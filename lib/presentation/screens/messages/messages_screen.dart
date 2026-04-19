@@ -257,7 +257,7 @@ class _ConversationTile extends ConsumerWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: AppColors.surface,
                 ),
               ),
             ),
@@ -270,7 +270,7 @@ class _ConversationTile extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: const BoxDecoration(
-                  color: Colors.redAccent,
+                  color: AppColors.error,
                   shape: BoxShape.circle,
                 ),
                 constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
@@ -280,7 +280,7 @@ class _ConversationTile extends ConsumerWidget {
                         ? '99+'
                         : '${conversation.unreadCount}',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.surface,
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
                     ),
@@ -521,7 +521,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 style:
                     const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
             Text(subtitle,
-                style: const TextStyle(fontSize: 11, color: Colors.white70)),
+                style: TextStyle(
+                    fontSize: 11, color: AppColors.surface.withOpacity(0.7))),
           ],
         ),
       ),
@@ -562,10 +563,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: AppColors.navy950.withOpacity(0.05),
                   blurRadius: 4,
                   offset: const Offset(0, -2),
                 ),
@@ -604,9 +605,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white)),
+                                      AppColors.surface)),
                             )
-                          : const Icon(Icons.send, color: Colors.white),
+                          : const Icon(Icons.send, color: AppColors.surface),
                       onPressed: _isSending ? null : _sendMessage,
                     ),
                   ),
@@ -727,7 +728,7 @@ class _MessageBubble extends ConsumerWidget {
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppColors.surface,
                   ),
                 ),
               ),
@@ -738,20 +739,14 @@ class _MessageBubble extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: isOwn ? AppColors.navy600 : Colors.white,
+                color: isOwn ? AppColors.navy600 : AppColors.surface,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16),
                   topRight: const Radius.circular(16),
                   bottomLeft: Radius.circular(isOwn ? 16 : 4),
                   bottomRight: Radius.circular(isOwn ? 4 : 16),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
+                boxShadow: AppColors.shadowSm,
               ),
               child: Column(
                 crossAxisAlignment:
@@ -760,7 +755,7 @@ class _MessageBubble extends ConsumerWidget {
                   Text(
                     message.body,
                     style: TextStyle(
-                      color: isOwn ? Colors.white : AppColors.zinc800,
+                      color: isOwn ? AppColors.surface : AppColors.zinc800,
                       fontSize: 14,
                     ),
                   ),
@@ -772,7 +767,7 @@ class _MessageBubble extends ConsumerWidget {
                         _formatMessageTime(message.createdAt, l10n),
                         style: TextStyle(
                           color: isOwn
-                              ? Colors.white.withOpacity(0.7)
+                              ? AppColors.surface.withOpacity(0.7)
                               : AppColors.zinc400,
                           fontSize: 10,
                         ),
@@ -784,7 +779,7 @@ class _MessageBubble extends ConsumerWidget {
                           size: 14,
                           color: isSeen
                               ? AppColors.wave300
-                              : Colors.white.withOpacity(0.5),
+                              : AppColors.surface.withOpacity(0.5),
                         ),
                       ],
                     ],
@@ -811,7 +806,7 @@ class _MessageBubble extends ConsumerWidget {
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppColors.surface,
                   ),
                 ),
               ),
