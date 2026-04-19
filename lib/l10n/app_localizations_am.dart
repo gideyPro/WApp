@@ -24,6 +24,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonUnknown => 'ያልታወቀ';
 
   @override
+  String get commonYou => 'እርስዎ';
+
+  @override
+  String get commonNow => 'አሁን';
+
+  @override
   String get commonOk => 'እሺ';
 
   @override
@@ -241,16 +247,326 @@ class AppLocalizationsAm extends AppLocalizations {
   String get searchFilterAny => 'ማንኛውም';
 
   @override
+  String get listingNext => 'ቀጣይ';
+
+  @override
+  String get listingSubmit => 'አስገባ';
+
+  @override
+  String get listingSubmitListing => 'ንብረት አስገባ';
+
+  @override
+  String get listingContinue => 'ቀጥል';
+
+  @override
+  String get listingBack => 'ተመለስ';
+
+  @override
+  String get listingStepBasics => 'መሰረታዊ';
+
+  @override
+  String get listingStepDetails => 'ዝርዝሮች';
+
+  @override
+  String get listingStepMedia => 'ሚዲያ';
+
+  @override
+  String get listingStepReview => 'ክለሳ';
+
+  @override
+  String get listingPropertyType => 'የንብረት አይነት';
+
+  @override
+  String get listingHoldingType => 'የባለቤትነት ሁኔታ';
+
+  @override
+  String get listingUseType => 'የአጠቃቀም ሁኔታ';
+
+  @override
+  String get listingLocation => 'ቦታ';
+
+  @override
+  String get listingPrice => 'ዋጋ';
+
+  @override
+  String get listingPriceEtb => 'ዋጋ (ብር)';
+
+  @override
+  String get listingHasDebt => 'ዕዳ ወይም እገዳ አለበት';
+
+  @override
+  String get listingDebtAmount => 'የዕዳ መጠን';
+
+  @override
+  String get listingSelectHolding => 'የባለቤትነት ሁኔታ ይምረጡ';
+
+  @override
+  String get listingSelectUse => 'የአጠቃቀም ሁኔታ ይምረጡ';
+
+  @override
+  String get listingRegion => 'ክልል';
+
+  @override
+  String get listingZone => 'ዞን';
+
+  @override
+  String get listingWoreda => 'ወረዳ';
+
+  @override
+  String get listingKebele => 'ቀበሌ';
+
+  @override
+  String get listingSpecificLocation => 'ልዩ ቦታ (አማራጭ)';
+
+  @override
+  String get listingTaxPaidYear => 'ግብር የተከፈለበት ዓመት';
+
+  @override
+  String get listingAcquisition => 'የንብረት ማግኛ ሁኔታ';
+
+  @override
+  String get listingLeasedYear => 'የሊዝ ዓመት';
+
+  @override
+  String get listingLeasePrice => 'የሊዝ ዋጋ በካሬ';
+
+  @override
+  String get listingBuildType => 'የግንባታ አይነት';
+
+  @override
+  String get listingAnnualPayment => 'ዓመታዊ ክፍያ';
+
+  @override
+  String get listingCooperativeName => 'የማህበሩ ስም';
+
+  @override
+  String get listingCooperativeCode => 'የማህበሩ ኮድ';
+
+  @override
+  String get listingBuildingStatus => 'የህንጻው ሁኔታ';
+
+  @override
+  String get listingRoomConfig => 'የክፍሎች አደረጃጀት';
+
+  @override
+  String get listingTotalRooms => 'ጠቅላላ ክፍሎች';
+
+  @override
+  String get listingBedrooms => 'መኝታ ቤቶች';
+
+  @override
+  String get listingBathrooms => 'መታጠቢያ ቤቶች';
+
+  @override
+  String get listingKitchens => 'ወጥ ቤቶች';
+
+  @override
+  String get listingSalons => 'ሳሎኖች';
+
+  @override
+  String get listingHouseType => 'የቤት አይነት';
+
+  @override
+  String get listingSelectHouseType => 'የቤት አይነት ይምረጡ';
+
+  @override
+  String get listingAmenities => 'መገልገያዎች';
+
+  @override
+  String get listingElectricity => 'መብራት';
+
+  @override
+  String get listingWater => 'ውሃ';
+
+  @override
+  String get listingParking => 'ፓርኪንግ';
+
+  @override
+  String get listingAreaDimensions => 'የቦታ ስፋት';
+
+  @override
+  String get listingTotalArea => 'ጠቅላላ ስፋት (ካሬ)';
+
+  @override
+  String get listingFrontArea => 'የፊት ስፋት (ካሬ)';
+
+  @override
+  String get listingSideArea => 'የጎን ስፋት (ካሬ)';
+
+  @override
+  String get listingFacingDirection => 'የሚመለከተው አቅጣጫ';
+
+  @override
+  String get listingSelectDirection => 'አቅጣጫ ይምረጡ';
+
+  @override
+  String get listingDescriptionLabel => 'መግለጫ';
+
+  @override
+  String get listingDescribeProperty => 'ስለ ንብረቱ ይግለጹ';
+
+  @override
+  String get listingImages => 'የንብረቱ ምስሎች (አስፈላጊ)';
+
+  @override
+  String get listingSitePlans => 'ሳይት ፕላን (አስፈላጊ)';
+
+  @override
+  String get listingOwnershipProof => 'የባለቤትነት ማረጋገጫ';
+
+  @override
+  String get listingLeaseContract => 'የሊዝ ውል';
+
+  @override
+  String get listingTapToAdd => 'ምስል ለመጨመር ይንኩ';
+
+  @override
+  String listingImagesSelected(Object count) {
+    return '$count ምስሎች ተመርጠዋል';
+  }
+
+  @override
+  String get listingBrowseFiles => 'ፋይሎችን ፈልግ';
+
+  @override
+  String get listingBrowseFile => 'ፋይል ፈልግ';
+
+  @override
+  String listingChangeFile(Object name) {
+    return 'ቀይር: $name';
+  }
+
+  @override
+  String get listingSummary => 'ማጠቃለያ';
+
+  @override
   String get listingNew => 'አዲስ';
+
+  @override
+  String get listingAcceptTerms => 'በአገልግሎት ውሎች እና ደንቦች እስማማለሁ';
+
+  @override
+  String get listingTermsSubtitle =>
+      'ንብረቱን በማስገባትዎ በውሎቻችን እና በግላዊነት ፖሊሲያችን ይስማማሉ';
+
+  @override
+  String get listingSuccess => 'ንብረቱ በተሳካ ሁኔታ ገብቷል! ይሁንታ በመጠባበቅ ላይ።';
+
+  @override
+  String listingError(Object error) {
+    return 'ስህተት: $error';
+  }
+
+  @override
+  String get listingNoOptions => 'ምንም አማራጮች የሉም';
+
+  @override
+  String get listingSelect => 'ይምረጡ';
+
+  @override
+  String get listingFreeHold => 'ነጻ ይዞታ';
+
+  @override
+  String get listingLeaseHold => 'ሊዝ';
+
+  @override
+  String get listingCooperative => 'ማህበር';
+
+  @override
+  String get listingResidential => 'ለመኖሪያ';
+
+  @override
+  String get listingCommercial => 'ለንግድ';
+
+  @override
+  String get listingMixed => 'ለተደባለቀ አገልግሎት';
+
+  @override
+  String get listingInvestment => 'ለኢንቨስትመንት';
+
+  @override
+  String get listingFinished => 'የተጠናቀቀ';
+
+  @override
+  String get listingUnfinished => 'ያልተጠናቀቀ';
+
+  @override
+  String get listingNorth => 'ሰሜን';
+
+  @override
+  String get listingSouth => 'ደቡብ';
+
+  @override
+  String get listingEast => 'ምስራቅ';
+
+  @override
+  String get listingWest => 'ምዕራብ';
+
+  @override
+  String get listingNorthEast => 'ሰሜን ምስራቅ';
+
+  @override
+  String get listingNorthWest => 'ሰሜን ምዕራብ';
+
+  @override
+  String get listingSouthEast => 'ደቡብ ምስራቅ';
+
+  @override
+  String get listingSouthWest => 'ደቡብ ምዕራብ';
+
+  @override
+  String get listingVilla => 'ቪላ';
+
+  @override
+  String get listingApartment => 'አፓርታማ';
+
+  @override
+  String get listingCondominium => 'ኮንዶሚኒየም';
+
+  @override
+  String get listingTownhouse => 'ታውን ሃውስ';
+
+  @override
+  String get listingBungalow => 'ባንጋሎው';
+
+  @override
+  String get listingPurchased => 'የተገዛ';
+
+  @override
+  String get listingInherited => 'የወረሰ';
+
+  @override
+  String get listingGift => 'በስጦታ';
+
+  @override
+  String get listingAssignment => 'በውክልና';
+
+  @override
+  String get listingOther => 'ሌላ';
+
+  @override
+  String get listingFreeHoldDetails => 'የነጻ ይዞታ ዝርዝሮች';
+
+  @override
+  String get listingLeaseHoldDetails => 'የሊዝ ዝርዝሮች';
+
+  @override
+  String get listingCooperativeDetails => 'የማህበር ዝርዝሮች';
+
+  @override
+  String get listingFinancial => 'ፋይናንሻል';
+
+  @override
+  String get listingSummaryProperty => 'ንብረት';
 
   @override
   String get listingFeatured => 'ተለይቷል';
 
   @override
-  String get listingHouse => '🏠 ቤት';
+  String get listingHouse => 'ቤት';
 
   @override
-  String get listingLand => '🌄 መሬት';
+  String get listingLand => 'መሬት';
 
   @override
   String get listingHouses => '🏠 ቤቶች';
@@ -306,7 +622,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsTitle => 'ንብረቶች';
 
   @override
-  String get listingsCreate => 'ንብረት ያስገቡ';
+  String get listingsCreate => 'አዲስ';
 
   @override
   String get listingsFeatured => 'ተለይተው የወጡ';
@@ -386,7 +702,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsLoadError => 'ንብረቱን መጫን አልተቻለም';
 
   @override
-  String listingsTitleTemplate(Object type, Object action, Object location) {
+  String listingsTitleTemplate(Object action, Object location, Object type) {
     return '$type $action በ$location';
   }
 
@@ -396,7 +712,7 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String listingsPriceRange(Object min, Object max) {
+  String listingsPriceRange(Object max, Object min) {
     return '$min - $max ብር';
   }
 

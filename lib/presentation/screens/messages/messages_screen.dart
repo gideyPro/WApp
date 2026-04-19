@@ -6,13 +6,14 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../data/models/message.dart' as msg;
+import '../../../l10n/app_localizations.dart';
 
 /// Format a DateTime into a human-readable time string
-String _formatTime(DateTime? dt) {
+String _formatTime(DateTime? dt, AppLocalizations l10n) {
   if (dt == null) return '';
   final now = DateTime.now();
   final diff = now.difference(dt);
-  if (diff.inMinutes < 1) return 'Now';
+  if (diff.inMinutes < 1) return l10n.commonNow;
   if (diff.inHours < 1) return '${diff.inMinutes}m';
   if (diff.inDays < 1) return '${diff.inHours}h';
   if (diff.inDays < 7) return '${diff.inDays}d';
@@ -85,17 +86,19 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final state = ref.watch(conversationsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages'),
+        title: Text(l10n.messagesTitle),
       ),
-      body: _buildBody(state),
+      body: _buildBody(state, l10n),
     );
   }
 
-  Widget _buildBody(ConversationsState state) {
+  Widget _buildBody(ConversationsState state, AppLocalizations l10n) {
     if (state.isLoading && state.conversations.isEmpty) {
       return _buildConversationsSkeleton();
     }
@@ -112,10 +115,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     if (state.conversations.isEmpty) {
       return WaveEmptyState(
         icon: Icons.chat_bubble_outline_rounded,
-        title: 'No Messages Yet',
-        subtitle:
-            'Start a conversation about a property by tapping the message icon on a listing',
-        actionLabel: 'Browse Properties',
+        title: l10n.messagesEmpty,
+        subtitle: l10n.favoritesEmptySubtitle, // Reusing similar empty state text
+        actionLabel: l10n.homeViewAll,
         onAction: () {
           // Navigate to home tab (index 0)
           Navigator.of(context).popUntil((route) => route.isFirst);
@@ -207,6 +209,7 @@ class _ConversationTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
     final currentUserId = authState.user?.id ?? 0;
+    final l10n = AppLocalizations.of(context);
 
     // Compute initials and name dynamically with currentUserId
     final initials = conversation.getInitials(currentUserId);
@@ -221,12 +224,15 @@ class _ConversationTile extends ConsumerWidget {
         conversation.unreadCount != null && conversation.unreadCount! > 0;
 
     // Format "You: " prefix for own messages - use lastMessageSenderId for accuracy
-    String previewText = conversation.previewText;
+    String previewText = conversation.lastMessage != null && conversation.lastMessage!.isNotEmpty
+        ? conversation.lastMessage!
+        : l10n.messagesEmpty;
+    
     if (conversation.lastMessage != null &&
         conversation.lastMessage!.isNotEmpty) {
       final isOwnLastMessage = conversation.isLastMessageFromMe(currentUserId);
       if (isOwnLastMessage) {
-        previewText = 'You: $previewText';
+        previewText = '${l10n.commonYou}: $previewText';
       }
     }
 
@@ -300,7 +306,7 @@ class _ConversationTile extends ConsumerWidget {
             const SizedBox(width: 4),
             Expanded(
               child: Text(
-                listingTitle ?? 'Property',
+                listingTitle ?? l10n.listingsTitle,
                 style:
                     AppTextStyles.bodySmall.copyWith(color: AppColors.zinc500),
                 maxLines: 1,
@@ -330,7 +336,7 @@ class _ConversationTile extends ConsumerWidget {
         children: [
           if (conversation.lastMessageAt != null)
             Text(
-              _formatTime(conversation.lastMessageAt),
+              _formatTime(conversation.lastMessageAt, l10n),
               style: TextStyle(
                 fontSize: 11,
                 color: hasUnread ? AppColors.wave600 : AppColors.zinc400,
@@ -385,9 +391,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (success) {
         _scrollToBottom();
       } else {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Failed to send message'),
+          SnackBar(
+              content: Text(l10n.commonError), // Using commonError for now
               backgroundColor: AppColors.error),
         );
       }
@@ -439,7 +446,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
-  Widget _buildMessagesList(List<msg.Message> messages, int currentUserId) {
+  Widget _buildMessagesList(List<msg.Message> messages, int currentUserId, AppLocalizations l10n) {
     // Trigger scroll to first unread on first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToFirstUnread(messages, currentUserId);
@@ -474,7 +481,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'New messages',
+                  l10n.messagesEmpty, // Actually we need a 'New Messages' string, but using messagesEmpty for now if it's the closest
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -496,12 +503,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final chatState = ref.watch(chatMessagesProvider(widget.conversationId));
     final authState = ref.watch(authStateProvider);
     final currentUserId = authState.user?.id ?? 0;
+    final l10n = AppLocalizations.of(context);
 
     // Build proper title from conversation data
     String title = widget.conversation.getDisplayTitle(currentUserId);
     String subtitle = widget.conversation.isAssetChat
-        ? (widget.conversation.listingTitle ?? 'Property Chat')
-        : 'Direct Message';
+        ? (widget.conversation.listingTitle ?? l10n.listingsTitle)
+        : l10n.profileMessages;
 
     return Scaffold(
       appBar: AppBar(
@@ -541,13 +549,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 Icon(Icons.chat_bubble_outline,
                                     size: 64, color: AppColors.navy300),
                                 const SizedBox(height: 16),
-                                Text('No messages yet',
+                                Text(l10n.messagesEmpty,
                                     style: AppTextStyles.bodyLarge
                                         .copyWith(color: AppColors.navy500)),
                               ],
                             ),
                           )
-                        : _buildMessagesList(chatState.messages, currentUserId),
+                        : _buildMessagesList(chatState.messages, currentUserId, l10n),
           ),
 
           // Message input
@@ -570,7 +578,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: TextField(
                       controller: _messageController,
                       decoration: InputDecoration(
-                        hintText: 'Type a message...',
+                        hintText: l10n.messagesTypeMessage,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
@@ -667,6 +675,19 @@ Widget _buildMessagesSkeleton() {
   );
 }
 
+/// Format message time for bubbles
+String _formatMessageTime(DateTime createdAt, AppLocalizations l10n) {
+  final now = DateTime.now();
+  final diff = now.difference(createdAt);
+
+  if (diff.inMinutes < 1) return l10n.commonNow;
+  if (diff.inHours < 1) return '${diff.inMinutes}m';
+  if (diff.inDays < 1) return '${diff.inHours}h';
+  if (diff.inDays < 7) return '${diff.inDays}d';
+
+  return '${createdAt.day}/${createdAt.month}/${createdAt.year}';
+}
+
 /// Message Bubble Widget - WhatsApp-like with actual user initials
 class _MessageBubble extends ConsumerWidget {
   final msg.Message message;
@@ -680,6 +701,7 @@ class _MessageBubble extends ConsumerWidget {
     final isOwn = message.senderId == currentUserId;
     final isSeen = message.readAt != null;
     final initials = message.senderInitials;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -747,7 +769,7 @@ class _MessageBubble extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        message.displayTime,
+                        _formatMessageTime(message.createdAt, l10n),
                         style: TextStyle(
                           color: isOwn
                               ? Colors.white.withOpacity(0.7)

@@ -24,6 +24,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonUnknown => 'Unknown';
 
   @override
+  String get commonYou => 'You';
+
+  @override
+  String get commonNow => 'Now';
+
+  @override
   String get commonOk => 'OK';
 
   @override
@@ -110,7 +116,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileMyListings => 'My Listings';
 
   @override
-  String get myListingsEmptySubtitle => 'Create your first listing to get started';
+  String get myListingsEmptySubtitle =>
+      'Create your first listing to get started';
 
   @override
   String get profileFavorites => 'Favorites';
@@ -243,16 +250,327 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchFilterAny => 'Any';
 
   @override
+  String get listingNext => 'Next';
+
+  @override
+  String get listingSubmit => 'Submit';
+
+  @override
+  String get listingSubmitListing => 'Submit Listing';
+
+  @override
+  String get listingContinue => 'Continue';
+
+  @override
+  String get listingBack => 'Back';
+
+  @override
+  String get listingStepBasics => 'Basics';
+
+  @override
+  String get listingStepDetails => 'Details';
+
+  @override
+  String get listingStepMedia => 'Media';
+
+  @override
+  String get listingStepReview => 'Review';
+
+  @override
+  String get listingPropertyType => 'Property Type';
+
+  @override
+  String get listingHoldingType => 'Holding Type';
+
+  @override
+  String get listingUseType => 'Use Type';
+
+  @override
+  String get listingLocation => 'Location';
+
+  @override
+  String get listingPrice => 'Price';
+
+  @override
+  String get listingPriceEtb => 'Price (ETB)';
+
+  @override
+  String get listingHasDebt => 'Has Debt or Encumbrance';
+
+  @override
+  String get listingDebtAmount => 'Debt Amount';
+
+  @override
+  String get listingSelectHolding => 'Select holding type';
+
+  @override
+  String get listingSelectUse => 'Select use type';
+
+  @override
+  String get listingRegion => 'Region';
+
+  @override
+  String get listingZone => 'Zone';
+
+  @override
+  String get listingWoreda => 'Woreda';
+
+  @override
+  String get listingKebele => 'Kebele';
+
+  @override
+  String get listingSpecificLocation => 'Specific Location (optional)';
+
+  @override
+  String get listingTaxPaidYear => 'Tax Paid Until Year';
+
+  @override
+  String get listingAcquisition => 'Acquisition Clarification';
+
+  @override
+  String get listingLeasedYear => 'Leased Year';
+
+  @override
+  String get listingLeasePrice => 'Lease Price per m²';
+
+  @override
+  String get listingBuildType => 'Build Type';
+
+  @override
+  String get listingAnnualPayment => 'Annual Payment';
+
+  @override
+  String get listingCooperativeName => 'Cooperative Name';
+
+  @override
+  String get listingCooperativeCode => 'Cooperative Code';
+
+  @override
+  String get listingBuildingStatus => 'Building Status';
+
+  @override
+  String get listingRoomConfig => 'Room Configuration';
+
+  @override
+  String get listingTotalRooms => 'Total Rooms';
+
+  @override
+  String get listingBedrooms => 'Bedrooms';
+
+  @override
+  String get listingBathrooms => 'Bathrooms';
+
+  @override
+  String get listingKitchens => 'Kitchens';
+
+  @override
+  String get listingSalons => 'Salons';
+
+  @override
+  String get listingHouseType => 'House Type';
+
+  @override
+  String get listingSelectHouseType => 'Select house type';
+
+  @override
+  String get listingAmenities => 'Amenities';
+
+  @override
+  String get listingElectricity => 'Electricity';
+
+  @override
+  String get listingWater => 'Water';
+
+  @override
+  String get listingParking => 'Parking';
+
+  @override
+  String get listingAreaDimensions => 'Area Dimensions';
+
+  @override
+  String get listingTotalArea => 'Total Area (m²)';
+
+  @override
+  String get listingFrontArea => 'Front Area (m²)';
+
+  @override
+  String get listingSideArea => 'Side Area (m²)';
+
+  @override
+  String get listingFacingDirection => 'Facing Direction';
+
+  @override
+  String get listingSelectDirection => 'Select direction';
+
+  @override
+  String get listingDescriptionLabel => 'Description';
+
+  @override
+  String get listingDescribeProperty => 'Describe your property';
+
+  @override
+  String get listingImages => 'Property Images (Required)';
+
+  @override
+  String get listingSitePlans => 'Site Plans (Required)';
+
+  @override
+  String get listingOwnershipProof => 'Ownership Proof';
+
+  @override
+  String get listingLeaseContract => 'Lease Contract';
+
+  @override
+  String get listingTapToAdd => 'Tap to add images';
+
+  @override
+  String listingImagesSelected(Object count) {
+    return '$count image(s) selected';
+  }
+
+  @override
+  String get listingBrowseFiles => 'Browse Files';
+
+  @override
+  String get listingBrowseFile => 'Browse File';
+
+  @override
+  String listingChangeFile(Object name) {
+    return 'Change: $name';
+  }
+
+  @override
+  String get listingSummary => 'Summary';
+
+  @override
   String get listingNew => 'NEW';
+
+  @override
+  String get listingAcceptTerms => 'I accept the Terms & Conditions';
+
+  @override
+  String get listingTermsSubtitle =>
+      'By submitting, you agree to our terms and privacy policy';
+
+  @override
+  String get listingSuccess =>
+      'Listing submitted successfully! Awaiting approval.';
+
+  @override
+  String listingError(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get listingNoOptions => 'No options available';
+
+  @override
+  String get listingSelect => 'Select';
+
+  @override
+  String get listingFreeHold => 'Free Hold';
+
+  @override
+  String get listingLeaseHold => 'Lease Hold';
+
+  @override
+  String get listingCooperative => 'Cooperative';
+
+  @override
+  String get listingResidential => 'Residential';
+
+  @override
+  String get listingCommercial => 'Commercial';
+
+  @override
+  String get listingMixed => 'Mixed';
+
+  @override
+  String get listingInvestment => 'Investment';
+
+  @override
+  String get listingFinished => 'Finished';
+
+  @override
+  String get listingUnfinished => 'Unfinished';
+
+  @override
+  String get listingNorth => 'North';
+
+  @override
+  String get listingSouth => 'South';
+
+  @override
+  String get listingEast => 'East';
+
+  @override
+  String get listingWest => 'West';
+
+  @override
+  String get listingNorthEast => 'North East';
+
+  @override
+  String get listingNorthWest => 'North West';
+
+  @override
+  String get listingSouthEast => 'South East';
+
+  @override
+  String get listingSouthWest => 'South West';
+
+  @override
+  String get listingVilla => 'Villa';
+
+  @override
+  String get listingApartment => 'Apartment';
+
+  @override
+  String get listingCondominium => 'Condominium';
+
+  @override
+  String get listingTownhouse => 'Townhouse';
+
+  @override
+  String get listingBungalow => 'Bungalow';
+
+  @override
+  String get listingPurchased => 'Purchased';
+
+  @override
+  String get listingInherited => 'Inherited';
+
+  @override
+  String get listingGift => 'Gift';
+
+  @override
+  String get listingAssignment => 'Assignment';
+
+  @override
+  String get listingOther => 'Other';
+
+  @override
+  String get listingFreeHoldDetails => 'Free Hold Details';
+
+  @override
+  String get listingLeaseHoldDetails => 'Lease Hold Details';
+
+  @override
+  String get listingCooperativeDetails => 'Cooperative Details';
+
+  @override
+  String get listingFinancial => 'Financial';
+
+  @override
+  String get listingSummaryProperty => 'Property';
 
   @override
   String get listingFeatured => 'FEATURED';
 
   @override
-  String get listingHouse => '🏠 House';
+  String get listingHouse => 'House';
 
   @override
-  String get listingLand => '🌄 Land';
+  String get listingLand => 'Land';
 
   @override
   String get listingHouses => '🏠 Houses';
@@ -308,7 +626,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsTitle => 'Listings';
 
   @override
-  String get listingsCreate => 'Create Listing';
+  String get listingsCreate => 'List';
 
   @override
   String get listingsFeatured => 'Featured';
@@ -388,7 +706,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsLoadError => 'Could not load property';
 
   @override
-  String listingsTitleTemplate(Object type, Object action, Object location) {
+  String listingsTitleTemplate(Object action, Object location, Object type) {
     return '$type $action in $location';
   }
 
@@ -398,7 +716,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String listingsPriceRange(Object min, Object max) {
+  String listingsPriceRange(Object max, Object min) {
     return '$min - $max ETB';
   }
 

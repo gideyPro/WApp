@@ -130,6 +130,18 @@ abstract class AppLocalizations {
   /// **'Unknown'**
   String get commonUnknown;
 
+  /// No description provided for @commonYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get commonYou;
+
+  /// No description provided for @commonNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get commonNow;
+
   /// No description provided for @commonOk.
   ///
   /// In en, this message translates to:
@@ -934,6 +946,12 @@ abstract class AppLocalizations {
   /// **'Summary'**
   String get listingSummary;
 
+  /// No description provided for @listingNew.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW'**
+  String get listingNew;
+
   /// No description provided for @listingAcceptTerms.
   ///
   /// In en, this message translates to:
@@ -1162,18 +1180,6 @@ abstract class AppLocalizations {
   /// **'Property'**
   String get listingSummaryProperty;
 
-  /// No description provided for @listingNew.
-  ///
-  /// In en, this message translates to:
-  /// **'NEW'**
-  String get listingNew;
-
-  /// No description provided for @listingNew.
-  ///
-  /// In en, this message translates to:
-  /// **'NEW'**
-  String get listingNew;
-
   /// No description provided for @listingFeatured.
   ///
   /// In en, this message translates to:
@@ -1183,13 +1189,13 @@ abstract class AppLocalizations {
   /// No description provided for @listingHouse.
   ///
   /// In en, this message translates to:
-  /// **'🏠 House'**
+  /// **'House'**
   String get listingHouse;
 
   /// No description provided for @listingLand.
   ///
   /// In en, this message translates to:
-  /// **'🌄 Land'**
+  /// **'Land'**
   String get listingLand;
 
   /// No description provided for @listingHouses.
@@ -1285,7 +1291,7 @@ abstract class AppLocalizations {
   /// No description provided for @listingsCreate.
   ///
   /// In en, this message translates to:
-  /// **'Create Listing'**
+  /// **'List'**
   String get listingsCreate;
 
   /// No description provided for @listingsFeatured.
@@ -1430,7 +1436,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{type} {action} in {location}'**
-  String listingsTitleTemplate(Object type, Object action, Object location);
+  String listingsTitleTemplate(Object action, Object location, Object type);
 
   /// No description provided for @listingsPriceFixed.
   ///
@@ -1442,7 +1448,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{min} - {max} ETB'**
-  String listingsPriceRange(Object min, Object max);
+  String listingsPriceRange(Object max, Object min);
 
   /// No description provided for @listingsYes.
   ///
