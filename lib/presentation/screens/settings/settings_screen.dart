@@ -12,6 +12,18 @@ import '../listing/my_listings_screen.dart';
 import '../payments/payment_history_screen.dart';
 import '../help/help_center_screen.dart';
 import '../auth/otp_login_screen.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_constants.dart';
+
+final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
+  try {
+    final response = await ApiClient().dio.get(ApiConstants.apiBase + '/settings');
+    if (response.statusCode == 200 && response.data is Map) {
+      return response.data['data'] ?? {};
+    }
+  } catch (_) {}
+  return {'subscription_enabled': false};
+});
 
 /// Settings Screen - App settings and support (no profile/nav)
 class SettingsScreen extends ConsumerWidget {
@@ -22,17 +34,18 @@ class SettingsScreen extends ConsumerWidget {
     final profileState = ref.watch(profileProvider);
     final kycState = ref.watch(kycStatusProvider);
     final localeCode = ref.watch(localeProvider).locale?.languageCode;
-
-    if (profileState.isLoading && profileState.user == null) {
-      ref.read(profileProvider.notifier).loadProfile();
-    }
+final settingsAsync = ref.watch(appSettingsProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
 
     final l10n = AppLocalizations.of(context);
 
     // Determine KYC status display
     String kycSubtitle = l10n.settingsKycRequired;
     String? kycBadge = l10n.settingsKycRequired;
-    
+
     if (profileState.user?.isKycVerified == true || kycState.isVerified || kycState.isApproved) {
       kycSubtitle = l10n.settingsKycVerified;
       kycBadge = null;
@@ -41,6 +54,52 @@ class SettingsScreen extends ConsumerWidget {
       kycBadge = l10n.settingsKycPending;
     }
 
+    // Build account menu items based on subscription enabled
+    final List<_MenuItemData> accountItems = [
+      _MenuItemData(
+        icon: Icons.list_alt_outlined,
+        title: l10n.profileMyListings,
+        subtitle: l10n.settingsMyListingsSubtitle,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const MyListingsScreen()),
+        ),
+      ),
+    ];
+
+    // Add subscription and payment only if enabled
+    if (subscriptionEnabled) {
+      accountItems.addAll([
+        _MenuItemData(
+          icon: Icons.payment_outlined,
+          title: l10n.profileSubscriptions,
+          subtitle: l10n.settingsSubscriptionsSubtitle,
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+          ),
+        ),
+        _MenuItemData(
+          icon: Icons.receipt_long_outlined,
+          title: l10n.profilePayments,
+          subtitle: l10n.settingsPaymentsSubtitle,
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const PaymentHistoryScreen()),
+          ),
+        ),
+      ]);
+    }
+
+    accountItems.add(
+      _MenuItemData(
+        icon: Icons.verified_user_outlined,
+        title: l10n.profileKyc,
+        subtitle: kycSubtitle,
+        badge: kycBadge,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const KycVerificationScreen()),
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.settingsTitle),
@@ -48,63 +107,14 @@ class SettingsScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           await ref.read(profileProvider.notifier).loadProfile();
+          ref.invalidate(appSettingsProvider);
         },
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
             _buildMenuSection(
               title: l10n.settingsSectionAccount,
-              items: [
-                _MenuItemData(
-                  icon: Icons.list_alt_outlined,
-                  title: l10n.profileMyListings,
-                  subtitle: l10n.settingsMyListingsSubtitle,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const MyListingsScreen(),
-                      ),
-                    );
-                  },
-                ),
-                _MenuItemData(
-                  icon: Icons.payment_outlined,
-                  title: l10n.profileSubscriptions,
-                  subtitle: l10n.settingsSubscriptionsSubtitle,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SubscriptionPlansScreen(),
-                      ),
-                    );
-                  },
-                ),
-                _MenuItemData(
-                  icon: Icons.receipt_long_outlined,
-                  title: l10n.profilePayments,
-                  subtitle: l10n.settingsPaymentsSubtitle,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const PaymentHistoryScreen(),
-                      ),
-                    );
-                  },
-                ),
-                _MenuItemData(
-                  icon: Icons.verified_user_outlined,
-                  title: l10n.profileKyc,
-                  subtitle: kycSubtitle,
-                  badge: kycBadge,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const KycVerificationScreen(),
-                      ),
-                    );
-                  },
-                ),
-              ],
+              items: accountItems,
             ),
             const SizedBox(height: 16),
             _buildMenuSection(

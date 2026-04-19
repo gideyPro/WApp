@@ -26,6 +26,7 @@
         "hive_flutter",
         "image_cropper",
         "image_picker",
+        "intl",
         "lottie",
         "path_provider",
         "permission_handler",
@@ -242,6 +243,15 @@
         "url_launcher_platform_interface",
         "url_launcher_web",
         "url_launcher_windows"
+      ]
+    },
+    {
+      "name": "intl",
+      "version": "0.20.2",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
       ]
     },
     {
@@ -1017,15 +1027,6 @@
       ]
     },
     {
-      "name": "image_cropper_platform_interface",
-      "version": "8.0.0",
-      "dependencies": [
-        "flutter",
-        "http",
-        "plugin_platform_interface"
-      ]
-    },
-    {
       "name": "image_cropper_for_web",
       "version": "7.0.0",
       "dependencies": [
@@ -1033,6 +1034,15 @@
         "flutter_web_plugins",
         "image_cropper_platform_interface",
         "web"
+      ]
+    },
+    {
+      "name": "image_cropper_platform_interface",
+      "version": "8.0.0",
+      "dependencies": [
+        "flutter",
+        "http",
+        "plugin_platform_interface"
       ]
     },
     {
@@ -1384,15 +1394,6 @@
         "flutter",
         "http",
         "vector_graphics_codec"
-      ]
-    },
-    {
-      "name": "intl",
-      "version": "0.20.2",
-      "dependencies": [
-        "clock",
-        "meta",
-        "path"
       ]
     },
     {
