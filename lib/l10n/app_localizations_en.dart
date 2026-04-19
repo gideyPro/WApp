@@ -876,6 +876,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsKycVerified => 'Verified';
 
   @override
+  String get settingsKycPending => 'Pending';
+
+  @override
   String get settingsKycRequired => 'Required';
 
   @override

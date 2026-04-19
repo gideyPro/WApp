@@ -20,13 +20,32 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileProvider);
+    final kycState = ref.watch(kycStatusProvider);
     final localeCode = ref.watch(localeProvider).locale?.languageCode;
 
     if (profileState.isLoading && profileState.user == null) {
       ref.read(profileProvider.notifier).loadProfile();
     }
 
+    if (!kycState.isLoading && kycState.status == 'none') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(kycStatusProvider.notifier).loadKycStatus();
+      });
+    }
+
     final l10n = AppLocalizations.of(context);
+
+    // Determine KYC status display
+    String kycSubtitle = l10n.settingsKycRequired;
+    String? kycBadge = l10n.settingsKycRequired;
+    
+    if (profileState.user?.isKycVerified == true || kycState.isVerified || kycState.isApproved) {
+      kycSubtitle = l10n.settingsKycVerified;
+      kycBadge = null;
+    } else if (kycState.isPending) {
+      kycSubtitle = l10n.settingsKycPending;
+      kycBadge = l10n.settingsKycPending;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -81,12 +100,8 @@ class SettingsScreen extends ConsumerWidget {
                 _MenuItemData(
                   icon: Icons.verified_user_outlined,
                   title: l10n.profileKyc,
-                  subtitle: profileState.user?.isKycVerified == true
-                      ? l10n.settingsKycVerified
-                      : l10n.settingsKycRequired,
-                  badge: profileState.user?.isKycVerified == true
-                      ? null
-                      : l10n.settingsKycRequired,
+                  subtitle: kycSubtitle,
+                  badge: kycBadge,
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(

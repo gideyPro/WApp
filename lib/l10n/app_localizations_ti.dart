@@ -869,6 +869,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsKycVerified => 'ተረጋጊጹ';
 
   @override
+  String get settingsKycPending => 'ኣብ መስርሕ';
+
+  @override
   String get settingsKycRequired => 'የድሊ';
 
   @override

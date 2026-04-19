@@ -1738,6 +1738,12 @@ abstract class AppLocalizations {
   /// **'Verified'**
   String get settingsKycVerified;
 
+  /// No description provided for @settingsKycPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get settingsKycPending;
+
   /// No description provided for @settingsKycRequired.
   ///
   /// In en, this message translates to:

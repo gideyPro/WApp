@@ -869,6 +869,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsKycVerified => 'ተረጋግጧል';
 
   @override
+  String get settingsKycPending => 'በመጠባበቅ ላይ';
+
+  @override
   String get settingsKycRequired => 'ያስፈልጋል';
 
   @override

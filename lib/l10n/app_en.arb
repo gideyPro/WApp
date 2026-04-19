@@ -283,6 +283,7 @@
   "settingsSubscriptionsSubtitle": "View your plans",
   "settingsPaymentsSubtitle": "Transaction history",
   "settingsKycVerified": "Verified",
+  "settingsKycPending": "Pending",
   "settingsKycRequired": "Required",
   "settingsHelpSubtitle": "FAQs and guides",
   "settingsContactSupport": "Contact Support",
