@@ -8,8 +8,7 @@ import '../../core/network/error_handler.dart';
 class KycService {
   final ApiClient _apiClient;
 
-  KycService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+  KycService({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient();
 
   /// Get KYC status
   Future<KycStatusResponse> getKycStatus() async {
@@ -22,10 +21,13 @@ class KycService {
 
         return KycStatusResponse(
           success: true,
-          status: verification['verified'] != true ? (data['status'] ?? 'none') : 'approved',
+          status: verification['verified'] != true
+              ? (verification['status'] ?? 'none')
+              : 'approved',
           isVerified: verification['verified'] ?? false,
           documentType: verification['document_type'] ?? data['document_type'],
-          rejectionReason: verification['rejection_reason'] ?? data['rejection_reason'],
+          rejectionReason:
+              verification['rejection_reason'] ?? data['rejection_reason'],
           submittedAt: verification['submitted_at'] ?? data['submitted_at'],
           verifiedAt: verification['verified_at'] ?? data['verified_at'],
         );
