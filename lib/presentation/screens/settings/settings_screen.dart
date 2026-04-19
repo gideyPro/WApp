@@ -27,12 +27,6 @@ class SettingsScreen extends ConsumerWidget {
       ref.read(profileProvider.notifier).loadProfile();
     }
 
-    if (!kycState.isLoading && kycState.status == 'none') {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(kycStatusProvider.notifier).loadKycStatus();
-      });
-    }
-
     final l10n = AppLocalizations.of(context);
 
     // Determine KYC status display

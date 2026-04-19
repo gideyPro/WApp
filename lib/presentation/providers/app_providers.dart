@@ -598,7 +598,13 @@ class KycStatusNotifier extends StateNotifier<KycStatusState> {
   KycStatusNotifier(this._kycService) : super(const KycStatusState.initial());
 
   Future<void> loadKycStatus() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    // Only set loading if not already loading to avoid flicker
+    if (state.isLoading && state.status == 'none') {
+       // Already in initial loading state
+    } else {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+    }
+
     final response = await _kycService.getKycStatus();
     if (response.success) {
       state = KycStatusState.loaded(
@@ -607,7 +613,12 @@ class KycStatusNotifier extends StateNotifier<KycStatusState> {
         rejectionReason: response.rejectionReason,
       );
     } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.status);
+      // Set status to error or keep existing to stop loading spinner
+      state = state.copyWith(
+        isLoading: false, 
+        errorMessage: response.status,
+        status: state.status == 'none' ? 'error' : state.status,
+      );
     }
   }
 }
@@ -627,7 +638,7 @@ class KycStatusState {
       this.submittedAt,
       this.errorMessage});
   const KycStatusState.initial()
-      : isLoading = true,
+      : isLoading = false,
         status = 'none',
         isVerified = false,
         rejectionReason = null,
@@ -659,7 +670,7 @@ class KycStatusState {
   bool get isPending => status == 'pending';
   bool get isApproved => status == 'approved';
   bool get isRejected => status == 'rejected';
-  bool get isNone => status == 'none' || status.isEmpty;
+  bool get isNone => status == 'none' || status == 'error' || status.isEmpty;
 }
 
 /// Conference Provider
