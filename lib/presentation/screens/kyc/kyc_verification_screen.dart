@@ -184,6 +184,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       return _buildVerifiedState(state);
     }
 
+    // Approved state (fallback for service status)
+    if (state.isApproved) {
+      return _buildVerifiedState(state);
+    }
+
     // Pending state
     if (state.isPending) {
       return _buildPendingState(state);

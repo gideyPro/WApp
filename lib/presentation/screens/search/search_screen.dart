@@ -13,7 +13,16 @@ import '../../../../l10n/app_localizations.dart';
 
 /// Modern Search & Filter Screen
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key});
+  final String? initialType;
+  final String? initialListingType;
+  final bool isFeatured;
+
+  const SearchScreen({
+    super.key,
+    this.initialType,
+    this.initialListingType,
+    this.isFeatured = false,
+  });
 
   @override
   ConsumerState<SearchScreen> createState() => _SearchScreenState();
@@ -38,6 +47,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _loadSettings();
+    _applyInitialFilters();
+  }
+
+  void _applyInitialFilters() {
+    final widget = this.widget;
+    if (widget.initialType != null) {
+      setState(() => _selectedType = widget.initialType);
+    }
+    if (widget.initialListingType != null) {
+      setState(() => _selectedListingType = widget.initialListingType);
+    }
+    if (widget.isFeatured) {
+      setState(() {
+        _activeFilters = {..._activeFilters, 'is_featured': 'true'};
+      });
+      _performSearch();
+    }
   }
 
   Future<void> _loadSettings() async {

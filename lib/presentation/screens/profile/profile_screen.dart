@@ -7,7 +7,6 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../auth/otp_login_screen.dart';
 import '../kyc/kyc_verification_screen.dart';
-import 'edit_profile_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Profile Screen - Only profile-related content (personal info, KYC, stats)
@@ -63,21 +62,6 @@ class ProfileScreen extends ConsumerWidget {
                         builder: (_) => const KycVerificationScreen(),
                       ),
                     );
-                  },
-                ),
-                _MenuItemData(
-                  icon: Icons.edit_outlined,
-                  title: l10n.profileEdit,
-                  subtitle: l10n.profileEditSubtitle,
-                  onTap: () async {
-                    final result = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const EditProfileScreen(),
-                      ),
-                    );
-                    if (result == true && context.mounted) {
-                      ref.read(profileProvider.notifier).loadProfile();
-                    }
                   },
                 ),
               ],
@@ -200,19 +184,6 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ],
           ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.edit_outlined),
-          onPressed: () async {
-            final result = await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const EditProfileScreen(),
-              ),
-            );
-            if (result == true && context.mounted) {
-              ref.read(profileProvider.notifier).loadProfile();
-            }
-          },
         ),
       ],
     );

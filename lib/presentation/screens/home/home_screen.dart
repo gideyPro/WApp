@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/theme/text_styles.dart';
 import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
@@ -12,7 +11,6 @@ import '../notifications/notifications_screen.dart';
 import '../listing/listing_detail_screen.dart';
 import '../listing/my_listings_screen.dart';
 import '../favorites/favorites_screen.dart';
-import '../profile/edit_profile_screen.dart';
 import '../auth/otp_login_screen.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
@@ -140,10 +138,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   child: Column(
                     children: [
                       _buildSectionHeader(context,
-                          l10n.listingsFeatured),
+                          l10n.listingsFeatured, isFeatured: true),
                       _buildFeaturedListings(featuredState),
                       _buildSectionHeader(
-                          context, l10n.listingsTitle),
+                          context, l10n.listingsTitle, isFeatured: false),
                     ],
                   ),
                 ),
@@ -162,12 +160,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final profileState = ref.read(profileProvider);
     final stats = profileState.stats;
     final l10n = AppLocalizations.of(context);
-    final initials = user?.initials.isNotEmpty == true
-        ? user!.initials
-        : (user?.firstName?.substring(0, 1).toUpperCase() ?? l10n.commonAppInitials);
+    String initialsTemp = l10n.commonAppInitials;
+    if (user?.initials.isNotEmpty == true) {
+      initialsTemp = user!.initials;
+    } else if (user != null && user.firstName.isNotEmpty) {
+      initialsTemp = user.firstName.substring(0, 1).toUpperCase();
+    }
+    final initials = initialsTemp;
     final fullName =
-        user?.fullName.isNotEmpty == true ? user!.fullName : l10n.commonUser;
-    final phone = user?.phoneNumber.isNotEmpty == true
+        (user?.fullName.isNotEmpty ?? false) ? user!.fullName : l10n.commonUser;
+    final phone = (user?.phoneNumber.isNotEmpty ?? false)
         ? user!.phoneNumber
         : (user?.email ?? l10n.commonNA);
 
@@ -303,22 +305,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
                     // Action buttons
                     _buildModalAction(
-                      icon: Icons.edit_outlined,
-                      title: l10n.profileEdit,
-                      onTap: () async {
-                        Navigator.pop(ctx);
-                        final result = await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const EditProfileScreen(),
-                          ),
-                        );
-                        if (result == true && mounted) {
-                          ref.read(profileProvider.notifier).loadProfile();
-                        }
-                      },
-                    ),
-                    const Divider(height: 1),
-                    _buildModalAction(
                       icon: Icons.logout,
                       title: l10n.authLogout,
                       textColor: AppColors.error,
@@ -433,7 +419,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title) {
+  Widget _buildSectionHeader(
+    BuildContext context, String title, {
+    bool isFeatured = false,
+  }) {
     final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
@@ -455,7 +444,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
               const SizedBox(height: 4),
               Text(
-                title == l10n.listingsFeatured
+                isFeatured
                     ? l10n.homeFeaturedPremium
                     : l10n.homeLatestRecently,
                 style: TextStyle(
@@ -466,19 +455,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             ],
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppColors.wave50,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.wave200),
-            ),
-            child: Text(
-              l10n.homeViewAll,
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.wave700,
-                fontWeight: FontWeight.w600,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SearchScreen(isFeatured: isFeatured),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.wave50,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.wave200),
+              ),
+              child: Text(
+                l10n.homeViewAll,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.wave700,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -619,7 +618,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     final user = authState.user;
     final userFirstName = user?.firstName ?? 'WaveMart';
     final userInitials = _getInitials(context, user?.firstName, user?.lastName);
-    final isScrolled = overlapsContent ?? false;
+    final isScrolled = overlapsContent;
     final l10n = AppLocalizations.of(context);
 
     return ClipRect(

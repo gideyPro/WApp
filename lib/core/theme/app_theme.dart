@@ -7,13 +7,11 @@ import 'text_styles.dart';
 class AppTheme {
   AppTheme._();
 
-  static ThemeData get lightTheme {
+static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      fontFamily: 'Outfit',
-      fontFamilyFallback: const ['Inter', 'Outfit', 'sans-serif'],
-      
+       
       // Color Scheme
       colorScheme: const ColorScheme.light(
         primary: AppColors.navy950,
@@ -319,23 +317,23 @@ class AppTheme {
         }),
       ),
 
-      // Text Theme - using locally bundled fonts
+      // Text Theme - using system default fonts
       textTheme: const TextTheme(
-        displayLarge: TextStyle(fontFamily: 'Inter'),
-        displayMedium: TextStyle(fontFamily: 'Inter'),
-        displaySmall: TextStyle(fontFamily: 'Inter'),
-        headlineLarge: TextStyle(fontFamily: 'Inter'),
-        headlineMedium: TextStyle(fontFamily: 'Inter'),
-        headlineSmall: TextStyle(fontFamily: 'Inter'),
-        titleLarge: TextStyle(fontFamily: 'Inter'),
-        titleMedium: TextStyle(fontFamily: 'Inter'),
-        titleSmall: TextStyle(fontFamily: 'Inter'),
-        bodyLarge: TextStyle(fontFamily: 'Inter'),
-        bodyMedium: TextStyle(fontFamily: 'Inter'),
-        bodySmall: TextStyle(fontFamily: 'Inter'),
-        labelLarge: TextStyle(fontFamily: 'Inter'),
-        labelMedium: TextStyle(fontFamily: 'Inter'),
-        labelSmall: TextStyle(fontFamily: 'Inter'),
+        displayLarge: TextStyle(),
+        displayMedium: TextStyle(),
+        displaySmall: TextStyle(),
+        headlineLarge: TextStyle(),
+        headlineMedium: TextStyle(),
+        headlineSmall: TextStyle(),
+        titleLarge: TextStyle(),
+        titleMedium: TextStyle(),
+        titleSmall: TextStyle(),
+        bodyLarge: TextStyle(),
+        bodyMedium: TextStyle(),
+        bodySmall: TextStyle(),
+        labelLarge: TextStyle(),
+        labelMedium: TextStyle(),
+        labelSmall: TextStyle(),
       ),
 
       // Icon Theme
