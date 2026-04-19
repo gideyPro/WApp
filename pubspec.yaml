@@ -39,6 +39,7 @@ dependencies:
   formz: ^0.7.0
 
   # Utilities
+  intl: ^0.20.2
   url_launcher: ^6.2.4
   share_plus: ^7.2.1
   image_picker: ^1.0.7

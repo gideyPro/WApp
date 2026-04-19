@@ -30,7 +30,6 @@ class PropertyListingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isLoading) return _buildSkeleton();
-    final l10n = AppLocalizations.of(context);
 
     return GestureDetector(
       onTap: onTap,
@@ -541,7 +540,6 @@ class FeaturedListingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isLoading || listing == null) return _buildSkeleton();
-    final l10n = AppLocalizations.of(context);
 
     return GestureDetector(
       onTap: onTap,

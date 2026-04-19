@@ -263,7 +263,7 @@ class Listing extends ChangeNotifier {
     final action = listingType == ListingType.sale ? l10n.listingForSale : l10n.listingForRent;
     final location = address?.region ?? l10n.listingUnknownLocation;
     
-    return l10n.listingsTitleTemplate(type, action, location);
+    return l10n.listingsTitleTemplate(action, location, type);
   }
 
   String getLocalizedPrice(BuildContext context) {
