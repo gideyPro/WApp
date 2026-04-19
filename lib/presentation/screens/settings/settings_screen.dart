@@ -118,6 +118,18 @@ final settingsAsync = ref.watch(appSettingsProvider);
             ),
             const SizedBox(height: 16),
             _buildMenuSection(
+              title: l10n.settingsPreferences,
+              items: [
+                _MenuItemData(
+                  icon: Icons.language,
+                  title: l10n.settingsLanguage,
+                  subtitle: _getCurrentLanguageName(context, localeCode),
+                  onTap: () => _showLanguageSelectionDialog(context, ref),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _buildMenuSection(
               title: l10n.settingsSectionSupport,
               items: [
                 _MenuItemData(
@@ -143,18 +155,6 @@ final settingsAsync = ref.watch(appSettingsProvider);
                       ),
                     );
                   },
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildMenuSection(
-              title: l10n.settingsPreferences,
-              items: [
-                _MenuItemData(
-                  icon: Icons.language,
-                  title: l10n.settingsLanguage,
-                  subtitle: _getCurrentLanguageName(context, localeCode),
-                  onTap: () => _showLanguageSelectionDialog(context, ref),
                 ),
                 _MenuItemData(
                   icon: Icons.privacy_tip_outlined,
