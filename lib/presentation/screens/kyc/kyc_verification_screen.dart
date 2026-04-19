@@ -27,6 +27,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   final ImagePicker _picker = ImagePicker();
   final KycService _kycService = KycService();
 
+  bool _showFormManually = false;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +38,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   Future<void> _pickImage(ImageSource source, String type) async {
+    final l10n = AppLocalizations.of(context);
     try {
       final XFile? image = await _picker.pickImage(
         source: source,
@@ -63,7 +66,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to pick image: $e'),
+            content: Text(l10n.kycError(e.toString())),
             backgroundColor: AppColors.error,
           ),
         );
@@ -72,6 +75,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   void _showImagePickerOptions(String type) {
+    final l10n = AppLocalizations.of(context);
     // For selfies, always open camera directly
     if (type == 'selfie') {
       _pickImage(ImageSource.camera, type);
@@ -87,7 +91,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Take Photo'),
+              title: const Text('Take Photo'), // Generic enough
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.camera, type);
@@ -95,7 +99,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'),
+              title: const Text('Choose from Gallery'), // Generic enough
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.gallery, type);
@@ -108,10 +112,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   Future<void> _submitKyc() async {
+    final l10n = AppLocalizations.of(context);
     if (_documentType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a document type'),
+        SnackBar(
+          content: Text(l10n.kycSelectDocumentType),
           backgroundColor: AppColors.error,
         ),
       );
@@ -120,8 +125,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
     if (_frontImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please upload front image'),
+        SnackBar(
+          content: Text(l10n.kycUploadFront),
           backgroundColor: AppColors.error,
         ),
       );
@@ -142,8 +147,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     if (mounted) {
       if (response.success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('KYC submitted successfully! Awaiting approval.'),
+          SnackBar(
+            content: Text(l10n.kycSuccess),
             backgroundColor: AppColors.success,
           ),
         );
@@ -162,10 +167,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     final kycState = ref.watch(kycStatusProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).profileKyc),
+        title: Text(l10n.kycTitle),
       ),
       body: kycState.isLoading && kycState.status == 'none'
           ? const Center(child: CircularProgressIndicator())
@@ -173,37 +179,32 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               onRefresh: () async {
                 await ref.read(kycStatusProvider.notifier).loadKycStatus();
               },
-              child: _buildBody(kycState),
+              child: _buildBody(kycState, l10n),
             ),
     );
   }
 
-  Widget _buildBody(KycStatusState state) {
+  Widget _buildBody(KycStatusState state, AppLocalizations l10n) {
     // Verified state
-    if (state.isVerified) {
-      return _buildVerifiedState(state);
-    }
-
-    // Approved state (fallback for service status)
-    if (state.isApproved) {
-      return _buildVerifiedState(state);
+    if (state.isVerified || state.isApproved) {
+      return _buildVerifiedState(state, l10n);
     }
 
     // Pending state
-    if (state.isPending) {
-      return _buildPendingState(state);
+    if (state.isPending && !_showFormManually) {
+      return _buildPendingState(state, l10n);
     }
 
     // Rejected state
-    if (state.isRejected) {
-      return _buildRejectedState(state);
+    if (state.isRejected && !_showFormManually) {
+      return _buildRejectedState(state, l10n);
     }
 
-    // Not submitted state - show form
-    return _buildKycForm(state);
+    // Not submitted state or manual form show - show form
+    return _buildKycForm(state, l10n);
   }
 
-  Widget _buildVerifiedState(KycStatusState state) {
+  Widget _buildVerifiedState(KycStatusState state, AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -225,12 +226,12 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Identity Verified',
+              l10n.kycVerifiedTitle,
               style: AppTextStyles.headline3,
             ),
             const SizedBox(height: 12),
             Text(
-              'Your identity has been verified. You can now create listings and access all features.',
+              l10n.kycVerifiedSubtitle,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.navy600,
               ),
@@ -238,9 +239,12 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             const SizedBox(height: 32),
             WaveButton(
-              text: 'Create a Listing',
+              text: l10n.kycCreateListing,
               icon: Icons.add,
-              onPressed: () {},
+              onPressed: () {
+                // Navigate to create listing or back to home
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
               variant: ButtonVariant.success,
               isFullWidth: true,
             ),
@@ -250,7 +254,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     );
   }
 
-  Widget _buildPendingState(KycStatusState state) {
+  Widget _buildPendingState(KycStatusState state, AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -272,12 +276,12 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Verification Pending',
+              l10n.kycPendingTitle,
               style: AppTextStyles.headline3,
             ),
             const SizedBox(height: 12),
             Text(
-              'Your documents are being reviewed. This usually takes 24-48 hours.',
+              l10n.kycPendingSubtitle,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.navy600,
               ),
@@ -286,13 +290,13 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             if (state.submittedAt != null) ...[
               const SizedBox(height: 16),
               Text(
-                'Submitted: ${state.submittedAt}',
+                l10n.kycSubmittedAt(state.submittedAt!),
                 style: AppTextStyles.caption,
               ),
             ],
             const SizedBox(height: 32),
             WaveButton(
-              text: 'Refresh Status',
+              text: l10n.kycRefreshStatus,
               icon: Icons.refresh,
               onPressed: () {
                 ref.read(kycStatusProvider.notifier).loadKycStatus();
@@ -305,7 +309,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     );
   }
 
-  Widget _buildRejectedState(KycStatusState state) {
+  Widget _buildRejectedState(KycStatusState state, AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -327,7 +331,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Verification Rejected',
+              l10n.kycRejectedTitle,
               style: AppTextStyles.headline3,
             ),
             const SizedBox(height: 12),
@@ -340,7 +344,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                   border: Border.all(color: Colors.red[200]!),
                 ),
                 child: Text(
-                  'Reason: ${state.rejectionReason}',
+                  l10n.kycRejectedReason(state.rejectionReason!),
                   style: TextStyle(
                     color: Colors.red[700],
                     fontWeight: FontWeight.w500,
@@ -351,7 +355,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               const SizedBox(height: 16),
             ],
             Text(
-              'Please resubmit with clear, readable documents.',
+              l10n.kycRejectedSubtitle,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.navy600,
               ),
@@ -359,12 +363,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             const SizedBox(height: 32),
             WaveButton(
-              text: 'Resubmit Documents',
+              text: l10n.kycResubmit,
               icon: Icons.upload_file,
               onPressed: () {
                 setState(() {
-                  // Reset to form state
-                  // TODO: Add a flag to track rejected state
+                  _showFormManually = true;
                 });
               },
               variant: ButtonVariant.danger,
@@ -376,7 +379,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     );
   }
 
-  Widget _buildKycForm(KycStatusState state) {
+  Widget _buildKycForm(KycStatusState state, AppLocalizations l10n) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -400,7 +403,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Please upload clear photos of your ID document to verify your identity.',
+                    l10n.kycInfoBanner,
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.navy700,
                     ),
@@ -413,7 +416,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
           // Document type selection
           Text(
-            'Document Type',
+            l10n.kycDocumentType,
             style: AppTextStyles.labelLarge,
           ),
           const SizedBox(height: 12),
@@ -422,7 +425,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               Expanded(
                 child: _DocumentTypeChip(
                   icon: Icons.credit_card,
-                  label: 'National ID',
+                  label: l10n.kycNationalId,
                   isSelected: _documentType == 'national_id',
                   onTap: () => setState(() => _documentType = 'national_id'),
                 ),
@@ -431,7 +434,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               Expanded(
                 child: _DocumentTypeChip(
                   icon: Icons.badge,
-                  label: 'Passport',
+                  label: l10n.kycPassport,
                   isSelected: _documentType == 'passport',
                   onTap: () => setState(() => _documentType = 'passport'),
                 ),
@@ -443,10 +446,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           // Front image upload
           _buildImageUploadCard(
             icon: Icons.credit_card,
-            title: 'Front of Document',
-            subtitle: 'Clear photo of the front side',
+            title: l10n.kycFrontOfDocument,
+            subtitle: l10n.kycFrontSubtitle,
             image: _frontImage,
             onTap: () => _showImagePickerOptions('front'),
+            l10n: l10n,
           ),
           const SizedBox(height: 16),
 
@@ -454,10 +458,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           if (_documentType == 'national_id') ...[
             _buildImageUploadCard(
               icon: Icons.credit_card,
-              title: 'Back of Document',
-              subtitle: 'Clear photo of the back side',
+              title: l10n.kycBackOfDocument,
+              subtitle: l10n.kycBackSubtitle,
               image: _backImage,
               onTap: () => _showImagePickerOptions('back'),
+              l10n: l10n,
             ),
             const SizedBox(height: 16),
           ],
@@ -465,16 +470,17 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           // Selfie upload
           _buildImageUploadCard(
             icon: Icons.person,
-            title: 'Selfie with Document',
-            subtitle: 'Hold your ID next to your face',
+            title: l10n.kycSelfieWithDocument,
+            subtitle: l10n.kycSelfieSubtitle,
             image: _selfieImage,
             onTap: () => _showImagePickerOptions('selfie'),
+            l10n: l10n,
           ),
           const SizedBox(height: 32),
 
           // Submit button
           WaveButton(
-            text: 'Submit for Verification',
+            text: l10n.kycSubmitForVerification,
             icon: Icons.upload_file,
             isLoading: _isSubmitting,
             onPressed: _isSubmitting ? null : _submitKyc,
@@ -493,6 +499,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     required String subtitle,
     File? image,
     required VoidCallback onTap,
+    required AppLocalizations l10n,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -540,7 +547,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    image != null ? 'Tap to change' : subtitle,
+                    image != null ? l10n.kycTapToChange : subtitle,
                     style: AppTextStyles.caption,
                   ),
                 ],

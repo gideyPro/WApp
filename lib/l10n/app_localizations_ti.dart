@@ -155,7 +155,99 @@ class AppLocalizationsTi extends AppLocalizations {
   String get profileStatsMessages => 'መልእኽታት';
 
   @override
-  String get profileStatsFavorites => 'ዝተመርፁ';
+  String get profileStatsFavorites => 'ዝተፈትው';
+
+  @override
+  String get kycTitle => 'መረጋገጺ መንነት (KYC)';
+
+  @override
+  String get kycVerifiedTitle => 'መንነት ተረጋጊጹ';
+
+  @override
+  String get kycVerifiedSubtitle =>
+      'መንነትኩም ተረጋጊጹ ኣሎ። ሕጂ ንብረታት ክትምዝግቡን ኩሉ ኣገልግሎት ክትረኽቡን ትኽእሉ ኢኹም።';
+
+  @override
+  String get kycCreateListing => 'ንብረት መዝግብ';
+
+  @override
+  String get kycPendingTitle => 'ምርግጋጽ ይጽበ ኣሎ';
+
+  @override
+  String get kycPendingSubtitle =>
+      'ሰነዳትኩም ይግምገም ኣሎ። እዚ መብዛሕትኡ ግዜ ካብ 24-48 ሰዓታት ይወስድ።';
+
+  @override
+  String kycSubmittedAt(Object date) {
+    return 'ዝተልኣኸሉ ዕለት: $date';
+  }
+
+  @override
+  String get kycRefreshStatus => 'ኵነታት ኣድስ';
+
+  @override
+  String get kycRejectedTitle => 'ምርግጋጽ ተነጺጉ';
+
+  @override
+  String kycRejectedReason(Object reason) {
+    return 'ምክንያት: $reason';
+  }
+
+  @override
+  String get kycRejectedSubtitle => 'በጃኹም ንጹርን ክንበብ ዝኽእልን ሰነዳት ደጊምኩም ስደዱ።';
+
+  @override
+  String get kycResubmit => 'ሰነዳት ደጊምካ ስደድ';
+
+  @override
+  String get kycInfoBanner => 'መንነትኩም ንምርግጋጽ በጃኹም ንጹር ፎቶ ናይ መንነት ወረቐትኩም ኣተሓሕዙ።';
+
+  @override
+  String get kycDocumentType => 'ዓይነት ሰነድ';
+
+  @override
+  String get kycNationalId => 'ሃገራዊ መለለዪ';
+
+  @override
+  String get kycPassport => 'ፓስፖርት';
+
+  @override
+  String get kycFrontOfDocument => 'ናይቲ ሰነድ ቅድሚት';
+
+  @override
+  String get kycFrontSubtitle => 'ናይ ቅድሚት ገጽ ንጹር ፎቶ';
+
+  @override
+  String get kycBackOfDocument => 'ናይቲ ሰነድ ድሕሪት';
+
+  @override
+  String get kycBackSubtitle => 'ናይ ድሕሪት ገጽ ንጹር ፎቶ';
+
+  @override
+  String get kycSelfieWithDocument => 'ምስቲ ሰነድ ዘለኩም ፎቶ';
+
+  @override
+  String get kycSelfieSubtitle => 'መለለዪኹም ኣብ ጥቓ ገጽኩም ሒዝኩም ተልዓሉ';
+
+  @override
+  String get kycSubmitForVerification => 'ንምርግጋጽ ስደድ';
+
+  @override
+  String get kycTapToChange => 'ንምቕያር ጠውቕ';
+
+  @override
+  String get kycSelectDocumentType => 'በጃኹም ዓይነት ሰነድ ምረጹ';
+
+  @override
+  String get kycUploadFront => 'በጃኹም ናይ ቅድሚት ገጽ ፎቶ ኣተሓሕዙ';
+
+  @override
+  String get kycSuccess => 'ምርግጋጽ ብትኽክል ተልኢኹ ኣሎ! ኣብ ገምጋም ይርከብ።';
+
+  @override
+  String kycError(Object error) {
+    return 'ፎቶ ምልዓል ኣይተኻእለን: $error';
+  }
 
   @override
   String get profileKycStatusVerified => 'ተረጋጊጹ';

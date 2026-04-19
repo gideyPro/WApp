@@ -158,6 +158,98 @@ class AppLocalizationsAm extends AppLocalizations {
   String get profileStatsFavorites => 'ተወዳጆች';
 
   @override
+  String get kycTitle => 'ማንነት ማረጋገጫ (KYC)';
+
+  @override
+  String get kycVerifiedTitle => 'ማንነት ተረጋግጧል';
+
+  @override
+  String get kycVerifiedSubtitle =>
+      'ማንነትዎ ተረጋግጧል። አሁን ንብረቶችን መመዝገብ እና ሁሉንም አገልግሎቶች ማግኘት ይችላሉ።';
+
+  @override
+  String get kycCreateListing => 'ንብረት መዝግብ';
+
+  @override
+  String get kycPendingTitle => 'ማረጋገጫ በመጠባበቅ ላይ';
+
+  @override
+  String get kycPendingSubtitle =>
+      'ሰነዶችዎ እየተገመገሙ ነው። ይህ ብዙውን ጊዜ ከ24-48 ሰዓታት ይወስዳል።';
+
+  @override
+  String kycSubmittedAt(Object date) {
+    return 'ገቢ የተደረገበት ቀን: $date';
+  }
+
+  @override
+  String get kycRefreshStatus => 'ሁኔታውን አድስ';
+
+  @override
+  String get kycRejectedTitle => 'ማረጋገጫ ውድቅ ተደርጓል';
+
+  @override
+  String kycRejectedReason(Object reason) {
+    return 'ምክንያት: $reason';
+  }
+
+  @override
+  String get kycRejectedSubtitle => 'እባክዎን ግልጽ እና ተነባቢ ሰነዶችን እንደገና ይላኩ።';
+
+  @override
+  String get kycResubmit => 'ሰነዶችን እንደገና ላክ';
+
+  @override
+  String get kycInfoBanner => 'ማንነትዎን ለማረጋገጥ እባክዎ የማንነት ሰነድዎን ግልጽ ፎቶዎች ያያይዙ።';
+
+  @override
+  String get kycDocumentType => 'የሰነድ ዓይነት';
+
+  @override
+  String get kycNationalId => 'ብሔራዊ መታወቂያ';
+
+  @override
+  String get kycPassport => 'ፓስፖርት';
+
+  @override
+  String get kycFrontOfDocument => 'የሰነዱ የፊት ገጽ';
+
+  @override
+  String get kycFrontSubtitle => 'የፊት ገጹ ግልጽ ፎቶ';
+
+  @override
+  String get kycBackOfDocument => 'የሰነዱ የጀርባ ገጽ';
+
+  @override
+  String get kycBackSubtitle => 'የጀርባ ገጹ ግልጽ ፎቶ';
+
+  @override
+  String get kycSelfieWithDocument => 'ከሰነዱ ጋር ያለዎት ፎቶ';
+
+  @override
+  String get kycSelfieSubtitle => 'መታወቂያዎን ከፊትዎ አጠገብ ይዘው ይነሱ';
+
+  @override
+  String get kycSubmitForVerification => 'ለማረጋገጫ ላክ';
+
+  @override
+  String get kycTapToChange => 'ለመቀየር ይንኩ';
+
+  @override
+  String get kycSelectDocumentType => 'እባክዎን የሰነድ ዓይነት ይምረጡ';
+
+  @override
+  String get kycUploadFront => 'እባክዎን የፊት ገጽ ፎቶ ያያይዙ';
+
+  @override
+  String get kycSuccess => 'ማረጋገጫው በትክክል ተልኳል! በግምገማ ላይ ነው።';
+
+  @override
+  String kycError(Object error) {
+    return 'ፎቶ ማንሳት አልተቻለም: $error';
+  }
+
+  @override
   String get profileKycStatusVerified => 'ተረጋግጧል';
 
   @override

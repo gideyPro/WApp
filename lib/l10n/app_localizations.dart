@@ -394,6 +394,174 @@ abstract class AppLocalizations {
   /// **'Favorites'**
   String get profileStatsFavorites;
 
+  /// No description provided for @kycTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC Verification'**
+  String get kycTitle;
+
+  /// No description provided for @kycVerifiedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity Verified'**
+  String get kycVerifiedTitle;
+
+  /// No description provided for @kycVerifiedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your identity has been verified. You can now create listings and access all features.'**
+  String get kycVerifiedSubtitle;
+
+  /// No description provided for @kycCreateListing.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a Listing'**
+  String get kycCreateListing;
+
+  /// No description provided for @kycPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Pending'**
+  String get kycPendingTitle;
+
+  /// No description provided for @kycPendingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your documents are being reviewed. This usually takes 24-48 hours.'**
+  String get kycPendingSubtitle;
+
+  /// No description provided for @kycSubmittedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted: {date}'**
+  String kycSubmittedAt(Object date);
+
+  /// No description provided for @kycRefreshStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Status'**
+  String get kycRefreshStatus;
+
+  /// No description provided for @kycRejectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Rejected'**
+  String get kycRejectedTitle;
+
+  /// No description provided for @kycRejectedReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String kycRejectedReason(Object reason);
+
+  /// No description provided for @kycRejectedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please resubmit with clear, readable documents.'**
+  String get kycRejectedSubtitle;
+
+  /// No description provided for @kycResubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Resubmit Documents'**
+  String get kycResubmit;
+
+  /// No description provided for @kycInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload clear photos of your ID document to verify your identity.'**
+  String get kycInfoBanner;
+
+  /// No description provided for @kycDocumentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Document Type'**
+  String get kycDocumentType;
+
+  /// No description provided for @kycNationalId.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID'**
+  String get kycNationalId;
+
+  /// No description provided for @kycPassport.
+  ///
+  /// In en, this message translates to:
+  /// **'Passport'**
+  String get kycPassport;
+
+  /// No description provided for @kycFrontOfDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Front of Document'**
+  String get kycFrontOfDocument;
+
+  /// No description provided for @kycFrontSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear photo of the front side'**
+  String get kycFrontSubtitle;
+
+  /// No description provided for @kycBackOfDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Back of Document'**
+  String get kycBackOfDocument;
+
+  /// No description provided for @kycBackSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear photo of the back side'**
+  String get kycBackSubtitle;
+
+  /// No description provided for @kycSelfieWithDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Selfie with Document'**
+  String get kycSelfieWithDocument;
+
+  /// No description provided for @kycSelfieSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold your ID next to your face'**
+  String get kycSelfieSubtitle;
+
+  /// No description provided for @kycSubmitForVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for Verification'**
+  String get kycSubmitForVerification;
+
+  /// No description provided for @kycTapToChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change'**
+  String get kycTapToChange;
+
+  /// No description provided for @kycSelectDocumentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a document type'**
+  String get kycSelectDocumentType;
+
+  /// No description provided for @kycUploadFront.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload front image'**
+  String get kycUploadFront;
+
+  /// No description provided for @kycSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC submitted successfully! Awaiting approval.'**
+  String get kycSuccess;
+
+  /// No description provided for @kycError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick image: {error}'**
+  String kycError(Object error);
+
   /// No description provided for @profileKycStatusVerified.
   ///
   /// In en, this message translates to:

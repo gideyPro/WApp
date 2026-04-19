@@ -159,6 +159,100 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileStatsFavorites => 'Favorites';
 
   @override
+  String get kycTitle => 'KYC Verification';
+
+  @override
+  String get kycVerifiedTitle => 'Identity Verified';
+
+  @override
+  String get kycVerifiedSubtitle =>
+      'Your identity has been verified. You can now create listings and access all features.';
+
+  @override
+  String get kycCreateListing => 'Create a Listing';
+
+  @override
+  String get kycPendingTitle => 'Verification Pending';
+
+  @override
+  String get kycPendingSubtitle =>
+      'Your documents are being reviewed. This usually takes 24-48 hours.';
+
+  @override
+  String kycSubmittedAt(Object date) {
+    return 'Submitted: $date';
+  }
+
+  @override
+  String get kycRefreshStatus => 'Refresh Status';
+
+  @override
+  String get kycRejectedTitle => 'Verification Rejected';
+
+  @override
+  String kycRejectedReason(Object reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get kycRejectedSubtitle =>
+      'Please resubmit with clear, readable documents.';
+
+  @override
+  String get kycResubmit => 'Resubmit Documents';
+
+  @override
+  String get kycInfoBanner =>
+      'Please upload clear photos of your ID document to verify your identity.';
+
+  @override
+  String get kycDocumentType => 'Document Type';
+
+  @override
+  String get kycNationalId => 'National ID';
+
+  @override
+  String get kycPassport => 'Passport';
+
+  @override
+  String get kycFrontOfDocument => 'Front of Document';
+
+  @override
+  String get kycFrontSubtitle => 'Clear photo of the front side';
+
+  @override
+  String get kycBackOfDocument => 'Back of Document';
+
+  @override
+  String get kycBackSubtitle => 'Clear photo of the back side';
+
+  @override
+  String get kycSelfieWithDocument => 'Selfie with Document';
+
+  @override
+  String get kycSelfieSubtitle => 'Hold your ID next to your face';
+
+  @override
+  String get kycSubmitForVerification => 'Submit for Verification';
+
+  @override
+  String get kycTapToChange => 'Tap to change';
+
+  @override
+  String get kycSelectDocumentType => 'Please select a document type';
+
+  @override
+  String get kycUploadFront => 'Please upload front image';
+
+  @override
+  String get kycSuccess => 'KYC submitted successfully! Awaiting approval.';
+
+  @override
+  String kycError(Object error) {
+    return 'Failed to pick image: $error';
+  }
+
+  @override
   String get profileKycStatusVerified => 'Verified';
 
   @override
