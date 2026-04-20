@@ -113,7 +113,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get profileEditSubtitle => 'ሓበሬታኹም ኣሐድሱ';
 
   @override
-  String get profileMyListings => 'ናይ ባዕለይ ንብረታት';
+  String get profileMyListings => 'ናተይ ንብረታት';
 
   @override
   String get myListingsEmptySubtitle => 'ንምጅማር ናይ መጀመሪያ ንብረትኩም ወስኹ';
@@ -372,19 +372,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingHoldingType => 'ዓይነት ዋናነት';
 
   @override
-  String get listingTaxPaid => 'ታክስ ግበረ';
+  String get listingTaxPaid => 'ታክስ ዝተኸፈለሉ';
 
   @override
-  String get listingAcquisition => 'ንብረት ዝተረኽበሉ ኩነታት';
-
-  @override
-  String get listingLeaseHolder => 'ጌሚያሕ';
+  String get listingLeaseHolder => 'ባለ ዋና ሊዝ';
 
   @override
   String get listingLeaseOrganization => 'ድርጅን';
 
   @override
-  String get listingLeaseExpiry => 'ጋሚያሕ ብናም';
+  String get listingLeaseExpiry => 'መወዳእታ ሊዝ';
 
   @override
   String get listingUseType => 'ዓይነት ኣገልግሎት';
@@ -429,6 +426,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingTaxPaidYear => 'ግብሪ ዝተኸፈለሉ ዓመት';
 
   @override
+  String get listingAcquisition => 'ዝተረኸበሉ መንገዲ';
+
+  @override
   String get listingLeasedYear => 'ናይ ሊዝ ዓመት';
 
   @override
@@ -469,7 +469,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String listingKitchensCount(Object count) {
-    return '$count Kitchen(s)';
+    return '$count ክሽነ(ታት)';
   }
 
   @override
@@ -749,19 +749,19 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsKeyFeatures => 'ቀንዲ መገለጺታት';
 
   @override
-  String get listingsImInterested => 'ምፈልጥ';
+  String get listingsImInterested => 'ድሌት ኣለኒ';
 
   @override
-  String get listingsInterestedHint => 'ባለቤቱን ኣብዚህ ንብረት ምፈልጠይሶ እንዳለይን ኣሳውቕ';
+  String get listingsInterestedHint => 'ድሌት ከምዘለኩም ንባዓል ንብረት ኣፍልጡ';
 
   @override
-  String get listingsInterestedPlaceholder => 'መልዕክት ለባለቤቱ (አማራጭ)';
+  String get listingsInterestedPlaceholder => 'ንባዓል ንብረት ዝኸውን መልእኽቲ (ኣማራጭ)';
 
   @override
-  String get listingsSubmitInterest => 'ምፈልጢያ ላኽ';
+  String get listingsSubmitInterest => 'ድሌት ስደድ';
 
   @override
-  String get listingsInterestSubmitted => 'ምፈልጢያ በተሳካ ተልኳል!';
+  String get listingsInterestSubmitted => 'ድሌትኩም ብዝግባእ ተላኢኹ ኣሎ!';
 
   @override
   String get listingsDescription => 'መግለጺ';

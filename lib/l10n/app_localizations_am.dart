@@ -372,19 +372,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingHoldingType => 'የባለቤትነት ሁኔታ';
 
   @override
-  String get listingTaxPaid => 'ግበረ ክፍል';
+  String get listingTaxPaid => 'ግብር የተከፈለበት';
 
   @override
-  String get listingAcquisition => 'የንብረት ማግኛ ሁኔታ';
-
-  @override
-  String get listingLeaseHolder => 'ጌሚው';
+  String get listingLeaseHolder => 'የሊዝ ባለቤት';
 
   @override
   String get listingLeaseOrganization => 'ድርጅት';
 
   @override
-  String get listingLeaseExpiry => 'ጋሚው ገቢ';
+  String get listingLeaseExpiry => 'የሊዝ ማብቂያ';
 
   @override
   String get listingUseType => 'የአጠቃቀም ሁኔታ';
@@ -429,6 +426,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingTaxPaidYear => 'ግብር የተከፈለበት ዓመት';
 
   @override
+  String get listingAcquisition => 'የተገኘበት መንገድ';
+
+  @override
   String get listingLeasedYear => 'የሊዝ ዓመት';
 
   @override
@@ -469,7 +469,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String listingKitchensCount(Object count) {
-    return '$count Kitchen(s)';
+    return '$count ወጥ ቤት(ዎች)';
   }
 
   @override
@@ -749,19 +749,19 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsKeyFeatures => 'ዋና መገለጫዎች';
 
   @override
-  String get listingsImInterested => 'ፈላጭ ነኝ';
+  String get listingsImInterested => 'ፍላጎት አለኝ';
 
   @override
-  String get listingsInterestedHint => 'ባለቤቱን በዚህ ንብረት ፍላጭ መሆንዎን እናሳውቁ';
+  String get listingsInterestedHint => 'ባለቤቱን በዚህ ንብረት ፍላጎት እንዳለዎት ያሳውቁ';
 
   @override
   String get listingsInterestedPlaceholder => 'ለባለቤቱ መልዕክት (አማራጭ)';
 
   @override
-  String get listingsSubmitInterest => 'ፍላጭነት ላክ';
+  String get listingsSubmitInterest => 'ፍላጎት ላክ';
 
   @override
-  String get listingsInterestSubmitted => 'ፍላጭነት በተሳካ ሁኔታ ተልኳል!';
+  String get listingsInterestSubmitted => 'ፍላጎትዎ በተሳካ ሁኔታ ተልኳል!';
 
   @override
   String get listingsDescription => 'መግለጫ';

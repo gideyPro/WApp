@@ -380,9 +380,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingTaxPaid => 'Tax Paid Until';
 
   @override
-  String get listingAcquisition => 'Acquisition Clarification';
-
-  @override
   String get listingLeaseHolder => 'Lease Holder';
 
   @override
@@ -432,6 +429,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingTaxPaidYear => 'Tax Paid Until Year';
+
+  @override
+  String get listingAcquisition => 'Acquisition Clarification';
 
   @override
   String get listingLeasedYear => 'Leased Year';

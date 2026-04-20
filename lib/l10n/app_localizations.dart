@@ -808,12 +808,6 @@ abstract class AppLocalizations {
   /// **'Tax Paid Until'**
   String get listingTaxPaid;
 
-  /// No description provided for @listingAcquisition.
-  ///
-  /// In en, this message translates to:
-  /// **'Acquisition Clarification'**
-  String get listingAcquisition;
-
   /// No description provided for @listingLeaseHolder.
   ///
   /// In en, this message translates to:
@@ -915,6 +909,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tax Paid Until Year'**
   String get listingTaxPaidYear;
+
+  /// No description provided for @listingAcquisition.
+  ///
+  /// In en, this message translates to:
+  /// **'Acquisition Clarification'**
+  String get listingAcquisition;
 
   /// No description provided for @listingLeasedYear.
   ///
