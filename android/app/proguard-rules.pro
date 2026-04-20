@@ -37,9 +37,7 @@
 -keep class com.it_nomads.fluttersecurestorage.** { *; }
 
 ## Video Player
--keep class io.flutter.plugins.** { *; }
--keep class video_player.** { *; }
--keep class chewie.** { *; }
+-keep class io.flutter.plugins.videoplayer.VideoPlayerPlugin { *; }
 
 ## WaveMart App - Keep models and core classes
 -keep class et.wavemart.app.** { *; }
