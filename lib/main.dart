@@ -71,9 +71,7 @@ class WaveMartApp extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
     final incomingCall = ref.watch(incomingCallProvider);
 
-    if (authState.isAuthenticated && incomingCall != null) {
-      ref.read(incomingCallProvider.notifier).stopPolling();
-    } else if (authState.isAuthenticated) {
+    if (authState.isAuthenticated) {
       ref.read(incomingCallProvider.notifier).startPolling();
     }
 
