@@ -1552,6 +1552,30 @@ abstract class AppLocalizations {
   /// **'Interest submitted successfully!'**
   String get listingsInterestSubmitted;
 
+  /// No description provided for @listingsInterestAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest Accepted'**
+  String get listingsInterestAccepted;
+
+  /// No description provided for @listingsInterestPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get listingsInterestPending;
+
+  /// No description provided for @listingsInterestRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest Rejected'**
+  String get listingsInterestRejected;
+
+  /// No description provided for @listingsInterestCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest cancelled'**
+  String get listingsInterestCancelled;
+
   /// No description provided for @listingsDescription.
   ///
   /// In en, this message translates to:

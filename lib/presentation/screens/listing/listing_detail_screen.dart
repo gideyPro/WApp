@@ -473,10 +473,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   Widget _buildBadges(Listing listing) {
     final l10n = AppLocalizations.of(context);
-    
+
     // Calculate total rooms for houses
     final totalRooms = listing.totalRooms;
-    
+
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -582,7 +582,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       if ((listing.kitchens ?? 0) > 0) {
         features.add(_buildFeatureChip(
           icon: Icons.kitchen,
-          label: '${listing.kitchens} kitchen${listing.kitchens == 1 ? '' : 's'}',
+          label:
+              '${listing.kitchens} kitchen${listing.kitchens == 1 ? '' : 's'}',
         ));
       }
     }
@@ -640,10 +641,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           runSpacing: 8,
           children: features.isNotEmpty
               ? features
-              : [
-                  Text(l10n.listingsNoFeatures,
-                      style: AppTextStyles.caption)
-                ],
+              : [Text(l10n.listingsNoFeatures, style: AppTextStyles.caption)],
         ),
       ],
     );
@@ -716,46 +714,60 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       details.add({'label': l10n.listingsUseType, 'value': listing.useType!});
     }
     if (listing.holdingType != null) {
-      details.add({'label': l10n.listingsHoldingType, 'value': listing.holdingType!});
-      
+      details.add(
+          {'label': l10n.listingsHoldingType, 'value': listing.holdingType!});
+
       // Free Hold details
       if (listing.holdingType == 'Free Hold') {
         if (listing.taxPaidUntilYear != null) {
-          details.add({'label': 'Tax Paid Until', 'value': listing.taxPaidUntilYear.toString()});
+          details.add({
+            'label': 'Tax Paid Until',
+            'value': listing.taxPaidUntilYear.toString()
+          });
         }
         if (listing.acquisitionType != null) {
-          details.add({'label': 'Acquisition', 'value': listing.acquisitionType!});
+          details
+              .add({'label': 'Acquisition', 'value': listing.acquisitionType!});
         }
       }
-      
+
       // Lease Hold details
       if (listing.holdingType == 'Lease Hold') {
         if (listing.leaseHolderName != null) {
-          details.add({'label': 'Lease Holder', 'value': listing.leaseHolderName!});
+          details.add(
+              {'label': 'Lease Holder', 'value': listing.leaseHolderName!});
         }
         if (listing.leaseOrganization != null) {
-          details.add({'label': 'Organization', 'value': listing.leaseOrganization!});
+          details.add(
+              {'label': 'Organization', 'value': listing.leaseOrganization!});
         }
         if (listing.leaseExpiryDate != null) {
-          details.add({'label': 'Lease Expiry', 'value': listing.leaseExpiryDate!.year.toString()});
+          details.add({
+            'label': 'Lease Expiry',
+            'value': listing.leaseExpiryDate!.year.toString()
+          });
         }
       }
-      
+
       // Cooperative details
       if (listing.holdingType == 'Cooperative') {
         if (listing.cooperativeName != null) {
-          details.add({'label': 'Cooperative', 'value': listing.cooperativeName!});
+          details
+              .add({'label': 'Cooperative', 'value': listing.cooperativeName!});
         }
         if (listing.cooperativeCode != null) {
-          details.add({'label': 'Cooperative Code', 'value': listing.cooperativeCode!});
+          details.add(
+              {'label': 'Cooperative Code', 'value': listing.cooperativeCode!});
         }
       }
     }
     if (listing.facingDirection != null) {
-      details.add({'label': l10n.listingsFacing, 'value': listing.facingDirection!});
+      details.add(
+          {'label': l10n.listingsFacing, 'value': listing.facingDirection!});
     }
     if (listing.priceRevisionPossible) {
-      details.add({'label': l10n.searchPriceRange, 'value': l10n.listingsNegotiable});
+      details.add(
+          {'label': l10n.searchPriceRange, 'value': l10n.listingsNegotiable});
     }
     if (listing.hasDebtOrEncumbrance) {
       final debtAmount = listing.debtAmount;
@@ -888,7 +900,8 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
     await Share.share(
       shareText,
-      subject: 'Check out this property on WaveMart: ${listing.getLocalizedTitle(context)}',
+      subject:
+          'Check out this property on WaveMart: ${listing.getLocalizedTitle(context)}',
     );
   }
 
@@ -896,6 +909,11 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     final l10n = AppLocalizations.of(context);
     final authState = ref.read(authStateProvider);
     final isLoggedIn = authState.isAuthenticated;
+
+    final interestStatus = listing.userInterestStatus;
+    final hasInterest = interestStatus != null;
+    final isPending = interestStatus == 'pending';
+    final isAccepted = interestStatus == 'accepted';
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -915,16 +933,53 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => _showInterestDialog(listing),
-                  icon: const Icon(Icons.handyman_outlined, size: 20),
-                  label: Text(l10n.listingsImInterested),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    side: const BorderSide(color: AppColors.wave500),
-                    foregroundColor: AppColors.wave600,
-                  ),
-                ),
+                child: hasInterest
+                    ? OutlinedButton.icon(
+                        onPressed: isAccepted
+                            ? null
+                            : () => _cancelInterest(
+                                listing.id, listing.userInterestId),
+                        icon: Icon(
+                          isAccepted
+                              ? Icons.check_circle
+                              : isPending
+                                  ? Icons.hourglass_empty
+                                  : Icons.close,
+                          size: 20,
+                        ),
+                        label: Text(
+                          isAccepted
+                              ? l10n.listingsInterestAccepted
+                              : isPending
+                                  ? l10n.listingsInterestPending
+                                  : l10n.listingsInterestRejected,
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: BorderSide(
+                            color: isAccepted
+                                ? AppColors.emerald600
+                                : isPending
+                                    ? Colors.amber
+                                    : AppColors.error,
+                          ),
+                          foregroundColor: isAccepted
+                              ? AppColors.emerald600
+                              : isPending
+                                  ? Colors.amber[700]
+                                  : AppColors.error,
+                        ),
+                      )
+                    : OutlinedButton.icon(
+                        onPressed: () => _submitInterest(listing.id),
+                        icon: const Icon(Icons.handyman_outlined, size: 20),
+                        label: Text(l10n.listingsImInterested),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: const BorderSide(color: AppColors.wave500),
+                          foregroundColor: AppColors.wave600,
+                        ),
+                      ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -946,7 +1001,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     );
   }
 
-  void _showInterestDialog(Listing listing) {
+  Future<void> _submitInterest(int listingId, [String? message]) async {
     final authState = ref.read(authStateProvider);
     if (!authState.isAuthenticated) {
       Navigator.push(
@@ -956,101 +1011,15 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       return;
     }
 
-    final messageController = TextEditingController();
     final l10n = AppLocalizations.of(context);
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(ctx).viewInsets.bottom,
-        ),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.wave50,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.handyman, color: AppColors.wave600),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    l10n.listingsImInterested,
-                    style: AppTextStyles.title,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.listingsInterestedHint,
-                style: AppTextStyles.bodySmall,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: messageController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  hintText: l10n.listingsInterestedPlaceholder,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.wave500),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    _submitInterest(listing.id, messageController.text);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.wave500,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text(l10n.listingsSubmitInterest),
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _submitInterest(int listingId, String message) async {
-    final l10n = AppLocalizations.of(context);
-    
     try {
       final service = InterestService();
       final response = await service.expressInterest(
-        listingId: listingId, 
-        message: message.isNotEmpty ? message : null,
+        listingId: listingId,
+        message: message?.isNotEmpty == true ? message : 'I am interested!',
       );
-      
+
       if (response.success) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -1059,6 +1028,48 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
               backgroundColor: AppColors.emerald600,
             ),
           );
+          ref.read(listingDetailProvider.notifier).loadListing(listingId);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message ?? l10n.commonError),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.commonError),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _cancelInterest(int listingId, int? interestId) async {
+    if (interestId == null) return;
+
+    final l10n = AppLocalizations.of(context);
+
+    try {
+      final service = InterestService();
+      final response = await service.cancelInterest(interestId);
+
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message ?? l10n.listingsInterestCancelled),
+              backgroundColor: AppColors.emerald600,
+            ),
+          );
+          ref.read(listingDetailProvider.notifier).loadListing(listingId);
         }
       } else {
         if (mounted) {

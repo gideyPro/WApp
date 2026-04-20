@@ -764,6 +764,18 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsInterestSubmitted => 'ድሌትኩም ብዝግባእ ተላኢኹ ኣሎ!';
 
   @override
+  String get listingsInterestAccepted => 'ድሌት ተቀባይነት';
+
+  @override
+  String get listingsInterestPending => 'ብምጠበቅ';
+
+  @override
+  String get listingsInterestRejected => 'ድሌት ተዋርዱ';
+
+  @override
+  String get listingsInterestCancelled => 'ድሌቱ ተሰርዝኹ';
+
+  @override
   String get listingsDescription => 'መግለጺ';
 
   @override

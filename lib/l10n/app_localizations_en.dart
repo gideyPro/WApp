@@ -772,6 +772,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsInterestSubmitted => 'Interest submitted successfully!';
 
   @override
+  String get listingsInterestAccepted => 'Interest Accepted';
+
+  @override
+  String get listingsInterestPending => 'Pending';
+
+  @override
+  String get listingsInterestRejected => 'Interest Rejected';
+
+  @override
+  String get listingsInterestCancelled => 'Interest cancelled';
+
+  @override
   String get listingsDescription => 'Description';
 
   @override

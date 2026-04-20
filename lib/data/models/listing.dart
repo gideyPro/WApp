@@ -95,20 +95,20 @@ class Listing extends ChangeNotifier {
 
   final String? sitePlanImageLink;
   final String? holdingType;
-  
+
   // Free Hold details
   final int? taxPaidUntilYear;
   final String? acquisitionType;
-  
+
   // Lease Hold details
   final String? leaseHolderName;
   final String? leaseOrganization;
   final DateTime? leaseExpiryDate;
-  
+
   // Cooperative details
   final String? cooperativeName;
   final String? cooperativeCode;
-  
+
   final String? description;
   final int? bedrooms;
   final int? bathrooms;
@@ -120,8 +120,12 @@ class Listing extends ChangeNotifier {
   final DateTime createdAt;
   final DateTime? updatedAt;
 
+  final String? userInterestStatus;
+  final int? userInterestId;
+
   /// Calculate total rooms
-  int get totalRooms => (bedrooms ?? 0) + (bathrooms ?? 0) + (salons ?? 0) + (kitchens ?? 0);
+  int get totalRooms =>
+      (bedrooms ?? 0) + (bathrooms ?? 0) + (salons ?? 0) + (kitchens ?? 0);
 
   Listing({
     required this.id,
@@ -167,6 +171,8 @@ class Listing extends ChangeNotifier {
     this.address,
     required this.createdAt,
     this.updatedAt,
+    this.userInterestStatus,
+    this.userInterestId,
   });
 
   factory Listing.fromJson(Map<String, dynamic> json) {
@@ -219,22 +225,22 @@ class Listing extends ChangeNotifier {
       videoLink: json['video_link'],
       sitePlanImageLink: json['site_plan_image_link'],
       holdingType: json['holding_type'],
-      
+
       // Free Hold details
       taxPaidUntilYear: _safeInt(json['tax_paid_until_year']),
       acquisitionType: json['acquisition_clarification'],
-      
+
       // Lease Hold details
       leaseHolderName: json['leaseholder_name'],
       leaseOrganization: json['lease_organization'],
-      leaseExpiryDate: json['lease_expiry_date'] != null 
-          ? DateTime.tryParse(json['lease_expiry_date']) 
+      leaseExpiryDate: json['lease_expiry_date'] != null
+          ? DateTime.tryParse(json['lease_expiry_date'])
           : null,
-      
-      // Cooperative details  
+
+      // Cooperative details
       cooperativeName: json['cooperative_name'],
       cooperativeCode: json['cooperative_code'],
-      
+
       description: json['description'] ??
           (property is Map ? property['description'] : null),
       bedrooms:
@@ -242,7 +248,8 @@ class Listing extends ChangeNotifier {
       bathrooms:
           _safeInt(property is Map ? property['bathrooms'] : json['bathrooms']),
       salons: _safeInt(property is Map ? property['salons'] : json['salons']),
-      kitchens: _safeInt(property is Map ? property['kitchens'] : json['kitchens']),
+      kitchens:
+          _safeInt(property is Map ? property['kitchens'] : json['kitchens']),
       imageCount: images.isNotEmpty
           ? images.length
           : _safeInt(json['image_count'] ??
@@ -257,6 +264,8 @@ class Listing extends ChangeNotifier {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
+      userInterestStatus: json['user_interest_status'],
+      userInterestId: _safeInt(json['user_interest_id']),
     );
   }
 
@@ -302,28 +311,32 @@ class Listing extends ChangeNotifier {
 
   String getLocalizedTitle(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final type = propertyType == PropertyType.house ? l10n.listingHouse : l10n.listingLand;
-    final action = listingType == ListingType.sale ? l10n.listingForSale : l10n.listingForRent;
+    final type = propertyType == PropertyType.house
+        ? l10n.listingHouse
+        : l10n.listingLand;
+    final action = listingType == ListingType.sale
+        ? l10n.listingForSale
+        : l10n.listingForRent;
     final location = address?.region ?? l10n.listingUnknownLocation;
-    
+
     return l10n.listingsTitleTemplate(action, location, type);
   }
 
   String getLocalizedPrice(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final formatter = NumberFormat('#,###');
-    
+
     if (priceFixed != null) {
       return l10n.listingsPriceFixed(formatter.format(priceFixed!.toInt()));
     }
-    
+
     if (priceMin != null && priceMax != null) {
       return l10n.listingsPriceRange(
         formatter.format(priceMin!.toInt()),
         formatter.format(priceMax!.toInt()),
       );
     }
-    
+
     return l10n.listingPriceOnRequest;
   }
 
