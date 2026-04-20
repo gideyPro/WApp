@@ -994,6 +994,12 @@ abstract class AppLocalizations {
   /// **'Kitchens'**
   String get listingKitchens;
 
+  /// No description provided for @listingKitchensCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Kitchen(s)'**
+  String listingKitchensCount(Object count);
+
   /// No description provided for @listingSalons.
   ///
   /// In en, this message translates to:
@@ -1515,6 +1521,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Key Features'**
   String get listingsKeyFeatures;
+
+  /// No description provided for @listingsImInterested.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m Interested'**
+  String get listingsImInterested;
+
+  /// No description provided for @listingsInterestedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Let the owner know you\'re interested in this property'**
+  String get listingsInterestedHint;
+
+  /// No description provided for @listingsInterestedPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message to the owner (optional)'**
+  String get listingsInterestedPlaceholder;
+
+  /// No description provided for @listingsSubmitInterest.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Interest'**
+  String get listingsSubmitInterest;
+
+  /// No description provided for @listingsInterestSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest submitted successfully!'**
+  String get listingsInterestSubmitted;
 
   /// No description provided for @listingsDescription.
   ///

@@ -473,6 +473,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingKitchens => 'Kitchens';
 
   @override
+  String listingKitchensCount(Object count) {
+    return '$count Kitchen(s)';
+  }
+
+  @override
   String get listingSalons => 'Salons';
 
   @override
@@ -748,6 +753,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingsKeyFeatures => 'Key Features';
+
+  @override
+  String get listingsImInterested => 'I\'m Interested';
+
+  @override
+  String get listingsInterestedHint =>
+      'Let the owner know you\'re interested in this property';
+
+  @override
+  String get listingsInterestedPlaceholder =>
+      'Your message to the owner (optional)';
+
+  @override
+  String get listingsSubmitInterest => 'Submit Interest';
+
+  @override
+  String get listingsInterestSubmitted => 'Interest submitted successfully!';
 
   @override
   String get listingsDescription => 'Description';

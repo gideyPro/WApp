@@ -6,10 +6,12 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
+import '../../../../data/services/interest_service.dart';
 import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/otp_login_screen.dart';
+import '../messages/messages_screen.dart';
 import '../../widgets/video/video_player_widget.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -378,6 +380,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                   _buildDescription(listing),
                   const SizedBox(height: 24),
                   _buildPropertyDetails(listing),
+                  const SizedBox(height: 24),
+                  _buildActionButtons(listing),
                   const SizedBox(height: 100),
                 ],
               ),
@@ -885,6 +889,215 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     await Share.share(
       shareText,
       subject: 'Check out this property on WaveMart: ${listing.getLocalizedTitle(context)}',
+    );
+  }
+
+  Widget _buildActionButtons(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    final authState = ref.read(authStateProvider);
+    final isLoggedIn = authState.isAuthenticated;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => _showInterestDialog(listing),
+                  icon: const Icon(Icons.handyman_outlined, size: 20),
+                  label: Text(l10n.listingsImInterested),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: const BorderSide(color: AppColors.wave500),
+                    foregroundColor: AppColors.wave600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () => _navigateToChat(listing),
+                  icon: const Icon(Icons.chat_bubble_outline, size: 20),
+                  label: Text(l10n.navMessages),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: AppColors.wave500,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showInterestDialog(Listing listing) {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
+      );
+      return;
+    }
+
+    final messageController = TextEditingController();
+    final l10n = AppLocalizations.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(ctx).viewInsets.bottom,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.wave50,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.handyman, color: AppColors.wave600),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    l10n.listingsImInterested,
+                    style: AppTextStyles.title,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.listingsInterestedHint,
+                style: AppTextStyles.bodySmall,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: messageController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: l10n.listingsInterestedPlaceholder,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppColors.wave500),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    _submitInterest(listing.id, messageController.text);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.wave500,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(l10n.listingsSubmitInterest),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _submitInterest(int listingId, String message) async {
+    final l10n = AppLocalizations.of(context);
+    
+    try {
+      final service = InterestService();
+      final response = await service.expressInterest(
+        listingId: listingId, 
+        message: message.isNotEmpty ? message : null,
+      );
+      
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message ?? l10n.listingsInterestSubmitted),
+              backgroundColor: AppColors.emerald600,
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message ?? l10n.commonError),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.commonError),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  void _navigateToChat(Listing listing) {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
+      );
+      return;
+    }
+
+    // Navigate to messages screen or start new conversation
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const MessagesScreen(),
+      ),
     );
   }
 }

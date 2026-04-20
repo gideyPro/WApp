@@ -468,6 +468,11 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingKitchens => 'ክሽነታት';
 
   @override
+  String listingKitchensCount(Object count) {
+    return '$count Kitchen(s)';
+  }
+
+  @override
   String get listingSalons => 'ሳሎናት';
 
   @override
@@ -742,6 +747,21 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingsKeyFeatures => 'ቀንዲ መገለጺታት';
+
+  @override
+  String get listingsImInterested => 'ምፈልጥ';
+
+  @override
+  String get listingsInterestedHint => 'ባለቤቱን ኣብዚህ ንብረት ምፈልጠይሶ እንዳለይን ኣሳውቕ';
+
+  @override
+  String get listingsInterestedPlaceholder => 'መልዕክት ለባለቤቱ (አማራጭ)';
+
+  @override
+  String get listingsSubmitInterest => 'ምፈልጢያ ላኽ';
+
+  @override
+  String get listingsInterestSubmitted => 'ምፈልጢያ በተሳካ ተልኳል!';
 
   @override
   String get listingsDescription => 'መግለጺ';
