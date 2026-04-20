@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../../data/services/conference_service.dart';
-import '../../../data/models/listing.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {
   final int conferenceId;
@@ -37,6 +37,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   @override
   void initState() {
     super.initState();
+    _startRingSound();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -53,9 +54,23 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
   @override
   void dispose() {
+    _stopRingSound();
     _controller.dispose();
     super.dispose();
   }
+
+  void _startRingSound() {
+    HapticFeedback.vibrate();
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted && mounted) {
+        HapticFeedback.vibrate();
+      }
+      return mounted;
+    });
+  }
+
+  void _stopRingSound() {}
 
   Future<void> _acceptCall() async {
     if (_isConnecting) return;

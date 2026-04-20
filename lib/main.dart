@@ -78,23 +78,27 @@ class WaveMartApp extends ConsumerWidget {
     }
 
     return MaterialApp(
-      title: 'WaveMart', // App name doesn't need localization at this level
+      title: 'WaveMart',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: authState.isAuthenticated && incomingCall != null
-          ? IncomingCallScreen(
-              conferenceId: incomingCall.conferenceId,
-              callerName: incomingCall.callerName,
-              callerAvatar: incomingCall.callerAvatar,
-              callerInitials: incomingCall.callerInitials,
-              listingTitle: incomingCall.listingTitle,
-            )
-          : const SplashScreen(),
+      home: const SplashScreen(),
       builder: (context, child) {
         if (child == null) {
           return const SizedBox.shrink();
         }
-        return child;
+        return Stack(
+          children: [
+            child,
+            if (authState.isAuthenticated && incomingCall != null)
+              IncomingCallScreen(
+                conferenceId: incomingCall.conferenceId,
+                callerName: incomingCall.callerName,
+                callerAvatar: incomingCall.callerAvatar,
+                callerInitials: incomingCall.callerInitials,
+                listingTitle: incomingCall.listingTitle,
+              ),
+          ],
+        );
       },
       locale: localeState.locale ?? const Locale('en'),
       localizationsDelegates: const [
