@@ -776,6 +776,15 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsInterestCancelled => 'ፍላጎት ተሰርዟል';
 
   @override
+  String get callIncoming => 'የሚመጣ ጥሪያ...';
+
+  @override
+  String get callAccept => 'ተቀበይ';
+
+  @override
+  String get callDecline => 'አጥፍድ';
+
+  @override
   String get listingsDescription => 'መግለጫ';
 
   @override

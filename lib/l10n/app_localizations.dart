@@ -1576,6 +1576,24 @@ abstract class AppLocalizations {
   /// **'Interest cancelled'**
   String get listingsInterestCancelled;
 
+  /// No description provided for @callIncoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming call...'**
+  String get callIncoming;
+
+  /// No description provided for @callAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get callAccept;
+
+  /// No description provided for @callDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get callDecline;
+
   /// No description provided for @listingsDescription.
   ///
   /// In en, this message translates to:

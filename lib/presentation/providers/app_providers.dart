@@ -600,7 +600,7 @@ class KycStatusNotifier extends StateNotifier<KycStatusState> {
   Future<void> loadKycStatus() async {
     // Only set loading if not already loading to avoid flicker
     if (state.isLoading && state.status == 'none') {
-       // Already in initial loading state
+      // Already in initial loading state
     } else {
       state = state.copyWith(isLoading: true, errorMessage: null);
     }
@@ -615,7 +615,7 @@ class KycStatusNotifier extends StateNotifier<KycStatusState> {
     } else {
       // Set status to error or keep existing to stop loading spinner
       state = state.copyWith(
-        isLoading: false, 
+        isLoading: false,
         errorMessage: response.status,
         status: state.status == 'none' ? 'error' : state.status,
       );
@@ -718,6 +718,76 @@ class ConferencesState {
         isLoading: isLoading ?? this.isLoading,
         conferences: conferences ?? this.conferences,
         errorMessage: errorMessage);
+  }
+}
+
+/// Incoming Call Provider
+class IncomingCall {
+  final int conferenceId;
+  final String callerName;
+  final String? callerAvatar;
+  final String? callerInitials;
+  final String? listingTitle;
+
+  const IncomingCall({
+    required this.conferenceId,
+    required this.callerName,
+    this.callerAvatar,
+    this.callerInitials,
+    this.listingTitle,
+  });
+}
+
+final incomingCallProvider =
+    StateNotifierProvider<IncomingCallNotifier, IncomingCall?>((ref) {
+  return IncomingCallNotifier();
+});
+
+class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
+  Timer? _pollingTimer;
+  static const _pollingInterval = Duration(seconds: 3);
+
+  IncomingCallNotifier() : super(null);
+
+  void startPolling() {
+    _pollingTimer?.cancel();
+    _pollingTimer =
+        Timer.periodic(_pollingInterval, (_) => _checkForIncomingCall());
+  }
+
+  void stopPolling() {
+    _pollingTimer?.cancel();
+    _pollingTimer = null;
+  }
+
+  Future<void> _checkForIncomingCall() async {
+    if (state != null) return;
+
+    try {
+      final service = ConferenceService();
+      final response = await service.checkIncomingCall();
+
+      if (response.hasIncoming && response.callData != null) {
+        final callData = response.callData!;
+        state = IncomingCall(
+          conferenceId: callData['conference_id'] ?? 0,
+          callerName: callData['caller_name'] ?? 'Unknown',
+          callerAvatar: callData['caller_avatar'],
+          callerInitials: callData['caller_initials'],
+          listingTitle: callData['listing_title'],
+        );
+      }
+    } catch (_) {}
+  }
+
+  void clearIncomingCall() {
+    state = null;
+  }
+
+  @override
+  void dispose() {
+    stopPolling();
+    super.dispose();
   }
 }
 

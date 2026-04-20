@@ -784,6 +784,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsInterestCancelled => 'Interest cancelled';
 
   @override
+  String get callIncoming => 'Incoming call...';
+
+  @override
+  String get callAccept => 'Accept';
+
+  @override
+  String get callDecline => 'Decline';
+
+  @override
   String get listingsDescription => 'Description';
 
   @override

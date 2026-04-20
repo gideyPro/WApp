@@ -9,7 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/providers/app_providers.dart';
+import 'presentation/providers/auth_provider.dart';
 import 'presentation/screens/splash/splash_screen.dart';
+import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
@@ -66,12 +68,28 @@ class WaveMartApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localeState = ref.watch(localeProvider);
+    final authState = ref.watch(authStateProvider);
+    final incomingCall = ref.watch(incomingCallProvider);
+
+    if (authState.isAuthenticated && incomingCall != null) {
+      ref.read(incomingCallProvider.notifier).stopPolling();
+    } else if (authState.isAuthenticated) {
+      ref.read(incomingCallProvider.notifier).startPolling();
+    }
 
     return MaterialApp(
       title: 'WaveMart', // App name doesn't need localization at this level
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const SplashScreen(),
+      home: authState.isAuthenticated && incomingCall != null
+          ? IncomingCallScreen(
+              conferenceId: incomingCall.conferenceId,
+              callerName: incomingCall.callerName,
+              callerAvatar: incomingCall.callerAvatar,
+              callerInitials: incomingCall.callerInitials,
+              listingTitle: incomingCall.listingTitle,
+            )
+          : const SplashScreen(),
       builder: (context, child) {
         if (child == null) {
           return const SizedBox.shrink();
