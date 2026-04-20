@@ -776,13 +776,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsInterestCancelled => 'ፍላጎት ተሰርዟል';
 
   @override
-  String get callIncoming => 'የሚመጣ ጥሪያ...';
+  String get callIncoming => 'የሚመጣ ጥሪ...';
 
   @override
-  String get callAccept => 'ተቀበይ';
+  String get callAccept => 'ተቀበል';
 
   @override
-  String get callDecline => 'አጥፍድ';
+  String get callDecline => 'አይቀበሉ';
 
   @override
   String get listingsDescription => 'መግለጫ';

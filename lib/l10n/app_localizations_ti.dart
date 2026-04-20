@@ -776,13 +776,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsInterestCancelled => 'ድሌት ተሰሪዙ';
 
   @override
-  String get callIncoming => 'ጥሪታ ኣላንካ...';
+  String get callIncoming => 'ዝመጽእ ዘሎ ጥሪ...';
 
   @override
-  String get callAccept => 'ተቀባይ';
+  String get callAccept => 'ተቐበል';
 
   @override
-  String get callDecline => 'ንብረድ';
+  String get callDecline => 'ኣይትቀበል';
 
   @override
   String get listingsDescription => 'መግለጺ';
