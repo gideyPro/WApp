@@ -377,6 +377,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingHoldingType => 'Holding Type';
 
   @override
+  String get listingTaxPaid => 'Tax Paid Until';
+
+  @override
+  String get listingAcquisition => 'Acquisition Clarification';
+
+  @override
+  String get listingLeaseHolder => 'Lease Holder';
+
+  @override
+  String get listingLeaseOrganization => 'Organization';
+
+  @override
+  String get listingLeaseExpiry => 'Lease Expiry';
+
+  @override
   String get listingUseType => 'Use Type';
 
   @override
@@ -419,9 +434,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingTaxPaidYear => 'Tax Paid Until Year';
 
   @override
-  String get listingAcquisition => 'Acquisition Clarification';
-
-  @override
   String get listingLeasedYear => 'Leased Year';
 
   @override
@@ -447,6 +459,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingTotalRooms => 'Total Rooms';
+
+  @override
+  String get listingPhotos => 'Photos';
 
   @override
   String get listingBedrooms => 'Bedrooms';

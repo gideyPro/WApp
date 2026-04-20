@@ -372,6 +372,21 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingHoldingType => 'ዓይነት ዋናነት';
 
   @override
+  String get listingTaxPaid => 'ታክስ ግበረ';
+
+  @override
+  String get listingAcquisition => 'ንብረት ዝተረኽበሉ ኩነታት';
+
+  @override
+  String get listingLeaseHolder => 'ጌሚያሕ';
+
+  @override
+  String get listingLeaseOrganization => 'ድርጅን';
+
+  @override
+  String get listingLeaseExpiry => 'ጋሚያሕ ብናም';
+
+  @override
   String get listingUseType => 'ዓይነት ኣገልግሎት';
 
   @override
@@ -414,9 +429,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingTaxPaidYear => 'ግብሪ ዝተኸፈለሉ ዓመት';
 
   @override
-  String get listingAcquisition => 'ንብረት ዝተረኽበሉ ኩነታት';
-
-  @override
   String get listingLeasedYear => 'ናይ ሊዝ ዓመት';
 
   @override
@@ -442,6 +454,9 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingTotalRooms => 'ጠቅላላ ክፍልታት';
+
+  @override
+  String get listingPhotos => 'ፎቶታት';
 
   @override
   String get listingBedrooms => 'መኝታ ክፍልታት';

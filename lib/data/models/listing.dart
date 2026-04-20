@@ -95,15 +95,33 @@ class Listing extends ChangeNotifier {
 
   final String? sitePlanImageLink;
   final String? holdingType;
+  
+  // Free Hold details
+  final int? taxPaidUntilYear;
+  final String? acquisitionType;
+  
+  // Lease Hold details
+  final String? leaseHolderName;
+  final String? leaseOrganization;
+  final DateTime? leaseExpiryDate;
+  
+  // Cooperative details
+  final String? cooperativeName;
+  final String? cooperativeCode;
+  
   final String? description;
   final int? bedrooms;
   final int? bathrooms;
   final int? salons;
+  final int? kitchens;
   final int? imageCount;
   final List<ImageModel> images;
   final Address? address;
   final DateTime createdAt;
   final DateTime? updatedAt;
+
+  /// Calculate total rooms
+  int get totalRooms => (bedrooms ?? 0) + (bathrooms ?? 0) + (salons ?? 0) + (kitchens ?? 0);
 
   Listing({
     required this.id,
@@ -132,10 +150,18 @@ class Listing extends ChangeNotifier {
     this.videoLink,
     this.sitePlanImageLink,
     this.holdingType,
+    this.taxPaidUntilYear,
+    this.acquisitionType,
+    this.leaseHolderName,
+    this.leaseOrganization,
+    this.leaseExpiryDate,
+    this.cooperativeName,
+    this.cooperativeCode,
     this.description,
     this.bedrooms,
     this.bathrooms,
     this.salons,
+    this.kitchens,
     this.imageCount,
     this.images = const [],
     this.address,
@@ -193,6 +219,22 @@ class Listing extends ChangeNotifier {
       videoLink: json['video_link'],
       sitePlanImageLink: json['site_plan_image_link'],
       holdingType: json['holding_type'],
+      
+      // Free Hold details
+      taxPaidUntilYear: _safeInt(json['tax_paid_until_year']),
+      acquisitionType: json['acquisition_clarification'],
+      
+      // Lease Hold details
+      leaseHolderName: json['leaseholder_name'],
+      leaseOrganization: json['lease_organization'],
+      leaseExpiryDate: json['lease_expiry_date'] != null 
+          ? DateTime.tryParse(json['lease_expiry_date']) 
+          : null,
+      
+      // Cooperative details  
+      cooperativeName: json['cooperative_name'],
+      cooperativeCode: json['cooperative_code'],
+      
       description: json['description'] ??
           (property is Map ? property['description'] : null),
       bedrooms:
@@ -200,6 +242,7 @@ class Listing extends ChangeNotifier {
       bathrooms:
           _safeInt(property is Map ? property['bathrooms'] : json['bathrooms']),
       salons: _safeInt(property is Map ? property['salons'] : json['salons']),
+      kitchens: _safeInt(property is Map ? property['kitchens'] : json['kitchens']),
       imageCount: images.isNotEmpty
           ? images.length
           : _safeInt(json['image_count'] ??

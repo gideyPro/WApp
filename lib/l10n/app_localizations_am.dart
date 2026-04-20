@@ -372,6 +372,21 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingHoldingType => 'የባለቤትነት ሁኔታ';
 
   @override
+  String get listingTaxPaid => 'ግበረ ክፍል';
+
+  @override
+  String get listingAcquisition => 'የንብረት ማግኛ ሁኔታ';
+
+  @override
+  String get listingLeaseHolder => 'ጌሚው';
+
+  @override
+  String get listingLeaseOrganization => 'ድርጅት';
+
+  @override
+  String get listingLeaseExpiry => 'ጋሚው ገቢ';
+
+  @override
   String get listingUseType => 'የአጠቃቀም ሁኔታ';
 
   @override
@@ -414,9 +429,6 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingTaxPaidYear => 'ግብር የተከፈለበት ዓመት';
 
   @override
-  String get listingAcquisition => 'የንብረት ማግኛ ሁኔታ';
-
-  @override
   String get listingLeasedYear => 'የሊዝ ዓመት';
 
   @override
@@ -442,6 +454,9 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get listingTotalRooms => 'ጠቅላላ ክፍሎች';
+
+  @override
+  String get listingPhotos => 'ፎቶዎች';
 
   @override
   String get listingBedrooms => 'መኝታ ቤቶች';

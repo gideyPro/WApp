@@ -802,6 +802,36 @@ abstract class AppLocalizations {
   /// **'Holding Type'**
   String get listingHoldingType;
 
+  /// No description provided for @listingTaxPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Paid Until'**
+  String get listingTaxPaid;
+
+  /// No description provided for @listingAcquisition.
+  ///
+  /// In en, this message translates to:
+  /// **'Acquisition Clarification'**
+  String get listingAcquisition;
+
+  /// No description provided for @listingLeaseHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Lease Holder'**
+  String get listingLeaseHolder;
+
+  /// No description provided for @listingLeaseOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get listingLeaseOrganization;
+
+  /// No description provided for @listingLeaseExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Lease Expiry'**
+  String get listingLeaseExpiry;
+
   /// No description provided for @listingUseType.
   ///
   /// In en, this message translates to:
@@ -886,12 +916,6 @@ abstract class AppLocalizations {
   /// **'Tax Paid Until Year'**
   String get listingTaxPaidYear;
 
-  /// No description provided for @listingAcquisition.
-  ///
-  /// In en, this message translates to:
-  /// **'Acquisition Clarification'**
-  String get listingAcquisition;
-
   /// No description provided for @listingLeasedYear.
   ///
   /// In en, this message translates to:
@@ -945,6 +969,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Rooms'**
   String get listingTotalRooms;
+
+  /// No description provided for @listingPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get listingPhotos;
 
   /// No description provided for @listingBedrooms.
   ///

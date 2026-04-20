@@ -469,6 +469,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   Widget _buildBadges(Listing listing) {
     final l10n = AppLocalizations.of(context);
+    
+    // Calculate total rooms for houses
+    final totalRooms = listing.totalRooms;
+    
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -487,6 +491,18 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           _buildBadge(l10n.listingFeatured.toUpperCase(), AppColors.wave500),
         if (listing.isNew)
           _buildBadge(l10n.listingNew.toUpperCase(), Colors.amber[700]!),
+        // Photo count badge
+        if (listing.imageCount != null && listing.imageCount! > 0)
+          _buildBadge(
+            '${listing.imageCount} photos',
+            AppColors.navy700,
+          ),
+        // Total rooms count badge (for houses only)
+        if (listing.propertyType == PropertyType.house && totalRooms > 0)
+          _buildBadge(
+            '$totalRooms ${l10n.listingTotalRooms.toLowerCase()}',
+            AppColors.emerald700,
+          ),
       ],
     );
   }
@@ -557,6 +573,12 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         features.add(_buildFeatureChip(
           icon: Icons.weekend,
           label: l10n.listingsSalons(listing.salons!),
+        ));
+      }
+      if ((listing.kitchens ?? 0) > 0) {
+        features.add(_buildFeatureChip(
+          icon: Icons.kitchen,
+          label: '${listing.kitchens} kitchen${listing.kitchens == 1 ? '' : 's'}',
         ));
       }
     }
@@ -691,6 +713,39 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     }
     if (listing.holdingType != null) {
       details.add({'label': l10n.listingsHoldingType, 'value': listing.holdingType!});
+      
+      // Free Hold details
+      if (listing.holdingType == 'Free Hold') {
+        if (listing.taxPaidUntilYear != null) {
+          details.add({'label': 'Tax Paid Until', 'value': listing.taxPaidUntilYear.toString()});
+        }
+        if (listing.acquisitionType != null) {
+          details.add({'label': 'Acquisition', 'value': listing.acquisitionType!});
+        }
+      }
+      
+      // Lease Hold details
+      if (listing.holdingType == 'Lease Hold') {
+        if (listing.leaseHolderName != null) {
+          details.add({'label': 'Lease Holder', 'value': listing.leaseHolderName!});
+        }
+        if (listing.leaseOrganization != null) {
+          details.add({'label': 'Organization', 'value': listing.leaseOrganization!});
+        }
+        if (listing.leaseExpiryDate != null) {
+          details.add({'label': 'Lease Expiry', 'value': listing.leaseExpiryDate!.year.toString()});
+        }
+      }
+      
+      // Cooperative details
+      if (listing.holdingType == 'Cooperative') {
+        if (listing.cooperativeName != null) {
+          details.add({'label': 'Cooperative', 'value': listing.cooperativeName!});
+        }
+        if (listing.cooperativeCode != null) {
+          details.add({'label': 'Cooperative Code', 'value': listing.cooperativeCode!});
+        }
+      }
     }
     if (listing.facingDirection != null) {
       details.add({'label': l10n.listingsFacing, 'value': listing.facingDirection!});
