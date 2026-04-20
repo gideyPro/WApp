@@ -764,16 +764,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsInterestSubmitted => 'ፍላጎትዎ በተሳካ ሁኔታ ተልኳል!';
 
   @override
-  String get listingsInterestAccepted => 'ፍላጎት ተቀባይነት';
+  String get listingsInterestAccepted => 'ፍላጎት ተቀባይነት አግኝቷል';
 
   @override
-  String get listingsInterestPending => 'በመጠበቅ ላይ';
+  String get listingsInterestPending => 'በመጠባበቅ ላይ';
 
   @override
-  String get listingsInterestRejected => 'ፍላጎት ተኪይኑ ነው';
+  String get listingsInterestRejected => 'ፍላጎት ውድቅ ተደርጓል';
 
   @override
-  String get listingsInterestCancelled => 'ፍላጎቱ ተሰርዟል';
+  String get listingsInterestCancelled => 'ፍላጎት ተሰርዟል';
 
   @override
   String get listingsDescription => 'መግለጫ';
