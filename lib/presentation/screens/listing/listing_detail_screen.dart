@@ -11,7 +11,6 @@ import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/otp_login_screen.dart';
-import '../messages/messages_screen.dart';
 import '../../widgets/video/video_player_widget.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -889,7 +888,6 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   }
 
   Future<void> _shareListing(Listing listing) async {
-    final l10n = AppLocalizations.of(context);
     final shareText = '''
 ${listing.getLocalizedTitle(context)}
 ${listing.getLocalizedPrice(context)}
@@ -907,8 +905,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
   Widget _buildActionButtons(Listing listing) {
     final l10n = AppLocalizations.of(context);
-    final authState = ref.read(authStateProvider);
-    final isLoggedIn = authState.isAuthenticated;
 
     final interestStatus = listing.userInterestStatus;
     final hasInterest = interestStatus != null;
@@ -980,19 +976,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                           foregroundColor: AppColors.wave600,
                         ),
                       ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () => _navigateToChat(listing),
-                  icon: const Icon(Icons.chat_bubble_outline, size: 20),
-                  label: Text(l10n.navMessages),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: AppColors.wave500,
-                    foregroundColor: Colors.white,
-                  ),
-                ),
               ),
             ],
           ),
@@ -1093,22 +1076,4 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     }
   }
 
-  void _navigateToChat(Listing listing) {
-    final authState = ref.read(authStateProvider);
-    if (!authState.isAuthenticated) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
-      );
-      return;
-    }
-
-    // Navigate to messages screen or start new conversation
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const MessagesScreen(),
-      ),
-    );
-  }
 }
