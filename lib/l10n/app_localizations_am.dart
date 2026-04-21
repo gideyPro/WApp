@@ -785,16 +785,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get callDecline => 'አይቀበሉ';
 
   @override
-  String get jitsiCallTitle => '��ድምፅ ጥሪ';
+  String get jitsiCallTitle => 'የድምፅ ጥሪ';
 
   @override
-  String get jitsiOpening => 'ጂትሲ ስብሰባ ለመክፈት...';
+  String get jitsiOpening => 'የጂትሲ ስብሰባ በመከፈት ላይ...';
 
   @override
-  String get jitsiOpenedExternal => 'ስብሰባው ካልተከፈተ ከዚህ በታች ይሞክሩ';
+  String get jitsiOpenedExternal => 'ስብሰባው ካልተከፈተ እንደገና ለመሞከር ከታች ያለውን ይንኩ';
 
   @override
-  String get jitsiCloseToJoin => 'ለመቀላቀል ይህንን ዝጋ';
+  String get jitsiCloseToJoin => 'በመተግበሪያው ውስጥ ስብሰባውን ለመቀላቀል ይህንን ይዝጉ';
 
   @override
   String get listingsDescription => 'መግለጫ';
