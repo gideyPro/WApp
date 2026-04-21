@@ -45,11 +45,14 @@ class ConferenceService {
         ApiConstants.checkIncomingCall,
       );
 
-      if (response.statusCode == 200 && response.data['has_incoming'] == true) {
+      if (response.statusCode == 200 && response.data['incoming'] == true) {
+        // Backend returns all call fields at the top level (not nested under 'data')
+        // Fields: incoming, conference_id, caller_name, caller_avatar,
+        //         caller_initials, listing_title
         return IncomingCallResponse(
           success: true,
           hasIncoming: true,
-          callData: response.data['data'],
+          callData: Map<String, dynamic>.from(response.data as Map),
         );
       }
 
@@ -61,6 +64,7 @@ class ConferenceService {
       return const IncomingCallResponse(success: false, hasIncoming: false);
     }
   }
+
 
   /// Create conference for a listing
   Future<ConferenceResponse> createConference({
