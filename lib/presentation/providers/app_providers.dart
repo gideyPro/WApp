@@ -166,8 +166,16 @@ final notificationsProvider =
 final unreadCountProvider = StreamProvider<int>((ref) async* {
   final service = ref.watch(notificationServiceProvider);
   while (true) {
-    final response = await service.getUnreadCount();
-    yield response.success ? response.count : 0;
+    try {
+      final response = await service.getUnreadCount();
+      if (response.success) {
+        yield response.count;
+      } else {
+        yield 0;
+      }
+    } catch (e) {
+      yield 0;
+    }
     await Future.delayed(const Duration(seconds: 30));
   }
 });

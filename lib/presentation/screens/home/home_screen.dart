@@ -795,7 +795,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               size: 22,
             ),
           ),
-          if (badgeValue is AsyncData && badgeValue.value! > 0)
+          if (badgeValue.hasValue && badgeValue.value! > 0)
             Positioned(
               right: -4,
               top: -4,

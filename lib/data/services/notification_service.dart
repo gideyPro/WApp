@@ -84,9 +84,27 @@ class NotificationService {
       final response = await _apiClient.dio.get(ApiConstants.unreadCount);
 
       if (response.statusCode == 200) {
+        final responseData = response.data;
+        int count = 0;
+        
+        if (responseData is Map) {
+          if (responseData['unread_count'] != null) {
+            count = (responseData['unread_count'] as num).toInt();
+          } else if (responseData['count'] != null) {
+            count = (responseData['count'] as num).toInt();
+          } else if (responseData['data'] is Map) {
+            final data = responseData['data'];
+            if (data['unread_count'] != null) {
+              count = (data['unread_count'] as num).toInt();
+            } else if (data['count'] != null) {
+              count = (data['count'] as num).toInt();
+            }
+          }
+        }
+        
         return NotificationCountResponse(
           success: true,
-          count: response.data['count'] ?? response.data['unread_count'] ?? 0,
+          count: count,
         );
       }
 
