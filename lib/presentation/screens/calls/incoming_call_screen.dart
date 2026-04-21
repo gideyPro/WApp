@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
@@ -33,11 +34,13 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   bool _isConnecting = false;
+  Timer? _vibrationTimer;
+  bool _isRinging = false;
 
   @override
   void initState() {
     super.initState();
-    _startRingSound();
+    _startRinging();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -54,27 +57,56 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
   @override
   void dispose() {
-    _stopRingSound();
+    _stopRinging();
     _controller.dispose();
     super.dispose();
   }
 
-  void _startRingSound() {
-    HapticFeedback.vibrate();
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (mounted && mounted) {
-        HapticFeedback.vibrate();
-      }
-      return mounted;
-    });
+  /// Start vibration pattern and system alert sound for incoming call
+  void _startRinging() {
+    _isRinging = true;
+
+    // Play system alert sound
+    SystemSound.play(SystemSoundType.alert);
+
+    // Initial strong vibration burst
+    HapticFeedback.heavyImpact();
+
+    // Set up repeating vibration pattern that mimics a phone ring
+    _vibrationTimer = Timer.periodic(
+      const Duration(milliseconds: 800),
+      (timer) {
+        if (!_isRinging || !mounted) {
+          timer.cancel();
+          return;
+        }
+        // Double-buzz pattern: buzz, short pause, buzz
+        HapticFeedback.heavyImpact();
+        Future.delayed(const Duration(milliseconds: 150), () {
+          if (_isRinging && mounted) {
+            HapticFeedback.heavyImpact();
+          }
+        });
+
+        // Re-play system alert sound every ~4 seconds
+        if (timer.tick % 5 == 0) {
+          SystemSound.play(SystemSoundType.alert);
+        }
+      },
+    );
   }
 
-  void _stopRingSound() {}
+  /// Stop all vibration and sound
+  void _stopRinging() {
+    _isRinging = false;
+    _vibrationTimer?.cancel();
+    _vibrationTimer = null;
+  }
 
   Future<void> _acceptCall() async {
     if (_isConnecting) return;
 
+    _stopRinging();
     setState(() => _isConnecting = true);
 
     try {
@@ -96,17 +128,19 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
             ),
           );
           setState(() => _isConnecting = false);
+          _startRinging(); // Resume ringing if accept failed
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Failed to join call'),
             backgroundColor: AppColors.error,
           ),
         );
         setState(() => _isConnecting = false);
+        _startRinging(); // Resume ringing if accept failed
       }
     }
   }
@@ -123,6 +157,8 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   }
 
   Future<void> _declineCall() async {
+    _stopRinging();
+
     try {
       final service = ConferenceService();
       await service.updateConferenceStatus(
@@ -140,53 +176,57 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      backgroundColor: AppColors.navy950,
-      body: SafeArea(
-        child: Column(
-          children: [
-            const Spacer(),
-            AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: Opacity(
-                    opacity: _fadeAnimation.value,
-                    child: child,
-                  ),
-                );
-              },
-              child: _buildCallerAvatar(),
-            ),
-            const SizedBox(height: 32),
-            Text(
-              widget.callerName,
-              style: AppTextStyles.headline2.copyWith(
-                color: Colors.white,
+    // Block back button from dismissing the incoming call overlay
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: AppColors.navy950,
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Spacer(),
+              AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Opacity(
+                      opacity: _fadeAnimation.value,
+                      child: child,
+                    ),
+                  );
+                },
+                child: _buildCallerAvatar(),
               ),
-            ),
-            if (widget.listingTitle != null) ...[
+              const SizedBox(height: 32),
+              Text(
+                widget.callerName,
+                style: AppTextStyles.headline2.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+              if (widget.listingTitle != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  widget.listingTitle!,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: Colors.white70,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
               const SizedBox(height: 8),
               Text(
-                widget.listingTitle!,
+                l10n.callIncoming,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white70,
+                  color: AppColors.wave400,
                 ),
-                textAlign: TextAlign.center,
               ),
+              const Spacer(),
+              _buildActionButtons(l10n),
+              const SizedBox(height: 60),
             ],
-            const SizedBox(height: 8),
-            Text(
-              l10n.callIncoming,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.wave400,
-              ),
-            ),
-            const Spacer(),
-            _buildActionButtons(l10n),
-            const SizedBox(height: 60),
-          ],
+          ),
         ),
       ),
     );

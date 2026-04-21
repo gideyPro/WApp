@@ -62,17 +62,34 @@ void main() async {
   );
 }
 
-class WaveMartApp extends ConsumerWidget {
+class WaveMartApp extends ConsumerStatefulWidget {
   const WaveMartApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WaveMartApp> createState() => _WaveMartAppState();
+}
+
+class _WaveMartAppState extends ConsumerState<WaveMartApp> {
+  bool _pollingStarted = false;
+
+  @override
+  Widget build(BuildContext context) {
     final localeState = ref.watch(localeProvider);
     final authState = ref.watch(authStateProvider);
     final incomingCall = ref.watch(incomingCallProvider);
 
-    if (authState.isAuthenticated) {
-      ref.read(incomingCallProvider.notifier).startPolling();
+    // Start polling only once when authenticated — not on every rebuild
+    if (authState.isAuthenticated && !_pollingStarted) {
+      _pollingStarted = true;
+      // Use addPostFrameCallback to avoid modifying state during build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(incomingCallProvider.notifier).startPolling();
+      });
+    } else if (!authState.isAuthenticated && _pollingStarted) {
+      _pollingStarted = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(incomingCallProvider.notifier).stopPolling();
+      });
     }
 
     return MaterialApp(
@@ -88,12 +105,17 @@ class WaveMartApp extends ConsumerWidget {
           children: [
             child,
             if (authState.isAuthenticated && incomingCall != null)
-              IncomingCallScreen(
-                conferenceId: incomingCall.conferenceId,
-                callerName: incomingCall.callerName,
-                callerAvatar: incomingCall.callerAvatar,
-                callerInitials: incomingCall.callerInitials,
-                listingTitle: incomingCall.listingTitle,
+              Positioned.fill(
+                child: Material(
+                  color: Colors.transparent,
+                  child: IncomingCallScreen(
+                    conferenceId: incomingCall.conferenceId,
+                    callerName: incomingCall.callerName,
+                    callerAvatar: incomingCall.callerAvatar,
+                    callerInitials: incomingCall.callerInitials,
+                    listingTitle: incomingCall.listingTitle,
+                  ),
+                ),
               ),
           ],
         );

@@ -740,14 +740,15 @@ class IncomingCall {
 
 final incomingCallProvider =
     StateNotifierProvider<IncomingCallNotifier, IncomingCall?>((ref) {
-  return IncomingCallNotifier();
+  return IncomingCallNotifier(ref.watch(conferenceServiceProvider));
 });
 
 class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
+  final ConferenceService _conferenceService;
   Timer? _pollingTimer;
   static const _pollingInterval = Duration(seconds: 3);
 
-  IncomingCallNotifier() : super(null);
+  IncomingCallNotifier(this._conferenceService) : super(null);
 
   void startPolling() {
     _pollingTimer?.cancel();
@@ -764,8 +765,7 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
     if (state != null) return;
 
     try {
-      final service = ConferenceService();
-      final response = await service.checkIncomingCall();
+      final response = await _conferenceService.checkIncomingCall();
 
       if (response.hasIncoming && response.callData != null) {
         final callData = response.callData!;
