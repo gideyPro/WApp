@@ -1594,6 +1594,30 @@ abstract class AppLocalizations {
   /// **'Decline'**
   String get callDecline;
 
+  /// No description provided for @jitsiCallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio Call'**
+  String get jitsiCallTitle;
+
+  /// No description provided for @jitsiOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening Jitsi meeting...'**
+  String get jitsiOpening;
+
+  /// No description provided for @jitsiOpenedExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'If the meeting didn\'t open, tap below to try again'**
+  String get jitsiOpenedExternal;
+
+  /// No description provided for @jitsiCloseToJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Close this to join the meeting in the app'**
+  String get jitsiCloseToJoin;
+
   /// No description provided for @listingsDescription.
   ///
   /// In en, this message translates to:

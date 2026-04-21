@@ -7,6 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../../data/services/conference_service.dart';
+import 'jitsi_call_screen.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {
   final int conferenceId;
@@ -146,14 +147,17 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   }
 
   void _navigateToJitsi(ConferenceResponse response) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Joining call...'),
-        backgroundColor: AppColors.emerald600,
-      ),
-    );
-
-    ref.read(incomingCallProvider.notifier).clearIncomingCall();
+    if (response.jitsiRoomUrl != null && mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => JitsiCallScreen(
+            jitsiUrl: response.jitsiRoomUrl!,
+            jitsiToken: response.jitsiToken,
+            conferenceId: widget.conferenceId,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _declineCall() async {

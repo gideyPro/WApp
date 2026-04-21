@@ -785,6 +785,18 @@ class AppLocalizationsTi extends AppLocalizations {
   String get callDecline => 'ኣይትቀበል';
 
   @override
+  String get jitsiCallTitle => 'ኣድምፂ ጥሪ';
+
+  @override
+  String get jitsiOpening => 'ስብሰባ ክንተርድ...';
+
+  @override
+  String get jitsiOpenedExternal => 'ስብሰባው እንተይተጀሚደ ከምዚ ስርሕ';
+
+  @override
+  String get jitsiCloseToJoin => 'ንምትሕብራሕ ዝጋ';
+
+  @override
   String get listingsDescription => 'መግለጺ';
 
   @override

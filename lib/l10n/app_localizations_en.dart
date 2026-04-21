@@ -793,6 +793,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get callDecline => 'Decline';
 
   @override
+  String get jitsiCallTitle => 'Audio Call';
+
+  @override
+  String get jitsiOpening => 'Opening Jitsi meeting...';
+
+  @override
+  String get jitsiOpenedExternal =>
+      'If the meeting didn\'t open, tap below to try again';
+
+  @override
+  String get jitsiCloseToJoin => 'Close this to join the meeting in the app';
+
+  @override
   String get listingsDescription => 'Description';
 
   @override

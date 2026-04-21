@@ -65,7 +65,6 @@ class ConferenceService {
     }
   }
 
-
   /// Create conference for a listing
   Future<ConferenceResponse> createConference({
     required int listingId,
@@ -182,11 +181,12 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200) {
+        final data = response.data['data'] as Map<String, dynamic>?;
         return ConferenceResponse(
           success: true,
           message: 'Joined conference',
-          jitsiRoomUrl: response.data['jitsi_url'],
-          jitsiToken: response.data['jitsi_token'],
+          jitsiRoomUrl: data?['jitsi_url'] as String?,
+          jitsiToken: data?['jitsi_token'] as String?,
         );
       }
 
