@@ -404,16 +404,18 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       );
     }
 
-    return Stack(
-      children: [
-        PageView.builder(
-          controller: _pageController,
-          itemCount: images.length,
-          onPageChanged: (index) {
-            setState(() => _currentImageIndex = index);
-          },
-          itemBuilder: (context, index) {
-            return CachedNetworkImage(
+    return Hero(
+      tag: 'listing_image_${listing.id}',
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: images.length,
+            onPageChanged: (index) {
+              setState(() => _currentImageIndex = index);
+            },
+            itemBuilder: (context, index) {
+              return CachedNetworkImage(
               imageUrl: images[index].imageUrl,
               fit: BoxFit.cover,
               placeholder: (_, __) => Container(
@@ -448,6 +450,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           ),
         ),
       ],
+      ),
     );
   }
 

@@ -218,11 +218,13 @@ class PropertyListingCard extends StatelessWidget {
     return Stack(
       children: [
         // Main Image
-        ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-          child: AspectRatio(
-            aspectRatio: 4 / 3,
-            child: CachedNetworkImage(
+        Hero(
+          tag: 'listing_image_${listing?.id}',
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            child: AspectRatio(
+              aspectRatio: 4 / 3,
+              child: CachedNetworkImage(
               imageUrl: listing?.mainImageUrl ?? '',
               fit: BoxFit.cover,
               placeholder: (_, __) => Shimmer.fromColors(
@@ -249,6 +251,7 @@ class PropertyListingCard extends StatelessWidget {
               ),
             ),
           ),
+        ),
         ),
 
         // Badges Overlay
