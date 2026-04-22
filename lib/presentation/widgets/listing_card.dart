@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
@@ -27,12 +28,19 @@ class PropertyListingCard extends StatelessWidget {
     this.hideFavoriteButton = false,
   });
 
+  void _handleTap() {
+    if (onTap != null) {
+      HapticFeedback.lightImpact();
+      onTap!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) return _buildSkeleton();
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: _handleTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
@@ -537,12 +545,19 @@ class FeaturedListingCard extends StatelessWidget {
     this.isLoading = false,
   });
 
+  void _handleTap() {
+    if (onTap != null) {
+      HapticFeedback.lightImpact();
+      onTap!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading || listing == null) return _buildSkeleton();
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: _handleTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(

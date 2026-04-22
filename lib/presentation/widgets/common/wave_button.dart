@@ -45,6 +45,12 @@ enum ButtonVariant {
 class _WaveButtonState extends State<WaveButton> {
   bool _isPressed = false;
 
+  void _handleTap() {
+    if (widget.isLoading || widget.onPressed == null) return;
+    HapticFeedback.lightImpact();
+    widget.onPressed!();
+  }
+
   @override
   Widget build(BuildContext context) {
     final buttonWidth = widget.isFullWidth
@@ -54,56 +60,62 @@ class _WaveButtonState extends State<WaveButton> {
     return SizedBox(
       width: buttonWidth,
       height: widget.height,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: widget.isLoading ? null : widget.onPressed,
-          borderRadius: BorderRadius.circular(12),
-          splashColor: _getSplashColor(),
-          highlightColor: _getHighlightColor(),
-          onTapDown: (_) => setState(() => _isPressed = true),
-          onTapUp: (_) => setState(() => _isPressed = false),
-          onTapCancel: () => setState(() => _isPressed = false),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            decoration: BoxDecoration(
-              gradient: _isPressed ? null : _getGradient(),
-              color: _isPressed ? _getPressedColor() : _getBackgroundColor(),
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: _handleTap,
+        child: AnimatedScale(
+          scale: _isPressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
               borderRadius: BorderRadius.circular(12),
-              boxShadow: _isPressed ? null : _getShadow(),
-            ),
-            child: Center(
-              child: widget.isLoading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          _getLoadingColor(),
-                        ),
-                      ),
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.icon != null) ...[
-                          Icon(
-                            widget.icon,
-                            size: 18,
-                            color: _getTextColor(),
+              splashColor: _getSplashColor(),
+              highlightColor: _getHighlightColor(),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                decoration: BoxDecoration(
+                  gradient: _isPressed ? null : _getGradient(),
+                  color: _isPressed ? _getPressedColor() : _getBackgroundColor(),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: _isPressed ? null : _getShadow(),
+                ),
+                child: Center(
+                  child: widget.isLoading
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              _getLoadingColor(),
+                            ),
                           ),
-                          const SizedBox(width: 8),
-                        ],
-                        Text(
-                          widget.text.toUpperCase(),
-                          style: AppTextStyles.buttonMedium.copyWith(
-                            color: _getTextColor(),
-                            fontSize: widget.height < 48 ? 12 : 14,
-                          ),
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (widget.icon != null) ...[
+                              Icon(
+                                widget.icon,
+                                size: 18,
+                                color: _getTextColor(),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            Text(
+                              widget.text.toUpperCase(),
+                              style: AppTextStyles.buttonMedium.copyWith(
+                                color: _getTextColor(),
+                                fontSize: widget.height < 48 ? 12 : 14,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                ),
+              ),
             ),
           ),
         ),
