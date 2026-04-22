@@ -10,6 +10,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/providers/app_providers.dart';
 import 'presentation/providers/auth_provider.dart';
+import 'presentation/providers/theme_provider.dart';
 import 'presentation/screens/splash/splash_screen.dart';
 import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
@@ -72,11 +73,12 @@ class WaveMartApp extends ConsumerStatefulWidget {
 class _WaveMartAppState extends ConsumerState<WaveMartApp> {
   bool _pollingStarted = false;
 
-  @override
+@override
   Widget build(BuildContext context) {
     final localeState = ref.watch(localeProvider);
     final authState = ref.watch(authStateProvider);
     final incomingCall = ref.watch(incomingCallProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     // Start polling only once when authenticated — not on every rebuild
     if (authState.isAuthenticated && !_pollingStarted) {
@@ -95,7 +97,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
     return MaterialApp(
       title: 'WaveMart',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
+      theme: getThemeData(themeMode),
       home: const SplashScreen(),
       builder: (context, child) {
         if (child == null) {

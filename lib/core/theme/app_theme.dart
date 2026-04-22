@@ -373,13 +373,177 @@ static ThemeData get lightTheme {
   }
 
   static ThemeData get darkTheme {
-    // For future dark mode implementation
-    return lightTheme.copyWith(
+    return ThemeData(
+      useMaterial3: true,
       brightness: Brightness.dark,
+
+      // Color Scheme - Dark mode adjusted
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.navy100,
-        secondary: AppColors.wave400,
-        surface: Color(0xFF1c1917),
+        primary: AppColors.wave400,
+        onPrimary: Colors.black,
+        primaryContainer: AppColors.wave800,
+        onPrimaryContainer: AppColors.wave100,
+        secondary: AppColors.navy300,
+        onSecondary: Colors.white,
+        secondaryContainer: AppColors.navy800,
+        onSecondaryContainer: AppColors.navy100,
+        tertiary: AppColors.emerald400,
+        onTertiary: Colors.black,
+        error: AppColors.error,
+        onError: Colors.white,
+        surface: AppColors.navy950,
+        onSurface: AppColors.zinc100,
+        onSurfaceVariant: AppColors.zinc400,
+        outline: AppColors.navy700,
+        shadow: Colors.black,
+      ),
+
+      // Scaffold - Dark background
+      scaffoldBackgroundColor: AppColors.navy950,
+
+      // AppBar Theme - Dark
+      appBarTheme: const AppBarTheme(
+        elevation: 0,
+        scrolledUnderElevation: 2,
+        centerTitle: false,
+        backgroundColor: AppColors.navy950,
+        foregroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        iconTheme: IconThemeData(
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+
+      // Card Theme - Dark
+      cardTheme: CardThemeData(
+        elevation: 0,
+        color: AppColors.navy900,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.navy800),
+        ),
+      ),
+
+      // Elevated Button Theme
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.wave500,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+
+      // Input Decoration Theme - Dark
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.navy900,
+        contentPadding: const EdgeInsets.all(16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.navy700),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.navy700),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.wave500, width: 2),
+        ),
+        hintStyle: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.navy400,
+        ),
+      ),
+
+      // Bottom Navigation Bar - Dark
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.navy900,
+        selectedItemColor: AppColors.wave400,
+        unselectedItemColor: AppColors.navy400,
+        type: BottomNavigationBarType.fixed,
+        elevation: 8,
+      ),
+
+      // Navigation Bar - Dark
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: AppColors.navy900,
+        indicatorColor: AppColors.wave800,
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppTextStyles.navActive.copyWith(color: AppColors.wave400);
+          }
+          return AppTextStyles.navInactive.copyWith(color: AppColors.navy400);
+        }),
+      ),
+
+      // Divider Theme - Dark
+      dividerTheme: const DividerThemeData(
+        color: AppColors.navy800,
+        thickness: 1,
+      ),
+
+      // Dialog Theme - Dark
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.navy900,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+
+      // Bottom Sheet Theme - Dark
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.navy900,
+        modalBackgroundColor: AppColors.navy900,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+      ),
+
+      // Snackbar Theme - Dark
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.navy800,
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(
+          color: Colors.white,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+
+      // Switch Theme - Dark
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.wave400;
+          }
+          return AppColors.navy400;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.wave800;
+          }
+          return AppColors.navy700;
+        }),
+      ),
+
+      // Icon Theme - Dark
+      iconTheme: const IconThemeData(
+        color: AppColors.navy300,
+        size: 24,
+      ),
+
+      // Primary Icon Theme - Dark
+      primaryIconTheme: const IconThemeData(
+        color: Colors.white,
+        size: 24,
       ),
     );
   }
