@@ -7,6 +7,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../data/services/kyc_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
+import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// KYC Verification Screen
@@ -242,8 +243,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               text: l10n.kycCreateListing,
               icon: Icons.add,
               onPressed: () {
-                // Navigate to create listing or back to home
                 Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (_) => const CreateListingScreen()),
+                );
               },
               variant: ButtonVariant.success,
               isFullWidth: true,
