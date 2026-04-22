@@ -167,9 +167,10 @@ final unreadCountProvider = StreamProvider<int>((ref) async* {
   final service = ref.watch(notificationServiceProvider);
   while (true) {
     try {
-      final response = await service.getUnreadCount();
+      final response =
+          await service.getNotifications(filter: 'unread', page: 1);
       if (response.success) {
-        yield response.count;
+        yield response.unreadCount;
       } else {
         yield 0;
       }
