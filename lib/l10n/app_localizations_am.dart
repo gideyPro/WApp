@@ -1071,11 +1071,11 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsSelectPlan => 'ዕቅድ ይምረጡ';
 
   @override
-  String get settingsDarkMode => 'ጨለም ሞድ';
+  String get settingsDarkMode => 'ጨለማ ሁኔታ';
 
   @override
-  String get commonOn => 'ተኽኪ';
+  String get commonOn => 'በርቷል';
 
   @override
-  String get commonOff => 'ተደንሪ';
+  String get commonOff => 'ጠፍቷል';
 }

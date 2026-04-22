@@ -809,7 +809,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String listingsBathrooms(Object count) {
-    return '$count ሽቓቕ';
+    return '$count ሽቓቓት';
   }
 
   @override
@@ -969,7 +969,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsLanguage => 'ቋንቋ';
 
   @override
-  String get settingsLanguageSubtitle => 'ናይ መተግበሪ ቋንቋ ቀይሩ';
+  String get settingsLanguageSubtitle => 'ናይ መተግበሪ ቋቋ ቀይሩ';
 
   @override
   String get settingsTheme => 'መልክዕ';
@@ -1071,11 +1071,11 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsSelectPlan => 'ትልሚ ይምረጡ';
 
   @override
-  String get settingsDarkMode => 'ጨለም ሞድ';
+  String get settingsDarkMode => 'ጸሊም መልክዕ';
 
   @override
-  String get commonOn => 'ተንቲ';
+  String get commonOn => 'ተወሊዑ';
 
   @override
-  String get commonOff => 'ሰንቲ';
+  String get commonOff => 'ተጠፊኡ';
 }

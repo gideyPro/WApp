@@ -261,7 +261,7 @@
   "listingsDescription": "መግለጺ",
   "listingsPropertyDetails": "ዝርዝር ንብረት",
   "listingsBedrooms": "{count} መኝታ ክፍል",
-  "listingsBathrooms": "{count} ሽቓቕ",
+  "listingsBathrooms": "{count} ሽቓቓት",
   "listingsSalons": "{count} ሳሎን",
   "listingsFrontArea": "ናይ ቅድሚት ስፍሓት",
   "listingsSideArea": "ናይ ጎኒ ስፍሓት",
@@ -313,7 +313,7 @@
   "settingsWebOpenError": "{title} ክኽፈት ኣይከኣለን",
   "settingsPreferences": "ምርጫታት",
   "settingsLanguage": "ቋንቋ",
-  "settingsLanguageSubtitle": "ናይ መተግበሪ ቋንቋ ቀይሩ",
+  "settingsLanguageSubtitle": "ናይ መተግበሪ ቋቋ ቀይሩ",
   "settingsTheme": "መልክዕ",
   "settingsThemeSubtitle": "ናይ መተግበሪ መልክዕ ይምረጡ",
   "settingsNotifications": "መጠንቀቕታታት",
@@ -352,7 +352,7 @@
   "subscriptionsSelectPlan": "ትልሚ ይምረጡ",
   "myListingsEmptySubtitle": "ንምጅማር ናይ መጀመሪያ ንብረትኩም ወስኹ",
   
-  "settingsDarkMode": "ጨለም ሞድ",
-  "commonOn": "ተንቲ",
-  "commonOff": "ሰንቲ"
+  "settingsDarkMode": "ጸሊም መልክዕ",
+  "commonOn": "ተወሊዑ",
+  "commonOff": "ተጠፊኡ"
 }
