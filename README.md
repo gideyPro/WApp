@@ -1,66 +1,132 @@
-# WaveMart App
+# WaveMart
 
-A simple Flutter application with GitHub Actions CI/CD for automated debug APK builds.
+Ethiopia's premier real estate marketplace mobile application.
+
+## Overview
+
+WaveMart is a Flutter-powered property listing platform enabling users to buy, sell, and rent real estate in Ethiopia. It connects property seekers with sellers and landlords through a comprehensive feature set including listings, messaging, video calls, and secure payments.
 
 ## Features
 
-- Simple counter app demonstrating Flutter basics
-- Automated debug APK builds via GitHub Actions
-- Material Design 3 UI
+- **Property Listings** — Browse, search, and filter real estate (houses, land)
+- **Listing Creation** — Multi-step wizard with draft auto-save
+- **OTP Authentication** — Phone-based login and verification
+- **In-app Messaging** — Direct conversations with sellers
+- **Video Calls** — Jitsi-powered property tours
+- **KYC Verification** — Identity verification for trusted transactions
+- **Subscription Plans** — Tiered access with Chapa payments
+- **Push Notifications** — Real-time updates
+- **Favorites** — Save and revisit properties
+- **Multi-language** — English, Amharic, and Tigrinya
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Flutter 3.x |
+| State Management | Riverpod |
+| HTTP Client | Dio |
+| Local Storage | Hive + flutter_secure_storage |
+| Theming | Material Design 3 |
+| Video | Jitsi Meet |
+| Payments | Chapa |
 
 ## Project Structure
 
 ```
-wavemartapp/
-├── lib/
-│   └── main.dart          # Main application code
-├── android/                # Android platform files
-├── .github/
-│   └── workflows/
-│       └── build-apk.yml  # GitHub Actions workflow
-└── pubspec.yaml           # Flutter dependencies
+lib/
+├── core/
+│   ├── constants/    # App colors
+│   ├── network/      # ApiClient, ApiConstants, ErrorHandler
+│   └── theme/       # AppTheme, TextStyles
+├── data/
+│   ├── models/      # User, Listing, Address, Payment, Message, etc.
+│   └── services/    # Auth, Listing, Favorite, Message, Payment, etc.
+├── l10n/            # Localization ARB files
+└── presentation/
+    ├── providers/   # Riverpod providers
+    ├── screens/     # All app screens
+    └── widgets/     # Reusable widgets
 ```
 
-## GitHub Actions Build
+## Screens
 
-The debug APK is automatically built when you:
-- Push to `main` or `master` branch
-- Open a pull request
-- Manually trigger the workflow
+| Screen | Description |
+|--------|-------------|
+| Splash | App initialization |
+| OTP Login | Phone + OTP verification |
+| Registration | New user sign-up |
+| Home | Featured and recent listings |
+| Search | Property search with filters |
+| Listing Detail | Full property view |
+| Create Listing | Multi-step listing wizard |
+| My Listings | User's own listings |
+| Favorites | Saved properties |
+| Profile | User profile and stats |
+| Messages | Conversation list |
+| Settings | App preferences |
+| KYC Verification | Identity verification |
+| Subscription Plans | Plan selection and billing |
+| Payment History | Transaction records |
+| Help Center | FAQs and support |
+| Video Call | Jitsi-powered calls |
 
-### Download the APK
+## API
 
-1. Go to the **Actions** tab in your GitHub repository
-2. Select the workflow run you want
-3. Scroll down to the **Artifacts** section
-4. Click on `app-debug` to download the APK
+The app communicates with a backend at `https://wavemart.et/api` covering:
 
-### Manually Trigger Build
-
-1. Go to **Actions** → **Build Debug APK**
-2. Click **Run workflow**
-3. Select the branch and click **Run workflow**
+- Authentication (send-otp, verify-otp, login, register, logout)
+- Listings CRUD (create, read, update, delete, feature)
+- Messaging and conversations
+- Video conferences (create, join, invite)
+- Payments via Chapa
+- KYC submission
+- Subscriptions
+- Notifications
+- Ethiopian address hierarchy (Region → Zone → Woreda → Kebele)
 
 ## Local Development
 
 ### Prerequisites
 
-- Flutter SDK (3.19.0 or higher)
+- Flutter SDK 3.0+
+- Android SDK
 - Java 17
-- Android Studio (optional, for emulators)
 
 ### Setup
 
 ```bash
-# Get dependencies
+# Install dependencies
 flutter pub get
 
-# Run on connected device/emulator
+# Generate localization
+flutter gen-l10n
+
+# Run on device/emulator
 flutter run
 
-# Build debug APK locally
+# Build debug APK
 flutter build apk --debug
+
+# Build release APK
+flutter build apk --release
 ```
+
+### Environment Variables
+
+Override the API base URL at build time:
+
+```bash
+flutter run --dart-define=API_BASE_URL=https://staging.wavemart.et
+```
+
+## Supported Languages
+
+| Code | Language |
+|------|---------|
+| `en` | English |
+| `am` | Amharic |
+| `ti` | Tigrinya |
 
 ## License
 
