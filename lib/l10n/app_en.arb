@@ -350,5 +350,9 @@
   "subscriptionsBasic": "Basic",
   "subscriptionsPremium": "Premium",
   "subscriptionsSubscribe": "Subscribe Now",
-  "subscriptionsSelectPlan": "Select Plan"
+  "subscriptionsSelectPlan": "Select Plan",
+  
+  "settingsDarkMode": "Dark Mode",
+  "commonOn": "On",
+  "commonOff": "Off"
 }

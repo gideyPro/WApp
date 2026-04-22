@@ -1079,4 +1079,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionsSelectPlan => 'Select Plan';
+
+  @override
+  String get settingsDarkMode => 'Dark Mode';
+
+  @override
+  String get commonOn => 'On';
+
+  @override
+  String get commonOff => 'Off';
 }

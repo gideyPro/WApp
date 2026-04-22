@@ -6,6 +6,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../listing/my_listings_screen.dart';
@@ -125,6 +126,12 @@ final settingsAsync = ref.watch(appSettingsProvider);
                   title: l10n.settingsLanguage,
                   subtitle: _getCurrentLanguageName(context, localeCode),
                   onTap: () => _showLanguageSelectionDialog(context, ref),
+                ),
+                _MenuItemData(
+                  icon: Icons.dark_mode_outlined,
+                  title: l10n.settingsDarkMode,
+                  subtitle: _getDarkModeSubtitle(context, ref),
+                  onTap: () => _toggleDarkMode(ref),
                 ),
               ],
             ),
@@ -422,6 +429,16 @@ Widget _buildLanguageOption(
         : const Icon(Icons.radio_button_unchecked),
     title: Text(languageName),
   );
+}
+
+String _getDarkModeSubtitle(BuildContext context, WidgetRef ref) {
+  final themeMode = ref.watch(themeModeProvider);
+  final l10n = AppLocalizations.of(context);
+  return themeMode == ThemeMode.dark ? l10n.commonOn : l10n.commonOff;
+}
+
+Future<void> _toggleDarkMode(WidgetRef ref) async {
+  await ref.read(themeModeProvider.notifier).toggle();
 }
 
 class _MenuItemData {

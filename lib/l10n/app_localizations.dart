@@ -2133,6 +2133,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Plan'**
   String get subscriptionsSelectPlan;
+
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get settingsDarkMode;
+
+  /// No description provided for @commonOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get commonOn;
+
+  /// No description provided for @commonOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get commonOff;
 }
 
 class _AppLocalizationsDelegate

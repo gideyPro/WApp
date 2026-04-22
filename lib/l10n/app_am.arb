@@ -350,5 +350,9 @@
   "subscriptionsBasic": "መሰረታዊ",
   "subscriptionsPremium": "ፕሪሚየም",
   "subscriptionsSubscribe": "አሁን ይመዝገቡ",
-  "subscriptionsSelectPlan": "ዕቅድ ይምረጡ"
+  "subscriptionsSelectPlan": "ዕቅድ ይምረጡ",
+  
+  "settingsDarkMode": "ጨለም ሞድ",
+  "commonOn": "ተኽኪ",
+  "commonOff": "ተደንሪ"
 }

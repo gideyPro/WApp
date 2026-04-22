@@ -1069,4 +1069,13 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get subscriptionsSelectPlan => 'ዕቅድ ይምረጡ';
+
+  @override
+  String get settingsDarkMode => 'ጨለም ሞድ';
+
+  @override
+  String get commonOn => 'ተኽኪ';
+
+  @override
+  String get commonOff => 'ተደንሪ';
 }

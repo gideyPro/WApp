@@ -350,5 +350,9 @@
   "subscriptionsPremium": "ፕሪሚየም",
   "subscriptionsSubscribe": "ሕጂ ተመዝገብ",
   "subscriptionsSelectPlan": "ትልሚ ይምረጡ",
-  "myListingsEmptySubtitle": "ንምጅማር ናይ መጀመሪያ ንብረትኩም ወስኹ"
+  "myListingsEmptySubtitle": "ንምጅማር ናይ መጀመሪያ ንብረትኩም ወስኹ",
+  
+  "settingsDarkMode": "ጨለም ሞድ",
+  "commonOn": "ተንቲ",
+  "commonOff": "ሰንቲ"
 }

@@ -1069,4 +1069,13 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get subscriptionsSelectPlan => 'ትልሚ ይምረጡ';
+
+  @override
+  String get settingsDarkMode => 'ጨለም ሞድ';
+
+  @override
+  String get commonOn => 'ተንቲ';
+
+  @override
+  String get commonOff => 'ሰንቲ';
 }
