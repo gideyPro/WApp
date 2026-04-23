@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../core/network/api_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,11 +17,59 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _logoController;
+  late AnimationController _textController;
+  late AnimationController _pulseController;
+  late Animation<double> _logoScale;
+  late Animation<double> _logoOpacity;
+  late Animation<double> _textOpacity;
+  late Animation<double> _pulseScale;
+
   @override
   void initState() {
     super.initState();
+    _initializeAnimations();
     _initializeApp();
+  }
+
+  void _initializeAnimations() {
+    // Logo entrance animation
+    _logoController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _logoScale = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(parent: _logoController, curve: Curves.easeOutBack),
+    );
+    _logoOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _logoController, curve: Curves.easeOut),
+    );
+
+    // Text slide-in animation
+    _textController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _textOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _textController, curve: Curves.easeOut),
+    );
+
+    // Pulse animation for loading indicator
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    )..repeat(reverse: true);
+    _pulseScale = Tween<double>(begin: 0.8, end: 1.2).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
+    // Start animations with delays
+    _logoController.forward();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) _textController.forward();
+    });
   }
 
   /// Initialize app: check auth during splash display, then navigate
@@ -58,69 +107,203 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   @override
+  void dispose() {
+    _logoController.dispose();
+    _textController.dispose();
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Container(
         constraints: const BoxConstraints.expand(),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF0A416B),
-              Color(0xFF0A355C),
-              Color(0xFF18996C),
-            ],
-            stops: [0.0, 0.6, 1.0],
+            colors: isDark
+                ? [
+                    const Color(0xFF0A355C),
+                    const Color(0xFF102A43),
+                    const Color(0xFF0A4D2E),
+                  ]
+                : [
+                    const Color(0xFF0A416B),
+                    const Color(0xFF0A355C),
+                    const Color(0xFF18996C),
+                  ],
+            stops: const [0.0, 0.6, 1.0],
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedScale(
-                scale: 1.0,
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.easeOut,
-                child: AnimatedOpacity(
-                  opacity: 1.0,
-                  duration: const Duration(milliseconds: 800),
-                  child: const GlassLogoContainer(size: 100, logoSize: 70),
+        child: Stack(
+          children: [
+            // Animated wave background
+            _buildWaveBackground(),
+            // Main content
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Animated logo
+                  AnimatedBuilder(
+                    animation: _logoController,
+                    builder: (context, child) {
+                      return Transform.scale(
+                        scale: _logoScale.value,
+                        child: Opacity(
+                          opacity: _logoOpacity.value,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: const GlassLogoContainer(size: 100, logoSize: 70),
+                  ),
+                  const SizedBox(height: 24),
+                  // Animated text
+                  FadeTransition(
+                    opacity: _textOpacity,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.3),
+                        end: Offset.zero,
+                      ).animate(CurvedAnimation(
+                        parent: _textController,
+                        curve: Curves.easeOut,
+                      )),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'WaveMart',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Ethiopia\'s Premier Real Estate Marketplace',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withValues(alpha: 0.7),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  // Animated loading indicator
+                  ScaleTransition(
+                    scale: _pulseScale,
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.3),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFF16b364)),
+                            strokeWidth: 2.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Version info at bottom
+            Positioned(
+              bottom: 40,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Text(
+                  'v1.0.0',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white.withValues(alpha: 0.4),
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-              const Text(
-                'WaveMart',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Ethiopia\'s Premier Real Estate Marketplace',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.6),
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 48),
-              // Loading indicator
-              const SizedBox(
-                width: 32,
-                height: 32,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16b364)),
-                  strokeWidth: 3,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  Widget _buildWaveBackground() {
+    return Positioned.fill(
+      child: CustomPaint(
+        painter: _WavePainter(),
+      ),
+    );
+  }
+}
+
+class _WavePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.05)
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    path.moveTo(0, size.height * 0.7);
+    
+    // Create smooth wave curves
+    for (double i = 0; i <= size.width; i++) {
+      final y = size.height * 0.7 +
+          sin(i * 0.02) * 20 +
+          sin(i * 0.01) * 10;
+      path.lineTo(i, y);
+    }
+    
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+    
+    canvas.drawPath(path, paint);
+    
+    // Second wave
+    final paint2 = Paint()
+      ..color = Colors.white.withValues(alpha: 0.03)
+      ..style = PaintingStyle.fill;
+
+    final path2 = Path();
+    path2.moveTo(0, size.height * 0.8);
+    
+    for (double i = 0; i <= size.width; i++) {
+      final y = size.height * 0.8 +
+          sin(i * 0.015 + 1) * 15 +
+          sin(i * 0.008) * 8;
+      path2.lineTo(i, y);
+    }
+    
+    path2.lineTo(size.width, size.height);
+    path2.lineTo(0, size.height);
+    path2.close();
+    
+    canvas.drawPath(path2, paint2);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

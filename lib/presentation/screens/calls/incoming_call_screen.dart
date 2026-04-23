@@ -115,10 +115,21 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
       final response = await service.joinConference(widget.conferenceId);
 
       if (response.success && mounted) {
-        ref.read(incomingCallProvider.notifier).clearIncomingCall();
-
         if (response.jitsiRoomUrl != null) {
           _navigateToJitsi(response);
+          // Clear incoming call state after navigation initiated
+          ref.read(incomingCallProvider.notifier).clearIncomingCall();
+        } else {
+          // No Jitsi URL - clear and show error
+          ref.read(incomingCallProvider.notifier).clearIncomingCall();
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(response.message ?? 'Failed to get meeting link'),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
         }
       } else {
         if (mounted) {
