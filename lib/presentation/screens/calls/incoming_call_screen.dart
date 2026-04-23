@@ -125,7 +125,9 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(response.message ?? 'Failed to get meeting link'),
+                content: Text(response.message.isNotEmpty
+                    ? response.message
+                    : 'Failed to get meeting link'),
                 backgroundColor: AppColors.error,
               ),
             );
