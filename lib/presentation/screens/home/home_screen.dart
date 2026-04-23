@@ -102,8 +102,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final l10n = AppLocalizations.of(context);
     ref.watch(favoritesProvider);
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       body: RefreshIndicator(
         onRefresh: () async {
           await Future.wait([

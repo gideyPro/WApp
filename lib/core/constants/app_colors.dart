@@ -65,10 +65,42 @@ class AppColors {
   static const Color info = Color(0xFF3b82f6);
   static const Color infoLight = Color(0xFFdbeafe);
 
-  // Background Colors
-  static const Color background = zinc50;
-  static const Color surface = Colors.white;
-  static const Color surfaceVariant = zinc100;
+  import 'package:flutter/material.dart';
+
+// Theme-aware extension for easy dark mode support
+extension AppColorsExtension on BuildContext {
+  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
+
+  Color get scaffoldBg =>
+      isDarkMode ? navy950 : zinc50;
+
+  Color get cardBg =>
+      isDarkMode ? navy900 : Colors.white;
+
+  Color get textPrimary =>
+      isDarkMode ? Colors.white : zinc900;
+
+  Color get textSecondary =>
+      isDarkMode ? zinc300 : zinc600;
+
+  Color get iconPrimary =>
+      isDarkMode ? Colors.white : navy700;
+
+  Color get divider =>
+      isDarkMode ? navy800 : zinc200;
+
+  Color get inputBg =>
+      isDarkMode ? navy900 : zinc50.withValues(alpha: 0.5);
+
+  Color get sheetBg =>
+      isDarkMode ? navy900 : Colors.white;
+
+  Color shimmerBase =>
+      isDarkMode ? navy800 : Colors.grey[300]!;
+
+  Color shimmerHighlight =>
+      isDarkMode ? navy700 : Colors.grey[100]!;
+}
 
   // Gradient Definitions
   static const LinearGradient gradientNavy = LinearGradient(

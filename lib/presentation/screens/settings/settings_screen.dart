@@ -42,6 +42,7 @@ final settingsAsync = ref.watch(appSettingsProvider);
     );
 
     final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Determine KYC status display
     String kycSubtitle = l10n.settingsKycRequired;
@@ -102,7 +103,9 @@ final settingsAsync = ref.watch(appSettingsProvider);
     );
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       appBar: AppBar(
+        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
         title: Text(l10n.settingsTitle),
       ),
       body: RefreshIndicator(
@@ -131,7 +134,7 @@ final settingsAsync = ref.watch(appSettingsProvider);
                   icon: Icons.dark_mode_outlined,
                   title: l10n.settingsDarkMode,
                   subtitle: _getDarkModeSubtitle(context, ref),
-                  onTap: () => _toggleDarkMode(ref),
+                  onTap: () => ref.read(themeModeProvider.notifier).toggle(),
                 ),
               ],
             ),
