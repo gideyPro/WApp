@@ -1055,6 +1055,34 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsDarkMode => 'ጸሊም መልክዕ';
 
   @override
+  String get listingEditTitle => 'ምስተካከል';
+
+  @override
+  String get listingDeleteConfirmTitle => 'ምሰር';
+
+  @override
+  String get listingDeleteConfirmMessage => 'ንምስተካከል ክምሰር ኢኻ?';
+
+  @override
+  String get listingDeletedSuccess => 'ምስተካከል ተሰርዙ';
+
+  @override
+  String get listingUpdatedSuccess => 'ምስተካከል ተስተካክሉ';
+
+  @override
+  String get listingUpdate => 'ምስተካከል';
+
+  @override
+  String get listingReviewTitle => 'ለውጢ ኣረማክ';
+
+  @override
+  String get listingDiscardTitle => 'Discard Changes';
+
+  @override
+  String get listingDiscardMessage =>
+      'Are you sure you want to discard your changes?';
+
+  @override
   String get languageTitle => 'ቋንቋ ይምረጡ';
 
   @override

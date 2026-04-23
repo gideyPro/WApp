@@ -419,5 +419,12 @@
   "paymentsSubscription": "የአባልነት ክፍያ",
   "paymentsFeatured": "የልዩ ንብረት ክፍያ",
   "paymentsDirect": "ቀጥታ ክፍያ",
-  "paymentsGeneral": "ክፍያ"
+  "paymentsGeneral": "ክፍያ",
+  "listingEditTitle": "ማስተካከያ",
+  "listingDeleteConfirmTitle": "ማስወገን",
+  "listingDeleteConfirmMessage": "ይህን ማስተካከያ ለማስወገን እርግጠኛ ነህ?",
+  "listingDeletedSuccess": "ማስተካከያ ተሰርዟል",
+  "listingUpdatedSuccess": "ማስተካከያ ተስተካክሏል",
+  "listingUpdate": "ማስተካከያ",
+  "listingReviewTitle": "ለውጦችን ይልተማካክ"
 }

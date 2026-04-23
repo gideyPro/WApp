@@ -419,5 +419,12 @@
   "paymentsSubscription": "ክፍሊት ኣባልነት",
   "paymentsFeatured": "ክፍሊት ፍሉይ ንብረት",
   "paymentsDirect": "ቀጥታ ክፍሊት",
-  "paymentsGeneral": "ክፍሊት"
+  "paymentsGeneral": "ክፍሊት",
+  "listingEditTitle": "ምስተካከል",
+  "listingDeleteConfirmTitle": "ምሰር",
+  "listingDeleteConfirmMessage": "ንምስተካከል ክምሰር ኢኻ?",
+  "listingDeletedSuccess": "ምስተካከል ተሰርዙ",
+  "listingUpdatedSuccess": "ምስተካከል ተስተካክሉ",
+  "listingUpdate": "ምስተካከል",
+  "listingReviewTitle": "ለውጢ ኣረማክ"
 }

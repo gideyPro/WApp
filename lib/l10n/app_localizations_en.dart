@@ -1065,6 +1065,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDarkMode => 'Dark Mode';
 
   @override
+  String get listingEditTitle => 'Edit Listing';
+
+  @override
+  String get listingDeleteConfirmTitle => 'Delete Listing';
+
+  @override
+  String get listingDeleteConfirmMessage =>
+      'Are you sure you want to delete this listing? This action cannot be undone.';
+
+  @override
+  String get listingDeletedSuccess => 'Listing deleted successfully';
+
+  @override
+  String get listingUpdatedSuccess => 'Listing updated successfully';
+
+  @override
+  String get listingUpdate => 'Update Listing';
+
+  @override
+  String get listingReviewTitle => 'Review Your Changes';
+
+  @override
+  String get listingDiscardTitle => 'Discard Changes';
+
+  @override
+  String get listingDiscardMessage =>
+      'Are you sure you want to discard your changes?';
+
+  @override
   String get languageTitle => 'Select Language';
 
   @override

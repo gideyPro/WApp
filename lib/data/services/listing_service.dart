@@ -520,3 +520,46 @@ class ListingDetailResponse {
     this.listing,
   });
 }
+
+/// Update an existing listing
+Future<ListingResponse> updateListing(int listingId, Map<String, dynamic> data) async {
+  try {
+    final response = await ApiClient().dio.put(
+      '${ApiConstants.apiBase}/listings/$listingId',
+      data: data,
+    );
+    
+    if (response.statusCode == 200) {
+      return ListingResponse(
+        success: true,
+        message: response.data['message'] ?? 'Listing updated successfully',
+        listings: response.data['data'] != null
+            ? [Listing.fromJson(response.data['data'])]
+            : [],
+      );
+    }
+
+    return ListingResponse(
+      success: false,
+      message: response.data['message'] ?? 'Failed to update listing',
+    );
+  } catch (e) {
+    return ListingResponse(
+      success: false,
+      message: 'Error: $e',
+    );
+  }
+}
+
+/// Delete an existing listing
+Future<bool> deleteListing(int listingId) async {
+  try {
+    final response = await ApiClient().dio.delete(
+      '${ApiConstants.apiBase}/listings/$listingId',
+    );
+    
+    return response.statusCode == 200 || response.statusCode == 204;
+  } catch (e) {
+    return false;
+  }
+}

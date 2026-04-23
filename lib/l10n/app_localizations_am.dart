@@ -1055,6 +1055,34 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsDarkMode => 'ጨለማ ሁኔታ';
 
   @override
+  String get listingEditTitle => 'ማስተካከያ';
+
+  @override
+  String get listingDeleteConfirmTitle => 'ማስወገን';
+
+  @override
+  String get listingDeleteConfirmMessage => 'ይህን ማስተካከያ ለማስወገን እርግጠኛ ነህ?';
+
+  @override
+  String get listingDeletedSuccess => 'ማስተካከያ ተሰርዟል';
+
+  @override
+  String get listingUpdatedSuccess => 'ማስተካከያ ተስተካክሏል';
+
+  @override
+  String get listingUpdate => 'ማስተካከያ';
+
+  @override
+  String get listingReviewTitle => 'ለውጦችን ይልተማካክ';
+
+  @override
+  String get listingDiscardTitle => 'Discard Changes';
+
+  @override
+  String get listingDiscardMessage =>
+      'Are you sure you want to discard your changes?';
+
+  @override
   String get languageTitle => 'ቋንቋ ይምረጡ';
 
   @override

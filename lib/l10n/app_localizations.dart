@@ -2098,6 +2098,60 @@ abstract class AppLocalizations {
   /// **'Dark Mode'**
   String get settingsDarkMode;
 
+  /// No description provided for @listingEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Listing'**
+  String get listingEditTitle;
+
+  /// No description provided for @listingDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Listing'**
+  String get listingDeleteConfirmTitle;
+
+  /// No description provided for @listingDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this listing? This action cannot be undone.'**
+  String get listingDeleteConfirmMessage;
+
+  /// No description provided for @listingDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing deleted successfully'**
+  String get listingDeletedSuccess;
+
+  /// No description provided for @listingUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing updated successfully'**
+  String get listingUpdatedSuccess;
+
+  /// No description provided for @listingUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Listing'**
+  String get listingUpdate;
+
+  /// No description provided for @listingReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Your Changes'**
+  String get listingReviewTitle;
+
+  /// No description provided for @listingDiscardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes'**
+  String get listingDiscardTitle;
+
+  /// No description provided for @listingDiscardMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to discard your changes?'**
+  String get listingDiscardMessage;
+
   /// No description provided for @languageTitle.
   ///
   /// In en, this message translates to:

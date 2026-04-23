@@ -7,12 +7,14 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
 import '../../../../data/services/interest_service.dart';
+import '../../../../data/services/listing_service.dart';
 import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/otp_login_screen.dart';
 import '../../widgets/video/video_player_widget.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'edit_listing_screen.dart';
 
 /// Listing Detail Screen with skeleton loaders
 class ListingDetailScreen extends ConsumerStatefulWidget {
@@ -922,8 +924,54 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     );
   }
 
+  Future<void> _editListing(Listing listing) async {
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => EditListingScreen(listing: listing)),
+    );
+    if (result == true && mounted) {
+      ref.read(listingDetailProvider.notifier).loadListing(listing.id);
+    }
+  }
+
+  Future<void> _deleteListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.listingDeleteConfirmTitle),
+        content: Text(l10n.listingDeleteConfirmMessage),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: Text(l10n.commonDelete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      final service = ListingService();
+      final success = await service.deleteListing(listing.id);
+      if (success && mounted) Navigator.of(context).pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to delete'), backgroundColor: AppColors.error),
+        );
+      }
+    }
+  }
+
   Widget _buildActionButtons(Listing listing) {
     final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Check if current user is the owner
+    final authState = ref.read(authStateProvider);
+    final currentUserId = authState.user?.id;
+    final isOwner = currentUserId != null && listing.userId == currentUserId;
 
     final interestStatus = listing.userInterestStatus;
     final hasInterest = interestStatus != null;
@@ -933,7 +981,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.navy900 : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -945,6 +993,40 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       ),
       child: Column(
         children: [
+          // Owner action buttons
+          if (isOwner) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _editListing(listing),
+                    icon: const Icon(Icons.edit, size: 20),
+                    label: Text(l10n.commonEdit),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: BorderSide(color: AppColors.navy600),
+                      foregroundColor: isDark ? AppColors.navy300 : AppColors.navy600,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _deleteListing(listing),
+                    icon: const Icon(Icons.delete_outline, size: 20),
+                    label: Text(l10n.commonDelete),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: AppColors.error),
+                      foregroundColor: AppColors.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
+          // Interest button
           Row(
             children: [
               Expanded(
