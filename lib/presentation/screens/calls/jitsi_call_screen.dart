@@ -41,7 +41,17 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
     });
 
     try {
-      final url = Uri.parse(widget.jitsiUrl);
+      String meetingUrl = widget.jitsiUrl;
+
+      // Append JWT token as query parameter if provided
+      if (widget.jitsiToken != null && widget.jitsiToken!.isNotEmpty) {
+        final uri = Uri.parse(meetingUrl);
+        final queryParams = Map<String, String>.from(uri.queryParameters);
+        queryParams['jwt'] = widget.jitsiToken!;
+        meetingUrl = uri.replace(queryParameters: queryParams).toString();
+      }
+
+      final url = Uri.parse(meetingUrl);
 
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);

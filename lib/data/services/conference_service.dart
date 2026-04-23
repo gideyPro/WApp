@@ -79,16 +79,15 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final conference = response.data['data'] != null
-            ? Conference.fromJson(response.data['data'])
-            : null;
+        final data = response.data['data'] ?? response.data;
+        final conference = data != null ? Conference.fromJson(data) : null;
 
         return ConferenceResponse(
           success: true,
           conference: conference,
           message: 'Conference created',
-          jitsiRoomUrl: response.data['jitsi_url'],
-          jitsiToken: response.data['jitsi_token'],
+          jitsiRoomUrl: data['jitsi_url'],
+          jitsiToken: data['jitsi_token'],
         );
       }
 
@@ -115,15 +114,14 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200) {
-        final conference = response.data['data'] != null
-            ? Conference.fromJson(response.data['data'])
-            : null;
+        final data = response.data['data'] ?? response.data;
+        final conference = data != null ? Conference.fromJson(data) : null;
 
         return ConferenceResponse(
           success: true,
           conference: conference,
-          jitsiRoomUrl: response.data['jitsi_url'],
-          jitsiToken: response.data['jitsi_token'],
+          jitsiRoomUrl: data['jitsi_url'],
+          jitsiToken: data['jitsi_token'],
         );
       }
 
@@ -148,15 +146,14 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200) {
-        final conference = Conference.fromJson(
-          response.data['data'] ?? response.data,
-        );
+        final data = response.data['data'] ?? response.data;
+        final conference = data != null ? Conference.fromJson(data) : null;
 
         return ConferenceResponse(
           success: true,
           conference: conference,
-          jitsiRoomUrl: response.data['jitsi_url'],
-          jitsiToken: response.data['jitsi_token'],
+          jitsiRoomUrl: data['jitsi_url'],
+          jitsiToken: data['jitsi_token'],
         );
       }
 
@@ -181,11 +178,12 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200) {
+        final data = response.data['data'] ?? response.data;
         return ConferenceResponse(
           success: true,
           message: 'Joined conference',
-          jitsiRoomUrl: response.data['jitsi_url'] as String?,
-          jitsiToken: response.data['jitsi_token'] as String?,
+          jitsiRoomUrl: data['jitsi_url'] as String?,
+          jitsiToken: data['jitsi_token'] as String?,
         );
       }
 
