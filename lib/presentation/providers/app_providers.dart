@@ -13,6 +13,7 @@ import '../../data/services/conference_service.dart';
 import '../../data/services/interest_service.dart';
 import '../../data/services/address_service.dart';
 import '../../core/network/connectivity_service.dart';
+import '../../core/network/api_client.dart';
 import '../../data/models/message.dart' as msg;
 
 /// Connectivity Provider
@@ -915,6 +916,11 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
         state = const LocaleState.loaded(locale: Locale('en'));
       }
     }
+    
+    // Sync to API Client
+    if (state.locale != null) {
+      ApiClient.currentLocale = state.locale!.languageCode;
+    }
   }
 
   Future<void> setLocale(Locale locale) async {
@@ -922,6 +928,9 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
     await box.put('locale', locale.languageCode);
 
     state = LocaleState.loaded(locale: locale);
+    
+    // Sync to API Client
+    ApiClient.currentLocale = locale.languageCode;
   }
 }
 

@@ -11,6 +11,9 @@ class ApiClient {
 
   // In-memory token cache shared across ALL ApiClient instances
   static String? _cachedToken;
+  
+  // Shared locale for API requests
+  static String currentLocale = 'en';
 
   // Android storage options for device compatibility
   static const _androidOptions = AndroidOptions(
@@ -61,6 +64,10 @@ class ApiClient {
             options.headers[ApiConstants.headerAuthorization] =
                 '${ApiConstants.headerBearer} $token';
           }
+          
+          // Add Localization Header
+          options.headers['Accept-Language'] = currentLocale;
+          
           return handler.next(options);
         },
         onError: (error, handler) {

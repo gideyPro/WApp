@@ -111,9 +111,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   const SizedBox(height: 24),
 
                   // Title
-                  const Text(
-                    'Welcome to WaveMart',
-                    style: TextStyle(
+                  Text(
+                    l10n.authWelcomeTitle,
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -122,7 +122,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Ethiopia\'s Premier Real Estate Marketplace',
+                    l10n.authWelcomeSubtitle,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white.withOpacity(0.7),
@@ -175,10 +175,10 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                         // Step 2: OTP Input
                         if (authState.otpSent) ...[
                           _buildSectionTitle(
-                              AppLocalizations.of(context).authEnterOtp),
+                              l10n.authEnterOtp),
                           const SizedBox(height: 8),
                           Text(
-                            'We sent a 6-digit code to ${authState.phoneNumber}',
+                            l10n.authOtpSentMessage(authState.phoneNumber),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.zinc500,
                             ),
@@ -308,9 +308,10 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Widget _buildResendOtp() {
+    final l10n = AppLocalizations.of(context);
     if (_resendCountdown > 0) {
       return Text(
-        'Resend code in ${_resendCountdown}s',
+        l10n.authResendCountdown(_resendCountdown),
         style: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.zinc400,
         ),
@@ -331,11 +332,12 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Widget _buildRegisterLink() {
+    final l10n = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Don\'t have an account? ',
+          l10n.authNoAccount,
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.navy600,
           ),
@@ -348,8 +350,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               ),
             );
           },
-          child: const Text(
-            'Register',
+          child: Text(
+            l10n.authRegister,
             style: TextStyle(
               color: AppColors.wave600,
               fontWeight: FontWeight.w600,
@@ -405,10 +407,11 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   Future<void> _sendOtp() async {
     final phone = _phoneController.text.trim();
+    final l10n = AppLocalizations.of(context);
     if (phone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your phone number'),
+        SnackBar(
+          content: Text(l10n.authEnterPhonePrompt),
           backgroundColor: AppColors.error,
         ),
       );
@@ -423,10 +426,11 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   Future<void> _verifyOtp() async {
     final otp = _otpControllers.map((c) => c.text).join();
+    final l10n = AppLocalizations.of(context);
     if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter the complete 6-digit OTP'),
+        SnackBar(
+          content: Text(l10n.authEnterOtpPrompt),
           backgroundColor: AppColors.error,
         ),
       );

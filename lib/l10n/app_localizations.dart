@@ -196,6 +196,24 @@ abstract class AppLocalizations {
   /// **'Success'**
   String get commonSuccess;
 
+  /// No description provided for @commonOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get commonOn;
+
+  /// No description provided for @commonOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get commonOff;
+
+  /// No description provided for @commonNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get commonNo;
+
   /// No description provided for @commonNoData.
   ///
   /// In en, this message translates to:
@@ -393,6 +411,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Favorites'**
   String get profileStatsFavorites;
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdated;
+
+  /// No description provided for @profileMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get profileMale;
+
+  /// No description provided for @profileFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get profileFemale;
+
+  /// No description provided for @profileFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get profileFirstName;
+
+  /// No description provided for @profileLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get profileLastName;
+
+  /// No description provided for @profileEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get profileEmail;
+
+  /// No description provided for @profileGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get profileGender;
+
+  /// No description provided for @profileFirstNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'First name is required'**
+  String get profileFirstNameRequired;
+
+  /// No description provided for @profileEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get profileEmailInvalid;
+
+  /// No description provided for @profileSaveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get profileSaveChanges;
+
+  /// No description provided for @profileUpdateError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update profile'**
+  String get profileUpdateError;
 
   /// No description provided for @kycTitle.
   ///
@@ -975,6 +1059,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photos'**
   String get listingPhotos;
+
+  /// No description provided for @listingPhotosCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} photo(s)'**
+  String listingPhotosCount(Object count);
 
   /// No description provided for @listingBedrooms.
   ///
@@ -1576,6 +1666,12 @@ abstract class AppLocalizations {
   /// **'Interest cancelled'**
   String get listingsInterestCancelled;
 
+  /// No description provided for @listingsDefaultInterestMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'I am interested!'**
+  String get listingsDefaultInterestMessage;
+
   /// No description provided for @callIncoming.
   ///
   /// In en, this message translates to:
@@ -1996,6 +2092,12 @@ abstract class AppLocalizations {
   /// **'Sign out of your account'**
   String get settingsLogoutSubtitle;
 
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get settingsDarkMode;
+
   /// No description provided for @languageTitle.
   ///
   /// In en, this message translates to:
@@ -2086,6 +2188,120 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to logout?'**
   String get authLogoutConfirm;
 
+  /// No description provided for @authEnterPhonePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your phone number'**
+  String get authEnterPhonePrompt;
+
+  /// No description provided for @authEnterOtpPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the complete 6-digit OTP'**
+  String get authEnterOtpPrompt;
+
+  /// No description provided for @authWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to WaveMart'**
+  String get authWelcomeTitle;
+
+  /// No description provided for @authWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ethiopia\'s Premier Real Estate Marketplace'**
+  String get authWelcomeSubtitle;
+
+  /// No description provided for @authOtpSentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to {phone}'**
+  String authOtpSentMessage(Object phone);
+
+  /// No description provided for @authResendCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in {seconds}s'**
+  String authResendCountdown(Object seconds);
+
+  /// No description provided for @authNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? '**
+  String get authNoAccount;
+
+  /// No description provided for @authCreateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Your Account'**
+  String get authCreateAccount;
+
+  /// No description provided for @authJoinMarketplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Ethiopia\'s Premier Real Estate Marketplace'**
+  String get authJoinMarketplace;
+
+  /// No description provided for @authPersonalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get authPersonalInfo;
+
+  /// No description provided for @authVerifyPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Your Phone'**
+  String get authVerifyPhone;
+
+  /// No description provided for @authVerifyAndCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify & Create Account'**
+  String get authVerifyAndCreate;
+
+  /// No description provided for @authAlreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get authAlreadyHaveAccount;
+
+  /// No description provided for @authCancelRegistration.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel registration?'**
+  String get authCancelRegistration;
+
+  /// No description provided for @authFirstNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your first name'**
+  String get authFirstNameRequired;
+
+  /// No description provided for @authLastNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your last name'**
+  String get authLastNameRequired;
+
+  /// No description provided for @authPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid phone number'**
+  String get authPhoneRequired;
+
+  /// No description provided for @authSelectGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your gender'**
+  String get authSelectGender;
+
+  /// No description provided for @authNetworkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Please try again.'**
+  String get authNetworkError;
+
   /// No description provided for @subscriptionsTitle.
   ///
   /// In en, this message translates to:
@@ -2134,23 +2350,191 @@ abstract class AppLocalizations {
   /// **'Select Plan'**
   String get subscriptionsSelectPlan;
 
-  /// No description provided for @settingsDarkMode.
+  /// No description provided for @subscriptionsChoosePlan.
   ///
   /// In en, this message translates to:
-  /// **'Dark Mode'**
-  String get settingsDarkMode;
+  /// **'Choose Your Plan'**
+  String get subscriptionsChoosePlan;
 
-  /// No description provided for @commonOn.
+  /// No description provided for @subscriptionsSelectPlanSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'On'**
-  String get commonOn;
+  /// **'Select a plan that fits your needs. Upgrade anytime.'**
+  String get subscriptionsSelectPlanSubtitle;
 
-  /// No description provided for @commonOff.
+  /// No description provided for @subscriptionsListings.
   ///
   /// In en, this message translates to:
-  /// **'Off'**
-  String get commonOff;
+  /// **'Listings'**
+  String get subscriptionsListings;
+
+  /// No description provided for @subscriptionsFeaturedListings.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured Listings'**
+  String get subscriptionsFeaturedListings;
+
+  /// No description provided for @subscriptionsNoFeaturedListings.
+  ///
+  /// In en, this message translates to:
+  /// **'No Featured Listings'**
+  String get subscriptionsNoFeaturedListings;
+
+  /// No description provided for @subscriptionsDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days left'**
+  String subscriptionsDaysLeft(Object count);
+
+  /// No description provided for @subscriptionsPopular.
+  ///
+  /// In en, this message translates to:
+  /// **'POPULAR'**
+  String get subscriptionsPopular;
+
+  /// No description provided for @subscriptionsCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENT'**
+  String get subscriptionsCurrent;
+
+  /// No description provided for @subscriptionsPaymentBrowserMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete payment in your browser. Return here after payment.'**
+  String get subscriptionsPaymentBrowserMessage;
+
+  /// No description provided for @subscriptionsFreeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Free plan activated successfully!'**
+  String get subscriptionsFreeSuccess;
+
+  /// No description provided for @subscriptionsPaymentBrowserError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open browser for payment'**
+  String get subscriptionsPaymentBrowserError;
+
+  /// No description provided for @subscriptionsPaymentError.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment error: {error}'**
+  String subscriptionsPaymentError(Object error);
+
+  /// No description provided for @notificationsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Notification'**
+  String get notificationsDeleteTitle;
+
+  /// No description provided for @notificationsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this notification?'**
+  String get notificationsDeleteConfirm;
+
+  /// No description provided for @notificationsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get notificationsDelete;
+
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notificationsEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You will see updates here when something happens'**
+  String get notificationsEmptySubtitle;
+
+  /// No description provided for @notificationsMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get notificationsMarkAllRead;
+
+  /// No description provided for @paymentsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment history yet'**
+  String get paymentsEmpty;
+
+  /// No description provided for @paymentsTransactionId.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction ID'**
+  String get paymentsTransactionId;
+
+  /// No description provided for @paymentsAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get paymentsAmount;
+
+  /// No description provided for @paymentsStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get paymentsStatus;
+
+  /// No description provided for @paymentsDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get paymentsDate;
+
+  /// No description provided for @paymentsPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get paymentsPlan;
+
+  /// No description provided for @paymentsMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Method'**
+  String get paymentsMethod;
+
+  /// No description provided for @paymentsRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref'**
+  String get paymentsRef;
+
+  /// No description provided for @paymentsUnknownDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown date'**
+  String get paymentsUnknownDate;
+
+  /// No description provided for @paymentsSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Payment'**
+  String get paymentsSubscription;
+
+  /// No description provided for @paymentsFeatured.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured Listing'**
+  String get paymentsFeatured;
+
+  /// No description provided for @paymentsDirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Payment'**
+  String get paymentsDirect;
+
+  /// No description provided for @paymentsGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get paymentsGeneral;
 }
 
 class _AppLocalizationsDelegate

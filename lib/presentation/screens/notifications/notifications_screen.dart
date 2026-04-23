@@ -54,10 +54,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(notificationsProvider);
     final unreadCount = ref.watch(unreadCountProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).settingsNotifications),
+        title: Text(l10n.settingsNotifications),
         actions: [
           // Mark all as read
           if (state.notifications.any((n) => !n.isRead))
@@ -66,7 +67,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 ref.read(notificationsProvider.notifier).markAllAsRead();
               },
               child: Text(
-                'Mark all read',
+                l10n.notificationsMarkAllRead,
                 style: TextStyle(
                   color: AppColors.wave600,
                   fontSize: 14,
@@ -98,10 +99,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
     // Empty state
     if (state.notifications.isEmpty) {
+      final l10n = AppLocalizations.of(context);
       return WaveEmptyState(
         icon: Icons.notifications_none,
-        title: 'No Notifications Yet',
-        subtitle: 'You will see updates here when something happens',
+        title: l10n.notificationsEmpty,
+        subtitle: l10n.notificationsEmptySubtitle,
       );
     }
 
@@ -215,19 +217,20 @@ class _NotificationTile extends StatelessWidget {
         child: const Icon(Icons.delete_outline, color: Colors.white),
       ),
       confirmDismiss: (direction) async {
+        final l10n = AppLocalizations.of(context);
         return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Delete Notification'),
-            content: const Text('Remove this notification?'),
+            title: Text(l10n.notificationsDeleteTitle),
+            content: Text(l10n.notificationsDeleteConfirm),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
+                child: Text(l10n.commonCancel),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Delete'),
+                child: Text(l10n.notificationsDelete),
               ),
             ],
           ),

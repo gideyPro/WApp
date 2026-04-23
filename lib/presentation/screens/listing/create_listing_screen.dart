@@ -131,9 +131,9 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
         if (response.success) {
           await _clearDraft();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content:
-                  Text('Listing submitted successfully! Awaiting approval.'),
+                  Text(l10n.listingSuccess),
               backgroundColor: AppColors.success,
             ),
           );
@@ -148,9 +148,10 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('Error: $e'), backgroundColor: AppColors.error),
+              content: Text(l10n.listingError(e.toString())), backgroundColor: AppColors.error),
         );
       }
     } finally {
@@ -1090,7 +1091,7 @@ class _Step1BasicsState extends ConsumerState<_Step1Basics> {
           ? [
               const DropdownMenuItem(
                   value: null,
-                  child: Text('No options available',
+                  child: Text(l10n.listingNoOptions,
                       style: TextStyle(color: Colors.grey)))
             ]
           : items
@@ -1455,8 +1456,7 @@ class _Step2DetailsState extends State<_Step2Details> {
           ? [
               const DropdownMenuItem(
                   value: null,
-                  child: Text('Select',
-                      style: TextStyle(
+                  child: Text(l10n.listingSelect,                      style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.normal)))
             ]
           : items

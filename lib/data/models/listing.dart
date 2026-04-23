@@ -309,6 +309,82 @@ class Listing extends ChangeNotifier {
     };
   }
 
+  String getLocalizedUseType(BuildContext context) {
+    if (useType == null) return '';
+    final l10n = AppLocalizations.of(context);
+    switch (useType) {
+      case 'Residential':
+        return l10n.listingResidential;
+      case 'Commercial':
+        return l10n.listingCommercial;
+      case 'Mixed':
+        return l10n.listingMixed;
+      case 'Investment':
+        return l10n.listingInvestment;
+      default:
+        return useType!;
+    }
+  }
+
+  String getLocalizedHoldingType(BuildContext context) {
+    if (holdingType == null) return '';
+    final l10n = AppLocalizations.of(context);
+    switch (holdingType) {
+      case 'Free Hold':
+        return l10n.listingFreeHold;
+      case 'Lease Hold':
+        return l10n.listingLeaseHold;
+      case 'Cooperative':
+        return l10n.listingCooperative;
+      default:
+        return holdingType!;
+    }
+  }
+
+  String getLocalizedAcquisitionType(BuildContext context) {
+    if (acquisitionType == null) return '';
+    final l10n = AppLocalizations.of(context);
+    switch (acquisitionType) {
+      case 'Purchased':
+        return l10n.listingPurchased;
+      case 'Inherited':
+        return l10n.listingInherited;
+      case 'Gift':
+        return l10n.listingGift;
+      case 'Assignment':
+        return l10n.listingAssignment;
+      case 'Other':
+        return l10n.listingOther;
+      default:
+        return acquisitionType!;
+    }
+  }
+
+  String getLocalizedFacingDirection(BuildContext context) {
+    if (facingDirection == null) return '';
+    final l10n = AppLocalizations.of(context);
+    switch (facingDirection) {
+      case 'North':
+        return l10n.listingNorth;
+      case 'South':
+        return l10n.listingSouth;
+      case 'East':
+        return l10n.listingEast;
+      case 'West':
+        return l10n.listingWest;
+      case 'North East':
+        return l10n.listingNorthEast;
+      case 'North West':
+        return l10n.listingNorthWest;
+      case 'South East':
+        return l10n.listingSouthEast;
+      case 'South West':
+        return l10n.listingSouthWest;
+      default:
+        return facingDirection!;
+    }
+  }
+
   String getLocalizedTitle(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final type = propertyType == PropertyType.house

@@ -500,7 +500,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         // Photo count badge
         if (listing.imageCount != null && listing.imageCount! > 0)
           _buildBadge(
-            '${listing.imageCount} photos',
+            l10n.listingPhotosCount(listing.imageCount!),
             AppColors.navy700,
           ),
         // Total rooms count badge (for houses only)
@@ -584,8 +584,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       if ((listing.kitchens ?? 0) > 0) {
         features.add(_buildFeatureChip(
           icon: Icons.kitchen,
-          label:
-              '${listing.kitchens} kitchen${listing.kitchens == 1 ? '' : 's'}',
+          label: l10n.listingKitchensCount(listing.kitchens!),
         ));
       }
     }
@@ -602,7 +601,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     if (listing.facingDirection != null) {
       features.add(_buildFeatureChip(
         icon: Icons.compass_calibration,
-        label: listing.facingDirection!,
+        label: listing.getLocalizedFacingDirection(context),
       ));
     }
 
@@ -610,7 +609,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     if (listing.holdingType != null) {
       features.add(_buildFeatureChip(
         icon: Icons.folder_copy,
-        label: listing.holdingType!,
+        label: listing.getLocalizedHoldingType(context),
       ));
     }
 
@@ -713,39 +712,50 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     }
 
     if (listing.useType != null) {
-      details.add({'label': l10n.listingsUseType, 'value': listing.useType!});
+      details.add({
+        'label': l10n.listingsUseType,
+        'value': listing.getLocalizedUseType(context)
+      });
     }
     if (listing.holdingType != null) {
-      details.add(
-          {'label': l10n.listingsHoldingType, 'value': listing.holdingType!});
+      details.add({
+        'label': l10n.listingsHoldingType,
+        'value': listing.getLocalizedHoldingType(context)
+      });
 
       // Free Hold details
       if (listing.holdingType == 'Free Hold') {
         if (listing.taxPaidUntilYear != null) {
           details.add({
-            'label': 'Tax Paid Until',
+            'label': l10n.listingTaxPaid,
             'value': listing.taxPaidUntilYear.toString()
           });
         }
         if (listing.acquisitionType != null) {
-          details
-              .add({'label': 'Acquisition', 'value': listing.acquisitionType!});
+          details.add({
+            'label': l10n.listingAcquisition,
+            'value': listing.getLocalizedAcquisitionType(context)
+          });
         }
       }
 
       // Lease Hold details
       if (listing.holdingType == 'Lease Hold') {
         if (listing.leaseHolderName != null) {
-          details.add(
-              {'label': 'Lease Holder', 'value': listing.leaseHolderName!});
+          details.add({
+            'label': l10n.listingLeaseHolder,
+            'value': listing.leaseHolderName!
+          });
         }
         if (listing.leaseOrganization != null) {
-          details.add(
-              {'label': 'Organization', 'value': listing.leaseOrganization!});
+          details.add({
+            'label': l10n.listingLeaseOrganization,
+            'value': listing.leaseOrganization!
+          });
         }
         if (listing.leaseExpiryDate != null) {
           details.add({
-            'label': 'Lease Expiry',
+            'label': l10n.listingLeaseExpiry,
             'value': listing.leaseExpiryDate!.year.toString()
           });
         }
@@ -754,18 +764,24 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       // Cooperative details
       if (listing.holdingType == 'Cooperative') {
         if (listing.cooperativeName != null) {
-          details
-              .add({'label': 'Cooperative', 'value': listing.cooperativeName!});
+          details.add({
+            'label': l10n.listingCooperativeName,
+            'value': listing.cooperativeName!
+          });
         }
         if (listing.cooperativeCode != null) {
-          details.add(
-              {'label': 'Cooperative Code', 'value': listing.cooperativeCode!});
+          details.add({
+            'label': l10n.listingCooperativeCode,
+            'value': listing.cooperativeCode!
+          });
         }
       }
     }
     if (listing.facingDirection != null) {
-      details.add(
-          {'label': l10n.listingsFacing, 'value': listing.facingDirection!});
+      details.add({
+        'label': l10n.listingsFacing,
+        'value': listing.getLocalizedFacingDirection(context)
+      });
     }
     if (listing.priceRevisionPossible) {
       details.add(
@@ -1003,7 +1019,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       final service = InterestService();
       final response = await service.expressInterest(
         listingId: listingId,
-        message: message?.isNotEmpty == true ? message : 'I am interested!',
+        message: message?.isNotEmpty == true ? message : l10n.listingsDefaultInterestMessage,
       );
 
       if (response.success) {

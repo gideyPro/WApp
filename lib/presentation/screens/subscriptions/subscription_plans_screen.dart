@@ -77,12 +77,12 @@ class _SubscriptionPlansScreenState
 
           // Plans header
           Text(
-            'Choose Your Plan',
+            l10n.subscriptionsChoosePlan,
             style: AppTextStyles.headline4,
           ),
           const SizedBox(height: 8),
           Text(
-            'Select a plan that fits your needs. Upgrade anytime.',
+            l10n.subscriptionsSelectPlanSubtitle,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.navy600,
             ),
@@ -120,7 +120,7 @@ class _SubscriptionPlansScreenState
               const Icon(Icons.star, color: Colors.white, size: 24),
               const SizedBox(width: 8),
               Text(
-                'Current Plan: ${plan?.name ?? 'Unknown'}',
+                '${l10n.subscriptionsCurrentPlan}: ${plan?.name ?? l10n.commonUnknown}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -134,18 +134,18 @@ class _SubscriptionPlansScreenState
             children: [
               _buildStatPill(
                 icon: Icons.home,
-                label: '${state.canCreateListing ? '✓' : '✗'} Listings',
+                label: '${state.canCreateListing ? '✓' : '✗'} ${l10n.subscriptionsListings}',
               ),
               const SizedBox(width: 8),
               _buildStatPill(
                 icon: Icons.star_border,
-                label: '${state.canFeatureListing ? '✓' : '✗'} Featured',
+                label: '${state.canFeatureListing ? '✓' : '✗'} ${l10n.listingFeatured}',
               ),
               if (sub != null && sub.daysRemaining < 999) ...[
                 const SizedBox(width: 8),
                 _buildStatPill(
                   icon: Icons.timer,
-                  label: '${sub.daysRemaining} days left',
+                  label: l10n.subscriptionsDaysLeft(sub.daysRemaining),
                 ),
               ],
             ],
@@ -190,12 +190,12 @@ class _SubscriptionPlansScreenState
         final response = await _subscriptionService.activateSubscription();
         if (mounted) {
           if (response.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Free plan activated successfully!'),
-                backgroundColor: AppColors.success,
-              ),
-            );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.subscriptionsFreeSuccess),
+              backgroundColor: AppColors.success,
+            ),
+          );
             ref
                 .read(currentSubscriptionProvider.notifier)
                 .loadCurrentSubscription();
@@ -240,9 +240,8 @@ class _SubscriptionPlansScreenState
           await launchUrl(uri, mode: LaunchMode.externalApplication);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                    'Complete payment in your browser. Return here after payment.'),
+              SnackBar(
+                content: Text(l10n.subscriptionsPaymentBrowserMessage),
                 backgroundColor: AppColors.wave500,
               ),
             );
@@ -250,8 +249,8 @@ class _SubscriptionPlansScreenState
         } else {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Could not open browser for payment'),
+              SnackBar(
+                content: Text(l10n.subscriptionsPaymentBrowserError),
                 backgroundColor: AppColors.error,
               ),
             );
@@ -292,9 +291,10 @@ class _SubscriptionPlansScreenState
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Payment error: $e'),
+            content: Text(l10n.subscriptionsPaymentError(e.toString())),
             backgroundColor: AppColors.error,
           ),
         );
@@ -325,6 +325,7 @@ class _PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFree = plan.isFree;
     final isPopular = plan.slug == 'basic' || plan.slug == 'premium';
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -383,9 +384,9 @@ class _PlanCard extends StatelessWidget {
                                 color: AppColors.wave500,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Text(
-                                'POPULAR',
-                                style: TextStyle(
+                              child: Text(
+                                l10n.subscriptionsPopular,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 9,
                                   fontWeight: FontWeight.bold,
@@ -405,9 +406,9 @@ class _PlanCard extends StatelessWidget {
                                 color: AppColors.emerald500,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Text(
-                                'CURRENT',
-                                style: TextStyle(
+                              child: Text(
+                                l10n.subscriptionsCurrent,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 9,
                                   fontWeight: FontWeight.bold,
@@ -462,14 +463,14 @@ class _PlanCard extends StatelessWidget {
               children: [
                 _buildFeatureRow(
                   icon: Icons.home_outlined,
-                  label: '${plan.maxListings} Listings',
+                  label: '${plan.maxListings} ${l10n.subscriptionsListings}',
                 ),
                 const SizedBox(height: 8),
                 _buildFeatureRow(
                   icon: Icons.star_border,
                   label: plan.maxFeaturedListings != null
-                      ? '${plan.maxFeaturedListings} Featured Listings'
-                      : 'No Featured Listings',
+                      ? '${plan.maxFeaturedListings} ${l10n.subscriptionsFeaturedListings}'
+                      : l10n.subscriptionsNoFeaturedListings,
                   included: plan.maxFeaturedListings != null &&
                       plan.maxFeaturedListings! > 0,
                 ),
@@ -480,10 +481,10 @@ class _PlanCard extends StatelessWidget {
                   width: double.infinity,
                   child: WaveButton(
                     text: isCurrentPlan
-                        ? 'Current Plan'
+                        ? l10n.subscriptionsCurrentPlan
                         : isFree
-                            ? 'Select Plan'
-                            : 'Subscribe Now',
+                            ? l10n.subscriptionsSelectPlan
+                            : l10n.subscriptionsSubscribe,
                     icon: isCurrentPlan
                         ? Icons.check_circle
                         : isFree

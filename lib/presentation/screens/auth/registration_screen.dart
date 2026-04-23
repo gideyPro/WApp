@@ -147,7 +147,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
                   // Title
                   Text(
-                    'Create Your Account',
+                    AppLocalizations.of(context).authCreateAccount,
                     style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
@@ -157,7 +157,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Join Ethiopia\'s Premier Real Estate Marketplace',
+                    AppLocalizations.of(context).authJoinMarketplace,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white.withOpacity(0.7),
@@ -184,7 +184,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                       children: [
                         // Step 1: Registration Form
                         if (!_isOtpSent) ...[
-                          _buildSectionTitle('Personal Information'),
+                          _buildSectionTitle(l10n.authPersonalInfo),
                           const SizedBox(height: 20),
                           _buildNameInputs(),
                           const SizedBox(height: 16),
@@ -193,7 +193,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           _buildGenderSelection(),
                           const SizedBox(height: 24),
                           WaveButton(
-                            text: 'Continue',
+                            text: l10n.listingContinue,
                             icon: Icons.arrow_forward_rounded,
                             isLoading: _isLoading,
                             isFullWidth: true,
@@ -203,10 +203,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
                         // Step 2: OTP Verification
                         if (_isOtpSent) ...[
-                          _buildSectionTitle('Verify Your Phone'),
+                          _buildSectionTitle(l10n.authVerifyPhone),
                           const SizedBox(height: 8),
                           Text(
-                            'We sent a 6-digit code to ${_phoneController.text}',
+                            l10n.authOtpSentMessage(_phoneController.text),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.zinc500,
                             ),
@@ -216,7 +216,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           _buildOtpInput(),
                           const SizedBox(height: 24),
                           WaveButton(
-                            text: 'Verify & Create Account',
+                            text: l10n.authVerifyAndCreate,
                             icon: Icons.check_circle_rounded,
                             isLoading: _isLoading,
                             isFullWidth: true,
@@ -262,14 +262,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         return AlertDialog(
           contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
           actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-          content: const Text(
-            'Cancel registration?',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          content: Text(
+            l10n.authCancelRegistration,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('No'),
+              child: Text(l10n.commonNo),
             ),
             TextButton(
               onPressed: () {
@@ -279,7 +279,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                 Navigator.pop(context);
               },
               style: TextButton.styleFrom(foregroundColor: AppColors.error),
-              child: const Text('Yes'),
+              child: Text(l10n.commonOk),
             ),
           ],
         );
@@ -304,7 +304,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Expanded(
           child: _buildInputField(
             controller: _firstNameController,
-            hint: 'First Name',
+            hint: AppLocalizations.of(context).profileFirstName,
             icon: Icons.person_outline,
           ),
         ),
@@ -312,7 +312,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Expanded(
           child: _buildInputField(
             controller: _lastNameController,
-            hint: 'Last Name',
+            hint: AppLocalizations.of(context).profileLastName,
             icon: Icons.person_outline,
           ),
         ),
@@ -358,12 +358,13 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Widget _buildGenderSelection() {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Gender',
-          style: TextStyle(
+        Text(
+          l10n.profileGender,
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: AppColors.navy800,
@@ -373,11 +374,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Row(
           children: [
             Expanded(
-              child: _buildGenderOption('Male', Icons.male),
+              child: _buildGenderOption(l10n.profileMale, Icons.male),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildGenderOption('Female', Icons.female),
+              child: _buildGenderOption(l10n.profileFemale, Icons.female),
             ),
           ],
         ),
@@ -511,11 +512,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Widget _buildLoginLink() {
+    final l10n = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Already have an account? ',
+          l10n.authAlreadyHaveAccount,
           style: TextStyle(
             color: Colors.white.withOpacity(0.7),
             fontSize: 14,
@@ -523,9 +525,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         ),
         GestureDetector(
           onTap: () => Navigator.of(context).pop(),
-          child: const Text(
-            'Login',
-            style: TextStyle(
+          child: Text(
+            l10n.authLogin,
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 14,
@@ -607,8 +609,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Future<void> _verifyAndRegister() async {
     final otp = _otpControllers.map((c) => c.text).join();
+    final l10n = AppLocalizations.of(context);
     if (otp.length != 6) {
-      _showErrorSnackBar('Please enter the complete 6-digit code');
+      _showErrorSnackBar(l10n.authEnterOtpPrompt);
       return;
     }
 
@@ -634,7 +637,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       }
     } catch (e) {
       setState(() => _isLoading = false);
-      _showErrorSnackBar('Network error. Please try again.');
+      final l10n = AppLocalizations.of(context);
+      _showErrorSnackBar(l10n.authNetworkError);
     }
   }
 
@@ -642,24 +646,25 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
     final phone = _phoneController.text.trim();
+    final l10n = AppLocalizations.of(context);
 
     if (firstName.isEmpty) {
-      _showErrorSnackBar('Please enter your first name');
+      _showErrorSnackBar(l10n.authFirstNameRequired);
       return false;
     }
 
     if (lastName.isEmpty) {
-      _showErrorSnackBar('Please enter your last name');
+      _showErrorSnackBar(l10n.authLastNameRequired);
       return false;
     }
 
     if (phone.isEmpty || phone.length < 9) {
-      _showErrorSnackBar('Please enter a valid phone number');
+      _showErrorSnackBar(l10n.authPhoneRequired);
       return false;
     }
 
     if (_selectedGender == null) {
-      _showErrorSnackBar('Please select your gender');
+      _showErrorSnackBar(l10n.authSelectGender);
       return false;
     }
 

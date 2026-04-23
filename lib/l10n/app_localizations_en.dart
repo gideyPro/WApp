@@ -57,6 +57,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonSuccess => 'Success';
 
   @override
+  String get commonOn => 'On';
+
+  @override
+  String get commonOff => 'Off';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
   String get commonNoData => 'No data available';
 
   @override
@@ -157,6 +166,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileStatsFavorites => 'Favorites';
+
+  @override
+  String get profileUpdated => 'Profile updated successfully';
+
+  @override
+  String get profileMale => 'Male';
+
+  @override
+  String get profileFemale => 'Female';
+
+  @override
+  String get profileFirstName => 'First Name';
+
+  @override
+  String get profileLastName => 'Last Name';
+
+  @override
+  String get profileEmail => 'Email';
+
+  @override
+  String get profileGender => 'Gender';
+
+  @override
+  String get profileFirstNameRequired => 'First name is required';
+
+  @override
+  String get profileEmailInvalid => 'Please enter a valid email';
+
+  @override
+  String get profileSaveChanges => 'Save Changes';
+
+  @override
+  String get profileUpdateError => 'Failed to update profile';
 
   @override
   String get kycTitle => 'KYC Verification';
@@ -462,6 +504,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingPhotos => 'Photos';
+
+  @override
+  String listingPhotosCount(Object count) {
+    return '$count photo(s)';
+  }
 
   @override
   String get listingBedrooms => 'Bedrooms';
@@ -784,6 +831,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsInterestCancelled => 'Interest cancelled';
 
   @override
+  String get listingsDefaultInterestMessage => 'I am interested!';
+
+  @override
   String get callIncoming => 'Incoming call...';
 
   @override
@@ -1012,6 +1062,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLogoutSubtitle => 'Sign out of your account';
 
   @override
+  String get settingsDarkMode => 'Dark Mode';
+
+  @override
   String get languageTitle => 'Select Language';
 
   @override
@@ -1057,6 +1110,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authLogoutConfirm => 'Are you sure you want to logout?';
 
   @override
+  String get authEnterPhonePrompt => 'Please enter your phone number';
+
+  @override
+  String get authEnterOtpPrompt => 'Please enter the complete 6-digit OTP';
+
+  @override
+  String get authWelcomeTitle => 'Welcome to WaveMart';
+
+  @override
+  String get authWelcomeSubtitle =>
+      'Ethiopia\'s Premier Real Estate Marketplace';
+
+  @override
+  String authOtpSentMessage(Object phone) {
+    return 'We sent a 6-digit code to $phone';
+  }
+
+  @override
+  String authResendCountdown(Object seconds) {
+    return 'Resend code in ${seconds}s';
+  }
+
+  @override
+  String get authNoAccount => 'Don\'t have an account? ';
+
+  @override
+  String get authCreateAccount => 'Create Your Account';
+
+  @override
+  String get authJoinMarketplace =>
+      'Join Ethiopia\'s Premier Real Estate Marketplace';
+
+  @override
+  String get authPersonalInfo => 'Personal Information';
+
+  @override
+  String get authVerifyPhone => 'Verify Your Phone';
+
+  @override
+  String get authVerifyAndCreate => 'Verify & Create Account';
+
+  @override
+  String get authAlreadyHaveAccount => 'Already have an account? ';
+
+  @override
+  String get authCancelRegistration => 'Cancel registration?';
+
+  @override
+  String get authFirstNameRequired => 'Please enter your first name';
+
+  @override
+  String get authLastNameRequired => 'Please enter your last name';
+
+  @override
+  String get authPhoneRequired => 'Please enter a valid phone number';
+
+  @override
+  String get authSelectGender => 'Please select your gender';
+
+  @override
+  String get authNetworkError => 'Network error. Please try again.';
+
+  @override
   String get subscriptionsTitle => 'Subscription Plans';
 
   @override
@@ -1081,11 +1197,103 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsSelectPlan => 'Select Plan';
 
   @override
-  String get settingsDarkMode => 'Dark Mode';
+  String get subscriptionsChoosePlan => 'Choose Your Plan';
 
   @override
-  String get commonOn => 'On';
+  String get subscriptionsSelectPlanSubtitle =>
+      'Select a plan that fits your needs. Upgrade anytime.';
 
   @override
-  String get commonOff => 'Off';
+  String get subscriptionsListings => 'Listings';
+
+  @override
+  String get subscriptionsFeaturedListings => 'Featured Listings';
+
+  @override
+  String get subscriptionsNoFeaturedListings => 'No Featured Listings';
+
+  @override
+  String subscriptionsDaysLeft(Object count) {
+    return '$count days left';
+  }
+
+  @override
+  String get subscriptionsPopular => 'POPULAR';
+
+  @override
+  String get subscriptionsCurrent => 'CURRENT';
+
+  @override
+  String get subscriptionsPaymentBrowserMessage =>
+      'Complete payment in your browser. Return here after payment.';
+
+  @override
+  String get subscriptionsFreeSuccess => 'Free plan activated successfully!';
+
+  @override
+  String get subscriptionsPaymentBrowserError =>
+      'Could not open browser for payment';
+
+  @override
+  String subscriptionsPaymentError(Object error) {
+    return 'Payment error: $error';
+  }
+
+  @override
+  String get notificationsDeleteTitle => 'Delete Notification';
+
+  @override
+  String get notificationsDeleteConfirm => 'Remove this notification?';
+
+  @override
+  String get notificationsDelete => 'Delete';
+
+  @override
+  String get notificationsEmpty => 'No notifications yet';
+
+  @override
+  String get notificationsEmptySubtitle =>
+      'You will see updates here when something happens';
+
+  @override
+  String get notificationsMarkAllRead => 'Mark all read';
+
+  @override
+  String get paymentsEmpty => 'No payment history yet';
+
+  @override
+  String get paymentsTransactionId => 'Transaction ID';
+
+  @override
+  String get paymentsAmount => 'Amount';
+
+  @override
+  String get paymentsStatus => 'Status';
+
+  @override
+  String get paymentsDate => 'Date';
+
+  @override
+  String get paymentsPlan => 'Plan';
+
+  @override
+  String get paymentsMethod => 'Method';
+
+  @override
+  String get paymentsRef => 'Ref';
+
+  @override
+  String get paymentsUnknownDate => 'Unknown date';
+
+  @override
+  String get paymentsSubscription => 'Subscription Payment';
+
+  @override
+  String get paymentsFeatured => 'Featured Listing';
+
+  @override
+  String get paymentsDirect => 'Direct Payment';
+
+  @override
+  String get paymentsGeneral => 'Payment';
 }

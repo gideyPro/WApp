@@ -66,8 +66,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     if (mounted) {
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile updated successfully'),
+          SnackBar(
+            content: Text(l10n.profileUpdated),
             backgroundColor: AppColors.success,
           ),
         );
@@ -76,7 +76,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         final state = ref.read(profileProvider);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(state.errorMessage ?? 'Failed to update profile'),
+            content: Text(state.errorMessage ?? l10n.profileUpdateError),
             backgroundColor: AppColors.error,
           ),
         );
@@ -88,12 +88,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget build(BuildContext context) {
     final user = ref.watch(profileProvider).user;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       appBar: AppBar(
         backgroundColor: isDark ? AppColors.navy900 : Colors.white,
-        title: const Text('Edit Profile'),
+        title: Text(l10n.profileEdit),
       ),
       body: user == null
           ? const Center(child: CircularProgressIndicator())
@@ -109,11 +110,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   // Form fields
                   _buildTextField(
                     controller: _firstNameController,
-                    label: 'First Name',
+                    label: l10n.profileFirstName,
                     icon: Icons.person_outline,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'First name is required';
+                        return l10n.profileFirstNameRequired;
                       }
                       return null;
                     },
@@ -121,19 +122,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: _lastNameController,
-                    label: 'Last Name',
+                    label: l10n.profileLastName,
                     icon: Icons.person_outline,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: _emailController,
-                    label: 'Email',
+                    label: l10n.profileEmail,
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value != null && value.trim().isNotEmpty) {
                         if (!value.contains('@')) {
-                          return 'Please enter a valid email';
+                          return l10n.profileEmailInvalid;
                         }
                       }
                       return null;
@@ -143,7 +144,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
                   // Phone (read-only)
                   _buildReadOnlyField(
-                    label: 'Phone Number',
+                    label: l10n.authPhoneNumber,
                     value: user.phoneNumber,
                     icon: Icons.phone_outlined,
                   ),
@@ -155,7 +156,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
                   // Save button
                   WaveButton(
-                    text: 'Save Changes',
+                    text: l10n.profileSaveChanges,
                     icon: Icons.check,
                     isLoading: _isSaving,
                     onPressed: _isSaving ? null : _saveProfile,
@@ -251,18 +252,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildGenderDropdown() {
+    final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
       value: _selectedGender?.isEmpty ?? true ? null : _selectedGender,
       decoration: InputDecoration(
-        labelText: 'Gender',
+        labelText: l10n.profileGender,
         prefixIcon: const Icon(Icons.wc_outlined, size: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      items: const [
-        DropdownMenuItem(value: 'male', child: Text('Male')),
-        DropdownMenuItem(value: 'female', child: Text('Female')),
+      items: [
+        DropdownMenuItem(value: 'male', child: Text(l10n.profileMale)),
+        DropdownMenuItem(value: 'female', child: Text(l10n.profileFemale)),
       ],
       onChanged: (value) {
         setState(() => _selectedGender = value);

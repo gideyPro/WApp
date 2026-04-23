@@ -57,6 +57,15 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonSuccess => 'ተሳኪዑ';
 
   @override
+  String get commonOn => 'ተወሊዑ';
+
+  @override
+  String get commonOff => 'ተጠፊኡ';
+
+  @override
+  String get commonNo => 'ኣይ';
+
+  @override
   String get commonNoData => 'ዝተረኽበ መረዳእታ የለን';
 
   @override
@@ -156,6 +165,39 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get profileStatsFavorites => 'ዝተፈትው';
+
+  @override
+  String get profileUpdated => 'መገለጺ ብትኽክል ተስተካኺሉ';
+
+  @override
+  String get profileMale => 'ተባዕታይ';
+
+  @override
+  String get profileFemale => 'ኣንስተይቲ';
+
+  @override
+  String get profileFirstName => 'ሽም';
+
+  @override
+  String get profileLastName => 'ሽም ኣቦ';
+
+  @override
+  String get profileEmail => 'ኢሜይል';
+
+  @override
+  String get profileGender => 'ጾታ';
+
+  @override
+  String get profileFirstNameRequired => 'ሽም የድሊ እዩ';
+
+  @override
+  String get profileEmailInvalid => 'በጃኹም ትኽክለኛ ኢሜይል ኣእትዉ';
+
+  @override
+  String get profileSaveChanges => 'ለውጥታት ዓቅብ';
+
+  @override
+  String get profileUpdateError => 'መገለጺ ንምሕዳስ ኣይተኻእለን';
 
   @override
   String get kycTitle => 'መረጋገጺ መንነት (KYC)';
@@ -457,6 +499,11 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingPhotos => 'ፎቶታት';
+
+  @override
+  String listingPhotosCount(Object count) {
+    return '$count ስእልታት';
+  }
 
   @override
   String get listingBedrooms => 'መኝታ ክፍልታት';
@@ -776,6 +823,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsInterestCancelled => 'ድሌት ተሰሪዙ';
 
   @override
+  String get listingsDefaultInterestMessage => 'ድሌት ኣለኒ!';
+
+  @override
   String get callIncoming => 'ዝመጽእ ዘሎ ጥሪ...';
 
   @override
@@ -1002,6 +1052,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsLogoutSubtitle => 'ካብ መለያኹም ንምውጻእ';
 
   @override
+  String get settingsDarkMode => 'ጸሊም መልክዕ';
+
+  @override
   String get languageTitle => 'ቋንቋ ይምረጡ';
 
   @override
@@ -1047,6 +1100,67 @@ class AppLocalizationsTi extends AppLocalizations {
   String get authLogoutConfirm => 'ርግጸኛ ዲኹም ክትወጽኡ ትደልዩ?';
 
   @override
+  String get authEnterPhonePrompt => 'በጃኹም ቁጽሪ ተሌፎንኩም ኣእትዉ';
+
+  @override
+  String get authEnterOtpPrompt => 'በጃኹም ባለ 6 ኣሃዝ ኮድ ኣእትዉ';
+
+  @override
+  String get authWelcomeTitle => 'ናብ ዌቭማርት ብድሓን መጹ';
+
+  @override
+  String get authWelcomeSubtitle => 'ናይ ኢትዮጵያ ቀዳማይ ናይ ሪል ስቴት ዕዳጋ';
+
+  @override
+  String authOtpSentMessage(Object phone) {
+    return 'ናይ 6 ኣሃዝ ኮድ ናብ $phone ሰዲድና ኣለና';
+  }
+
+  @override
+  String authResendCountdown(Object seconds) {
+    return 'ኮድ ድሕሪ $seconds ሰከንድ ደጊምካ ስደድ';
+  }
+
+  @override
+  String get authNoAccount => 'መለያ የብልኩምን? ';
+
+  @override
+  String get authCreateAccount => 'መለያኹም ፍጠሩ';
+
+  @override
+  String get authJoinMarketplace => 'ነቲ ናይ ኢትዮጵያ ቀዳማይ ናይ ሪል ስቴት ዕዳጋ ተጸንበሩ';
+
+  @override
+  String get authPersonalInfo => 'ናይ ውልቂ ሓበሬታ';
+
+  @override
+  String get authVerifyPhone => 'ተሌፎንኩም ኣረጋግጹ';
+
+  @override
+  String get authVerifyAndCreate => 'ኣረጋግጽን መለያ ፍጠርን';
+
+  @override
+  String get authAlreadyHaveAccount => 'ቀዲምኩም መለያ ኣለኩም? ';
+
+  @override
+  String get authCancelRegistration => 'ምዝገባ ክትሰርዙ ትደልዩ?';
+
+  @override
+  String get authFirstNameRequired => 'በጃኹም ሽምኩም ኣእትዉ';
+
+  @override
+  String get authLastNameRequired => 'በጃኹም ሽም ኣቦኹም ኣእትዉ';
+
+  @override
+  String get authPhoneRequired => 'በጃኹም ትኽክለኛ ቁጽሪ ተሌፎን ኣእትዉ';
+
+  @override
+  String get authSelectGender => 'በጃኹም ጾታኹም ምረጹ';
+
+  @override
+  String get authNetworkError => 'ናይ ኔትወርክ ጌጋ። በጃኹም ደጊምኩም ፈትኑ።';
+
+  @override
   String get subscriptionsTitle => 'ናይ ኣባልነት ትልምታት';
 
   @override
@@ -1071,11 +1185,101 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsSelectPlan => 'ትልሚ ይምረጡ';
 
   @override
-  String get settingsDarkMode => 'ጸሊም መልክዕ';
+  String get subscriptionsChoosePlan => 'ትልሚኹም ይምረጡ';
 
   @override
-  String get commonOn => 'ተወሊዑ';
+  String get subscriptionsSelectPlanSubtitle =>
+      'ንዓኹም ዝበቅዕ ትልሚ ይምረጡ። ኣብ ዝኾነ እዋን ከተዕብይዎ ትኽእሉ ኢኹም።';
 
   @override
-  String get commonOff => 'ተጠፊኡ';
+  String get subscriptionsListings => 'ንብረታት';
+
+  @override
+  String get subscriptionsFeaturedListings => 'ፍሉያት ንብረታት';
+
+  @override
+  String get subscriptionsNoFeaturedListings => 'ምንም ፍሉያት ንብረታት የለን';
+
+  @override
+  String subscriptionsDaysLeft(Object count) {
+    return '$count መዓልታት ተሪፎም';
+  }
+
+  @override
+  String get subscriptionsPopular => 'ተፈታዊ';
+
+  @override
+  String get subscriptionsCurrent => 'ናይ ሕጂ';
+
+  @override
+  String get subscriptionsPaymentBrowserMessage =>
+      'ክፍሊትኩም ኣብ ብራውዘርኩም ወድኡ። ድሕሪ ክፍሊት ናብዚ ተመለሱ።';
+
+  @override
+  String get subscriptionsFreeSuccess => 'ነጻ ትልሚ ብትኽክል ተወሊዑ!';
+
+  @override
+  String get subscriptionsPaymentBrowserError => 'ብራውዘር ንክፍሊት ክኽፈት ኣይከኣለን';
+
+  @override
+  String subscriptionsPaymentError(Object error) {
+    return 'ጌጋ ክፍሊት: $error';
+  }
+
+  @override
+  String get notificationsDeleteTitle => 'መጠንቀቕታ ሰርዝ';
+
+  @override
+  String get notificationsDeleteConfirm => 'ነዚ መጠንቀቕታ ክትሰርዙ ትደልዩ?';
+
+  @override
+  String get notificationsDelete => 'ሰርዝ';
+
+  @override
+  String get notificationsEmpty => 'ምንም መጠንቀቕታ የለን';
+
+  @override
+  String get notificationsEmptySubtitle => 'ሓድሽ ነገር ምስ ዝህሉ ኣብዚ ክትርእዩ ኢኹም';
+
+  @override
+  String get notificationsMarkAllRead => 'ኹሉ ተነቢቡ ግበሮ';
+
+  @override
+  String get paymentsEmpty => 'ምንም ታሪኽ ክፍሊት የለን';
+
+  @override
+  String get paymentsTransactionId => 'መለለዪ ትራንዛክሽን';
+
+  @override
+  String get paymentsAmount => 'መጠን';
+
+  @override
+  String get paymentsStatus => 'ኵነታት';
+
+  @override
+  String get paymentsDate => 'ዕለት';
+
+  @override
+  String get paymentsPlan => 'ትልሚ';
+
+  @override
+  String get paymentsMethod => 'መንገዲ ክፍሊት';
+
+  @override
+  String get paymentsRef => 'መለለዪ';
+
+  @override
+  String get paymentsUnknownDate => 'ዘይፍለጥ ዕለት';
+
+  @override
+  String get paymentsSubscription => 'ክፍሊት ኣባልነት';
+
+  @override
+  String get paymentsFeatured => 'ክፍሊት ፍሉይ ንብረት';
+
+  @override
+  String get paymentsDirect => 'ቀጥታ ክፍሊት';
+
+  @override
+  String get paymentsGeneral => 'ክፍሊት';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 
@@ -45,16 +46,18 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(paymentHistoryProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment History'),
+        title: Text(l10n.profilePayments),
       ),
       body: _buildBody(state),
     );
   }
 
   Widget _buildBody(PaymentHistoryState state) {
+    final l10n = AppLocalizations.of(context);
     if (state.isLoading && state.payments.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -69,10 +72,10 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
     }
 
     if (state.payments.isEmpty) {
-      return const WaveEmptyState(
+      return WaveEmptyState(
         icon: Icons.receipt_long_outlined,
-        title: 'No Payment History',
-        subtitle: 'Your payment transactions will appear here',
+        title: l10n.paymentsEmpty,
+        subtitle: l10n.settingsPaymentsSubtitle,
       );
     }
 
@@ -108,6 +111,7 @@ class _PaymentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ListTile(
       leading: Container(
         width: 48,
@@ -135,7 +139,7 @@ class _PaymentTile extends StatelessWidget {
         ),
       ),
       title: Text(
-        _paymentTitle(payment),
+        _paymentTitle(payment, context),
         style: AppTextStyles.bodyMedium.copyWith(
           fontWeight: FontWeight.w600,
         ),
@@ -145,12 +149,12 @@ class _PaymentTile extends StatelessWidget {
         children: [
           const SizedBox(height: 4),
           Text(
-            'Ref: ${payment.transactionReference ?? 'N/A'}',
+            '${l10n.paymentsRef}: ${payment.transactionReference ?? l10n.commonNA}',
             style: AppTextStyles.caption,
           ),
           const SizedBox(height: 2),
           Text(
-            _formatDate(payment.createdAt),
+            _formatDate(payment.createdAt, context),
             style: AppTextStyles.caption.copyWith(
               color: AppColors.zinc400,
             ),
@@ -188,22 +192,24 @@ class _PaymentTile extends StatelessWidget {
     );
   }
 
-  String _paymentTitle(dynamic payment) {
+  String _paymentTitle(dynamic payment, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final type = payment.paymentType.toString().split('.').last;
     switch (type) {
       case 'subscription':
-        return 'Subscription Payment';
+        return l10n.paymentsSubscription;
       case 'featuredListing':
-        return 'Featured Listing';
+        return l10n.paymentsFeatured;
       case 'directPayment':
-        return 'Direct Payment';
+        return l10n.paymentsDirect;
       default:
-        return 'Payment';
+        return l10n.paymentsGeneral;
     }
   }
 
-  String _formatDate(dynamic date) {
-    if (date == null) return 'Unknown date';
+  String _formatDate(dynamic date, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (date == null) return l10n.paymentsUnknownDate;
     if (date is DateTime) {
       return '${date.day}/${date.month}/${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
     }
