@@ -39,11 +39,11 @@ class ProfileScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           children: [
             // Profile Header
-            _buildProfileHeader(context, ref, profileState),
+            _buildProfileHeader(context, ref, profileState, isDark),
             const SizedBox(height: 24),
 
             // Stats
-            _buildStatsRow(context, profileState),
+            _buildStatsRow(context, profileState, isDark),
             const SizedBox(height: 24),
 
             // Account Actions
@@ -97,7 +97,7 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _buildProfileHeader(
-      BuildContext context, WidgetRef ref, ProfileState state) {
+      BuildContext context, WidgetRef ref, ProfileState state, [bool isDark = false]) {
     final l10n = AppLocalizations.of(context);
     if (state.isLoading) {
       return const SizedBox(
@@ -231,7 +231,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, ProfileState state) {
+  Widget _buildStatsRow(BuildContext context, ProfileState state, [bool isDark = false]) {
     final stats = state.stats;
     final l10n = AppLocalizations.of(context);
 
@@ -240,29 +240,32 @@ class ProfileScreen extends ConsumerWidget {
         _buildStatItem(
           value: stats?.totalListings.toString() ?? '-',
           label: l10n.profileStatsListings,
+          isDark: isDark,
         ),
         const SizedBox(width: 16),
         _buildStatItem(
           value: stats?.unreadMessages.toString() ?? '-',
           label: l10n.profileStatsMessages,
+          isDark: isDark,
         ),
         const SizedBox(width: 16),
         _buildStatItem(
           value: stats?.totalFavorites.toString() ?? '-',
           label: l10n.profileStatsFavorites,
+          isDark: isDark,
         ),
       ],
     );
   }
 
-  Widget _buildStatItem({required String value, required String label}) {
+  Widget _buildStatItem({required String value, required String label, bool isDark = false}) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? AppColors.navy900 : Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.zinc200),
+          border: Border.all(color: isDark ? AppColors.navy800 : AppColors.zinc200),
         ),
         child: Column(
           children: [
@@ -275,7 +278,9 @@ class ProfileScreen extends ConsumerWidget {
             const SizedBox(height: 4),
             Text(
               label,
-              style: AppTextStyles.caption,
+              style: AppTextStyles.caption.copyWith(
+                color: isDark ? AppColors.zinc400 : null,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
