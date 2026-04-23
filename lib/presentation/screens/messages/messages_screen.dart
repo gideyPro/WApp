@@ -89,9 +89,12 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     super.build(context);
     final state = ref.watch(conversationsProvider);
     final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       appBar: AppBar(
+        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
         title: Text(l10n.messagesTitle),
       ),
       body: _buildBody(state, l10n),
@@ -254,10 +257,10 @@ class _ConversationTile extends ConsumerWidget {
             child: Center(
               child: Text(
                 initials,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.surface,
+                  color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
                 ),
               ),
             ),
@@ -279,8 +282,8 @@ class _ConversationTile extends ConsumerWidget {
                     conversation.unreadCount! > 99
                         ? '99+'
                         : '${conversation.unreadCount}',
-                    style: const TextStyle(
-                      color: AppColors.surface,
+                    style: TextStyle(
+                      color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
                     ),
@@ -563,7 +566,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.navy950.withOpacity(0.05),
@@ -725,10 +728,10 @@ class _MessageBubble extends ConsumerWidget {
               child: Center(
                 child: Text(
                   initials,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.surface,
+                    color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
                   ),
                 ),
               ),
@@ -803,10 +806,10 @@ class _MessageBubble extends ConsumerWidget {
               child: Center(
                 child: Text(
                   initials,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.surface,
+                    color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
                   ),
                 ),
               ),

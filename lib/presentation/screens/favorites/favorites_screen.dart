@@ -50,9 +50,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(favoritesProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       appBar: AppBar(
+        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
         title: Text(AppLocalizations.of(context).favoritesTitle),
         actions: [
           if (state.favorites.isNotEmpty)

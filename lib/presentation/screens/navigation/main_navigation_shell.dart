@@ -42,8 +42,10 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       error: (_, __) => 0,
     );
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       extendBody: true,
       body: IndexedStack(
         index: _selectedIndex,

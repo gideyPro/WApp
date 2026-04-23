@@ -158,9 +158,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final listingsState = ref.watch(listingsProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       body: Column(
         children: [
           // Search Header
@@ -182,9 +183,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildSearchHeader() {
     final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.navy900 : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),

@@ -23,8 +23,12 @@ class ProfileScreen extends ConsumerWidget {
       ref.read(profileProvider.notifier).loadProfile();
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       appBar: AppBar(
+        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
         title: Text(l10n.profileTitle),
       ),
       body: RefreshIndicator(

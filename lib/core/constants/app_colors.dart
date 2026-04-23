@@ -65,42 +65,10 @@ class AppColors {
   static const Color info = Color(0xFF3b82f6);
   static const Color infoLight = Color(0xFFdbeafe);
 
-  import 'package:flutter/material.dart';
-
-// Theme-aware extension for easy dark mode support
-extension AppColorsExtension on BuildContext {
-  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
-
-  Color get scaffoldBg =>
-      isDarkMode ? navy950 : zinc50;
-
-  Color get cardBg =>
-      isDarkMode ? navy900 : Colors.white;
-
-  Color get textPrimary =>
-      isDarkMode ? Colors.white : zinc900;
-
-  Color get textSecondary =>
-      isDarkMode ? zinc300 : zinc600;
-
-  Color get iconPrimary =>
-      isDarkMode ? Colors.white : navy700;
-
-  Color get divider =>
-      isDarkMode ? navy800 : zinc200;
-
-  Color get inputBg =>
-      isDarkMode ? navy900 : zinc50.withValues(alpha: 0.5);
-
-  Color get sheetBg =>
-      isDarkMode ? navy900 : Colors.white;
-
-  Color shimmerBase =>
-      isDarkMode ? navy800 : Colors.grey[300]!;
-
-  Color shimmerHighlight =>
-      isDarkMode ? navy700 : Colors.grey[100]!;
-}
+  // Background Colors
+  static const Color background = zinc50;
+  static const Color surface = Colors.white;
+  static const Color surfaceVariant = zinc100;
 
   // Gradient Definitions
   static const LinearGradient gradientNavy = LinearGradient(
@@ -167,4 +135,20 @@ extension AppColorsExtension on BuildContext {
           spreadRadius: 0,
         ),
       ];
+}
+
+/// Theme-aware extension for easy dark mode support
+extension AppColorsExtension on BuildContext {
+  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
+
+  Color get scaffoldBg => isDarkMode ? AppColors.navy950 : AppColors.zinc50;
+  Color get cardBg => isDarkMode ? AppColors.navy900 : Colors.white;
+  Color get textPrimary => isDarkMode ? Colors.white : AppColors.zinc900;
+  Color get textSecondary => isDarkMode ? AppColors.zinc300 : AppColors.zinc600;
+  Color get iconPrimary => isDarkMode ? Colors.white : AppColors.navy700;
+  Color get divider => isDarkMode ? AppColors.navy800 : AppColors.zinc200;
+  Color get inputBg => isDarkMode ? AppColors.navy900 : AppColors.zinc50.withValues(alpha: 0.5);
+  Color get sheetBg => isDarkMode ? AppColors.navy900 : Colors.white;
+  Color get shimmerBase => isDarkMode ? AppColors.navy800 : Colors.grey[300]!;
+  Color get shimmerHighlight => isDarkMode ? AppColors.navy700 : Colors.grey[100]!;
 }
