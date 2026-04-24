@@ -31,6 +31,7 @@ class MessagesScreen extends ConsumerStatefulWidget {
 class _MessagesScreenState extends ConsumerState<MessagesScreen>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
+  String _selectedFilter = 'all'; // 'all', 'property', 'direct'
 
   @override
   bool get wantKeepAlive => true;
@@ -96,9 +97,57 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       appBar: AppBar(
         backgroundColor: isDark ? AppColors.navy900 : Colors.white,
         title: Text(l10n.messagesTitle),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                _filterChip('All', 'all'),
+                const SizedBox(width: 8),
+                _filterChip('Properties', 'property'),
+                const SizedBox(width: 8),
+                _filterChip('Direct', 'direct'),
+              ],
+            ),
+          ),
+        ),
       ),
       body: _buildBody(state, l10n),
+);
+  }
+
+  Widget _filterChip(String label, String value) {
+    final isSelected = _selectedFilter == value;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedFilter = value),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.wave500 : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: isSelected ? AppColors.wave500 : AppColors.zinc300),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : (isDark ? AppColors.zinc300 : AppColors.navy700),
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            fontSize: 13,
+          ),
+        ),
+      ),
     );
+  }
+
+  List<msg.Conversation> _filterConversations(List<msg.Conversation> conversations) {
+    if (_selectedFilter == 'all') return conversations;
+    return conversations.where((c) {
+      if (_selectedFilter == 'property') return c.isAssetChat == true;
+      if (_selectedFilter == 'direct') return c.isAssetChat != true;
+      return true;
+    }).toList();
   }
 
   Widget _buildBody(ConversationsState state, AppLocalizations l10n) {
@@ -115,14 +164,31 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       );
     }
 
-    if (state.conversations.isEmpty) {
+    final List<msg.Conversation> filteredConversations = _filterConversations(state.conversations.cast<msg.Conversation>());
+
+    if (filteredConversations.isEmpty && state.conversations.isNotEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.filter_list_off, size: 48, color: AppColors.zinc400),
+            const SizedBox(height: 12),
+            Text(
+              'No ${_selectedFilter == 'property' ? 'property' : _selectedFilter == 'direct' ? 'direct' : ''} messages',
+              style: TextStyle(color: AppColors.zinc500),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (filteredConversations.isEmpty) {
       return WaveEmptyState(
         icon: Icons.chat_bubble_outline_rounded,
         title: l10n.messagesEmpty,
-        subtitle: l10n.favoritesEmptySubtitle, // Reusing similar empty state text
+        subtitle: l10n.favoritesEmptySubtitle,
         actionLabel: l10n.homeViewAll,
         onAction: () {
-          // Navigate to home tab (index 0)
           Navigator.of(context).popUntil((route) => route.isFirst);
         },
       );
@@ -137,17 +203,17 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       },
       child: ListView.separated(
         controller: _scrollController,
-        itemCount: state.conversations.length + (state.isLoading ? 1 : 0),
+        itemCount: filteredConversations.length + (state.isLoading ? 1 : 0),
         separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
-          if (index >= state.conversations.length) {
+          if (index >= filteredConversations.length) {
             return const Padding(
               padding: EdgeInsets.all(16),
               child: Center(child: CircularProgressIndicator()),
             );
           }
 
-          final conversation = state.conversations[index] as msg.Conversation;
+          final conversation = filteredConversations[index] as msg.Conversation;
           return _ConversationTile(
             conversation: conversation,
             onTap: () async {
