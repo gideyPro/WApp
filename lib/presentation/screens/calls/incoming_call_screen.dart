@@ -1,13 +1,14 @@
 import 'dart:async';
-import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../../data/services/conference_service.dart';
+import '../../../core/network/api_constants.dart';
 import 'jitsi_call_screen.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {
@@ -106,34 +107,16 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     setState(() => _isConnecting = true);
 
     try {
-      final service = ConferenceService();
-      dev.log('=== ACCEPT CALL: conferenceId=${widget.conferenceId} ===', name: 'IncomingCall');
-      final response = await service.joinConference(widget.conferenceId);
-
-      dev.log('Response: success=${response.success}, message=${response.message}, jitsiUrl=${response.jitsiRoomUrl}, rawData=${response.rawData}', name: 'IncomingCall');
-
-      if (response.success && mounted) {
-        if (response.jitsiRoomUrl != null) {
-          _navigateToJitsi(response);
-          ref.read(incomingCallProvider.notifier).clearIncomingCall();
-        } else {
-          ref.read(incomingCallProvider.notifier).clearIncomingCall();
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(response.message.isNotEmpty
-                    ? response.message
-                    : 'Failed to get meeting link'),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          }
-        }
+      final joinUrl = '${ApiConstants.apiBase}/conferences/${widget.conferenceId}/join';
+      
+      final uri = Uri.parse(joinUrl);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.inAppWebView);
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.message),
+            const SnackBar(
+              content: Text('Cannot open join link'),
               backgroundColor: AppColors.error,
             ),
           );
@@ -141,6 +124,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
           _startRinging();
         }
       }
+      ref.read(incomingCallProvider.notifier).clearIncomingCall();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
