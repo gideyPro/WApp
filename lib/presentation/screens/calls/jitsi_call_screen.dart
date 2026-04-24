@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../data/services/conference_service.dart';
 
 class JitsiCallScreen extends ConsumerStatefulWidget {
   final String jitsiUrl;
@@ -22,24 +24,16 @@ class JitsiCallScreen extends ConsumerStatefulWidget {
 }
 
 class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
-  bool _isLaunching = false;
-  bool _isLaunched = false;
+  bool _isConnecting = true;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _launchJitsi();
+    _connectToCall();
   }
 
-  Future<void> _launchJitsi() async {
-    if (_isLaunched) return;
-
-    setState(() {
-      _isLaunching = true;
-      _errorMessage = null;
-    });
-
+  Future<void> _connectToCall() async {
     try {
       String meetingUrl = widget.jitsiUrl;
 
@@ -54,131 +48,96 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
       final url = Uri.parse(meetingUrl);
 
       if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-        setState(() => _isLaunched = true);
+        // Try in-app first, fall back to external
+        final launched = await launchUrl(
+          url, 
+          mode: LaunchMode.inAppWebView,
+        );
+        
+        if (!launched) {
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+        }
+        
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       } else {
         setState(() {
-          _errorMessage = 'Cannot open Jitsi meeting link';
+          _errorMessage = 'Cannot open meeting link';
+          _isConnecting = false;
         });
       }
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to open Jitsi: $e';
+        _errorMessage = 'Failed to connect';
+        _isConnecting = false;
       });
-    } finally {
-      if (mounted) {
-        setState(() => _isLaunching = false);
-      }
     }
+  }
+
+  Future<void> _retryConnection() async {
+    setState(() {
+      _isConnecting = true;
+      _errorMessage = null;
+    });
+    await _connectToCall();
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.navy950,
+      backgroundColor: isDark ? AppColors.navy950 : Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
+        title: const Text('Video Call'),
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            final service = ConferenceService();
+            service.updateConferenceStatus(
+              conferenceId: widget.conferenceId,
+              status: 'left',
+            );
+            Navigator.of(context).pop();
+          },
         ),
-        title: Text(
-          l10n.jitsiCallTitle,
-          style: AppTextStyles.title.copyWith(color: Colors.white),
-        ),
-        centerTitle: true,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_isLaunching)
-                const CircularProgressIndicator(color: Colors.white)
-              else if (_errorMessage != null) ...[
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: AppColors.error,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  _errorMessage!,
-                  style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _launchJitsi,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.wave600,
-                    foregroundColor: Colors.white,
+      body: Center(
+        child: _isConnecting 
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.wave500),
                   ),
-                  child: Text(l10n.commonRetry),
-                ),
-              ] else ...[
-                const Icon(
-                  Icons.videocam,
-                  size: 64,
-                  color: AppColors.emerald600,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.jitsiOpening,
-                  style:
-                      AppTextStyles.bodyMedium.copyWith(color: Colors.white70),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-              const SizedBox(height: 32),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white10,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Meeting URL:',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: Colors.white54,
-                      ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Connecting to call...',
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      color: isDark ? Colors.white : AppColors.navy900,
                     ),
-                    const SizedBox(height: 8),
-                    SelectableText(
-                      widget.jitsiUrl,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: AppColors.error),
+                  const SizedBox(height: 16),
+                  Text(
+                    _errorMessage ?? 'Failed to connect',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: _retryConnection,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Try Again'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
-              if (_isLaunched)
-                Text(
-                  l10n.jitsiOpenedExternal,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: Colors.white54,
-                  ),
-                  textAlign: TextAlign.center,
-                )
-              else
-                Text(
-                  l10n.jitsiCloseToJoin,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: Colors.white54,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-            ],
-          ),
-        ),
       ),
     );
   }

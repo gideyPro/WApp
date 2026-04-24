@@ -1026,18 +1026,66 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
             ),
             const SizedBox(height: 12),
           ],
-          // Interest button - only for non-owners who haven't submitted interest
-          if (!isOwner && !hasInterest)
-            OutlinedButton.icon(
-              onPressed: () => _submitInterest(listing.id),
-              icon: const Icon(Icons.handyman_outlined, size: 20),
-              label: Text(l10n.listingsImInterested),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                side: const BorderSide(color: AppColors.wave500),
-                foregroundColor: AppColors.wave600,
-              ),
-            ),
+          // Interest button - show status for all users
+          Row(
+            children: [
+              if (isOwner)
+                OutlinedButton.icon(
+                  onPressed: () => _editListing(listing),
+                  icon: const Icon(Icons.edit, size: 20),
+                  label: Text(l10n.commonEdit),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: BorderSide(color: AppColors.navy600),
+                    foregroundColor: isDark ? AppColors.navy300 : AppColors.navy600,
+                  ),
+                ),
+              if (!isOwner && !hasInterest)
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _submitInterest(listing.id),
+                    icon: const Icon(Icons.handyman_outlined, size: 20),
+                    label: Text(l10n.listingsImInterested),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: AppColors.wave500),
+                      foregroundColor: AppColors.wave600,
+                    ),
+                  ),
+                ),
+              if (!isOwner && hasInterest)
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: _getInterestStatusColor(listing.userInterestStatus).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: _getInterestStatusColor(listing.userInterestStatus),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          _getInterestStatusIcon(listing.userInterestStatus),
+                          size: 20,
+                          color: _getInterestStatusColor(listing.userInterestStatus),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _getInterestStatusText(listing.userInterestStatus, l10n),
+                          style: TextStyle(
+                            color: _getInterestStatusColor(listing.userInterestStatus),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );
@@ -1135,4 +1183,21 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     }
   }
 
+  Color _getInterestStatusColor(String? status) {
+    if (status == 'accepted') return AppColors.emerald600;
+    if (status == 'pending') return Colors.amber;
+    return AppColors.error;
+  }
+
+  IconData _getInterestStatusIcon(String? status) {
+    if (status == 'accepted') return Icons.check_circle;
+    if (status == 'pending') return Icons.hourglass_empty;
+    return Icons.cancel;
+  }
+
+  String _getInterestStatusText(String? status, AppLocalizations l10n) {
+    if (status == 'accepted') return l10n.listingsInterestAccepted;
+    if (status == 'pending') return l10n.listingsInterestPending;
+    return l10n.listingsInterestRejected;
+  }
 }

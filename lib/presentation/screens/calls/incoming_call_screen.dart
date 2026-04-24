@@ -63,11 +63,11 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     super.dispose();
   }
 
-  /// Start vibration pattern and system alert sound for incoming call
+  /// Start vibration pattern and system ringtone for incoming call
   void _startRinging() {
     _isRinging = true;
 
-    // Play system alert sound
+    // Play system ringtone
     SystemSound.play(SystemSoundType.alert);
 
     // Initial strong vibration burst
@@ -175,6 +175,9 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
   Future<void> _declineCall() async {
     _stopRinging();
+    
+    // Immediately pause polling to prevent call from reappearing
+    ref.read(incomingCallProvider.notifier).pausePolling(duration: const Duration(seconds: 5));
 
     try {
       final service = ConferenceService();
@@ -186,6 +189,10 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
     if (mounted) {
       ref.read(incomingCallProvider.notifier).clearIncomingCall();
+      // Resume polling after delay
+      Future.delayed(const Duration(seconds: 5), () {
+        ref.read(incomingCallProvider.notifier).resumePolling();
+      });
     }
   }
 

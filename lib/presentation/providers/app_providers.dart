@@ -757,6 +757,7 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
   final ConferenceService _conferenceService;
   Timer? _pollingTimer;
   static const _pollingInterval = Duration(seconds: 3);
+  bool _isPaused = false;
 
   IncomingCallNotifier(this._conferenceService) : super(null);
 
@@ -771,8 +772,19 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
     _pollingTimer = null;
   }
 
+  void pausePolling({Duration? duration}) {
+    _isPaused = true;
+    if (duration != null) {
+      Future.delayed(duration, () => _isPaused = false);
+    }
+  }
+
+  void resumePolling() {
+    _isPaused = false;
+  }
+
   Future<void> _checkForIncomingCall() async {
-    if (state != null) return;
+    if (state != null || _isPaused) return;
 
     try {
       final response = await _conferenceService.checkIncomingCall();
