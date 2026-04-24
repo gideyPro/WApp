@@ -315,6 +315,8 @@
   "messagesEmpty": "No messages yet",
   "messagesTypeMessage": "Type a message...",
   "messagesSend": "Send",
+  "messagesUnread": "unread",
+  "messagesSwitchContext": "Switch Context",
 
   "settingsTitle": "Settings",
   "settingsSectionAccount": "My Account",

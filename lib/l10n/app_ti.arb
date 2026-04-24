@@ -315,6 +315,8 @@
   "messagesEmpty": "መልእኽቲ የለን",
   "messagesTypeMessage": "መልእኽቲ ጽሓፉ...",
   "messagesSend": "ስደድ",
+  "messagesUnread": "ያልተነብሡ",
+  "messagesSwitchContext": "ኣውራጅ ለውጥ",
 
   "settingsTitle": "ቅጥዒታት",
   "settingsSectionAccount": "ናይ መለያ ሓበሬታ",

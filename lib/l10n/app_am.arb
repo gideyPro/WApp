@@ -315,6 +315,8 @@
   "messagesEmpty": "ምንም መልእክት የለም",
   "messagesTypeMessage": "መልእክት ይጻፉ...",
   "messagesSend": "ላክ",
+  "messagesUnread": "ያልተነበቡ",
+  "messagesSwitchContext": "አውራጅ ለውጥ",
 
   "settingsTitle": "ቅንብሮች",
   "settingsSectionAccount": "የመለያ መረጃ",

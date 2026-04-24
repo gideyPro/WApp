@@ -13,9 +13,11 @@ class Conversation {
   final DateTime? updatedAt;
 
   // Additional fields for WhatsApp-like UI
+  final int? otherParticipantId;
   final String? otherParticipantFirstName;
   final String? otherParticipantLastName;
   final String? listingTitle;
+  final String? listingImageUrl;
   final bool isAssetChat;
   
   // Raw sender/receiver data for dynamic name computation
@@ -35,9 +37,11 @@ class Conversation {
     this.unreadCount,
     required this.createdAt,
     this.updatedAt,
+    this.otherParticipantId,
     this.otherParticipantFirstName,
     this.otherParticipantLastName,
     this.listingTitle,
+    this.listingImageUrl,
     this.isAssetChat = false,
     Map<String, dynamic>? senderData,
     Map<String, dynamic>? receiverData,
@@ -59,11 +63,20 @@ class Conversation {
 
     // Get listing info
     String? listingTitle;
+    String? listingImageUrl;
     bool isAssetChat = false;
     if (json['listing'] is Map) {
       final listing = json['listing'] as Map<String, dynamic>;
       listingTitle = listing['title'];
       isAssetChat = json['listing_id'] != null;
+      // Extract first image if available
+      if (listing['property'] is Map) {
+        final property = listing['property'] as Map<String, dynamic>;
+        if (property['images'] is List && (property['images'] as List).isNotEmpty) {
+          final images = property['images'] as List;
+          listingImageUrl = images.first['image_path'];
+        }
+      }
     }
 
     // Store raw sender/receiver data for dynamic name computation
@@ -72,6 +85,7 @@ class Conversation {
 
     // Determine other participant at parse time (if currentUserId is available)
     String? otherFirstName, otherLastName;
+    int? otherId;
     if (currentUserId != null) {
       final sid = _safeInt(senderData?['id']);
       final rid = _safeInt(receiverData?['id']);
@@ -79,9 +93,11 @@ class Conversation {
       if (sid != null && sid != currentUserId && senderData != null) {
         otherFirstName = senderData['first_name'];
         otherLastName = senderData['last_name'];
+        otherId = sid;
       } else if (rid != null && rid != currentUserId && receiverData != null) {
         otherFirstName = receiverData['first_name'];
         otherLastName = receiverData['last_name'];
+        otherId = rid;
       }
     }
 
@@ -106,9 +122,11 @@ class Conversation {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
+      otherParticipantId: otherId,
       otherParticipantFirstName: otherFirstName,
       otherParticipantLastName: otherLastName,
       listingTitle: listingTitle,
+      listingImageUrl: listingImageUrl,
       isAssetChat: isAssetChat,
       senderData: senderData,
       receiverData: receiverData,
@@ -189,15 +207,45 @@ class Conversation {
     return senderId == currentUserId;
   }
 
-  String get previewText {
-    if (lastMessage != null && lastMessage!.isNotEmpty) {
-      return lastMessage!;
+  String get displayName {
+    if (listingTitle != null && listingTitle!.isNotEmpty) {
+      return listingTitle!;
     }
-    return 'No messages yet';
+    final first = otherParticipantFirstName ?? '';
+    final last = otherParticipantLastName ?? '';
+    final full = [first, last].where((e) => e.isNotEmpty).join(' ');
+    if (full.isNotEmpty) return full;
+    return 'Conversation #$id';
+  }
+
+  String get displayInitials {
+    final first = otherParticipantFirstName ?? '';
+    final last = otherParticipantLastName ?? '';
+    if (first.isNotEmpty && last.isNotEmpty) {
+      return '${first[0]}${last[0]}'.toUpperCase();
+    }
+    if (first.isNotEmpty) {
+      return first.substring(0, first.length > 1 ? 2 : 1).toUpperCase();
+    }
+    return '??';
+  }
+
+  String? get otherParticipantAvatar {
+    return null;
+  }
+
+  String get contextDisplayTitle {
+    if (listingTitle != null && listingTitle!.isNotEmpty) {
+      return listingTitle!;
+    }
+    return 'Direct Chat';
+  }
+
+  bool matchesParticipant(int userId) {
+    return senderId == userId || receiverId == userId;
   }
 }
 
-/// Message Model
 class Message {
   final int id;
   final int conversationId;

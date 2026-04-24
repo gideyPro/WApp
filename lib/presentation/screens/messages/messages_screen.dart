@@ -436,12 +436,60 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final ScrollController _listScrollController = ScrollController();
   bool _isSending = false;
   bool _hasScrolledToUnread = false;
+  bool _contextDropdownOpen = false;
+  List<msg.Conversation> _relatedConversations = [];
 
   @override
   void dispose() {
     _messageController.dispose();
     _listScrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRelatedConversations();
+  }
+
+  Future<void> _loadRelatedConversations() async {
+    final authState = ref.read(authStateProvider);
+    final currentUserId = authState.user?.id ?? 0;
+    
+    // Get other participant ID
+    final otherId = widget.conversation.otherParticipantId ?? 
+        (widget.conversation.senderId == currentUserId 
+            ? widget.conversation.receiverId 
+            : widget.conversation.senderId);
+    
+    // Load all conversations to find related ones
+    // For now, we'll use the conversations provider
+    final conversationsState = ref.read(conversationsProvider);
+    final allConversations = conversationsState.conversations;
+    
+    // Filter: same other participant but different conversation
+    final related = allConversations.where((c) {
+      return c.id != widget.conversationId && 
+             (c.senderId == otherId || c.receiverId == otherId);
+    }).toList();
+    
+    if (mounted) {
+      setState(() {
+        _relatedConversations = related;
+      });
+    }
+  }
+
+  void _toggleContextDropdown() {
+    setState(() {
+      _contextDropdownOpen = !_contextDropdownOpen;
+    });
+  }
+
+  void _closeContextDropdown() {
+    setState(() {
+      _contextDropdownOpen = false;
+    });
   }
 
   Future<void> _sendMessage() async {
@@ -515,6 +563,180 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
+  Widget _buildContextDropdown(BuildContext context, AppLocalizations l10n, bool isDark) {
+    return GestureDetector(
+      onTap: _closeContextDropdown,
+      child: Container(
+        margin: const EdgeInsets.only(top: 48),
+        constraints: const BoxConstraints(maxHeight: 320),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.navy800 : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                color: isDark ? AppColors.navy900 : AppColors.zinc50,
+                child: Text(
+                  l10n.messagesSwitchContext,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.navy400,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+              // Conversation list
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  itemCount: _relatedConversations.length,
+                  itemBuilder: (context, index) {
+                    final conv = _relatedConversations[index];
+                    final isSelected = conv.id == widget.conversationId;
+                    return _buildContextItem(conv, isSelected, l10n, isDark);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContextItem(msg.Conversation conv, bool isSelected, AppLocalizations l10n, bool isDark) {
+    return InkWell(
+      onTap: () {
+        _closeContextDropdown();
+        if (conv.id != widget.conversationId) {
+          // Navigate to the selected conversation
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => ChatScreen(
+                conversationId: conv.id,
+                conversation: conv,
+              ),
+            ),
+          );
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        color: isSelected ? (isDark ? AppColors.navy700 : AppColors.navy50) : null,
+        child: Row(
+          children: [
+            // Icon/Image
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: conv.isAssetChat
+                    ? (isDark ? AppColors.navy700 : AppColors.navy100)
+                    : (isDark ? AppColors.zinc700 : AppColors.zinc100),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: conv.listingImageUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        conv.listingImageUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Icon(
+                          conv.isAssetChat ? Icons.home : Icons.chat,
+                          size: 18,
+                          color: conv.isAssetChat
+                              ? AppColors.navy600
+                              : AppColors.zinc500,
+                        ),
+                      ),
+                    )
+                  : Icon(
+                      conv.isAssetChat ? Icons.home : Icons.chat,
+                      size: 18,
+                      color: conv.isAssetChat
+                          ? AppColors.navy600
+                          : AppColors.zinc500,
+                    ),
+            ),
+            const SizedBox(width: 12),
+            // Text content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    conv.contextDisplayTitle,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color: isDark ? AppColors.zinc100 : AppColors.zinc900,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      if (conv.unreadCount != null && conv.unreadCount! > 0)
+                        Text(
+                          '${conv.unreadCount} ${l10n.messagesUnread}',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.error,
+                          ),
+                        )
+                      else if (conv.lastMessageAt != null)
+                        Text(
+                          _formatRelativeTime(conv.lastMessageAt!),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: AppColors.zinc400,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // Checkmark for selected
+            if (isSelected)
+              const Icon(
+                Icons.check,
+                size: 18,
+                color: AppColors.navy600,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatRelativeTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final diff = now.difference(dateTime);
+    if (diff.inDays < 1) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    return '${dateTime.day}/${dateTime.month}';
+  }
+
   Widget _buildMessagesList(List<msg.Message> messages, int currentUserId, AppLocalizations l10n) {
     // Trigger scroll to first unread on first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -573,27 +795,83 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final authState = ref.watch(authStateProvider);
     final currentUserId = authState.user?.id ?? 0;
     final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Build proper title from conversation data
-    String title = widget.conversation.getDisplayTitle(currentUserId);
-    String subtitle = widget.conversation.isAssetChat
-        ? (widget.conversation.listingTitle ?? l10n.listingsTitle)
-        : l10n.profileMessages;
+    String title = widget.conversation.contextDisplayTitle;
+    String otherUserName = widget.conversation.getDisplayTitle(currentUserId);
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(title,
-                style:
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-            Text(subtitle,
-                style: TextStyle(
-                    fontSize: 11, color: AppColors.surface.withOpacity(0.7))),
-          ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
+        titleSpacing: 0,
+        title: GestureDetector(
+          onTap: _relatedConversations.isNotEmpty ? _toggleContextDropdown : null,
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (_relatedConversations.isNotEmpty) ...[
+                        const SizedBox(width: 4),
+                        Icon(
+                          _contextDropdownOpen
+                              ? Icons.keyboard_arrow_up
+                              : Icons.keyboard_arrow_down,
+                          size: 20,
+                          color: AppColors.navy400,
+                        ),
+                      ],
+                    ],
+                  ),
+                  Text(
+                    'with $otherUserName',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isDark ? AppColors.zinc400 : AppColors.zinc500,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+              // Dropdown overlay
+              if (_contextDropdownOpen)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: _buildContextDropdown(context, l10n, isDark),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {
+              // Additional actions (call, profile, etc.)
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
