@@ -188,10 +188,10 @@ class ConferenceService {
         }
 
         dynamic responseData = response.data;
-        Map<String, dynamic> data = {};
+        Map<String, dynamic> rootData = {};
 
         if (responseData is Map) {
-          data = Map<String, dynamic>.from(responseData);
+          rootData = Map<String, dynamic>.from(responseData);
         } else {
           return ConferenceResponse(
             success: false,
@@ -200,7 +200,13 @@ class ConferenceService {
           );
         }
 
-        // Extract URL and token safely
+        // Backend returns {success: true, data: {jitsi_url: ..., ...}}
+        // Need to look inside rootData['data'] for jitsi_url
+        final data = rootData['data'] is Map
+            ? Map<String, dynamic>.from(rootData['data'])
+            : <String, dynamic>{};
+
+        // Extract URL and token from nested data object
         String? jitsiUrl;
         if (data['jitsi_url'] is String) {
           jitsiUrl = data['jitsi_url'] as String;
@@ -216,7 +222,7 @@ class ConferenceService {
           message: 'Joined conference',
           jitsiRoomUrl: jitsiUrl,
           jitsiToken: jitsiToken,
-          rawData: data,
+          rawData: rootData,
         );
       }
 
