@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +37,8 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   bool _isConnecting = false;
   Timer? _vibrationTimer;
   bool _isRinging = false;
+  
+  String _debugLog = '';
 
   @override
   void initState() {
@@ -64,17 +65,14 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     super.dispose();
   }
 
-  /// Start vibration pattern and system ringtone for incoming call
   void _startRinging() {
     _isRinging = true;
 
-    // Play system ringtone
+    // Play system alert sound
     SystemSound.play(SystemSoundType.alert);
 
-    // Initial strong vibration burst
     HapticFeedback.heavyImpact();
 
-    // Set up repeating vibration pattern that mimics a phone ring
     _vibrationTimer = Timer.periodic(
       const Duration(milliseconds: 800),
       (timer) {
@@ -82,7 +80,6 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
           timer.cancel();
           return;
         }
-        // Double-buzz pattern: buzz, short pause, buzz
         HapticFeedback.heavyImpact();
         Future.delayed(const Duration(milliseconds: 150), () {
           if (_isRinging && mounted) {
@@ -90,7 +87,6 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
           }
         });
 
-        // Re-play system alert sound every ~4 seconds
         if (timer.tick % 5 == 0) {
           SystemSound.play(SystemSoundType.alert);
         }
@@ -98,33 +94,42 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     );
   }
 
-  /// Stop all vibration and sound
   void _stopRinging() {
     _isRinging = false;
     _vibrationTimer?.cancel();
     _vibrationTimer = null;
   }
 
-Future<void> _acceptCall() async {
+  Future<void> _acceptCall() async {
     if (_isConnecting) return;
 
     _stopRinging();
-    setState(() => _isConnecting = true);
-
-    dev.log('Accepting call with conferenceId: ${widget.conferenceId}');
+    setState(() {
+      _isConnecting = true;
+      _debugLog = 'Conference ID: ${widget.conferenceId}\n';
+    });
 
     try {
+      setState(() => _debugLog += 'Calling joinConference...\n');
       final service = ConferenceService();
       final response = await service.joinConference(widget.conferenceId);
 
-      dev.log('Join conference response: success=${response.success}, message=${response.message}, jitsiUrl=${response.jitsiRoomUrl}');
+      setState(() {
+        _debugLog += 'success=${response.success}, message=${response.message}\n';
+        _debugLog += 'jitsiUrl=${response.jitsiRoomUrl ?? "null"}\n';
+        if (response.rawData != null) {
+          _debugLog += 'rawData=$response.rawData\n';
+        }
+      });
 
       if (response.success && mounted) {
         if (response.jitsiRoomUrl != null) {
+          setState(() => _debugLog += 'Navigating to Jitsi...\n');
           _navigateToJitsi(response);
           ref.read(incomingCallProvider.notifier).clearIncomingCall();
         } else {
           ref.read(incomingCallProvider.notifier).clearIncomingCall();
+          setState(() => _debugLog += 'No Jitsi URL!\n');
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -137,6 +142,7 @@ Future<void> _acceptCall() async {
           }
         }
       } else {
+        setState(() => _debugLog += 'Join failed!\n');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -149,7 +155,7 @@ Future<void> _acceptCall() async {
         }
       }
     } catch (e) {
-      dev.log('Accept call error: $e');
+      setState(() => _debugLog += 'Error: $e\n');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -159,32 +165,6 @@ Future<void> _acceptCall() async {
         );
         setState(() => _isConnecting = false);
         _startRinging();
-      }
-    }
-  }
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.message),
-              backgroundColor: AppColors.error,
-            ),
-          );
-          setState(() => _isConnecting = false);
-          _startRinging(); // Resume ringing if accept failed
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to join call'),
-            backgroundColor: AppColors.error,
-          ),
-        );
-        setState(() => _isConnecting = false);
-        _startRinging(); // Resume ringing if accept failed
       }
     }
   }
@@ -206,7 +186,6 @@ Future<void> _acceptCall() async {
   Future<void> _declineCall() async {
     _stopRinging();
     
-    // Mark this call as declined to skip it in polling
     ref.read(incomingCallProvider.notifier).markDeclined(widget.conferenceId);
 
     try {
@@ -226,9 +205,13 @@ Future<void> _acceptCall() async {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    // Block back button from dismissing the incoming call overlay
     return PopScope(
       canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          SystemNavigator.pop();
+        }
+      },
       child: Scaffold(
         backgroundColor: AppColors.navy950,
         body: SafeArea(
@@ -275,6 +258,27 @@ Future<void> _acceptCall() async {
               const Spacer(),
               _buildActionButtons(l10n),
               const SizedBox(height: 60),
+              // Debug display
+              if (_debugLog.isNotEmpty)
+                Container(
+                  margin: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      _debugLog,
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontSize: 12,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

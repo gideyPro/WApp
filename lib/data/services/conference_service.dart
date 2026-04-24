@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 import '../../core/network/error_handler.dart';
@@ -178,25 +179,27 @@ class ConferenceService {
       );
 
       // Debug logging
-      debugPrint('Join conference response: status=${response.statusCode}, data=${response.data}');
+      dev.log('Join conference: status=${response.statusCode}, data=${response.data}');
 
       if (response.statusCode == 200) {
         final data = response.data['data'] ?? response.data;
-        debugPrint('Join conference data: $data');
+        final jitsiUrl = data['jitsi_url'] ?? data['jitsiRoomUrl'] ?? data['room_url'] ?? data['url'];
         return ConferenceResponse(
           success: true,
           message: 'Joined conference',
-          jitsiRoomUrl: data['jitsi_url'] as String?,
+          jitsiRoomUrl: jitsiUrl as String?,
           jitsiToken: data['jitsi_token'] as String?,
+          rawData: data,
         );
       }
 
       return ConferenceResponse(
         success: false,
         message: response.data['message'] ?? 'Failed to join conference (${response.statusCode})',
+        rawData: response.data,
       );
     } catch (e) {
-      debugPrint('Join conference error: $e');
+      dev.log('Join conference error: $e');
       final exception = ApiErrorHandler.handle(e);
       return ConferenceResponse(
         success: false,
@@ -315,6 +318,7 @@ class ConferenceResponse {
   final Conference? conference;
   final String? jitsiRoomUrl;
   final String? jitsiToken;
+  final dynamic rawData;
 
   const ConferenceResponse({
     required this.success,
@@ -323,6 +327,7 @@ class ConferenceResponse {
     this.conference,
     this.jitsiRoomUrl,
     this.jitsiToken,
+    this.rawData,
   });
 }
 
