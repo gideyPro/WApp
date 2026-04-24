@@ -178,58 +178,55 @@ class ConferenceService {
         '${ApiConstants.joinConference}/$conferenceId/join',
       );
 
-      if (response.statusCode == 200) {
-        // Safely extract data
-        if (response.data == null) {
+      if (response.statusCode == 200 && response.data != null) {
+        try {
+          final responseData = response.data;
+          
+          // Handle unexpected response types gracefully
+          if (responseData is! Map) {
+            return ConferenceResponse(
+              success: false,
+              message: 'Invalid response format from server',
+              rawData: responseData,
+            );
+          }
+
+          final Map<String, dynamic> rootData = Map<String, dynamic>.from(responseData);
+
+          // Backend returns {success: true, data: {jitsi_url: ..., ...}}
+          // Need to look inside rootData['data'] for jitsi_url
+          final Map<String, dynamic> data = rootData['data'] is Map
+              ? Map<String, dynamic>.from(rootData['data'] as Map)
+              : <String, dynamic>{};
+
+          final jitsiUrl = data['jitsi_url'] as String?;
+          final jitsiToken = data['jitsi_token'] as String?;
+
+          return ConferenceResponse(
+            success: true,
+            message: 'Joined conference',
+            jitsiRoomUrl: jitsiUrl,
+            jitsiToken: jitsiToken,
+            rawData: rootData,
+          );
+        } catch (parseError) {
           return ConferenceResponse(
             success: false,
-            message: 'Invalid response: null data',
+            message: 'Failed to parse response: $parseError',
           );
         }
-
-        dynamic responseData = response.data;
-        Map<String, dynamic> rootData = {};
-
-        if (responseData is Map) {
-          rootData = Map<String, dynamic>.from(responseData);
-        } else {
-          return ConferenceResponse(
-            success: false,
-            message: 'Invalid response format',
-            rawData: responseData,
-          );
-        }
-
-        // Backend returns {success: true, data: {jitsi_url: ..., ...}}
-        // Need to look inside rootData['data'] for jitsi_url
-        final data = rootData['data'] is Map
-            ? Map<String, dynamic>.from(rootData['data'])
-            : <String, dynamic>{};
-
-        // Extract URL and token from nested data object
-        String? jitsiUrl;
-        if (data['jitsi_url'] is String) {
-          jitsiUrl = data['jitsi_url'] as String;
-        }
-
-        String? jitsiToken;
-        if (data['jitsi_token'] is String) {
-          jitsiToken = data['jitsi_token'] as String;
-        }
-
-        return ConferenceResponse(
-          success: true,
-          message: 'Joined conference',
-          jitsiRoomUrl: jitsiUrl,
-          jitsiToken: jitsiToken,
-          rawData: rootData,
-        );
       }
 
       // Handle non-200 responses (400, 401, etc.)
-      final errorMessage = response.data is Map && response.data['message'] != null
-          ? response.data['message'] as String
-          : 'Failed to join conference (HTTP ${response.statusCode})';
+      String errorMessage = 'Failed to join conference';
+      if (response.data is Map) {
+        final data = response.data as Map;
+        if (data['message'] != null) {
+          errorMessage = data['message'].toString();
+        }
+      } else if (response.statusCode != null) {
+        errorMessage = 'Failed to join conference (HTTP ${response.statusCode})';
+      }
 
       return ConferenceResponse(
         success: false,
