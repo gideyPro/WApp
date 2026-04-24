@@ -183,11 +183,20 @@ class ConferenceService {
 
       if (response.statusCode == 200) {
         final data = response.data['data'] ?? response.data;
-        final jitsiUrl = data['jitsi_url'] ?? data['jitsiRoomUrl'] ?? data['room_url'] ?? data['url'];
+        
+        // Check for different URL field names
+        String? jitsiUrl = data['jitsi_url'] ?? data['jitsi_url'];
+        String? roomName = data['room_name'] ?? data['room'] ?? data['roomName'];
+        
+        // If we have base URL and room name, combine them
+        if (jitsiUrl != null && roomName != null && !jitsiUrl.contains(roomName)) {
+          jitsiUrl = '$jitsiUrl/$roomName';
+        }
+        
         return ConferenceResponse(
           success: true,
           message: 'Joined conference',
-          jitsiRoomUrl: jitsiUrl as String?,
+          jitsiRoomUrl: jitsiUrl,
           jitsiToken: data['jitsi_token'] as String?,
           rawData: data,
         );

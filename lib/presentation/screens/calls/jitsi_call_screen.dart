@@ -34,8 +34,16 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
   }
 
   Future<void> _connectToCall() async {
+    if (widget.jitsiUrl == null || widget.jitsiUrl!.isEmpty) {
+      setState(() {
+        _errorMessage = 'No meeting URL provided';
+        _isConnecting = false;
+      });
+      return;
+    }
+    
     try {
-      String meetingUrl = widget.jitsiUrl;
+      String meetingUrl = widget.jitsiUrl!;
 
       // Append JWT token as query parameter if provided
       if (widget.jitsiToken != null && widget.jitsiToken!.isNotEmpty) {
