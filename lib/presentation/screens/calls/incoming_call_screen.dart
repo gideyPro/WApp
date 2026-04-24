@@ -176,8 +176,8 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   Future<void> _declineCall() async {
     _stopRinging();
     
-    // Immediately pause polling to prevent call from reappearing
-    ref.read(incomingCallProvider.notifier).pausePolling(duration: const Duration(seconds: 5));
+    // Mark this call as declined to skip it in polling
+    ref.read(incomingCallProvider.notifier).markDeclined(widget.conferenceId);
 
     try {
       final service = ConferenceService();
@@ -189,10 +189,6 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
     if (mounted) {
       ref.read(incomingCallProvider.notifier).clearIncomingCall();
-      // Resume polling after delay
-      Future.delayed(const Duration(seconds: 5), () {
-        ref.read(incomingCallProvider.notifier).resumePolling();
-      });
     }
   }
 

@@ -27,7 +27,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   int _resendCountdown = 0;
   Timer? _countdownTimer;
-  
+
   AppLocalizations get l10n => AppLocalizations.of(context);
 
   @override
@@ -176,11 +176,11 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
                         // Step 2: OTP Input
                         if (authState.otpSent) ...[
-                          _buildSectionTitle(
-                              l10n.authEnterOtp),
+                          _buildSectionTitle(l10n.authEnterOtp),
                           const SizedBox(height: 8),
                           Text(
-                            l10n.authOtpSentMessage(authState.phoneNumber ?? ''),
+                            l10n.authOtpSentMessage(
+                                authState.phoneNumber ?? ''),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.zinc500,
                             ),
@@ -297,7 +297,6 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               ),
               onChanged: (value) {
                 if (value.isEmpty && index > 0) {
-                  _otpControllers[index - 1].clear();
                   _otpFocusNodes[index - 1].requestFocus();
                 } else if (value.isNotEmpty && index < 5) {
                   _otpFocusNodes[index + 1].requestFocus();

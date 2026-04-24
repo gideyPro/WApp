@@ -757,7 +757,8 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
   final ConferenceService _conferenceService;
   Timer? _pollingTimer;
   static const _pollingInterval = Duration(seconds: 3);
-  bool _isPaused = false;
+  int? _declinedConferenceId;
+  DateTime? _declinedUntil;
 
   IncomingCallNotifier(this._conferenceService) : super(null);
 
@@ -772,27 +773,38 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
     _pollingTimer = null;
   }
 
-  void pausePolling({Duration? duration}) {
-    _isPaused = true;
-    if (duration != null) {
-      Future.delayed(duration, () => _isPaused = false);
-    }
-  }
-
-  void resumePolling() {
-    _isPaused = false;
+  void markDeclined(int conferenceId) {
+    _declinedConferenceId = conferenceId;
+    _declinedUntil = DateTime.now().add(const Duration(seconds: 10));
   }
 
   Future<void> _checkForIncomingCall() async {
-    if (state != null || _isPaused) return;
+    if (state != null) return;
+
+    // Skip if this specific call was just declined (within cooldown)
+    if (_declinedConferenceId != null && _declinedUntil != null) {
+      if (DateTime.now().isBefore(_declinedUntil!)) {
+        return; // Still in cooldown for this specific call
+      }
+      // Cooldown expired, clear
+      _declinedConferenceId = null;
+      _declinedUntil = null;
+    }
 
     try {
       final response = await _conferenceService.checkIncomingCall();
 
       if (response.hasIncoming && response.callData != null) {
         final callData = response.callData!;
+        final conferenceId = callData['conference_id'] ?? 0;
+        
+        // Skip if this was just declined
+        if (_declinedConferenceId == conferenceId && _declinedUntil != null && DateTime.now().isBefore(_declinedUntil!)) {
+          return;
+        }
+        
         state = IncomingCall(
-          conferenceId: callData['conference_id'] ?? 0,
+          conferenceId: conferenceId,
           callerName: callData['caller_name'] ?? 'Unknown',
           callerAvatar: callData['caller_avatar'],
           callerInitials: callData['caller_initials'],

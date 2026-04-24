@@ -18,9 +18,7 @@
 ## Commands
 - `flutter pub get` (deps)
 - `flutter analyze` (lint, uses flutter_lints)
-- `flutter run` (dev)
-- `flutter build apk --debug` / `--release` (builds)
-- No tests exist: skip `flutter test`
+-
 
 ## CI
 - Manual trigger only; builds/upload APKs

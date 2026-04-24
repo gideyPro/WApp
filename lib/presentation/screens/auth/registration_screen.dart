@@ -32,7 +32,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   bool _hasUserData = false;
   int _resendCountdown = 0;
   Timer? _countdownTimer;
-  
+
   AppLocalizations get l10n => AppLocalizations.of(context);
 
   @override
@@ -478,7 +478,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                 ),
               ),
               onChanged: (value) {
-                if (value.isNotEmpty && index < 5) {
+                if (value.isEmpty && index > 0) {
+                  _otpFocusNodes[index - 1].requestFocus();
+                } else if (value.isNotEmpty && index < 5) {
                   _otpFocusNodes[index + 1].requestFocus();
                 } else if (value.isNotEmpty && index == 5) {
                   FocusScope.of(context).unfocus();
