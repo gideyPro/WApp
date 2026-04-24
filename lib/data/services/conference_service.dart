@@ -173,16 +173,44 @@ class ConferenceService {
 
   /// Join conference
   Future<ConferenceResponse> joinConference(int conferenceId) async {
-try {
+    try {
       final response = await _apiClient.dio.get(
         '${ApiConstants.joinConference}/$conferenceId/join',
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-        final jitsiUrl = data['jitsi_url'] as String?;
-        final jitsiToken = data['jitsi_token'] as String?;
-        
+        // Safely extract data
+        if (response.data == null) {
+          return ConferenceResponse(
+            success: false,
+            message: 'Invalid response: null data',
+          );
+        }
+
+        dynamic responseData = response.data;
+        Map<String, dynamic> data = {};
+
+        if (responseData is Map) {
+          data = Map<String, dynamic>.from(responseData);
+        } else {
+          return ConferenceResponse(
+            success: false,
+            message: 'Invalid response format',
+            rawData: responseData,
+          );
+        }
+
+        // Extract URL and token safely
+        String? jitsiUrl;
+        if (data['jitsi_url'] is String) {
+          jitsiUrl = data['jitsi_url'] as String;
+        }
+
+        String? jitsiToken;
+        if (data['jitsi_token'] is String) {
+          jitsiToken = data['jitsi_token'] as String;
+        }
+
         return ConferenceResponse(
           success: true,
           message: 'Joined conference',
@@ -194,7 +222,8 @@ try {
 
       return ConferenceResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to join conference (${response.statusCode})',
+        message: response.data['message'] ??
+            'Failed to join conference (${response.statusCode})',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);

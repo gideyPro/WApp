@@ -152,11 +152,12 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   }
 
   void _navigateToJitsi(ConferenceResponse response) {
-    if (response.jitsiRoomUrl != null && mounted) {
+    final url = response.jitsiRoomUrl;
+    if (url != null && url.isNotEmpty && mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => JitsiCallScreen(
-            jitsiUrl: response.jitsiRoomUrl!,
+            jitsiUrl: url,
             jitsiToken: response.jitsiToken,
             conferenceId: widget.conferenceId,
           ),
@@ -167,7 +168,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
   Future<void> _declineCall() async {
     _stopRinging();
-    
+
     ref.read(incomingCallProvider.notifier).markDeclined(widget.conferenceId);
 
     try {

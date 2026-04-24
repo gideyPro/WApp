@@ -4,17 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../../data/services/conference_service.dart';
 
 class JitsiCallScreen extends ConsumerStatefulWidget {
-  final String jitsiUrl;
+  final String? jitsiUrl;
   final String? jitsiToken;
   final int conferenceId;
 
   const JitsiCallScreen({
     super.key,
-    required this.jitsiUrl,
+    this.jitsiUrl,
     this.jitsiToken,
     required this.conferenceId,
   });
@@ -34,39 +33,41 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
   }
 
   Future<void> _connectToCall() async {
-    if (widget.jitsiUrl == null || widget.jitsiUrl!.isEmpty) {
+    final urlString = widget.jitsiUrl;
+    if (urlString == null || urlString.isEmpty) {
       setState(() {
         _errorMessage = 'No meeting URL provided';
         _isConnecting = false;
       });
       return;
     }
-    
+
     try {
-      String meetingUrl = widget.jitsiUrl!;
+      var meetingUrl = urlString;
 
       // Append JWT token as query parameter if provided
-      if (widget.jitsiToken != null && widget.jitsiToken!.isNotEmpty) {
-        final uri = Uri.parse(meetingUrl);
-        final queryParams = Map<String, String>.from(uri.queryParameters);
-        queryParams['jwt'] = widget.jitsiToken!;
-        meetingUrl = uri.replace(queryParameters: queryParams).toString();
+      final token = widget.jitsiToken;
+      if (token != null && token.isNotEmpty) {
+        final parsedUri = Uri.parse(meetingUrl);
+        final queryParams = Map<String, String>.from(parsedUri.queryParameters);
+        queryParams['jwt'] = token;
+        meetingUrl = parsedUri.replace(queryParameters: queryParams).toString();
       }
 
-      final url = Uri.parse(meetingUrl);
+      final uri = Uri.parse(meetingUrl);
 
-      if (await canLaunchUrl(url)) {
+      if (await canLaunchUrl(uri)) {
         // Try in-app first, fall back to external
         final launched = await launchUrl(
-          url, 
+          uri,
           mode: LaunchMode.inAppWebView,
         );
-        
+
         if (!launched) {
-          await launchUrl(url, mode: LaunchMode.externalApplication);
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
         }
-        
-        if (mounted) {
+
+        if (context.mounted) {
           Navigator.of(context).pop();
         }
       } else {
@@ -77,7 +78,7 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
       }
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to connect';
+        _errorMessage = 'Failed to connect: $e';
         _isConnecting = false;
       });
     }
@@ -113,12 +114,13 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
         ),
       ),
       body: Center(
-        child: _isConnecting 
+        child: _isConnecting
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.wave500),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppColors.wave500),
                   ),
                   const SizedBox(height: 24),
                   Text(
@@ -132,7 +134,8 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 64, color: AppColors.error),
+                  const Icon(Icons.error_outline,
+                      size: 64, color: AppColors.error),
                   const SizedBox(height: 16),
                   Text(
                     _errorMessage ?? 'Failed to connect',
