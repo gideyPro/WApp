@@ -118,7 +118,8 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
         _debugLog += 'success=${response.success}, message=${response.message}\n';
         _debugLog += 'jitsiUrl=${response.jitsiRoomUrl ?? "null"}\n';
         if (response.rawData != null) {
-          _debugLog += 'room=${response.rawData['room_name']}\n';
+          _debugLog += 'rawData keys: ${(response.rawData as Map).keys.toList()}\n';
+          _debugLog += 'rawData: ${response.rawData}\n';
         }
       });
 

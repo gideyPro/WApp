@@ -184,9 +184,17 @@ class ConferenceService {
       if (response.statusCode == 200) {
         final data = response.data['data'] ?? response.data;
         
+        // Log raw data for debugging
+        dev.log('Raw response data: $data');
+        dev.log('All keys: ${data.keys.toList()}');
+        
         // Check for different URL field names
-        String? jitsiUrl = data['jitsi_url'] ?? data['jitsi_url'];
-        String? roomName = data['room_name'] ?? data['room'] ?? data['roomName'];
+        String? jitsiUrl = data['jitsi_url'] ?? data['jitsiUrl'];
+        String? roomName = data['room_name'] ?? data['room'] ?? data['roomName'] ?? data['room_name'];
+        
+        // Log what we found
+        dev.log('Found jitsiUrl: $jitsiUrl');
+        dev.log('Found roomName: $roomName');
         
         // If we have base URL and room name, combine them
         if (jitsiUrl != null && roomName != null && !jitsiUrl.contains(roomName)) {
