@@ -184,28 +184,15 @@ class ConferenceService {
       if (response.statusCode == 200) {
         final data = response.data['data'] ?? response.data;
         
-        // Log raw data for debugging
-        dev.log('Raw response data: $data');
-        dev.log('All keys: ${data.keys.toList()}');
-        
-        // Check for different URL field names
-        String? jitsiUrl = data['jitsi_url'] ?? data['jitsiUrl'];
-        String? roomName = data['room_name'] ?? data['room'] ?? data['roomName'] ?? data['room_name'];
-        
-        // Log what we found
-        dev.log('Found jitsiUrl: $jitsiUrl');
-        dev.log('Found roomName: $roomName');
-        
-        // If we have base URL and room name, combine them
-        if (jitsiUrl != null && roomName != null && !jitsiUrl.contains(roomName)) {
-          jitsiUrl = '$jitsiUrl/$roomName';
-        }
+        // Data structure: {conference: {...}, jitsi_url: "...", jitsi_token: null}
+        final jitsiUrl = data['jitsi_url'] as String?;
+        final jitsiToken = data['jitsi_token'] as String?;
         
         return ConferenceResponse(
           success: true,
           message: 'Joined conference',
           jitsiRoomUrl: jitsiUrl,
-          jitsiToken: data['jitsi_token'] as String?,
+          jitsiToken: jitsiToken,
           rawData: data,
         );
       }
@@ -213,7 +200,6 @@ class ConferenceService {
       return ConferenceResponse(
         success: false,
         message: response.data['message'] ?? 'Failed to join conference (${response.statusCode})',
-        rawData: response.data,
       );
     } catch (e) {
       dev.log('Join conference error: $e');
