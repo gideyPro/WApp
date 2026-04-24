@@ -178,7 +178,7 @@ final unreadCountProvider = StreamProvider<int>((ref) async* {
     } catch (e) {
       yield 0;
     }
-    await Future.delayed(const Duration(seconds: 30));
+    await Future.delayed(const Duration(seconds: 15));
   }
 });
 

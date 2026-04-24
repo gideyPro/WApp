@@ -296,7 +296,10 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                 ),
               ),
               onChanged: (value) {
-                if (value.isNotEmpty && index < 5) {
+                if (value.isEmpty && index > 0) {
+                  _otpControllers[index - 1].clear();
+                  _otpFocusNodes[index - 1].requestFocus();
+                } else if (value.isNotEmpty && index < 5) {
                   _otpFocusNodes[index + 1].requestFocus();
                 } else if (value.isNotEmpty && index == 5) {
                   FocusScope.of(context).unfocus();

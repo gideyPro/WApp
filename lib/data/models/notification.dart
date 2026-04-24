@@ -40,6 +40,34 @@ class Notification {
     required this.createdAt,
   });
 
+  Notification copyWith({
+    int? id,
+    int? userId,
+    String? title,
+    String? body,
+    NotificationType? type,
+    String? actionUrl,
+    int? relatedId,
+    String? relatedType,
+    bool? isRead,
+    DateTime? readAt,
+    DateTime? createdAt,
+  }) {
+    return Notification(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      type: type ?? this.type,
+      actionUrl: actionUrl ?? this.actionUrl,
+      relatedId: relatedId ?? this.relatedId,
+      relatedType: relatedType ?? this.relatedType,
+      isRead: isRead ?? this.isRead,
+      readAt: readAt ?? this.readAt,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   factory Notification.fromJson(Map<String, dynamic> json) {
     return Notification(
       id: json['id'] ?? 0,
