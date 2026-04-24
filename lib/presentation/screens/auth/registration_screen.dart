@@ -24,17 +24,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final List<TextEditingController> _otpControllers =
       List.generate(6, (_) => TextEditingController());
-  late final List<FocusNode> _otpFocusNodes = List.generate(
-      6,
-      (index) => FocusNode(onKeyEvent: (node, event) {
-            if (index > 0 &&
-                event.logicalKey == LogicalKeyboardKey.backspace &&
-                _otpControllers[index].text.isEmpty) {
-              _otpFocusNodes[index - 1].requestFocus();
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          }));
+  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
 
   String? _selectedGender = 'Male';
   bool _isOtpSent = false;
@@ -55,6 +45,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _firstNameController.addListener(_markDataEntered);
     _lastNameController.addListener(_markDataEntered);
     _phoneController.addListener(_markDataEntered);
+    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
   }
 
   void _markDataEntered() {
@@ -75,7 +66,24 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     for (var node in _otpFocusNodes) {
       node.dispose();
     }
+    HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
     super.dispose();
+  }
+
+  bool _handleKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.backspace) {
+      for (int i = 0; i < _otpFocusNodes.length; i++) {
+        if (_otpFocusNodes[i].hasFocus) {
+          if (_otpControllers[i].text.isEmpty && i > 0) {
+            _otpFocusNodes[i - 1].requestFocus();
+            return true;
+          }
+          break;
+        }
+      }
+    }
+    return false;
   }
 
   void _startCountdown() {

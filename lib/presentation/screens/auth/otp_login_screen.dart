@@ -36,6 +36,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authStateProvider.notifier).clearError();
     });
+    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
   }
 
   @override
@@ -48,7 +49,24 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     for (var node in _otpFocusNodes) {
       node.dispose();
     }
+    HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
     super.dispose();
+  }
+
+  bool _handleKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.backspace) {
+      for (int i = 0; i < _otpFocusNodes.length; i++) {
+        if (_otpFocusNodes[i].hasFocus) {
+          if (_otpControllers[i].text.isEmpty && i > 0) {
+            _otpFocusNodes[i - 1].requestFocus();
+            return true;
+          }
+          break;
+        }
+      }
+    }
+    return false;
   }
 
   void _startCountdown() {
@@ -296,14 +314,15 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                 ),
               ),
               onChanged: (value) {
-                if (value.isNotEmpty && index < 5) {
-                  _otpFocusNodes[index + 1].requestFocus();
-                } else if (value.isNotEmpty && index == 5) {
-                  FocusScope.of(context).unfocus();
+                if (value.isNotEmpty) {
+                  if (index < 5) {
+                    _otpFocusNodes[index + 1].requestFocus();
+                  } else if (index == 5) {
+                    FocusScope.of(context).unfocus();
+                  }
+                } else if (value.isEmpty && index > 0) {
+                  _otpFocusNodes[index - 1].requestFocus();
                 }
-              },
-              onTap: () {
-                // If field is empty and user taps on it, allow normal behavior
               },
             ),
           ),
