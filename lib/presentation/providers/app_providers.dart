@@ -792,9 +792,7 @@ Future<void> _checkForIncomingCall() async {
     }
 
     try {
-      dev.log('Checking for incoming calls...');
       final response = await _conferenceService.checkIncomingCall();
-      dev.log('Check incoming response: hasIncoming=${response.hasIncoming}, callData=${response.callData}');
 
       if (response.hasIncoming && response.callData != null) {
         final callData = response.callData!;

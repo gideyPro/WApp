@@ -37,8 +37,6 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   bool _isConnecting = false;
   Timer? _vibrationTimer;
   bool _isRinging = false;
-  
-  String _debugLog = '';
 
   @override
   void initState() {
@@ -104,33 +102,18 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     if (_isConnecting) return;
 
     _stopRinging();
-    setState(() {
-      _isConnecting = true;
-      _debugLog = 'Conference ID: ${widget.conferenceId}\n';
-    });
+    setState(() => _isConnecting = true);
 
     try {
-      setState(() => _debugLog += 'Calling joinConference...\n');
       final service = ConferenceService();
       final response = await service.joinConference(widget.conferenceId);
 
-      setState(() {
-        _debugLog += 'success=${response.success}, message=${response.message}\n';
-        _debugLog += 'jitsiUrl=${response.jitsiRoomUrl ?? "null"}\n';
-        if (response.rawData != null) {
-          _debugLog += 'rawData keys: ${(response.rawData as Map).keys.toList()}\n';
-          _debugLog += 'rawData: ${response.rawData}\n';
-        }
-      });
-
       if (response.success && mounted) {
         if (response.jitsiRoomUrl != null) {
-          setState(() => _debugLog += 'Navigating to Jitsi...\n');
           _navigateToJitsi(response);
           ref.read(incomingCallProvider.notifier).clearIncomingCall();
         } else {
           ref.read(incomingCallProvider.notifier).clearIncomingCall();
-          setState(() => _debugLog += 'No Jitsi URL!\n');
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -143,7 +126,6 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
           }
         }
       } else {
-        setState(() => _debugLog += 'Join failed!\n');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -156,7 +138,6 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
         }
       }
     } catch (e) {
-      setState(() => _debugLog += 'Error: $e\n');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -259,27 +240,6 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
               const Spacer(),
               _buildActionButtons(l10n),
               const SizedBox(height: 60),
-              // Debug display
-              if (_debugLog.isNotEmpty)
-                Container(
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  constraints: const BoxConstraints(maxHeight: 200),
-                  child: SingleChildScrollView(
-                    child: Text(
-                      _debugLog,
-                      style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 12,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                  ),
-                ),
             ],
           ),
         ),

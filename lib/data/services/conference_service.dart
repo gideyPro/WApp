@@ -173,18 +173,13 @@ class ConferenceService {
 
   /// Join conference
   Future<ConferenceResponse> joinConference(int conferenceId) async {
-    try {
+try {
       final response = await _apiClient.dio.get(
         '${ApiConstants.joinConference}/$conferenceId/join',
       );
 
-      // Debug logging
-      dev.log('Join conference: status=${response.statusCode}, data=${response.data}');
-
       if (response.statusCode == 200) {
         final data = response.data['data'] ?? response.data;
-        
-        // Data structure: {conference: {...}, jitsi_url: "...", jitsi_token: null}
         final jitsiUrl = data['jitsi_url'] as String?;
         final jitsiToken = data['jitsi_token'] as String?;
         
@@ -202,7 +197,6 @@ class ConferenceService {
         message: response.data['message'] ?? 'Failed to join conference (${response.statusCode})',
       );
     } catch (e) {
-      dev.log('Join conference error: $e');
       final exception = ApiErrorHandler.handle(e);
       return ConferenceResponse(
         success: false,
