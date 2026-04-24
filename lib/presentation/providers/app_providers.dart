@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -778,21 +779,22 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
     _declinedUntil = DateTime.now().add(const Duration(seconds: 10));
   }
 
-  Future<void> _checkForIncomingCall() async {
+Future<void> _checkForIncomingCall() async {
     if (state != null) return;
 
     // Skip if this specific call was just declined (within cooldown)
     if (_declinedConferenceId != null && _declinedUntil != null) {
       if (DateTime.now().isBefore(_declinedUntil!)) {
-        return; // Still in cooldown for this specific call
+        return;
       }
-      // Cooldown expired, clear
       _declinedConferenceId = null;
       _declinedUntil = null;
     }
 
     try {
+      dev.log('Checking for incoming calls...');
       final response = await _conferenceService.checkIncomingCall();
+      dev.log('Check incoming response: hasIncoming=${response.hasIncoming}, callData=${response.callData}');
 
       if (response.hasIncoming && response.callData != null) {
         final callData = response.callData!;

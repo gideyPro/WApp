@@ -177,8 +177,12 @@ class ConferenceService {
         '${ApiConstants.joinConference}/$conferenceId/join',
       );
 
+      // Debug logging
+      debugPrint('Join conference response: status=${response.statusCode}, data=${response.data}');
+
       if (response.statusCode == 200) {
         final data = response.data['data'] ?? response.data;
+        debugPrint('Join conference data: $data');
         return ConferenceResponse(
           success: true,
           message: 'Joined conference',
@@ -189,9 +193,10 @@ class ConferenceService {
 
       return ConferenceResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to join conference',
+        message: response.data['message'] ?? 'Failed to join conference (${response.statusCode})',
       );
     } catch (e) {
+      debugPrint('Join conference error: $e');
       final exception = ApiErrorHandler.handle(e);
       return ConferenceResponse(
         success: false,

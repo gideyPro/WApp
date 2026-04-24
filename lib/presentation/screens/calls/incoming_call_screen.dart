@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
@@ -104,23 +105,25 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     _vibrationTimer = null;
   }
 
-  Future<void> _acceptCall() async {
+Future<void> _acceptCall() async {
     if (_isConnecting) return;
 
     _stopRinging();
     setState(() => _isConnecting = true);
 
+    dev.log('Accepting call with conferenceId: ${widget.conferenceId}');
+
     try {
       final service = ConferenceService();
       final response = await service.joinConference(widget.conferenceId);
 
+      dev.log('Join conference response: success=${response.success}, message=${response.message}, jitsiUrl=${response.jitsiRoomUrl}');
+
       if (response.success && mounted) {
         if (response.jitsiRoomUrl != null) {
           _navigateToJitsi(response);
-          // Clear incoming call state after navigation initiated
           ref.read(incomingCallProvider.notifier).clearIncomingCall();
         } else {
-          // No Jitsi URL - clear and show error
           ref.read(incomingCallProvider.notifier).clearIncomingCall();
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -132,6 +135,33 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
               ),
             );
           }
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message),
+              backgroundColor: AppColors.error,
+            ),
+          );
+          setState(() => _isConnecting = false);
+          _startRinging();
+        }
+      }
+    } catch (e) {
+      dev.log('Accept call error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to join call: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        setState(() => _isConnecting = false);
+        _startRinging();
+      }
+    }
+  }
         }
       } else {
         if (mounted) {
