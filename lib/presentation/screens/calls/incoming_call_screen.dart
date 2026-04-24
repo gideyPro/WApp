@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
@@ -106,7 +107,10 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
     try {
       final service = ConferenceService();
+      dev.log('=== ACCEPT CALL: conferenceId=${widget.conferenceId} ===', name: 'IncomingCall');
       final response = await service.joinConference(widget.conferenceId);
+
+      dev.log('Response: success=${response.success}, message=${response.message}, jitsiUrl=${response.jitsiRoomUrl}, rawData=${response.rawData}', name: 'IncomingCall');
 
       if (response.success && mounted) {
         if (response.jitsiRoomUrl != null) {
