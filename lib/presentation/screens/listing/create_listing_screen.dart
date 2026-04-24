@@ -31,6 +31,8 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
   Timer? _autoSaveTimer;
   final _addressService = AddressService();
 
+  AppLocalizations get l10n => AppLocalizations.of(context);
+
   // Validation state
   Map<int, List<String>> _stepErrors = {};
 
@@ -1072,7 +1074,8 @@ class _Step1BasicsState extends ConsumerState<_Step1Basics> {
     required String label,
     required Function(String?) onChanged,
     bool isLoading = false,
-  }) {
+}) {
+    final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
       value: items.contains(value) ? value : null,
       decoration: InputDecoration(
@@ -1089,7 +1092,7 @@ class _Step1BasicsState extends ConsumerState<_Step1Basics> {
       dropdownColor: Colors.white,
       items: items.isEmpty
           ? [
-              const DropdownMenuItem(
+              DropdownMenuItem(
                   value: null,
                   child: Text(l10n.listingNoOptions,
                       style: TextStyle(color: Colors.grey)))
@@ -1444,6 +1447,7 @@ class _Step2DetailsState extends State<_Step2Details> {
       required List<String> items,
       required String label,
       required Function(String?) onChanged}) {
+    final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
       value: items.contains(value) ? value : null,
       decoration: InputDecoration(
@@ -1454,7 +1458,7 @@ class _Step2DetailsState extends State<_Step2Details> {
       dropdownColor: Colors.white,
       items: items.isEmpty
           ? [
-              const DropdownMenuItem(
+              DropdownMenuItem(
                   value: null,
                   child: Text(l10n.listingSelect,                      style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.normal)))

@@ -85,7 +85,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
         if (_formData.totalSquareMeters != null) 'total_square_meters': _formData.totalSquareMeters.toString(),
       };
       
-      await service.updateListing(widget.listing.id, data);
+      await service.updateListing(listingId: widget.listing.id, listingData: data);
       
       if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
@@ -177,7 +177,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
-              value: (currentStep + 1) / 4,
+              value: (_currentStep + 1) / 4,
               backgroundColor: AppColors.zinc200,
               valueColor: const AlwaysStoppedAnimation<Color>(AppColors.wave500),
               minHeight: 4,
@@ -187,8 +187,8 @@ class _EditListingScreenState extends State<EditListingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(4, (i) {
-              final isCompleted = i < currentStep;
-              final isCurrent = i == currentStep;
+              final isCompleted = i < _currentStep;
+              final isCurrent = i == _currentStep;
               return Row(
                 children: [
                   Container(

@@ -416,6 +416,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingPropertyType => 'Property Type';
 
   @override
+  String get listingTitle => 'Title';
+
+  @override
+  String get listingArea => 'Area';
+
+  @override
+  String get listingListingType => 'Listing Type';
+
+  @override
   String get listingHoldingType => 'Holding Type';
 
   @override

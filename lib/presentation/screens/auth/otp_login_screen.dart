@@ -27,6 +27,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   int _resendCountdown = 0;
   Timer? _countdownTimer;
+  
+  AppLocalizations get l10n => AppLocalizations.of(context);
 
   @override
   void initState() {
@@ -178,7 +180,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                               l10n.authEnterOtp),
                           const SizedBox(height: 8),
                           Text(
-                            l10n.authOtpSentMessage(authState.phoneNumber),
+                            l10n.authOtpSentMessage(authState.phoneNumber ?? ''),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.zinc500,
                             ),

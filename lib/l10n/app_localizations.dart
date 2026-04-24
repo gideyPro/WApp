@@ -880,6 +880,24 @@ abstract class AppLocalizations {
   /// **'Property Type'**
   String get listingPropertyType;
 
+  /// No description provided for @listingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get listingTitle;
+
+  /// No description provided for @listingArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get listingArea;
+
+  /// No description provided for @listingListingType.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing Type'**
+  String get listingListingType;
+
   /// No description provided for @listingHoldingType.
   ///
   /// In en, this message translates to:

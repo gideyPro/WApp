@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
@@ -31,6 +32,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   bool _hasUserData = false;
   int _resendCountdown = 0;
   Timer? _countdownTimer;
+  
+  AppLocalizations get l10n => AppLocalizations.of(context);
 
   @override
   void initState() {

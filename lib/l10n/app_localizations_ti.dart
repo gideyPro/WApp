@@ -411,6 +411,15 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingPropertyType => 'ዓይነት ንብረት';
 
   @override
+  String get listingTitle => 'ርእስ';
+
+  @override
+  String get listingArea => 'ቦታ';
+
+  @override
+  String get listingListingType => 'ዓይነት ማስፈርድ';
+
+  @override
   String get listingHoldingType => 'ዓይነት ዋናነት';
 
   @override

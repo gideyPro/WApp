@@ -24,6 +24,9 @@ class _SubscriptionPlansScreenState
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   final PaymentService _paymentService = PaymentService();
   bool _isProcessingPayment = false;
+  
+  AppLocalizations get l10n => AppLocalizations.of(context);
+  
   @override
   void initState() {
     super.initState();

@@ -411,6 +411,15 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingPropertyType => 'የንብረት አይነት';
 
   @override
+  String get listingTitle => 'ርእስ';
+
+  @override
+  String get listingArea => 'ቦታ';
+
+  @override
+  String get listingListingType => 'የማስፈርድ አይነት';
+
+  @override
   String get listingHoldingType => 'የባለቤትነት ሁኔታ';
 
   @override

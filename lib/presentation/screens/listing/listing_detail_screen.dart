@@ -953,8 +953,8 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     if (confirmed != true) return;
     try {
       final service = ListingService();
-      final success = await service.deleteListing(listing.id);
-      if (success && mounted) Navigator.of(context).pop();
+      final result = await service.deleteListing(listing.id);
+      if (result.success && mounted) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
