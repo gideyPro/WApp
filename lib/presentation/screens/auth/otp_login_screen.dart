@@ -23,7 +23,17 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final List<TextEditingController> _otpControllers =
       List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
+  late final List<FocusNode> _otpFocusNodes = List.generate(
+      6,
+      (index) => FocusNode(onKeyEvent: (node, event) {
+            if (index > 0 &&
+                event.logicalKey == LogicalKeyboardKey.backspace &&
+                _otpControllers[index].text.isEmpty) {
+              _otpFocusNodes[index - 1].requestFocus();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          }));
 
   int _resendCountdown = 0;
   Timer? _countdownTimer;
@@ -296,13 +306,14 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                 ),
               ),
               onChanged: (value) {
-                if (value.isEmpty && index > 0) {
-                  _otpFocusNodes[index - 1].requestFocus();
-                } else if (value.isNotEmpty && index < 5) {
+                if (value.isNotEmpty && index < 5) {
                   _otpFocusNodes[index + 1].requestFocus();
                 } else if (value.isNotEmpty && index == 5) {
                   FocusScope.of(context).unfocus();
                 }
+              },
+              onTap: () {
+                // If field is empty and user taps on it, allow normal behavior
               },
             ),
           ),

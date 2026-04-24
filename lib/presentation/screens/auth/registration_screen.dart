@@ -24,7 +24,17 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final List<TextEditingController> _otpControllers =
       List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
+  late final List<FocusNode> _otpFocusNodes = List.generate(
+      6,
+      (index) => FocusNode(onKeyEvent: (node, event) {
+            if (index > 0 &&
+                event.logicalKey == LogicalKeyboardKey.backspace &&
+                _otpControllers[index].text.isEmpty) {
+              _otpFocusNodes[index - 1].requestFocus();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          }));
 
   String? _selectedGender = 'Male';
   bool _isOtpSent = false;
