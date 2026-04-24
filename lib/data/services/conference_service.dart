@@ -226,10 +226,14 @@ class ConferenceService {
         );
       }
 
+      // Handle non-200 responses (400, 401, etc.)
+      final errorMessage = response.data is Map && response.data['message'] != null
+          ? response.data['message'] as String
+          : 'Failed to join conference (HTTP ${response.statusCode})';
+
       return ConferenceResponse(
         success: false,
-        message: response.data['message'] ??
-            'Failed to join conference (${response.statusCode})',
+        message: errorMessage,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
