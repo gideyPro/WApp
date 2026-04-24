@@ -1026,60 +1026,18 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
             ),
             const SizedBox(height: 12),
           ],
-          // Interest button
-          Row(
-            children: [
-              Expanded(
-                child: hasInterest
-                    ? OutlinedButton.icon(
-                        onPressed: isAccepted
-                            ? null
-                            : () => _cancelInterest(
-                                listing.id, listing.userInterestId),
-                        icon: Icon(
-                          isAccepted
-                              ? Icons.check_circle
-                              : isPending
-                                  ? Icons.hourglass_empty
-                                  : Icons.close,
-                          size: 20,
-                        ),
-                        label: Text(
-                          isAccepted
-                              ? l10n.listingsInterestAccepted
-                              : isPending
-                                  ? l10n.listingsInterestPending
-                                  : l10n.listingsInterestRejected,
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: BorderSide(
-                            color: isAccepted
-                                ? AppColors.emerald600
-                                : isPending
-                                    ? Colors.amber
-                                    : AppColors.error,
-                          ),
-                          foregroundColor: isAccepted
-                              ? AppColors.emerald600
-                              : isPending
-                                  ? Colors.amber[700]
-                                  : AppColors.error,
-                        ),
-                      )
-                    : OutlinedButton.icon(
-                        onPressed: () => _submitInterest(listing.id),
-                        icon: const Icon(Icons.handyman_outlined, size: 20),
-                        label: Text(l10n.listingsImInterested),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: const BorderSide(color: AppColors.wave500),
-                          foregroundColor: AppColors.wave600,
-                        ),
-                      ),
+          // Interest button - only for non-owners who haven't submitted interest
+          if (!isOwner && !hasInterest)
+            OutlinedButton.icon(
+              onPressed: () => _submitInterest(listing.id),
+              icon: const Icon(Icons.handyman_outlined, size: 20),
+              label: Text(l10n.listingsImInterested),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: const BorderSide(color: AppColors.wave500),
+                foregroundColor: AppColors.wave600,
               ),
-            ],
-          ),
+            ),
         ],
       ),
     );
