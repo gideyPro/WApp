@@ -972,6 +972,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get messagesSend => 'ስደድ';
 
   @override
+  String get messagesUnread => 'ያልተነብሡ';
+
+  @override
+  String get messagesSwitchContext => 'ኣውራጅ ለውጥ';
+
+  @override
   String get settingsTitle => 'ቅጥዒታት';
 
   @override

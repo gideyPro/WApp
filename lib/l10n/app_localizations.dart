@@ -1936,6 +1936,18 @@ abstract class AppLocalizations {
   /// **'Send'**
   String get messagesSend;
 
+  /// No description provided for @messagesUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'unread'**
+  String get messagesUnread;
+
+  /// No description provided for @messagesSwitchContext.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Context'**
+  String get messagesSwitchContext;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:

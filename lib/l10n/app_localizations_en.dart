@@ -982,6 +982,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messagesSend => 'Send';
 
   @override
+  String get messagesUnread => 'unread';
+
+  @override
+  String get messagesSwitchContext => 'Switch Context';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

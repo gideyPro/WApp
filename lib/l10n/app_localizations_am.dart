@@ -972,6 +972,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get messagesSend => 'ላክ';
 
   @override
+  String get messagesUnread => 'ያልተነበቡ';
+
+  @override
+  String get messagesSwitchContext => 'አውራጅ ለውጥ';
+
+  @override
   String get settingsTitle => 'ቅንብሮች';
 
   @override
