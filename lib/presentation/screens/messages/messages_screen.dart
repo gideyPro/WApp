@@ -468,10 +468,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final allConversations = conversationsState.conversations;
     
     // Filter: same other participant but different conversation
-    final related = allConversations.where((c) {
-      return c.id != widget.conversationId && 
-             (c.senderId == otherId || c.receiverId == otherId);
-    }).toList();
+    final related = allConversations
+        .where((c) {
+          return c.id != widget.conversationId && 
+                 (c.senderId == otherId || c.receiverId == otherId);
+        })
+        .map((c) => msg.Conversation(
+              id: c.id,
+              senderId: c.senderId,
+              receiverId: c.receiverId,
+              createdAt: c.createdAt,
+            ))
+        .toList();
     
     if (mounted) {
       setState(() {
