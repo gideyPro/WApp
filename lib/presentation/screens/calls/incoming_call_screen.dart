@@ -141,8 +141,8 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
   void _navigateToJitsi(ConferenceResponse response) {
     final url = response.jitsiRoomUrl;
-    if (url != null && url.isNotEmpty && mounted) {
-      Navigator.of(context).pushReplacement(
+    if (url != null && url.isNotEmpty) {
+      navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder: (context) => JitsiCallScreen(
             jitsiUrl: url,

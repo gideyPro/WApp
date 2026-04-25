@@ -17,6 +17,9 @@ import '../../core/network/connectivity_service.dart';
 import '../../core/network/api_client.dart';
 import '../../data/models/message.dart' as msg;
 
+/// Global Navigator Key for context-less navigation (useful for overlays)
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 /// Connectivity Provider
 final connectivityProvider = Provider<ConnectivityService>((ref) {
   final service = ConnectivityService();

@@ -95,6 +95,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
     }
 
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'WaveMart',
       debugShowCheckedModeBanner: false,
       theme: getThemeData(themeMode),
