@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/services/conference_service.dart';
+import '../../../core/network/api_constants.dart';
+import '../../../core/network/api_client.dart';
 
 class JitsiCallScreen extends ConsumerStatefulWidget {
   final String? jitsiUrl;
@@ -33,54 +36,71 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
   }
 
   Future<void> _connectToCall() async {
-    final urlString = widget.jitsiUrl;
-    if (urlString == null || urlString.isEmpty) {
-      setState(() {
-        _errorMessage = 'No meeting URL provided';
-        _isConnecting = false;
-      });
-      return;
-    }
-
     try {
-      var meetingUrl = urlString;
+      // 1. Request native permissions first
+      final cameraStatus = await Permission.camera.request();
+      final micStatus = await Permission.microphone.request();
 
-      // Append JWT token as query parameter if provided
-      final token = widget.jitsiToken;
-      if (token != null && token.isNotEmpty) {
-        final parsedUri = Uri.parse(meetingUrl);
-        final queryParams = Map<String, String>.from(parsedUri.queryParameters);
-        queryParams['jwt'] = token;
-        meetingUrl = parsedUri.replace(queryParameters: queryParams).toString();
+      if (!cameraStatus.isGranted || !micStatus.isGranted) {
+        setState(() {
+          _errorMessage = 'Camera and Microphone permissions are required to join the call.';
+          _isConnecting = false;
+        });
+        return;
       }
 
-      final uri = Uri.parse(meetingUrl);
+      // 2. Build the managed web URL
+      // Use the web-based join route: /conferences/{id}/join
+      final baseUrl = ApiConstants.baseUrl;
+      final conferenceId = widget.conferenceId;
+      
+      // Get the current token for the "magic link" bridge
+      final apiClient = ApiClient();
+      final token = await apiClient.getAuthToken();
+      
+      if (token == null) {
+        setState(() {
+          _errorMessage = 'Authentication token not found.';
+          _isConnecting = false;
+        });
+        return;
+      }
 
-      if (await canLaunchUrl(uri)) {
-        // Try in-app first, fall back to external
+      // Construct the URL with the token for the TokenToSession middleware
+      final webJoinUrl = Uri.parse('$baseUrl/conferences/$conferenceId/join').replace(
+        queryParameters: {
+          'token': token,
+        },
+      );
+
+      if (await canLaunchUrl(webJoinUrl)) {
         final launched = await launchUrl(
-          uri,
-          mode: LaunchMode.inAppWebView,
+          webJoinUrl,
+          mode: LaunchMode.inAppBrowserView,
         );
 
-        if (!launched) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
-
-        if (context.mounted) {
+        if (launched && context.mounted) {
+          // Immediately pop since the browser view is an overlay
           Navigator.of(context).pop();
+        } else if (!launched) {
+          setState(() {
+            _errorMessage = 'Could not launch the call room.';
+            _isConnecting = false;
+          });
         }
       } else {
         setState(() {
-          _errorMessage = 'Cannot open meeting link';
+          _errorMessage = 'Cannot open the meeting room link.';
           _isConnecting = false;
         });
       }
     } catch (e) {
-      setState(() {
-        _errorMessage = 'Failed to connect: $e';
-        _isConnecting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Failed to connect: $e';
+          _isConnecting = false;
+        });
+      }
     }
   }
 
