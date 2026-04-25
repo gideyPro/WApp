@@ -37,13 +37,12 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
 
   Future<void> _connectToCall() async {
     try {
-      // 1. Request native permissions first
-      final cameraStatus = await Permission.camera.request();
+      // 1. Request native microphone permission
       final micStatus = await Permission.microphone.request();
 
-      if (!cameraStatus.isGranted || !micStatus.isGranted) {
+      if (!micStatus.isGranted) {
         setState(() {
-          _errorMessage = 'Camera and Microphone permissions are required to join the call.';
+          _errorMessage = 'Microphone permission is required to join the call.';
           _isConnecting = false;
         });
         return;
@@ -120,7 +119,7 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
       backgroundColor: isDark ? AppColors.navy950 : Colors.white,
       appBar: AppBar(
         backgroundColor: isDark ? AppColors.navy900 : Colors.white,
-        title: const Text('Video Call'),
+        title: const Text('Audio Call'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
@@ -143,12 +142,12 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
                         AlwaysStoppedAnimation<Color>(AppColors.wave500),
                   ),
                   const SizedBox(height: 24),
-                  Text(
-                    'Connecting to call...',
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: isDark ? Colors.white : AppColors.navy900,
+                    Text(
+                      'Connecting to audio call...',
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: isDark ? Colors.white : AppColors.navy900,
+                      ),
                     ),
-                  ),
                 ],
               )
             : Column(
