@@ -75,7 +75,7 @@ class ConferenceService {
       final response = await _apiClient.dio.post(
         '${ApiConstants.createConference}/$listingId',
         data: {
-          if (participantIds != null) 'participant_ids': participantIds,
+          if (participantIds != null) 'buyer_ids': participantIds,
         },
       );
 

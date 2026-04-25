@@ -107,24 +107,24 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     setState(() => _isConnecting = true);
 
     try {
-      final joinUrl = '${ApiConstants.apiBase}/conferences/${widget.conferenceId}/join';
+      final service = ConferenceService();
+      final response = await service.joinConference(widget.conferenceId);
       
-      final uri = Uri.parse(joinUrl);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.inAppWebView);
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Cannot open join link'),
-              backgroundColor: AppColors.error,
-            ),
-          );
-          setState(() => _isConnecting = false);
-          _startRinging();
-        }
-      }
+      if (!mounted) return;
       ref.read(incomingCallProvider.notifier).clearIncomingCall();
+
+      if (response.success && response.jitsiRoomUrl != null) {
+        _navigateToJitsi(response);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.message.isNotEmpty ? response.message : 'Cannot open join link'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        setState(() => _isConnecting = false);
+        _startRinging();
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
