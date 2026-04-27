@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
@@ -27,11 +28,17 @@ final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
 });
 
 /// Settings Screen - App settings and support (no profile/nav)
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+
+  @override
+  Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
     final kycState = ref.watch(kycStatusProvider);
     final localeCode = ref.watch(localeProvider).locale?.languageCode;
@@ -295,7 +302,7 @@ final settingsAsync = ref.watch(appSettingsProvider);
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: context.isDarkMode ? AppColors.navy800 : AppColors.navy50,
+              color: context.theme.isDark ? AppColors.navy800 : AppColors.navy50,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -322,7 +329,7 @@ final settingsAsync = ref.watch(appSettingsProvider);
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: context.isDarkMode ? AppColors.wave950 : AppColors.wave100,
+                    color: context.theme.isDark ? AppColors.wave950 : AppColors.wave100,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.wave500.withOpacity(0.3)),
                   ),

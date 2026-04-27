@@ -7,6 +7,9 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/listing_card.dart';
 import '../search/search_screen.dart';
+import '../kyc/kyc_verification_screen.dart';
+import '../../widgets/common/wave_glass.dart';
+import '../../../core/theme/text_styles.dart';
 import '../notifications/notifications_screen.dart';
 import '../listing/listing_detail_screen.dart';
 import '../listing/my_listings_screen.dart';
@@ -698,8 +701,6 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 
