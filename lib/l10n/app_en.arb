@@ -132,6 +132,8 @@
   "listingSubmitListing": "Submit Listing",
   "listingContinue": "Continue",
   "listingBack": "Back",
+  "listingYearBuilt": "Year Built",
+  "listingRentalPeriod": "Rental Period",
   "listingStepBasics": "Basics",
   "listingStepDetails": "Details",
   "listingStepMedia": "Media",

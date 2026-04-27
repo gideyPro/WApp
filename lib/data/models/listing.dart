@@ -23,6 +23,15 @@ int? _safeInt(dynamic value, {int defaultValue = 0}) {
   return defaultValue;
 }
 
+// Helper to safely parse bools
+bool _safeBool(dynamic value, {bool defaultValue = false}) {
+  if (value == null) return defaultValue;
+  if (value is bool) return value;
+  if (value is int) return value != 0;
+  if (value is String) return value.toLowerCase() == 'true';
+  return defaultValue;
+}
+
 // Parse property type from backend (handles 'App\Models\House' or 'house')
 PropertyType _parsePropertyType(dynamic value) {
   if (value == null) return PropertyType.house;
@@ -109,6 +118,18 @@ class Listing extends ChangeNotifier {
   final String? cooperativeName;
   final String? cooperativeCode;
 
+  // Additional property details
+  final int? yearBuilt;
+  final String? houseType;
+  final bool electricity;
+  final bool water;
+  final bool parkingAvailable;
+  final String? buildingStatus;
+  final int? leasedYear;
+  final double? leasePricePerSqm;
+  final String? buildType;
+  final double? annualPayment;
+
   final String? description;
   final int? bedrooms;
   final int? bathrooms;
@@ -161,6 +182,16 @@ class Listing extends ChangeNotifier {
     this.leaseExpiryDate,
     this.cooperativeName,
     this.cooperativeCode,
+    this.yearBuilt,
+    this.houseType,
+    this.electricity = false,
+    this.water = false,
+    this.parkingAvailable = false,
+    this.buildingStatus,
+    this.leasedYear,
+    this.leasePricePerSqm,
+    this.buildType,
+    this.annualPayment,
     this.description,
     this.bedrooms,
     this.bathrooms,
@@ -240,6 +271,18 @@ class Listing extends ChangeNotifier {
       // Cooperative details
       cooperativeName: json['cooperative_name'],
       cooperativeCode: json['cooperative_code'],
+
+      // Additional property details
+      yearBuilt: _safeInt(property is Map ? property['year_built'] : json['year_built']),
+      houseType: property is Map ? property['house_type'] : json['house_type'],
+      electricity: _safeBool(property is Map ? property['electricity'] : json['electricity']),
+      water: _safeBool(property is Map ? property['water'] : json['water']),
+      parkingAvailable: _safeBool(property is Map ? property['parking_available'] : json['parking_available']),
+      buildingStatus: property is Map ? property['building_status'] : json['building_status'],
+      leasedYear: _safeInt(property is Map ? property['leased_year'] : json['leased_year']),
+      leasePricePerSqm: _parseDouble(property is Map ? property['lease_price_per_sqm'] : json['lease_price_per_sqm']),
+      buildType: property is Map ? property['build_type'] : json['build_type'],
+      annualPayment: _parseDouble(property is Map ? property['annual_payment'] : json['annual_payment']),
 
       description: json['description'] ??
           (property is Map ? property['description'] : null),
