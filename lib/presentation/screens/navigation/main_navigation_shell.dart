@@ -18,15 +18,14 @@ class MainNavigationShell extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
-  int _selectedIndex = 0;
-
   void _onItemTapped(int index) {
     if (index == 2) return; // FAB button
-    setState(() => _selectedIndex = index);
+    ref.read(selectedTabProvider.notifier).state = index;
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = ref.watch(selectedTabProvider);
     final screens = [
       const HomeScreen(),
       const FavoritesScreen(),
@@ -48,7 +47,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       extendBody: true,
       body: IndexedStack(
-        index: _selectedIndex,
+        index: selectedIndex,
         children: screens,
       ),
       floatingActionButton: FloatingActionButton(
@@ -100,7 +99,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   }
 
   Widget _buildNavItem(IconData icon, String label, int index) {
-    final isSelected = _selectedIndex == index;
+    final selectedIndex = ref.watch(selectedTabProvider);
+    final isSelected = selectedIndex == index;
     return Expanded(
       child: InkWell(
         onTap: () => _onItemTapped(index),
@@ -129,7 +129,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   }
 
   Widget _buildMessagesNavItem(int unreadCount) {
-    final isSelected = _selectedIndex == 3;
+    final selectedIndex = ref.watch(selectedTabProvider);
+    final isSelected = selectedIndex == 3;
     return Expanded(
       child: InkWell(
         onTap: () => _onItemTapped(3),

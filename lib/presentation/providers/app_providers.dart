@@ -20,6 +20,9 @@ import '../../data/models/message.dart' as msg;
 /// Global Navigator Key for context-less navigation (useful for overlays)
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+/// Selected Tab Provider for MainNavigationShell
+final selectedTabProvider = StateProvider<int>((ref) => 0);
+
 /// Connectivity Provider
 final connectivityProvider = Provider<ConnectivityService>((ref) {
   final service = ConnectivityService();

@@ -38,6 +38,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   int? _selectedPriceMin;
   int? _selectedPriceMax;
   String? _selectedPriceLabel;
+  bool _isFeaturedFilter = false;
   Map<String, dynamic> _activeFilters = {};
   bool _hasSearched = false;
   bool _rentalEnabled = false;
@@ -60,6 +61,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
     if (widget.isFeatured) {
       setState(() {
+        _isFeaturedFilter = true;
         _activeFilters = {..._activeFilters, 'is_featured': 'true'};
       });
       _performSearch();
@@ -106,6 +108,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void _performSearch() {
     final query = _searchController.text.trim();
     _activeFilters = {};
+    if (_isFeaturedFilter) {
+      _activeFilters['is_featured'] = 'true';
+    }
     if (query.isNotEmpty) _activeFilters['location'] = query;
     if (_selectedType != null) _activeFilters['type'] = _selectedType;
     if (_selectedListingType != null)
@@ -130,6 +135,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       _selectedPriceMin = null;
       _selectedPriceMax = null;
       _selectedPriceLabel = null;
+      _isFeaturedFilter = false;
       _activeFilters = {};
       _hasSearched = false;
       _searchController.clear();
@@ -153,6 +159,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       _selectedListingType != null ||
       _selectedSort != 'newest' ||
       _selectedPriceLabel != null ||
+      _isFeaturedFilter ||
       _searchController.text.isNotEmpty;
 
   @override
@@ -342,6 +349,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   _removeFilterAndCheck(() {});
                 },
               ),
+            if (_isFeaturedFilter)
+              _filterChip(
+                'Featured',
+                () => _removeFilterAndCheck(
+                    () => setState(() => _isFeaturedFilter = false)),
+              ),
             const SizedBox(width: 8),
             GestureDetector(
               onTap: _clearAllFilters,
@@ -475,6 +488,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   setState(() => _selectedListingType = 'rental');
                   _performSearch();
                 }),
+              _popularSearchChip('Featured', () {
+                setState(() => _isFeaturedFilter = true);
+                _performSearch();
+              }),
               _popularSearchChip(l10n.searchUnder5M, () {
                 setState(() {
                   _selectedPriceLabel = 'Under 5M';
