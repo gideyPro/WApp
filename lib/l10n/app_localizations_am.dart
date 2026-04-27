@@ -146,6 +146,153 @@ class AppLocalizationsAm extends AppLocalizations {
   String get profileHelp => 'የእርዳታ ማዕከል';
 
   @override
+  String get helpSearchHint => 'እገዛ ይፈልጉ...';
+
+  @override
+  String get helpNoResultsTitle => 'ምንም ውጤት አልተገኘም';
+
+  @override
+  String get helpNoResultsSubtitle => 'ሌላ ቃል ይሞክሩ ወይም ምድቦችን ይመልከቱ';
+
+  @override
+  String get helpStillNeedHelp => 'ተጨማሪ እገዛ ይፈልጋሉ?';
+
+  @override
+  String get helpSupportTeam => 'የእገዛ ቡድናችን እርስዎን ለመርዳት ዝግጁ ነው።';
+
+  @override
+  String get helpEmail => 'ኢሜይል';
+
+  @override
+  String get helpCall => 'ይደውሉ';
+
+  @override
+  String get helpErrorEmail => 'የኢሜይል መተግበሪያን መክፈት አልተቻለም';
+
+  @override
+  String get helpErrorPhone => 'የስልክ መተግበሪያን መክፈት አልተቻለም';
+
+  @override
+  String get helpCategoryAccount => 'መለያ እና መገለጫ';
+
+  @override
+  String get helpCategoryListings => 'ንብረቶች';
+
+  @override
+  String get helpCategoryPayments => 'ክፍያዎች እና ምዝገባዎች';
+
+  @override
+  String get helpCategoryKyc => 'የማንነት ማረጋገጫ (KYC)';
+
+  @override
+  String get helpCategorySafety => 'ደህንነት እና ደንቦች';
+
+  @override
+  String get helpAccCreateTitle => 'መለያ እንዴት እንደሚከፈት';
+
+  @override
+  String get helpAccCreateContent =>
+      'በዌቭማርት ላይ መለያ ለመክፈት:\n\n1. መተግበሪያውን ይክፈቱ እና \"ይመዝገቡ\" የሚለውን ይንኩ\n2. ስልክ ቁጥርዎን ወይም ኢሜይልዎን ያስገቡ\n3. ባለ 6 አሃዝ ኮድ (OTP) ይላክልዎታል\n4. መለያዎን ለማረጋገጥ ኮዱን ያስገቡ\n5. ስምዎን እና ሌሎች ዝርዝሮችን በማከል መገለጫዎን ያጠናቅቁ\n\nአንዴ ከተመዘገቡ በኋላ ንብረቶችን ማየት፣ የራስዎን ንብረቶች መመዝገብ እና ከሌሎች ተጠቃሚዎች ጋር መገናኘት ይችላሉ።';
+
+  @override
+  String get helpAccEditTitle => 'መገለጫዎን እንዴት እንደሚያስተካክሉ';
+
+  @override
+  String get helpAccEditContent =>
+      'የመገለጫ መረጃዎን ለማስተካከል:\n\n1. ወደ መገለጫ (Profile) ይሂዱ\n2. \"መገለጫ ያስተካክሉ\" የሚለውን ይንኩ\n3. ስምዎን፣ ኢሜይልዎን ወይም ሌሎች ዝርዝሮችን ያዘምኑ\n4. ለውጦቹን ለማረጋገጥ \"አስቀምጥ\" የሚለውን ይንኩ\n\nየመገለጫ መረጃዎ ስለ ንብረቶች በሚነጋገሩበት ጊዜ ሌሎች ተጠቃሚዎች እርስዎን እንዲያውቁ ይረዳል።';
+
+  @override
+  String get helpAccResetTitle => 'የይለፍ ቃልዎን እንዴት መቀየር እንደሚችሉ';
+
+  @override
+  String get helpAccResetContent =>
+      'የይለፍ ቃልዎን መቀየር ካለብዎ:\n\n1. በመግቢያ ገጹ ላይ \"የይለፍ ቃል ረስተዋል?\" የሚለውን ይንኩ\n2. የተመዘገቡበትን ስልክ ቁጥር ወይም ኢሜይል ያስገቡ\n3. ባለ 6 አሃዝ ኮድ ይላክልዎታል\n4. ኮዱን ያስገቡ እና አዲስ የይለፍ ቃል ያዘጋጁ\n\nለሌሎች ሰዎች የማይጋሩት ጠንካራ የይለፍ ቃል መጠቀሙን ያረጋግጡ።';
+
+  @override
+  String get helpListCreateTitle => 'ንብረት እንዴት እንደሚመዘገብ';
+
+  @override
+  String get helpListCreateContent =>
+      'የንብረት ምዝገባ ለማካሄድ:\n\n1. በታችኛው ዳሰሳ ላይ ያለውን \"+\" ቁልፍ ይንኩ\n2. የንብረት አይነት ይምረጡ (ቤት ወይም ቦታ)\n3. የማስፈርድ አይነት ይምረጡ (ለሽያጭ ወይም ለኪራይ)\n4. የንብረቱን ዝርዝር መረጃ ይሙሉ: ዋጋ፣ ስፋት፣ መግለጫ\n5. የአድራሻ መረጃ ያክሉ\n6. የንብረቱን ግልጽ ፎቶዎች ያያይዙ (እስከ 10 ፎቶዎች)\n7. ምዝገባዎን ከከለሱ በኋላ ያስገቡ\n\nንብረትዎ በቀጥታ ከመታየቱ በፊት በቡድናችን ይገመገማል። ይህ ብዙውን ጊዜ ጥቂት ሰዓታትን ይወስዳል።';
+
+  @override
+  String get helpListManageTitle => 'ንብረቶችዎን እንዴት እንደሚያስተዳድሩ';
+
+  @override
+  String get helpListManageContent =>
+      'የመዘገቧቸውን ንብረቶች ለማስተዳደር:\n\n1. ወደ ቅንብሮች > የእኔ ንብረቶች ይሂዱ\n2. እዚህ ሁሉንም ንቁ ንብረቶችዎን ማየት ይችላሉ\n3. ዝርዝሩን ለማየት በአንድ ንብረት ላይ ይንኩ\n4. ከንብረት ዝርዝር ገጽ ላይ ማስተካከል ወይም መሰረዝ ይችላሉ\n\nያልጸደቁ ወይም በመጠባበቅ ላይ ያሉ ንብረቶችም ከነሁኔታቸው እዚህ ይታያሉ።';
+
+  @override
+  String get helpListTipsTitle => 'ለተሻለ ንብረት ምዝገባ ጠቃሚ ምክሮች';
+
+  @override
+  String get helpListTipsContent =>
+      'ንብረትዎ ጎልቶ እንዲታይ:\n\n1. ግልጽ እና ብርሃን ያላቸው ፎቶዎችን ይጠቀሙ (ቢያንስ 5 ፎቶዎች)\n2. ስለ ንብረቱ ዝርዝር መግለጫ ይጻፉ\n3. ትክክለኛ የአድራሻ ዝርዝሮችን ያካትቱ\n4. ተወዳዳሪ እና ተመጣጣኝ ዋጋ ያውጡ\n5. በአቅራቢያ ያሉ አገልግሎቶችን እና ታዋቂ ቦታዎችን ይጠቅሱ\n6. የንብረቱን ልዩ ባህሪያት ይጥቀሱ\n7. ከገዢዎች ለሚመጡ ጥያቄዎች በፍጥነት ምላሽ ይስጡ';
+
+  @override
+  String get helpPayPlansTitle => 'ስለ አባልነት ዕቅዶች መግለጫ';
+
+  @override
+  String get helpPayPlansContent =>
+      'ዌቭማርት በርካታ የአባልነት ዕቅዶችን ያቀርባል:\n\n- ነጻ ዕቅድ: ውስን ንብረቶችን ለመመዝገብ\n- መሰረታዊ ዕቅድ: ተጨማሪ ንብረቶች እና መሰረታዊ አገልግሎቶች\n- ፕሪሚየም ዕቅድ: ያልተገደበ ምዝገባ እና ሁሉንም አገልግሎቶች (ልዩ ንብረቶችን ጨምሮ)\n\nእያንዳንዱ ዕቅድ የራሱ ጥቅሞች እና ዋጋ አለው። በማንኛውም ጊዜ ከአባልነት ገጽ ላይ ዕቅድዎን መቀየር ይችላሉ።';
+
+  @override
+  String get helpPayMakeTitle => 'ክፍያ እንዴት እንደሚፈጸም';
+
+  @override
+  String get helpPayMakeContent =>
+      'ለአባልነት ዕቅድ ለመመዝገብ:\n\n1. ወደ ቅንብሮች > የአባልነት ዕቅዶች ይሂዱ\n2. የሚፈልጉትን ዕቅድ ይምረጡ\n3. \"አሁን ይመዝገቡ\" የሚለውን ይንኩ\n4. ወደ ቻፓ (Chapa) የክፍያ ገጽ ይወሰዳሉ\n5. የሚመርጡትን የመክፈያ ዘዴ በመጠቀም ክፍያውን ይፈጽሙ\n6. ክፍያው እንደተረጋገጠ አባልነትዎ ወዲያውኑ ይነቃቃል\n\nሁሉንም የክፍያ ታሪክዎን በቅንብሮች > የክፍያ ታሪክ ውስጥ ማየት ይችላሉ።';
+
+  @override
+  String get helpPaySecurityTitle => 'የክፍያ ደህንነት';
+
+  @override
+  String get helpPaySecurityContent =>
+      'በዌቭማርት ላይ ያሉ ሁሉም ክፍያዎች የታመነ የኢትዮጵያ የክፍያ አገልግሎት በሆነው በቻፓ (Chapa) በኩል በደህንነት ይፈጸማሉ።\n\nእኛ የእርስዎን የክፍያ ካርድ መረጃ አናስቀምጥም። ሁሉም ግብይቶች በምስጠራ (Encryption) የተጠበቁ ናቸው።\n\nከክፍያ ጋር የተያያዘ ችግር ካጋጠመዎት ወዲያውኑ የእገዛ ቡድናችንን ያነጋግሩ።';
+
+  @override
+  String get helpKycWhyTitle => 'KYC ምንድን ነው? ለምንስ ያስፈልጋል?';
+
+  @override
+  String get helpKycWhyContent =>
+      'KYC (Know Your Customer) ማንነትዎን የሚያረጋግጥ ሂደት ነው።\n\nKYC የሚያስፈልገው ለሚከተሉት ነው:\n- የንብረት ምዝገባ ለማካሄድ\n- ከሌሎች ተጠቃሚዎች ጋር እምነት ለመገንባት\n- የአገሪቱን ደንቦች ለማክበር\n- ማጭበርበርን ለመከላከል\n\nየማረጋገጫ ሂደቱ ፈጣን ሲሆን ሰነዶችዎ በደህንነት ይያዛሉ።';
+
+  @override
+  String get helpKycHowTitle => 'የማንነት ማረጋገጫ (KYC) እንዴት እንደሚሞላ';
+
+  @override
+  String get helpKycHowContent =>
+      'የማንነት ማረጋገጫ ለማጠናቀቅ:\n\n1. ወደ ቅንብሮች > የማንነት ማረጋገጫ (KYC) ይሂዱ\n2. የሰነድ አይነት ይምረጡ (መታወቂያ ወይም ፓስፖርት)\n3. የሰነድዎን የፊት ገጽ ግልጽ ፎቶ ያያይዙ\n4. ለመታወቂያ ከሆነ የጀርባ ገጽ ፎቶም ያያይዙ\n5. ሰነዱን ከፊትዎ አጠገብ ይዘው ፎቶ (Selfie) ይነሱ\n6. ለግምገማ ይላኩ\n\nማረጋገጫው ከ24-48 ሰዓታት ይወስዳል። እንደተረጋገጠ ማሳወቂያ ይላክልዎታል።';
+
+  @override
+  String get helpKycRejectTitle => 'ማረጋገጫዬ ለምን ውድቅ ተደረገ?';
+
+  @override
+  String get helpKycRejectContent =>
+      'ለማረጋገጫ ውድቅ መደረግ የተለመዱ ምክንያቶች:\n\n1. ግልጽ ያልሆነ ወይም የማይነበብ የሰነድ ፎቶ\n2. ጊዜው ያለፈበት ሰነድ\n3. ፎቶው (Selfie) ፊትዎን እና ሰነዱን በግልጽ አለማሳየቱ\n4. የተመረጠው የሰነድ አይነት ከፎቶው ጋር አለመመሳሰሉ\n5. ሙሉ በሙሉ የማይታይ ወይም የተቆረጠ የሰነድ ፎቶ\n\nእንደገና ለመላክ:\n- ወደ የማንነት ማረጋገጫ ይሂዱ\n- \"ሰነዶችን እንደገና ላክ\" የሚለውን ይንኩ\n- ሁሉም ፎቶዎች ግልጽ መሆናቸውን ያረጋግጡ';
+
+  @override
+  String get helpSafeStayTitle => 'በዌቭማርት ላይ ደህንነትዎን እንዴት እንደሚጠብቁ';
+
+  @override
+  String get helpSafeStayContent =>
+      'ለደህንነቱ የተጠበቀ ግብይት ጠቃሚ ምክሮች:\n\n1. ንብረቶችን ለመጎብኘት ሁልጊዜ የሕዝብ ቦታዎች ላይ ይገናኙ\n2. የግል የባንክ መረጃዎን ለሌላ ሰው አይስጡ\n3. ክፍያ ከመፈጸምዎ በፊት የንብረቱን ባለቤትነት ያረጋግጡ\n4. ለመገናኛ በመተግበሪያው ውስጥ ያለውን የመልእክት ልውውጥ ይጠቀሙ\n5. አጠራጣሪ ነገሮችን ለእገዛ ቡድናችን ያሳውቁ\n6. ንብረቱን ሳያዩ ገንዘብ አይላኩ\n7. ለንብረት ሽያጭ የሕግ ባለሙያ ማማከር ይመከራል';
+
+  @override
+  String get helpSafePrivacyTitle => 'የግላዊነት ፖሊሲ';
+
+  @override
+  String get helpSafePrivacyContent =>
+      'ዌቭማርት የእርስዎን ግላዊነት ያከብራል እንዲሁም መረጃዎን ይጠብቃል።\n\nእኛ የምንሰበስበው:\n- የመለያ መረጃ (ስም፣ ስልክ፣ ኢሜይል)\n- እርስዎ የሚሰጡት የንብረት መረጃ\n- አገልግሎቱን ለማሻሻል የሚረዱ አጠቃቀሞች\n\nእኛ አናደርግም:\n- የእርስዎን መረጃ ለሌላ አንሸጥም\n- ያለ እርስዎ ፈቃድ መረጃዎን ለሶስተኛ ወገን አናጋራም\n- የክፍያ ዝርዝሮችዎን አናስቀምጥም\n\nለበለጠ መረጃ ድረ-ገጻችንን ይጎብኙ ወይም እኛን ያነጋግሩ።';
+
+  @override
+  String get helpSafeReportTitle => 'ችግርን ሪፖርት ማድረግ';
+
+  @override
+  String get helpSafeReportContent =>
+      'ችግር ካጋጠመዎት:\n\n1. መፍትሄ ለማግኘት የመተግበሪያውን የእገዛ ማዕከል ይጠቀሙ\n2. በኢሜይል ያነጋግሩን: support@wavemart.et\n3. ለአስቸኳይ ጉዳዮች በስልክ ይደውሉ\n4. አጠራጣሪ ንብረቶችን ወይም ተጠቃሚዎችን በንብረቱ ገጽ ላይ ሪፖርት ያድርጉ\n\nለሁሉም ጥያቄዎች በ24 ሰዓታት ውስጥ ምላሽ ለመስጠት እንጥራለን።';
+
+  @override
   String get profileNotLoggedIn => 'አልገቡም';
 
   @override
@@ -292,6 +439,12 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
+  String get kycTakePhoto => 'ፎቶ አንሳ';
+
+  @override
+  String get kycChooseGallery => 'ከጋለሪ ምረጥ';
+
+  @override
   String get profileKycStatusVerified => 'ተረጋግጧል';
 
   @override
@@ -394,6 +547,12 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get listingBack => 'ተመለስ';
+
+  @override
+  String get listingYearBuilt => 'የተገነባበት ዓመት';
+
+  @override
+  String get listingRentalPeriod => 'የኪራይ ጊዜ';
 
   @override
   String get listingStepBasics => 'መሰረታዊ';
@@ -1091,11 +1250,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingReviewTitle => 'ለውጦችን ይልተማካክ';
 
   @override
-  String get listingDiscardTitle => 'Discard Changes';
+  String get listingDiscardTitle => 'ለውጦችን እርሳ';
 
   @override
-  String get listingDiscardMessage =>
-      'Are you sure you want to discard your changes?';
+  String get listingDiscardMessage => 'ለውጦችን ማጥፋት እርግጠኛ ነዎት?';
 
   @override
   String get languageTitle => 'ቋንቋ ይምረጡ';

@@ -64,3 +64,6 @@ htmlcov/
 *.tar.zst
 # Opencode
 .opencode/
+.agent/
+.gemini/
+.kilo/

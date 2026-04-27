@@ -370,6 +370,270 @@ abstract class AppLocalizations {
   /// **'Help Center'**
   String get profileHelp;
 
+  /// No description provided for @helpSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for help...'**
+  String get helpSearchHint;
+
+  /// No description provided for @helpNoResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Results Found'**
+  String get helpNoResultsTitle;
+
+  /// No description provided for @helpNoResultsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try different keywords or browse categories'**
+  String get helpNoResultsSubtitle;
+
+  /// No description provided for @helpStillNeedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Still need help?'**
+  String get helpStillNeedHelp;
+
+  /// No description provided for @helpSupportTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Our support team is here to help you.'**
+  String get helpSupportTeam;
+
+  /// No description provided for @helpEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get helpEmail;
+
+  /// No description provided for @helpCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get helpCall;
+
+  /// No description provided for @helpErrorEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open email app'**
+  String get helpErrorEmail;
+
+  /// No description provided for @helpErrorPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open phone app'**
+  String get helpErrorPhone;
+
+  /// No description provided for @helpCategoryAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & Profile'**
+  String get helpCategoryAccount;
+
+  /// No description provided for @helpCategoryListings.
+  ///
+  /// In en, this message translates to:
+  /// **'Listings'**
+  String get helpCategoryListings;
+
+  /// No description provided for @helpCategoryPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments & Subscriptions'**
+  String get helpCategoryPayments;
+
+  /// No description provided for @helpCategoryKyc.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC Verification'**
+  String get helpCategoryKyc;
+
+  /// No description provided for @helpCategorySafety.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety & Policies'**
+  String get helpCategorySafety;
+
+  /// No description provided for @helpAccCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to create an account'**
+  String get helpAccCreateTitle;
+
+  /// No description provided for @helpAccCreateContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your phone number or email address\n3. You will receive an OTP (One-Time Password)\n4. Enter the OTP to verify your account\n5. Complete your profile by adding your name and other details\n\nOnce registered, you can browse listings, create your own listings, and communicate with other users.'**
+  String get helpAccCreateContent;
+
+  /// No description provided for @helpAccEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to edit your profile'**
+  String get helpAccEditTitle;
+
+  /// No description provided for @helpAccEditContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To edit your profile information:\n\n1. Go to the Profile tab\n2. Tap on \"Edit Profile\"\n3. Update your name, email, or other details\n4. Tap \"Save\" to confirm changes\n\nYour profile information helps other users identify you when communicating about listings.'**
+  String get helpAccEditContent;
+
+  /// No description provided for @helpAccResetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to reset your password'**
+  String get helpAccResetTitle;
+
+  /// No description provided for @helpAccResetContent.
+  ///
+  /// In en, this message translates to:
+  /// **'If you need to reset your password:\n\n1. On the login screen, tap \"Forgot Password\"\n2. Enter your registered phone number or email\n3. You will receive an OTP\n4. Enter the OTP and set a new password\n\nMake sure to use a strong password that you do not share with others.'**
+  String get helpAccResetContent;
+
+  /// No description provided for @helpListCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to create a listing'**
+  String get helpListCreateTitle;
+
+  /// No description provided for @helpListCreateContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To create a property listing:\n\n1. Tap the \"+\" button in the bottom navigation\n2. Select your property type (House or Land)\n3. Choose listing type (For Sale or For Rent)\n4. Fill in property details: price, area, description\n5. Add location information\n6. Upload clear photos of your property (up to 10 images)\n7. Review your listing and submit\n\nYour listing will be reviewed before it goes live. This usually takes a few hours.'**
+  String get helpListCreateContent;
+
+  /// No description provided for @helpListManageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to manage your listings'**
+  String get helpListManageTitle;
+
+  /// No description provided for @helpListManageContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To manage your property listings:\n\n1. Go to Settings > My Listings\n2. Here you can see all your active listings\n3. Tap on a listing to view its details\n4. You can edit or delete listings from the listing detail page\n\nInactive or pending listings will also appear here with their current status.'**
+  String get helpListManageContent;
+
+  /// No description provided for @helpListTipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips for a great listing'**
+  String get helpListTipsTitle;
+
+  /// No description provided for @helpListTipsContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Make your listing stand out:\n\n1. Use clear, well-lit photos (at least 5 images)\n2. Write a detailed description of the property\n3. Include accurate location details\n4. Set a competitive and realistic price\n5. Mention nearby amenities and landmarks\n6. Specify any unique features of the property\n7. Respond promptly to inquiries from interested buyers'**
+  String get helpListTipsContent;
+
+  /// No description provided for @helpPayPlansTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription plans explained'**
+  String get helpPayPlansTitle;
+
+  /// No description provided for @helpPayPlansContent.
+  ///
+  /// In en, this message translates to:
+  /// **'WaveMart offers several subscription plans:\n\n- Free Plan: Basic access with limited listings\n- Basic Plan: More listings and basic features\n- Premium Plan: Maximum listings and all features including featured listings\n\nEach plan has different benefits and pricing. You can upgrade or change your plan at any time from the Subscriptions page.'**
+  String get helpPayPlansContent;
+
+  /// No description provided for @helpPayMakeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to make a payment'**
+  String get helpPayMakeTitle;
+
+  /// No description provided for @helpPayMakeContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To subscribe to a plan:\n\n1. Go to Settings > Subscriptions\n2. Choose your desired plan\n3. Tap \"Subscribe Now\"\n4. You will be redirected to Chapa payment gateway\n5. Complete the payment using your preferred method\n6. Once payment is confirmed, your subscription activates immediately\n\nYou can view all your payment transactions in Settings > Payment History.'**
+  String get helpPayMakeContent;
+
+  /// No description provided for @helpPaySecurityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment security'**
+  String get helpPaySecurityTitle;
+
+  /// No description provided for @helpPaySecurityContent.
+  ///
+  /// In en, this message translates to:
+  /// **'All payments on WaveMart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted and processed securely.\n\nIf you notice any issues with payments, contact our support team immediately.'**
+  String get helpPaySecurityContent;
+
+  /// No description provided for @helpKycWhyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is KYC and why is it required?'**
+  String get helpKycWhyTitle;
+
+  /// No description provided for @helpKycWhyContent.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC (Know Your Customer) is a verification process that confirms your identity.\n\nKYC is required to:\n- Create property listings\n- Build trust with other users\n- Comply with local regulations\n- Prevent fraud and misuse\n\nThe verification process is quick and your documents are handled securely.'**
+  String get helpKycWhyContent;
+
+  /// No description provided for @helpKycHowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to complete KYC verification'**
+  String get helpKycHowTitle;
+
+  /// No description provided for @helpKycHowContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To complete KYC verification:\n\n1. Go to Settings > KYC Verification\n2. Select your document type (National ID or Passport)\n3. Upload a clear photo of the front of your document\n4. For National ID, also upload the back side\n5. Take a selfie holding your document next to your face\n6. Submit for review\n\nVerification usually takes 24-48 hours. You will be notified once your identity is verified.'**
+  String get helpKycHowContent;
+
+  /// No description provided for @helpKycRejectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why was my KYC rejected?'**
+  String get helpKycRejectTitle;
+
+  /// No description provided for @helpKycRejectContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Common reasons for KYC rejection:\n\n1. Blurry or unreadable document photos\n2. Document is expired or invalid\n3. Selfie does not clearly show your face and document\n4. Document type does not match selection\n5. Cropped or incomplete document images\n\nTo resubmit:\n- Go to KYC Verification\n- Tap \"Resubmit Documents\"\n- Ensure all photos are clear and well-lit\n- Make sure the entire document is visible'**
+  String get helpKycRejectContent;
+
+  /// No description provided for @helpSafeStayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staying safe on WaveMart'**
+  String get helpSafeStayTitle;
+
+  /// No description provided for @helpSafeStayContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips for safe transactions:\n\n1. Always meet in public places for property viewings\n2. Never share personal financial information\n3. Verify property ownership before making payments\n4. Use the in-app messaging system for communication\n5. Report suspicious activity to our support team\n6. Do not send money without seeing the property\n7. Consider using a legal professional for property transactions'**
+  String get helpSafeStayContent;
+
+  /// No description provided for @helpSafePrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get helpSafePrivacyTitle;
+
+  /// No description provided for @helpSafePrivacyContent.
+  ///
+  /// In en, this message translates to:
+  /// **'WaveMart respects your privacy and protects your personal data.\n\nWe collect:\n- Account information (name, phone, email)\n- Listing data you provide\n- Usage analytics to improve the app\n\nWe do not:\n- Sell your personal data\n- Share your information with third parties (except for necessary services like payment processing)\n- Store your payment details\n\nFor full details, visit our website or contact support.'**
+  String get helpSafePrivacyContent;
+
+  /// No description provided for @helpSafeReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting a problem'**
+  String get helpSafeReportTitle;
+
+  /// No description provided for @helpSafeReportContent.
+  ///
+  /// In en, this message translates to:
+  /// **'If you encounter any issues:\n\n1. Use the in-app Help Center to find solutions\n2. Contact support via email: support@wavemart.et\n3. Call our support line for urgent issues\n4. Report suspicious listings or users through the listing detail page\n\nWe aim to respond to all inquiries within 24 hours.'**
+  String get helpSafeReportContent;
+
   /// No description provided for @profileNotLoggedIn.
   ///
   /// In en, this message translates to:
@@ -646,6 +910,18 @@ abstract class AppLocalizations {
   /// **'Failed to pick image: {error}'**
   String kycError(Object error);
 
+  /// No description provided for @kycTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get kycTakePhoto;
+
+  /// No description provided for @kycChooseGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get kycChooseGallery;
+
   /// No description provided for @profileKycStatusVerified.
   ///
   /// In en, this message translates to:
@@ -849,6 +1125,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get listingBack;
+
+  /// No description provided for @listingYearBuilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Year Built'**
+  String get listingYearBuilt;
+
+  /// No description provided for @listingRentalPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Rental Period'**
+  String get listingRentalPeriod;
 
   /// No description provided for @listingStepBasics.
   ///

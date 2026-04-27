@@ -8,6 +8,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../data/services/conference_service.dart';
 import '../../../core/network/api_constants.dart';
 import '../../../core/network/api_client.dart';
+import '../../../l10n/app_localizations.dart';
 
 class JitsiCallScreen extends ConsumerStatefulWidget {
   final String? jitsiUrl;
@@ -119,7 +120,7 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
       backgroundColor: isDark ? AppColors.navy950 : Colors.white,
       appBar: AppBar(
         backgroundColor: isDark ? AppColors.navy900 : Colors.white,
-        title: const Text('Audio Call'),
+        title: Text(AppLocalizations.of(context).jitsiCallTitle),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
@@ -143,7 +144,7 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
                   ),
                   const SizedBox(height: 24),
                     Text(
-                      'Connecting to audio call...',
+                      'Connecting...',
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: isDark ? Colors.white : AppColors.navy900,
                       ),
@@ -157,14 +158,14 @@ class _JitsiCallScreenState extends ConsumerState<JitsiCallScreen> {
                       size: 64, color: AppColors.error),
                   const SizedBox(height: 16),
                   Text(
-                    _errorMessage ?? 'Failed to connect',
+                    _errorMessage ?? AppLocalizations.of(context).commonError,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
                     onPressed: _retryConnection,
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Try Again'),
+                    label: Text(AppLocalizations.of(context).commonRetry),
                   ),
                 ],
               ),

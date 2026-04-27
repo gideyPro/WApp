@@ -147,6 +147,154 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileHelp => 'Help Center';
 
   @override
+  String get helpSearchHint => 'Search for help...';
+
+  @override
+  String get helpNoResultsTitle => 'No Results Found';
+
+  @override
+  String get helpNoResultsSubtitle =>
+      'Try different keywords or browse categories';
+
+  @override
+  String get helpStillNeedHelp => 'Still need help?';
+
+  @override
+  String get helpSupportTeam => 'Our support team is here to help you.';
+
+  @override
+  String get helpEmail => 'Email';
+
+  @override
+  String get helpCall => 'Call';
+
+  @override
+  String get helpErrorEmail => 'Could not open email app';
+
+  @override
+  String get helpErrorPhone => 'Could not open phone app';
+
+  @override
+  String get helpCategoryAccount => 'Account & Profile';
+
+  @override
+  String get helpCategoryListings => 'Listings';
+
+  @override
+  String get helpCategoryPayments => 'Payments & Subscriptions';
+
+  @override
+  String get helpCategoryKyc => 'KYC Verification';
+
+  @override
+  String get helpCategorySafety => 'Safety & Policies';
+
+  @override
+  String get helpAccCreateTitle => 'How to create an account';
+
+  @override
+  String get helpAccCreateContent =>
+      'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your phone number or email address\n3. You will receive an OTP (One-Time Password)\n4. Enter the OTP to verify your account\n5. Complete your profile by adding your name and other details\n\nOnce registered, you can browse listings, create your own listings, and communicate with other users.';
+
+  @override
+  String get helpAccEditTitle => 'How to edit your profile';
+
+  @override
+  String get helpAccEditContent =>
+      'To edit your profile information:\n\n1. Go to the Profile tab\n2. Tap on \"Edit Profile\"\n3. Update your name, email, or other details\n4. Tap \"Save\" to confirm changes\n\nYour profile information helps other users identify you when communicating about listings.';
+
+  @override
+  String get helpAccResetTitle => 'How to reset your password';
+
+  @override
+  String get helpAccResetContent =>
+      'If you need to reset your password:\n\n1. On the login screen, tap \"Forgot Password\"\n2. Enter your registered phone number or email\n3. You will receive an OTP\n4. Enter the OTP and set a new password\n\nMake sure to use a strong password that you do not share with others.';
+
+  @override
+  String get helpListCreateTitle => 'How to create a listing';
+
+  @override
+  String get helpListCreateContent =>
+      'To create a property listing:\n\n1. Tap the \"+\" button in the bottom navigation\n2. Select your property type (House or Land)\n3. Choose listing type (For Sale or For Rent)\n4. Fill in property details: price, area, description\n5. Add location information\n6. Upload clear photos of your property (up to 10 images)\n7. Review your listing and submit\n\nYour listing will be reviewed before it goes live. This usually takes a few hours.';
+
+  @override
+  String get helpListManageTitle => 'How to manage your listings';
+
+  @override
+  String get helpListManageContent =>
+      'To manage your property listings:\n\n1. Go to Settings > My Listings\n2. Here you can see all your active listings\n3. Tap on a listing to view its details\n4. You can edit or delete listings from the listing detail page\n\nInactive or pending listings will also appear here with their current status.';
+
+  @override
+  String get helpListTipsTitle => 'Tips for a great listing';
+
+  @override
+  String get helpListTipsContent =>
+      'Make your listing stand out:\n\n1. Use clear, well-lit photos (at least 5 images)\n2. Write a detailed description of the property\n3. Include accurate location details\n4. Set a competitive and realistic price\n5. Mention nearby amenities and landmarks\n6. Specify any unique features of the property\n7. Respond promptly to inquiries from interested buyers';
+
+  @override
+  String get helpPayPlansTitle => 'Subscription plans explained';
+
+  @override
+  String get helpPayPlansContent =>
+      'WaveMart offers several subscription plans:\n\n- Free Plan: Basic access with limited listings\n- Basic Plan: More listings and basic features\n- Premium Plan: Maximum listings and all features including featured listings\n\nEach plan has different benefits and pricing. You can upgrade or change your plan at any time from the Subscriptions page.';
+
+  @override
+  String get helpPayMakeTitle => 'How to make a payment';
+
+  @override
+  String get helpPayMakeContent =>
+      'To subscribe to a plan:\n\n1. Go to Settings > Subscriptions\n2. Choose your desired plan\n3. Tap \"Subscribe Now\"\n4. You will be redirected to Chapa payment gateway\n5. Complete the payment using your preferred method\n6. Once payment is confirmed, your subscription activates immediately\n\nYou can view all your payment transactions in Settings > Payment History.';
+
+  @override
+  String get helpPaySecurityTitle => 'Payment security';
+
+  @override
+  String get helpPaySecurityContent =>
+      'All payments on WaveMart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted and processed securely.\n\nIf you notice any issues with payments, contact our support team immediately.';
+
+  @override
+  String get helpKycWhyTitle => 'What is KYC and why is it required?';
+
+  @override
+  String get helpKycWhyContent =>
+      'KYC (Know Your Customer) is a verification process that confirms your identity.\n\nKYC is required to:\n- Create property listings\n- Build trust with other users\n- Comply with local regulations\n- Prevent fraud and misuse\n\nThe verification process is quick and your documents are handled securely.';
+
+  @override
+  String get helpKycHowTitle => 'How to complete KYC verification';
+
+  @override
+  String get helpKycHowContent =>
+      'To complete KYC verification:\n\n1. Go to Settings > KYC Verification\n2. Select your document type (National ID or Passport)\n3. Upload a clear photo of the front of your document\n4. For National ID, also upload the back side\n5. Take a selfie holding your document next to your face\n6. Submit for review\n\nVerification usually takes 24-48 hours. You will be notified once your identity is verified.';
+
+  @override
+  String get helpKycRejectTitle => 'Why was my KYC rejected?';
+
+  @override
+  String get helpKycRejectContent =>
+      'Common reasons for KYC rejection:\n\n1. Blurry or unreadable document photos\n2. Document is expired or invalid\n3. Selfie does not clearly show your face and document\n4. Document type does not match selection\n5. Cropped or incomplete document images\n\nTo resubmit:\n- Go to KYC Verification\n- Tap \"Resubmit Documents\"\n- Ensure all photos are clear and well-lit\n- Make sure the entire document is visible';
+
+  @override
+  String get helpSafeStayTitle => 'Staying safe on WaveMart';
+
+  @override
+  String get helpSafeStayContent =>
+      'Tips for safe transactions:\n\n1. Always meet in public places for property viewings\n2. Never share personal financial information\n3. Verify property ownership before making payments\n4. Use the in-app messaging system for communication\n5. Report suspicious activity to our support team\n6. Do not send money without seeing the property\n7. Consider using a legal professional for property transactions';
+
+  @override
+  String get helpSafePrivacyTitle => 'Privacy Policy';
+
+  @override
+  String get helpSafePrivacyContent =>
+      'WaveMart respects your privacy and protects your personal data.\n\nWe collect:\n- Account information (name, phone, email)\n- Listing data you provide\n- Usage analytics to improve the app\n\nWe do not:\n- Sell your personal data\n- Share your information with third parties (except for necessary services like payment processing)\n- Store your payment details\n\nFor full details, visit our website or contact support.';
+
+  @override
+  String get helpSafeReportTitle => 'Reporting a problem';
+
+  @override
+  String get helpSafeReportContent =>
+      'If you encounter any issues:\n\n1. Use the in-app Help Center to find solutions\n2. Contact support via email: support@wavemart.et\n3. Call our support line for urgent issues\n4. Report suspicious listings or users through the listing detail page\n\nWe aim to respond to all inquiries within 24 hours.';
+
+  @override
   String get profileNotLoggedIn => 'Not Logged In';
 
   @override
@@ -295,6 +443,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get kycTakePhoto => 'Take Photo';
+
+  @override
+  String get kycChooseGallery => 'Choose from Gallery';
+
+  @override
   String get profileKycStatusVerified => 'Verified';
 
   @override
@@ -399,6 +553,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingBack => 'Back';
+
+  @override
+  String get listingYearBuilt => 'Year Built';
+
+  @override
+  String get listingRentalPeriod => 'Rental Period';
 
   @override
   String get listingStepBasics => 'Basics';

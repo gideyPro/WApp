@@ -146,6 +146,153 @@ class AppLocalizationsTi extends AppLocalizations {
   String get profileHelp => 'መእከሊ ሓገዝ';
 
   @override
+  String get helpSearchHint => 'ሓገዝ ድለዩ...';
+
+  @override
+  String get helpNoResultsTitle => 'ዝተረኽበ ውፅኢት የለን';
+
+  @override
+  String get helpNoResultsSubtitle => 'ካልእ ቃል ይሞክሩ ወይ ድማ ምድባት ይርኣዩ';
+
+  @override
+  String get helpStillNeedHelp => 'ተወሳኺ ሓገዝ ይደልዩ ዲዮም?';
+
+  @override
+  String get helpSupportTeam => 'ጉጅለ ሓገዝና ንዓኹም ንምሕጋዝ ድሉው እዩ።';
+
+  @override
+  String get helpEmail => 'ኢሜይል';
+
+  @override
+  String get helpCall => 'ደውሉ';
+
+  @override
+  String get helpErrorEmail => 'ናይ ኢሜይል መተግበሪያ ክኽፈት ኣይተኽኣለን';
+
+  @override
+  String get helpErrorPhone => 'ናይ ስልኪ መተግበሪያ ክኽፈት ኣይተኽኣለን';
+
+  @override
+  String get helpCategoryAccount => 'መእተዊን መገለፅን';
+
+  @override
+  String get helpCategoryListings => 'ንብረታት';
+
+  @override
+  String get helpCategoryPayments => 'ክፍሊታትን ምዝገባታትን';
+
+  @override
+  String get helpCategoryKyc => 'ምርግጋፅ መንነት (KYC)';
+
+  @override
+  String get helpCategorySafety => 'ድሕንነትን ደንብታትን';
+
+  @override
+  String get helpAccCreateTitle => 'መእተዊ ከመይ ይኽፈት';
+
+  @override
+  String get helpAccCreateContent =>
+      'ኣብ ዌቭማርት መእተዊ ንምኽፋት:\n\n1. ነቲ መተግበሪያ ይኽፈቱ እሞ \"ይመዝገቡ\" ዝብል ጠውቑ\n2. ቁፅሪ ስልኪኹም ወይ ኢሜይልኩም ኣእትዉ\n3. ናይ 6 ኣሃዝ ኮድ (OTP) ክስደደልኩም እዩ\n4. መእተዊኹም ንምርግጋፅ ነቲ ኮድ ኣእትዉ\n5. ስምኩምን ካልኦት ዝርዝራትን ብምውሳኽ መገለፂኹም ኣማልኡ\n\nምስ ተመዝገብኩም ንብረታት ክትሪኡ፣ ናይ ባዕልኹም ንብረታት ከተመዝግቡን ምስ ካልኦት ተጠቀምቲ ክትራኸቡን ትኽእሉ ኢኹም።';
+
+  @override
+  String get helpAccEditTitle => 'መገለፂኹም ከመይ ከምተስተኻኽሉ';
+
+  @override
+  String get helpAccEditContent =>
+      'ሓበሬታ መገለፂኹም ንምስትኽኻል:\n\n1. ናብ መገለፂ (Profile) ኺዱ\n2. \"መገለፂ ኣስተኻኽል\" ዝብል ጠውቑ\n3. ስምኩም፣ ኢሜይልኩም ወይ ካልኦት ዝርዝራት ኣሐድሱ\n4. ነቲ ለውጥታት ንምርግጋፅ \"ኣቐምጥ\" ዝብል ጠውቑ\n\nሓበሬታ መገለፂኹም ብዛዕባ ንብረታት ኣብ እትዘራረቡሉ ግዘ ካልኦት ተጠቀምቲ ንዓኹም ንኽፈልጡ ይሕግዝ።';
+
+  @override
+  String get helpAccResetTitle => 'ናይ ምስጢር ቃልኩም ከመይ ከምትቕይሩ';
+
+  @override
+  String get helpAccResetContent =>
+      'ናይ ምስጢር ቃልኩም ክትቕይሩ እንተደሊኹም:\n\n1. ኣብቲ ገፅ መእተዊ \"ናይ ምስጢር ቃል ረሲዐ\" ዝብል ጠውቑ\n2. ዝተመዝገብኩምሉ ቁፅሪ ስልኪ ወይ ኢሜይል ኣእትዉ\n3. ናይ 6 ኣሃዝ ኮድ ክስደደልኩም እዩ\n4. ነቲ ኮድ ኣእትዉ እሞ ሓዱሽ ናይ ምስጢር ቃል ኣዳልዉ\n\nንካልኦት ሰባት ዘይትህብዎ ድልዱል ናይ ምስጢር ቃል ምጥቃምኩም ኣረጋግፁ።';
+
+  @override
+  String get helpListCreateTitle => 'ንብረት ከመይ ከምዝምዝገብ';
+
+  @override
+  String get helpListCreateContent =>
+      'ምዝገባ ንብረት ንምክያድ:\n\n1. ኣብቲ ናይ ታሕቲ ዳሰሳ ዘሎ ምልክት \"+\" ጠውቑ\n2. ዓይነት ንብረት ምረፁ (ገዛ ወይ ቦታ)\n3. ዓይነት ምዝገባ ምረፁ (ንሽያጥ ወይ ንኪራይ)\n4. ዝርዝር ሓበሬታ ንብረት ምልኡ: ዋጋ፣ ስፍሓት፣ መግለፂ\n5. ሓበሬታ ኣድራሻ ወስኹ\n6. ንፁር ፎቶታት እቲ ንብረት ኣተሓሕዙ (ክሳብ 10 ፎቶታት)\n7. ምዝገባኹም ምስ ራኣኹም ኣእትዉ\n\nንብረትኩም ብቐጥታ ቅድሚ ምርኣዩ ብጉጅለና ክግምገም እዩ። እዚ መብዛሕትኡ ግዘ ሒደት ሰዓታት ይወስድ።';
+
+  @override
+  String get helpListManageTitle => 'ንብረትኩም ከመይ ከምተመሓድሩ';
+
+  @override
+  String get helpListManageContent =>
+      'ዘመዝገብኩምዎም ንብረታት ንምምሕዳር:\n\n1. ናብ ቅጥታታት > ናተይ ንብረታት ኺዱ\n2. ኣብዚ ኩሎም ንጡፋት ንብረትኩም ክትሪኡ ትኽእሉ ኢኹም\n3. ዝርዝሩ ንምርኣይ ኣብ ሓደ ንብረት ጠውቑ\n4. ካብቲ ገፅ ዝርዝር ንብረት ከተስተኻኽሉ ወይ ክትሰርዙ ትኽእሉ ኢኹም\n\nዘይፀደቑ ወይ ኣብ መስርሕ ዘለዉ ንብረታት እውን ምስ ኩነታቶም ኣብዚ ይርኣዩ።';
+
+  @override
+  String get helpListTipsTitle => 'ንዝበለፀ ምዝገባ ንብረት ዝሕግዙ ነጥብታት';
+
+  @override
+  String get helpListTipsContent =>
+      'ንብረትኩም ጎሊሁ ንኽርአ:\n\n1. ንፁርን ብርሃን ዘለዎምን ፎቶታት ተጠቐሙ (ውሑዱ 5 ፎቶታት)\n2. ብዛዕባ እቲ ንብረት ዝርዝር መግለፂ ፅሓፉ\n3. ትኽክለኛ ዝርዝር ኣድራሻ ወስኹ\n4. ተወዳዳሪን ተመጣጣኒን ዋጋ ኣውፅኡ\n5. ኣብ ጥቓ ዘለዉ ኣገልግሎታትን ፍሉጣት ቦታታትን ጥቐሱ\n6. ፍሉይ ባህርያት እቲ ንብረት ግለፁ\n7. ካብ ዓደግቲ ንዝመፅኡ ሕቶታት ብቕልጡፍ ምላሽ ሃቡ';
+
+  @override
+  String get helpPayPlansTitle => 'ብዛዕባ ናይ ኣባልነት ትልምታት መግለፂ';
+
+  @override
+  String get helpPayPlansContent =>
+      'ዌቭማርት ብዙሓት ናይ ኣባልነት ትልምታት የቕርብ:\n\n- ነፃ ትልሚ: ውሱን ንብረታት ንምምዝጋብ\n- መሰረታዊ ትልሚ: ተወሳኺ ንብረታትን መሰረታዊ ኣገልግሎታትን\n- ፕሪሚየም ትልሚ: ደረት ዘይብሉ ምዝገባን ኩሎም ኣገልግሎታትን (ፍሉይ ንብረታት ሓዊሱ)\n\nነፍሲ ወከፍ ትልሚ ናቱ ረብሓታትን ዋጋን ኣለዎ። ኣብ ዝኾነ ግዘ ካብ ገፅ ኣባልነት ትልምኹም ክትቅይሩ ትኽእሉ ኢኹም።';
+
+  @override
+  String get helpPayMakeTitle => 'ክፍሊት ከመይ ከምዝፍፀም';
+
+  @override
+  String get helpPayMakeContent =>
+      'ንናይ ኣባልነት ትልሚ ንምምዝጋብ:\n\n1. ናብ ቅጥታታት > ናይ ኣባልነት ትልምታት ኺዱ\n2. ዝደለኹምዎ ትልሚ ምረፁ\n3. \"ሕጂ ተመዝገብ\" ዝብል ጠውቑ\n4. ናብ ቻፓ (Chapa) ገፅ ክፍሊት ክትውሰዱ ኢኹም\n5. ዝመረፅኩምዎ መክፈሊ መንገዲ ብምጥቃም ክፍሊት ፈፅሙ\n6. ክፍሊት ምስ ተረጋገፀ ኣባልነትኩም ብኡ ንብኡ ክሰርሕ እዩ\n\nምሉእ ታሪኽ ክፍሊትኩም ኣብ ቅጥታታት > ታሪኽ ክፍሊት ክትሪኡ ትኽእሉ ኢኹም።';
+
+  @override
+  String get helpPaySecurityTitle => 'ድሕንነት ክፍሊት';
+
+  @override
+  String get helpPaySecurityContent =>
+      'ኣብ ዌቭማርት ዘለዉ ኩሎም ክፍሊታት ብታመነ ናይ ኢትዮጵያ ኣገልግሎት ክፍሊት ዝኾነ ቻፓ (Chapa) ኣቢሎም ብድሕንነት ይፍፀሙ።\n\nንሕና ሓበሬታ ካርድ ክፍሊትኩም ኣይንዕቅብን። ኩሎም ትካላት ብምስጠራ (Encryption) ዝተሓለዉ እዮም።\n\nምስ ክፍሊት ዝተሓሓዝ ፀገም እንተጋጢሙኩም ብኡ ንብኡ ንጉጅለ ሓገዝና ኣዘራርቡ።';
+
+  @override
+  String get helpKycWhyTitle => 'KYC እንታይ እዩ? ስለምንታይከ የድሊ?';
+
+  @override
+  String get helpKycWhyContent =>
+      'KYC (Know Your Customer) መንነትኩም ዘረጋግፅ መስርሕ እዩ።\n\nKYC ዘድሊ ንእዞም ዝስዕቡ እዩ:\n- ምዝገባ ንብረት ንምክያድ\n- ምስ ካልኦት ተጠቀምቲ እምነት ንምህናፅ\n- ሕጊ እታ ሃገር ንምኽባር\n- ምትላል ንምክልኻል\n\nመስርሕ ምርግጋፅ ቅልጡፍ ኮይኑ ሰነዳትኩም ብድሕንነት ይተሓዙ።';
+
+  @override
+  String get helpKycHowTitle => 'ምርግጋፅ መንነት (KYC) ከመይ ከምዝምላእ';
+
+  @override
+  String get helpKycHowContent =>
+      'ምርግጋፅ መንነት ንምዝዛም:\n\n1. ናብ ቅጥታታት > ምርግጋፅ መንነት (KYC) ኺዱ\n2. ዓይነት ሰነድ ምረፁ (መታወቂያ ወይ ፓስፖርት)\n3. ናይቲ ሰነድኩም ቅድሚት ገፅ ንፁር ፎቶ ኣተሓሕዙ\n4. ንመታወቂያ እንተኾይኑ ናይ ድሕሪት ገፅ ፎቶ እውን ኣተሓሕዙ\n5. ነቲ ሰነድ ኣብ ጥቓ ገፅኩም ሒዝኩም ፎቶ (Selfie) ተልዓሉ\n6. ንገምጋም ስደዱ\n\nምርግጋፅ መንነት ካብ 24-48 ሰዓታት ይወስድ። ምስ ተረጋገፀ መልእኽቲ ክስደደልኩም እዩ።';
+
+  @override
+  String get helpKycRejectTitle => 'ምርግጋፅ መንነተይ ስለምንታይ ውድቅ ተገይሩ?';
+
+  @override
+  String get helpKycRejectContent =>
+      'ምርግጋፅ መንነት ውድቅ ንምግባር ዝውተሩ ምኽንያታት:\n\n1. ንፁር ዘይኮነ ወይ ዘይንበብ ፎቶ ሰነድ\n2. ግዝኡ ዝሓለፎ ሰነድ\n3. እቲ ፎቶ (Selfie) ገፅኩምን ሰነድኩምን ብንፁር ዘይምርኣዩ\n4. ዝተመረፀ ዓይነት ሰነድን እቲ ፎቶን ዘይምመሳሰሎም\n5. ምሉእ ብምሉእ ዘይርአ ወይ ዝተቖረፀ ፎቶ ሰነድ\n\nእንደገና ንምስዳድ:\n- ናብ ምርግጋፅ መንነት ኺዱ\n- \"ሰነዳት እንደገና ስደድ\" ዝብል ጠውቑ\n- ኩሎም ፎቶታት ንፁር ምዃኖም ኣረጋግፁ';
+
+  @override
+  String get helpSafeStayTitle => 'ኣብ ዌቭማርት ድሕንነትኩም ከመይ ከምትሕልዉ';
+
+  @override
+  String get helpSafeStayContent =>
+      'ንድሕንነቱ ዝተሓለወ ትካል ዝሕግዙ ነጥብታት:\n\n1. ንብረታት ንምርኣይ ኩሉ ግዘ ኣብ ህዝባዊ ቦታታት ተራኸቡ\n2. ናይ ባንኪ ሓበሬታኹም ንካልእ ሰብ ኣይትሃቡ\n3. ክፍሊት ቅድሚ ምፍፃምኩም ዋናነት እቲ ንብረት ኣረጋግፁ\n4. ንርክብ ኣብቲ መተግበሪያ ዘሎ መልእኽቲ ተጠቐሙ\n5. ዘጠራጥሩ ነገራት ንጉጅለ ሓገዝና ሓብሩ\n6. ነቲ ንብረት ከይረኣኹም ገንዘብ ኣይትስደዱ\n7. ንሽያጥ ንብረት ናይ ሕጊ ኪኢላ ምምካር ይምከር';
+
+  @override
+  String get helpSafePrivacyTitle => 'ፖሊሲ ግላዊነት';
+
+  @override
+  String get helpSafePrivacyContent =>
+      'ዌቭማርት ግላዊነትኩም የኽብር ከምኡ እውን ሓበሬታኹም ይሕሉ።\n\nንሕና እንእክቦ:\n- ሓበሬታ መእተዊ (ስም፣ ስልኪ፣ ኢሜይል)\n- ንስኹም እትህብዎ ሓበሬታ ንብረት\n- ነቲ ኣገልግሎት ንምምሕያሽ ዝሕግዙ ኣጠቓቕማታት\n\nንሕና ኣይንገብርን:\n- ሓበሬታኹም ንካልእ ሰብ ኣይንሸጥን\n- ብዘይ ፍቓድኩም ሓበሬታኹም ንሳልሳይ ወገን ኣይንህብን\n- ዝርዝር ክፍሊትኩም ኣይንዕቅብን\n\nንዝበለፀ ሓበሬታ ወብሳይትና ተዓዘቡ ወይ ንዓና ኣዘራርቡ።';
+
+  @override
+  String get helpSafeReportTitle => 'ፀገም ሪፖርት ምግባር';
+
+  @override
+  String get helpSafeReportContent =>
+      'ፀገም እንተጋጢሙኩም:\n\n1. መፍትሒ ንምርካብ ናይቲ መተግበሪያ መእከሊ ሓገዝ ተጠቐሙ\n2. ብኢሜይል ኣዘራርቡና: support@wavemart.et\n3. ንህፁፅ ጉዳያት ብስልኪ ደውሉ\n4. ዘጠራጥሩ ንብረታት ወይ ተጠቀምቲ ኣብቲ ገፅ ንብረት ሪፖርት ግበሩ\n5. ንኹሎም ሕቶታት ኣብ ውሽጢ 24 ሰዓታት ምላሽ ንምሃብ ንፅዕር።';
+
+  @override
   String get profileNotLoggedIn => 'ኣይኣተኹምን';
 
   @override
@@ -292,6 +439,12 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
+  String get kycTakePhoto => 'ስእሊ ኣልዕል';
+
+  @override
+  String get kycChooseGallery => 'ካብ ጋለሪ ምረፅ';
+
+  @override
   String get profileKycStatusVerified => 'ተረጋጊጹ';
 
   @override
@@ -394,6 +547,12 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingBack => 'ተመለስ';
+
+  @override
+  String get listingYearBuilt => 'ዝተሃነፀሉ ዓመት';
+
+  @override
+  String get listingRentalPeriod => 'ናይ ኪራይ ግዘ';
 
   @override
   String get listingStepBasics => 'መሰረታዊ';
@@ -1091,11 +1250,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingReviewTitle => 'ለውጢ ኣረማክ';
 
   @override
-  String get listingDiscardTitle => 'Discard Changes';
+  String get listingDiscardTitle => 'ለውጥታት ደምስስ';
 
   @override
-  String get listingDiscardMessage =>
-      'Are you sure you want to discard your changes?';
+  String get listingDiscardMessage => 'ለውጥታት ንምድምሳስ ርግፀኛ ዲኻ?';
 
   @override
   String get languageTitle => 'ቋንቋ ይምረጡ';

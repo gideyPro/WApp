@@ -553,17 +553,18 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
           Text(l10n.listingFreeHoldDetails, style: AppTextStyles.labelMedium.copyWith(color: AppColors.navy700, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           _buildNumberField(label: l10n.listingTaxPaidYear, controller: _taxPaidUntilController, onSubmitted: (v) {
-          final n = int.tryParse(v);
-          if (n != null) widget.onUpdate(widget.formData.copyWith(taxPaidUntilYear: n));
-        }),
-        const SizedBox(height: 12),
-        _dropdownField(
-          value: widget.formData.acquisitionClarification,
-          items: [l10n.listingPurchased, l10n.listingInherited, l10n.listingGift, l10n.listingAssignment, l10n.listingOther],
-          label: l10n.listingAcquisition,
-          onChanged: (v) => widget.onUpdate(widget.formData.copyWith(acquisitionClarification: v)),
-        ),
-      ],
+            final n = int.tryParse(v);
+            if (n != null) widget.onUpdate(widget.formData.copyWith(taxPaidUntilYear: n));
+          }),
+          const SizedBox(height: 12),
+          _dropdownField(
+            value: widget.formData.acquisitionClarification,
+            items: [l10n.listingPurchased, l10n.listingInherited, l10n.listingGift, l10n.listingAssignment, l10n.listingOther],
+            label: l10n.listingAcquisition,
+            onChanged: (v) => widget.onUpdate(widget.formData.copyWith(acquisitionClarification: v)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -581,21 +582,21 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
           Text(l10n.listingLeaseHoldDetails, style: AppTextStyles.labelMedium.copyWith(color: Colors.purple.shade700, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           _buildNumberField(label: l10n.listingLeasedYear, controller: _leasedYearController, onSubmitted: (v) {
-          final n = int.tryParse(v);
-          if (n != null) widget.onUpdate(widget.formData.copyWith(leasedYear: n));
-        }),
-        const SizedBox(height: 12),
-        _buildNumberField(label: l10n.listingLeasePrice, controller: _leasePriceController, onSubmitted: (v) {
-          final n = double.tryParse(v.replaceAll(',', ''));
-          if (n != null) widget.onUpdate(widget.formData.copyWith(leasePricePerSqm: n));
-        }),
-        const SizedBox(height: 12),
-        _textField(label: l10n.listingBuildType, controller: _buildTypeController, onSubmitted: (v) => widget.onUpdate(widget.formData.copyWith(buildType: v))),
-        const SizedBox(height: 12),
-        _buildNumberField(label: l10n.listingAnnualPayment, controller: _annualPaymentController, onSubmitted: (v) {
-          final n = double.tryParse(v.replaceAll(',', ''));
-          if (n != null) widget.onUpdate(widget.formData.copyWith(annualPayment: n));
-        }),
+            final n = int.tryParse(v);
+            if (n != null) widget.onUpdate(widget.formData.copyWith(leasedYear: n));
+          }),
+          const SizedBox(height: 12),
+          _buildNumberField(label: l10n.listingLeasePrice, controller: _leasePriceController, onSubmitted: (v) {
+            final n = double.tryParse(v.replaceAll(',', ''));
+            if (n != null) widget.onUpdate(widget.formData.copyWith(leasePricePerSqm: n));
+          }),
+          const SizedBox(height: 12),
+          _textField(label: l10n.listingBuildType, controller: _buildTypeController, onSubmitted: (v) => widget.onUpdate(widget.formData.copyWith(buildType: v))),
+          const SizedBox(height: 12),
+          _buildNumberField(label: l10n.listingAnnualPayment, controller: _annualPaymentController, onSubmitted: (v) {
+            final n = double.tryParse(v.replaceAll(',', ''));
+            if (n != null) widget.onUpdate(widget.formData.copyWith(annualPayment: n));
+          }),
         ],
       ),
     );
@@ -615,20 +616,21 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
           Text(l10n.listingCooperativeDetails, style: AppTextStyles.labelMedium.copyWith(color: Colors.green.shade700, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           _textField(label: l10n.listingCooperativeName, controller: _cooperativeNameController, onSubmitted: (v) {
-          widget.onUpdate(widget.formData.copyWith(cooperativeName: v));
-        }),
-        const SizedBox(height: 12),
-        _textField(label: l10n.listingCooperativeCode, controller: _cooperativeCodeController, onSubmitted: (v) {
-          widget.onUpdate(widget.formData.copyWith(cooperativeCode: v));
-        }),
-        const SizedBox(height: 12),
-        _dropdownField(
-          value: widget.formData.buildingStatus,
-          items: [l10n.listingFinished, l10n.listingUnfinished],
-          label: l10n.listingBuildingStatus,
-          onChanged: (v) => widget.onUpdate(widget.formData.copyWith(buildingStatus: v)),
-        ),
-      ],
+            widget.onUpdate(widget.formData.copyWith(cooperativeName: v));
+          }),
+          const SizedBox(height: 12),
+          _textField(label: l10n.listingCooperativeCode, controller: _cooperativeCodeController, onSubmitted: (v) {
+            widget.onUpdate(widget.formData.copyWith(cooperativeCode: v));
+          }),
+          const SizedBox(height: 12),
+          _dropdownField(
+            value: widget.formData.buildingStatus,
+            items: [l10n.listingFinished, l10n.listingUnfinished],
+            label: l10n.listingBuildingStatus,
+            onChanged: (v) => widget.onUpdate(widget.formData.copyWith(buildingStatus: v)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -696,6 +698,8 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
       }
     } catch (_) {
       if (mounted) setState(() => _zones = []);
+    } finally {
+      if (mounted) setState(() => _loadingZones = false);
     }
   }
 

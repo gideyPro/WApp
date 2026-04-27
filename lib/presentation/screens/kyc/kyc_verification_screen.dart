@@ -92,7 +92,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Take Photo'), // Generic enough
+              title: Text(l10n.kycTakePhoto),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.camera, type);
@@ -100,7 +100,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'), // Generic enough
+              title: Text(l10n.kycChooseGallery),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.gallery, type);
