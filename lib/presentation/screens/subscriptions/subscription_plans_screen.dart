@@ -79,27 +79,37 @@ class _SubscriptionPlansScreenState
           const SizedBox(height: 8),
 
           // Plans header
-          Text(
-            l10n.subscriptionsChoosePlan,
-            style: AppTextStyles.headline4,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.subscriptionsSelectPlanSubtitle,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.navy600,
+          if (activePlans.isNotEmpty) ...[
+            Text(
+              l10n.subscriptionsChoosePlan,
+              style: AppTextStyles.headline4,
             ),
-          ),
-          const SizedBox(height: 24),
+            const SizedBox(height: 8),
+            Text(
+              l10n.subscriptionsSelectPlanSubtitle,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.navy600,
+              ),
+            ),
+            const SizedBox(height: 24),
 
-          // Plans list
-          ...activePlans.map((plan) => _PlanCard(
-                plan: plan,
-                isCurrentPlan: currentSub.subscription?.planId == plan.id &&
-                    currentSub.subscription.isActive,
-                isLoading: _isProcessingPayment,
-                onSelect: () => _selectPlan(plan),
-              )),
+            // Plans list
+            ...activePlans.map((plan) => _PlanCard(
+                  plan: plan,
+                  isCurrentPlan: currentSub.subscription?.planId == plan.id &&
+                      currentSub.subscription.isActive,
+                  isLoading: _isProcessingPayment,
+                  onSelect: () => _selectPlan(plan),
+                )),
+          ] else ...[
+            const SizedBox(height: 32),
+            Center(
+              child: Text(
+                'No active subscription plans available at this time.',
+                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.zinc500),
+              ),
+            ),
+          ],
         ],
       ),
     );
