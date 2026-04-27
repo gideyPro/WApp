@@ -7,6 +7,7 @@ import '../../providers/auth_provider.dart';
 import '../auth/otp_login_screen.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/app_logo.dart';
+import '../../widgets/common/auth_background.dart';
 
 /// Modern Splash Screen displayed on app start
 /// Performs auth check during display, then navigates to appropriate screen
@@ -119,26 +120,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Container(
-        constraints: const BoxConstraints.expand(),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: isDark
-                ? [
-                    const Color(0xFF0A355C),
-                    const Color(0xFF102A43),
-                    const Color(0xFF0A4D2E),
-                  ]
-                : [
-                    const Color(0xFF0A416B),
-                    const Color(0xFF0A355C),
-                    const Color(0xFF18996C),
-                  ],
-            stops: const [0.0, 0.6, 1.0],
-          ),
-        ),
+      body: WaveAuthBackground(
         child: Stack(
           children: [
             // Animated wave background
@@ -248,62 +230,4 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       ),
     );
   }
-
-  Widget _buildWaveBackground() {
-    return Positioned.fill(
-      child: CustomPaint(
-        painter: _WavePainter(),
-      ),
-    );
-  }
-}
-
-class _WavePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.05)
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-    path.moveTo(0, size.height * 0.7);
-    
-    // Create smooth wave curves
-    for (double i = 0; i <= size.width; i++) {
-      final y = size.height * 0.7 +
-          sin(i * 0.02) * 20 +
-          sin(i * 0.01) * 10;
-      path.lineTo(i, y);
-    }
-    
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.close();
-    
-    canvas.drawPath(path, paint);
-    
-    // Second wave
-    final paint2 = Paint()
-      ..color = Colors.white.withValues(alpha: 0.03)
-      ..style = PaintingStyle.fill;
-
-    final path2 = Path();
-    path2.moveTo(0, size.height * 0.8);
-    
-    for (double i = 0; i <= size.width; i++) {
-      final y = size.height * 0.8 +
-          sin(i * 0.015 + 1) * 15 +
-          sin(i * 0.008) * 8;
-      path2.lineTo(i, y);
-    }
-    
-    path2.lineTo(size.width, size.height);
-    path2.lineTo(0, size.height);
-    path2.close();
-    
-    canvas.drawPath(path2, paint2);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

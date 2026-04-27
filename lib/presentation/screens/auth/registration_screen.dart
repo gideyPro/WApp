@@ -9,6 +9,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../navigation/main_navigation_shell.dart';
+import '../../widgets/common/auth_background.dart';
 
 /// Modern Registration Screen with consistent design
 class RegistrationScreen extends ConsumerStatefulWidget {
@@ -119,20 +120,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         _showCancelDialog();
       },
       child: Scaffold(
-        body: Container(
-          constraints: const BoxConstraints.expand(),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF0A416B), // Navy from SVG
-                Color(0xFF0A355C),
-                Color(0xFF18996C), // Green accent
-              ],
-              stops: [0.0, 0.6, 1.0],
-            ),
-          ),
+        body: WaveAuthBackground(
           child: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
@@ -189,17 +177,20 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
                   // White card container
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      color: context.isDarkMode ? Colors.white.withOpacity(0.08) : Colors.white,
+                      borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 24,
+                          offset: const Offset(0, 12),
                         ),
                       ],
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.15),
+                      ),
                     ),
                     child: Column(
                       children: [
