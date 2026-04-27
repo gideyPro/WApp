@@ -441,10 +441,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           const SizedBox(height: 24),
           Text(
             l10n.searchFindProperty,
-            style: AppTextStyles.title.copyWith(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: AppColors.navy800,
+            style: AppTextStyles.headline4.copyWith(
+              fontWeight: FontWeight.w800,
+              color: context.theme.textPrimary,
             ),
           ),
           const SizedBox(height: 8),

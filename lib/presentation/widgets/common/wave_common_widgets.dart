@@ -18,7 +18,7 @@ class WaveBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.theme.bottomNav,
         boxShadow: [
           BoxShadow(
             color: AppColors.navy950.withOpacity(0.1),

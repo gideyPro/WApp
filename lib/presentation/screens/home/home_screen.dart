@@ -10,6 +10,7 @@ import '../search/search_screen.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../notifications/notifications_screen.dart';
 import '../listing/listing_detail_screen.dart';
 import '../listing/my_listings_screen.dart';
@@ -238,9 +239,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           child: Center(
                             child: Text(
                               initials,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
+                              style: AppTextStyles.headline4.copyWith(
                                 color: Colors.white,
                               ),
                             ),
@@ -373,19 +372,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             children: [
               Text(
                 value,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+                style: AppTextStyles.titleSmall.copyWith(
                   color: valueColor ?? AppColors.wave600,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: AppColors.navy400,
-                  fontWeight: FontWeight.w500,
+                style: AppTextStyles.caption.copyWith(
+                  color: context.theme.textSecondary,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -662,7 +658,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                                   l10n.homeGreeting(userFirstName),
                                   style: AppTextStyles.title.copyWith(
                                     fontWeight: FontWeight.w800,
-                                    color: Colors.white,
+                                    color: context.theme.textPrimary,
                                     height: 1.2,
                                   ),
                                 ),
@@ -670,7 +666,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                                   l10n.homeDiscover,
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.white.withOpacity(0.65),
+                                    color: context.theme.textSecondary,
                                     fontWeight: FontWeight.w400,
                                     height: 1.3,
                                   ),

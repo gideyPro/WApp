@@ -139,17 +139,15 @@ class ProfileScreen extends ConsumerWidget {
             color: AppColors.wave500,
             borderRadius: BorderRadius.circular(18),
           ),
-          child: Center(
-            child: Text(
-              initials,
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                fontFamily: 'Outfit',
+            child: Center(
+              child: Text(
+                initials,
+                style: AppTextStyles.headline4.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
-          ),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -219,9 +217,9 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(width: 3),
           Text(
             isVerified ? '$label ✓' : label,
-            style: TextStyle(
+            style: AppTextStyles.labelSmall.copyWith(
               fontSize: 9,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w800,
               color: isVerified ? AppColors.emerald700 : AppColors.zinc500,
               letterSpacing: 0.3,
             ),
@@ -308,9 +306,9 @@ class ProfileScreen extends ConsumerWidget {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.cardBg,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.zinc200),
+            border: Border.all(color: context.divider.withOpacity(0.5)),
           ),
           child: Column(
             children: items.asMap().entries.map((entry) {

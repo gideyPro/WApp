@@ -11,6 +11,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamily: 'Inter',
       
       // Color Scheme
       colorScheme: const ColorScheme.light(
@@ -132,6 +133,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: 'Inter',
 
       // Color Scheme - Deep Night Premium
       colorScheme: const ColorScheme.dark(

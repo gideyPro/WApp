@@ -121,11 +121,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   // Title
                   Text(
                     l10n.authWelcomeTitle,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                    style: AppTextStyles.headline3.copyWith(
                       color: Colors.white,
-                      letterSpacing: 0.5,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -224,9 +221,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
+      style: AppTextStyles.titleSmall.copyWith(
+        fontWeight: FontWeight.w800,
         color: AppColors.navy900,
       ),
     );
@@ -277,9 +273,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               maxLength: 1,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
+              style: AppTextStyles.title.copyWith(
+                fontWeight: FontWeight.w800,
                 color: AppColors.navy900,
               ),
               decoration: InputDecoration(

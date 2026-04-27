@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import 'common/wave_card.dart';

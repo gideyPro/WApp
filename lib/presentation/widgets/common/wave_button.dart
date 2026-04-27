@@ -311,9 +311,9 @@ class WaveTextField extends StatelessWidget {
                       child: Icon(
                         prefixIcon,
                         size: 20,
-                        color: enabled
-                            ? AppColors.navy400
-                            : AppColors.zinc300,
+                         color: enabled
+                             ? context.theme.textMuted.withOpacity(0.5)
+                             : AppColors.zinc300,
                       ),
                     )
                   : null,
@@ -377,9 +377,9 @@ class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       elevation: elevation,
       scrolledUnderElevation: isScrolled ? 4 : 0,
-      backgroundColor: backgroundColor ?? Colors.white,
+      backgroundColor: backgroundColor ?? context.scaffoldBg,
       foregroundColor: foregroundColor ??
-          (isLight ? AppColors.navy950 : Colors.white),
+          (isLight ? context.theme.textPrimary : Colors.white),
       centerTitle: false,
       leading: leading ??
           (showBackButton
@@ -392,7 +392,7 @@ class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: AppTextStyles.title.copyWith(
           color: foregroundColor ??
-              (isLight ? AppColors.navy950 : Colors.white),
+              (isLight ? context.theme.textPrimary : Colors.white),
         ),
       ),
       actions: actions,
@@ -425,9 +425,9 @@ class WaveCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.cardBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.zinc200),
+          border: Border.all(color: context.divider.withOpacity(0.5)),
           boxShadow: enableHover ? AppColors.shadowMd : AppColors.shadowSm,
         ),
         child: ClipRRect(

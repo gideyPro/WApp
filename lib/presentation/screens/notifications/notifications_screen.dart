@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/notification.dart' as app;
 import '../../../../data/services/notification_service.dart';
 import '../../providers/app_providers.dart';
@@ -238,20 +239,20 @@ class _NotificationTile extends StatelessWidget {
       },
       onDismissed: (direction) => onDismissed(),
       child: Material(
-        color: notification.isRead ? Colors.white : AppColors.wave50,
+        color: notification.isRead ? context.theme.surface : (context.theme.isDark ? AppColors.navy800 : AppColors.wave50),
         child: ListTile(
           leading: Container(
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: notification.isRead ? AppColors.navy50 : AppColors.wave100,
+              color: notification.isRead ? (context.theme.isDark ? AppColors.navy800 : AppColors.navy50) : (context.theme.isDark ? AppColors.wave900 : AppColors.wave100),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               notification.icon,
               size: 24,
-              color:
-                  notification.isRead ? AppColors.navy400 : AppColors.wave600,
+                color:
+                  notification.isRead ? context.theme.textSecondary : AppColors.wave600,
             ),
           ),
           title: Text(

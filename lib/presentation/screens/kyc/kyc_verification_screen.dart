@@ -349,9 +349,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 ),
                 child: Text(
                   l10n.kycRejectedReason(state.rejectionReason!),
-                  style: TextStyle(
+                  style: AppTextStyles.bodyMedium.copyWith(
                     color: Colors.red[700],
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w800,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -510,7 +510,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.cardBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: image != null ? AppColors.wave300 : AppColors.zinc200,
@@ -590,7 +590,7 @@ class _DocumentTypeChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.wave50 : Colors.white,
+          color: isSelected ? context.theme.wave50 : context.cardBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.wave400 : AppColors.zinc200,

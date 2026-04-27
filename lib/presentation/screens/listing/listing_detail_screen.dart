@@ -448,7 +448,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
             ),
             child: Text(
               '${_currentImageIndex + 1}/${images.length}',
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+              style: AppTextStyles.labelSmall.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -526,9 +529,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       ),
       child: Text(
         text,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
+        style: AppTextStyles.labelSmall.copyWith(
+          fontWeight: FontWeight.w800,
           color: color,
           letterSpacing: 0.5,
         ),

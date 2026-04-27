@@ -317,11 +317,10 @@ class _StepIndicator extends StatelessWidget {
                       ),
                       child: Center(
                         child: isCompleted
-                            ? Icon(Icons.check, size: 16, color: Colors.white)
+                            ? const Icon(Icons.check, size: 16, color: Colors.white)
                             : Text(
                                 '${i + 1}',
-                                style: TextStyle(
-                                  fontSize: 12,
+                                style: AppTextStyles.labelSmall.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: isCurrent
                                       ? Colors.white

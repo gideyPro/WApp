@@ -157,11 +157,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   // Title
                   Text(
                     AppLocalizations.of(context).authCreateAccount,
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
+                    style: AppTextStyles.headline3.copyWith(
                       color: Colors.white,
-                      letterSpacing: 0.5,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -302,9 +299,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
+      style: AppTextStyles.titleSmall.copyWith(
+        fontWeight: FontWeight.w800,
         color: AppColors.navy900,
       ),
     );

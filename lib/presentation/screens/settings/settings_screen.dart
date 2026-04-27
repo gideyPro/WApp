@@ -387,10 +387,7 @@ void _showLanguageSelectionDialog(BuildContext context, WidgetRef ref) {
         children: [
           Text(
             AppLocalizations.of(context).languageTitle,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppTextStyles.title,
           ),
           const SizedBox(height: 24),
           _buildLanguageOption(
