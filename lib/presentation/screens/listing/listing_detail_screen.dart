@@ -958,7 +958,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete'), backgroundColor: AppColors.error),
+          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
         );
       }
     }
@@ -1029,17 +1029,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
           // Interest button - show status for all users
           Row(
             children: [
-              if (isOwner)
-                OutlinedButton.icon(
-                  onPressed: () => _editListing(listing),
-                  icon: const Icon(Icons.edit, size: 20),
-                  label: Text(l10n.commonEdit),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    side: BorderSide(color: AppColors.navy600),
-                    foregroundColor: isDark ? AppColors.navy300 : AppColors.navy600,
-                  ),
-                ),
               if (!isOwner && !hasInterest)
                 Expanded(
                   child: OutlinedButton.icon(

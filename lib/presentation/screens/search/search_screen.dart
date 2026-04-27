@@ -109,7 +109,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final query = _searchController.text.trim();
     _activeFilters = {};
     if (_isFeaturedFilter) {
-      _activeFilters['is_featured'] = 'true';
+      _activeFilters['is_featured'] = true;
     }
     if (query.isNotEmpty) _activeFilters['location'] = query;
     if (_selectedType != null) _activeFilters['type'] = _selectedType;

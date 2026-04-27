@@ -540,10 +540,19 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
   }
 
   Widget _buildFreeHoldFields(AppLocalizations l10n) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildNumberField(label: l10n.listingTaxPaidYear, controller: _taxPaidUntilController, onSubmitted: (v) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.navy50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.navy100),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.listingFreeHoldDetails, style: AppTextStyles.labelMedium.copyWith(color: AppColors.navy700, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          _buildNumberField(label: l10n.listingTaxPaidYear, controller: _taxPaidUntilController, onSubmitted: (v) {
           final n = int.tryParse(v);
           if (n != null) widget.onUpdate(widget.formData.copyWith(taxPaidUntilYear: n));
         }),
@@ -559,10 +568,19 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
   }
 
   Widget _buildLeaseHoldFields(AppLocalizations l10n) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildNumberField(label: l10n.listingLeasedYear, controller: _leasedYearController, onSubmitted: (v) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.purple.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.purple.shade100),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.listingLeaseHoldDetails, style: AppTextStyles.labelMedium.copyWith(color: Colors.purple.shade700, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          _buildNumberField(label: l10n.listingLeasedYear, controller: _leasedYearController, onSubmitted: (v) {
           final n = int.tryParse(v);
           if (n != null) widget.onUpdate(widget.formData.copyWith(leasedYear: n));
         }),
@@ -578,15 +596,25 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
           final n = double.tryParse(v.replaceAll(',', ''));
           if (n != null) widget.onUpdate(widget.formData.copyWith(annualPayment: n));
         }),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildCooperativeFields(AppLocalizations l10n) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _textField(label: l10n.listingCooperativeName, controller: _cooperativeNameController, onSubmitted: (v) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.green.shade100),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.listingCooperativeDetails, style: AppTextStyles.labelMedium.copyWith(color: Colors.green.shade700, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          _textField(label: l10n.listingCooperativeName, controller: _cooperativeNameController, onSubmitted: (v) {
           widget.onUpdate(widget.formData.copyWith(cooperativeName: v));
         }),
         const SizedBox(height: 12),
