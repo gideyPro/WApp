@@ -63,22 +63,35 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       hasDebtOrEncumbrance: listing.hasDebtOrEncumbrance,
       debtAmount: listing.debtAmount,
       taxPaidUntilYear: listing.taxPaidUntilYear,
+      acquisitionClarification: listing.acquisitionType,
+      leasedYear: listing.leasedYear,
+      leasePricePerSqm: listing.leasePricePerSqm,
+      buildType: listing.buildType,
+      annualPayment: listing.annualPayment,
       cooperativeName: listing.cooperativeName,
       cooperativeCode: listing.cooperativeCode,
+      buildingStatus: listing.buildingStatus,
       totalRooms: listing.totalRooms,
       bedrooms: listing.bedrooms,
       bathrooms: listing.bathrooms,
       kitchens: listing.kitchens,
       salons: listing.salons,
+      yearBuilt: listing.yearBuilt,
+      houseType: listing.houseType,
+      electricity: listing.electricity,
+      water: listing.water,
+      parkingAvailable: listing.parkingAvailable,
       frontAreaSqm: listing.frontAreaSqm,
       sideAreaSqm: listing.sideAreaSqm,
       facingDirection: listing.facingDirection,
+      specificLocation: listing.specificLocation,
+      rentalPeriodUnit: listing.rentalPeriodUnit?.toString().split('.').last,
     );
 
     _titleController.text = listing.specificLocation ?? '';
-    _priceController.text = listing.priceFixed?.toString() ?? '';
+    _priceController.text = listing.priceFixed?.toStringAsFixed(0) ?? '';
     _descriptionController.text = listing.description ?? '';
-    if (listing.debtAmount != null) _debtAmountController.text = listing.debtAmount.toString();
+    if (listing.debtAmount != null) _debtAmountController.text = listing.debtAmount!.toStringAsFixed(0);
     if (listing.taxPaidUntilYear != null) _taxPaidUntilController.text = listing.taxPaidUntilYear.toString();
     _cooperativeNameController.text = listing.cooperativeName ?? '';
     _cooperativeCodeController.text = listing.cooperativeCode ?? '';
@@ -87,15 +100,16 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     if (listing.bathrooms != null) _bathroomsController.text = listing.bathrooms.toString();
     if (listing.kitchens != null) _kitchensController.text = listing.kitchens.toString();
     if (listing.salons != null) _salonsController.text = listing.salons.toString();
-    if (listing.totalSquareMeters != null) _totalAreaController.text = listing.totalSquareMeters.toString();
-    if (listing.frontAreaSqm != null) _frontAreaController.text = listing.frontAreaSqm.toString();
-    if (listing.sideAreaSqm != null) _sideAreaController.text = listing.sideAreaSqm.toString();
+    if (listing.totalSquareMeters != null) _totalAreaController.text = listing.totalSquareMeters!.toStringAsFixed(0);
+    if (listing.frontAreaSqm != null) _frontAreaController.text = listing.frontAreaSqm!.toStringAsFixed(0);
+    if (listing.sideAreaSqm != null) _sideAreaController.text = listing.sideAreaSqm!.toStringAsFixed(0);
 
     if (listing.address != null) {
       _selectedRegion = listing.address?.region;
       _selectedZone = listing.address?.zone;
       _selectedWoreda = listing.address?.woreda;
       _selectedKebele = listing.address?.kebele;
+      _addressId = listing.addressId;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadRegions());
   }
@@ -161,27 +175,42 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     try {
       final service = ListingService();
       final data = <String, dynamic>{
+        'type': _formData.type,
+        'listing_type': _formData.listingType,
         'description': _formData.description ?? '',
-        'specific_location': _titleController.text,
-        if (_formData.priceFixed != null) 'price_fixed': _formData.priceFixed.toString(),
-        if (_formData.totalSquareMeters != null) 'total_square_meters': _formData.totalSquareMeters.toString(),
-        'address_id': _addressId,
+        'specific_location': _formData.specificLocation,
+        if (_formData.priceFixed != null) 'price_fixed': _formData.priceFixed,
+        if (_formData.rentalPeriodUnit != null) 'rental_period_unit': _formData.rentalPeriodUnit,
+        if (_formData.totalSquareMeters != null) 'total_square_meters': _formData.totalSquareMeters,
+        'address_id': _addressId ?? _formData.addressId,
         'holding_type': _formData.holdingType,
         'use_type': _formData.useType,
-        if (_formData.debtAmount != null) 'debt_amount': _formData.debtAmount.toString(),
-        if (_formData.hasDebtOrEncumbrance == true) 'has_debt_or_encumbrance': true,
-        if (_formData.taxPaidUntilYear != null) 'tax_paid_until_year': _formData.taxPaidUntilYear.toString(),
+        'has_debt_or_encumbrance': _formData.hasDebtOrEncumbrance ? 1 : 0,
+        if (_formData.debtAmount != null) 'debt_amount': _formData.debtAmount,
+        if (_formData.taxPaidUntilYear != null) 'tax_paid_until_year': _formData.taxPaidUntilYear,
+        if (_formData.acquisitionClarification != null) 'acquisition_clarification': _formData.acquisitionClarification,
+        if (_formData.leasedYear != null) 'leased_year': _formData.leasedYear,
+        if (_formData.leasePricePerSqm != null) 'lease_price_per_sqm': _formData.leasePricePerSqm,
+        if (_formData.buildType != null) 'build_type': _formData.buildType,
+        if (_formData.annualPayment != null) 'annual_payment': _formData.annualPayment,
         if (_formData.cooperativeName != null) 'cooperative_name': _formData.cooperativeName,
         if (_formData.cooperativeCode != null) 'cooperative_code': _formData.cooperativeCode,
-        if (_formData.totalRooms != null) 'total_rooms': _formData.totalRooms.toString(),
-        if (_formData.bedrooms != null) 'bedrooms': _formData.bedrooms.toString(),
-        if (_formData.bathrooms != null) 'bathrooms': _formData.bathrooms.toString(),
-        if (_formData.kitchens != null) 'kitchens': _formData.kitchens.toString(),
-        if (_formData.salons != null) 'salons': _formData.salons.toString(),
-        if (_formData.frontAreaSqm != null) 'front_area_sqm': _formData.frontAreaSqm.toString(),
-        if (_formData.sideAreaSqm != null) 'side_area_sqm': _formData.sideAreaSqm.toString(),
+        if (_formData.buildingStatus != null) 'building_status': _formData.buildingStatus,
+        if (_formData.totalRooms != null) 'total_rooms': _formData.totalRooms,
+        if (_formData.bedrooms != null) 'bedrooms': _formData.bedrooms,
+        if (_formData.bathrooms != null) 'bathrooms': _formData.bathrooms,
+        if (_formData.kitchens != null) 'kitchens': _formData.kitchens,
+        if (_formData.salons != null) 'salons': _formData.salons,
+        if (_formData.yearBuilt != null) 'year_built': _formData.yearBuilt,
+        if (_formData.houseType != null) 'house_type': _formData.houseType,
+        'electricity': _formData.electricity ? 1 : 0,
+        'water': _formData.water ? 1 : 0,
+        'parking_available': _formData.parkingAvailable ? 1 : 0,
+        if (_formData.frontAreaSqm != null) 'front_area_sqm': _formData.frontAreaSqm,
+        if (_formData.sideAreaSqm != null) 'side_area_sqm': _formData.sideAreaSqm,
         if (_formData.facingDirection != null) 'facing_direction': _formData.facingDirection,
       };
+
       
       final result = await service.updateListing(listingId: widget.listing.id, listingData: data);
       if (mounted) {
@@ -314,6 +343,10 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
   final _priceController = TextEditingController();
   final _debtAmountController = TextEditingController();
   final _taxPaidUntilController = TextEditingController();
+  final _leasedYearController = TextEditingController();
+  final _leasePriceController = TextEditingController();
+  final _buildTypeController = TextEditingController();
+  final _annualPaymentController = TextEditingController();
   final _cooperativeNameController = TextEditingController();
   final _cooperativeCodeController = TextEditingController();
 
@@ -329,8 +362,18 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
     if (widget.formData.priceFixed != null) _priceController.text = widget.formData.priceFixed!.toStringAsFixed(0);
     if (widget.formData.debtAmount != null) _debtAmountController.text = widget.formData.debtAmount!.toStringAsFixed(0);
     _taxPaidUntilController.text = widget.formData.taxPaidUntilYear?.toString() ?? '';
+    _leasedYearController.text = widget.formData.leasedYear?.toString() ?? '';
+    _leasePriceController.text = widget.formData.leasePricePerSqm?.toString() ?? '';
+    _buildTypeController.text = widget.formData.buildType ?? '';
+    _annualPaymentController.text = widget.formData.annualPayment?.toString() ?? '';
     _cooperativeNameController.text = widget.formData.cooperativeName ?? '';
     _cooperativeCodeController.text = widget.formData.cooperativeCode ?? '';
+    
+    _selectedRegion = widget.formData.addressRegion;
+    _selectedZone = widget.formData.addressZone;
+    _selectedWoreda = widget.formData.addressWoreda;
+    _selectedKebele = widget.formData.addressKebele;
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadInitialRegions());
   }
 
@@ -340,6 +383,7 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
     if (mounted && response.success) {
       final regions = response.regions.map((r) => r.region).where((s) => s != null && s.isNotEmpty).cast<String>().toList();
       setState(() => _regions = regions);
+      if (_selectedRegion != null) _loadZones();
     }
   }
 
@@ -349,6 +393,10 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
     _priceController.dispose();
     _debtAmountController.dispose();
     _taxPaidUntilController.dispose();
+    _leasedYearController.dispose();
+    _leasePriceController.dispose();
+    _buildTypeController.dispose();
+    _annualPaymentController.dispose();
     _cooperativeNameController.dispose();
     _cooperativeCodeController.dispose();
     super.dispose();
@@ -382,11 +430,27 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
           ),
           const SizedBox(height: 16),
           if (widget.formData.holdingType == l10n.listingFreeHold) _buildFreeHoldFields(l10n),
+          if (widget.formData.holdingType == l10n.listingLeaseHold) _buildLeaseHoldFields(l10n),
           if (widget.formData.holdingType == l10n.listingCooperative) _buildCooperativeFields(l10n),
+          const SizedBox(height: 20),
+          _sectionTitle(l10n.listingUseType),
+          const SizedBox(height: 8),
+          _dropdownField(
+            value: widget.formData.useType.isEmpty ? null : widget.formData.useType,
+            items: [l10n.listingResidential, l10n.listingCommercial, l10n.listingMixed, l10n.listingInvestment],
+            label: l10n.listingSelectUse,
+            onChanged: (v) => widget.onUpdate(widget.formData.copyWith(useType: v ?? l10n.listingResidential)),
+          ),
           const SizedBox(height: 20),
           _sectionTitle(l10n.listingLocation),
           const SizedBox(height: 8),
           _buildAddressDropdowns(l10n),
+          const SizedBox(height: 12),
+          _textField(
+            label: l10n.listingSpecificLocation,
+            controller: _specificLocationController,
+            onSubmitted: (v) => widget.onUpdate(widget.formData.copyWith(specificLocation: v)),
+          ),
           const SizedBox(height: 20),
           _sectionTitle(l10n.listingPriceEtb),
           const SizedBox(height: 8),
@@ -394,6 +458,15 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
             final cleaned = v.replaceAll(',', '');
             widget.onUpdate(widget.formData.copyWith(priceFixed: double.tryParse(cleaned)));
           }),
+          if (widget.formData.listingType == 'rental') ...[
+            const SizedBox(height: 12),
+            _dropdownField(
+              value: widget.formData.rentalPeriodUnit,
+              items: ['day', 'week', 'month', 'year'],
+              label: l10n.listingRentalPeriod,
+              onChanged: (v) => widget.onUpdate(widget.formData.copyWith(rentalPeriodUnit: v)),
+            ),
+          ],
           const SizedBox(height: 20),
           CheckboxListTile(
             title: Text(l10n.listingHasDebt),
@@ -470,13 +543,41 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionTitle(l10n.listingTaxPaidYear),
-        const SizedBox(height: 8),
         _buildNumberField(label: l10n.listingTaxPaidYear, controller: _taxPaidUntilController, onSubmitted: (v) {
           final n = int.tryParse(v);
           if (n != null) widget.onUpdate(widget.formData.copyWith(taxPaidUntilYear: n));
         }),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
+        _dropdownField(
+          value: widget.formData.acquisitionClarification,
+          items: [l10n.listingPurchased, l10n.listingInherited, l10n.listingGift, l10n.listingAssignment, l10n.listingOther],
+          label: l10n.listingAcquisition,
+          onChanged: (v) => widget.onUpdate(widget.formData.copyWith(acquisitionClarification: v)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLeaseHoldFields(AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildNumberField(label: l10n.listingLeasedYear, controller: _leasedYearController, onSubmitted: (v) {
+          final n = int.tryParse(v);
+          if (n != null) widget.onUpdate(widget.formData.copyWith(leasedYear: n));
+        }),
+        const SizedBox(height: 12),
+        _buildNumberField(label: l10n.listingLeasePrice, controller: _leasePriceController, onSubmitted: (v) {
+          final n = double.tryParse(v.replaceAll(',', ''));
+          if (n != null) widget.onUpdate(widget.formData.copyWith(leasePricePerSqm: n));
+        }),
+        const SizedBox(height: 12),
+        _textField(label: l10n.listingBuildType, controller: _buildTypeController, onSubmitted: (v) => widget.onUpdate(widget.formData.copyWith(buildType: v))),
+        const SizedBox(height: 12),
+        _buildNumberField(label: l10n.listingAnnualPayment, controller: _annualPaymentController, onSubmitted: (v) {
+          final n = double.tryParse(v.replaceAll(',', ''));
+          if (n != null) widget.onUpdate(widget.formData.copyWith(annualPayment: n));
+        }),
       ],
     );
   }
@@ -485,18 +586,20 @@ class _EditStep1BasicsState extends State<_EditStep1Basics> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionTitle(l10n.listingCooperativeName),
-        const SizedBox(height: 8),
         _textField(label: l10n.listingCooperativeName, controller: _cooperativeNameController, onSubmitted: (v) {
           widget.onUpdate(widget.formData.copyWith(cooperativeName: v));
         }),
         const SizedBox(height: 12),
-        _sectionTitle(l10n.listingCooperativeCode),
-        const SizedBox(height: 8),
         _textField(label: l10n.listingCooperativeCode, controller: _cooperativeCodeController, onSubmitted: (v) {
           widget.onUpdate(widget.formData.copyWith(cooperativeCode: v));
         }),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
+        _dropdownField(
+          value: widget.formData.buildingStatus,
+          items: [l10n.listingFinished, l10n.listingUnfinished],
+          label: l10n.listingBuildingStatus,
+          onChanged: (v) => widget.onUpdate(widget.formData.copyWith(buildingStatus: v)),
+        ),
       ],
     );
   }
@@ -621,6 +724,7 @@ class _EditStep2DetailsState extends State<_EditStep2Details> {
   final _bathroomsController = TextEditingController();
   final _kitchensController = TextEditingController();
   final _salonsController = TextEditingController();
+  final _yearBuiltController = TextEditingController();
   final _totalAreaController = TextEditingController();
   final _frontAreaController = TextEditingController();
   final _sideAreaController = TextEditingController();
@@ -633,9 +737,10 @@ class _EditStep2DetailsState extends State<_EditStep2Details> {
     _bathroomsController.text = widget.formData.bathrooms?.toString() ?? '';
     _kitchensController.text = widget.formData.kitchens?.toString() ?? '';
     _salonsController.text = widget.formData.salons?.toString() ?? '';
-    _totalAreaController.text = widget.formData.totalSquareMeters?.toString() ?? '';
-    _frontAreaController.text = widget.formData.frontAreaSqm?.toString() ?? '';
-    _sideAreaController.text = widget.formData.sideAreaSqm?.toString() ?? '';
+    _yearBuiltController.text = widget.formData.yearBuilt?.toString() ?? '';
+    _totalAreaController.text = widget.formData.totalSquareMeters?.toStringAsFixed(0) ?? '';
+    _frontAreaController.text = widget.formData.frontAreaSqm?.toStringAsFixed(0) ?? '';
+    _sideAreaController.text = widget.formData.sideAreaSqm?.toStringAsFixed(0) ?? '';
   }
 
   @override
@@ -645,6 +750,7 @@ class _EditStep2DetailsState extends State<_EditStep2Details> {
     _bathroomsController.dispose();
     _kitchensController.dispose();
     _salonsController.dispose();
+    _yearBuiltController.dispose();
     _totalAreaController.dispose();
     _frontAreaController.dispose();
     _sideAreaController.dispose();
@@ -714,24 +820,50 @@ class _EditStep2DetailsState extends State<_EditStep2Details> {
               ],
             ),
             const SizedBox(height: 16),
+            _sectionTitle(l10n.listingHouseType),
+            const SizedBox(height: 8),
+            _dropdownField(
+              value: widget.formData.houseType,
+              items: [l10n.listingVilla, l10n.listingApartment, l10n.listingCondominium, l10n.listingTownhouse, l10n.listingBungalow],
+              label: l10n.listingSelectHouseType,
+              onChanged: (v) => widget.onUpdate(widget.formData.copyWith(houseType: v)),
+            ),
+            const SizedBox(height: 12),
+            _buildNumberField(label: l10n.listingYearBuilt, controller: _yearBuiltController, onSubmitted: (v) {
+              final n = int.tryParse(v);
+              if (n != null) widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
+            }),
+            const SizedBox(height: 16),
+            _sectionTitle(l10n.listingAmenities),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _amenityChip(l10n.listingElectricity, widget.formData.electricity, (v) => widget.onUpdate(widget.formData.copyWith(electricity: v))),
+                _amenityChip(l10n.listingWater, widget.formData.water, (v) => widget.onUpdate(widget.formData.copyWith(water: v))),
+                _amenityChip(l10n.listingParking, widget.formData.parkingAvailable, (v) => widget.onUpdate(widget.formData.copyWith(parkingAvailable: v))),
+              ],
+            ),
+            const SizedBox(height: 16),
           ],
           _sectionTitle(l10n.listingAreaDimensions),
           const SizedBox(height: 8),
           _buildNumberField(label: l10n.listingTotalArea, controller: _totalAreaController, onSubmitted: (v) {
-            final n = int.tryParse(v);
-            if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n.toDouble()));
+            final n = double.tryParse(v.replaceAll(',', ''));
+            if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n));
           }),
           const SizedBox(height: 8),
           Row(
             children: [
               Expanded(child: _buildNumberField(label: l10n.listingFrontArea, controller: _frontAreaController, onSubmitted: (v) {
-                final n = int.tryParse(v);
-                if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n.toDouble()));
+                final n = double.tryParse(v.replaceAll(',', ''));
+                if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n));
               })),
               const SizedBox(width: 8),
               Expanded(child: _buildNumberField(label: l10n.listingSideArea, controller: _sideAreaController, onSubmitted: (v) {
-                final n = int.tryParse(v);
-                if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n.toDouble()));
+                final n = double.tryParse(v.replaceAll(',', ''));
+                if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n));
               })),
             ],
           ),
@@ -739,10 +871,19 @@ class _EditStep2DetailsState extends State<_EditStep2Details> {
           _sectionTitle(l10n.listingFacingDirection),
           const SizedBox(height: 8),
           _dropdownField(
-            value: widget.formData.facingDirection?.isEmpty ?? true ? null : widget.formData.facingDirection,
+            value: widget.formData.facingDirection,
             items: [l10n.listingNorth, l10n.listingSouth, l10n.listingEast, l10n.listingWest, l10n.listingNorthEast, l10n.listingNorthWest, l10n.listingSouthEast, l10n.listingSouthWest],
             label: l10n.listingSelectDirection,
             onChanged: (v) => widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
+          ),
+          const SizedBox(height: 16),
+          _sectionTitle(l10n.listingDescriptionLabel),
+          const SizedBox(height: 8),
+          TextFormField(
+            initialValue: widget.formData.description,
+            maxLines: 4,
+            decoration: InputDecoration(labelText: l10n.listingDescribeProperty, border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
+            onChanged: (v) => widget.onUpdate(widget.formData.copyWith(description: v)),
           ),
           const SizedBox(height: 32),
         ],
@@ -790,6 +931,16 @@ class _EditStep2DetailsState extends State<_EditStep2Details> {
       decoration: InputDecoration(labelText: label, border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
       keyboardType: TextInputType.number,
       onFieldSubmitted: onSubmitted,
+    );
+  }
+
+  Widget _amenityChip(String label, bool isSelected, Function(bool) onChanged) {
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: onChanged,
+      selectedColor: AppColors.wave100,
+      checkmarkColor: AppColors.wave600,
     );
   }
 }
