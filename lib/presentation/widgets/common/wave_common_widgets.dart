@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import 'wave_button.dart';
 
 /// WaveMart Bottom Navigation Bar
