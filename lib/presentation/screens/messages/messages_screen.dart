@@ -93,9 +93,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
+        backgroundColor: context.cardBg,
         title: Text(l10n.messagesTitle),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(50),
@@ -126,13 +126,13 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.wave500 : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: isSelected ? AppColors.wave500 : AppColors.zinc300),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: isSelected ? AppColors.wave500 : context.divider),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : (isDark ? AppColors.zinc300 : AppColors.navy700),
+            color: isSelected ? Colors.white : context.textSecondary,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             fontSize: 13,
           ),
@@ -246,18 +246,18 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
           leading: Container(
             width: 50,
             height: 50,
-            decoration: const BoxDecoration(
-              color: AppColors.zinc200,
+            decoration: BoxDecoration(
+              color: context.shimmerBase,
               shape: BoxShape.circle,
             ),
           ),
-          title: Container(height: 16, width: 140, color: AppColors.zinc200),
+          title: Container(height: 16, width: 140, color: context.shimmerBase),
           subtitle: Container(
               height: 12,
               width: 200,
-              color: AppColors.zinc200,
+              color: context.shimmerBase,
               margin: const EdgeInsets.only(top: 8)),
-          trailing: Container(height: 12, width: 40, color: AppColors.zinc200),
+          trailing: Container(height: 12, width: 40, color: context.shimmerBase),
         );
       },
     );
@@ -578,18 +578,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         margin: const EdgeInsets.only(top: 48),
         constraints: const BoxConstraints(maxHeight: 320),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.navy800 : Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: context.cardBgElevated,
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 12,
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 16,
               offset: const Offset(0, 4),
             ),
           ],
+          border: Border.all(color: context.divider.withOpacity(0.5)),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -598,7 +599,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: isDark ? AppColors.navy900 : AppColors.zinc50,
+                color: context.isDarkMode ? AppColors.navy900 : AppColors.zinc50,
                 child: Text(
                   l10n.messagesSwitchContext,
                   style: TextStyle(
@@ -776,15 +777,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.wave100,
+                  color: context.isDarkMode ? AppColors.wave950 : AppColors.wave100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  l10n.messagesEmpty, // Actually we need a 'New Messages' string, but using messagesEmpty for now if it's the closest
+                  l10n.messagesEmpty, 
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.wave700,
+                    color: AppColors.wave500,
                   ),
                 ),
               ),
@@ -1094,14 +1095,15 @@ class _MessageBubble extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: isOwn ? AppColors.navy600 : AppColors.surface,
+                color: isOwn ? (context.isDarkMode ? AppColors.wave600 : AppColors.navy600) : context.cardBg,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16),
                   topRight: const Radius.circular(16),
                   bottomLeft: Radius.circular(isOwn ? 16 : 4),
                   bottomRight: Radius.circular(isOwn ? 4 : 16),
                 ),
-                boxShadow: AppColors.shadowSm,
+                boxShadow: context.isDarkMode ? null : AppColors.shadowSm,
+                border: isOwn ? null : Border.all(color: context.divider.withOpacity(0.5)),
               ),
               child: Column(
                 crossAxisAlignment:
@@ -1110,7 +1112,7 @@ class _MessageBubble extends ConsumerWidget {
                   Text(
                     message.body,
                     style: TextStyle(
-                      color: isOwn ? AppColors.surface : AppColors.zinc800,
+                      color: isOwn ? Colors.white : context.textPrimary,
                       fontSize: 14,
                     ),
                   ),

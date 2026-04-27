@@ -103,9 +103,12 @@ final settingsAsync = ref.watch(appSettingsProvider);
     );
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
+        centerTitle: false,
+        backgroundColor: context.cardBg,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         title: Text(l10n.settingsTitle),
       ),
       body: RefreshIndicator(
@@ -259,15 +262,17 @@ final settingsAsync = ref.watch(appSettingsProvider);
           child: Text(
             title,
             style: AppTextStyles.labelMedium.copyWith(
-              color: AppColors.zinc500,
+              color: context.textMuted,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.2,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.zinc200),
+            color: context.cardBg,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: context.divider.withOpacity(0.5)),
           ),
           child: Column(
             children: items.asMap().entries.map((entry) {
@@ -290,8 +295,8 @@ final settingsAsync = ref.watch(appSettingsProvider);
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.navy50,
-              borderRadius: BorderRadius.circular(10),
+              color: context.isDarkMode ? AppColors.navy800 : AppColors.navy50,
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               item.icon,
@@ -317,8 +322,9 @@ final settingsAsync = ref.watch(appSettingsProvider);
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.wave100,
-                    borderRadius: BorderRadius.circular(10),
+                    color: context.isDarkMode ? AppColors.wave950 : AppColors.wave100,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.wave500.withOpacity(0.3)),
                   ),
                   child: Text(
                     item.badge!,
@@ -362,8 +368,9 @@ void _showLanguageSelectionDialog(BuildContext context, WidgetRef ref) {
 
   showModalBottomSheet(
     context: context,
+    backgroundColor: context.sheetBg,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (context) => Container(
       padding: const EdgeInsets.all(24),

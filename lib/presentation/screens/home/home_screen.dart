@@ -184,9 +184,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         minChildSize: 0.35,
         maxChildSize: 0.55,
         builder: (_, controller) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          decoration: BoxDecoration(
+            color: context.sheetBg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 20,
+              ),
+            ],
           ),
           child: Column(
             children: [
@@ -244,10 +250,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             children: [
                               Text(
                                 fullName,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.navy950,
+                                style: AppTextStyles.title.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: context.textPrimary,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -437,11 +442,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.navy950,
-                  letterSpacing: -0.3,
+                style: AppTextStyles.title.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                  color: context.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
@@ -449,10 +453,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 isFeatured
                     ? l10n.homeFeaturedPremium
                     : l10n.homeLatestRecently,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.navy400,
-                  fontWeight: FontWeight.w500,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: context.textSecondary,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -623,41 +626,17 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     final isScrolled = overlapsContent;
     final l10n = AppLocalizations.of(context);
 
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.navy950.withOpacity(isScrolled ? 0.98 : 0.95),
-                AppColors.navy900.withOpacity(isScrolled ? 0.96 : 0.90),
-              ],
-            ),
-            boxShadow: isScrolled
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.25),
-                      blurRadius: 20,
-                      offset: const Offset(0, 6),
-                    ),
-                    BoxShadow(
-                      color: AppColors.wave500.withOpacity(0.08),
-                      blurRadius: 15,
-                      offset: const Offset(0, -2),
-                    ),
-                  ]
-                : [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-          ),
-          child: SafeArea(
+    return WaveGlass(
+      blur: 20,
+      color: context.scaffoldBg.withOpacity(isScrolled ? 0.95 : 0.8),
+      border: Border(
+        bottom: BorderSide(
+          color: isScrolled 
+            ? context.divider.withOpacity(0.5) 
+            : Colors.transparent
+        ),
+      ),
+      child: SafeArea(
             bottom: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
@@ -678,11 +657,9 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                               children: [
                                 Text(
                                   l10n.homeGreeting(userFirstName),
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
+                                  style: AppTextStyles.title.copyWith(
+                                    fontWeight: FontWeight.w800,
                                     color: Colors.white,
-                                    letterSpacing: -0.2,
                                     height: 1.2,
                                   ),
                                 ),
@@ -739,9 +716,14 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.wave500.withOpacity(0.4),
-            blurRadius: 12,
-            spreadRadius: 1,
+            color: AppColors.wave500.withOpacity(0.35),
+            blurRadius: 16,
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -749,8 +731,8 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: Colors.white.withOpacity(0.2),
-            width: 2,
+            color: Colors.white.withOpacity(0.3),
+            width: 1.5,
           ),
         ),
         child: Center(

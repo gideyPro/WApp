@@ -6,6 +6,8 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
+import 'common/wave_card.dart';
+import 'common/wave_glass.dart';
 
 /// Property Listing Card Widget
 class PropertyListingCard extends StatelessWidget {
@@ -39,51 +41,50 @@ class PropertyListingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isLoading) return _buildSkeleton();
 
-    return GestureDetector(
+    return WaveCard(
       onTap: _handleTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.zinc200),
-          boxShadow: AppColors.shadowMd,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image Section
-            _buildImageSection(context),
+      margin: const EdgeInsets.only(bottom: 20),
+      borderRadius: 24,
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image Section
+          _buildImageSection(context),
 
-            // Content Section
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Price
-                  _buildPrice(context),
-                  const SizedBox(height: 8),
+          // Content Section
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Price
+                _buildPrice(context),
+                const SizedBox(height: 10),
 
-                  // Description
-                  _buildDescription(),
-                  const SizedBox(height: 8),
+                // Description
+                _buildDescription(),
+                const SizedBox(height: 12),
 
-                  // Location
-                  _buildLocation(context),
-                  const SizedBox(height: 6),
+                // Location & Date
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(child: _buildLocation(context)),
+                    _buildDatePosted(context),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                
+                const Divider(height: 1),
+                const SizedBox(height: 16),
 
-                  // Date Posted
-                  _buildDatePosted(context),
-                  const SizedBox(height: 12),
-
-                  // Features Row
-                  _buildFeatures(context),
-                ],
-              ),
+                // Features Row
+                _buildFeatures(context),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -310,12 +311,9 @@ class PropertyListingCard extends StatelessWidget {
           Positioned(
             top: 12,
             right: 48,
-            child: Container(
+            child: WaveGlass(
+              borderRadius: 8,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(6),
-              ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -336,12 +334,9 @@ class PropertyListingCard extends StatelessWidget {
         Positioned(
           bottom: 12,
           left: 12,
-          child: Container(
+          child: WaveGlass(
+            borderRadius: 8,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(6),
-            ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -559,57 +554,48 @@ class FeaturedListingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isLoading || listing == null) return _buildSkeleton();
 
-    return GestureDetector(
+    return WaveCard(
       onTap: _handleTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.zinc200),
-          boxShadow: AppColors.shadowMd,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image Section (Left)
-            _buildImageSection(),
+      margin: const EdgeInsets.only(bottom: 20),
+      borderRadius: 24,
+      padding: EdgeInsets.zero,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image Section (Left)
+          Expanded(flex: 2, child: _buildImageSection()),
 
-            // Content Section (Right)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Badges Row
-                    _buildBadgesRow(context),
-                    const SizedBox(height: 8),
+          // Content Section (Right)
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Badges Row
+                  _buildBadgesRow(context),
+                  const SizedBox(height: 10),
 
-                    // Price
-                    _buildPrice(context),
-                    const SizedBox(height: 4),
+                  // Price
+                  _buildPrice(context),
+                  const SizedBox(height: 6),
 
-                    // Description
-                    _buildDescription(),
-                    const SizedBox(height: 4),
+                  // Description
+                  _buildDescription(),
+                  const SizedBox(height: 10),
 
-                    // Location
-                    _buildLocation(context),
-                    const SizedBox(height: 4),
+                  // Location
+                  _buildLocation(context),
+                  const SizedBox(height: 8),
 
-                    // Date Posted
-                    _buildDatePosted(context),
-                    const Spacer(),
-
-                    // Features Row
-                    _buildFeatures(context),
-                  ],
-                ),
+                  // Features Row
+                  _buildFeatures(context),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

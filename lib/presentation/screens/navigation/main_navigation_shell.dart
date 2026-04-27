@@ -54,8 +54,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const CreateListingScreen()),
         ),
-        backgroundColor: Colors.white,
-        elevation: 4,
+        backgroundColor: context.cardBg,
+        elevation: 12,
         shape: const CircleBorder(),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -64,10 +64,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             const SizedBox(height: 2),
             Text(
               AppLocalizations.of(context).listingsCreate,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: AppColors.navy900,
+              style: AppTextStyles.labelSmall.copyWith(
+                color: isDark ? AppColors.wave400 : AppColors.navy900,
               ),
             ),
           ],
@@ -75,10 +73,12 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        elevation: 8,
+        color: context.sheetBg,
+        elevation: 20,
+        padding: EdgeInsets.zero,
+        surfaceTintColor: Colors.transparent,
         shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
+        notchMargin: 10.0,
         child: SizedBox(
           height: 60,
           child: Row(
@@ -110,7 +110,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.navy900 : AppColors.zinc400,
+              color: isSelected ? context.textPrimary : context.textMuted,
               size: 26,
             ),
             const SizedBox(height: 4),

@@ -220,12 +220,17 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
     final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, -2)),
-      ]),
+      decoration: BoxDecoration(
+        color: context.sheetBg, 
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, -4)
+          ),
+        ],
+        border: Border(top: BorderSide(color: context.divider.withOpacity(0.5))),
+      ),
       child: SafeArea(
         child: Row(
           children: [
@@ -285,10 +290,10 @@ class _StepIndicator extends StatelessWidget {
           // Progress bar
           LinearProgressIndicator(
             value: (currentStep + 1) / 4,
-            backgroundColor: AppColors.zinc200,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.navy950),
-            minHeight: 4,
-            borderRadius: BorderRadius.circular(2),
+            backgroundColor: context.divider,
+            valueColor: AlwaysStoppedAnimation<Color>(context.isDarkMode ? AppColors.wave400 : AppColors.navy950),
+            minHeight: 6,
+            borderRadius: BorderRadius.circular(4),
           ),
           SizedBox(height: 8),
           // Step circles
@@ -306,8 +311,8 @@ class _StepIndicator extends StatelessWidget {
                       height: 28,
                       decoration: BoxDecoration(
                         color: isCompleted || isCurrent
-                            ? AppColors.navy950
-                            : AppColors.zinc200,
+                            ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
+                            : context.divider,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -333,8 +338,9 @@ class _StepIndicator extends StatelessWidget {
                           fontSize: 10,
                           fontWeight:
                               isCurrent ? FontWeight.w700 : FontWeight.w500,
-                          color:
-                              isCurrent ? AppColors.navy900 : AppColors.zinc400,
+                          color: isCurrent 
+                              ? (context.isDarkMode ? AppColors.wave400 : AppColors.navy950) 
+                              : context.textMuted,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -729,11 +735,15 @@ class _Step1BasicsState extends ConsumerState<_Step1Basics> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.navy950 : Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            color: isSelected 
+                ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950) 
+                : context.cardBg,
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
-                color: isSelected ? AppColors.navy950 : AppColors.zinc300,
-                width: 2),
+                color: isSelected 
+                    ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950) 
+                    : context.divider,
+                width: 1.5),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

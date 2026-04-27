@@ -81,3 +81,6 @@ flutter:
     - family: Outfit
       fonts:
         - asset: assets/fonts/outfit/Outfit-Regular.ttf
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/plusjakartasans/PlusJakartaSans-Variable.ttf

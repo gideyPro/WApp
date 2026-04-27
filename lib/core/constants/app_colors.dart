@@ -135,6 +135,29 @@ class AppColors {
           spreadRadius: 0,
         ),
       ];
+
+  // Premium Premium Shadows
+  static List<BoxShadow> get shadowPremium => [
+        BoxShadow(
+          color: navy950.withOpacity(0.04),
+          blurRadius: 24,
+          offset: const Offset(0, 8),
+        ),
+        BoxShadow(
+          color: navy950.withOpacity(0.02),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ];
+
+  static List<BoxShadow> shadowDarkPremium(Color color) => [
+        BoxShadow(
+          color: color.withOpacity(0.2),
+          blurRadius: 20,
+          offset: const Offset(0, 10),
+          spreadRadius: -5,
+        ),
+      ];
 }
 
 /// Theme-aware extension for easy dark mode support
@@ -143,12 +166,18 @@ extension AppColorsExtension on BuildContext {
 
   Color get scaffoldBg => isDarkMode ? AppColors.navy950 : AppColors.zinc50;
   Color get cardBg => isDarkMode ? AppColors.navy900 : Colors.white;
+  Color get cardBgElevated => isDarkMode ? AppColors.navy800 : Colors.white;
   Color get textPrimary => isDarkMode ? Colors.white : AppColors.zinc900;
   Color get textSecondary => isDarkMode ? AppColors.zinc300 : AppColors.zinc600;
+  Color get textMuted => isDarkMode ? AppColors.navy400 : AppColors.zinc400;
   Color get iconPrimary => isDarkMode ? Colors.white : AppColors.navy700;
   Color get divider => isDarkMode ? AppColors.navy800 : AppColors.zinc200;
-  Color get inputBg => isDarkMode ? AppColors.navy900 : AppColors.zinc50.withValues(alpha: 0.5);
+  Color get inputBg => isDarkMode ? AppColors.navy900 : AppColors.zinc50.withOpacity(0.5);
   Color get sheetBg => isDarkMode ? AppColors.navy900 : Colors.white;
   Color get shimmerBase => isDarkMode ? AppColors.navy800 : Colors.grey[300]!;
   Color get shimmerHighlight => isDarkMode ? AppColors.navy700 : Colors.grey[100]!;
+  
+  // Glassmorphism helpers
+  Color get glassBg => isDarkMode ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.7);
+  Color get glassBorder => isDarkMode ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.2);
 }

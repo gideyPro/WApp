@@ -53,9 +53,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
+        centerTitle: false,
+        backgroundColor: context.cardBg,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         title: Text(AppLocalizations.of(context).favoritesTitle),
         actions: [
           if (state.favorites.isNotEmpty)

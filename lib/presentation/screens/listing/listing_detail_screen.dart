@@ -67,26 +67,27 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   Widget _buildSkeletonLoader() {
     return Scaffold(
+      backgroundColor: context.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           // Image skeleton
           SliverToBoxAdapter(
             child: Shimmer.fromColors(
-              baseColor: Colors.grey[200]!,
-              highlightColor: Colors.grey[100]!,
+              baseColor: context.shimmerBase,
+              highlightColor: context.shimmerHighlight,
               child: Column(
                 children: [
                   // App bar skeleton
                   Container(
                     height: 56,
-                    color: Colors.grey[300],
+                    color: context.shimmerHighlight,
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.only(left: 16),
                     child: Container(
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.shimmerBase,
                         borderRadius: BorderRadius.circular(18),
                       ),
                     ),
@@ -94,7 +95,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                   // Image skeleton
                   AspectRatio(
                     aspectRatio: 4 / 3,
-                    child: Container(color: Colors.grey[300]),
+                    child: Container(color: context.shimmerHighlight),
                   ),
                   // Page indicator skeleton
                   Padding(
@@ -108,7 +109,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                           width: 24,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.shimmerHighlight,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -124,8 +125,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
             padding: const EdgeInsets.all(20),
             sliver: SliverToBoxAdapter(
               child: Shimmer.fromColors(
-                baseColor: Colors.grey[200]!,
-                highlightColor: Colors.grey[100]!,
+                baseColor: context.shimmerBase,
+                highlightColor: context.shimmerHighlight,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -134,7 +135,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                       height: 28,
                       width: 160,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.shimmerHighlight,
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
@@ -143,7 +144,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                       height: 18,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.shimmerHighlight,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -151,11 +152,11 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                     // Badges skeleton
                     Row(
                       children: [
-                        _skeletonChip(50, 20),
+                        _skeletonChip(context, 50, 20),
                         const SizedBox(width: 8),
-                        _skeletonChip(65, 20),
+                        _skeletonChip(context, 65, 20),
                         const SizedBox(width: 8),
-                        _skeletonChip(55, 20),
+                        _skeletonChip(context, 55, 20),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -166,7 +167,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                           width: 16,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.shimmerHighlight,
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
@@ -175,7 +176,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                           height: 14,
                           width: 200,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.shimmerHighlight,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -187,18 +188,18 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                       height: 16,
                       width: 100,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.shimmerHighlight,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        _skeletonChip(80, 32),
+                        _skeletonChip(context, 80, 32),
                         const SizedBox(width: 8),
-                        _skeletonChip(90, 32),
+                        _skeletonChip(context, 90, 32),
                         const SizedBox(width: 8),
-                        _skeletonChip(70, 32),
+                        _skeletonChip(context, 70, 32),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -207,7 +208,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                       height: 16,
                       width: 120,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.shimmerHighlight,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -221,7 +222,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                             height: 14,
                             width: double.maxFinite,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: context.shimmerHighlight,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -238,12 +239,12 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     );
   }
 
-  Widget _skeletonChip(double width, double height) {
+  Widget _skeletonChip(BuildContext context, double width, double height) {
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: context.shimmerHighlight,
         borderRadius: BorderRadius.circular(height / 2),
       ),
     );
@@ -398,10 +399,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
     if (images.isEmpty) {
       return Container(
-        color: AppColors.navy100,
-        child: const Center(
+        color: context.cardBg,
+        child: Center(
           child: Icon(Icons.image_not_supported,
-              size: 64, color: AppColors.navy400),
+              size: 64, color: context.textMuted),
         ),
       );
     }
@@ -654,18 +655,20 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.navy50,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: context.divider.withOpacity(0.5)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppColors.navy600),
+          Icon(icon, size: 16, color: AppColors.wave500),
           const SizedBox(width: 6),
           Text(
             label,
             style: AppTextStyles.labelMedium.copyWith(
-              color: AppColors.navy700,
+              color: context.textSecondary,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
