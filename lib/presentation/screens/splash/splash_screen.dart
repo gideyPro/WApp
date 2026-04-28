@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/text_styles.dart';
 import '../../../../core/network/api_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
@@ -156,9 +157,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         children: [
                           const Text(
                             'WaveMart',
-                            style: TextStyle(
+                            style: AppTextStyles.headline3.copyWith(
                               fontSize: 32,
-                              fontWeight: FontWeight.bold,
                               color: Colors.white,
                               letterSpacing: 1.5,
                             ),
@@ -166,8 +166,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           const SizedBox(height: 8),
                           Text(
                             'Ethiopia\'s Premier Real Estate Marketplace',
-                            style: TextStyle(
-                              fontSize: 14,
+                            style: AppTextStyles.bodyMedium.copyWith(
                               color: Colors.white.withValues(alpha: 0.7),
                               letterSpacing: 0.5,
                             ),
@@ -214,8 +213,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               child: Center(
                 child: Text(
                   'v1.0.0',
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: AppTextStyles.caption.copyWith(
                     color: Colors.white.withValues(alpha: 0.4),
                   ),
                 ),

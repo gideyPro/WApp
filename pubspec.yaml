@@ -78,9 +78,18 @@ flutter:
     - family: Inter
       fonts:
         - asset: assets/fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/inter/Inter-Bold.ttf
+          weight: 700
     - family: Outfit
       fonts:
         - asset: assets/fonts/outfit/Outfit-Regular.ttf
-    - family: PlusJakartaSans
-      fonts:
-        - asset: assets/fonts/plusjakartasans/PlusJakartaSans-Variable.ttf
+          weight: 400
+        - asset: assets/fonts/outfit/Outfit-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/outfit/Outfit-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/outfit/Outfit-ExtraBold.ttf
+          weight: 800

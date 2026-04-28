@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../home/home_screen.dart';
 import '../favorites/favorites_screen.dart';
@@ -105,8 +106,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             const SizedBox(height: 4),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 10,
+              style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected ? context.textPrimary : AppColors.zinc500,
               ),
@@ -131,8 +131,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               Badge(
                 label: Text(
                   '$unreadCount',
-                  style: const TextStyle(
-                      fontSize: 10, fontWeight: FontWeight.bold),
+                  style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold),
                 ),
                 backgroundColor: AppColors.wave500,
                 textColor: Colors.white,
@@ -151,8 +150,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             const SizedBox(height: 4),
             Text(
               AppLocalizations.of(context).navMessages,
-              style: TextStyle(
-                fontSize: 10,
+              style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected ? AppColors.navy900 : AppColors.zinc500,
               ),
@@ -181,8 +179,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             const SizedBox(height: 4),
             Text(
               AppLocalizations.of(context).navSettings,
-              style: TextStyle(
-                fontSize: 10,
+              style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected ? context.textPrimary : AppColors.zinc500,
               ),

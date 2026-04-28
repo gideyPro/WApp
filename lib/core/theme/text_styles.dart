@@ -58,6 +58,36 @@ class AppTextStyles {
         height: 1.4,
       );
 
+  static TextStyle get headline5 => const TextStyle(
+        fontFamily: _headingFont,
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+        height: 1.3,
+        letterSpacing: -0.2,
+      );
+
+  static TextStyle get subtitle => const TextStyle(
+        fontFamily: _bodyFont,
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        height: 1.4,
+      );
+
+  static TextStyle get bodyLargePlus => const TextStyle(
+        fontFamily: _bodyFont,
+        fontSize: 17,
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+      );
+
+  static TextStyle get captionSmall => const TextStyle(
+        fontFamily: _bodyFont,
+        fontSize: 10,
+        fontWeight: FontWeight.w500,
+        color: AppColors.zinc500,
+        height: 1.4,
+      );
+
   // Body Text
   static TextStyle get bodyLarge => const TextStyle(
         fontFamily: _bodyFont,
