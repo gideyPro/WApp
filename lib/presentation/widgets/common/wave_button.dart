@@ -26,7 +26,7 @@ class WaveButton extends StatefulWidget {
     this.isFullWidth = false,
     this.variant = ButtonVariant.primary,
     this.width,
-    this.height = 52,
+    this.height = 48,
     this.inputFormatters,
   });
 
@@ -72,7 +72,7 @@ class _WaveButtonState extends State<WaveButton> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               splashColor: _getSplashColor(),
               highlightColor: _getHighlightColor(),
               child: AnimatedContainer(
@@ -80,7 +80,7 @@ class _WaveButtonState extends State<WaveButton> {
                 decoration: BoxDecoration(
                   gradient: _isPressed ? null : _getGradient(),
                   color: _isPressed ? _getPressedColor() : _getBackgroundColor(),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   boxShadow: _isPressed ? null : _getShadow(),
                 ),
                 child: Center(
@@ -197,9 +197,9 @@ class _WaveButtonState extends State<WaveButton> {
           color: (widget.variant == ButtonVariant.primary
                   ? AppColors.navy950
                   : AppColors.emerald600)
-              .withOpacity(0.3),
-          blurRadius: 12,
-          offset: const Offset(0, 4),
+              .withOpacity(0.25),
+          blurRadius: 8,
+          offset: const Offset(0, 3),
         ),
       ];
     }
@@ -277,7 +277,7 @@ class WaveTextField extends StatelessWidget {
             color: enabled
                 ? AppColors.zinc50.withOpacity(0.5)
                 : AppColors.zinc100,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: errorText != null
                   ? AppColors.error
