@@ -351,7 +351,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
             if (_isFeaturedFilter)
               _filterChip(
-                'Featured',
+                l10n.listingsFeatured,
                 () => _removeFilterAndCheck(
                     () => setState(() => _isFeaturedFilter = false)),
               ),
@@ -488,7 +488,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   setState(() => _selectedListingType = 'rental');
                   _performSearch();
                 }),
-              _popularSearchChip('Featured', () {
+              _popularSearchChip(l10n.listingsFeatured, () {
                 setState(() => _isFeaturedFilter = true);
                 _performSearch();
               }),
