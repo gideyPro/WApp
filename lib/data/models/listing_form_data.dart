@@ -406,15 +406,28 @@ class ListingFormData {
   /// Validate step 3 (Media)
   List<String> validateStep3() {
     final errors = <String>[];
-    if (images.isEmpty) errors.add('At least one property image is required');
-    if (sitePlans.isEmpty) errors.add('At least one site plan is required');
     
-    if (holdingType == 'Cooperative' && ownershipProof == null) {
-      errors.add('Ownership proof is required for cooperative properties');
+    // Check new images OR existing images that weren't removed
+    final hasImages = images.isNotEmpty || 
+      (existingImages.isNotEmpty && existingImages.length > removedImageIds.length);
+    if (!hasImages) errors.add('At least one property image is required');
+    
+    // Check new site plans OR existing site plan URL
+    final hasSitePlan = sitePlans.isNotEmpty || existingSitePlanUrl != null;
+    if (!hasSitePlan) errors.add('At least one site plan is required');
+    
+    // Ownership proof - check new upload OR existing URL
+    if (holdingType == 'Cooperative') {
+      final hasOwnership = ownershipProof != null || existingOwnershipProofUrl != null;
+      if (!hasOwnership) errors.add('Ownership proof is required for cooperative properties');
     }
-    if (holdingType == 'Lease Hold' && leaseContract == null) {
-      errors.add('Lease contract is required for lease hold properties');
+    
+    // Lease contract - check new upload OR existing URL
+    if (holdingType == 'Lease Hold') {
+      final hasLease = leaseContract != null || existingLeaseContractUrl != null;
+      if (!hasLease) errors.add('Lease contract is required for lease hold properties');
     }
+    
     return errors;
   }
 

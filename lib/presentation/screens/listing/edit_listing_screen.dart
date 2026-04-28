@@ -24,6 +24,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   int _currentStep = 0;
   bool _isSubmitting = false;
   final _addressService = AddressService();
+  final Map<int, List<String>> _stepErrors = {};
 
   @override
   void initState() {
@@ -95,11 +96,13 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   void _nextStep() {
     final errors = _validateCurrentStep();
     if (errors.isNotEmpty) {
+      setState(() => _stepErrors[_currentStep] = errors);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errors.first), backgroundColor: AppColors.error),
       );
       return;
     }
+    setState(() => _stepErrors.remove(_currentStep));
 
     if (_currentStep < 3) {
       _goToStep(_currentStep + 1);

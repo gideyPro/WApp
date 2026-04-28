@@ -437,7 +437,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             title: Text(l10n.listingHasDebt),
             value: widget.formData.hasDebtOrEncumbrance,
             onChanged: (v) => widget.onUpdate(
-                widget.formData.copyWith(hasDebtOrEncumbrance: v ?? false)),
+                widget.formData.copyWith(
+                  hasDebtOrEncumbrance: v ?? false,
+                  debtAmount: (v ?? false) ? widget.formData.debtAmount : null,
+                )),
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
           ),
@@ -1046,6 +1049,20 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
               label: l10n.listingSelectHouseType,
               onChanged: (v) =>
                   widget.onUpdate(widget.formData.copyWith(houseType: v)),
+            ),
+            const SizedBox(height: 16),
+            _sectionTitle(l10n.listingYearBuilt),
+            const SizedBox(height: 8),
+            _buildPersistedField(
+              label: l10n.listingYearBuilt,
+              controller: _yearBuiltController,
+              keyboardType: TextInputType.number,
+              onSubmitted: (v) {
+                final n = int.tryParse(v);
+                if (n != null) {
+                  widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
+                }
+              },
             ),
             const SizedBox(height: 16),
             _sectionTitle(l10n.listingAmenities),
