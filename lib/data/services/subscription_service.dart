@@ -10,26 +10,22 @@ class SubscriptionServiceApi {
   SubscriptionServiceApi({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get all subscription plans
+  /// Get all subscription plans with current subscription info
+  /// Uses the combined /subscriptions endpoint for efficiency (single call)
   Future<SubscriptionPlansResponse> getPlans() async {
     try {
       final response = await _apiClient.dio.get(
-        ApiConstants.subscriptionPlans,
+        ApiConstants.currentSubscription,
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
-        List<Map<String, dynamic>> plansList = [];
+        final data = response.data['data'] ?? response.data;
+        final plansData = data['plans'] ?? [];
 
-        if (data is Map && data['success'] == true) {
-          final plansData = data['data'];
-          if (plansData is List) {
-            plansList = plansData.cast<Map<String, dynamic>>();
-          }
-        }
-
-        final plans =
-            plansList.map((json) => SubscriptionPlan.fromJson(json)).toList();
+        final plans = (plansData as List? ?? [])
+            .whereType<Map<String, dynamic>>()
+            .map((json) => SubscriptionPlan.fromJson(json))
+            .toList();
 
         return SubscriptionPlansResponse(
           success: true,
@@ -49,6 +45,7 @@ class SubscriptionServiceApi {
       );
     }
   }
+
 
   /// Get current user subscription
   Future<CurrentSubscriptionResponse> getCurrentSubscription() async {
@@ -94,14 +91,16 @@ class SubscriptionServiceApi {
 
       if (response.statusCode == 200) {
         final data = response.data['data'] ?? response.data;
+        final planData = data['plan'] != null
+            ? SubscriptionPlan.fromJson(data['plan'])
+            : null;
 
         return SubscriptionResponse(
           success: true,
           message: response.data['message'] ?? 'Subscription initiated',
           checkoutUrl: data['checkout_url'],
-          plan: data['plan'] != null
-              ? SubscriptionPlan.fromJson(data['plan'])
-              : null,
+          plan: planData,
+          requiresPayment: data['requires_payment'] == true,
         );
       }
 
@@ -114,9 +113,11 @@ class SubscriptionServiceApi {
       return SubscriptionResponse(
         success: false,
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        requiresPayment: false,
       );
     }
   }
+
 
   /// Process subscription payment
   Future<SubscriptionResponse> processPayment({
@@ -241,11 +242,13 @@ class SubscriptionResponse {
   final String message;
   final SubscriptionPlan? plan;
   final String? checkoutUrl;
+  final bool requiresPayment;
 
   const SubscriptionResponse({
     required this.success,
     this.message = '',
     this.plan,
     this.checkoutUrl,
+    this.requiresPayment = false,
   });
 }
