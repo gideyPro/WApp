@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
+import 'image.dart';
 
-/// Complete form data for create listing (matches web version's listingWizard)
+/// Complete form data for create/edit listing
 class ListingFormData {
   // --- Basics ---
   String type; // 'house' | 'land'
@@ -71,6 +72,14 @@ class ListingFormData {
   XFile? debtDocument;
   XFile? videoFile;
 
+  // --- Existing Media (for Edit mode) ---
+  List<ImageModel> existingImages = [];
+  List<int> removedImageIds = [];
+  String? existingSitePlanUrl;
+  String? existingOwnershipProofUrl;
+  String? existingLeaseContractUrl;
+  String? existingDebtDocumentUrl;
+
   ListingFormData({
     this.type = 'house',
     this.holdingType = 'Free Hold',
@@ -111,6 +120,12 @@ class ListingFormData {
     this.hasDebtOrEncumbrance = false,
     this.debtAmount,
     this.termsAccepted = false,
+    this.existingImages = const [],
+    this.removedImageIds = const [],
+    this.existingSitePlanUrl,
+    this.existingOwnershipProofUrl,
+    this.existingLeaseContractUrl,
+    this.existingDebtDocumentUrl,
   });
 
   /// Create empty form data with defaults
@@ -286,6 +301,12 @@ class ListingFormData {
     XFile? leaseContract,
     XFile? debtDocument,
     XFile? videoFile,
+    List<ImageModel>? existingImages,
+    List<int>? removedImageIds,
+    String? existingSitePlanUrl,
+    String? existingOwnershipProofUrl,
+    String? existingLeaseContractUrl,
+    String? existingDebtDocumentUrl,
   }) {
     return ListingFormData(
       type: type ?? this.type,
@@ -327,6 +348,12 @@ class ListingFormData {
       hasDebtOrEncumbrance: hasDebtOrEncumbrance ?? this.hasDebtOrEncumbrance,
       debtAmount: debtAmount ?? this.debtAmount,
       termsAccepted: termsAccepted ?? this.termsAccepted,
+      existingImages: existingImages ?? this.existingImages,
+      removedImageIds: removedImageIds ?? this.removedImageIds,
+      existingSitePlanUrl: existingSitePlanUrl ?? this.existingSitePlanUrl,
+      existingOwnershipProofUrl: existingOwnershipProofUrl ?? this.existingOwnershipProofUrl,
+      existingLeaseContractUrl: existingLeaseContractUrl ?? this.existingLeaseContractUrl,
+      existingDebtDocumentUrl: existingDebtDocumentUrl ?? this.existingDebtDocumentUrl,
     )
       ..images = images ?? this.images
       ..sitePlans = sitePlans ?? this.sitePlans

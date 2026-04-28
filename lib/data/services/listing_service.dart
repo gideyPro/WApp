@@ -14,8 +14,6 @@ class ListingService {
       : _apiClient = apiClient ?? ApiClient();
 
   /// Get all active listings with optional filters
-  ///
-  /// Supports query params: type, listing_type, location, price_min, price_max, etc.
   Future<ListingResponse> getListings({
     int page = 1,
     int perPage = 15,
@@ -35,30 +33,23 @@ class ListingService {
 
       if (response.statusCode == 200) {
         final raw = response.data;
-
-        // Determine response structure
         List<dynamic> dataList = [];
         Map<String, dynamic> meta = {};
 
         if (raw is Map) {
-          // Check if wrapped: { success: true, data: { paginator } }
           final dataField = raw['data'];
           if (dataField is Map && raw['success'] != null) {
-            // Wrapped format (featured, favorites)
             meta = Map<String, dynamic>.from(dataField);
             final listRaw = dataField['data'] ?? dataField['listings'] ?? dataField['items'];
             if (listRaw is List) dataList = listRaw;
           } else if (dataField is List) {
-            // Raw array: { data: [...] }
             dataList = dataField;
             meta = Map<String, dynamic>.from(raw);
           } else if (dataField is Map) {
-            // Direct paginator: { current_page, data: [...], last_page, total }
             meta = Map<String, dynamic>.from(dataField);
             final listRaw = dataField['data'] ?? dataField['listings'] ?? dataField['items'];
             if (listRaw is List) dataList = listRaw;
           } else if (raw['current_page'] != null) {
-            // Response IS the paginator itself
             meta = Map<String, dynamic>.from(raw);
             final listRaw = raw['data'] ?? raw['listings'] ?? raw['items'];
             if (listRaw is List) dataList = listRaw;
@@ -98,7 +89,6 @@ class ListingService {
     }
   }
 
-  /// Safely convert dynamic value to int
   int? _safeInt(dynamic value) {
     if (value == null) return null;
     if (value is int) return value;
@@ -274,106 +264,117 @@ class ListingService {
     }
   }
 
-  /// Create a new listing with multipart form data
-  Future<ListingResponse> createListing({
-    required ListingFormData formData,
-  }) async {
+  /// Build FormData from ListingFormData
+  Future<FormData> _buildFormData(ListingFormData formData, {bool isUpdate = false}) async {
+    final dioFormData = FormData();
+
+    // Add text fields
+    dioFormData.fields.addAll([
+      MapEntry('type', formData.type),
+      MapEntry('holding_type', formData.holdingType),
+      MapEntry('listing_type', formData.listingType),
+      MapEntry('use_type', formData.useType),
+      if (formData.specificLocation != null) MapEntry('specific_location', formData.specificLocation!),
+      if (formData.priceFixed != null) MapEntry('price_fixed', formData.priceFixed.toString()),
+      if (formData.rentalPeriodUnit != null) MapEntry('rental_period_unit', formData.rentalPeriodUnit!),
+      if (formData.facingDirection != null) MapEntry('facing_direction', formData.facingDirection!),
+      if (formData.description != null) MapEntry('description', formData.description!),
+      if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),
+      MapEntry('has_debt_or_encumbrance', formData.hasDebtOrEncumbrance ? '1' : '0'),
+      if (formData.debtAmount != null) MapEntry('debt_amount', formData.debtAmount.toString()),
+      MapEntry('electricity', formData.electricity ? '1' : '0'),
+      MapEntry('water', formData.water ? '1' : '0'),
+      MapEntry('parking_available', formData.parkingAvailable ? '1' : '0'),
+      if (formData.totalSquareMeters != null) MapEntry('total_square_meters', formData.totalSquareMeters.toString()),
+      if (formData.frontAreaSqm != null) MapEntry('front_area_sqm', formData.frontAreaSqm.toString()),
+      if (formData.sideAreaSqm != null) MapEntry('side_area_sqm', formData.sideAreaSqm.toString()),
+    ]);
+
+    // House-specific fields
+    if (formData.type == 'house') {
+      if (formData.totalRooms != null) dioFormData.fields.add(MapEntry('total_rooms', formData.totalRooms.toString()));
+      if (formData.bedrooms != null) dioFormData.fields.add(MapEntry('bedrooms', formData.bedrooms.toString()));
+      if (formData.bathrooms != null) dioFormData.fields.add(MapEntry('bathrooms', formData.bathrooms.toString()));
+      if (formData.kitchens != null) dioFormData.fields.add(MapEntry('kitchens', formData.kitchens.toString()));
+      if (formData.salons != null) dioFormData.fields.add(MapEntry('salons', formData.salons.toString()));
+      if (formData.houseType != null) dioFormData.fields.add(MapEntry('house_type', formData.houseType!));
+      if (formData.yearBuilt != null) dioFormData.fields.add(MapEntry('year_built', formData.yearBuilt.toString()));
+    }
+
+    // Holding-specific fields
+    if (formData.holdingType == 'Free Hold') {
+      if (formData.taxPaidUntilYear != null) dioFormData.fields.add(MapEntry('tax_paid_until_year', formData.taxPaidUntilYear.toString()));
+      if (formData.acquisitionClarification != null) dioFormData.fields.add(MapEntry('acquisition_clarification', formData.acquisitionClarification!));
+    } else if (formData.holdingType == 'Lease Hold') {
+      if (formData.leasedYear != null) dioFormData.fields.add(MapEntry('leased_year', formData.leasedYear.toString()));
+      if (formData.leasePricePerSqm != null) dioFormData.fields.add(MapEntry('lease_price_per_sqm', formData.leasePricePerSqm.toString()));
+      if (formData.buildType != null) dioFormData.fields.add(MapEntry('build_type', formData.buildType!));
+      if (formData.annualPayment != null) dioFormData.fields.add(MapEntry('annual_payment', formData.annualPayment.toString()));
+    } else if (formData.holdingType == 'Cooperative') {
+      if (formData.cooperativeName != null) dioFormData.fields.add(MapEntry('cooperative_name', formData.cooperativeName!));
+      if (formData.cooperativeCode != null) dioFormData.fields.add(MapEntry('cooperative_code', formData.cooperativeCode!));
+      if (formData.buildingStatus != null) dioFormData.fields.add(MapEntry('building_status', formData.buildingStatus!));
+    }
+
+    // Add new images
+    for (int i = 0; i < formData.images.length; i++) {
+      final file = formData.images[i];
+      dioFormData.files.add(MapEntry(
+        'images[]',
+        await MultipartFile.fromFile(file.path, filename: 'image_${i}.jpg'),
+      ));
+    }
+
+    // Add site plans
+    for (int i = 0; i < formData.sitePlans.length; i++) {
+      final file = formData.sitePlans[i];
+      dioFormData.files.add(MapEntry(
+        'site_plans[]',
+        await MultipartFile.fromFile(file.path, filename: 'site_plan_${i}.jpg'),
+      ));
+    }
+
+    // Add conditional files
+    if (formData.ownershipProof != null) {
+      dioFormData.files.add(MapEntry(
+        'ownership_proof[]',
+        await MultipartFile.fromFile(formData.ownershipProof!.path, filename: 'ownership_proof.jpg'),
+      ));
+    }
+    if (formData.leaseContract != null) {
+      dioFormData.files.add(MapEntry(
+        'lease_contract[]',
+        await MultipartFile.fromFile(formData.leaseContract!.path, filename: 'lease_contract.jpg'),
+      ));
+    }
+    if (formData.debtDocument != null) {
+      dioFormData.files.add(MapEntry(
+        'debt_encumbrance_file',
+        await MultipartFile.fromFile(formData.debtDocument!.path, filename: 'debt_document.jpg'),
+      ));
+    }
+    if (formData.videoFile != null) {
+      dioFormData.files.add(MapEntry(
+        'video_file',
+        await MultipartFile.fromFile(formData.videoFile!.path, filename: 'video.mp4'),
+      ));
+    }
+
+    // Update-specific fields
+    if (isUpdate) {
+      dioFormData.fields.add(MapEntry('_method', 'PUT'));
+      for (final id in formData.removedImageIds) {
+        dioFormData.fields.add(MapEntry('removed_image_ids[]', id.toString()));
+      }
+    }
+
+    return dioFormData;
+  }
+
+  /// Create a new listing
+  Future<ListingResponse> createListing({required ListingFormData formData}) async {
     try {
-      // Build multipart form data
-      final dioFormData = FormData();
-
-      // Add text fields
-      dioFormData.fields.addAll([
-        MapEntry('type', formData.type),
-        MapEntry('holding_type', formData.holdingType),
-        MapEntry('listing_type', formData.listingType),
-        MapEntry('use_type', formData.useType),
-        if (formData.specificLocation != null) MapEntry('specific_location', formData.specificLocation!),
-        if (formData.priceFixed != null) MapEntry('price_fixed', formData.priceFixed.toString()),
-        if (formData.rentalPeriodUnit != null) MapEntry('rental_period_unit', formData.rentalPeriodUnit!),
-        if (formData.facingDirection != null) MapEntry('facing_direction', formData.facingDirection!),
-        if (formData.description != null) MapEntry('description', formData.description!),
-        if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),
-        MapEntry('has_debt_or_encumbrance', formData.hasDebtOrEncumbrance ? '1' : '0'),
-        if (formData.debtAmount != null) MapEntry('debt_amount', formData.debtAmount.toString()),
-        MapEntry('electricity', formData.electricity ? '1' : '0'),
-        MapEntry('water', formData.water ? '1' : '0'),
-        MapEntry('parking_available', formData.parkingAvailable ? '1' : '0'),
-        if (formData.totalSquareMeters != null) MapEntry('total_square_meters', formData.totalSquareMeters.toString()),
-        if (formData.frontAreaSqm != null) MapEntry('front_area_sqm', formData.frontAreaSqm.toString()),
-        if (formData.sideAreaSqm != null) MapEntry('side_area_sqm', formData.sideAreaSqm.toString()),
-      ]);
-
-      // House-specific fields
-      if (formData.type == 'house') {
-        if (formData.totalRooms != null) dioFormData.fields.add(MapEntry('total_rooms', formData.totalRooms.toString()));
-        if (formData.bedrooms != null) dioFormData.fields.add(MapEntry('bedrooms', formData.bedrooms.toString()));
-        if (formData.bathrooms != null) dioFormData.fields.add(MapEntry('bathrooms', formData.bathrooms.toString()));
-        if (formData.kitchens != null) dioFormData.fields.add(MapEntry('kitchens', formData.kitchens.toString()));
-        if (formData.salons != null) dioFormData.fields.add(MapEntry('salons', formData.salons.toString()));
-        if (formData.houseType != null) dioFormData.fields.add(MapEntry('house_type', formData.houseType!));
-        if (formData.yearBuilt != null) dioFormData.fields.add(MapEntry('year_built', formData.yearBuilt.toString()));
-      }
-
-      // Holding-specific fields
-      if (formData.holdingType == 'Free Hold') {
-        if (formData.taxPaidUntilYear != null) dioFormData.fields.add(MapEntry('tax_paid_until_year', formData.taxPaidUntilYear.toString()));
-        if (formData.acquisitionClarification != null) dioFormData.fields.add(MapEntry('acquisition_clarification', formData.acquisitionClarification!));
-      } else if (formData.holdingType == 'Lease Hold') {
-        if (formData.leasedYear != null) dioFormData.fields.add(MapEntry('leased_year', formData.leasedYear.toString()));
-        if (formData.leasePricePerSqm != null) dioFormData.fields.add(MapEntry('lease_price_per_sqm', formData.leasePricePerSqm.toString()));
-        if (formData.buildType != null) dioFormData.fields.add(MapEntry('build_type', formData.buildType!));
-        if (formData.annualPayment != null) dioFormData.fields.add(MapEntry('annual_payment', formData.annualPayment.toString()));
-      } else if (formData.holdingType == 'Cooperative') {
-        if (formData.cooperativeName != null) dioFormData.fields.add(MapEntry('cooperative_name', formData.cooperativeName!));
-        if (formData.cooperativeCode != null) dioFormData.fields.add(MapEntry('cooperative_code', formData.cooperativeCode!));
-        if (formData.buildingStatus != null) dioFormData.fields.add(MapEntry('building_status', formData.buildingStatus!));
-      }
-
-      // Add images
-      for (int i = 0; i < formData.images.length; i++) {
-        final file = formData.images[i];
-        dioFormData.files.add(MapEntry(
-          'images[]',
-          await MultipartFile.fromFile(file.path, filename: 'image_${i}.jpg'),
-        ));
-      }
-
-      // Add site plans
-      for (int i = 0; i < formData.sitePlans.length; i++) {
-        final file = formData.sitePlans[i];
-        dioFormData.files.add(MapEntry(
-          'site_plans[]',
-          await MultipartFile.fromFile(file.path, filename: 'site_plan_${i}.jpg'),
-        ));
-      }
-
-      // Add conditional files
-      if (formData.ownershipProof != null) {
-        dioFormData.files.add(MapEntry(
-          'ownership_proof[]',
-          await MultipartFile.fromFile(formData.ownershipProof!.path, filename: 'ownership_proof.jpg'),
-        ));
-      }
-      if (formData.leaseContract != null) {
-        dioFormData.files.add(MapEntry(
-          'lease_contract[]',
-          await MultipartFile.fromFile(formData.leaseContract!.path, filename: 'lease_contract.jpg'),
-        ));
-      }
-      if (formData.debtDocument != null) {
-        dioFormData.files.add(MapEntry(
-          'debt_encumbrance_file',
-          await MultipartFile.fromFile(formData.debtDocument!.path, filename: 'debt_document.jpg'),
-        ));
-      }
-      if (formData.videoFile != null) {
-        dioFormData.files.add(MapEntry(
-          'video_file',
-          await MultipartFile.fromFile(formData.videoFile!.path, filename: 'video.mp4'),
-        ));
-      }
-
+      final dioFormData = await _buildFormData(formData);
       final response = await _apiClient.dio.post(
         ApiConstants.createListing,
         data: dioFormData,
@@ -402,18 +403,30 @@ class ListingService {
   /// Update an existing listing
   Future<ListingResponse> updateListing({
     required int listingId,
-    required Map<String, dynamic> listingData,
+    Map<String, dynamic>? listingData,
+    ListingFormData? formData,
   }) async {
     try {
-      final response = await _apiClient.dio.put(
-        '${ApiConstants.updateListing}/$listingId',
-        data: listingData,
+      dynamic data = listingData;
+      String method = 'PUT';
+      String url = '${ApiConstants.updateListing}/$listingId';
+
+      if (formData != null) {
+        // If we have files, we must use POST with _method=PUT
+        data = await _buildFormData(formData, isUpdate: true);
+        method = 'POST';
+      }
+
+      final response = await _apiClient.dio.request(
+        url,
+        data: data,
+        options: Options(method: method),
       );
 
       if (response.statusCode == 200) {
         return ListingResponse(
           success: true,
-          message: 'Listing updated successfully',
+          message: response.data['message'] ?? 'Listing updated successfully',
         );
       }
 
@@ -438,10 +451,7 @@ class ListingService {
       );
 
       if (response.statusCode == 200) {
-        return ListingResponse(
-          success: true,
-          message: 'Listing deleted successfully',
-        );
+        return ListingResponse(success: true, message: 'Listing deleted successfully');
       }
 
       return ListingResponse(
@@ -460,17 +470,10 @@ class ListingService {
   /// Make listing featured
   Future<ListingResponse> featureListing(int listingId) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.featureListing}/$listingId/feature',
-      );
-
+      final response = await _apiClient.dio.post('${ApiConstants.featureListing}/$listingId/feature');
       if (response.statusCode == 200) {
-        return ListingResponse(
-          success: true,
-          message: 'Listing featured successfully',
-        );
+        return ListingResponse(success: true, message: 'Listing featured successfully');
       }
-
       return ListingResponse(
         success: false,
         message: response.data['message'] ?? 'Failed to feature listing',
@@ -504,8 +507,7 @@ class ListingResponse {
   });
 
   @override
-  String toString() =>
-      'ListingResponse(success: $success, listings: ${listings.length})';
+  String toString() => 'ListingResponse(success: $success, listings: ${listings.length})';
 }
 
 /// Response wrapper for single listing detail
@@ -519,47 +521,4 @@ class ListingDetailResponse {
     this.message = '',
     this.listing,
   });
-}
-
-/// Update an existing listing
-Future<ListingResponse> updateListing(int listingId, Map<String, dynamic> data) async {
-  try {
-    final response = await ApiClient().dio.put(
-      '${ApiConstants.apiBase}/listings/$listingId',
-      data: data,
-    );
-    
-    if (response.statusCode == 200) {
-      return ListingResponse(
-        success: true,
-        message: response.data['message'] ?? 'Listing updated successfully',
-        listings: response.data['data'] != null
-            ? [Listing.fromJson(response.data['data'])]
-            : [],
-      );
-    }
-
-    return ListingResponse(
-      success: false,
-      message: response.data['message'] ?? 'Failed to update listing',
-    );
-  } catch (e) {
-    return ListingResponse(
-      success: false,
-      message: 'Error: $e',
-    );
-  }
-}
-
-/// Delete an existing listing
-Future<bool> deleteListing(int listingId) async {
-  try {
-    final response = await ApiClient().dio.delete(
-      '${ApiConstants.apiBase}/listings/$listingId',
-    );
-    
-    return response.statusCode == 200 || response.statusCode == 204;
-  } catch (e) {
-    return false;
-  }
 }

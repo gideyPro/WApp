@@ -103,6 +103,8 @@ class Listing extends ChangeNotifier {
   }
 
   final String? sitePlanImageLink;
+  final String? ownershipProofLink;
+  final String? leaseContractLink;
   final String? holdingType;
 
   // Free Hold details
@@ -255,6 +257,8 @@ class Listing extends ChangeNotifier {
       priceRevisionPossible: json['price_revision_possible'] ?? false,
       videoLink: json['video_link'],
       sitePlanImageLink: json['site_plan_image_link'],
+      ownershipProofLink: json['ownership_proof_link'],
+      leaseContractLink: json['lease_contract_link'],
       holdingType: json['holding_type'],
 
       // Free Hold details
@@ -339,6 +343,8 @@ class Listing extends ChangeNotifier {
       'price_revision_possible': priceRevisionPossible,
       'video_link': videoLink,
       'site_plan_image_link': sitePlanImageLink,
+      'ownership_proof_link': ownershipProofLink,
+      'lease_contract_link': leaseContractLink,
       'holding_type': holdingType,
       'description': description,
       'bedrooms': bedrooms,

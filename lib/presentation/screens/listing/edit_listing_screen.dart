@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
-import '../../providers/app_providers.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
+import '../../widgets/common/wave_common_widgets.dart';
+import 'widgets/listing_form_steps.dart';
 
 class EditListingScreen extends ConsumerStatefulWidget {
   final Listing listing;
@@ -25,27 +23,13 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   late ListingFormData _formData;
   int _currentStep = 0;
   bool _isSubmitting = false;
-
-  final _titleController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _debtAmountController = TextEditingController();
-  final _taxPaidUntilController = TextEditingController();
-  final _cooperativeNameController = TextEditingController();
-  final _cooperativeCodeController = TextEditingController();
-  final _totalRoomsController = TextEditingController();
-  final _bedroomsController = TextEditingController();
-  final _bathroomsController = TextEditingController();
-  final _kitchensController = TextEditingController();
-  final _salonsController = TextEditingController();
-  final _totalAreaController = TextEditingController();
-  final _frontAreaController = TextEditingController();
-  final _sideAreaController = TextEditingController();
+  final _addressService = AddressService();
 
   @override
   void initState() {
     super.initState();
     final listing = widget.listing;
+    
     _formData = ListingFormData(
       type: listing.propertyType == PropertyType.house ? 'house' : 'land',
       listingType: listing.listingType == ListingType.sale ? 'sale' : 'rental',
@@ -84,43 +68,18 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       addressZone: listing.address?.zone,
       addressWoreda: listing.address?.woreda,
       addressKebele: listing.address?.kebele,
+      addressId: listing.addressId,
+      existingImages: listing.images,
+      existingSitePlanUrl: listing.sitePlanImageLink != null ? 'https://wavemart.et/storage/${listing.sitePlanImageLink}' : null,
+      existingOwnershipProofUrl: listing.ownershipProofLink != null ? 'https://wavemart.et/storage/${listing.ownershipProofLink}' : null,
+      existingLeaseContractUrl: listing.leaseContractLink != null ? 'https://wavemart.et/storage/${listing.leaseContractLink}' : null,
+      existingDebtDocumentUrl: listing.debtEncumbranceFileLink != null ? 'https://wavemart.et/storage/${listing.debtEncumbranceFileLink}' : null,
     );
-
-    _titleController.text = listing.specificLocation ?? '';
-    _priceController.text = listing.priceFixed?.toStringAsFixed(0) ?? '';
-    _descriptionController.text = listing.description ?? '';
-    if (listing.debtAmount != null) _debtAmountController.text = listing.debtAmount!.toStringAsFixed(0);
-    if (listing.taxPaidUntilYear != null) _taxPaidUntilController.text = listing.taxPaidUntilYear.toString();
-    _cooperativeNameController.text = listing.cooperativeName ?? '';
-    _cooperativeCodeController.text = listing.cooperativeCode ?? '';
-    if (listing.totalRooms != null) _totalRoomsController.text = listing.totalRooms.toString();
-    if (listing.bedrooms != null) _bedroomsController.text = listing.bedrooms.toString();
-    if (listing.bathrooms != null) _bathroomsController.text = listing.bathrooms.toString();
-    if (listing.kitchens != null) _kitchensController.text = listing.kitchens.toString();
-    if (listing.salons != null) _salonsController.text = listing.salons.toString();
-    if (listing.totalSquareMeters != null) _totalAreaController.text = listing.totalSquareMeters!.toStringAsFixed(0);
-    if (listing.frontAreaSqm != null) _frontAreaController.text = listing.frontAreaSqm!.toStringAsFixed(0);
-    if (listing.sideAreaSqm != null) _sideAreaController.text = listing.sideAreaSqm!.toStringAsFixed(0);
   }
 
   @override
   void dispose() {
     _pageController.dispose();
-    _titleController.dispose();
-    _priceController.dispose();
-    _descriptionController.dispose();
-    _debtAmountController.dispose();
-    _taxPaidUntilController.dispose();
-    _cooperativeNameController.dispose();
-    _cooperativeCodeController.dispose();
-    _totalRoomsController.dispose();
-    _bedroomsController.dispose();
-    _bathroomsController.dispose();
-    _kitchensController.dispose();
-    _salonsController.dispose();
-    _totalAreaController.dispose();
-    _frontAreaController.dispose();
-    _sideAreaController.dispose();
     super.dispose();
   }
 
@@ -134,6 +93,14 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   }
 
   void _nextStep() {
+    final errors = _validateCurrentStep();
+    if (errors.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errors.first), backgroundColor: AppColors.error),
+      );
+      return;
+    }
+
     if (_currentStep < 3) {
       _goToStep(_currentStep + 1);
     } else {
@@ -145,50 +112,40 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     if (_currentStep > 0) _goToStep(_currentStep - 1);
   }
 
+  List<String> _validateCurrentStep() {
+    switch (_currentStep) {
+      case 0:
+        return _formData.validateStep1();
+      case 1:
+        return _formData.validateStep2();
+      case 2:
+        // Skip media validation on edit if there are existing images
+        if (_formData.existingImages.length > _formData.removedImageIds.length) {
+          return [];
+        }
+        return _formData.validateStep3();
+      case 3:
+        return _formData.validateStep4();
+      default:
+        return [];
+    }
+  }
+
   Future<void> _submitListing() async {
     if (_isSubmitting) return;
     setState(() => _isSubmitting = true);
     try {
       final service = ListingService();
-      final data = <String, dynamic>{
-        'type': _formData.type,
-        'listing_type': _formData.listingType,
-        'description': _formData.description ?? '',
-        'specific_location': _formData.specificLocation,
-        if (_formData.priceFixed != null) 'price_fixed': _formData.priceFixed,
-        if (_formData.rentalPeriodUnit != null) 'rental_period_unit': _formData.rentalPeriodUnit,
-        if (_formData.totalSquareMeters != null) 'total_square_meters': _formData.totalSquareMeters,
-        'holding_type': _formData.holdingType,
-        'use_type': _formData.useType,
-        'has_debt_or_encumbrance': _formData.hasDebtOrEncumbrance ? 1 : 0,
-        if (_formData.debtAmount != null) 'debt_amount': _formData.debtAmount,
-        if (_formData.taxPaidUntilYear != null) 'tax_paid_until_year': _formData.taxPaidUntilYear,
-        if (_formData.acquisitionClarification != null) 'acquisition_clarification': _formData.acquisitionClarification,
-        if (_formData.leasedYear != null) 'leased_year': _formData.leasedYear,
-        if (_formData.leasePricePerSqm != null) 'lease_price_per_sqm': _formData.leasePricePerSqm,
-        if (_formData.buildType != null) 'build_type': _formData.buildType,
-        if (_formData.annualPayment != null) 'annual_payment': _formData.annualPayment,
-        if (_formData.cooperativeName != null) 'cooperative_name': _formData.cooperativeName,
-        if (_formData.cooperativeCode != null) 'cooperative_code': _formData.cooperativeCode,
-        if (_formData.buildingStatus != null) 'building_status': _formData.buildingStatus,
-        if (_formData.totalRooms != null) 'total_rooms': _formData.totalRooms,
-        if (_formData.bedrooms != null) 'bedrooms': _formData.bedrooms,
-        if (_formData.bathrooms != null) 'bathrooms': _formData.bathrooms,
-        if (_formData.kitchens != null) 'kitchens': _formData.kitchens,
-        if (_formData.salons != null) 'salons': _formData.salons,
-        if (_formData.yearBuilt != null) 'year_built': _formData.yearBuilt,
-        if (_formData.houseType != null) 'house_type': _formData.houseType,
-        'electricity': _formData.electricity ? 1 : 0,
-        'water': _formData.water ? 1 : 0,
-        'parking_available': _formData.parkingAvailable ? 1 : 0,
-        if (_formData.frontAreaSqm != null) 'front_area_sqm': _formData.frontAreaSqm,
-        if (_formData.sideAreaSqm != null) 'side_area_sqm': _formData.sideAreaSqm,
-        if (_formData.facingDirection != null) 'facing_direction': _formData.facingDirection,
-      };
-
-      final result = await service.updateListing(listingId: widget.listing.id, listingData: data);
+      final result = await service.updateListing(
+        listingId: widget.listing.id,
+        formData: _formData,
+      );
+      
       if (mounted) {
         if (result.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Listing updated successfully'), backgroundColor: AppColors.success),
+          );
           Navigator.of(context).pop(true);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -229,36 +186,45 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         ),
         body: Column(
           children: [
-            StepIndicator(currentStep: _currentStep),
+            ListingStepIndicator(currentStep: _currentStep),
             const Divider(height: 1),
             Expanded(
               child: PageView(
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  EditStep1Basics(formData: _formData, onUpdate: _updateFormData),
-                  EditStep2Details(formData: _formData, onUpdate: _updateFormData),
-                  EditStep3Media(formData: _formData, onUpdate: _updateFormData),
-                  EditStep4Review(formData: _formData),
+                  ListingStep1Basics(
+                    formData: _formData, 
+                    onUpdate: _updateFormData, 
+                    addressService: _addressService
+                  ),
+                  ListingStep2Details(formData: _formData, onUpdate: _updateFormData),
+                  ListingStep3Media(formData: _formData, onUpdate: _updateFormData),
+                  ListingStep4Review(formData: _formData, onUpdate: _updateFormData),
                 ],
               ),
             ),
-            if (!_isSubmitting) buildBottomBar(),
+            if (!_isSubmitting) _buildBottomBar(),
           ],
         ),
       );
   }
 
-  Widget buildBottomBar() {
+  Widget _buildBottomBar() {
     final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, -2)),
-      ]),
+      decoration: BoxDecoration(
+        color: context.sheetBg, 
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, -4)
+          ),
+        ],
+        border: Border(top: BorderSide(color: context.divider.withOpacity(0.5))),
+      ),
       child: SafeArea(
         child: Row(
           children: [
@@ -293,137 +259,5 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         ),
       ),
     );
-  }
-}
-
-class StepIndicator extends StatelessWidget {
-  final int currentStep;
-  const StepIndicator({super.key, required this.currentStep});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final steps = [
-      l10n.listingStepBasics,
-      l10n.listingStepDetails,
-      l10n.listingStepMedia,
-      l10n.listingStepReview
-    ];
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Column(
-        children: [
-          LinearProgressIndicator(
-            value: (currentStep + 1) / 4,
-            backgroundColor: AppColors.zinc200,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.navy950),
-            minHeight: 4,
-            borderRadius: BorderRadius.circular(2),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(4, (i) {
-              final isCompleted = i < currentStep;
-              final isCurrent = i == currentStep;
-              return Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: isCompleted || isCurrent
-                            ? AppColors.navy950
-                            : AppColors.zinc200,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: isCompleted
-                            ? const Icon(Icons.check, size: 16, color: Colors.white)
-                            : Text(
-                                '${i + 1}',
-                                style: TextStyle(
-                                  color: isCurrent ? Colors.white : AppColors.zinc600,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      ),
-                    ),
-                    if (i < 3)
-                      Expanded(
-                        child: Container(
-                          height: 2,
-                          color: i < currentStep ? AppColors.navy950 : AppColors.zinc200,
-                        ),
-                      ),
-                  ],
-                ),
-              );
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class EditStep1Basics extends StatefulWidget {
-  final ListingFormData formData;
-  final Function(ListingFormData) onUpdate;
-  const EditStep1Basics({super.key, required this.formData, required this.onUpdate});
-
-  @override
-  State<EditStep1Basics> createState() => _EditStep1BasicsState();
-}
-
-class _EditStep1BasicsState extends State<EditStep1Basics> {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(padding: const EdgeInsets.all(16));
-  }
-}
-
-class EditStep2Details extends StatefulWidget {
-  final ListingFormData formData;
-  final Function(ListingFormData) onUpdate;
-  const EditStep2Details({super.key, required this.formData, required this.onUpdate});
-
-  @override
-  State<EditStep2Details> createState() => _EditStep2DetailsState();
-}
-
-class _EditStep2DetailsState extends State<EditStep2Details> {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(padding: const EdgeInsets.all(16));
-  }
-}
-
-class EditStep3Media extends StatefulWidget {
-  final ListingFormData formData;
-  final Function(ListingFormData) onUpdate;
-  const EditStep3Media({super.key, required this.formData, required this.onUpdate});
-
-  @override
-  State<EditStep3Media> createState() => _EditStep3MediaState();
-}
-
-class _EditStep3MediaState extends State<EditStep3Media> {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(padding: const EdgeInsets.all(16));
-  }
-}
-
-class EditStep4Review extends StatelessWidget {
-  final ListingFormData formData;
-  const EditStep4Review({super.key, required this.formData});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(padding: const EdgeInsets.all(16));
   }
 }
