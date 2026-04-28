@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'image.dart';
@@ -16,7 +15,8 @@ class ListingFormData {
 
   // --- Free Hold ---
   int? taxPaidUntilYear;
-  String? acquisitionClarification; // 'Purchased' | 'Inherited' | 'Gift' | 'Assignment' | 'Other'
+  String?
+      acquisitionClarification; // 'Purchased' | 'Inherited' | 'Gift' | 'Assignment' | 'Other'
 
   // --- Lease Hold ---
   int? leasedYear;
@@ -317,7 +317,8 @@ class ListingFormData {
       priceFixed: priceFixed ?? this.priceFixed,
       rentalPeriodUnit: rentalPeriodUnit ?? this.rentalPeriodUnit,
       taxPaidUntilYear: taxPaidUntilYear ?? this.taxPaidUntilYear,
-      acquisitionClarification: acquisitionClarification ?? this.acquisitionClarification,
+      acquisitionClarification:
+          acquisitionClarification ?? this.acquisitionClarification,
       leasedYear: leasedYear ?? this.leasedYear,
       leasePricePerSqm: leasePricePerSqm ?? this.leasePricePerSqm,
       buildType: buildType ?? this.buildType,
@@ -351,9 +352,12 @@ class ListingFormData {
       existingImages: existingImages ?? this.existingImages,
       removedImageIds: removedImageIds ?? this.removedImageIds,
       existingSitePlanUrl: existingSitePlanUrl ?? this.existingSitePlanUrl,
-      existingOwnershipProofUrl: existingOwnershipProofUrl ?? this.existingOwnershipProofUrl,
-      existingLeaseContractUrl: existingLeaseContractUrl ?? this.existingLeaseContractUrl,
-      existingDebtDocumentUrl: existingDebtDocumentUrl ?? this.existingDebtDocumentUrl,
+      existingOwnershipProofUrl:
+          existingOwnershipProofUrl ?? this.existingOwnershipProofUrl,
+      existingLeaseContractUrl:
+          existingLeaseContractUrl ?? this.existingLeaseContractUrl,
+      existingDebtDocumentUrl:
+          existingDebtDocumentUrl ?? this.existingDebtDocumentUrl,
     )
       ..images = images ?? this.images
       ..sitePlans = sitePlans ?? this.sitePlans
@@ -371,20 +375,26 @@ class ListingFormData {
     if (listingType.isEmpty) errors.add('Listing type is required');
     if (useType.isEmpty) errors.add('Use type is required');
     if (addressId == null) errors.add('Please select a complete address');
-    if (priceFixed == null || priceFixed! < 1000) errors.add('Price must be at least 1,000 ETB');
-    
+    if (priceFixed == null || priceFixed! < 1000)
+      errors.add('Price must be at least 1,000 ETB');
+
     // Holding-specific validation
     if (holdingType == 'Free Hold') {
-      if (taxPaidUntilYear != null && (taxPaidUntilYear! < 2000 || taxPaidUntilYear! > DateTime.now().year + 10)) {
-        errors.add('Tax paid year must be between 2000 and ${DateTime.now().year + 10}');
+      if (taxPaidUntilYear != null &&
+          (taxPaidUntilYear! < 2000 ||
+              taxPaidUntilYear! > DateTime.now().year + 10)) {
+        errors.add(
+            'Tax paid year must be between 2000 and ${DateTime.now().year + 10}');
       }
     } else if (holdingType == 'Lease Hold') {
       if (leasedYear == null) errors.add('Leased year is required');
     } else if (holdingType == 'Cooperative') {
-      if (cooperativeName == null || cooperativeName!.trim().isEmpty) errors.add('Cooperative name is required');
-      if (cooperativeCode == null || cooperativeCode!.trim().isEmpty) errors.add('Cooperative code is required');
+      if (cooperativeName == null || cooperativeName!.trim().isEmpty)
+        errors.add('Cooperative name is required');
+      if (cooperativeCode == null || cooperativeCode!.trim().isEmpty)
+        errors.add('Cooperative code is required');
     }
-    
+
     return errors;
   }
 
@@ -392,42 +402,53 @@ class ListingFormData {
   List<String> validateStep2() {
     final errors = <String>[];
     if (type == 'house') {
-      if (totalRooms == null || totalRooms! < 1) errors.add('Total rooms is required');
-      if (houseType == null || houseType!.isEmpty) errors.add('House type is required');
-      if (yearBuilt != null && (yearBuilt! < 1900 || yearBuilt! > DateTime.now().year)) {
-        errors.add('Year built must be between 1900 and ${DateTime.now().year}');
+      if (totalRooms == null || totalRooms! < 1)
+        errors.add('Total rooms is required');
+      if (houseType == null || houseType!.isEmpty)
+        errors.add('House type is required');
+      if (yearBuilt != null &&
+          (yearBuilt! < 1900 || yearBuilt! > DateTime.now().year)) {
+        errors
+            .add('Year built must be between 1900 and ${DateTime.now().year}');
       }
     }
-    if (totalSquareMeters == null || totalSquareMeters! <= 0) errors.add('Total area is required');
-    if (description == null || description!.trim().isEmpty) errors.add('Description is required');
+    if (totalSquareMeters == null || totalSquareMeters! <= 0)
+      errors.add('Total area is required');
+    if (description == null || description!.trim().isEmpty)
+      errors.add('Description is required');
     return errors;
   }
 
   /// Validate step 3 (Media)
   List<String> validateStep3() {
     final errors = <String>[];
-    
+
     // Check new images OR existing images that weren't removed
-    final hasImages = images.isNotEmpty || 
-      (existingImages.isNotEmpty && existingImages.length > removedImageIds.length);
+    final hasImages = images.isNotEmpty ||
+        (existingImages.isNotEmpty &&
+            existingImages.length > removedImageIds.length);
     if (!hasImages) errors.add('At least one property image is required');
-    
+
     // Check new site plans OR existing site plan URL
     final hasSitePlan = sitePlans.isNotEmpty || existingSitePlanUrl != null;
     if (!hasSitePlan) errors.add('At least one site plan is required');
-    
+
     // Ownership proof - check new upload OR existing URL
     if (holdingType == 'Cooperative') {
-      final hasOwnership = ownershipProof != null || existingOwnershipProofUrl != null;
-      if (!hasOwnership) errors.add('Ownership proof is required for cooperative properties');
+      final hasOwnership =
+          ownershipProof != null || existingOwnershipProofUrl != null;
+      if (!hasOwnership)
+        errors.add('Ownership proof is required for cooperative properties');
     }
-    
+
     // Lease contract - check new upload OR existing URL
     if (holdingType == 'Lease Hold') {
-      final hasLease = leaseContract != null || existingLeaseContractUrl != null;
-      if (!hasLease) errors.add('Lease contract is required for lease hold properties');
+      final hasLease =
+          leaseContract != null || existingLeaseContractUrl != null;
+      if (!hasLease)
+        errors.add('Lease contract is required for lease hold properties');
     }
-    
+
     return errors;
   }
 

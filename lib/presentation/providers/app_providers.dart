@@ -13,6 +13,7 @@ import '../../data/services/kyc_service.dart';
 import '../../data/services/conference_service.dart';
 import '../../data/services/interest_service.dart';
 import '../../data/services/address_service.dart';
+import '../../data/models/subscription.dart';
 import '../../core/network/connectivity_service.dart';
 import '../../core/network/api_client.dart';
 import '../../data/models/message.dart' as msg;
@@ -532,74 +533,102 @@ class PaymentHistoryState {
   }
 }
 
-/// Subscription Provider
+/// Subscription Providers
 final subscriptionServiceProvider =
     Provider<SubscriptionServiceApi>((ref) => SubscriptionServiceApi());
-final subscriptionPlansProvider = FutureProvider((ref) async {
-  return ref.watch(subscriptionServiceProvider).getPlans();
-});
-final currentSubscriptionProvider = StateNotifierProvider<
-    CurrentSubscriptionNotifier, CurrentSubscriptionState>((ref) {
-  return CurrentSubscriptionNotifier(ref.watch(subscriptionServiceProvider));
+
+final subscriptionProvider =
+    StateNotifierProvider<SubscriptionNotifier, SubscriptionState>((ref) {
+  return SubscriptionNotifier(ref.watch(subscriptionServiceProvider));
 });
 
-class CurrentSubscriptionNotifier
-    extends StateNotifier<CurrentSubscriptionState> {
+class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   final SubscriptionServiceApi _subscriptionService;
-  CurrentSubscriptionNotifier(this._subscriptionService)
-      : super(const CurrentSubscriptionState.initial());
+  SubscriptionNotifier(this._subscriptionService)
+      : super(const SubscriptionState.initial());
 
-  Future<void> loadCurrentSubscription() async {
+  Future<void> refresh() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _subscriptionService.getCurrentSubscription();
-    if (response.success) {
-      state = CurrentSubscriptionState.loaded(
-        subscription: response.subscription,
-        canCreateListing: response.canCreateListing,
-        canFeatureListing: response.canFeatureListing,
-      );
-    } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+    try {
+      // Both getPlans and getCurrentSubscription use the same endpoint
+      // We'll use getPlans as it returns the full plans list
+      final response = await _subscriptionService.getPlans();
+      
+      // We also need the current subscription info which is in the same response
+      // but SubscriptionServiceApi splits them. To be efficient without changing 
+      // the service significantly yet, we'll call getCurrentSubscription 
+      // which is already cached or use a single call if we refactor.
+      // For now, let's just make one call that gets everything.
+      final currentSubResponse = await _subscriptionService.getCurrentSubscription();
+
+      if (response.success && currentSubResponse.success) {
+        state = SubscriptionState.loaded(
+          plans: response.plans,
+          subscription: currentSubResponse.subscription,
+          canCreateListing: currentSubResponse.canCreateListing,
+          canFeatureListing: currentSubResponse.canFeatureListing,
+        );
+      } else {
+        state = state.copyWith(
+          isLoading: false, 
+          errorMessage: response.message.isNotEmpty ? response.message : currentSubResponse.message
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 }
 
-class CurrentSubscriptionState {
+class SubscriptionState {
   final bool isLoading;
-  final dynamic subscription;
+  final List<SubscriptionPlan> plans;
+  final Subscription? subscription;
   final bool canCreateListing;
   final bool canFeatureListing;
   final String? errorMessage;
-  const CurrentSubscriptionState(
-      {required this.isLoading,
-      this.subscription,
-      this.canCreateListing = true,
-      this.canFeatureListing = true,
-      this.errorMessage});
-  const CurrentSubscriptionState.initial()
+
+  const SubscriptionState({
+    required this.isLoading,
+    this.plans = const [],
+    this.subscription,
+    this.canCreateListing = true,
+    this.canFeatureListing = true,
+    this.errorMessage,
+  });
+
+  const SubscriptionState.initial()
       : isLoading = true,
+        plans = const [],
         subscription = null,
         canCreateListing = true,
         canFeatureListing = true,
         errorMessage = null;
-  const CurrentSubscriptionState.loaded(
-      {this.subscription,
-      this.canCreateListing = true,
-      this.canFeatureListing = true})
-      : isLoading = false,
+
+  const SubscriptionState.loaded({
+    required this.plans,
+    this.subscription,
+    this.canCreateListing = true,
+    this.canFeatureListing = true,
+  })  : isLoading = false,
         errorMessage = null;
-  CurrentSubscriptionState copyWith(
-      {bool? isLoading,
-      dynamic subscription,
-      bool? canCreateListing,
-      bool? canFeatureListing,
-      String? errorMessage}) {
-    return CurrentSubscriptionState(
-        isLoading: isLoading ?? this.isLoading,
-        subscription: subscription ?? this.subscription,
-        canCreateListing: canCreateListing ?? this.canCreateListing,
-        canFeatureListing: canFeatureListing ?? this.canFeatureListing,
-        errorMessage: errorMessage);
+
+  SubscriptionState copyWith({
+    bool? isLoading,
+    List<SubscriptionPlan>? plans,
+    Subscription? subscription,
+    bool? canCreateListing,
+    bool? canFeatureListing,
+    String? errorMessage,
+  }) {
+    return SubscriptionState(
+      isLoading: isLoading ?? this.isLoading,
+      plans: plans ?? this.plans,
+      subscription: subscription ?? this.subscription,
+      canCreateListing: canCreateListing ?? this.canCreateListing,
+      canFeatureListing: canFeatureListing ?? this.canFeatureListing,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
   }
 }
 

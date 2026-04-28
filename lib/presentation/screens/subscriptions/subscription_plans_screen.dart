@@ -32,41 +32,43 @@ class _SubscriptionPlansScreenState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(currentSubscriptionProvider.notifier).loadCurrentSubscription();
+      ref.read(subscriptionProvider.notifier).refresh();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final plansAsync = ref.watch(subscriptionPlansProvider);
-    final currentSub = ref.watch(currentSubscriptionProvider);
+    final subState = ref.watch(subscriptionProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).subscriptionsTitle),
       ),
-      body: plansAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => WaveErrorBanner(
-          message: error.toString(),
-          onRetry: () => ref.invalidate(subscriptionPlansProvider),
-        ),
-        data: (plans) => RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(subscriptionPlansProvider);
-            await ref
-                .read(currentSubscriptionProvider.notifier)
-                .loadCurrentSubscription();
-          },
-          child: _buildBody(plans, currentSub),
-        ),
-      ),
+      body: _buildContent(subState),
     );
   }
 
-  Widget _buildBody(dynamic plans, CurrentSubscriptionState currentSub) {
-    final activePlans = plans.where((p) => p.isActive).toList();
-    final subscription = currentSub.subscription;
+  Widget _buildContent(SubscriptionState state) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.errorMessage != null && state.plans.isEmpty) {
+      return WaveErrorBanner(
+        message: state.errorMessage!,
+        onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(subscriptionProvider.notifier).refresh(),
+      child: _buildBody(state),
+    );
+  }
+
+  Widget _buildBody(SubscriptionState state) {
+    final activePlans = state.plans.where((p) => p.isActive).toList();
+    final subscription = state.subscription;
     final isActiveSub = subscription != null && subscription.isActive;
 
     return SingleChildScrollView(
@@ -79,14 +81,14 @@ class _SubscriptionPlansScreenState
             if (isActiveSub)
               _buildCurrentSubscriptionBanner(
                 subscription,
-                currentSub.canCreateListing,
-                currentSub.canFeatureListing,
+                state.canCreateListing,
+                state.canFeatureListing,
               )
             else
               _buildInactiveSubscriptionBanner(
                 subscription,
-                currentSub.canCreateListing,
-                currentSub.canFeatureListing,
+                state.canCreateListing,
+                state.canFeatureListing,
               ),
             const SizedBox(height: 8),
           ],
@@ -107,7 +109,7 @@ class _SubscriptionPlansScreenState
             const SizedBox(height: 24),
 
             // Plans list
-            ...activePlans.map((plan) => _PlanCard(
+            ...activePlans.map((SubscriptionPlan plan) => _PlanCard(
                   plan: plan,
                   isCurrentPlan: subscription?.planId == plan.id &&
                       (subscription?.isActive ?? false),
@@ -131,7 +133,7 @@ class _SubscriptionPlansScreenState
 
   Widget _buildCurrentSubscriptionBanner(
       Subscription sub, bool canCreateListing, bool canFeatureListing) {
-    final plan = sub.plan;
+    final localPlan = sub.plan;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -151,7 +153,7 @@ class _SubscriptionPlansScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${l10n.subscriptionsCurrentPlan}: ${plan?.name ?? l10n.commonUnknown}',
+                      '${l10n.subscriptionsCurrentPlan}: ${localPlan?.name ?? l10n.commonUnknown}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -171,60 +173,65 @@ class _SubscriptionPlansScreenState
               ),
             ],
           ),
-          if (plan?.features != null && plan!.features!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: plan!.features!
-                  .take(4) // Limit to first 4 features to avoid overflow
-                  .map((feature) => Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.check_circle,
-                                size: 14, color: Colors.white),
-                            const SizedBox(width: 4),
-                            Text(
-                              feature,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+          if (localPlan != null)
+            Builder(builder: (context) {
+              final localFeatures = localPlan.features;
+              if (localFeatures!.isEmpty) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: localFeatures!
+                      .take(4) // Limit to first 4 features to avoid overflow
+                      .map((feature) => Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
                             ),
-                          ],
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ],
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.check_circle,
+                                    size: 14, color: Colors.white),
+                                const SizedBox(width: 4),
+                                Text(
+                                  feature,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ))
+                      .toList(),
+                ),
+              );
+            }),
           const SizedBox(height: 12),
-          Row(
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
               _buildStatPill(
                 icon: Icons.home,
                 label: l10n.subscriptionsListings,
                 included: canCreateListing,
               ),
-              const SizedBox(width: 8),
               _buildStatPill(
                 icon: Icons.star_border,
                 label: l10n.listingFeatured,
                 included: canFeatureListing,
               ),
               if (sub.daysRemaining < 999) ...[
-                const SizedBox(width: 8),
                 _buildStatPill(
                   icon: Icons.timer,
                   label: l10n.subscriptionsDaysLeft(sub.daysRemaining),
@@ -242,7 +249,7 @@ class _SubscriptionPlansScreenState
     bool canCreateListing,
     bool canFeatureListing,
   ) {
-    final plan = sub.plan;
+    final localPlan = sub.plan;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -263,7 +270,7 @@ class _SubscriptionPlansScreenState
               ),
               const SizedBox(width: 8),
               Text(
-                '${sub.statusLabel} Plan: ${plan?.name ?? l10n.commonUnknown}',
+                '${sub.statusLabel} Plan: ${localPlan?.name ?? l10n.commonUnknown}',
                 style: AppTextStyles.title.copyWith(
                   color: AppColors.navy900,
                   fontSize: 15,
@@ -291,7 +298,9 @@ class _SubscriptionPlansScreenState
               icon: Icons.refresh,
               variant: ButtonVariant.primary,
               onPressed: () {
-                _selectPlan(plan!);
+                if (localPlan != null) {
+                  _selectPlan(localPlan);
+                }
               },
             ),
           ),
@@ -356,8 +365,8 @@ class _SubscriptionPlansScreenState
               ),
             );
             ref
-                .read(currentSubscriptionProvider.notifier)
-                .loadCurrentSubscription();
+                .read(subscriptionProvider.notifier)
+                .refresh();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -524,12 +533,16 @@ class _PlanCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            plan.name,
-                            style: AppTextStyles.title.copyWith(
-                              color: isCurrentPlan
-                                  ? AppColors.wave700
-                                  : AppColors.navy900,
+                          Flexible(
+                            child: Text(
+                              plan.name,
+                              style: AppTextStyles.title.copyWith(
+                                color: isCurrentPlan
+                                    ? AppColors.wave700
+                                    : AppColors.navy900,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isPopular) ...[

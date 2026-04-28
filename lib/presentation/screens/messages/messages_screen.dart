@@ -114,7 +114,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
         ),
       ),
       body: _buildBody(state, l10n),
-);
+    );
   }
 
   Widget _filterChip(String label, String value) {
@@ -127,7 +127,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
         decoration: BoxDecoration(
           color: isSelected ? AppColors.wave500 : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? AppColors.wave500 : context.divider),
+          border: Border.all(
+              color: isSelected ? AppColors.wave500 : context.divider),
         ),
         child: Text(
           label,
@@ -141,7 +142,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     );
   }
 
-  List<msg.Conversation> _filterConversations(List<msg.Conversation> conversations) {
+  List<msg.Conversation> _filterConversations(
+      List<msg.Conversation> conversations) {
     if (_selectedFilter == 'all') return conversations;
     return conversations.where((c) {
       if (_selectedFilter == 'property') return c.isAssetChat == true;
@@ -164,7 +166,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       );
     }
 
-    final List<msg.Conversation> filteredConversations = _filterConversations(state.conversations.cast<msg.Conversation>());
+    final List<msg.Conversation> filteredConversations =
+        _filterConversations(state.conversations.cast<msg.Conversation>());
 
     if (filteredConversations.isEmpty && state.conversations.isNotEmpty) {
       return Center(
@@ -257,7 +260,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
               width: 200,
               color: context.shimmerBase,
               margin: const EdgeInsets.only(top: 8)),
-          trailing: Container(height: 12, width: 40, color: context.shimmerBase),
+          trailing:
+              Container(height: 12, width: 40, color: context.shimmerBase),
         );
       },
     );
@@ -293,10 +297,11 @@ class _ConversationTile extends ConsumerWidget {
         conversation.unreadCount != null && conversation.unreadCount! > 0;
 
     // Format "You: " prefix for own messages - use lastMessageSenderId for accuracy
-    String previewText = conversation.lastMessage != null && conversation.lastMessage!.isNotEmpty
-        ? conversation.lastMessage!
-        : l10n.messagesEmpty;
-    
+    String previewText =
+        conversation.lastMessage != null && conversation.lastMessage!.isNotEmpty
+            ? conversation.lastMessage!
+            : l10n.messagesEmpty;
+
     if (conversation.lastMessage != null &&
         conversation.lastMessage!.isNotEmpty) {
       final isOwnLastMessage = conversation.isLastMessageFromMe(currentUserId);
@@ -326,7 +331,9 @@ class _ConversationTile extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
+                  color: context.isDarkMode
+                      ? AppColors.navy900
+                      : AppColors.surface,
                 ),
               ),
             ),
@@ -349,7 +356,9 @@ class _ConversationTile extends ConsumerWidget {
                         ? '99+'
                         : '${conversation.unreadCount}',
                     style: TextStyle(
-                      color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
+                      color: context.isDarkMode
+                          ? AppColors.navy900
+                          : AppColors.surface,
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
                     ),
@@ -455,32 +464,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Future<void> _loadRelatedConversations() async {
     final authState = ref.read(authStateProvider);
     final currentUserId = authState.user?.id ?? 0;
-    
+
     // Get other participant ID
-    final otherId = widget.conversation.otherParticipantId ?? 
-        (widget.conversation.senderId == currentUserId 
-            ? widget.conversation.receiverId 
-            : widget.conversation.senderId);
-    
+    final otherId = widget.conversation.getOtherParticipantId(currentUserId);
+
     // Load all conversations to find related ones
     // For now, we'll use the conversations provider
     final conversationsState = ref.read(conversationsProvider);
     final allConversations = conversationsState.conversations;
-    
+
     // Filter: same other participant but different conversation
     final related = allConversations
         .where((c) {
-          return c.id != widget.conversationId && 
-                 (c.senderId == otherId || c.receiverId == otherId);
+          return c.id != widget.conversationId &&
+              (c.getOtherParticipantId(currentUserId) == otherId);
         })
-        .map((c) => msg.Conversation(
-              id: c.id,
-              senderId: c.senderId,
-              receiverId: c.receiverId,
-              createdAt: c.createdAt,
-            ))
+        .cast<msg.Conversation>()
         .toList();
-    
+
     if (mounted) {
       setState(() {
         _relatedConversations = related;
@@ -571,7 +572,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
-  Widget _buildContextDropdown(BuildContext context, AppLocalizations l10n, bool isDark) {
+  Widget _buildContextDropdown(
+      BuildContext context, AppLocalizations l10n, bool isDark) {
     return GestureDetector(
       onTap: _closeContextDropdown,
       child: Container(
@@ -598,8 +600,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               // Header
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: context.isDarkMode ? AppColors.navy900 : AppColors.zinc50,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                color:
+                    context.isDarkMode ? AppColors.navy900 : AppColors.zinc50,
                 child: Text(
                   l10n.messagesSwitchContext,
                   style: TextStyle(
@@ -630,7 +634,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  Widget _buildContextItem(msg.Conversation conv, bool isSelected, AppLocalizations l10n, bool isDark) {
+  Widget _buildContextItem(msg.Conversation conv, bool isSelected,
+      AppLocalizations l10n, bool isDark) {
     return InkWell(
       onTap: () {
         _closeContextDropdown();
@@ -648,7 +653,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        color: isSelected ? (isDark ? AppColors.navy700 : AppColors.navy50) : null,
+        color:
+            isSelected ? (isDark ? AppColors.navy700 : AppColors.navy50) : null,
         child: Row(
           children: [
             // Icon/Image
@@ -694,7 +700,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     conv.contextDisplayTitle,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
                       color: isDark ? AppColors.zinc100 : AppColors.zinc900,
                     ),
                     maxLines: 1,
@@ -746,7 +753,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return '${dateTime.day}/${dateTime.month}';
   }
 
-  Widget _buildMessagesList(List<msg.Message> messages, int currentUserId, AppLocalizations l10n) {
+  Widget _buildMessagesList(
+      List<msg.Message> messages, int currentUserId, AppLocalizations l10n) {
     // Trigger scroll to first unread on first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToFirstUnread(messages, currentUserId);
@@ -777,11 +785,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
-                  color: context.isDarkMode ? AppColors.wave950 : AppColors.wave100,
+                  color: context.isDarkMode
+                      ? AppColors.wave950
+                      : AppColors.wave100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  l10n.messagesEmpty, 
+                  l10n.messagesEmpty,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -818,7 +828,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
         titleSpacing: 0,
         title: GestureDetector(
-          onTap: _relatedConversations.isNotEmpty ? _toggleContextDropdown : null,
+          onTap:
+              _relatedConversations.isNotEmpty ? _toggleContextDropdown : null,
           child: Stack(
             children: [
               Column(
@@ -912,7 +923,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               ],
                             ),
                           )
-                        : _buildMessagesList(chatState.messages, currentUserId, l10n),
+                        : _buildMessagesList(
+                            chatState.messages, currentUserId, l10n),
           ),
 
           // Message input
@@ -1084,7 +1096,9 @@ class _MessageBubble extends ConsumerWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
+                    color: context.isDarkMode
+                        ? AppColors.navy900
+                        : AppColors.surface,
                   ),
                 ),
               ),
@@ -1095,7 +1109,11 @@ class _MessageBubble extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: isOwn ? (context.isDarkMode ? AppColors.wave600 : AppColors.navy600) : context.cardBg,
+                color: isOwn
+                    ? (context.isDarkMode
+                        ? AppColors.wave600
+                        : AppColors.navy600)
+                    : context.cardBg,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16),
                   topRight: const Radius.circular(16),
@@ -1103,7 +1121,9 @@ class _MessageBubble extends ConsumerWidget {
                   bottomRight: Radius.circular(isOwn ? 4 : 16),
                 ),
                 boxShadow: context.isDarkMode ? null : AppColors.shadowSm,
-                border: isOwn ? null : Border.all(color: context.divider.withOpacity(0.5)),
+                border: isOwn
+                    ? null
+                    : Border.all(color: context.divider.withOpacity(0.5)),
               ),
               child: Column(
                 crossAxisAlignment:
@@ -1163,7 +1183,9 @@ class _MessageBubble extends ConsumerWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
+                    color: context.isDarkMode
+                        ? AppColors.navy900
+                        : AppColors.surface,
                   ),
                 ),
               ),

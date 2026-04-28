@@ -155,7 +155,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       )),
                       child: Column(
                         children: [
-                          const Text(
+                          Text(
                             'WaveMart',
                             style: AppTextStyles.headline3.copyWith(
                               fontSize: 32,
