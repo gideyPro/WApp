@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 /// Subscription Plan Model
 class SubscriptionPlan {
   final int id;
@@ -8,6 +10,7 @@ class SubscriptionPlan {
   final int durationMonths;
   final int maxListings;
   final int? maxFeaturedListings;
+  final List<String>? features;
   final bool isActive;
   final int? sortOrder;
   final DateTime? createdAt;
@@ -22,6 +25,7 @@ class SubscriptionPlan {
     this.durationMonths = 1,
     this.maxListings = 1,
     this.maxFeaturedListings,
+    this.features,
     this.isActive = true,
     this.sortOrder,
     this.createdAt,
@@ -38,6 +42,7 @@ class SubscriptionPlan {
       durationMonths: json['duration_months'] ?? 1,
       maxListings: json['max_listings'] ?? 1,
       maxFeaturedListings: json['max_featured_listings'],
+      features: _parseFeatures(json['features']),
       isActive: json['is_active'] ?? true,
       sortOrder: json['sort_order'],
       createdAt: json['created_at'] != null
@@ -47,6 +52,22 @@ class SubscriptionPlan {
           ? DateTime.parse(json['updated_at'])
           : null,
     );
+  }
+
+  static List<String>? _parseFeatures(dynamic value) {
+    if (value == null) return null;
+    if (value is List) {
+      return value.whereType<String>().toList();
+    }
+    if (value is String) {
+      try {
+        final decoded = jsonDecode(value);
+        if (decoded is List) {
+          return decoded.whereType<String>().toList();
+        }
+      } catch (_) {}
+    }
+    return null;
   }
 
   /// Parse double from various types (String, num, double)
@@ -79,6 +100,7 @@ class Subscription {
   final String status;
   final DateTime startsAt;
   final DateTime? endsAt;
+  final DateTime? cancelledAt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final SubscriptionPlan? plan;
@@ -90,6 +112,7 @@ class Subscription {
     this.status = 'active',
     required this.startsAt,
     this.endsAt,
+    this.cancelledAt,
     this.createdAt,
     this.updatedAt,
     this.plan,
@@ -105,6 +128,9 @@ class Subscription {
           ? DateTime.parse(json['starts_at'])
           : DateTime.now(),
       endsAt: json['ends_at'] != null ? DateTime.parse(json['ends_at']) : null,
+      cancelledAt: json['cancelled_at'] != null
+          ? DateTime.parse(json['cancelled_at'])
+          : null,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
@@ -117,11 +143,24 @@ class Subscription {
   }
 
   bool get isActive =>
-      status == 'active' && (endsAt == null || endsAt!.isAfter(DateTime.now()));
+      status == 'active' &&
+      (cancelledAt == null || cancelledAt!.isAfter(DateTime.now())) &&
+      (endsAt == null || endsAt!.isAfter(DateTime.now()));
+
   bool get isExpired => endsAt != null && endsAt!.isBefore(DateTime.now());
+
+  bool get isCancelled => cancelledAt != null;
 
   int get daysRemaining {
     if (endsAt == null) return 999;
-    return endsAt!.difference(DateTime.now()).inDays;
+    final now = DateTime.now();
+    if (endsAt!.isBefore(now)) return 0;
+    return endsAt!.difference(now).inDays;
+  }
+
+  String get statusLabel {
+    if (isCancelled) return 'Cancelled';
+    if (isExpired) return 'Expired';
+    return 'Active';
   }
 }

@@ -2794,6 +2794,30 @@ abstract class AppLocalizations {
   /// **'Payment error: {error}'**
   String subscriptionsPaymentError(Object error);
 
+  /// No description provided for @subscriptionsExpiresOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires on {date}'**
+  String subscriptionsExpiresOn(Object date);
+
+  /// No description provided for @subscriptionsCancelledOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled on {date}'**
+  String subscriptionsCancelledOn(Object date);
+
+  /// No description provided for @subscriptionsExpiredOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired on {date}'**
+  String subscriptionsExpiredOn(Object date);
+
+  /// No description provided for @subscriptionsFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Features'**
+  String get subscriptionsFeatures;
+
   /// No description provided for @notificationsDeleteTitle.
   ///
   /// In en, this message translates to:

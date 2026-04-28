@@ -461,9 +461,13 @@
   "subscriptionsPaymentBrowserMessage": "Complete payment in your browser. Return here after payment.",
   "subscriptionsFreeSuccess": "Free plan activated successfully!",
   "subscriptionsPaymentBrowserError": "Could not open browser for payment",
-  "subscriptionsPaymentError": "Payment error: {error}",
-  
-  "notificationsDeleteTitle": "Delete Notification",
+   "subscriptionsPaymentError": "Payment error: {error}",
+   "subscriptionsExpiresOn": "Expires on {date}",
+   "subscriptionsCancelledOn": "Cancelled on {date}",
+   "subscriptionsExpiredOn": "Expired on {date}",
+   "subscriptionsFeatures": "Features",
+
+   "notificationsDeleteTitle": "Delete Notification",
   "notificationsDeleteConfirm": "Remove this notification?",
   "notificationsDelete": "Delete",
   "notificationsEmpty": "No notifications yet",

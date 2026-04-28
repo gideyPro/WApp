@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/services/subscription_service.dart';
 import '../../../../data/services/payment_service.dart';
+import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -24,9 +25,9 @@ class _SubscriptionPlansScreenState
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   final PaymentService _paymentService = PaymentService();
   bool _isProcessingPayment = false;
-  
+
   AppLocalizations get l10n => AppLocalizations.of(context);
-  
+
   @override
   void initState() {
     super.initState();
@@ -65,18 +66,30 @@ class _SubscriptionPlansScreenState
 
   Widget _buildBody(dynamic plans, CurrentSubscriptionState currentSub) {
     final activePlans = plans.where((p) => p.isActive).toList();
+    final subscription = currentSub.subscription;
+    final isActiveSub = subscription != null && subscription.isActive;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Current subscription banner
-          if (currentSub.subscription != null &&
-              currentSub.subscription.isActive)
-            _buildCurrentSubscriptionBanner(currentSub),
-
-          const SizedBox(height: 8),
+          // Current subscription banner (if any)
+          if (subscription != null) ...[
+            if (isActiveSub)
+              _buildCurrentSubscriptionBanner(
+                subscription,
+                currentSub.canCreateListing,
+                currentSub.canFeatureListing,
+              )
+            else
+              _buildInactiveSubscriptionBanner(
+                subscription,
+                currentSub.canCreateListing,
+                currentSub.canFeatureListing,
+              ),
+            const SizedBox(height: 8),
+          ],
 
           // Plans header
           if (activePlans.isNotEmpty) ...[
@@ -96,8 +109,8 @@ class _SubscriptionPlansScreenState
             // Plans list
             ...activePlans.map((plan) => _PlanCard(
                   plan: plan,
-                  isCurrentPlan: currentSub.subscription?.planId == plan.id &&
-                      currentSub.subscription.isActive,
+                  isCurrentPlan: subscription?.planId == plan.id &&
+                      (subscription?.isActive ?? false),
                   isLoading: _isProcessingPayment,
                   onSelect: () => _selectPlan(plan),
                 )),
@@ -106,7 +119,8 @@ class _SubscriptionPlansScreenState
             Center(
               child: Text(
                 'No active subscription plans available at this time.',
-                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.zinc500),
+                style:
+                    AppTextStyles.bodyMedium.copyWith(color: AppColors.zinc500),
               ),
             ),
           ],
@@ -115,9 +129,9 @@ class _SubscriptionPlansScreenState
     );
   }
 
-  Widget _buildCurrentSubscriptionBanner(CurrentSubscriptionState state) {
-    final sub = state.subscription;
-    final plan = sub?.plan;
+  Widget _buildCurrentSubscriptionBanner(
+      Subscription sub, bool canCreateListing, bool canFeatureListing) {
+    final plan = sub.plan;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -132,12 +146,27 @@ class _SubscriptionPlansScreenState
             children: [
               const Icon(Icons.star, color: Colors.white, size: 24),
               const SizedBox(width: 8),
-              Text(
-                '${l10n.subscriptionsCurrentPlan}: ${plan?.name ?? l10n.commonUnknown}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${l10n.subscriptionsCurrentPlan}: ${plan?.name ?? l10n.commonUnknown}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    if (sub.endsAt != null)
+                      Text(
+                        l10n.subscriptionsExpiresOn(_formatDate(sub.endsAt!)),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],
@@ -147,14 +176,16 @@ class _SubscriptionPlansScreenState
             children: [
               _buildStatPill(
                 icon: Icons.home,
-                label: '${state.canCreateListing ? '✓' : '✗'} ${l10n.subscriptionsListings}',
+                label:
+                    '${canCreateListing ? '✓' : '✗'} ${l10n.subscriptionsListings}',
               ),
               const SizedBox(width: 8),
               _buildStatPill(
                 icon: Icons.star_border,
-                label: '${state.canFeatureListing ? '✓' : '✗'} ${l10n.listingFeatured}',
+                label:
+                    '${canFeatureListing ? '✓' : '✗'} ${l10n.listingFeatured}',
               ),
-              if (sub != null && sub.daysRemaining < 999) ...[
+              if (sub.daysRemaining < 999) ...[
                 const SizedBox(width: 8),
                 _buildStatPill(
                   icon: Icons.timer,
@@ -166,6 +197,73 @@ class _SubscriptionPlansScreenState
         ],
       ),
     );
+  }
+
+  Widget _buildInactiveSubscriptionBanner(
+    Subscription sub,
+    bool canCreateListing,
+    bool canFeatureListing,
+  ) {
+    final plan = sub.plan;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.zinc100,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.zinc300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                sub.isCancelled ? Icons.cancel : Icons.info_outline,
+                color: AppColors.zinc600,
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${sub.statusLabel} Plan: ${plan?.name ?? l10n.commonUnknown}',
+                style: AppTextStyles.title.copyWith(
+                  color: AppColors.navy900,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+          if (sub.endsAt != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              sub.isCancelled
+                  ? l10n.subscriptionsCancelledOn(
+                      _formatDate(sub.cancelledAt ?? sub.endsAt!))
+                  : l10n.subscriptionsExpiredOn(_formatDate(sub.endsAt!)),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.zinc600,
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: WaveButton(
+              text: l10n.subscriptionsSubscribe,
+              icon: Icons.refresh,
+              variant: ButtonVariant.primary,
+              onPressed: () {
+                _selectPlan(plan!);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
   }
 
   Widget _buildStatPill({required IconData icon, required String label}) {
@@ -203,12 +301,12 @@ class _SubscriptionPlansScreenState
         final response = await _subscriptionService.activateSubscription();
         if (mounted) {
           if (response.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.subscriptionsFreeSuccess),
-              backgroundColor: AppColors.success,
-            ),
-          );
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.subscriptionsFreeSuccess),
+                backgroundColor: AppColors.success,
+              ),
+            );
             ref
                 .read(currentSubscriptionProvider.notifier)
                 .loadCurrentSubscription();
@@ -487,6 +585,39 @@ class _PlanCard extends StatelessWidget {
                   included: plan.maxFeaturedListings != null &&
                       plan.maxFeaturedListings! > 0,
                 ),
+                // Additional features from JSON (if any)
+                if (plan.features != null && plan.features.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  const Divider(height: 1, thickness: 1),
+                  const SizedBox(height: 12),
+                  Text(
+                    l10n.subscriptionsFeatures,
+                    style: AppTextStyles.titleSmall.copyWith(
+                      color: AppColors.navy800,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...plan.features.map((feature) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.check_circle,
+                                size: 16, color: AppColors.wave500),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                feature,
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.navy700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                ],
                 const SizedBox(height: 16),
 
                 // Action button

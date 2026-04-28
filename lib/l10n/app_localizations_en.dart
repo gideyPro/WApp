@@ -1444,6 +1444,24 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String subscriptionsExpiresOn(Object date) {
+    return 'Expires on $date';
+  }
+
+  @override
+  String subscriptionsCancelledOn(Object date) {
+    return 'Cancelled on $date';
+  }
+
+  @override
+  String subscriptionsExpiredOn(Object date) {
+    return 'Expired on $date';
+  }
+
+  @override
+  String get subscriptionsFeatures => 'Features';
+
+  @override
   String get notificationsDeleteTitle => 'Delete Notification';
 
   @override
