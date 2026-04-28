@@ -394,24 +394,21 @@ void _showLanguageSelectionDialog(BuildContext context, WidgetRef ref) {
             context,
             ref,
             languageCode: 'en',
-            languageName:
-                '🇺🇸 ${AppLocalizations.of(context).languageEnglish}',
+            languageName: AppLocalizations.of(context).languageEnglish,
             currentLocale: currentLocale,
           ),
           _buildLanguageOption(
             context,
             ref,
             languageCode: 'am',
-            languageName:
-                '🇪🇹 ${AppLocalizations.of(context).languageAmharic}',
+            languageName: AppLocalizations.of(context).languageAmharic,
             currentLocale: currentLocale,
           ),
           _buildLanguageOption(
             context,
             ref,
             languageCode: 'ti',
-            languageName:
-                '🇪🇹 ${AppLocalizations.of(context).languageTigrinya}',
+            languageName: AppLocalizations.of(context).languageTigrinya,
             currentLocale: currentLocale,
           ),
           const SizedBox(height: 16),
@@ -451,9 +448,7 @@ String _getDarkModeSubtitle(BuildContext context, WidgetRef ref) {
   return themeMode == ThemeMode.dark ? l10n.commonOn : l10n.commonOff;
 }
 
-Future<void> _toggleDarkMode(WidgetRef ref) async {
-  await ref.read(themeModeProvider.notifier).toggle();
-}
+
 
 class _MenuItemData {
   final IconData icon;

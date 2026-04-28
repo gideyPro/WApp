@@ -1446,6 +1446,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsFeatures => 'Features';
 
   @override
+  String get subscriptionsNoPlansAvailable =>
+      'ኣብዚ ግዘ ዝኾነ ንጡፍ ናይ ኣባልነት ትልሚ የለን።';
+
+  @override
   String get notificationsDeleteTitle => 'መጠንቀቕታ ሰርዝ';
 
   @override

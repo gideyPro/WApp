@@ -453,6 +453,7 @@
   "subscriptionsFreeSuccess": "ነጻ ዕቅድ በትክክል ገቢር ሆኗል!",
   "subscriptionsPaymentBrowserError": "ለክፍያ ብራውዘር መክፈት አልተቻለም",
   "subscriptionsPaymentError": "የክፍያ ስህተት: {error}",
+  "subscriptionsNoPlansAvailable": "በአሁኑ ጊዜ ምንም ንቁ የምዝገባ ዕቅዶች አልተገኙም።",
   
   "notificationsDeleteTitle": "ማስታወቂያ ሰርዝ",
   "notificationsDeleteConfirm": "ይህንን ማስታወቂያ ማስወገድ ይፈልጋሉ?",

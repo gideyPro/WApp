@@ -364,7 +364,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: onTap != null ? AppColors.zinc50 : AppColors.zinc50,
+            color: onTap != null ? AppColors.wave50 : AppColors.zinc50,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.zinc200),
           ),
@@ -685,6 +685,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _buildActionButton(
+                        context: context,
                         icon: Icons.notifications_outlined,
                         onTap: onNotificationsTap,
                         badgeProvider: () => unreadCountAsync,
@@ -748,6 +749,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget _buildActionButton({
+    required BuildContext context,
     required IconData icon,
     required VoidCallback onTap,
     required AsyncValue<int> Function() badgeProvider,
@@ -772,7 +774,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
             ),
             child: Icon(
               icon,
-              color: Colors.white,
+              color: context.iconPrimary,
               size: 22,
             ),
           ),

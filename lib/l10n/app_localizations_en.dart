@@ -1462,6 +1462,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsFeatures => 'Features';
 
   @override
+  String get subscriptionsNoPlansAvailable =>
+      'No active subscription plans available at this time.';
+
+  @override
   String get notificationsDeleteTitle => 'Delete Notification';
 
   @override

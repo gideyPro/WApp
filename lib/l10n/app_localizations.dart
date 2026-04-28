@@ -2818,6 +2818,12 @@ abstract class AppLocalizations {
   /// **'Features'**
   String get subscriptionsFeatures;
 
+  /// No description provided for @subscriptionsNoPlansAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No active subscription plans available at this time.'**
+  String get subscriptionsNoPlansAvailable;
+
   /// No description provided for @notificationsDeleteTitle.
   ///
   /// In en, this message translates to:

@@ -466,6 +466,7 @@
    "subscriptionsCancelledOn": "Cancelled on {date}",
    "subscriptionsExpiredOn": "Expired on {date}",
    "subscriptionsFeatures": "Features",
+   "subscriptionsNoPlansAvailable": "No active subscription plans available at this time.",
 
    "notificationsDeleteTitle": "Delete Notification",
   "notificationsDeleteConfirm": "Remove this notification?",

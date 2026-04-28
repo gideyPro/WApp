@@ -1446,6 +1446,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsFeatures => 'Features';
 
   @override
+  String get subscriptionsNoPlansAvailable =>
+      'በአሁኑ ጊዜ ምንም ንቁ የምዝገባ ዕቅዶች አልተገኙም።';
+
+  @override
   String get notificationsDeleteTitle => 'ማስታወቂያ ሰርዝ';
 
   @override

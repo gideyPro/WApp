@@ -118,7 +118,7 @@ class _SubscriptionPlansScreenState
             const SizedBox(height: 32),
             Center(
               child: Text(
-                'No active subscription plans available at this time.',
+                l10n.subscriptionsNoPlansAvailable,
                 style:
                     AppTextStyles.bodyMedium.copyWith(color: AppColors.zinc500),
               ),
@@ -171,12 +171,12 @@ class _SubscriptionPlansScreenState
               ),
             ],
           ),
-          if (plan != null && plan.features != null && plan.features!.isNotEmpty) ...[
+          if (plan?.features != null && plan!.features!.isNotEmpty) ...[
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
               runSpacing: 4,
-              children: plan.features!
+              children: plan!.features!
                   .take(4) // Limit to first 4 features to avoid overflow
                   .map((feature) => Container(
                         padding: const EdgeInsets.symmetric(
@@ -214,14 +214,14 @@ class _SubscriptionPlansScreenState
             children: [
               _buildStatPill(
                 icon: Icons.home,
-                label:
-                    '${canCreateListing ? '✓' : '✗'} ${l10n.subscriptionsListings}',
+                label: l10n.subscriptionsListings,
+                included: canCreateListing,
               ),
               const SizedBox(width: 8),
               _buildStatPill(
                 icon: Icons.star_border,
-                label:
-                    '${canFeatureListing ? '✓' : '✗'} ${l10n.listingFeatured}',
+                label: l10n.listingFeatured,
+                included: canFeatureListing,
               ),
               if (sub.daysRemaining < 999) ...[
                 const SizedBox(width: 8),
@@ -304,7 +304,11 @@ class _SubscriptionPlansScreenState
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  Widget _buildStatPill({required IconData icon, required String label}) {
+  Widget _buildStatPill({
+    required IconData icon,
+    required String label,
+    bool? included,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -314,7 +318,13 @@ class _SubscriptionPlansScreenState
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.white),
+          Icon(
+            included != null
+                ? (included ? Icons.check_circle : Icons.cancel)
+                : icon,
+            size: 14,
+            color: Colors.white,
+          ),
           const SizedBox(width: 4),
           Text(
             label,
@@ -329,7 +339,7 @@ class _SubscriptionPlansScreenState
     );
   }
 
-  Future<void> _selectPlan(dynamic plan) async {
+  Future<void> _selectPlan(SubscriptionPlan plan) async {
     if (_isProcessingPayment) return;
 
     // For free plans, activate directly
@@ -409,7 +419,7 @@ class _SubscriptionPlansScreenState
         // Fallback: initialize payment via payment service
         final paymentResponse = await _paymentService.initializePayment(
           paymentType: 'subscription',
-          amount: plan.price ?? 0.0,
+          amount: plan.price,
           relatedId: plan.id,
         );
 
@@ -458,7 +468,7 @@ class _SubscriptionPlansScreenState
 
 /// Plan Card Widget
 class _PlanCard extends StatelessWidget {
-  final dynamic plan;
+  final SubscriptionPlan plan;
   final bool isCurrentPlan;
   final bool isLoading;
   final VoidCallback onSelect;
@@ -479,7 +489,7 @@ class _PlanCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isCurrentPlan
@@ -624,7 +634,7 @@ class _PlanCard extends StatelessWidget {
                       plan.maxFeaturedListings! > 0,
                 ),
                 // Additional features from JSON (if any)
-                if (plan.features != null && plan.features.isNotEmpty) ...[
+                if (plan.features != null && plan.features!.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   const Divider(height: 1, thickness: 1),
                   const SizedBox(height: 12),
@@ -636,7 +646,7 @@ class _PlanCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  ...plan.features.map((feature) => Padding(
+                  ...plan.features!.map((feature) => Padding(
                         padding: const EdgeInsets.only(bottom: 6),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,

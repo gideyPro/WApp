@@ -453,6 +453,7 @@
   "subscriptionsFreeSuccess": "ነጻ ትልሚ ብትኽክል ተወሊዑ!",
   "subscriptionsPaymentBrowserError": "ብራውዘር ንክፍሊት ክኽፈት ኣይከኣለን",
   "subscriptionsPaymentError": "ጌጋ ክፍሊት: {error}",
+  "subscriptionsNoPlansAvailable": "ኣብዚ ግዘ ዝኾነ ንጡፍ ናይ ኣባልነት ትልሚ የለን።",
   
   "notificationsDeleteTitle": "መጠንቀቕታ ሰርዝ",
   "notificationsDeleteConfirm": "ነዚ መጠንቀቕታ ክትሰርዙ ትደልዩ?",

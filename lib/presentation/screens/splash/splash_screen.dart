@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/network/api_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
@@ -195,7 +196,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           height: 20,
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF16b364)),
+                                AppColors.wave500),
                             strokeWidth: 2.5,
                           ),
                         ),

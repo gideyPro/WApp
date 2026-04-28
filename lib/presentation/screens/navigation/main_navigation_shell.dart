@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../home/home_screen.dart';
 import '../favorites/favorites_screen.dart';
@@ -32,6 +31,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       const FavoritesScreen(),
       const Center(child: Text('')), // Placeholder for FAB
       const MessagesScreen(),
+      const SettingsScreen(),
     ];
 
     // Watch unread messages count
@@ -58,19 +58,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
         backgroundColor: context.cardBg,
         elevation: 12,
         shape: const CircleBorder(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.add, color: AppColors.navy900, size: 30),
-            const SizedBox(height: 2),
-            Text(
-              AppLocalizations.of(context).listingsCreate,
-              style: AppTextStyles.labelSmall.copyWith(
-                color: isDark ? AppColors.wave400 : AppColors.navy900,
-              ),
-            ),
-          ],
-        ),
+        child: Icon(Icons.add, color: context.iconPrimary, size: 30),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -111,7 +99,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           children: [
             Icon(
               icon,
-              color: isSelected ? context.textPrimary : context.textMuted,
+              color: isSelected ? context.iconPrimary : context.textMuted,
               size: 26,
             ),
             const SizedBox(height: 4),
@@ -120,7 +108,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.navy900 : AppColors.zinc500,
+                color: isSelected ? context.textPrimary : AppColors.zinc500,
               ),
             ),
           ],
@@ -176,18 +164,18 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   }
 
   Widget _buildSettingsNavItem(BuildContext context) {
+    final selectedIndex = ref.watch(selectedTabProvider);
+    final isSelected = selectedIndex == 4;
     return Expanded(
       child: InkWell(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const SettingsScreen()),
-        ),
+        onTap: () => _onItemTapped(4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.settings_outlined,
-              color: AppColors.zinc400,
+              color: isSelected ? context.iconPrimary : AppColors.zinc400,
               size: 26,
             ),
             const SizedBox(height: 4),
@@ -195,8 +183,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               AppLocalizations.of(context).navSettings,
               style: TextStyle(
                 fontSize: 10,
-                fontWeight: FontWeight.w500,
-                color: AppColors.zinc500,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: isSelected ? context.textPrimary : AppColors.zinc500,
               ),
             ),
           ],
