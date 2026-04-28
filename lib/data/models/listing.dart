@@ -176,6 +176,8 @@ class Listing extends ChangeNotifier {
     this.priceRevisionPossible = false,
     this.videoLink,
     this.sitePlanImageLink,
+    this.ownershipProofLink,
+    this.leaseContractLink,
     this.holdingType,
     this.taxPaidUntilYear,
     this.acquisitionType,

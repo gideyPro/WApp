@@ -9,8 +9,8 @@ import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/models/image.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../widgets/common/wave_common_widgets.dart';
-import '../../providers/app_providers.dart';
+import '../../../widgets/common/wave_common_widgets.dart';
+import '../../../providers/app_providers.dart';
 
 // ===================== STEP INDICATOR =====================
 
