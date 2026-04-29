@@ -496,10 +496,13 @@ class _SubscriptionPlansScreenState
         showPaymentMethodsOnGridView: true,
         availablePaymentMethods: const ['telebirr', 'cbebirr', 'mpesa', 'ebirr'],
         namedRouteFallBack: '',
-        onPaymentFinished: (status, message, txRef) async {
+        onPaymentFinished: (status, message, returnedTxRef) async {
           // response status can be 'success', 'failed', or 'cancelled'
           if (status == 'success') {
-            final activateResponse = await _subscriptionService.activateSubscription();
+            // Use the txRef returned from Chapa to activate subscription
+            final activateResponse = await _subscriptionService.activateSubscription(
+              txRef: returnedTxRef ?? txRef,
+            );
             if (mounted) {
               if (activateResponse.success) {
                 ScaffoldMessenger.of(context).showSnackBar(

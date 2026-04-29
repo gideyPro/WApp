@@ -199,10 +199,11 @@ class SubscriptionServiceApi {
   }
 
   /// Activate subscription after payment
-  Future<SubscriptionResponse> activateSubscription() async {
+  Future<SubscriptionResponse> activateSubscription({String? txRef}) async {
     try {
       final response = await _apiClient.dio.get(
         ApiConstants.activateSubscription,
+        queryParameters: txRef != null ? {'tx_ref': txRef} : null,
       );
 
       if (response.statusCode == 200) {
