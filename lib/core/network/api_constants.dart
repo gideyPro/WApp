@@ -96,6 +96,8 @@ class ApiConstants {
   static const String currentSubscription = '$apiBase/subscriptions';
   static const String subscribeToPlan =
       '$apiBase/subscriptions'; // + /{id}/subscribe
+  static const String initiateSubscriptionPayment =
+      '$apiBase/subscriptions'; // + /{id}/initiate-payment
   static const String processSubscriptionPayment =
       '$apiBase/subscriptions'; // + /{id}/process-payment
   static const String activateSubscription =

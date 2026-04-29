@@ -5,7 +5,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/services/subscription_service.dart';
-import '../../../../data/services/payment_service.dart';
 import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
@@ -27,7 +26,6 @@ class SubscriptionPlansScreen extends ConsumerStatefulWidget {
 class _SubscriptionPlansScreenState
     extends ConsumerState<SubscriptionPlansScreen> {
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
-  final PaymentService _paymentService = PaymentService();
   int? _processingPlanId;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
@@ -402,105 +400,14 @@ class _SubscriptionPlansScreenState
     setState(() => _processingPlanId = plan.id);
 
     try {
-      // First, get payment initialization from backend to get tx_ref
-      final paymentResponse = await _paymentService.initializePayment(
-        paymentType: 'subscription',
-        amount: plan.price,
-        relatedId: plan.id,
+      // Initiate payment for mobile SDK - gets tx_ref without calling Chapa
+      final paymentResponse = await _subscriptionService.initiatePayment(
+        planId: plan.id,
       );
 
       if (!mounted) return;
 
-      if (paymentResponse.success && paymentResponse.txRef != null) {
-        // Get Chapa Public Key from backend settings
-        final settings = await ref.read(appSettingsProvider.future);
-        final publicKey = settings['chapa_public_key'];
-        
-        if (publicKey == null || publicKey.toString().isEmpty) {
-          throw Exception('Chapa public key not found in settings');
-        }
-
-        // Get current user details
-        final authState = ref.read(authStateProvider);
-        final user = authState.user;
-        
-        // Format phone number to 10 digits (e.g., 0912345678)
-        String formattedPhone = user?.phoneNumber ?? '0900000000';
-        // Remove non-digits
-        formattedPhone = formattedPhone.replaceAll(RegExp(r'\D'), '');
-        // If it starts with 251, remove it
-        if (formattedPhone.startsWith('251')) {
-          formattedPhone = formattedPhone.substring(3);
-        }
-        // Ensure it starts with 0
-        if (!formattedPhone.startsWith('0')) {
-          formattedPhone = '0$formattedPhone';
-        }
-        // Limit to 10 digits
-        if (formattedPhone.length > 10) {
-          formattedPhone = formattedPhone.substring(0, 10);
-        }
-        
-        // Start Native Payment Flow
-        if (!mounted) return;
-        
-        // Debug logging for Chapa parameters
-        debugPrint('Initializing Chapa with:');
-        debugPrint('Public Key: $publicKey');
-        debugPrint('Amount: ${plan.price}');
-        debugPrint('TX Ref: ${paymentResponse.txRef}');
-        debugPrint('Email: ${user?.email ?? '${formattedPhone}@wavemart.et'}');
-        debugPrint('Phone: $formattedPhone');
-        
-        Chapa.paymentParameters(
-          context: context,
-          publicKey: publicKey.toString(),
-          amount: plan.price.toString(),
-          currency: 'ETB',
-          txRef: paymentResponse.txRef!,
-          email: user?.email ?? '${formattedPhone}@wavemart.et',
-          phone: formattedPhone,
-          firstName: user?.firstName ?? 'Customer',
-          lastName: user?.lastName ?? 'User',
-          title: 'WaveMart Subscription',
-          desc: '${plan.name} Plan',
-          namedRouteFallBack: '',
-          onPaymentFinished: (status, message, txRef) async {
-            // response status can be 'success', 'failed', or 'cancelled'
-            if (status == 'success') {
-              // Activate subscription on backend after successful native payment
-              final activateResponse = await _subscriptionService.activateSubscription();
-              if (mounted) {
-                if (activateResponse.success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.subscriptionsFreeSuccess),
-                      backgroundColor: AppColors.success,
-                    ),
-                  );
-                  ref.read(subscriptionProvider.notifier).refresh();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(activateResponse.message),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              }
-            } else {
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Payment $status'),
-                    backgroundColor: AppColors.error,
-                  ),
-                );
-              }
-            }
-          },
-        );
-      } else {
+      if (!paymentResponse.success) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -509,7 +416,122 @@ class _SubscriptionPlansScreenState
             ),
           );
         }
+        return;
       }
+
+      // Free plan - already activated
+      if (paymentResponse.requiresPayment == false) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(paymentResponse.message),
+              backgroundColor: AppColors.success,
+            ),
+          );
+          ref.read(subscriptionProvider.notifier).refresh();
+        }
+        return;
+      }
+
+      // Paid plan - get tx_ref for Chapa SDK
+      final txRef = paymentResponse.txRef;
+      if (txRef == null) {
+        throw Exception('Failed to get transaction reference');
+      }
+
+      // Get Chapa Public Key from backend settings
+      final settings = await ref.read(appSettingsProvider.future);
+      final publicKey = settings['chapa_public_key'];
+      
+      if (publicKey == null || publicKey.toString().isEmpty) {
+        throw Exception('Chapa public key not found in settings');
+      }
+
+      // Get current user details
+      final authState = ref.read(authStateProvider);
+      final user = authState.user;
+      
+      // Format phone number to 10 digits (e.g., 0912345678)
+      String formattedPhone = user?.phoneNumber ?? '0900000000';
+      // Remove non-digits
+      formattedPhone = formattedPhone.replaceAll(RegExp(r'\D'), '');
+      // If it starts with 251, remove it
+      if (formattedPhone.startsWith('251')) {
+        formattedPhone = formattedPhone.substring(3);
+      }
+      // Ensure it starts with 0
+      if (!formattedPhone.startsWith('0')) {
+        formattedPhone = '0$formattedPhone';
+      }
+      // Limit to 10 digits
+      if (formattedPhone.length > 10) {
+        formattedPhone = formattedPhone.substring(0, 10);
+      }
+      
+      // Start Native Payment Flow
+      if (!mounted) return;
+      
+      // Debug logging for Chapa parameters
+      debugPrint('Initializing Chapa with:');
+      debugPrint('Public Key: $publicKey');
+      debugPrint('Amount: ${plan.price}');
+      debugPrint('TX Ref: $txRef');
+      debugPrint('Email: ${user?.email ?? '${formattedPhone}@wavemart.et'}');
+      debugPrint('Phone: $formattedPhone');
+      
+      Chapa.paymentParameters(
+        context: context,
+        publicKey: publicKey.toString(),
+        amount: plan.price.toString(),
+        currency: 'ETB',
+        txRef: txRef,
+        email: user?.email ?? '${formattedPhone}@wavemart.et',
+        phone: formattedPhone,
+        firstName: user?.firstName ?? 'Customer',
+        lastName: user?.lastName ?? 'User',
+        title: 'WaveMart Subscription',
+        desc: '${plan.name} Plan',
+        nativeCheckout: true,
+        buttonColor: AppColors.primary,
+        textColor: Colors.white,
+        showPaymentMethodsOnGridView: true,
+        availablePaymentMethods: const ['telebirr', 'cbebirr', 'mpesa', 'ebirr'],
+        namedRouteFallBack: '',
+        onPaymentFinished: (status, message, txRef) async {
+          // response status can be 'success', 'failed', or 'cancelled'
+          if (status == 'success') {
+            final activateResponse = await _subscriptionService.activateSubscription();
+            if (mounted) {
+              if (activateResponse.success) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.subscriptionsFreeSuccess),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+                ref.read(subscriptionProvider.notifier).refresh();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(activateResponse.message),
+                    backgroundColor: AppColors.error,
+                  ),
+                );
+              }
+            }
+          } else if (status == 'failed') {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message.isNotEmpty ? message : 'Payment failed'),
+                  backgroundColor: AppColors.error,
+                ),
+              );
+            }
+          }
+          // cancelled - do nothing
+        },
+      );
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context);

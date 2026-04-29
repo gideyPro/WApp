@@ -118,6 +118,51 @@ class SubscriptionServiceApi {
     }
   }
 
+  /// Initiate payment for mobile SDK - gets tx_ref without calling Chapa
+  Future<SubscriptionResponse> initiatePayment({
+    required int planId,
+  }) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '${ApiConstants.initiateSubscriptionPayment}/$planId/initiate-payment',
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data['data'] ?? response.data;
+        
+        if (data['free_plan'] == true) {
+          return SubscriptionResponse(
+            success: true,
+            message: data['message'] ?? 'Free plan activated',
+            requiresPayment: false,
+          );
+        }
+        
+        return SubscriptionResponse(
+          success: true,
+          message: response.data['message'] ?? 'Payment initiated',
+          txRef: data['tx_ref'],
+          paymentId: data['payment_id'],
+          amount: data['amount']?.toDouble(),
+          requiresPayment: true,
+        );
+      }
+
+      return SubscriptionResponse(
+        success: false,
+        message: response.data['message'] ?? 'Failed to initiate payment',
+        requiresPayment: false,
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return SubscriptionResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        requiresPayment: false,
+      );
+    }
+  }
+
 
   /// Process subscription payment
   Future<SubscriptionResponse> processPayment({
@@ -242,6 +287,9 @@ class SubscriptionResponse {
   final String message;
   final SubscriptionPlan? plan;
   final String? checkoutUrl;
+  final String? txRef;
+  final int? paymentId;
+  final double? amount;
   final bool requiresPayment;
 
   const SubscriptionResponse({
@@ -249,6 +297,9 @@ class SubscriptionResponse {
     this.message = '',
     this.plan,
     this.checkoutUrl,
+    this.txRef,
+    this.paymentId,
+    this.amount,
     this.requiresPayment = false,
   });
 }
