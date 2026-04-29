@@ -26,15 +26,17 @@ class ConnectivityService {
   }
 
   /// Update connection status from connectivity result
-  void _updateConnectionStatus(ConnectivityResult result) {
-    final isConnected = result != ConnectivityResult.none;
+  void _updateConnectionStatus(List<ConnectivityResult> results) {
+    final isConnected = results.isNotEmpty &&
+        !results.every((result) => result == ConnectivityResult.none);
     _connectionStatusController.add(isConnected);
   }
 
   /// Check if currently connected
   Future<bool> isConnected() async {
-    final result = await _connectivity.checkConnectivity();
-    return result != ConnectivityResult.none;
+    final results = await _connectivity.checkConnectivity();
+    return results.isNotEmpty &&
+        !results.every((result) => result == ConnectivityResult.none);
   }
 
   /// Dispose resources
