@@ -496,12 +496,13 @@ class _SubscriptionPlansScreenState
         showPaymentMethodsOnGridView: true,
         availablePaymentMethods: const ['telebirr', 'cbebirr', 'mpesa', 'ebirr'],
         namedRouteFallBack: '',
-        onPaymentFinished: (status, message, returnedTxRef) async {
-          // response status can be 'success', 'failed', or 'cancelled'
-          if (status == 'success') {
-            // Use the txRef returned from Chapa to activate subscription
+        onPaymentFinished: (message, reference, amount) async {
+          // message can be: "paymentSuccessful", "paymentFailed", "paymentCancelled"
+          debugPrint('Chapa payment finished - message: $message, reference: $reference, amount: $amount');
+          
+          if (message == 'paymentSuccessful') {
             final activateResponse = await _subscriptionService.activateSubscription(
-              txRef: returnedTxRef ?? txRef,
+              txRef: reference ?? txRef,
             );
             if (mounted) {
               if (activateResponse.success) {
@@ -521,17 +522,17 @@ class _SubscriptionPlansScreenState
                 );
               }
             }
-          } else if (status == 'failed') {
+          } else if (message == 'paymentFailed') {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(message.isNotEmpty ? message : 'Payment failed'),
+                  content: Text('Payment failed. Please try again.'),
                   backgroundColor: AppColors.error,
                 ),
               );
             }
           }
-          // cancelled - do nothing
+          // paymentCancelled - do nothing
         },
       );
     } catch (e) {
