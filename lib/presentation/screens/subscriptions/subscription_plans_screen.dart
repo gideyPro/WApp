@@ -24,7 +24,7 @@ class _SubscriptionPlansScreenState
     extends ConsumerState<SubscriptionPlansScreen> {
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   final PaymentService _paymentService = PaymentService();
-  bool _isProcessingPayment = false;
+  int? _processingPlanId;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
@@ -113,7 +113,7 @@ class _SubscriptionPlansScreenState
                   plan: plan,
                   isCurrentPlan: subscription?.planId == plan.id &&
                       (subscription?.isActive ?? false),
-                  isLoading: _isProcessingPayment,
+                  isLoading: _processingPlanId == plan.id,
                   onSelect: () => _selectPlan(plan),
                 )),
           ] else ...[
@@ -297,6 +297,7 @@ class _SubscriptionPlansScreenState
               text: l10n.subscriptionsSubscribe,
               icon: Icons.refresh,
               variant: ButtonVariant.primary,
+              isLoading: _processingPlanId != null && _processingPlanId == localPlan?.id,
               onPressed: () {
                 if (localPlan != null) {
                   _selectPlan(localPlan);
@@ -349,11 +350,11 @@ class _SubscriptionPlansScreenState
   }
 
   Future<void> _selectPlan(SubscriptionPlan plan) async {
-    if (_isProcessingPayment) return;
+    if (_processingPlanId != null) return;
 
     // For free plans, activate directly
     if (plan.isFree) {
-      setState(() => _isProcessingPayment = true);
+      setState(() => _processingPlanId = plan.id);
       try {
         final response = await _subscriptionService.activateSubscription();
         if (mounted) {
@@ -387,13 +388,13 @@ class _SubscriptionPlansScreenState
         }
       } finally {
         if (mounted) {
-          setState(() => _isProcessingPayment = false);
+          setState(() => _processingPlanId = null);
         }
       }
       return;
     }
 
-    setState(() => _isProcessingPayment = true);
+    setState(() => _processingPlanId = plan.id);
 
     try {
       // First, try to subscribe via subscription service (which returns checkout URL)
@@ -469,7 +470,7 @@ class _SubscriptionPlansScreenState
       }
     } finally {
       if (mounted) {
-        setState(() => _isProcessingPayment = false);
+        setState(() => _processingPlanId = null);
       }
     }
   }
