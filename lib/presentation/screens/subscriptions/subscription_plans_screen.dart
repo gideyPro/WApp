@@ -501,9 +501,8 @@ class _SubscriptionPlansScreenState
           debugPrint('Chapa payment finished - message: $message, reference: $reference, amount: $amount');
           
           if (message == 'paymentSuccessful') {
-            final activateResponse = await _subscriptionService.activateSubscription(
-              txRef: reference ?? txRef,
-            );
+            // Don't pass txRef - backend will find the pending payment automatically
+            final activateResponse = await _subscriptionService.activateSubscription();
             if (mounted) {
               if (activateResponse.success) {
                 ScaffoldMessenger.of(context).showSnackBar(
