@@ -231,11 +231,12 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Widget _buildPhoneInput() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.zinc50,
+        color: isDark ? AppColors.zinc800 : AppColors.zinc50,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.zinc200),
+        border: Border.all(color: isDark ? AppColors.zinc700 : AppColors.zinc200),
       ),
       child: Row(
         children: [
@@ -245,16 +246,25 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               setState(() => _selectedCountry = country);
             },
           ),
+          Container(
+            height: 24,
+            width: 1,
+            color: isDark ? AppColors.zinc700 : AppColors.zinc200,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+          ),
           Expanded(
             child: TextField(
               controller: _phoneController,
               decoration: InputDecoration(
                 hintText: _selectedCountry.example,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
               ),
               keyboardType: TextInputType.phone,
-              style: const TextStyle(fontSize: 16),
+              style: TextStyle(
+                fontSize: 15,
+                color: isDark ? Colors.white : AppColors.navy900,
+              ),
             ),
           ),
         ],

@@ -69,36 +69,32 @@ class CountrySelectorDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () => _showCountryPicker(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppColors.zinc100,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.zinc200),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               selectedCountry.flag,
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              selectedCountry.code,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.navy900,
-              ),
+              style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(width: 4),
-            const Icon(
+            Text(
+              selectedCountry.code,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white : AppColors.navy900,
+              ),
+            ),
+            const SizedBox(width: 2),
+            Icon(
               Icons.keyboard_arrow_down,
-              size: 20,
-              color: AppColors.navy600,
+              size: 16,
+              color: isDark ? AppColors.zinc400 : AppColors.navy600,
             ),
           ],
         ),
