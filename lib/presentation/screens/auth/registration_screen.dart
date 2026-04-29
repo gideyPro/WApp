@@ -11,6 +11,7 @@ import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
+import 'otp_login_screen.dart';
 
 /// Modern Registration Screen with consistent design
 class RegistrationScreen extends ConsumerStatefulWidget {
@@ -332,42 +333,57 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildPhoneInput() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.zinc800 : AppColors.zinc50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: isDark ? AppColors.zinc700 : AppColors.zinc200),
-      ),
-      child: Row(
-        children: [
-          CountrySelectorDropdown(
-            selectedCountry: _selectedCountry,
-            onCountrySelected: (country) {
-              setState(() => _selectedCountry = country);
-            },
+    final focusNode = FocusNode();
+    return Focus(
+      onFocusChange: (hasFocus) => setState(() {}),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.zinc800 : AppColors.zinc50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: focusNode.hasFocus
+                ? AppColors.wave500
+                : (isDark ? AppColors.zinc700 : AppColors.zinc200),
+            width: focusNode.hasFocus ? 2 : 1,
           ),
-          Container(
-            height: 24,
-            width: 1,
-            color: isDark ? AppColors.zinc700 : AppColors.zinc200,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-          ),
-          Expanded(
-            child: TextField(
-              controller: _phoneController,
-              decoration: InputDecoration(
-                hintText: _selectedCountry.example,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
-              ),
-              keyboardType: TextInputType.phone,
-              style: TextStyle(
-                fontSize: 15,
-                color: isDark ? Colors.white : AppColors.navy900,
+        ),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () => focusNode.requestFocus(),
+              child: CountrySelectorDropdown(
+                selectedCountry: _selectedCountry,
+                onCountrySelected: (country) {
+                  setState(() => _selectedCountry = country);
+                  focusNode.requestFocus();
+                },
               ),
             ),
-          ),
-        ],
+            Container(
+              height: 24,
+              width: 1,
+              color: isDark ? AppColors.zinc700 : AppColors.zinc200,
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+            ),
+            Expanded(
+              flex: 4,
+              child: TextField(
+                focusNode: focusNode,
+                controller: _phoneController,
+                decoration: InputDecoration(
+                  hintText: _selectedCountry.example,
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
+                ),
+                keyboardType: TextInputType.phone,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: isDark ? Colors.white : AppColors.navy900,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -557,6 +573,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Widget _buildLoginLink() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -564,16 +581,22 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Text(
           l10n.authAlreadyHaveAccount,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
+            color: isDark ? AppColors.zinc400 : AppColors.zinc600,
             fontSize: 14,
           ),
         ),
         GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const OtpLoginScreen(),
+              ),
+            );
+          },
           child: Text(
             l10n.authLogin,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: isDark ? Colors.white : AppColors.wave600,
               fontWeight: FontWeight.w600,
               fontSize: 14,
             ),
