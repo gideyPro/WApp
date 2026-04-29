@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:chapasdk/chapasdk.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/services/subscription_service.dart';
 import '../../../../data/services/payment_service.dart';
 import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../settings/settings_screen.dart';
 
 /// Subscription Plans Screen
 class SubscriptionPlansScreen extends ConsumerStatefulWidget {
@@ -397,62 +399,84 @@ class _SubscriptionPlansScreenState
     setState(() => _processingPlanId = plan.id);
 
     try {
-      // First, try to subscribe via subscription service (which returns checkout URL)
-      final response = await _subscriptionService.subscribe(plan.id);
+      // First, get payment initialization from backend to get tx_ref
+      final paymentResponse = await _paymentService.initializePayment(
+        paymentType: 'subscription',
+        amount: plan.price,
+        relatedId: plan.id,
+      );
 
       if (!mounted) return;
 
-      if (response.success && response.checkoutUrl != null) {
-        // Open checkout URL in browser
-        final uri = Uri.parse(response.checkoutUrl!);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subscriptionsPaymentBrowserMessage),
-                backgroundColor: AppColors.wave500,
-              ),
-            );
-          }
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subscriptionsPaymentBrowserError),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          }
+      if (paymentResponse.success && paymentResponse.txRef != null) {
+        // Get Chapa Public Key from backend settings
+        final settings = await ref.read(appSettingsProvider.future);
+        final publicKey = settings['chapa_public_key'];
+        
+        if (publicKey == null || publicKey.toString().isEmpty) {
+          throw Exception('Chapa public key not found in settings');
         }
-      } else if (response.success) {
-        // Fallback: initialize payment via payment service
-        final paymentResponse = await _paymentService.initializePayment(
-          paymentType: 'subscription',
-          amount: plan.price,
-          relatedId: plan.id,
-        );
 
-        if (mounted &&
-            paymentResponse.success &&
-            paymentResponse.checkoutUrl != null) {
-          final uri = Uri.parse(paymentResponse.checkoutUrl!);
-          if (await canLaunchUrl(uri)) {
-            await launchUrl(uri, mode: LaunchMode.externalApplication);
-          }
-        } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(paymentResponse.message),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
+        // Get current user details
+        final authState = ref.read(authStateProvider);
+        final user = authState.user;
+        
+        // Start Native Payment Flow
+        if (!mounted) return;
+        
+        Chapa.paymentParameters(
+          context: context,
+          publicKey: publicKey.toString(),
+          amount: plan.price.toString(),
+          currency: 'ETB',
+          txRef: paymentResponse.txRef!,
+          email: user?.email ?? '${user?.phoneNumber ?? 'user'}@wavemart.et',
+          phone: user?.phoneNumber ?? '0900000000',
+          firstName: user?.firstName ?? 'Customer',
+          lastName: user?.lastName ?? '',
+          title: 'WaveMart Subscription',
+          desc: '${plan.name} Plan',
+          namedRouteFallBack: '', // Using callback instead of named route
+          onPaymentFinished: (status, message, txRef) async {
+            // response status can be 'success', 'failed', or 'cancelled'
+            if (status == 'success') {
+              // Activate subscription on backend after successful native payment
+              final activateResponse = await _subscriptionService.activateSubscription();
+              if (mounted) {
+                if (activateResponse.success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.subscriptionsFreeSuccess),
+                      backgroundColor: AppColors.success,
+                    ),
+                  );
+                  ref.read(subscriptionProvider.notifier).refresh();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(activateResponse.message),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                }
+              }
+            } else {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Payment $status'),
+                    backgroundColor: AppColors.error,
+                  ),
+                );
+              }
+            }
+          },
+        );
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(response.message),
+              content: Text(paymentResponse.message),
               backgroundColor: AppColors.error,
             ),
           );
