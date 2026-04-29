@@ -143,7 +143,9 @@ class SubscriptionServiceApi {
           message: response.data['message'] ?? 'Payment initiated',
           txRef: data['tx_ref'],
           paymentId: data['payment_id'],
-          amount: data['amount']?.toDouble(),
+          amount: data['amount'] != null 
+              ? (data['amount'] is num ? data['amount'] : double.tryParse(data['amount'].toString()))
+              : null,
           requiresPayment: true,
         );
       }
