@@ -424,8 +424,33 @@ class _SubscriptionPlansScreenState
         final authState = ref.read(authStateProvider);
         final user = authState.user;
         
+        // Format phone number to 10 digits (e.g., 0912345678)
+        String formattedPhone = user?.phoneNumber ?? '0900000000';
+        // Remove non-digits
+        formattedPhone = formattedPhone.replaceAll(RegExp(r'\D'), '');
+        // If it starts with 251, remove it
+        if (formattedPhone.startsWith('251')) {
+          formattedPhone = formattedPhone.substring(3);
+        }
+        // Ensure it starts with 0
+        if (!formattedPhone.startsWith('0')) {
+          formattedPhone = '0$formattedPhone';
+        }
+        // Limit to 10 digits
+        if (formattedPhone.length > 10) {
+          formattedPhone = formattedPhone.substring(0, 10);
+        }
+        
         // Start Native Payment Flow
         if (!mounted) return;
+        
+        // Debug logging for Chapa parameters
+        debugPrint('Initializing Chapa with:');
+        debugPrint('Public Key: $publicKey');
+        debugPrint('Amount: ${plan.price}');
+        debugPrint('TX Ref: ${paymentResponse.txRef}');
+        debugPrint('Email: ${user?.email ?? '${formattedPhone}@wavemart.et'}');
+        debugPrint('Phone: $formattedPhone');
         
         Chapa.paymentParameters(
           context: context,
@@ -433,13 +458,13 @@ class _SubscriptionPlansScreenState
           amount: plan.price.toString(),
           currency: 'ETB',
           txRef: paymentResponse.txRef!,
-          email: user?.email ?? '${user?.phoneNumber ?? 'user'}@wavemart.et',
-          phone: user?.phoneNumber ?? '0900000000',
+          email: user?.email ?? '${formattedPhone}@wavemart.et',
+          phone: formattedPhone,
           firstName: user?.firstName ?? 'Customer',
-          lastName: user?.lastName ?? '',
+          lastName: user?.lastName ?? 'User',
           title: 'WaveMart Subscription',
           desc: '${plan.name} Plan',
-          namedRouteFallBack: '', // Using callback instead of named route
+          namedRouteFallBack: '',
           onPaymentFinished: (status, message, txRef) async {
             // response status can be 'success', 'failed', or 'cancelled'
             if (status == 'success') {
