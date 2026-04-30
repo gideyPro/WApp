@@ -503,14 +503,15 @@ class _SubscriptionPlansScreenState
           if (!mounted) return;
           
           if (message == 'paymentSuccessful') {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Payment successful! Your subscription is activating...'),
-                backgroundColor: AppColors.success,
-                duration: const Duration(seconds: 2),
-              ),
-            );
-            Navigator.of(context).pop();
+            // Try to activate (handles case where webhook might not fire)
+            final activateResponse = await _subscriptionService.activateSubscription();
+            if (mounted) {
+              if (activateResponse.success) {
+                ref.read(subscriptionProvider.notifier).refresh();
+              }
+              // Navigate back regardless - refresh happens via provider
+              Navigator.of(context).pop();
+            }
           } else if (message == 'paymentFailed') {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -520,7 +521,6 @@ class _SubscriptionPlansScreenState
             );
             Navigator.of(context).pop();
           } else {
-            // paymentCancelled or any other case - just pop back
             Navigator.of(context).pop();
           }
         },
