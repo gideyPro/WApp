@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// A utility widget for consistent glassmorphism effects across WaveMart
 class WaveGlass extends StatelessWidget {
