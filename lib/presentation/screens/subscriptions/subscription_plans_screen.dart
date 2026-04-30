@@ -24,7 +24,7 @@ class SubscriptionPlansScreen extends ConsumerStatefulWidget {
 }
 
 class _SubscriptionPlansScreenState
-    extends ConsumerState<SubscriptionPlansScreen> {
+    extends ConsumerState<SubscriptionPlansScreen> with RouteAware {
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   int? _processingPlanId;
 
@@ -36,6 +36,29 @@ class _SubscriptionPlansScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(subscriptionProvider.notifier).refresh();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // This is called when the top route has been popped off, 
+    // and this route shows up.
+    debugPrint('SubscriptionPlansScreen: didPopNext - refreshing subscription');
+    ref.read(subscriptionProvider.notifier).refresh();
   }
 
   @override
@@ -517,8 +540,10 @@ class _SubscriptionPlansScreenState
                 backgroundColor: AppColors.error,
               ),
             );
+            ref.read(subscriptionProvider.notifier).refresh();
             Navigator.of(context).pop();
           } else {
+            ref.read(subscriptionProvider.notifier).refresh();
             Navigator.of(context).pop();
           }
         },

@@ -36,6 +36,14 @@ class AppTheme {
         shadow: AppColors.navy950,
       ),
 
+      // Legacy support for older SDKs
+      primaryColor: AppColors.navy950,
+      canvasColor: Colors.white,
+      buttonTheme: const ButtonThemeData(
+        buttonColor: AppColors.wave600,
+        textTheme: ButtonTextTheme.primary,
+      ),
+
       // Scaffold
       scaffoldBackgroundColor: AppColors.background,
 
@@ -76,6 +84,26 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          textStyle: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
+        ),
+      ),
+
+      // Filled Button Theme - M3
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.navy950,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
+        ),
+      ),
+
+      // Text Button Theme
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.navy950,
           textStyle: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
@@ -156,6 +184,14 @@ class AppTheme {
         shadow: Colors.black,
       ),
 
+      // Legacy support for older SDKs
+      primaryColor: AppColors.wave500,
+      canvasColor: AppColors.navy950,
+      buttonTheme: const ButtonThemeData(
+        buttonColor: AppColors.wave500,
+        textTheme: ButtonTextTheme.primary,
+      ),
+
       // Scaffold - Dark Luxury
       scaffoldBackgroundColor: AppColors.navy950,
 
@@ -193,6 +229,26 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          textStyle: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
+        ),
+      ),
+
+      // Filled Button Theme - M3
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.wave500,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
+        ),
+      ),
+
+      // Text Button Theme
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.wave400,
           textStyle: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
         ),
       ),

@@ -7,7 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'core/theme/app_theme.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'presentation/providers/app_providers.dart';
 import 'presentation/providers/auth_provider.dart';
 import 'presentation/providers/theme_provider.dart';
@@ -17,6 +17,9 @@ import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Intl
+  await initializeDateFormatting();
 
   // Initialize Hive for draft persistence
   await Hive.initFlutter();
@@ -96,6 +99,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
 
     return MaterialApp(
       navigatorKey: navigatorKey,
+      navigatorObservers: [routeObserver],
       title: 'WaveMart',
       debugShowCheckedModeBanner: false,
       theme: getThemeData(themeMode),

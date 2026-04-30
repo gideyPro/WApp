@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +19,9 @@ import '../../data/models/message.dart' as msg;
 
 /// Global Navigator Key for context-less navigation (useful for overlays)
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+/// Global Route Observer for navigation tracking
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 /// Selected Tab Provider for MainNavigationShell
 final selectedTabProvider = StateProvider<int>((ref) => 0);
