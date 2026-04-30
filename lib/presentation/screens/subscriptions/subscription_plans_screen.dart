@@ -358,7 +358,8 @@ class _SubscriptionPlansScreenState
     if (plan.isFree) {
       setState(() => _processingPlanId = plan.id);
       try {
-        final response = await _subscriptionService.activateSubscription();
+        // Backend handles free plan activation in the subscribe method
+        final response = await _subscriptionService.subscribe(plan.id);
         if (mounted) {
           if (response.success) {
             ScaffoldMessenger.of(context).showSnackBar(
