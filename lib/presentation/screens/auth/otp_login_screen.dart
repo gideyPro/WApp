@@ -232,57 +232,36 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   Widget _buildPhoneInput() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final focusNode = FocusNode();
-    return Focus(
-      onFocusChange: (hasFocus) => setState(() {}),
-      child: Container(
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.zinc800 : AppColors.zinc50,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: focusNode.hasFocus
-                ? AppColors.wave500
-                : (isDark ? AppColors.zinc700 : AppColors.zinc200),
-            width: focusNode.hasFocus ? 2 : 1,
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.zinc800 : AppColors.zinc50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: isDark ? AppColors.zinc700 : AppColors.zinc200),
+      ),
+      child: Row(
+        children: [
+          CountrySelectorDropdown(
+            selectedCountry: _selectedCountry,
+            onCountrySelected: (country) {
+              setState(() => _selectedCountry = country);
+            },
           ),
-        ),
-        child: Row(
-          children: [
-            GestureDetector(
-              onTap: () => focusNode.requestFocus(),
-              child: CountrySelectorDropdown(
-                selectedCountry: _selectedCountry,
-                onCountrySelected: (country) {
-                  setState(() => _selectedCountry = country);
-                  focusNode.requestFocus();
-                },
+          Expanded(
+            child: TextField(
+              controller: _phoneController,
+              decoration: InputDecoration(
+                hintText: _selectedCountry.example,
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+              ),
+              keyboardType: TextInputType.phone,
+              style: TextStyle(
+                fontSize: 15,
+                color: isDark ? Colors.white : AppColors.navy900,
               ),
             ),
-            Container(
-              height: 24,
-              width: 1,
-              color: isDark ? AppColors.zinc700 : AppColors.zinc200,
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-            ),
-            Expanded(
-              flex: 4,
-              child: TextField(
-                focusNode: focusNode,
-                controller: _phoneController,
-                decoration: InputDecoration(
-                  hintText: _selectedCountry.example,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
-                ),
-                keyboardType: TextInputType.phone,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: isDark ? Colors.white : AppColors.navy900,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
