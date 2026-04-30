@@ -559,9 +559,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       children: [
         Text(
           l10n.authAlreadyHaveAccount,
-          style: TextStyle(
+          style: AppTextStyles.bodyMedium.copyWith(
             color: isDark ? AppColors.zinc400 : AppColors.zinc600,
-            fontSize: 14,
           ),
         ),
         GestureDetector(
@@ -574,10 +573,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           },
           child: Text(
             l10n.authLogin,
-            style: TextStyle(
-              color: isDark ? Colors.white : AppColors.wave600,
+            style: const TextStyle(
+              color: AppColors.wave600,
               fontWeight: FontWeight.w600,
-              fontSize: 14,
+              fontSize: 15,
             ),
           ),
         ),
