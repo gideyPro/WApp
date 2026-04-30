@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// A universal premium card component for WaveMart
 /// Supports glassmorphism effects, tap feedback, and theme-aware shadows
@@ -20,7 +21,7 @@ class WaveCard extends StatelessWidget {
     super.key,
     required this.child,
     this.onTap,
-    this.borderRadius = 24,
+    this.borderRadius = AppSpacing.borderRadiusXxl,
     this.color,
     this.showBorder = true,
     this.showShadow = true,

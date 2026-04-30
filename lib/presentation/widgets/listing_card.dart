@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/listing.dart';
@@ -44,30 +45,25 @@ class PropertyListingCard extends StatelessWidget {
 
     return WaveCard(
       onTap: _handleTap,
-      margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 24,
+      margin: const EdgeInsets.only(bottom: AppSpacing.xl),
+      borderRadius: AppSpacing.borderRadiusXxl,
       padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image Section
           _buildImageSection(context),
 
-          // Content Section
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xl),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Price
                 _buildPrice(context),
                 const SizedBox(height: 10),
 
-                // Description
                 _buildDescription(),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
 
-                // Location & Date
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -75,7 +71,7 @@ class PropertyListingCard extends StatelessWidget {
                     _buildDatePosted(context),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 
                 const Divider(height: 1),
                 const SizedBox(height: 16),
@@ -367,10 +363,10 @@ class PropertyListingCard extends StatelessWidget {
 
   Widget _buildBadge(String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
       ),
       child: Text(
         text,

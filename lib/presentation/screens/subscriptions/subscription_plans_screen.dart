@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chapasdk/chapasdk.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/services/subscription_service.dart';
 import '../../../../data/services/payment_service.dart';
@@ -10,6 +11,7 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../settings/settings_screen.dart';
 
@@ -522,10 +524,10 @@ class _PlanCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusLg),
         border: Border.all(
           color: isCurrentPlan
               ? AppColors.wave400
@@ -539,9 +541,8 @@ class _PlanCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Plan header
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: isCurrentPlan
                   ? AppColors.wave50
@@ -549,7 +550,7 @@ class _PlanCard extends StatelessWidget {
                       ? AppColors.wave50
                       : Colors.transparent,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+                  BorderRadius.vertical(top: Radius.circular(AppSpacing.borderRadiusLg)),
             ),
             child: Row(
               children: [
@@ -572,52 +573,24 @@ class _PlanCard extends StatelessWidget {
                             ),
                           ),
                           if (isPopular) ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.wave500,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                l10n.subscriptionsPopular,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
+                            const SizedBox(width: AppSpacing.sm),
+                            WaveChip(
+                              label: l10n.subscriptionsPopular,
+                              variant: ChipVariant.featured,
+                              size: ChipSize.small,
                             ),
                           ],
                           if (isCurrentPlan) ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.emerald500,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                l10n.subscriptionsCurrent,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
+                            const SizedBox(width: AppSpacing.sm),
+                            WaveChip(
+                              label: l10n.subscriptionsCurrent,
+                              variant: ChipVariant.current,
+                              size: ChipSize.small,
                             ),
                           ],
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         plan.description ?? '',
                         style: AppTextStyles.caption.copyWith(
@@ -663,7 +636,7 @@ class _PlanCard extends StatelessWidget {
                   icon: Icons.home_outlined,
                   label: '${plan.maxListings} ${l10n.subscriptionsListings}',
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 _buildFeatureRow(
                   icon: Icons.star_border,
                   label: plan.maxFeaturedListings != null
@@ -674,9 +647,9 @@ class _PlanCard extends StatelessWidget {
                 ),
                 // Additional features from JSON (if any)
                 if (plan.features != null && plan.features!.isNotEmpty) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   const Divider(height: 1, thickness: 1),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     l10n.subscriptionsFeatures,
                     style: AppTextStyles.titleSmall.copyWith(
@@ -684,7 +657,7 @@ class _PlanCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   ...plan.features!.map((feature) => Padding(
                         padding: const EdgeInsets.only(bottom: 6),
                         child: Row(
@@ -705,7 +678,7 @@ class _PlanCard extends StatelessWidget {
                         ),
                       )),
                 ],
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Action button
                 SizedBox(

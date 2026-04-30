@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 
@@ -269,7 +270,7 @@ class WaveTextField extends StatelessWidget {
           label,
           style: AppTextStyles.labelMedium,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
 
         // Input Field
         Container(
@@ -277,7 +278,7 @@ class WaveTextField extends StatelessWidget {
             color: enabled
                 ? AppColors.zinc50.withOpacity(0.5)
                 : AppColors.zinc100,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
             border: Border.all(
               color: errorText != null
                   ? AppColors.error
@@ -308,7 +309,7 @@ class WaveTextField extends StatelessWidget {
               ),
               prefixIcon: prefixIcon != null
                   ? Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(AppSpacing.md),
                       child: Icon(
                         prefixIcon,
                         size: 20,
@@ -321,10 +322,10 @@ class WaveTextField extends StatelessWidget {
               suffixIcon: suffixIcon,
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(
-                left: prefixIcon != null ? 8 : 16,
-                right: suffixIcon != null ? 8 : 16,
-                top: 16,
-                bottom: 16,
+                left: prefixIcon != null ? 8 : AppSpacing.lg,
+                right: suffixIcon != null ? 8 : AppSpacing.lg,
+                top: AppSpacing.lg,
+                bottom: AppSpacing.lg,
               ),
               errorText: null,
               errorStyle: const TextStyle(height: 0),
@@ -334,7 +335,7 @@ class WaveTextField extends StatelessWidget {
 
         // Error Text
         if (errorText != null) ...[
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             errorText!,
             style: AppTextStyles.caption.copyWith(
@@ -404,44 +405,7 @@ class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(56);
 }
 
-/// WaveMart Card
-class WaveCard extends StatelessWidget {
-  final Widget child;
-  final EdgeInsetsGeometry? padding;
-  final VoidCallback? onTap;
-  final bool enableHover;
 
-  const WaveCard({
-    super.key,
-    required this.child,
-    this.padding,
-    this.onTap,
-    this.enableHover = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: context.cardBg,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: context.divider.withOpacity(0.5)),
-          boxShadow: enableHover ? AppColors.shadowMd : AppColors.shadowSm,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: padding ?? const EdgeInsets.all(16),
-            child: child,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 /// WaveMart Badge
 class WaveBadge extends StatelessWidget {
