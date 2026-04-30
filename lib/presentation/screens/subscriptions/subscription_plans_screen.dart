@@ -497,19 +497,17 @@ class _SubscriptionPlansScreenState
         availablePaymentMethods: const ['telebirr', 'cbebirr', 'mpesa', 'ebirr'],
         namedRouteFallBack: '',
         onPaymentFinished: (message, reference, amount) async {
-          // message can be: "paymentSuccessful", "paymentFailed", "paymentCancelled"
           debugPrint('Chapa payment finished - message: $message, reference: $reference, amount: $amount');
           
           if (!mounted) return;
           
           if (message == 'paymentSuccessful') {
-            // Try to activate (handles case where webhook might not fire)
-            final activateResponse = await _subscriptionService.activateSubscription();
+            // Pass the original txRef we created so backend finds the correct payment
+            final activateResponse = await _subscriptionService.activateSubscription(txRef: txRef);
             if (mounted) {
               if (activateResponse.success) {
                 ref.read(subscriptionProvider.notifier).refresh();
               }
-              // Navigate back regardless - refresh happens via provider
               Navigator.of(context).pop();
             }
           } else if (message == 'paymentFailed') {
