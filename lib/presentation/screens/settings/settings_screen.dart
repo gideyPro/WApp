@@ -82,9 +82,15 @@ final settingsAsync = ref.watch(appSettingsProvider);
           icon: Icons.payment_outlined,
           title: l10n.profileSubscriptions,
           subtitle: l10n.settingsSubscriptionsSubtitle,
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-          ),
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+            );
+            // Refresh subscription when returning
+            if (mounted) {
+              ref.read(subscriptionProvider.notifier).refresh();
+            }
+          },
         ),
         _MenuItemData(
           icon: Icons.receipt_long_outlined,

@@ -507,18 +507,27 @@ class _SubscriptionPlansScreenState
               if (activateResponse.success) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(l10n.subscriptionsFreeSuccess),
+                    content: Text(activateResponse.message.isNotEmpty 
+                        ? activateResponse.message 
+                        : 'Subscription activated successfully'),
                     backgroundColor: AppColors.success,
+                    duration: const Duration(seconds: 2),
                   ),
                 );
                 ref.read(subscriptionProvider.notifier).refresh();
+                // Pop back to subscriptions list
+                Navigator.of(context).pop();
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(activateResponse.message),
+                    content: Text(activateResponse.message.isNotEmpty 
+                        ? activateResponse.message 
+                        : 'Activation failed. Please contact support.'),
                     backgroundColor: AppColors.error,
                   ),
                 );
+                // Still navigate back even on error - user can retry
+                Navigator.of(context).pop();
               }
             }
           } else if (message == 'paymentFailed') {
@@ -529,9 +538,12 @@ class _SubscriptionPlansScreenState
                   backgroundColor: AppColors.error,
                 ),
               );
+              Navigator.of(context).pop();
             }
+          } else {
+            // paymentCancelled or any other case - just pop back
+            Navigator.of(context).pop();
           }
-          // paymentCancelled - do nothing
         },
       );
     } catch (e) {
