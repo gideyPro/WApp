@@ -5,7 +5,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
-import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import 'common/wave_card.dart';
@@ -254,15 +253,15 @@ class PropertyListingCard extends StatelessWidget {
 
         // Badges Overlay
         Positioned(
-          top: 12,
-          left: 12,
+          top: AppSpacing.md,
+          left: AppSpacing.md,
           child: Row(
             children: [
               if (listing?.isNew ?? false)
                 _buildBadge(l10n.listingNew, AppColors.emerald500),
               if (listing?.isFeatured ?? false)
                 Padding(
-                  padding: const EdgeInsets.only(left: 4),
+                  padding: const EdgeInsets.only(left: AppSpacing.xs),
                   child: _buildBadge(l10n.listingFeatured, AppColors.wave500),
                 ),
             ],
@@ -272,17 +271,24 @@ class PropertyListingCard extends StatelessWidget {
         // Favorite Button
         if (!hideFavoriteButton)
           Positioned(
-            top: 12,
-            right: 12,
+            top: AppSpacing.md,
+            right: AppSpacing.md,
             child: GestureDetector(
               onTap: isTogglingFavorite ? null : onFavorite,
               child: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: isFavorite
-                      ? Colors.red.withOpacity(0.9)
-                      : Colors.black.withOpacity(0.7),
+                      ? Colors.red.withValues(alpha: 0.95)
+                      : Colors.black.withValues(alpha: 0.75),
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: isTogglingFavorite
                     ? const SizedBox(
@@ -306,17 +312,16 @@ class PropertyListingCard extends StatelessWidget {
         // Image Count Badge
         if ((listing?.imageCount ?? 0) > 1)
           Positioned(
-            top: 12,
-            right: 48,
+            top: AppSpacing.md,
+            right: AppSpacing.xl + 32,
             child: WaveGlass(
-              borderRadius: 8,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.photo_library,
                       size: 12, color: Colors.white),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${listing?.imageCount ?? 0}',
                     style:
@@ -329,11 +334,10 @@ class PropertyListingCard extends StatelessWidget {
 
         // Property Type Badge
         Positioned(
-          bottom: 12,
-          left: 12,
+          bottom: AppSpacing.md,
+          left: AppSpacing.md,
           child: WaveGlass(
-            borderRadius: 8,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -344,7 +348,7 @@ class PropertyListingCard extends StatelessWidget {
                   size: 14,
                   color: Colors.white,
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   listing?.propertyType == PropertyType.house
                       ? l10n.listingHouse
@@ -640,11 +644,11 @@ class FeaturedListingCard extends StatelessWidget {
               child: GestureDetector(
                 onTap: isTogglingFavorite ? null : onFavorite,
                 child: Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(AppSpacing.sm - 2),
                   decoration: BoxDecoration(
                     color: isFavorite
-                        ? Colors.red.withOpacity(0.85)
-                        : Colors.black.withOpacity(0.6),
+                        ? Colors.red.withValues(alpha: 0.85)
+                        : Colors.black.withValues(alpha: 0.6),
                     shape: BoxShape.circle,
                   ),
                   child: isTogglingFavorite

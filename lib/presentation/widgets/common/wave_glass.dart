@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
 
 /// A utility widget for consistent glassmorphism effects across WaveMart
 class WaveGlass extends StatelessWidget {
@@ -15,7 +14,7 @@ class WaveGlass extends StatelessWidget {
     super.key,
     required this.child,
     this.blur = 12,
-    this.borderRadius = 0,
+    this.borderRadius = AppSpacing.borderRadiusSm,
     this.color,
     this.border,
     this.padding,
@@ -23,6 +22,8 @@ class WaveGlass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
@@ -30,9 +31,15 @@ class WaveGlass extends StatelessWidget {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: color ?? context.glassBg,
+            color: color ?? (isDark 
+                ? Colors.black.withValues(alpha: 0.3)
+                : Colors.white.withValues(alpha: 0.85)),
             borderRadius: BorderRadius.circular(borderRadius),
-            border: border ?? Border.all(color: context.glassBorder),
+            border: border ?? Border.all(
+              color: isDark 
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.white.withValues(alpha: 0.5),
+            ),
           ),
           child: child,
         ),
