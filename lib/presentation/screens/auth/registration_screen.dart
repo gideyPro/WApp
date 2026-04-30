@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
@@ -28,6 +29,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
 
   String? _selectedGender = 'Male';
+  CountryCode _selectedCountry = Countries.defaultCountry;
   bool _isOtpSent = false;
   bool _isLoading = false;
   bool _hasUserData = false;
@@ -240,13 +242,13 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           const SizedBox(height: 16),
                           _buildInlineError(authState.errorMessage!),
                         ],
+
+                        // Login Link INSIDE card (only show before OTP is sent)
+                        if (!_isOtpSent) _buildLoginLink(),
                       ],
                     ),
                   ),
                   const SizedBox(height: 24),
-
-                  // Login Link (only show before OTP is sent)
-                  if (!_isOtpSent) _buildLoginLink(),
                 ],
               ),
             ),
@@ -329,11 +331,34 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Widget _buildPhoneInput() {
-    return _buildInputField(
-      controller: _phoneController,
-      hint: '+251912345678',
-      icon: Icons.phone_outlined,
-      keyboardType: TextInputType.phone,
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.zinc50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.zinc200),
+      ),
+      child: Row(
+        children: [
+          CountrySelectorDropdown(
+            selectedCountry: _selectedCountry,
+            onCountrySelected: (country) {
+              setState(() => _selectedCountry = country);
+            },
+          ),
+          Expanded(
+            child: TextField(
+              controller: _phoneController,
+              decoration: InputDecoration(
+                hintText: _selectedCountry.example,
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              ),
+              keyboardType: TextInputType.phone,
+              style: const TextStyle(fontSize: 15),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -596,10 +621,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     setState(() => _isLoading = true);
 
     try {
+      // Prepend country code
+      final fullPhone = '${_selectedCountry.code}${_phoneController.text.trim()}';
       final response = await ref.read(authStateProvider.notifier).register(
             firstName: _firstNameController.text.trim(),
             lastName: _lastNameController.text.trim(),
-            phoneNumber: _phoneController.text.trim(),
+            phoneNumber: fullPhone,
             gender: _selectedGender!,
           );
 

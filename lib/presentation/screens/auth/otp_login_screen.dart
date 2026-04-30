@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
@@ -28,6 +29,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   int _resendCountdown = 0;
   Timer? _countdownTimer;
+  CountryCode _selectedCountry = Countries.defaultCountry;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
@@ -235,16 +237,27 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.zinc200),
       ),
-      child: TextField(
-        controller: _phoneController,
-        decoration: const InputDecoration(
-          hintText: '+251912345678',
-          prefixIcon: Icon(Icons.phone_outlined, color: AppColors.navy600),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        ),
-        keyboardType: TextInputType.phone,
-        style: const TextStyle(fontSize: 16),
+      child: Row(
+        children: [
+          CountrySelectorDropdown(
+            selectedCountry: _selectedCountry,
+            onCountrySelected: (country) {
+              setState(() => _selectedCountry = country);
+            },
+          ),
+          Expanded(
+            child: TextField(
+              controller: _phoneController,
+              decoration: InputDecoration(
+                hintText: _selectedCountry.example,
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              ),
+              keyboardType: TextInputType.phone,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -428,7 +441,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       return;
     }
 
-    await ref.read(authStateProvider.notifier).sendOtp(phone);
+    // Prepend country code
+    final fullPhone = '${_selectedCountry.code}$phone';
+    await ref.read(authStateProvider.notifier).sendOtp(fullPhone);
     if (mounted) {
       _startCountdown();
     }
