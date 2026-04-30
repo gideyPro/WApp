@@ -500,46 +500,25 @@ class _SubscriptionPlansScreenState
           // message can be: "paymentSuccessful", "paymentFailed", "paymentCancelled"
           debugPrint('Chapa payment finished - message: $message, reference: $reference, amount: $amount');
           
+          if (!mounted) return;
+          
           if (message == 'paymentSuccessful') {
-            // Don't pass txRef - backend will find the pending payment automatically
-            final activateResponse = await _subscriptionService.activateSubscription();
-            if (mounted) {
-              if (activateResponse.success) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(activateResponse.message.isNotEmpty 
-                        ? activateResponse.message 
-                        : 'Subscription activated successfully'),
-                    backgroundColor: AppColors.success,
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-                ref.read(subscriptionProvider.notifier).refresh();
-                // Pop back to subscriptions list
-                Navigator.of(context).pop();
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(activateResponse.message.isNotEmpty 
-                        ? activateResponse.message 
-                        : 'Activation failed. Please contact support.'),
-                    backgroundColor: AppColors.error,
-                  ),
-                );
-                // Still navigate back even on error - user can retry
-                Navigator.of(context).pop();
-              }
-            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Payment successful! Your subscription is activating...'),
+                backgroundColor: AppColors.success,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+            Navigator.of(context).pop();
           } else if (message == 'paymentFailed') {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Payment failed. Please try again.'),
-                  backgroundColor: AppColors.error,
-                ),
-              );
-              Navigator.of(context).pop();
-            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Payment failed. Please try again.'),
+                backgroundColor: AppColors.error,
+              ),
+            );
+            Navigator.of(context).pop();
           } else {
             // paymentCancelled or any other case - just pop back
             Navigator.of(context).pop();
