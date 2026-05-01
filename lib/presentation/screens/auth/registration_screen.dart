@@ -107,15 +107,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
 
-    // If authenticated, navigate to home
-    if (authState.isAuthenticated) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MainNavigationShell()),
-        );
-      });
-    }
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -669,7 +660,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       final response = await ref.read(authStateProvider.notifier).register(
             firstName: _firstNameController.text.trim(),
             lastName: _lastNameController.text.trim(),
-            phoneNumber: _phoneController.text.trim(),
+            phoneNumber: '${_selectedCountry.code}${_phoneController.text.trim()}',
             gender: _selectedGender!,
             otpCode: otp,
           );
