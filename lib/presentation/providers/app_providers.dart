@@ -15,6 +15,7 @@ import '../../data/services/address_service.dart';
 import '../../data/models/subscription.dart';
 import '../../core/network/connectivity_service.dart';
 import '../../core/network/api_client.dart';
+import 'auth_provider.dart';
 import '../../data/models/message.dart' as msg;
 
 /// Global Navigator Key for context-less navigation (useful for overlays)
@@ -356,16 +357,19 @@ class ConversationsState {
 final chatMessagesProvider =
     StateNotifierProvider.family<ChatMessagesNotifier, ChatMessagesState, int>(
         (ref, conversationId) {
-  return ChatMessagesNotifier(
-      ref.watch(messageServiceProvider), conversationId);
+  final authState = ref.watch(authStateProvider);
+  return ChatMessagesNotifier(ref.watch(messageServiceProvider), conversationId,
+      authState.user?.id);
 });
 
 class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
   final MessageService _messageService;
   final int conversationId;
+  final int? _currentUserId;
   Timer? _pollTimer;
 
-  ChatMessagesNotifier(this._messageService, this.conversationId)
+  ChatMessagesNotifier(
+      this._messageService, this.conversationId, this._currentUserId)
       : super(const ChatMessagesState.initial()) {
     loadMessages();
     _startPolling();
@@ -385,6 +389,7 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
     final response = await _messageService.getConversationMessages(
       conversationId: conversationId,
       page: page,
+      currentUserId: _currentUserId,
     );
 
     if (response.success) {
@@ -395,6 +400,7 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
       state = ChatMessagesState.loaded(
         messages: newMessages,
         hasMore: response.messages.length >= 50,
+        relatedConversations: response.relatedConversations,
       );
     } else {
       // Graceful error handling - don't show error if no data yet
@@ -442,12 +448,14 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
 class ChatMessagesState {
   final bool isLoading;
   final List<msg.Message> messages;
+  final List<msg.Conversation> relatedConversations;
   final bool hasMore;
   final String? errorMessage;
 
   const ChatMessagesState({
     required this.isLoading,
     this.messages = const [],
+    this.relatedConversations = const [],
     this.hasMore = false,
     this.errorMessage,
   });
@@ -455,29 +463,34 @@ class ChatMessagesState {
   const ChatMessagesState.initial()
       : isLoading = true,
         messages = const [],
+        relatedConversations = const [],
         hasMore = false,
         errorMessage = null;
 
   const ChatMessagesState.loaded({
     required this.messages,
     this.hasMore = false,
+    this.relatedConversations = const [],
   })  : isLoading = false,
         errorMessage = null;
 
   ChatMessagesState copyWith({
     bool? isLoading,
     List<msg.Message>? messages,
+    List<msg.Conversation>? relatedConversations,
     bool? hasMore,
     String? errorMessage,
   }) {
     return ChatMessagesState(
       isLoading: isLoading ?? this.isLoading,
       messages: messages ?? this.messages,
+      relatedConversations: relatedConversations ?? this.relatedConversations,
       hasMore: hasMore ?? this.hasMore,
       errorMessage: errorMessage,
     );
   }
 }
+
 
 /// Payment Provider
 final paymentServiceProvider =

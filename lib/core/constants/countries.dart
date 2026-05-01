@@ -103,7 +103,6 @@ class Countries {
     CountryCode(code: '+240', name: 'Equatorial Guinea', flag: '🇬🇶', minDigits: 9, maxDigits: 9, example: '222 123 456'),
     CountryCode(code: '+291', name: 'Eritrea', flag: '🇪🇷', minDigits: 7, maxDigits: 7, example: '123 4567'),
     CountryCode(code: '+372', name: 'Estonia', flag: '🇪🇪', minDigits: 8, maxDigits: 8, example: '5123 4567'),
-    CountryCode(code: '+251', name: 'Ethiopia', flag: '🇪🇹', minDigits: 9, maxDigits: 9, example: '912 345 678'),
     CountryCode(code: '+500', name: 'Falkland Islands', flag: '🇫🇰', minDigits: 5, maxDigits: 5, example: '12345'),
     CountryCode(code: '+298', name: 'Faroe Islands', flag: '🇫🇴', minDigits: 6, maxDigits: 6, example: '123456'),
     CountryCode(code: '+679', name: 'Fiji', flag: '🇫🇯', minDigits: 7, maxDigits: 7, example: '123 4567'),

@@ -91,6 +91,7 @@ class MessageService {
   Future<MessageResponse> getConversationMessages({
     required int conversationId,
     int page = 1,
+    int? currentUserId,
   }) async {
     try {
       final response = await _apiClient.dio.get(
@@ -101,7 +102,7 @@ class MessageService {
       if (response.statusCode == 200) {
         final raw = response.data;
 
-        // Backend returns: { success: true, data: { conversation, messages: { paginator }, other_user } }
+        // Backend returns: { success: true, data: { conversation, messages: { paginator }, other_user, related_conversations } }
         Map<String, dynamic> innerData = {};
         if (raw is Map) {
           final dataField = raw['data'];
@@ -115,7 +116,9 @@ class MessageService {
         final messagesRaw = innerData['messages'];
         if (messagesRaw is Map) {
           // Laravel paginator: { data: [...], current_page, ... }
-          final listRaw = messagesRaw['data'] ?? messagesRaw['listings'] ?? messagesRaw['items'];
+          final listRaw = messagesRaw['data'] ??
+              messagesRaw['listings'] ??
+              messagesRaw['items'];
           if (listRaw is List) msgList = listRaw;
         } else if (messagesRaw is List) {
           msgList = messagesRaw;
@@ -128,13 +131,28 @@ class MessageService {
 
         msg.Conversation? conversation;
         if (innerData['conversation'] is Map) {
-          conversation = msg.Conversation.fromJson(innerData['conversation']);
+          conversation = msg.Conversation.fromJson(
+              innerData['conversation'] as Map<String, dynamic>,
+              currentUserId: currentUserId);
+        }
+
+        // Extract related conversations
+        List<msg.Conversation> relatedConversations = [];
+        final relatedRaw = innerData['related_conversations'];
+        if (relatedRaw is List) {
+          relatedConversations = relatedRaw
+              .whereType<Map>()
+              .map((json) => msg.Conversation.fromJson(
+                  json as Map<String, dynamic>,
+                  currentUserId: currentUserId))
+              .toList();
         }
 
         return MessageResponse(
           success: true,
           messages: messages,
           conversation: conversation,
+          relatedConversations: relatedConversations,
         );
       }
 
@@ -150,6 +168,7 @@ class MessageService {
       );
     }
   }
+
 
   /// Send message in conversation
   Future<MessageResponse> sendMessage({
@@ -367,6 +386,7 @@ class MessageResponse {
   final List<msg.Message> messages;
   final msg.Message? messageData;
   final msg.Conversation? conversation;
+  final List<msg.Conversation> relatedConversations;
 
   const MessageResponse({
     required this.success,
@@ -374,5 +394,7 @@ class MessageResponse {
     this.messages = const [],
     this.messageData,
     this.conversation,
+    this.relatedConversations = const [],
   });
 }
+

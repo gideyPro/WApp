@@ -18,6 +18,7 @@ class Conversation {
   final String? otherParticipantLastName;
   final String? listingTitle;
   final String? listingImageUrl;
+  final int? listingOwnerId;
   final bool isAssetChat;
 
   // Raw sender/receiver data for dynamic name computation
@@ -42,6 +43,7 @@ class Conversation {
     this.otherParticipantLastName,
     this.listingTitle,
     this.listingImageUrl,
+    this.listingOwnerId,
     this.isAssetChat = false,
     Map<String, dynamic>? senderData,
     Map<String, dynamic>? receiverData,
@@ -65,6 +67,7 @@ class Conversation {
     // Get listing info
     String? listingTitle;
     String? listingImageUrl;
+    int? listingOwnerId;
     bool isAssetChat = false;
     if (json['listing'] is Map) {
       final listing = json['listing'] as Map<String, dynamic>;
@@ -73,6 +76,7 @@ class Conversation {
       // Extract first image if available
       if (listing['property'] is Map) {
         final property = listing['property'] as Map<String, dynamic>;
+        listingOwnerId = _safeInt(property['owner_id']);
         if (property['images'] is List &&
             (property['images'] as List).isNotEmpty) {
           final images = property['images'] as List;
@@ -134,12 +138,14 @@ class Conversation {
       otherParticipantLastName: otherLastName,
       listingTitle: listingTitle,
       listingImageUrl: listingImageUrl,
+      listingOwnerId: listingOwnerId,
       isAssetChat: isAssetChat,
       senderData: senderData,
       receiverData: receiverData,
       lastMessageSenderId: lastMsgSenderId,
     );
   }
+
 
   /// Safely convert dynamic value to int
   static int? _safeInt(dynamic value) {

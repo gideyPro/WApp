@@ -59,7 +59,11 @@ class AppTheme {
           color: AppColors.navy950,
           size: 24,
         ),
-        titleTextStyle: AppTextStyles.title.copyWith(fontSize: 22, fontWeight: FontWeight.w800),
+        titleTextStyle: AppTextStyles.title.copyWith(
+          color: AppColors.navy950,
+          fontSize: 22,
+          fontWeight: FontWeight.w800,
+        ),
       ),
 
       // Card Theme - Smooth & Refined

@@ -31,7 +31,6 @@ class MessagesScreen extends ConsumerStatefulWidget {
 class _MessagesScreenState extends ConsumerState<MessagesScreen>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
-  String _selectedFilter = 'all'; // 'all', 'property', 'direct'
 
   @override
   bool get wantKeepAlive => true;
@@ -90,66 +89,15 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     super.build(context);
     final state = ref.watch(conversationsProvider);
     final l10n = AppLocalizations.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: AppBar(
         backgroundColor: context.cardBg,
         title: Text(l10n.messagesTitle),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                _filterChip('All', 'all'),
-                const SizedBox(width: 8),
-                _filterChip('Properties', 'property'),
-                const SizedBox(width: 8),
-                _filterChip('Direct', 'direct'),
-              ],
-            ),
-          ),
-        ),
       ),
       body: _buildBody(state, l10n),
     );
-  }
-
-  Widget _filterChip(String label, String value) {
-    final isSelected = _selectedFilter == value;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedFilter = value),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.wave500 : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-              color: isSelected ? AppColors.wave500 : context.divider),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : context.textSecondary,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            fontSize: 13,
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<msg.Conversation> _filterConversations(
-      List<msg.Conversation> conversations) {
-    if (_selectedFilter == 'all') return conversations;
-    return conversations.where((c) {
-      if (_selectedFilter == 'property') return c.isAssetChat == true;
-      if (_selectedFilter == 'direct') return c.isAssetChat != true;
-      return true;
-    }).toList();
   }
 
   Widget _buildBody(ConversationsState state, AppLocalizations l10n) {
@@ -166,26 +114,10 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       );
     }
 
-    final List<msg.Conversation> filteredConversations =
-        _filterConversations(state.conversations.cast<msg.Conversation>());
+    final List<msg.Conversation> conversations =
+        state.conversations.cast<msg.Conversation>().toList();
 
-    if (filteredConversations.isEmpty && state.conversations.isNotEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.filter_list_off, size: 48, color: AppColors.zinc400),
-            const SizedBox(height: 12),
-            Text(
-              'No ${_selectedFilter == 'property' ? 'property' : _selectedFilter == 'direct' ? 'direct' : ''} messages',
-              style: TextStyle(color: AppColors.zinc500),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (filteredConversations.isEmpty) {
+    if (conversations.isEmpty) {
       return WaveEmptyState(
         icon: Icons.chat_bubble_outline_rounded,
         title: l10n.messagesEmpty,
@@ -206,17 +138,17 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       },
       child: ListView.separated(
         controller: _scrollController,
-        itemCount: filteredConversations.length + (state.isLoading ? 1 : 0),
+        itemCount: conversations.length + (state.isLoading ? 1 : 0),
         separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
-          if (index >= filteredConversations.length) {
+          if (index >= conversations.length) {
             return const Padding(
               padding: EdgeInsets.all(16),
               child: Center(child: CircularProgressIndicator()),
             );
           }
 
-          final conversation = filteredConversations[index] as msg.Conversation;
+          final conversation = conversations[index];
           return _ConversationTile(
             conversation: conversation,
             onTap: () async {
@@ -240,6 +172,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       ),
     );
   }
+
 
   Widget _buildConversationsSkeleton() {
     return ListView.builder(
@@ -446,47 +379,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   bool _isSending = false;
   bool _hasScrolledToUnread = false;
   bool _contextDropdownOpen = false;
-  List<msg.Conversation> _relatedConversations = [];
 
   @override
   void dispose() {
     _messageController.dispose();
     _listScrollController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadRelatedConversations();
-  }
-
-  Future<void> _loadRelatedConversations() async {
-    final authState = ref.read(authStateProvider);
-    final currentUserId = authState.user?.id ?? 0;
-
-    // Get other participant ID
-    final otherId = widget.conversation.getOtherParticipantId(currentUserId);
-
-    // Load all conversations to find related ones
-    // For now, we'll use the conversations provider
-    final conversationsState = ref.read(conversationsProvider);
-    final allConversations = conversationsState.conversations;
-
-    // Filter: same other participant but different conversation
-    final related = allConversations
-        .where((c) {
-          return c.id != widget.conversationId &&
-              (c.getOtherParticipantId(currentUserId) == otherId);
-        })
-        .cast<msg.Conversation>()
-        .toList();
-
-    if (mounted) {
-      setState(() {
-        _relatedConversations = related;
-      });
-    }
   }
 
   void _toggleContextDropdown() {
@@ -572,8 +470,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
-  Widget _buildContextDropdown(
-      BuildContext context, AppLocalizations l10n, bool isDark) {
+  Widget _buildContextDropdown(BuildContext context, AppLocalizations l10n,
+      bool isDark, List<msg.Conversation> relatedConversations) {
     return GestureDetector(
       onTap: _closeContextDropdown,
       child: Container(
@@ -603,13 +501,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 color:
-                    context.isDarkMode ? AppColors.navy900 : AppColors.zinc50,
+                    context.isDarkMode ? AppColors.navy900 : AppColors.zinc400,
                 child: Text(
                   l10n.messagesSwitchContext,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.navy400,
+                    color: Colors.white,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -619,9 +517,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: _relatedConversations.length,
+                  itemCount: relatedConversations.length,
                   itemBuilder: (context, index) {
-                    final conv = _relatedConversations[index];
+                    final conv = relatedConversations[index];
                     final isSelected = conv.id == widget.conversationId;
                     return _buildContextItem(conv, isSelected, l10n, isDark);
                   },
@@ -633,6 +531,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
     );
   }
+
 
   Widget _buildContextItem(msg.Conversation conv, bool isSelected,
       AppLocalizations l10n, bool isDark) {
@@ -753,8 +652,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return '${dateTime.day}/${dateTime.month}';
   }
 
-  Widget _buildMessagesList(
-      List<msg.Message> messages, int currentUserId, AppLocalizations l10n) {
+  Widget _buildMessagesList(List<msg.Message> messages,
+      int currentUserId, AppLocalizations l10n, int? listingOwnerId) {
     // Trigger scroll to first unread on first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToFirstUnread(messages, currentUserId);
@@ -799,11 +698,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                 ),
               ),
-              _MessageBubble(message: messages[index]),
+              _MessageBubble(
+                  message: messages[index], listingOwnerId: listingOwnerId),
             ],
           );
         }
-        return _MessageBubble(message: messages[index]);
+        return _MessageBubble(
+            message: messages[index], listingOwnerId: listingOwnerId);
       },
     );
   }
@@ -819,6 +720,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     // Build proper title from conversation data
     String title = widget.conversation.contextDisplayTitle;
     String otherUserName = widget.conversation.getDisplayTitle(currentUserId);
+    final relatedConversations = chatState.relatedConversations;
 
     return Scaffold(
       appBar: AppBar(
@@ -829,7 +731,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         titleSpacing: 0,
         title: GestureDetector(
           onTap:
-              _relatedConversations.isNotEmpty ? _toggleContextDropdown : null,
+              relatedConversations.isNotEmpty ? _toggleContextDropdown : null,
           child: Stack(
             children: [
               Column(
@@ -848,7 +750,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (_relatedConversations.isNotEmpty) ...[
+                      if (relatedConversations.isNotEmpty) ...[
                         const SizedBox(width: 4),
                         Icon(
                           _contextDropdownOpen
@@ -878,12 +780,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   right: 0,
                   child: Material(
                     color: Colors.transparent,
-                    child: _buildContextDropdown(context, l10n, isDark),
+                    child: _buildContextDropdown(
+                        context, l10n, isDark, relatedConversations),
                   ),
                 ),
             ],
           ),
         ),
+
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert),
@@ -923,8 +827,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               ],
                             ),
                           )
-                        : _buildMessagesList(
-                            chatState.messages, currentUserId, l10n),
+                        : _buildMessagesList(chatState.messages, currentUserId,
+                            l10n, widget.conversation.listingOwnerId),
           ),
 
           // Message input
@@ -1060,8 +964,9 @@ String _formatMessageTime(DateTime createdAt, AppLocalizations l10n) {
 /// Message Bubble Widget - WhatsApp-like with actual user initials
 class _MessageBubble extends ConsumerWidget {
   final msg.Message message;
+  final int? listingOwnerId;
 
-  const _MessageBubble({required this.message});
+  const _MessageBubble({required this.message, this.listingOwnerId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1071,6 +976,8 @@ class _MessageBubble extends ConsumerWidget {
     final isSeen = message.readAt != null;
     final initials = message.senderInitials;
     final l10n = AppLocalizations.of(context);
+    final isListingOwner =
+        listingOwnerId != null && message.senderId == listingOwnerId;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -1086,7 +993,9 @@ class _MessageBubble extends ConsumerWidget {
               height: 32,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.navy400, AppColors.navy600],
+                  colors: isListingOwner
+                      ? [AppColors.wave400, AppColors.wave600]
+                      : [AppColors.navy400, AppColors.navy600],
                 ),
                 shape: BoxShape.circle,
               ),
@@ -1106,63 +1015,83 @@ class _MessageBubble extends ConsumerWidget {
             const SizedBox(width: 8),
           ],
           Flexible(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: isOwn
-                    ? (context.isDarkMode
-                        ? AppColors.wave600
-                        : AppColors.navy600)
-                    : context.cardBg,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(16),
-                  topRight: const Radius.circular(16),
-                  bottomLeft: Radius.circular(isOwn ? 16 : 4),
-                  bottomRight: Radius.circular(isOwn ? 4 : 16),
-                ),
-                boxShadow: context.isDarkMode ? null : AppColors.shadowSm,
-                border: isOwn
-                    ? null
-                    : Border.all(color: context.divider.withOpacity(0.5)),
-              ),
-              child: Column(
-                crossAxisAlignment:
-                    isOwn ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message.body,
-                    style: TextStyle(
-                      color: isOwn ? Colors.white : context.textPrimary,
-                      fontSize: 14,
+            child: Column(
+              crossAxisAlignment:
+                  isOwn ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                if (!isOwn && isListingOwner)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 2),
+                    child: Text(
+                      '(Owner)',
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.wave500,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: isOwn
+                        ? (context.isDarkMode
+                            ? AppColors.wave600
+                            : AppColors.navy600)
+                        : context.cardBg,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
+                      bottomLeft: Radius.circular(isOwn ? 16 : 4),
+                      bottomRight: Radius.circular(isOwn ? 4 : 16),
+                    ),
+                    boxShadow: context.isDarkMode ? null : AppColors.shadowSm,
+                    border: isOwn
+                        ? null
+                        : Border.all(color: context.divider.withOpacity(0.5)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: isOwn
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _formatMessageTime(message.createdAt, l10n),
+                        message.body,
                         style: TextStyle(
-                          color: isOwn
-                              ? AppColors.surface.withOpacity(0.7)
-                              : AppColors.zinc400,
-                          fontSize: 10,
+                          color: isOwn ? Colors.white : context.textPrimary,
+                          fontSize: 14,
                         ),
                       ),
-                      if (isOwn) ...[
-                        const SizedBox(width: 4),
-                        Icon(
-                          isSeen ? Icons.done_all : Icons.done,
-                          size: 14,
-                          color: isSeen
-                              ? AppColors.wave300
-                              : AppColors.surface.withOpacity(0.5),
-                        ),
-                      ],
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            _formatMessageTime(message.createdAt, l10n),
+                            style: TextStyle(
+                              color: isOwn
+                                  ? AppColors.surface.withOpacity(0.7)
+                                  : AppColors.zinc400,
+                              fontSize: 10,
+                            ),
+                          ),
+                          if (isOwn) ...[
+                            const SizedBox(width: 4),
+                            Icon(
+                              isSeen ? Icons.done_all : Icons.done,
+                              size: 14,
+                              color: isSeen
+                                  ? AppColors.wave300
+                                  : AppColors.surface.withOpacity(0.5),
+                            ),
+                          ],
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           // Avatar for outgoing messages
@@ -1196,3 +1125,4 @@ class _MessageBubble extends ConsumerWidget {
     );
   }
 }
+

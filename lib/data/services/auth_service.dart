@@ -241,7 +241,8 @@ class AuthService {
           },
         );
 
-        if (response.statusCode == 200 && _isJsonResponse(response.data)) {
+final statusCode = response.statusCode;
+        if ((statusCode == 200 || statusCode == 201) && _isJsonResponse(response.data)) {
           // Extract token from response
           final token = response.data['token'] ?? response.data['access_token'];
 
