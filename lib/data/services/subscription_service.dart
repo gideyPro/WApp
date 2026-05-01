@@ -178,10 +178,11 @@ class SubscriptionServiceApi {
       );
 
       if (response.statusCode == 200) {
+        final data = response.data['data'] ?? response.data;
         return SubscriptionResponse(
           success: true,
           message: response.data['message'] ?? 'Payment processed',
-          checkoutUrl: response.data['checkout_url'],
+          checkoutUrl: data['checkout_url'],
         );
       }
 

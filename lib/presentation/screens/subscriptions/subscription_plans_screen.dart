@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:chapasdk/chapasdk.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/services/subscription_service.dart';
 import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
-import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_chip.dart';
+import '../../widgets/common/wave_webview_page.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../settings/settings_screen.dart';
 
 /// Subscription Plans Screen
 class SubscriptionPlansScreen extends ConsumerStatefulWidget {
@@ -391,9 +389,7 @@ class _SubscriptionPlansScreenState
                 backgroundColor: AppColors.success,
               ),
             );
-            ref
-                .read(subscriptionProvider.notifier)
-                .refresh();
+            ref.read(subscriptionProvider.notifier).refresh();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -423,131 +419,57 @@ class _SubscriptionPlansScreenState
     setState(() => _processingPlanId = plan.id);
 
     try {
-      // Initiate payment for mobile SDK - gets tx_ref without calling Chapa
-      final paymentResponse = await _subscriptionService.initiatePayment(
+      // Process payment - initializes Chapa on backend and gets checkoutUrl
+      final paymentResponse = await _subscriptionService.processPayment(
         planId: plan.id,
+        paymentData: {'payment_method': 'chapa'},
       );
 
       if (!mounted) return;
 
       if (!paymentResponse.success) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(paymentResponse.message),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(paymentResponse.message),
+            backgroundColor: AppColors.error,
+          ),
+        );
         return;
       }
 
-      // Free plan - already activated
-      if (paymentResponse.requiresPayment == false) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(paymentResponse.message),
-              backgroundColor: AppColors.success,
-            ),
-          );
-          ref.read(subscriptionProvider.notifier).refresh();
-        }
-        return;
+      final checkoutUrl = paymentResponse.checkoutUrl;
+      if (checkoutUrl == null) {
+        throw Exception('Failed to get checkout URL');
       }
 
-      // Paid plan - get tx_ref for Chapa SDK
-      final txRef = paymentResponse.txRef;
-      if (txRef == null) {
-        throw Exception('Failed to get transaction reference');
-      }
-
-      // Get Chapa Public Key from backend settings
-      final settings = await ref.read(appSettingsProvider.future);
-      final publicKey = settings['chapa_public_key'];
-      
-      if (publicKey == null || publicKey.toString().isEmpty) {
-        throw Exception('Chapa public key not found in settings');
-      }
-
-      // Get current user details
-      final authState = ref.read(authStateProvider);
-      final user = authState.user;
-      
-      // Format phone number to 10 digits (e.g., 0912345678)
-      String formattedPhone = user?.phoneNumber ?? '0900000000';
-      // Remove non-digits
-      formattedPhone = formattedPhone.replaceAll(RegExp(r'\D'), '');
-      // If it starts with 251, remove it
-      if (formattedPhone.startsWith('251')) {
-        formattedPhone = formattedPhone.substring(3);
-      }
-      // Ensure it starts with 0
-      if (!formattedPhone.startsWith('0')) {
-        formattedPhone = '0$formattedPhone';
-      }
-      // Limit to 10 digits
-      if (formattedPhone.length > 10) {
-        formattedPhone = formattedPhone.substring(0, 10);
-      }
-      
-      // Start Native Payment Flow
-      if (!mounted) return;
-      
-      // Debug logging for Chapa parameters
-      debugPrint('Initializing Chapa with:');
-      debugPrint('Public Key: $publicKey');
-      debugPrint('Amount: ${plan.price}');
-      debugPrint('TX Ref: $txRef');
-      debugPrint('Email: ${user?.email ?? '${formattedPhone}@wavemart.et'}');
-      debugPrint('Phone: $formattedPhone');
-      
-      Chapa.paymentParameters(
-        context: context,
-        publicKey: publicKey.toString(),
-        amount: plan.price.toString(),
-        currency: 'ETB',
-        txRef: txRef,
-        email: user?.email ?? '${formattedPhone}@wavemart.et',
-        phone: formattedPhone,
-        firstName: user?.firstName ?? 'Customer',
-        lastName: user?.lastName ?? 'User',
-        title: 'WaveMart Subscription',
-        desc: '${plan.name} Plan',
-        nativeCheckout: true,
-        buttonColor: AppColors.wave600,
-        showPaymentMethodsOnGridView: true,
-        availablePaymentMethods: const ['telebirr', 'cbebirr', 'mpesa', 'ebirr'],
-        namedRouteFallBack: '',
-        onPaymentFinished: (message, reference, amount) async {
-          debugPrint('Chapa payment finished - message: $message, reference: $reference, amount: $amount');
-          
-          if (!mounted) return;
-          
-          if (message == 'paymentSuccessful') {
-            // Pass the original txRef we created so backend finds the correct payment
-            final activateResponse = await _subscriptionService.activateSubscription(txRef: txRef);
-            if (mounted) {
-              if (activateResponse.success) {
-                ref.read(subscriptionProvider.notifier).refresh();
-              }
-              Navigator.of(context).pop();
-            }
-          } else if (message == 'paymentFailed') {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Payment failed. Please try again.'),
-                backgroundColor: AppColors.error,
-              ),
-            );
-            ref.read(subscriptionProvider.notifier).refresh();
-            Navigator.of(context).pop();
-          } else {
-            ref.read(subscriptionProvider.notifier).refresh();
-            Navigator.of(context).pop();
-          }
-        },
+      // Open WebView for payment
+      final result = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => WaveWebViewPage(
+            url: checkoutUrl,
+            title: l10n.subscriptionsSubscribe,
+          ),
+        ),
       );
+
+      if (!mounted) return;
+
+      if (result == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Payment successful!'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        ref.read(subscriptionProvider.notifier).refresh();
+      } else if (result == 'cancelled') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Payment cancelled.'),
+            backgroundColor: AppColors.zinc600,
+          ),
+        );
+      }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context);
