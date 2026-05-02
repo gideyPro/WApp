@@ -247,20 +247,6 @@ class SubscriptionServiceApi {
       return null;
     }
   }
-}
-
-      return SubscriptionResponse(
-        success: false,
-        message: response.data['message'] ?? 'Activation failed',
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return SubscriptionResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
 
   /// Cancel current subscription
   Future<SubscriptionResponse> cancelSubscription() async {
