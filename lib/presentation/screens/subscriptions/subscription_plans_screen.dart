@@ -485,32 +485,47 @@ class _SubscriptionPlansScreenState
 
       if (!mounted) return;
 
+      // Check payment status from API
+      final paymentStatus = await _subscriptionService.getLatestPaymentStatus();
+      
       // Refresh subscription to get latest status
       await ref.read(subscriptionProvider.notifier).refresh();
       final subState = ref.read(subscriptionProvider);
-      final isActive = subState.subscription?.status == 'active';
+      final isActive = subState.subscription?.isActive == true;
 
-      // Check subscription status FIRST - this is the most reliable indicator
-      if (isActive) {
+      // Show error message with retry if:
+      // 1. Payment status is 'failed' or 'cancelled', OR
+      // 2. Subscription is not active
+      if (paymentStatus == 'failed' || paymentStatus == 'cancelled' || !isActive) {
+        // Show persistent error with retry option
+        final errorMessenger = ScaffoldMessenger.of(context);
+        errorMessenger.clearSnackBars();
+        errorMessenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              paymentStatus == 'failed' || paymentStatus == 'cancelled'
+                  ? 'Payment ${paymentStatus}. Please try again.'
+                  : 'Payment failed. Please try again.',
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(days: 1),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () {
+                errorMessenger.hideCurrentSnackBar();
+                _selectPlan(plan);
+              },
+            ),
+          ),
+        );
+      } else {
+        // Payment successful
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Payment successful!'),
             backgroundColor: AppColors.success,
-          ),
-        );
-      } else {
-        // Subscription not active - payment failed (regardless of result)
-        // Show retry option so user can initiate new payment with new tx_ref
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Payment failed. Please try again.'),
-            backgroundColor: AppColors.error,
-            duration: const Duration(seconds: 5),
-            action: SnackBarAction(
-              label: 'Retry',
-              textColor: Colors.white,
-              onPressed: () => _selectPlan(plan),
-            ),
           ),
         );
       }
