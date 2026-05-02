@@ -756,60 +756,37 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   }) {
     final badgeValue = badgeProvider();
 
+    final container = Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.15),
+          width: 1,
+        ),
+      ),
+      child: Icon(
+        icon,
+        color: context.iconPrimary,
+        size: 22,
+      ),
+    );
+
     return GestureDetector(
       onTap: onTap,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.15),
-                width: 1,
+      child: (badgeValue.hasValue && badgeValue.value! > 0)
+          ? Badge(
+              label: Text(
+                '${badgeValue.value}',
+                style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold),
               ),
-            ),
-            child: Icon(
-              icon,
-              color: context.iconPrimary,
-              size: 22,
-            ),
-          ),
-          if (badgeValue.hasValue && badgeValue.value! > 0)
-            Positioned(
-              right: -4,
-              top: -4,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                constraints: const BoxConstraints(
-                  minWidth: 18,
-                  minHeight: 18,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.wave500,
-                  borderRadius: BorderRadius.circular(9),
-                  border: Border.all(
-                    color: AppColors.navy950,
-                    width: 2,
-                  ),
-                ),
-                child: Text(
-                  badgeValue.value! > 99 ? '99+' : '${badgeValue.value}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    height: 1,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
+              backgroundColor: AppColors.wave500,
+              textColor: Colors.white,
+              child: container,
+            )
+          : container,
     );
   }
 

@@ -860,6 +860,21 @@
       ]
     },
     {
+      "name": "timezone",
+      "version": "0.10.1",
+      "dependencies": [
+        "http",
+        "path"
+      ]
+    },
+    {
+      "name": "flutter_local_notifications_platform_interface",
+      "version": "10.0.0",
+      "dependencies": [
+        "plugin_platform_interface"
+      ]
+    },
+    {
       "name": "flutter_local_notifications_windows",
       "version": "2.0.1",
       "dependencies": [
@@ -869,13 +884,6 @@
         "meta",
         "timezone",
         "xml"
-      ]
-    },
-    {
-      "name": "flutter_local_notifications_platform_interface",
-      "version": "10.0.0",
-      "dependencies": [
-        "plugin_platform_interface"
       ]
     },
     {
@@ -1913,14 +1921,6 @@
       "name": "synchronized",
       "version": "3.4.0",
       "dependencies": []
-    },
-    {
-      "name": "timezone",
-      "version": "0.10.1",
-      "dependencies": [
-        "http",
-        "path"
-      ]
     }
   ],
   "configVersion": 1

@@ -7,8 +7,8 @@ import '../constants/app_colors.dart';
 class AppTextStyles {
   AppTextStyles._();
 
-  static const String _headingFont = 'Outfit';
-  static const String _bodyFont = 'Inter';
+  static const String _headingFont = 'Cinzel';
+  static const String _bodyFont = 'Josefin Sans';
 
   // Headings
   static TextStyle get headline1 => const TextStyle(

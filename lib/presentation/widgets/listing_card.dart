@@ -319,13 +319,13 @@ class PropertyListingCard extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.photo_library,
-                      size: 12, color: Colors.white),
+                  Icon(Icons.photo_library,
+                      size: 12, color: context.textPrimary),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${listing?.imageCount ?? 0}',
                     style:
-                        AppTextStyles.labelSmall.copyWith(color: Colors.white),
+                        AppTextStyles.labelSmall.copyWith(color: context.textPrimary),
                   ),
                 ],
               ),
@@ -346,7 +346,7 @@ class PropertyListingCard extends StatelessWidget {
                       ? Icons.home
                       : Icons.landscape,
                   size: 14,
-                  color: Colors.white,
+                  color: context.textPrimary,
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
@@ -354,7 +354,7 @@ class PropertyListingCard extends StatelessWidget {
                       ? l10n.listingHouse
                       : l10n.listingLand,
                   style: AppTextStyles.badge.copyWith(
-                    color: Colors.white,
+                    color: context.textPrimary,
                   ),
                 ),
               ],
