@@ -49,7 +49,6 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true  // Enable multidex for apps with over 64K methods
-        coreLibraryDesugaringEnabled true
     }
 
     buildTypes {
