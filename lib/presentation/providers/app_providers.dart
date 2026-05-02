@@ -15,6 +15,7 @@ import '../../data/services/address_service.dart';
 import '../../data/models/subscription.dart';
 import '../../core/network/connectivity_service.dart';
 import '../../core/network/api_client.dart';
+import '../../core/network/local_notification_service.dart';
 import 'auth_provider.dart';
 import '../../data/models/message.dart' as msg;
 
@@ -852,6 +853,14 @@ Future<void> _checkForIncomingCall() async {
         if (_declinedConferenceId == conferenceId && _declinedUntil != null && DateTime.now().isBefore(_declinedUntil!)) {
           return;
         }
+
+        if (state == null) {
+          LocalNotificationService.showNotification(
+            id: 300 + (conferenceId as int),
+            title: 'Incoming Call',
+            body: '${callData['caller_name']} is calling you...',
+          );
+        }
         
         state = IncomingCall(
           conferenceId: conferenceId,
@@ -982,7 +991,7 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
     } else {
       // Use system locale or default to English
       final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
-      final supportedLocales = const ['en', 'am', 'ti'];
+      const supportedLocales = ['en', 'am', 'ti'];
 
       if (supportedLocales.contains(systemLocale.languageCode)) {
         state = LocaleState.loaded(locale: systemLocale);
@@ -1036,3 +1045,4 @@ class LocaleState {
     );
   }
 }
+

@@ -14,9 +14,14 @@ import 'presentation/providers/theme_provider.dart';
 import 'presentation/screens/splash/splash_screen.dart';
 import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
+import 'core/network/local_notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Notifications
+  await LocalNotificationService.initialize();
+  await LocalNotificationService.requestPermissions();
 
   // Initialize Intl
   await initializeDateFormatting();
