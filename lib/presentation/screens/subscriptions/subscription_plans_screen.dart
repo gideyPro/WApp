@@ -454,19 +454,36 @@ class _SubscriptionPlansScreenState
 
       if (!mounted) return;
 
-      if (result == 'success') {
+      // Refresh subscription to get latest status
+      await ref.read(subscriptionProvider.notifier).refresh();
+      final subState = ref.read(subscriptionProvider);
+      final isActive = subState.subscription?.status == 'active';
+
+      if (isActive) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Payment successful!'),
             backgroundColor: AppColors.success,
           ),
         );
-        ref.read(subscriptionProvider.notifier).refresh();
       } else if (result == 'cancelled') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Payment cancelled.'),
             backgroundColor: AppColors.zinc600,
+          ),
+        );
+      } else {
+        // Payment failed (user closed without success or payment didn't go through)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Payment failed. Please try again.'),
+            backgroundColor: AppColors.error,
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _selectPlan(plan),
+            ),
           ),
         );
       }
