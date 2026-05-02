@@ -57,7 +57,7 @@ dependencies:
   # Icons
   cupertino_icons: ^1.0.6
   flutter_inappwebview: ^6.1.5
-  flutter_local_notifications: ^21.0.0
+  flutter_local_notifications: ^20.1.0
 
 dev_dependencies:
   flutter_test:

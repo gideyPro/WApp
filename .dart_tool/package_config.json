@@ -338,6 +338,30 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "flutter_local_notifications",
+      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/flutter_local_notifications-20.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "flutter_local_notifications_linux",
+      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/flutter_local_notifications_linux-7.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "flutter_local_notifications_platform_interface",
+      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/flutter_local_notifications_platform_interface-10.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "flutter_local_notifications_windows",
+      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/flutter_local_notifications_windows-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
       "name": "flutter_localizations",
       "rootUri": "file:///initrd/mnt/dev_save/dev/flutter_sdk/packages/flutter_localizations",
       "packageUri": "lib/",
@@ -753,13 +777,13 @@
     },
     {
       "name": "permission_handler",
-      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/permission_handler-11.4.0",
+      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/permission_handler-12.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "permission_handler_android",
-      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/permission_handler_android-12.1.0",
+      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/permission_handler_android-13.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -978,6 +1002,12 @@
       "rootUri": "file:///root/.pub-cache/hosted/pub.dev/test_api-0.7.10",
       "packageUri": "lib/",
       "languageVersion": "3.7"
+    },
+    {
+      "name": "timezone",
+      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/timezone-0.10.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "timing",
