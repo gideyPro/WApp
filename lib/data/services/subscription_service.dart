@@ -199,7 +199,7 @@ class SubscriptionServiceApi {
     }
   }
 
-  /// Activate subscription after payment
+/// Activate subscription after payment
   Future<SubscriptionResponse> activateSubscription({String? txRef}) async {
     try {
       final response = await _apiClient.dio.get(
@@ -213,6 +213,41 @@ class SubscriptionServiceApi {
           message: response.data['message'] ?? 'Subscription activated',
         );
       }
+
+      return SubscriptionResponse(
+        success: false,
+        message: response.data['message'] ?? 'Activation failed',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return SubscriptionResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  /// Check latest payment status - returns 'pending', 'success', 'failed', 'cancelled' or null
+  Future<String?> getLatestPaymentStatus() async {
+    try {
+      final response = await _apiClient.dio.get(
+        ApiConstants.payments,
+        queryParameters: {'per_page': 1},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data['data'];
+        if (data != null && data['data'] != null && (data['data'] as List).isNotEmpty) {
+          final payment = data['data'][0] as Map<String, dynamic>;
+          return payment['status'] as String?;
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+}
 
       return SubscriptionResponse(
         success: false,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -442,6 +444,31 @@ class _SubscriptionPlansScreenState
         throw Exception('Failed to get checkout URL');
       }
 
+      // Start polling for payment status
+      Timer? paymentCheckTimer;
+      bool webViewClosed = false;
+
+      paymentCheckTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+        if (!mounted || webViewClosed) {
+          timer.cancel();
+          return;
+        }
+
+        final status = await _subscriptionService.getLatestPaymentStatus();
+        if (!mounted || webViewClosed) {
+          timer.cancel();
+          return;
+        }
+
+        // If payment failed or cancelled, close WebView
+        if (status == 'failed' || status == 'cancelled') {
+          timer.cancel();
+          webViewClosed = true;
+          // Try to close WebView if controller is available
+          Navigator.of(context).pop('failed');
+        }
+      });
+
       // Open WebView for payment
       final result = await Navigator.of(context).push(
         MaterialPageRoute(
@@ -452,6 +479,10 @@ class _SubscriptionPlansScreenState
         ),
       );
 
+      // Stop polling
+      paymentCheckTimer?.cancel();
+      webViewClosed = true;
+
       if (!mounted) return;
 
       // Refresh subscription to get latest status
@@ -459,6 +490,7 @@ class _SubscriptionPlansScreenState
       final subState = ref.read(subscriptionProvider);
       final isActive = subState.subscription?.status == 'active';
 
+      // Check subscription status FIRST - this is the most reliable indicator
       if (isActive) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -466,19 +498,14 @@ class _SubscriptionPlansScreenState
             backgroundColor: AppColors.success,
           ),
         );
-      } else if (result == 'cancelled') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Payment cancelled.'),
-            backgroundColor: AppColors.zinc600,
-          ),
-        );
       } else {
-        // Payment failed (user closed without success or payment didn't go through)
+        // Subscription not active - payment failed (regardless of result)
+        // Show retry option so user can initiate new payment with new tx_ref
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Payment failed. Please try again.'),
             backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 5),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
