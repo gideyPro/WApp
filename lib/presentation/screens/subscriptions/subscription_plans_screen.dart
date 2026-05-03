@@ -604,7 +604,7 @@ class _PlanCard extends StatelessWidget {
                   : AppColors.zinc200,
           width: isCurrentPlan || isPopular ? 2 : 1,
         ),
-        boxShadow: isPopular ? AppColors.shadowWave : AppColors.shadowSm,
+        boxShadow: isCurrentPlan || isPopular ? AppColors.shadowWave : AppColors.shadowSm,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -626,36 +626,33 @@ class _PlanCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      Wrap(
+                        spacing: AppSpacing.sm,
+                        runSpacing: AppSpacing.xs,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Flexible(
-                            child: Text(
-                              plan.name,
-                              style: AppTextStyles.title.copyWith(
-                                color: isCurrentPlan
-                                    ? AppColors.wave700
-                                    : AppColors.navy900,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                          Text(
+                            plan.name,
+                            style: AppTextStyles.title.copyWith(
+                              color: isCurrentPlan
+                                  ? AppColors.wave700
+                                  : AppColors.navy900,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                          if (isPopular) ...[
-                            const SizedBox(width: AppSpacing.sm),
+                          if (isPopular)
                             WaveChip(
                               label: l10n.subscriptionsPopular,
                               variant: ChipVariant.featured,
                               size: ChipSize.small,
                             ),
-                          ],
-                          if (isCurrentPlan) ...[
-                            const SizedBox(width: AppSpacing.sm),
+                          if (isCurrentPlan)
                             WaveChip(
                               label: l10n.subscriptionsCurrent,
                               variant: ChipVariant.current,
                               size: ChipSize.small,
                             ),
-                          ],
                         ],
                       ),
                       const SizedBox(height: AppSpacing.xs),
