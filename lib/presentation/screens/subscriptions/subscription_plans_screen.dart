@@ -27,6 +27,7 @@ class _SubscriptionPlansScreenState
     extends ConsumerState<SubscriptionPlansScreen> with RouteAware {
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   int? _processingPlanId;
+  String _selectedCurrency = 'ETB';
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
@@ -120,16 +121,29 @@ class _SubscriptionPlansScreenState
 
           // Plans header
           if (activePlans.isNotEmpty) ...[
-            Text(
-              l10n.subscriptionsChoosePlan,
-              style: AppTextStyles.headline4,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.subscriptionsSelectPlanSubtitle,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.navy600,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.subscriptionsChoosePlan,
+                        style: AppTextStyles.headline4,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        l10n.subscriptionsSelectPlanSubtitle,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.navy600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                _buildCurrencySwitch(),
+              ],
             ),
             const SizedBox(height: 24),
 
@@ -139,6 +153,7 @@ class _SubscriptionPlansScreenState
                   isCurrentPlan: subscription?.planId == plan.id &&
                       (subscription?.isActive ?? false),
                   isLoading: _processingPlanId == plan.id,
+                  selectedCurrency: _selectedCurrency,
                   onSelect: () => _selectPlan(plan),
                 )),
           ] else ...[
@@ -424,7 +439,10 @@ class _SubscriptionPlansScreenState
       // Process payment - initializes Chapa on backend and gets checkoutUrl
       final paymentResponse = await _subscriptionService.processPayment(
         planId: plan.id,
-        paymentData: {'payment_method': 'chapa'},
+        paymentData: {
+          'payment_method': 'chapa',
+          'currency': _selectedCurrency,
+        },
       );
 
       if (!mounted) return;
@@ -569,6 +587,54 @@ class _SubscriptionPlansScreenState
       }
     }
   }
+  Widget _buildCurrencySwitch() {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppColors.zinc100,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildCurrencyToggleItem('ETB'),
+          _buildCurrencyToggleItem('USD'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCurrencyToggleItem(String currency) {
+    final isSelected = _selectedCurrency == currency;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedCurrency = currency),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  )
+                ]
+              : null,
+        ),
+        child: Text(
+          currency,
+          style: TextStyle(
+            color: isSelected ? AppColors.wave600 : AppColors.zinc600,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// Plan Card Widget
@@ -576,12 +642,14 @@ class _PlanCard extends StatelessWidget {
   final SubscriptionPlan plan;
   final bool isCurrentPlan;
   final bool isLoading;
+  final String selectedCurrency;
   final VoidCallback onSelect;
 
   const _PlanCard({
     required this.plan,
     required this.isCurrentPlan,
     this.isLoading = false,
+    required this.selectedCurrency,
     required this.onSelect,
   });
 
@@ -670,11 +738,9 @@ class _PlanCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      plan.displayPrice,
+                      plan.getDisplayPrice(selectedCurrency),
                       style: AppTextStyles.headline3.copyWith(
-                        color: isCurrentPlan
-                            ? AppColors.wave600
-                            : AppColors.navy900,
+                        color: isCurrentPlan ? AppColors.wave600 : AppColors.navy900,
                       ),
                     ),
                     Text(

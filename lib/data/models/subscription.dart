@@ -7,6 +7,7 @@ class SubscriptionPlan {
   final String slug;
   final String? description;
   final double price;
+  final double priceUsd;
   final int durationMonths;
   final int maxListings;
   final int? maxFeaturedListings;
@@ -22,6 +23,7 @@ class SubscriptionPlan {
     required this.slug,
     this.description,
     required this.price,
+    this.priceUsd = 0.0,
     this.durationMonths = 1,
     this.maxListings = 1,
     this.maxFeaturedListings,
@@ -39,6 +41,7 @@ class SubscriptionPlan {
       slug: json['slug'] ?? '',
       description: json['description'],
       price: _parseDouble(json['price']),
+      priceUsd: _parseDouble(json['price_usd']),
       durationMonths: json['duration_months'] ?? 1,
       maxListings: json['max_listings'] ?? 1,
       maxFeaturedListings: json['max_featured_listings'],
@@ -80,6 +83,12 @@ class SubscriptionPlan {
   }
 
   String get displayPrice => '${price.toStringAsFixed(0)} ETB';
+  String get displayPriceUsd => '\$${priceUsd.toStringAsFixed(2)}';
+
+  String getDisplayPrice(String currency) {
+    if (currency == 'USD') return displayPriceUsd;
+    return displayPrice;
+  }
 
   String get durationLabel {
     if (durationMonths == 1) return '1 Month';
