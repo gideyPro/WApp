@@ -460,12 +460,47 @@ class _SubscriptionPlansScreenState
           return;
         }
 
-        // If payment failed or cancelled, close WebView
+        // If payment failed or cancelled, show dialog before closing WebView
         if (status == 'failed' || status == 'cancelled') {
           timer.cancel();
           webViewClosed = true;
-          // Try to close WebView if controller is available
-          Navigator.of(context).pop('failed');
+          
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (dialogContext) => AlertDialog(
+              title: const Text('Payment Failed'),
+              content: Text('Your payment was $status. Would you like to try again?'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                    Navigator.of(context).pop('cancelled');
+                  },
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.zinc500),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                    Navigator.of(context).pop('retry');
+                  },
+                  child: Text(
+                    'Retry',
+                    style: TextStyle(
+                      color: AppColors.wave600,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
         }
       });
 
@@ -485,6 +520,15 @@ class _SubscriptionPlansScreenState
 
       if (!mounted) return;
 
+      if (result == 'retry') {
+        _selectPlan(plan);
+        return;
+      }
+      
+      if (result == 'cancelled' || result == 'closed') {
+        return;
+      }
+
       // Check payment status from API
       final paymentStatus = await _subscriptionService.getLatestPaymentStatus();
       
@@ -493,31 +537,11 @@ class _SubscriptionPlansScreenState
       final subState = ref.read(subscriptionProvider);
       final isActive = subState.subscription?.isActive == true;
 
-      // Show error message with retry if:
-      // 1. Payment status is 'failed' or 'cancelled', OR
-      // 2. Subscription is not active
-      if (paymentStatus == 'failed' || paymentStatus == 'cancelled' || !isActive) {
-        // Show persistent error with retry option
-        final errorMessenger = ScaffoldMessenger.of(context);
-        errorMessenger.clearSnackBars();
-        errorMessenger.showSnackBar(
-          SnackBar(
-            content: Text(
-              paymentStatus == 'failed' || paymentStatus == 'cancelled'
-                  ? 'Payment ${paymentStatus}. Please try again.'
-                  : 'Payment failed. Please try again.',
-            ),
+      if (!isActive && paymentStatus != 'pending') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Your payment could not be verified.'),
             backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(days: 1),
-            action: SnackBarAction(
-              label: 'Retry',
-              textColor: Colors.white,
-              onPressed: () {
-                errorMessenger.hideCurrentSnackBar();
-                _selectPlan(plan);
-              },
-            ),
           ),
         );
       } else {
