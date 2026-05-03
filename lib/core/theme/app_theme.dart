@@ -60,8 +60,9 @@ class AppTheme {
           size: 24,
         ),
         titleTextStyle: AppTextStyles.title.copyWith(
+          fontFamily: 'Josefin Sans',
           color: AppColors.navy950,
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -207,8 +208,9 @@ class AppTheme {
         foregroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         titleTextStyle: AppTextStyles.title.copyWith(
+          fontFamily: 'Josefin Sans',
           color: Colors.white,
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: FontWeight.w800,
         ),
       ),

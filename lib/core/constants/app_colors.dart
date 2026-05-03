@@ -18,18 +18,18 @@ class AppColors {
   static const Color navy900 = Color(0xFF1e3a5f);
   static const Color navy950 = Color(0xFF102a43);
 
-  // Primary Accent - Wave (Teal for trust & conversion)
-  static const Color wave50 = Color(0xFFf0fdfa);
-  static const Color wave100 = Color(0xFFccfbf1);
-  static const Color wave200 = Color(0xFF99f6e4);
-  static const Color wave300 = Color(0xFF5eead4);
-  static const Color wave400 = Color(0xFF14B8A6);
-  static const Color wave500 = Color(0xFF0F766E);
-  static const Color wave600 = Color(0xFF0D675F);
-  static const Color wave700 = Color(0xFF0B5952);
-  static const Color wave800 = Color(0xFF115e59);
-  static const Color wave900 = Color(0xFF134e4a);
-  static const Color wave950 = Color(0xFF042f2e);
+  // Primary Accent - Wave (Vibrant Green based on backend config)
+  static const Color wave50 = Color(0xFFedfcf2);
+  static const Color wave100 = Color(0xFFd3f9e0);
+  static const Color wave200 = Color(0xFFaaf0c4);
+  static const Color wave300 = Color(0xFF73e2a3);
+  static const Color wave400 = Color(0xFF3acd7e);
+  static const Color wave500 = Color(0xFF16b364);
+  static const Color wave600 = Color(0xFF0d9450);
+  static const Color wave700 = Color(0xFF0b7742);
+  static const Color wave800 = Color(0xFF0c5e37);
+  static const Color wave900 = Color(0xFF0a4d2e);
+  static const Color wave950 = Color(0xFF052b19);
 
   // Success - Emerald
   static const Color emerald50 = Color(0xFFecfdf5);
@@ -168,8 +168,8 @@ extension AppColorsExtension on BuildContext {
   Color get cardBg => isDarkMode ? AppColors.navy900 : Colors.white;
   Color get cardBgElevated => isDarkMode ? AppColors.navy800 : Colors.white;
   Color get textPrimary => isDarkMode ? Colors.white : AppColors.zinc900;
-  Color get textSecondary => isDarkMode ? AppColors.zinc300 : AppColors.zinc600;
-  Color get textMuted => isDarkMode ? AppColors.navy400 : AppColors.zinc400;
+  Color get textSecondary => isDarkMode ? AppColors.zinc300 : AppColors.zinc700;
+  Color get textMuted => isDarkMode ? AppColors.navy400 : AppColors.zinc500;
   Color get iconPrimary => isDarkMode ? Colors.white : AppColors.navy700;
   Color get divider => isDarkMode ? AppColors.navy800 : AppColors.zinc200;
   Color get inputBg => isDarkMode ? AppColors.navy900 : AppColors.zinc50.withOpacity(0.5);

@@ -69,22 +69,22 @@ class AppTextStyles {
   static TextStyle get subtitle => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 15,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.4,
       );
 
   static TextStyle get bodyLargePlus => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 17,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         height: 1.5,
       );
 
   static TextStyle get captionSmall => const TextStyle(
         fontFamily: _bodyFont,
-        fontSize: 10,
-        fontWeight: FontWeight.w500,
-        color: AppColors.zinc500,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: AppColors.zinc600,
         height: 1.4,
       );
 
@@ -92,21 +92,21 @@ class AppTextStyles {
   static TextStyle get bodyLarge => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 16,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.5,
       );
 
   static TextStyle get bodyMedium => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 14,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.5,
       );
 
   static TextStyle get bodySmall => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 12,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.5,
       );
 
@@ -163,9 +163,9 @@ class AppTextStyles {
   // Caption/Helper Text
   static TextStyle get caption => const TextStyle(
         fontFamily: _bodyFont,
-        fontSize: 11,
-        fontWeight: FontWeight.w500,
-        color: AppColors.zinc500,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: AppColors.zinc600,
         height: 1.4,
       );
 

@@ -271,12 +271,12 @@ final settingsAsync = ref.watch(appSettingsProvider);
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Text(
             title,
             style: AppTextStyles.labelMedium.copyWith(
-              color: context.textMuted,
-              fontWeight: FontWeight.w600,
+              color: context.theme.textSecondary,
+              fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
           ),
