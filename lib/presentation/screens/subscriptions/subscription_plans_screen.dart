@@ -500,7 +500,7 @@ class _SubscriptionPlansScreenState
                   },
                   child: Text(
                     'Cancel',
-                    style: TextStyle(color: AppColors.zinc500),
+                    style: const TextStyle(color: AppColors.zinc500),
                   ),
                 ),
                 TextButton(
@@ -554,6 +554,8 @@ class _SubscriptionPlansScreenState
       await ref.read(subscriptionProvider.notifier).refresh();
       final subState = ref.read(subscriptionProvider);
       final isActive = subState.subscription?.isActive == true;
+
+      if (!mounted) return;
 
       if (!isActive && paymentStatus != 'pending') {
         ScaffoldMessenger.of(context).showSnackBar(
