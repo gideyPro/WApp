@@ -18,6 +18,8 @@ import '../favorites/favorites_screen.dart';
 import '../auth/otp_login_screen.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
+import '../subscriptions/subscription_plans_screen.dart';
+import '../settings/settings_screen.dart';
 
 /// Home Screen - Modern premium header with glassmorphism & animations
 class HomeScreen extends ConsumerStatefulWidget {
@@ -490,6 +492,105 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
+  void _handleListingTap(Listing listing) {
+    final subState = ref.read(subscriptionProvider);
+    final settingsAsync = ref.read(appSettingsProvider);
+    final user = ref.read(profileProvider).user;
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => true, // Default to true if not loaded
+    );
+
+    // Skip check if:
+    // 1. User is the owner of the listing
+    // 2. Staff (handled backend)
+    // 3. Subscriptions are globally disabled
+    final isOwner = user != null && listing.userId == user.id;
+    if (!isOwner && subscriptionEnabled && !subState.canCreateListing) {
+      _showSubscriptionRequiredDialog();
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ListingDetailScreen(listingId: listing.id),
+      ),
+    );
+  }
+
+  Future<void> _showSubscriptionRequiredDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: AppColors.wave500.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.workspace_premium_outlined,
+                    size: 32, color: AppColors.wave600),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Subscription Required',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'You need an active subscription to view property details and contact owners.',
+                style: TextStyle(color: AppColors.navy500),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        side: BorderSide(color: AppColors.zinc300),
+                        foregroundColor: AppColors.navy600,
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        backgroundColor: AppColors.wave500,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('View Plans'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (result == true && mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+      );
+    }
+  }
+
   Widget _buildFeaturedListings(ListingsState state) {
     if (state.isLoading) {
       return SizedBox(
@@ -535,11 +636,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 isFavorite: fav,
                 isTogglingFavorite: _isToggling(listing.id),
                 onFavorite: () => _toggleFavorite(listing.id),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (_) =>
-                          ListingDetailScreen(listingId: listing.id)),
-                ),
+                onTap: () => _handleListingTap(listing),
               ),
             ),
           );
@@ -585,11 +682,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 isFavorite: fav,
                 isTogglingFavorite: _isToggling(listing.id),
                 onFavorite: () => _toggleFavorite(listing.id),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (_) =>
-                          ListingDetailScreen(listingId: listing.id)),
-                ),
+                onTap: () => _handleListingTap(listing),
               ),
             );
           },

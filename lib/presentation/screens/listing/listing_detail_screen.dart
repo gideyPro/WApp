@@ -14,6 +14,7 @@ import '../../providers/auth_provider.dart';
 import '../auth/otp_login_screen.dart';
 import '../../widgets/video/video_player_widget.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../subscriptions/subscription_plans_screen.dart';
 import 'edit_listing_screen.dart';
 
 /// Listing Detail Screen with skeleton loaders
@@ -252,6 +253,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   Widget _buildErrorView(String message) {
     final l10n = AppLocalizations.of(context);
+    final isSubscriptionError = message.toLowerCase().contains('subscription');
+    
     return Scaffold(
       appBar: AppBar(title: Text(l10n.listingsTitle)),
       body: Center(
@@ -261,13 +264,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.signal_wifi_off_rounded,
+                isSubscriptionError ? Icons.workspace_premium_rounded : Icons.signal_wifi_off_rounded,
                 size: 64,
-                color: AppColors.navy300,
+                color: isSubscriptionError ? AppColors.wave500 : AppColors.navy300,
               ),
               const SizedBox(height: 16),
               Text(
-                l10n.listingsLoadError,
+                isSubscriptionError ? 'Subscription Required' : l10n.listingsLoadError,
                 style: AppTextStyles.title,
               ),
               const SizedBox(height: 8),
@@ -278,24 +281,43 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: () {
-                  ref
-                      .read(listingDetailProvider.notifier)
-                      .loadListing(widget.listingId);
-                },
-                icon: const Icon(Icons.refresh, size: 18),
-                label: Text(l10n.commonRetry),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.navy950,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              if (isSubscriptionError)
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+                    );
+                  },
+                  icon: const Icon(Icons.star, size: 18),
+                  label: const Text('Upgrade Now'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.wave500,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                )
+              else
+                ElevatedButton.icon(
+                  onPressed: () {
+                    ref
+                        .read(listingDetailProvider.notifier)
+                        .loadListing(widget.listingId);
+                  },
+                  icon: const Icon(Icons.refresh, size: 18),
+                  label: Text(l10n.commonRetry),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.navy950,
+                    foregroundColor: Colors.white,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
