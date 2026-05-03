@@ -178,11 +178,31 @@ final notificationsProvider =
 });
 final unreadCountProvider = StreamProvider<int>((ref) async* {
   final service = ref.watch(notificationServiceProvider);
+  Set<int> knownIds = {};
+  bool isFirstRun = true;
+
   while (true) {
     try {
       final response =
           await service.getNotifications(filter: 'unread', page: 1);
       if (response.success) {
+        if (!isFirstRun) {
+          for (var n in response.notifications) {
+            if (!knownIds.contains(n.id)) {
+              LocalNotificationService.showNotification(
+                id: 1000 + n.id,
+                title: n.title,
+                body: n.body,
+              );
+              knownIds.add(n.id);
+            }
+          }
+        } else {
+          for (var n in response.notifications) {
+            knownIds.add(n.id);
+          }
+          isFirstRun = false;
+        }
         yield response.unreadCount;
       } else {
         yield 0;
@@ -271,14 +291,41 @@ final conversationsProvider =
 /// Unread messages count provider - sums unreadCount from all conversations
 final unreadMessagesCountProvider = StreamProvider<int>((ref) async* {
   final service = ref.watch(messageServiceProvider);
+  final authState = ref.watch(authStateProvider);
+  Map<int, int> knownUnreadCounts = {};
+  bool isFirstRun = true;
+
   while (true) {
     try {
       final response = await service.getConversations(page: 1, perPage: 100);
       if (response.success) {
-        final totalUnread = response.conversations.fold<int>(
-          0,
-          (sum, conv) => sum + (conv.unreadCount ?? 0),
-        );
+        int totalUnread = 0;
+        
+        if (!isFirstRun) {
+           for (var conv in response.conversations) {
+             final count = conv.unreadCount ?? 0;
+             totalUnread += count;
+             
+             final previousCount = knownUnreadCounts[conv.id] ?? 0;
+             if (count > previousCount) {
+               LocalNotificationService.showNotification(
+                 id: 2000 + conv.id,
+                 title: conv.getDisplayTitle(authState.user?.id ?? 0),
+                 body: conv.lastMessage ?? 'You received a new message',
+                 payload: 'message_${conv.id}',
+               );
+             }
+             knownUnreadCounts[conv.id] = count;
+           }
+        } else {
+           for (var conv in response.conversations) {
+             final count = conv.unreadCount ?? 0;
+             totalUnread += count;
+             knownUnreadCounts[conv.id] = count;
+           }
+           isFirstRun = false;
+        }
+        
         yield totalUnread;
       } else {
         yield 0;
