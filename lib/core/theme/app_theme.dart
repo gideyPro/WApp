@@ -11,7 +11,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      fontFamily: 'Inter',
+      fontFamily: 'Nunito',
       
       // Color Scheme
       colorScheme: const ColorScheme.light(
@@ -60,7 +60,7 @@ class AppTheme {
           size: 24,
         ),
         titleTextStyle: AppTextStyles.title.copyWith(
-          fontFamily: 'Josefin Sans',
+          fontFamily: 'Lora',
           color: AppColors.navy950,
           fontSize: 20,
           fontWeight: FontWeight.w800,
@@ -166,7 +166,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      fontFamily: 'Inter',
+      fontFamily: 'Nunito',
 
       // Color Scheme - Deep Night Premium
       colorScheme: const ColorScheme.dark(
@@ -208,7 +208,7 @@ class AppTheme {
         foregroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         titleTextStyle: AppTextStyles.title.copyWith(
-          fontFamily: 'Josefin Sans',
+          fontFamily: 'Lora',
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.w800,

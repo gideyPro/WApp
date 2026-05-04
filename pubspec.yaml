@@ -76,9 +76,12 @@ flutter:
     - assets/lottie/
 
   fonts:
-    - family: Cinzel
+    - family: Lora
       fonts:
-        - asset: assets/fonts/cinzel/Cinzel-VariableFont_wght.ttf
-    - family: Josefin Sans
+        - asset: assets/fonts/lora/Lora-Regular.ttf
+        - asset: assets/fonts/lora/Lora-Bold.ttf
+    - family: Nunito
       fonts:
-        - asset: assets/fonts/josefin_sans/JosefinSans-VariableFont_wght.ttf
+        - asset: assets/fonts/nunito/Nunito-Regular.ttf
+        - asset: assets/fonts/nunito/Nunito-SemiBold.ttf
+        - asset: assets/fonts/nunito/Nunito-Bold.ttf

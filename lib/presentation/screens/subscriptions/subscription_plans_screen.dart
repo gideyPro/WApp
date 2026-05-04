@@ -466,7 +466,7 @@ class _SubscriptionPlansScreenState
       Timer? paymentCheckTimer;
       bool webViewClosed = false;
 
-      paymentCheckTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+      paymentCheckTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
         if (!mounted || webViewClosed) {
           timer.cancel();
           return;
@@ -539,6 +539,7 @@ class _SubscriptionPlansScreenState
       if (!mounted) return;
 
       if (result == 'retry') {
+        setState(() => _processingPlanId = null);
         _selectPlan(plan);
         return;
       }

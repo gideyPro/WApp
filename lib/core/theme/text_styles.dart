@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
 /// WaveMart Text Styles
-/// Using Outfit for headings and Inter for body text
+/// Using Lora for headings and Nunito for body text
 /// Fonts are bundled locally - no network fetching required
 class AppTextStyles {
   AppTextStyles._();
 
-  static const String _headingFont = 'Cinzel';
-  static const String _bodyFont = 'Josefin Sans';
+  static const String _headingFont = 'Lora';
+  static const String _bodyFont = 'Nunito';
 
   // Headings
   static TextStyle get headline1 => const TextStyle(
@@ -60,7 +60,7 @@ class AppTextStyles {
 
   static TextStyle get headline5 => const TextStyle(
         fontFamily: _headingFont,
-        fontSize: 22,
+        fontSize: 26,
         fontWeight: FontWeight.w700,
         height: 1.3,
         letterSpacing: -0.2,
