@@ -360,19 +360,11 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
   final MessageService _messageService;
   final int conversationId;
   final int? _currentUserId;
-  Timer? _pollTimer;
 
   ChatMessagesNotifier(
       this._messageService, this.conversationId, this._currentUserId)
       : super(const ChatMessagesState.initial()) {
     loadMessages();
-    _startPolling();
-  }
-
-  void _startPolling() {
-    _pollTimer?.cancel();
-    _pollTimer =
-        Timer.periodic(const Duration(seconds: 5), (_) => _pollNewMessages());
   }
 
   Future<void> loadMessages({int page = 1}) async {
@@ -404,23 +396,6 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
     }
   }
 
-  Future<void> _pollNewMessages() async {
-    if (state.messages.isEmpty) return;
-    try {
-      final lastMessage = state.messages.last;
-      final response = await _messageService.fetchNewMessages(
-        conversationId: conversationId,
-        after: lastMessage.createdAt,
-      );
-      if (response.success && response.messages.isNotEmpty) {
-        state =
-            state.copyWith(messages: [...state.messages, ...response.messages]);
-      }
-    } catch (_) {
-      // Silently ignore polling errors
-    }
-  }
-
   Future<bool> sendMessage(String body) async {
     final response = await _messageService.sendMessage(
       conversationId: conversationId,
@@ -434,7 +409,6 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
 
   @override
   void dispose() {
-    _pollTimer?.cancel();
     super.dispose();
   }
 }
@@ -977,4 +951,3 @@ class LocaleState {
     );
   }
 }
-

@@ -27,14 +27,16 @@ class FcmService {
       log('User declined or has not accepted permission');
     }
 
-    // 2. Get the token
-    String? token = await _fcm.getToken();
-    log('FCM Token: $token');
-    if (token != null) {
-      await _ref.read(fcmApiServiceProvider).registerToken(token);
-    }
+    // 2. Get and Register Token
+    await _updateToken();
 
-    // 3. Handle messages when app is in foreground
+    // 3. Listen for token refresh
+    _fcm.onTokenRefresh.listen((newToken) async {
+      log('FCM Token Refreshed: $newToken');
+      await _ref.read(fcmApiServiceProvider).registerToken(newToken);
+    });
+
+    // 4. Handle messages when app is in foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log('Got a message whilst in the foreground!');
       log('Message data: ${message.data}');
@@ -47,6 +49,16 @@ class FcmService {
         _handleIncomingCall(message.data);
       } else if (type == 'message') {
         _ref.invalidate(unreadMessagesCountProvider);
+        
+        // Phase 2: Refresh chat messages if we are in a conversation
+        final conversationIdStr = message.data['conversation_id'];
+        if (conversationIdStr != null) {
+          final convId = int.tryParse(conversationIdStr.toString());
+          if (convId != null) {
+            // This triggers the specific ChatMessagesNotifier to reload
+            _ref.invalidate(chatMessagesProvider(convId));
+          }
+        }
       } else {
         _ref.invalidate(unreadCountProvider);
       }
@@ -57,23 +69,37 @@ class FcmService {
           id: message.hashCode,
           title: notification.title ?? 'WaveMart',
           body: notification.body ?? '',
+          payload: type == 'message' ? message.data['conversation_id']?.toString() : null,
         );
       }
     });
 
-    // 4. Handle messages when app is in background but opened via notification
+    // 5. Handle messages when app is in background but opened via notification
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       log('App opened from notification!');
       final type = message.data['type'];
       
       if (type == 'incoming_call') {
         _handleIncomingCall(message.data);
+      } else if (type == 'message') {
+        _ref.invalidate(unreadMessagesCountProvider);
       } else {
         // Invalidate to show latest data when navigated back
         _ref.invalidate(unreadCountProvider);
-        _ref.invalidate(unreadMessagesCountProvider);
       }
     });
+  }
+
+  Future<void> _updateToken() async {
+    try {
+      String? token = await _fcm.getToken();
+      log('FCM Token: $token');
+      if (token != null) {
+        await _ref.read(fcmApiServiceProvider).registerToken(token);
+      }
+    } catch (e) {
+      log('Error getting FCM token: $e');
+    }
   }
 
   void _handleIncomingCall(Map<String, dynamic> data) {

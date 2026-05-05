@@ -16,9 +16,21 @@ import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
 import 'core/network/local_notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'data/services/fcm_service.dart';
 
 import 'firebase_options.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Initialize Firebase if needed (it might already be initialized by the system)
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  
+  log("Handling a background message: ${message.messageId}");
+  // Note: Most logic for background messages (like showing a notification) 
+  // is handled automatically by Firebase if the payload contains a 'notification' block.
+  // For 'data' only messages, you would handle them here.
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,13 +40,16 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    
+    // Set background message handler
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   } catch (e) {
     log('Firebase initialization failed: $e. Make sure to run flutterfire configure.');
   }
 
   // Initialize Notifications
   await LocalNotificationService.initialize();
-  await LocalNotificationService.requestPermissions();
+  // Permission request moved to FcmService.initialize() for consolidation
 
   // Initialize Intl
   await initializeDateFormatting();
