@@ -265,22 +265,32 @@ final conversationsProvider =
 });
 
 /// Unread messages count provider - sums unreadCount from all conversations
-final unreadMessagesCountProvider = StreamProvider<int>((ref) async* {
-  final service = ref.watch(messageServiceProvider);
-  try {
-    final response = await service.getConversations(page: 1, perPage: 100);
-    if (response.success) {
-      int totalUnread = 0;
-      for (var conv in response.conversations) {
-        totalUnread += (conv.unreadCount ?? 0) as int;
-      }
-      yield totalUnread;
-    } else {
-      yield 0;
-    }
-  } catch (e) {
-    yield 0;
+
+class UnreadCountNotifier extends StateNotifier<int> {
+  final MessageService _messageService;
+
+  UnreadCountNotifier(this._messageService) : super(0) {
+    refresh();
   }
+
+  Future<void> refresh() async {
+    try {
+      final response = await _messageService.getConversations(page: 1, perPage: 100);
+      if (response.success) {
+        int totalUnread = 0;
+        for (var conv in response.conversations) {
+          totalUnread += (conv.unreadCount ?? 0) as int;
+        }
+        state = totalUnread;
+      }
+    } catch (e) {
+      // Handle error
+    }
+  }
+}
+
+final unreadMessagesCountProvider = StateNotifierProvider<UnreadCountNotifier, int>((ref) {
+  return UnreadCountNotifier(ref.watch(messageServiceProvider));
 });
 
 class ConversationsNotifier extends StateNotifier<ConversationsState> {

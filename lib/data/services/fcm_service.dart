@@ -48,7 +48,7 @@ class FcmService {
       if (type == 'incoming_call') {
         _handleIncomingCall(message.data);
       } else if (type == 'message') {
-        _ref.invalidate(unreadMessagesCountProvider);
+        _ref.read(unreadMessagesCountProvider.notifier).refresh();
         
         // Phase 2: Refresh chat messages if we are in a conversation
         final conversationIdStr = message.data['conversation_id'];
@@ -82,7 +82,7 @@ class FcmService {
       if (type == 'incoming_call') {
         _handleIncomingCall(message.data);
       } else if (type == 'message') {
-        _ref.invalidate(unreadMessagesCountProvider);
+        _ref.read(unreadMessagesCountProvider.notifier).refresh();
       } else {
         // Invalidate to show latest data when navigated back
         _ref.invalidate(unreadCountProvider);
