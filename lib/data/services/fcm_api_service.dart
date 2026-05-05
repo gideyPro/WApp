@@ -12,7 +12,7 @@ class FcmApiService {
       final platform = Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : 'web');
       
       final response = await _apiClient.dio.post(
-        '/fcm/register',
+        ApiConstants.registerFcmToken,
         data: {
           'token': token,
           'platform': platform,
