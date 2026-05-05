@@ -13,6 +13,7 @@ __pycache__/
 dist/
 build/
 target/
+*.apk
 
 # Dependencies
 node_modules/
