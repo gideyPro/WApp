@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'fcm_api_service.dart';
 import '../../presentation/providers/app_providers.dart';
+import '../../core/network/local_notification_service.dart';
 
 final fcmApiServiceProvider = Provider<FcmApiService>((ref) => FcmApiService());
 
@@ -47,7 +48,7 @@ class FcmService {
       } else if (type == 'message') {
         _ref.invalidate(unreadMessagesCountProvider);
       } else {
-        _ref.invalidate(notificationsCountProvider);
+        _ref.invalidate(unreadCountProvider);
       }
 
       // Show local notification for foreground visibility if available
@@ -69,7 +70,7 @@ class FcmService {
         _handleIncomingCall(message.data);
       } else {
         // Invalidate to show latest data when navigated back
-        _ref.invalidate(notificationsCountProvider);
+        _ref.invalidate(unreadCountProvider);
         _ref.invalidate(unreadMessagesCountProvider);
       }
     });

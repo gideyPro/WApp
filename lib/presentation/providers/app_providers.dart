@@ -809,6 +809,11 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
   void clearIncomingCall() {
     state = null;
   }
+
+  void markDeclined(int conferenceId) {
+    // Just clear the state for now
+    state = null;
+  }
 }
 
 /// Interest Provider
