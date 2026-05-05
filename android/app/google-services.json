@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "717162180744",
+    "project_id": "wavemart-ee113",
+    "storage_bucket": "wavemart-ee113.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717162180744:android:24253dd5af98b7a43def3d",
+        "android_client_info": {
+          "package_name": "et.wavemart.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwRf0QE5GqiCAo0J52USwTBxXBvQ5wmy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

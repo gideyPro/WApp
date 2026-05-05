@@ -872,9 +872,14 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
     _pollingTimer = null;
   }
 
+  void setIncomingCall(IncomingCall? call) {
+    state = call;
+  }
+
   void markDeclined(int conferenceId) {
     _declinedConferenceId = conferenceId;
     _declinedUntil = DateTime.now().add(const Duration(seconds: 10));
+    state = null;
   }
 
 Future<void> _checkForIncomingCall() async {

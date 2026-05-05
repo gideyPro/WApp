@@ -15,9 +15,22 @@ import 'presentation/screens/splash/splash_screen.dart';
 import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
 import 'core/network/local_notification_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'data/services/fcm_service.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    log('Firebase initialization failed: $e. Make sure to run flutterfire configure.');
+  }
 
   // Initialize Notifications
   await LocalNotificationService.initialize();
@@ -80,15 +93,24 @@ class WaveMartApp extends ConsumerStatefulWidget {
 
 class _WaveMartAppState extends ConsumerState<WaveMartApp> {
   bool _pollingStarted = false;
+  bool _fcmStarted = false;
 
-@override
+  @override
   Widget build(BuildContext context) {
     final localeState = ref.watch(localeProvider);
     final authState = ref.watch(authStateProvider);
     final incomingCall = ref.watch(incomingCallProvider);
     final themeMode = ref.watch(themeModeProvider);
 
-    // Start polling only once when authenticated — not on every rebuild
+    // Start FCM only once when authenticated
+    if (authState.isAuthenticated && !_fcmStarted) {
+      _fcmStarted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(fcmServiceProvider).initialize();
+      });
+    }
+
+    // Start polling as fallback
     if (authState.isAuthenticated && !_pollingStarted) {
       _pollingStarted = true;
       // Use addPostFrameCallback to avoid modifying state during build
@@ -97,6 +119,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
       });
     } else if (!authState.isAuthenticated && _pollingStarted) {
       _pollingStarted = false;
+      _fcmStarted = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(incomingCallProvider.notifier).stopPolling();
       });
