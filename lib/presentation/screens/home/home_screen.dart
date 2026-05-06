@@ -127,7 +127,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               pinned: true,
               delegate: _HeaderDelegate(
                 authState: authState,
-                unreadCountAsync: unreadCountAsync,
+                unreadCount: unreadCountAsync,
                 onSearchTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const SearchScreen()),
                 ),
@@ -696,14 +696,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 /// Modern Premium Header Delegate - Fixed height 100, no shrink
 class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   final AuthState authState;
-  final AsyncValue<int> unreadCountAsync;
+  final int unreadCount;
   final VoidCallback onSearchTap;
   final VoidCallback onProfileTap;
   final VoidCallback onNotificationsTap;
 
   _HeaderDelegate({
     required this.authState,
-    required this.unreadCountAsync,
+    required this.unreadCount,
     required this.onSearchTap,
     required this.onProfileTap,
     required this.onNotificationsTap,
@@ -781,7 +781,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                         context: context,
                         icon: Icons.notifications_outlined,
                         onTap: onNotificationsTap,
-                        badgeProvider: () => unreadCountAsync,
+                        badgeProvider: () => unreadCount,
                       ),
                       const SizedBox(width: 8),
                       _buildSearchButton(),
@@ -845,7 +845,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     required BuildContext context,
     required IconData icon,
     required VoidCallback onTap,
-    required AsyncValue<int> Function() badgeProvider,
+    required int Function() badgeProvider,
   }) {
     final badgeValue = badgeProvider();
 
@@ -869,10 +869,10 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
 
     return GestureDetector(
       onTap: onTap,
-      child: (badgeValue.hasValue && badgeValue.value! > 0)
+      child: (badgeValue > 0)
           ? Badge(
               label: Text(
-                '${badgeValue.value}',
+                '$badgeValue',
                 style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold),
               ),
               backgroundColor: AppColors.wave500,
@@ -932,6 +932,6 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(_HeaderDelegate oldDelegate) {
     return oldDelegate.authState != authState ||
-        oldDelegate.unreadCountAsync != unreadCountAsync;
+        oldDelegate.unreadCount != unreadCount;
   }
 }
