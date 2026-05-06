@@ -1,0 +1,324 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:dio/dio.dart';
+import '../../../core/theme/text_styles.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../data/services/conference_service.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/network/api_constants.dart';
+import '../../../l10n/app_localizations.dart';
+
+/// WebView-based Jitsi call screen that properly handles authentication
+/// by pre-injecting session cookies to avoid login page redirect
+class WebViewJitsiScreen extends ConsumerStatefulWidget {
+  final String? jitsiUrl;
+  final String? jitsiToken;
+  final int conferenceId;
+
+  const WebViewJitsiScreen({
+    super.key,
+    this.jitsiUrl,
+    this.jitsiToken,
+    required this.conferenceId,
+  });
+
+  @override
+  ConsumerState<WebViewJitsiScreen> createState() => _WebViewJitsiScreenState();
+}
+
+class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
+  double _progress = 0;
+  bool _isLoading = true;
+  bool _hasError = false;
+  String? _errorMessage;
+  final CookieManager _cookieManager = CookieManager.instance();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCall();
+  }
+
+  Future<void> _initializeCall() async {
+    try {
+      // 1. Request microphone permission
+      final micStatus = await Permission.microphone.request();
+      if (!micStatus.isGranted) {
+        setState(() {
+          _hasError = true;
+          _errorMessage = 'Microphone permission is required to join the call.';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // 2. Get auth token
+      final apiClient = ApiClient();
+      final token = await apiClient.getAuthToken();
+
+      if (token == null) {
+        setState(() {
+          _hasError = true;
+          _errorMessage = 'Authentication token not found.';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // 3. Call web-session/cookie endpoint to get session cookie info
+      try {
+        final dio = apiClient.dio;
+        final sessionResponse = await dio.post(
+          '${ApiConstants.apiBase}/web-session/cookie',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Accept': 'application/json',
+            },
+          ),
+        );
+
+        if (sessionResponse.statusCode == 200 && sessionResponse.data['success']) {
+          final cookieData = sessionResponse.data['data'];
+          await _injectSessionCookie(cookieData);
+        } else {
+          debugPrint('Failed to get session cookie: ${sessionResponse.data}');
+        }
+      } catch (e) {
+        debugPrint('Error getting session cookie: $e');
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _hasError = true;
+        _errorMessage = 'Failed to initialize call: $e';
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _injectSessionCookie(Map<String, dynamic> cookieData) async {
+    try {
+      final cookieName = cookieData['cookie_name'] ?? 'wavemart-session';
+      final cookieValue = cookieData['cookie_value'] ?? '';
+      final domain = cookieData['domain'] ?? _extractDomain(ApiConstants.baseUrl);
+      final path = cookieData['path'] ?? '/';
+      final isSecure = cookieData['secure'] ?? false;
+
+      await _cookieManager.setCookie(
+        url: WebUri(ApiConstants.baseUrl),
+        name: cookieName,
+        value: cookieValue,
+        domain: domain,
+        path: path,
+        isSecure: isSecure,
+        isHttpOnly: cookieData['http_only'] ?? true,
+      );
+
+      debugPrint('Session cookie injected: $cookieName=$cookieValue for domain: $domain');
+    } catch (e) {
+      debugPrint('Failed to inject session cookie: $e');
+    }
+  }
+
+  String _extractDomain(String url) {
+    try {
+      final uri = Uri.parse(url);
+      return uri.host;
+    } catch (e) {
+      return 'wavemart.et';
+    }
+  }
+
+  Future<String> _getConferenceUrl() async {
+    final apiClient = ApiClient();
+    final token = await apiClient.getAuthToken();
+
+    final uri = Uri.parse('${ApiConstants.baseUrl}/conferences/${widget.conferenceId}/join');
+    return uri.replace(queryParameters: {
+      'token': token ?? '',
+    }).toString();
+  }
+
+  Future<void> _leaveCall() async {
+    try {
+      final service = ConferenceService();
+      await service.updateConferenceStatus(
+        conferenceId: widget.conferenceId,
+        status: 'left',
+      );
+    } catch (e) {
+      debugPrint('Error updating conference status: $e');
+    }
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _retryConnection() async {
+    setState(() {
+      _hasError = false;
+      _errorMessage = null;
+      _isLoading = true;
+    });
+    await _initializeCall();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.navy950 : Colors.white,
+      appBar: AppBar(
+        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
+        title: Text(AppLocalizations.of(context).jitsiCallTitle),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: _leaveCall,
+        ),
+        bottom: _progress < 1.0 && !_hasError
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(3.0),
+                child: LinearProgressIndicator(
+                  value: _progress,
+                  backgroundColor: Colors.white,
+                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.wave500),
+                ),
+              )
+            : null,
+      ),
+      body: _hasError
+          ? _buildErrorView()
+          : _isLoading
+              ? _buildLoadingView()
+              : _buildWebView(),
+    );
+  }
+
+  Widget _buildLoadingView() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.wave500),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Setting up call...',
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: isDark ? Colors.white : AppColors.navy900,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorView() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
+            const SizedBox(height: 16),
+            Text(
+              _errorMessage ?? AppLocalizations.of(context).commonError,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: isDark ? Colors.white : AppColors.navy900,
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: _retryConnection,
+              icon: const Icon(Icons.refresh),
+              label: Text(AppLocalizations.of(context).commonRetry),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWebView() {
+    return FutureBuilder<String>(
+      future: _getConferenceUrl(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return _buildLoadingView();
+        }
+
+        final url = snapshot.data!;
+        debugPrint('Loading WebView with URL: $url');
+
+        return Stack(
+          children: [
+            InAppWebView(
+              initialUrlRequest: URLRequest(url: WebUri(url)),
+              initialSettings: InAppWebViewSettings(
+                useShouldOverrideUrlLoading: true,
+                mediaPlaybackRequiresUserGesture: false,
+                allowsInlineMediaPlayback: true,
+                iframeAllow: "camera; microphone",
+                iframeAllowFullscreen: true,
+                javaScriptEnabled: true,
+                domStorageEnabled: true,
+                useHybridComposition: true,
+                supportMultipleWindows: false,
+                thirdPartyCookiesEnabled: true,
+                javaScriptCanOpenWindowsAutomatically: true,
+                cacheMode: CacheMode.LOAD_DEFAULT,
+              ),
+              onProgressChanged: (controller, progress) {
+                setState(() {
+                  _progress = progress / 100;
+                });
+                debugPrint('WebView progress: $progress%');
+              },
+              onLoadStart: (controller, url) {
+                debugPrint('WebView started loading: $url');
+              },
+              onLoadStop: (controller, url) {
+                debugPrint('WebView finished loading: $url');
+                setState(() {
+                  _isLoading = false;
+                });
+              },
+              onReceivedError: (controller, request, error) {
+                debugPrint('WebView error: ${error.description}');
+                setState(() {
+                  _hasError = true;
+                  _errorMessage = 'Failed to load: ${error.description}';
+                });
+              },
+              shouldOverrideUrlLoading: (controller, navigationAction) async {
+                final uri = navigationAction.request.url;
+                if (uri != null) {
+                  debugPrint('WebView navigating to: $uri');
+                }
+                return NavigationActionPolicy.ALLOW;
+              },
+            ),
+            if (_isLoading && _progress < 0.1)
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+}

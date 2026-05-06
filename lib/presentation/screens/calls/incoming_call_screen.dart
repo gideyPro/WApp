@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
@@ -10,6 +10,7 @@ import '../../providers/app_providers.dart';
 import '../../../data/services/conference_service.dart';
 import '../../../core/network/api_constants.dart';
 import 'jitsi_call_screen.dart';
+import 'webview_jitsi_screen.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {
   final int conferenceId;
@@ -140,18 +141,15 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   }
 
   void _navigateToJitsi(ConferenceResponse response) {
-    final url = response.jitsiRoomUrl;
-    if (url != null && url.isNotEmpty) {
-      navigatorKey.currentState?.push(
-        MaterialPageRoute(
-          builder: (context) => JitsiCallScreen(
-            jitsiUrl: url,
-            jitsiToken: response.jitsiToken,
-            conferenceId: widget.conferenceId,
-          ),
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => WebViewJitsiScreen(
+          jitsiUrl: response.jitsiRoomUrl,
+          jitsiToken: response.jitsiToken,
+          conferenceId: widget.conferenceId,
         ),
-      );
-    }
+      ),
+    );
   }
 
   Future<void> _declineCall() async {
