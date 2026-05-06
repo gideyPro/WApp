@@ -60,11 +60,20 @@ class FcmService {
           }
         }
       } else {
-        _ref.invalidate(unreadCountProvider);
+        _ref.read(unreadCountProvider.notifier).refresh();
       }
 
       // Show local notification for foreground visibility if available
       if (notification != null && type != 'incoming_call') {
+        // Suppress notification if user is already on the relevant chat page
+        final activeConvId = _ref.read(activeConversationIdProvider);
+        final msgConvId = int.tryParse(message.data['conversation_id']?.toString() ?? '');
+        
+        if (type == 'message' && activeConvId != null && activeConvId == msgConvId) {
+          log('Suppressing duplicate notification for active chat: $msgConvId');
+          return;
+        }
+
         LocalNotificationService.showNotification(
           id: message.hashCode,
           title: notification.title ?? 'WaveMart',

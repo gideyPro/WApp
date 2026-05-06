@@ -28,7 +28,8 @@ final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<v
 /// Selected Tab Provider for MainNavigationShell
 final selectedTabProvider = StateProvider<int>((ref) => 0);
 
-/// Connectivity Provider
+/// Currently active conversation ID (for suppression of background notifications)
+final activeConversationIdProvider = StateProvider<int?>((ref) => null);
 final connectivityProvider = Provider<ConnectivityService>((ref) {
   final service = ConnectivityService();
   ref.onDispose(() => service.dispose());
@@ -174,25 +175,35 @@ final notificationServiceProvider =
     Provider<NotificationService>((ref) => NotificationService());
 final notificationsProvider =
     StateNotifierProvider<NotificationNotifier, NotificationState>((ref) {
-  return NotificationNotifier(ref.watch(notificationServiceProvider));
+  return NotificationNotifier(ref.watch(notificationServiceProvider), ref);
 });
-final unreadCountProvider = StreamProvider<int>((ref) async* {
-  final service = ref.watch(notificationServiceProvider);
-  try {
-    final response = await service.getNotifications(filter: 'unread', page: 1);
-    if (response.success) {
-      yield response.unreadCount;
-    } else {
-      yield 0;
-    }
-  } catch (e) {
-    yield 0;
+class UnreadNotifCountNotifier extends StateNotifier<int> {
+  final NotificationService _notificationService;
+
+  UnreadNotifCountNotifier(this._notificationService) : super(0) {
+    refresh();
   }
+
+  Future<void> refresh() async {
+    try {
+      final response = await _notificationService.getNotifications(filter: 'unread', page: 1);
+      if (response.success) {
+        state = response.unreadCount;
+      }
+    } catch (e) {
+      // Handle error
+    }
+  }
+}
+
+final unreadCountProvider = StateNotifierProvider<UnreadNotifCountNotifier, int>((ref) {
+  return UnreadNotifCountNotifier(ref.watch(notificationServiceProvider));
 });
 
 class NotificationNotifier extends StateNotifier<NotificationState> {
   final NotificationService _notificationService;
-  NotificationNotifier(this._notificationService)
+  final Ref _ref;
+  NotificationNotifier(this._notificationService, this._ref)
       : super(const NotificationState.initial());
 
   Future<void> loadNotifications({int page = 1}) async {
@@ -204,6 +215,11 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
           : [...state.notifications, ...response.notifications];
       state = NotificationState.loaded(
           notifications: newListings, total: response.total ?? 0);
+      
+      // Update unread count provider if we just loaded page 1
+      if (page == 1) {
+        _ref.read(unreadCountProvider.notifier).refresh();
+      }
     } else {
       state = state.copyWith(isLoading: false, errorMessage: response.message);
     }
@@ -215,6 +231,9 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
         notifications: state.notifications
             .map((n) => n.id == id ? n.copyWith(isRead: true) : n)
             .toList());
+    
+    // Refresh unread count
+    _ref.read(unreadCountProvider.notifier).refresh();
   }
 
   Future<void> markAllAsRead() async {
@@ -222,6 +241,9 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     state = state.copyWith(
         notifications:
             state.notifications.map((n) => n.copyWith(isRead: true)).toList());
+    
+    // Refresh unread count
+    _ref.read(unreadCountProvider.notifier).refresh();
   }
 }
 
@@ -363,7 +385,7 @@ final chatMessagesProvider =
         (ref, conversationId) {
   final authState = ref.watch(authStateProvider);
   return ChatMessagesNotifier(ref.watch(messageServiceProvider), conversationId,
-      authState.user?.id);
+      authState.user?.id, ref);
 });
 
 class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
@@ -372,10 +394,16 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
   final int? _currentUserId;
 
   ChatMessagesNotifier(
-      this._messageService, this.conversationId, this._currentUserId)
+      this._messageService, this.conversationId, this._currentUserId, this._ref)
       : super(const ChatMessagesState.initial()) {
+    // Set active conversation ID for FCM suppression
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _ref.read(activeConversationIdProvider.notifier).state = conversationId;
+    });
     loadMessages();
   }
+
+  final Ref _ref;
 
   Future<void> loadMessages({int page = 1}) async {
     if (page == 1) {
@@ -398,6 +426,10 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
         hasMore: response.messages.length >= 50,
         relatedConversations: response.relatedConversations,
       );
+
+      // Instant Update: Messages are marked as read on server when loaded,
+      // so we refresh the global badge count immediately.
+      _ref.read(unreadMessagesCountProvider.notifier).refresh();
     } else {
       // Graceful error handling - don't show error if no data yet
       if (state.messages.isEmpty) {
@@ -419,6 +451,12 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
 
   @override
   void dispose() {
+    // Clear active conversation ID when user leaves chat
+    Future.microtask(() {
+      if (_ref.read(activeConversationIdProvider) == conversationId) {
+        _ref.read(activeConversationIdProvider.notifier).state = null;
+      }
+    });
     super.dispose();
   }
 }
