@@ -92,8 +92,13 @@ class FcmService {
 
   Future<void> _updateToken() async {
     try {
+      // Delete old token first to invalidate any stale token from a
+      // previous user who may have abandoned this device without logging out.
+      // This ensures the old token is immediately invalidated in Firebase,
+      // then we get a fresh one for the current user.
+      await _fcm.deleteToken();
       String? token = await _fcm.getToken();
-      log('FCM Token: $token');
+      log('FCM Token (fresh): $token');
       if (token != null) {
         await _ref.read(fcmApiServiceProvider).registerToken(token);
       }
@@ -112,6 +117,16 @@ class FcmService {
       callerInitials: data['caller_initials'],
       listingTitle: data['listing_title'],
     ));
+  }
+
+  /// Clean up FCM on logout — delete token so logged-out user stops receiving pushes
+  Future<void> cleanup() async {
+    try {
+      await _fcm.deleteToken();
+      log('FCM token deleted on logout');
+    } catch (e) {
+      log('Error deleting FCM token: $e');
+    }
   }
 }
 

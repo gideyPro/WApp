@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/services/auth_service.dart';
+import '../../data/services/fcm_service.dart';
 import '../../data/models/user.dart';
 
 /// Auth Service Provider
@@ -9,13 +10,14 @@ final authServiceProvider = Provider<AuthService>((ref) {
 
 /// Auth State - Current authenticated user
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(ref.watch(authServiceProvider));
+  return AuthNotifier(ref.watch(authServiceProvider), ref);
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthService _authService;
+  final Ref _ref;
 
-  AuthNotifier(this._authService) : super(AuthState.initial());
+  AuthNotifier(this._authService, this._ref) : super(AuthState.initial());
 
   /// Check if user is authenticated
   Future<void> checkAuth() async {
@@ -102,6 +104,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   /// Logout
   Future<void> logout() async {
+    // Clean up FCM token before logging out to stop receiving pushes
+    try {
+      _ref.read(fcmServiceProvider).cleanup();
+    } catch (_) {}
     await _authService.logout();
     state = AuthState.unauthenticated();
   }
