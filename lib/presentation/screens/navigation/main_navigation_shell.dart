@@ -172,12 +172,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     ];
 
     // Watch unread messages count
-    final unreadMessagesAsync = ref.watch(unreadMessagesCountProvider);
-    final unreadMsgCount = unreadMessagesAsync.when(
-      data: (count) => count,
-      loading: () => 0,
-      error: (_, __) => 0,
-    );
+    final unreadMsgCount = ref.watch(unreadMessagesCountProvider);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
