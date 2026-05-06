@@ -92,7 +92,6 @@ class WaveMartApp extends ConsumerStatefulWidget {
 }
 
 class _WaveMartAppState extends ConsumerState<WaveMartApp> {
-  bool _pollingStarted = false;
   bool _fcmStarted = false;
 
   @override
@@ -108,21 +107,8 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(fcmServiceProvider).initialize();
       });
-    }
-
-    // Start polling as fallback
-    if (authState.isAuthenticated && !_pollingStarted) {
-      _pollingStarted = true;
-      // Use addPostFrameCallback to avoid modifying state during build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(incomingCallProvider.notifier).startPolling();
-      });
-    } else if (!authState.isAuthenticated && _pollingStarted) {
-      _pollingStarted = false;
+    } else if (!authState.isAuthenticated) {
       _fcmStarted = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(incomingCallProvider.notifier).stopPolling();
-      });
     }
 
     return MaterialApp(

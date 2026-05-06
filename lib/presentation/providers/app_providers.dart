@@ -178,39 +178,15 @@ final notificationsProvider =
 });
 final unreadCountProvider = StreamProvider<int>((ref) async* {
   final service = ref.watch(notificationServiceProvider);
-  Set<int> knownIds = {};
-  bool isFirstRun = true;
-
-  while (true) {
-    try {
-      final response =
-          await service.getNotifications(filter: 'unread', page: 1);
-      if (response.success) {
-        if (!isFirstRun) {
-          for (var n in response.notifications) {
-            if (!knownIds.contains(n.id)) {
-              LocalNotificationService.showNotification(
-                id: 1000 + n.id,
-                title: n.title,
-                body: n.body,
-              );
-              knownIds.add(n.id);
-            }
-          }
-        } else {
-          for (var n in response.notifications) {
-            knownIds.add(n.id);
-          }
-          isFirstRun = false;
-        }
-        yield response.unreadCount;
-      } else {
-        yield 0;
-      }
-    } catch (e) {
+  try {
+    final response = await service.getNotifications(filter: 'unread', page: 1);
+    if (response.success) {
+      yield response.unreadCount;
+    } else {
       yield 0;
     }
-    await Future.delayed(const Duration(seconds: 15));
+  } catch (e) {
+    yield 0;
   }
 });
 
@@ -291,49 +267,19 @@ final conversationsProvider =
 /// Unread messages count provider - sums unreadCount from all conversations
 final unreadMessagesCountProvider = StreamProvider<int>((ref) async* {
   final service = ref.watch(messageServiceProvider);
-  final authState = ref.watch(authStateProvider);
-  Map<int, int> knownUnreadCounts = {};
-  bool isFirstRun = true;
-
-  while (true) {
-    try {
-      final response = await service.getConversations(page: 1, perPage: 100);
-      if (response.success) {
-        int totalUnread = 0;
-        
-        if (!isFirstRun) {
-           for (var conv in response.conversations) {
-             final count = conv.unreadCount ?? 0;
-             totalUnread += count;
-             
-             final previousCount = knownUnreadCounts[conv.id] ?? 0;
-             if (count > previousCount) {
-               LocalNotificationService.showNotification(
-                 id: 2000 + conv.id,
-                 title: conv.getDisplayTitle(authState.user?.id ?? 0),
-                 body: conv.lastMessage ?? 'You received a new message',
-                 payload: 'message_${conv.id}',
-               );
-             }
-             knownUnreadCounts[conv.id] = count;
-           }
-        } else {
-           for (var conv in response.conversations) {
-             final count = conv.unreadCount ?? 0;
-             totalUnread += count;
-             knownUnreadCounts[conv.id] = count;
-           }
-           isFirstRun = false;
-        }
-        
-        yield totalUnread;
-      } else {
-        yield 0;
+  try {
+    final response = await service.getConversations(page: 1, perPage: 100);
+    if (response.success) {
+      int totalUnread = 0;
+      for (var conv in response.conversations) {
+        totalUnread += (conv.unreadCount ?? 0) as int;
       }
-    } catch (e) {
+      yield totalUnread;
+    } else {
       yield 0;
     }
-    await Future.delayed(const Duration(seconds: 15));
+  } catch (e) {
+    yield 0;
   }
 });
 
@@ -854,85 +800,14 @@ final incomingCallProvider =
 
 class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
   final ConferenceService _conferenceService;
-  Timer? _pollingTimer;
-  static const _pollingInterval = Duration(seconds: 3);
-  int? _declinedConferenceId;
-  DateTime? _declinedUntil;
-
   IncomingCallNotifier(this._conferenceService) : super(null);
-
-  void startPolling() {
-    _pollingTimer?.cancel();
-    _pollingTimer =
-        Timer.periodic(_pollingInterval, (_) => _checkForIncomingCall());
-  }
-
-  void stopPolling() {
-    _pollingTimer?.cancel();
-    _pollingTimer = null;
-  }
 
   void setIncomingCall(IncomingCall? call) {
     state = call;
   }
 
-  void markDeclined(int conferenceId) {
-    _declinedConferenceId = conferenceId;
-    _declinedUntil = DateTime.now().add(const Duration(seconds: 10));
-    state = null;
-  }
-
-Future<void> _checkForIncomingCall() async {
-    if (state != null) return;
-
-    // Skip if this specific call was just declined (within cooldown)
-    if (_declinedConferenceId != null && _declinedUntil != null) {
-      if (DateTime.now().isBefore(_declinedUntil!)) {
-        return;
-      }
-      _declinedConferenceId = null;
-      _declinedUntil = null;
-    }
-
-    try {
-      final response = await _conferenceService.checkIncomingCall();
-
-      if (response.hasIncoming && response.callData != null) {
-        final callData = response.callData!;
-        final conferenceId = callData['conference_id'] ?? 0;
-        
-        // Skip if this was just declined
-        if (_declinedConferenceId == conferenceId && _declinedUntil != null && DateTime.now().isBefore(_declinedUntil!)) {
-          return;
-        }
-
-        if (state == null) {
-          LocalNotificationService.showNotification(
-            id: 300 + (conferenceId as int),
-            title: 'Incoming Call',
-            body: '${callData['caller_name']} is calling you...',
-          );
-        }
-        
-        state = IncomingCall(
-          conferenceId: conferenceId,
-          callerName: callData['caller_name'] ?? 'Unknown',
-          callerAvatar: callData['caller_avatar'],
-          callerInitials: callData['caller_initials'],
-          listingTitle: callData['listing_title'],
-        );
-      }
-    } catch (_) {}
-  }
-
   void clearIncomingCall() {
     state = null;
-  }
-
-  @override
-  void dispose() {
-    stopPolling();
-    super.dispose();
   }
 }
 

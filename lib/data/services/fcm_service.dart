@@ -38,16 +38,39 @@ class FcmService {
       log('Got a message whilst in the foreground!');
       log('Message data: ${message.data}');
 
-      if (message.data['type'] == 'incoming_call') {
+      final type = message.data['type'];
+      final notification = message.notification;
+      
+      // Update Providers
+      if (type == 'incoming_call') {
         _handleIncomingCall(message.data);
+      } else if (type == 'message') {
+        _ref.invalidate(unreadMessagesCountProvider);
+      } else {
+        _ref.invalidate(notificationsCountProvider);
+      }
+
+      // Show local notification for foreground visibility if available
+      if (notification != null && type != 'incoming_call') {
+        LocalNotificationService.showNotification(
+          id: message.hashCode,
+          title: notification.title ?? 'WaveMart',
+          body: notification.body ?? '',
+        );
       }
     });
 
     // 4. Handle messages when app is in background but opened via notification
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       log('App opened from notification!');
-      if (message.data['type'] == 'incoming_call') {
+      final type = message.data['type'];
+      
+      if (type == 'incoming_call') {
         _handleIncomingCall(message.data);
+      } else {
+        // Invalidate to show latest data when navigated back
+        _ref.invalidate(notificationsCountProvider);
+        _ref.invalidate(unreadMessagesCountProvider);
       }
     });
   }
