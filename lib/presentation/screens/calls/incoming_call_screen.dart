@@ -9,7 +9,6 @@ import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../../data/services/conference_service.dart';
 import '../../../core/network/api_constants.dart';
-import 'jitsi_call_screen.dart';
 import 'webview_jitsi_screen.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {

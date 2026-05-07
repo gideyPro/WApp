@@ -34,12 +34,21 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
   bool _isLoading = true;
   bool _hasError = false;
   String? _errorMessage;
+  String? _conferenceUrl;
+  bool _hasLeft = false;
   final CookieManager _cookieManager = CookieManager.instance();
+  InAppWebViewController? _webViewController;
 
   @override
   void initState() {
     super.initState();
     _initializeCall();
+  }
+
+  @override
+  void dispose() {
+    _webViewController?.dispose();
+    super.dispose();
   }
 
   Future<void> _initializeCall() async {
@@ -156,14 +165,36 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
     final token = await apiClient.getAuthToken();
     final uri =
         Uri.parse('${ApiConstants.baseUrl}/conferences/${widget.conferenceId}/join');
-    return uri
+    final url = uri
         .replace(queryParameters: {
           'token': token ?? '',
         })
         .toString();
+    _conferenceUrl = url;
+    return url;
+  }
+
+  bool _isConferenceUrl(String? url) {
+    if (url == null || _conferenceUrl == null) return false;
+    try {
+      final incoming = Uri.parse(url);
+      final conference = Uri.parse(_conferenceUrl!);
+      final jitsiHosts = [
+        'jitsi.member.fsf.org',
+        'meet.jit.si',
+        conference.host,
+      ];
+      return jitsiHosts.contains(incoming.host) ||
+          incoming.host == conference.host;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<void> _leaveCall() async {
+    if (_hasLeft) return;
+    _hasLeft = true;
+
     try {
       final service = ConferenceService();
       await service.updateConferenceStatus(
@@ -284,52 +315,100 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
 
         return Stack(
           children: [
-            InAppWebView(
-              initialUrlRequest: URLRequest(url: WebUri(url)),
-              initialSettings: InAppWebViewSettings(
-                useShouldOverrideUrlLoading: true,
-                mediaPlaybackRequiresUserGesture: false,
-                allowsInlineMediaPlayback: true,
-                iframeAllow: "camera; microphone",
-                iframeAllowFullscreen: true,
-                javaScriptEnabled: true,
-                domStorageEnabled: true,
-                useHybridComposition: true,
-                supportMultipleWindows: false,
-                thirdPartyCookiesEnabled: true,
-                javaScriptCanOpenWindowsAutomatically: true,
-                cacheMode: CacheMode.LOAD_DEFAULT,
-              ),
-              onProgressChanged: (controller, progress) {
-                setState(() {
-                  _progress = progress / 100;
+        InAppWebView(
+          initialUrlRequest: URLRequest(url: WebUri(url)),
+          initialSettings: InAppWebViewSettings(
+            useShouldOverrideUrlLoading: true,
+            mediaPlaybackRequiresUserGesture: false,
+            allowsInlineMediaPlayback: true,
+            iframeAllow: "camera; microphone",
+            iframeAllowFullscreen: true,
+            javaScriptEnabled: true,
+            domStorageEnabled: true,
+            useHybridComposition: true,
+            supportMultipleWindows: false,
+            thirdPartyCookiesEnabled: true,
+            javaScriptCanOpenWindowsAutomatically: true,
+            cacheMode: CacheMode.LOAD_DEFAULT,
+          ),
+          onWebViewCreated: (controller) {
+            _webViewController = controller;
+            controller.addJavaScriptHandler(
+              handlerName: 'onJitsiLeave',
+              callback: (args) {
+                debugPrint('Jitsi leave event received via JS');
+                _leaveCall();
+              },
+            );
+          },
+          onPermissionRequest: (controller, request) async {
+            debugPrint('WebView permission request: ${request.resources}');
+            return PermissionResponse(
+              resources: request.resources,
+              action: PermissionResponseAction.GRANT,
+            );
+          },
+          onProgressChanged: (controller, progress) {
+            setState(() {
+              _progress = progress / 100;
+            });
+            debugPrint('WebView progress: $progress%');
+          },
+          onLoadStart: (controller, url) {
+            debugPrint('WebView started loading: $url');
+          },
+          onLoadStop: (controller, url) async {
+            debugPrint('WebView finished loading: $url');
+            if (!_isConferenceUrl(url?.toString())) {
+              debugPrint('Navigated away from conference URL, leaving call');
+              _leaveCall();
+              return;
+            }
+            setState(() {
+              _isLoading = false;
+            });
+            await controller.evaluateJavascript(source: '''
+              (function() {
+                var observer = new MutationObserver(function() {
+                  var leaveBtn = document.querySelector('.dismiss-button, .icon-default, [aria-label="Leave"], [data-testid="leave"], button[title="Leave"], .toolbox-button[aria-label="Leave call"]');
+                  if (leaveBtn) {
+                    leaveBtn.addEventListener('click', function() {
+                      if (window.flutter_inappwebview) {
+                        window.flutter_inappwebview.callHandler('onJitsiLeave');
+                      }
+                    }, true);
+                  }
                 });
-                debugPrint('WebView progress: $progress%');
-              },
-              onLoadStart: (controller, url) {
-                debugPrint('WebView started loading: $url');
-              },
-              onLoadStop: (controller, url) {
-                debugPrint('WebView finished loading: $url');
-                setState(() {
-                  _isLoading = false;
-                });
-              },
-              onReceivedError: (controller, request, error) {
-                debugPrint('WebView error: ${error.description}');
-                setState(() {
-                  _hasError = true;
-                  _errorMessage = 'Failed to load: ${error.description}';
-                });
-              },
-              shouldOverrideUrlLoading: (controller, navigationAction) async {
-                final uri = navigationAction.request.url;
-                if (uri != null) {
-                  debugPrint('WebView navigating to: $uri');
-                }
-                return NavigationActionPolicy.ALLOW;
-              },
-            ),
+                observer.observe(document.body, { childList: true, subtree: true });
+              })();
+            ''');
+          },
+          onReceivedError: (controller, request, error) {
+            debugPrint('WebView error: ${error.description}');
+            if (!_hasLeft) {
+              setState(() {
+                _hasError = true;
+                _errorMessage = 'Failed to load: ${error.description}';
+              });
+            }
+          },
+          shouldOverrideUrlLoading: (controller, navigationAction) async {
+            final uri = navigationAction.request.url;
+            if (uri != null) {
+              debugPrint('WebView navigating to: $uri');
+              if (!_isConferenceUrl(uri.toString())) {
+                debugPrint('Navigation outside conference detected, leaving call');
+                _leaveCall();
+                return NavigationActionPolicy.CANCEL;
+              }
+            }
+            return NavigationActionPolicy.ALLOW;
+          },
+          onCloseWindow: (controller) {
+            debugPrint('WebView window closed');
+            _leaveCall();
+          },
+        ),
             if (_isLoading && _progress < 0.1)
               const Center(
                 child: CircularProgressIndicator(),
