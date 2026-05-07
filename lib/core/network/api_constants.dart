@@ -132,9 +132,6 @@ class ApiConstants {
       '$apiBase/conferences/start-direct'; // + /{conversation}
   static const String conferenceDetail = '$apiBase/conferences'; // + /{id}
   static const String joinConference = '$apiBase/conferences'; // + /{id}/join
-  static const String conferenceStatus = '$apiBase/conferences'; // + /{id}/status
-  static const String updateConferenceStatus =
-      '$apiBase/conferences'; // + /{id}/status
   static const String deleteConference = '$apiBase/conferences'; // + /{id}
   static const String inviteToConference =
       '$apiBase/conferences'; // + /{id}/invite/{user}

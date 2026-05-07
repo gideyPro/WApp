@@ -51,9 +51,9 @@ class PropertyListingCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildImageSection(context),
-
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xl),
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xl),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -71,7 +71,7 @@ class PropertyListingCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                
+
                 const Divider(height: 1),
                 const SizedBox(height: 16),
 
@@ -222,33 +222,33 @@ class PropertyListingCard extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 4 / 3,
               child: CachedNetworkImage(
-              imageUrl: listing?.mainImageUrl ?? '',
-              fit: BoxFit.cover,
-              placeholder: (_, __) => Shimmer.fromColors(
-                baseColor: Colors.grey[200]!,
-                highlightColor: Colors.grey[100]!,
-                child: Container(
-                  color: Colors.grey[300],
-                  child: Center(
-                    child: Icon(
-                      Icons.home_rounded,
-                      size: 40,
-                      color: Colors.grey[400],
+                imageUrl: listing?.mainImageUrl ?? '',
+                fit: BoxFit.cover,
+                placeholder: (_, __) => Shimmer.fromColors(
+                  baseColor: Colors.grey[200]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    color: Colors.grey[300],
+                    child: Center(
+                      child: Icon(
+                        Icons.home_rounded,
+                        size: 40,
+                        color: Colors.grey[400],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              errorWidget: (_, __, ___) => Container(
-                color: AppColors.navy100,
-                child: const Icon(
-                  Icons.home_outlined,
-                  size: 64,
-                  color: AppColors.navy300,
+                errorWidget: (_, __, ___) => Container(
+                  color: AppColors.navy100,
+                  child: const Icon(
+                    Icons.home_outlined,
+                    size: 64,
+                    color: AppColors.navy300,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
         ),
 
         // Badges Overlay
@@ -315,7 +315,8 @@ class PropertyListingCard extends StatelessWidget {
             top: AppSpacing.md,
             right: AppSpacing.xl + 32,
             child: WaveGlass(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -324,8 +325,8 @@ class PropertyListingCard extends StatelessWidget {
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${listing?.imageCount ?? 0}',
-                    style:
-                        AppTextStyles.labelSmall.copyWith(color: context.textPrimary),
+                    style: AppTextStyles.labelSmall
+                        .copyWith(color: context.textPrimary),
                   ),
                 ],
               ),
@@ -337,7 +338,8 @@ class PropertyListingCard extends StatelessWidget {
           bottom: AppSpacing.md,
           left: AppSpacing.md,
           child: WaveGlass(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -367,7 +369,8 @@ class PropertyListingCard extends StatelessWidget {
 
   Widget _buildBadge(String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
@@ -414,7 +417,7 @@ class PropertyListingCard extends StatelessWidget {
 
   Widget _buildLocation(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final location = listing?.address?.shortAddress ??
+    final location = listing?.address?.getLocalizedAddress(context) ??
         listing?.address?.region ??
         l10n.listingUnknownLocation;
     return Row(
@@ -490,7 +493,9 @@ class PropertyListingCard extends StatelessWidget {
         const SizedBox(width: 8),
         _buildFeatureChip(
           Icons.sell_outlined,
-          listing?.listingType == ListingType.sale ? l10n.listingSale : l10n.listingRent,
+          listing?.listingType == ListingType.sale
+              ? l10n.listingSale
+              : l10n.listingRent,
         ),
         const Spacer(),
         Icon(
@@ -698,7 +703,9 @@ class FeaturedListingCard extends StatelessWidget {
               ),
               const SizedBox(width: 3),
               Text(
-                listing?.propertyType == PropertyType.house ? l10n.listingHouse : l10n.listingLand,
+                listing?.propertyType == PropertyType.house
+                    ? l10n.listingHouse
+                    : l10n.listingLand,
                 style: AppTextStyles.labelSmall.copyWith(
                   color: Colors.white,
                   fontSize: 9,
@@ -708,7 +715,8 @@ class FeaturedListingCard extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 6),
-        if (listing?.isNew == true) _buildBadge(l10n.listingNew, AppColors.emerald500),
+        if (listing?.isNew == true)
+          _buildBadge(l10n.listingNew, AppColors.emerald500),
         if (listing?.isNew == true && listing?.isFeatured == true)
           const SizedBox(width: 4),
         if (listing?.isFeatured == true)
@@ -821,7 +829,7 @@ class FeaturedListingCard extends StatelessWidget {
         const SizedBox(width: 3),
         Expanded(
           child: Text(
-            listing?.address?.shortAddress ??
+            listing?.address?.getLocalizedAddress(context) ??
                 listing?.address?.region ??
                 l10n.listingUnknownLocation,
             style: AppTextStyles.bodySmall.copyWith(
@@ -854,7 +862,9 @@ class FeaturedListingCard extends StatelessWidget {
         const SizedBox(width: 4),
         _buildFeatureChip(
           Icons.sell_outlined,
-          listing?.listingType == ListingType.sale ? l10n.listingSale : l10n.listingRent,
+          listing?.listingType == ListingType.sale
+              ? l10n.listingSale
+              : l10n.listingRent,
         ),
       ],
     );

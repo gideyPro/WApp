@@ -6,7 +6,6 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:dio/dio.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../data/services/conference_service.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
 import '../../../l10n/app_localizations.dart';
@@ -179,31 +178,19 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
     try {
       final incoming = Uri.parse(url);
       final conference = Uri.parse(_conferenceUrl!);
-      final jitsiHosts = [
-        'jitsi.member.fsf.org',
-        'meet.jit.si',
-        conference.host,
-      ];
-      return jitsiHosts.contains(incoming.host) ||
-          incoming.host == conference.host;
+      
+      // We strictly only allow the exact conference join path on our domain.
+      // If Jitsi redirects to / (home) or any other path after the call, 
+      // this will return false and trigger the screen to close.
+      return incoming.host == conference.host && incoming.path == conference.path;
     } catch (_) {
       return false;
     }
   }
 
-  Future<void> _leaveCall() async {
+  void _leaveCall() {
     if (_hasLeft) return;
     _hasLeft = true;
-
-    try {
-      final service = ConferenceService();
-      await service.updateConferenceStatus(
-        conferenceId: widget.conferenceId,
-        status: 'left',
-      );
-    } catch (e) {
-      debugPrint('Error updating conference status: $e');
-    }
 
     if (mounted) {
       Navigator.of(context).pop();

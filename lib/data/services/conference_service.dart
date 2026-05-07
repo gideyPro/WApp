@@ -1,4 +1,3 @@
-import 'dart:developer' as dev;
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 import '../../core/network/error_handler.dart';
@@ -231,37 +230,6 @@ class ConferenceService {
       return ConferenceResponse(
         success: false,
         message: errorMessage,
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return ConferenceResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
-
-  /// Update conference status
-  Future<ConferenceResponse> updateConferenceStatus({
-    required int conferenceId,
-    required String status, // active, ended
-  }) async {
-    try {
-      final response = await _apiClient.dio.patch(
-        '${ApiConstants.updateConferenceStatus}/$conferenceId/status',
-        data: {'status': status},
-      );
-
-      if (response.statusCode == 200) {
-        return ConferenceResponse(
-          success: true,
-          message: 'Conference status updated',
-        );
-      }
-
-      return ConferenceResponse(
-        success: false,
-        message: response.data['message'] ?? 'Failed to update status',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
