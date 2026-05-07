@@ -58,7 +58,6 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
       // 2. Get auth token
       final apiClient = ApiClient();
       final token = await apiClient.getAuthToken();
-
       if (token == null) {
         setState(() {
           _hasError = true;
@@ -81,7 +80,8 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
           ),
         );
 
-        if (sessionResponse.statusCode == 200 && sessionResponse.data['success']) {
+        if (sessionResponse.statusCode == 200 &&
+            sessionResponse.data['success']) {
           final cookieData = sessionResponse.data['data'];
           await _injectSessionCookie(cookieData);
         } else {
@@ -107,9 +107,24 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
     try {
       final cookieName = cookieData['cookie_name'] ?? 'wavemart-session';
       final cookieValue = cookieData['cookie_value'] ?? '';
-      final domain = cookieData['domain'] ?? _extractDomain(ApiConstants.baseUrl);
+
+      // Always derive domain from ApiConstants.baseUrl to avoid mismatch
+      // (e.g. backend may return "localhost" if APP_URL is misconfigured)
+      final correctDomain = _extractDomain(ApiConstants.baseUrl);
+      final backendDomain = cookieData['domain'] as String?;
+      final domain = (backendDomain != null &&
+              backendDomain != 'localhost' &&
+              backendDomain.isNotEmpty)
+          ? backendDomain
+          : correctDomain;
+
       final path = cookieData['path'] ?? '/';
-      final isSecure = cookieData['secure'] ?? false;
+
+      // Force secure=true for HTTPS sites — the backend config may not
+      // reflect the actual deployment scheme
+      final baseUrlIsHttps =
+          Uri.parse(ApiConstants.baseUrl).scheme == 'https';
+      final isSecure = baseUrlIsHttps || (cookieData['secure'] == true);
 
       await _cookieManager.setCookie(
         url: WebUri(ApiConstants.baseUrl),
@@ -121,7 +136,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
         isHttpOnly: cookieData['http_only'] ?? true,
       );
 
-      debugPrint('Session cookie injected: $cookieName=$cookieValue for domain: $domain');
+      debugPrint('Session cookie injected: $cookieName for domain: $domain secure: $isSecure');
     } catch (e) {
       debugPrint('Failed to inject session cookie: $e');
     }
@@ -139,11 +154,13 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
   Future<String> _getConferenceUrl() async {
     final apiClient = ApiClient();
     final token = await apiClient.getAuthToken();
-
-    final uri = Uri.parse('${ApiConstants.baseUrl}/conferences/${widget.conferenceId}/join');
-    return uri.replace(queryParameters: {
-      'token': token ?? '',
-    }).toString();
+    final uri =
+        Uri.parse('${ApiConstants.baseUrl}/conferences/${widget.conferenceId}/join');
+    return uri
+        .replace(queryParameters: {
+          'token': token ?? '',
+        })
+        .toString();
   }
 
   Future<void> _leaveCall() async {
@@ -156,6 +173,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
     } catch (e) {
       debugPrint('Error updating conference status: $e');
     }
+
     if (mounted) {
       Navigator.of(context).pop();
     }
@@ -189,7 +207,8 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
                 child: LinearProgressIndicator(
                   value: _progress,
                   backgroundColor: Colors.white,
-                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.wave500),
+                  valueColor:
+                      const AlwaysStoppedAnimation<Color>(AppColors.wave500),
                 ),
               )
             : null,
@@ -320,5 +339,4 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
       },
     );
   }
-
 }
