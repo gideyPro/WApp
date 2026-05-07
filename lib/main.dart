@@ -18,6 +18,7 @@ import 'core/network/local_notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'data/services/fcm_service.dart';
+import 'presentation/widgets/common/wave_connectivity_banner.dart';
 
 import 'firebase_options.dart';
 
@@ -143,6 +144,8 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
         return Stack(
           children: [
             child,
+            // Global Connectivity Banner
+            const WaveConnectivityBanner(),
             if (authState.isAuthenticated && incomingCall != null)
               Positioned.fill(
                 child: Material(

@@ -36,9 +36,58 @@ final connectivityProvider = Provider<ConnectivityService>((ref) {
   return service;
 });
 
-/// Is connected stream
-final isConnectedProvider = StreamProvider<bool>((ref) {
-  return ref.watch(connectivityProvider).connectionStatus;
+enum ConnectivityStatus { online, offline, connecting }
+
+final connectivityStatusProvider = StateNotifierProvider<ConnectivityNotifier, ConnectivityStatus>((ref) {
+  return ConnectivityNotifier(ref);
+});
+
+class ConnectivityNotifier extends StateNotifier<ConnectivityStatus> {
+  final Ref _ref;
+  StreamSubscription? _subscription;
+  bool _wasOffline = false;
+
+  ConnectivityNotifier(this._ref) : super(ConnectivityStatus.online) {
+    _init();
+  }
+
+  void _init() {
+    _subscription = _ref.read(connectivityProvider).connectionStatus.listen((isConnected) {
+      if (isConnected) {
+        state = ConnectivityStatus.online;
+        if (_wasOffline) {
+          _triggerAutoHealing();
+          _wasOffline = false;
+        }
+      } else {
+        state = ConnectivityStatus.offline;
+        _wasOffline = true;
+      }
+    });
+  }
+
+  void _triggerAutoHealing() {
+    // Standard industry practice: auto-refresh active data when connection returns
+    final authState = _ref.read(authStateProvider);
+    if (authState.isAuthenticated) {
+      // Silent refresh of core data
+      _ref.read(unreadCountProvider.notifier).refresh();
+      _ref.read(unreadMessagesCountProvider.notifier).refresh();
+      _ref.read(conversationsProvider.notifier).loadConversations();
+      _ref.read(notificationsProvider.notifier).loadNotifications();
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+}
+
+/// Is connected stream (keeping for backward compatibility if needed)
+final isConnectedProvider = Provider<bool>((ref) {
+  return ref.watch(connectivityStatusProvider) == ConnectivityStatus.online;
 });
 
 /// Favorite Provider
