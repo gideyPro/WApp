@@ -67,7 +67,7 @@ class FcmService {
         _ref.read(unreadCountProvider.notifier).refresh();
         
         // Refresh the notifications list if the user is on that screen
-        _ref.read(notificationProvider.notifier).loadNotifications();
+        _ref.read(notificationsProvider.notifier).loadNotifications();
       }
 
       // Show local notification for foreground visibility if available
