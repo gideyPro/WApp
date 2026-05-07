@@ -26,6 +26,40 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
   InAppWebViewController? webViewController;
   double progress = 0;
   bool isLoading = true;
+  Timer? _watchdogTimer;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startWatchdog();
+  }
+
+  @override
+  void dispose() {
+    _watchdogTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startWatchdog() {
+    _watchdogTimer?.cancel();
+    _watchdogTimer = Timer(const Duration(minutes: 1), () {
+      if (isLoading && mounted) {
+        debugPrint('WebView Watchdog Timeout: Page failed to load in 60s');
+        _handleError('Gateway Timeout');
+      }
+    });
+  }
+
+  void _handleError(String message) {
+    if (_hasError) return;
+    _hasError = true;
+    _watchdogTimer?.cancel();
+    debugPrint('WebView Technical Error: $message');
+    if (mounted) {
+      Navigator.of(context).pop('technical_failure');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +118,20 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
             onLoadStop: (controller, url) {
               setState(() {
                 isLoading = false;
+                _watchdogTimer?.cancel(); // Success!
               });
               _checkUrl(url.toString());
+            },
+            onReceivedError: (controller, request, error) {
+              // Ignore some minor errors if needed, but usually network errors are fatal for payment
+              if (request.isForMainFrame == true) {
+                _handleError(error.description);
+              }
+            },
+            onReceivedHttpError: (controller, request, errorResponse) {
+              if (request.isForMainFrame == true) {
+                _handleError('HTTP ${errorResponse.statusCode}');
+              }
             },
             shouldOverrideUrlLoading: (controller, navigationAction) async {
               var uri = navigationAction.request.url;

@@ -179,25 +179,51 @@ final notificationsProvider =
 });
 class UnreadNotifCountNotifier extends StateNotifier<int> {
   final NotificationService _notificationService;
+  final Ref _ref;
+  Timer? _timer;
 
-  UnreadNotifCountNotifier(this._notificationService) : super(0) {
+  UnreadNotifCountNotifier(this._notificationService, this._ref) : super(0) {
     refresh();
+    _startPolling();
+  }
+
+  void _startPolling() {
+    _timer?.cancel();
+    // Poll every 60 seconds as a fallback to FCM
+    _timer = Timer.periodic(const Duration(seconds: 60), (_) {
+      final authState = _ref.read(authStateProvider);
+      if (authState.isAuthenticated) {
+        refresh();
+      }
+    });
   }
 
   Future<void> refresh() async {
+    final authState = _ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      if (state != 0) state = 0;
+      return;
+    }
+
     try {
       final response = await _notificationService.getNotifications(filter: 'unread', page: 1);
       if (response.success) {
         state = response.unreadCount;
       }
     } catch (e) {
-      // Handle error
+      // Handle error silently for background polling
     }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }
 
 final unreadCountProvider = StateNotifierProvider<UnreadNotifCountNotifier, int>((ref) {
-  return UnreadNotifCountNotifier(ref.watch(notificationServiceProvider));
+  return UnreadNotifCountNotifier(ref.watch(notificationServiceProvider), ref);
 });
 
 class NotificationNotifier extends StateNotifier<NotificationState> {
@@ -290,12 +316,31 @@ final conversationsProvider =
 
 class UnreadCountNotifier extends StateNotifier<int> {
   final MessageService _messageService;
+  final Ref _ref;
+  Timer? _timer;
 
-  UnreadCountNotifier(this._messageService) : super(0) {
+  UnreadCountNotifier(this._messageService, this._ref) : super(0) {
     refresh();
+    _startPolling();
+  }
+
+  void _startPolling() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 60), (_) {
+      final authState = _ref.read(authStateProvider);
+      if (authState.isAuthenticated) {
+        refresh();
+      }
+    });
   }
 
   Future<void> refresh() async {
+    final authState = _ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      if (state != 0) state = 0;
+      return;
+    }
+
     try {
       final response = await _messageService.getConversations(page: 1, perPage: 100);
       if (response.success) {
@@ -306,14 +351,55 @@ class UnreadCountNotifier extends StateNotifier<int> {
         state = totalUnread;
       }
     } catch (e) {
-      // Handle error
+      // Handle error silently
     }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }
 
 final unreadMessagesCountProvider = StateNotifierProvider<UnreadCountNotifier, int>((ref) {
-  return UnreadCountNotifier(ref.watch(messageServiceProvider));
+  return UnreadCountNotifier(ref.watch(messageServiceProvider), ref);
 });
+
+/// Lifecycle Provider - Triggers refresh when app comes to foreground
+final appLifecycleProvider = StateNotifierProvider<LifecycleNotifier, AppLifecycleState>((ref) {
+  return LifecycleNotifier(ref);
+});
+
+class LifecycleNotifier extends StateNotifier<AppLifecycleState> with WidgetsBindingObserver {
+  final Ref _ref;
+  LifecycleNotifier(this._ref) : super(AppLifecycleState.resumed) {
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    this.state = state;
+    if (state == AppLifecycleState.resumed) {
+      _triggerRefresh();
+    }
+  }
+
+  void _triggerRefresh() {
+    final authState = _ref.read(authStateProvider);
+    if (authState.isAuthenticated) {
+      _ref.read(unreadCountProvider.notifier).refresh();
+      _ref.read(unreadMessagesCountProvider.notifier).refresh();
+      _ref.read(conversationsProvider.notifier).loadConversations();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+}
 
 class ConversationsNotifier extends StateNotifier<ConversationsState> {
   final MessageService _messageService;

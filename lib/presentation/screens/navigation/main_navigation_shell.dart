@@ -249,6 +249,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   Widget _buildMessagesNavItem(int unreadCount) {
     final selectedIndex = ref.watch(selectedTabProvider);
     final isSelected = selectedIndex == 3;
+    final displayCount = unreadCount > 99 ? '99+' : '$unreadCount';
+    
     return Expanded(
       child: InkWell(
         onTap: () => _onItemTapped(3),
@@ -259,21 +261,25 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             if (unreadCount > 0)
               Badge(
                 label: Text(
-                  '$unreadCount',
-                  style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold),
+                  displayCount,
+                  style: AppTextStyles.labelSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: unreadCount > 99 ? 8 : 10,
+                  ),
                 ),
                 backgroundColor: AppColors.wave500,
                 textColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Icon(
                   Icons.chat_bubble_outline_rounded,
-                  color: isSelected ? AppColors.navy900 : AppColors.zinc400,
+                  color: isSelected ? context.iconPrimary : context.textMuted,
                   size: 26,
                 ),
               )
             else
               Icon(
                 Icons.chat_bubble_outline_rounded,
-                color: isSelected ? AppColors.navy900 : AppColors.zinc400,
+                color: isSelected ? context.iconPrimary : context.textMuted,
                 size: 26,
               ),
             const SizedBox(height: 4),
@@ -281,7 +287,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               AppLocalizations.of(context).navMessages,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.navy900 : AppColors.zinc500,
+                color: isSelected ? context.textPrimary : context.textMuted,
               ),
             ),
           ],

@@ -107,8 +107,10 @@ class ProfileScreen extends ConsumerWidget {
     }
 
     if (state.errorMessage != null) {
-      return WaveErrorBanner(
-        message: state.errorMessage!,
+      return WaveMessageScreen.error(
+        isEmbedded: true,
+        title: 'Error Loading Profile',
+        subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(profileProvider.notifier).loadProfile();
         },

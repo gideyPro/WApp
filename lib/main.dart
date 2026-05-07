@@ -115,6 +115,9 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
     final authState = ref.watch(authStateProvider);
     final incomingCall = ref.watch(incomingCallProvider);
     final themeMode = ref.watch(themeModeProvider);
+    
+    // Activate lifecycle listener for real-time sync on app resume
+    ref.watch(appLifecycleProvider);
 
     // Start FCM only once when authenticated
     if (authState.isAuthenticated && !_fcmStarted) {

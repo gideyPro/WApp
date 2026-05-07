@@ -115,8 +115,9 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
     }
 
     if (_errorMessage != null && _myListings.isEmpty) {
-      return WaveErrorBanner(
-        message: _errorMessage!,
+      return WaveMessageScreen.error(
+        title: 'Error Loading Listings',
+        subtitle: _errorMessage!,
         onRetry: () => _loadMyListings(),
       );
     }

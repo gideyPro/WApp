@@ -106,8 +106,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     }
 
     if (state.errorMessage != null && state.conversations.isEmpty) {
-      return WaveErrorBanner(
-        message: state.errorMessage!,
+      return WaveMessageScreen.error(
+        title: 'Error Loading Conversations',
+        subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(conversationsProvider.notifier).loadConversations();
         },
@@ -804,8 +805,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             child: chatState.isLoading && chatState.messages.isEmpty
                 ? _buildMessagesSkeleton()
                 : chatState.errorMessage != null && chatState.messages.isEmpty
-                    ? WaveErrorBanner(
-                        message: chatState.errorMessage!,
+                    ? WaveMessageScreen.error(
+                        isEmbedded: true,
+                        title: 'Error Loading Messages',
+                        subtitle: chatState.errorMessage!,
                         onRetry: () {
                           ref
                               .read(chatMessagesProvider(widget.conversationId)

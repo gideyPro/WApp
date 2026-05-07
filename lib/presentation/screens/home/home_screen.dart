@@ -848,6 +848,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     required int Function() badgeProvider,
   }) {
     final badgeValue = badgeProvider();
+    final displayCount = badgeValue > 99 ? '99+' : '$badgeValue';
 
     final container = Container(
       width: 44,
@@ -872,11 +873,15 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
       child: (badgeValue > 0)
           ? Badge(
               label: Text(
-                '$badgeValue',
-                style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold),
+                displayCount,
+                style: AppTextStyles.labelSmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: badgeValue > 99 ? 8 : 10,
+                ),
               ),
               backgroundColor: AppColors.wave500,
               textColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: container,
             )
           : container,

@@ -669,8 +669,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
 
     if (state.errorMessage != null && state.listings.isEmpty) {
-      return WaveErrorBanner(
-        message: state.errorMessage!,
+      return WaveMessageScreen.error(
+        title: 'Search Error',
+        subtitle: state.errorMessage!,
         onRetry: _performSearch,
       );
     }

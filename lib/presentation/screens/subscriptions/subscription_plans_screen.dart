@@ -80,8 +80,9 @@ class _SubscriptionPlansScreenState
     }
 
     if (state.errorMessage != null && state.plans.isEmpty) {
-      return WaveErrorBanner(
-        message: state.errorMessage!,
+      return WaveMessageScreen.error(
+        title: 'Subscription Error',
+        subtitle: state.errorMessage!,
         onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
       );
     }
@@ -448,12 +449,7 @@ class _SubscriptionPlansScreenState
       if (!mounted) return;
 
       if (!paymentResponse.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(paymentResponse.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, paymentResponse.message);
         return;
       }
 
@@ -462,11 +458,11 @@ class _SubscriptionPlansScreenState
         throw Exception('Failed to get checkout URL');
       }
 
-      // Start polling for payment status
+      // Start polling for payment status - 1s interval for instant feedback
       Timer? paymentCheckTimer;
       bool webViewClosed = false;
 
-      paymentCheckTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
+      paymentCheckTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
         if (!mounted || webViewClosed) {
           timer.cancel();
           return;
@@ -478,47 +474,15 @@ class _SubscriptionPlansScreenState
           return;
         }
 
-        // If payment failed or cancelled, show dialog before closing WebView
+        // If payment failed or cancelled, handle it
         if (status == 'failed' || status == 'cancelled') {
           timer.cancel();
           webViewClosed = true;
           
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (dialogContext) => AlertDialog(
-              title: const Text('Payment Failed'),
-              content: Text('Your payment was $status. Would you like to try again?'),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(dialogContext).pop();
-                    Navigator.of(context).pop('cancelled');
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: const TextStyle(color: AppColors.zinc500),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(dialogContext).pop();
-                    Navigator.of(context).pop('retry');
-                  },
-                  child: Text(
-                    'Retry',
-                    style: TextStyle(
-                      color: AppColors.wave600,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
+          if (mounted) {
+            // Close WebView if it's still open
+            Navigator.of(context).pop(status);
+          }
         }
       });
 
@@ -538,9 +502,30 @@ class _SubscriptionPlansScreenState
 
       if (!mounted) return;
 
-      if (result == 'retry') {
-        setState(() => _processingPlanId = null);
-        _selectPlan(plan);
+      // Handle Failures & Retries
+      if (result == 'retry' || result == 'failed' || result == 'technical_failure') {
+        final failureTitle = result == 'technical_failure' 
+            ? 'Connection Error' 
+            : 'Payment Failed';
+        final failureSubtitle = result == 'technical_failure'
+            ? 'The payment gateway could not be reached. Please check your connection.'
+            : 'Your transaction was not completed. Would you like to try again?';
+
+        final retryAction = await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => WaveMessageScreen.error(
+              title: failureTitle,
+              subtitle: failureSubtitle,
+              actionLabel: 'Retry Payment',
+            ),
+          ),
+        );
+
+        if (retryAction == 'retry' || retryAction == true || retryAction == 'Continue') {
+          setState(() => _processingPlanId = null);
+          _selectPlan(plan); // RE-START FRESH
+          return;
+        }
         return;
       }
       
@@ -559,30 +544,14 @@ class _SubscriptionPlansScreenState
       if (!mounted) return;
 
       if (!isActive && paymentStatus != 'pending') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Your payment could not be verified.'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, 'Your payment could not be verified.');
       } else {
         // Payment successful
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Payment successful!'),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        WaveToast.showSuccess(context, 'Payment successful!');
       }
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.subscriptionsPaymentError(e.toString())),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, 'An unexpected error occurred: $e');
       }
     } finally {
       if (mounted) {

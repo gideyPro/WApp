@@ -63,8 +63,9 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
     }
 
     if (state.errorMessage != null && state.payments.isEmpty) {
-      return WaveErrorBanner(
-        message: state.errorMessage!,
+      return WaveMessageScreen.error(
+        title: 'Error Loading Payments',
+        subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(paymentHistoryProvider.notifier).loadPayments();
         },

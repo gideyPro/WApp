@@ -225,66 +225,6 @@ class WaveEmptyState extends StatelessWidget {
   }
 }
 
-/// Error Banner Widget - Shows error message with retry button
-class WaveErrorBanner extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-  final String? actionLabel;
-
-  const WaveErrorBanner({
-    super.key,
-    required this.message,
-    required this.onRetry,
-    this.actionLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.error.withOpacity(0.2)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 48,
-            color: AppColors.error,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Oops! Something went wrong',
-            style: AppTextStyles.title.copyWith(
-              color: AppColors.error,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            message,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.zinc600,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          WaveButton(
-            text: actionLabel ?? 'Retry',
-            icon: Icons.refresh,
-            onPressed: onRetry,
-            variant: ButtonVariant.danger,
-            isFullWidth: true,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// WaveMart Toast/Snackbar
 class WaveToast {
   static void showSuccess(BuildContext context, String message) {
@@ -380,6 +320,7 @@ class WaveMessageScreen extends StatelessWidget {
   final Color? customIconColor;
   final bool showBackButton;
   final VoidCallback? onBack;
+  final bool isEmbedded;
 
   const WaveMessageScreen({
     super.key,
@@ -393,6 +334,7 @@ class WaveMessageScreen extends StatelessWidget {
     this.customIconColor,
     this.showBackButton = false,
     this.onBack,
+    this.isEmbedded = false,
   });
 
   factory WaveMessageScreen.error({
@@ -401,6 +343,7 @@ class WaveMessageScreen extends StatelessWidget {
     String? actionLabel,
     VoidCallback? onAction,
     VoidCallback? onRetry,
+    bool isEmbedded = false,
   }) {
     return WaveMessageScreen(
       type: WaveMessageType.error,
@@ -408,11 +351,13 @@ class WaveMessageScreen extends StatelessWidget {
       subtitle: subtitle,
       actionLabel: actionLabel ?? 'Retry',
       onAction: onRetry ?? onAction,
+      isEmbedded: isEmbedded,
     );
   }
 
   factory WaveMessageScreen.networkError({
     VoidCallback? onRetry,
+    bool isEmbedded = false,
   }) {
     return WaveMessageScreen(
       type: WaveMessageType.networkError,
@@ -420,6 +365,7 @@ class WaveMessageScreen extends StatelessWidget {
       subtitle: 'Please check your internet connection and try again.',
       actionLabel: 'Try Again',
       onRetry: onRetry,
+      isEmbedded: isEmbedded,
     );
   }
 
@@ -428,6 +374,7 @@ class WaveMessageScreen extends StatelessWidget {
     String? subtitle,
     String? actionLabel,
     VoidCallback? onAction,
+    bool isEmbedded = false,
   }) {
     return WaveMessageScreen(
       type: WaveMessageType.warning,
@@ -435,6 +382,7 @@ class WaveMessageScreen extends StatelessWidget {
       subtitle: subtitle,
       actionLabel: actionLabel,
       onAction: onAction,
+      isEmbedded: isEmbedded,
     );
   }
 
@@ -443,6 +391,7 @@ class WaveMessageScreen extends StatelessWidget {
     String? subtitle,
     String? actionLabel,
     VoidCallback? onAction,
+    bool isEmbedded = false,
   }) {
     return WaveMessageScreen(
       type: WaveMessageType.success,
@@ -450,6 +399,7 @@ class WaveMessageScreen extends StatelessWidget {
       subtitle: subtitle,
       actionLabel: actionLabel,
       onAction: onAction,
+      isEmbedded: isEmbedded,
     );
   }
 
@@ -458,6 +408,7 @@ class WaveMessageScreen extends StatelessWidget {
     String? subtitle,
     String? actionLabel,
     VoidCallback? onAction,
+    bool isEmbedded = false,
   }) {
     return WaveMessageScreen(
       type: WaveMessageType.info,
@@ -465,6 +416,7 @@ class WaveMessageScreen extends StatelessWidget {
       subtitle: subtitle,
       actionLabel: actionLabel,
       onAction: onAction,
+      isEmbedded: isEmbedded,
     );
   }
 
@@ -473,6 +425,7 @@ class WaveMessageScreen extends StatelessWidget {
     String? subtitle,
     String? actionLabel,
     VoidCallback? onAction,
+    bool isEmbedded = false,
   }) {
     return WaveMessageScreen(
       type: WaveMessageType.empty,
@@ -480,6 +433,7 @@ class WaveMessageScreen extends StatelessWidget {
       subtitle: subtitle,
       actionLabel: actionLabel,
       onAction: onAction,
+      isEmbedded: isEmbedded,
     );
   }
 
@@ -488,72 +442,81 @@ class WaveMessageScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final (icon, iconColor, bgColor, gradient) = _getTypeConfig();
 
+    final content = Padding(
+      padding: EdgeInsets.all(isEmbedded ? 16 : 24),
+      child: Column(
+        mainAxisSize: isEmbedded ? MainAxisSize.min : MainAxisSize.max,
+        children: [
+          if (showBackButton && !isEmbedded)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                onPressed: onBack ?? () => Navigator.of(context).pop(),
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.navy800 : AppColors.zinc100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.arrow_back_ios_new, size: 18),
+                ),
+              ),
+            ),
+          if (!isEmbedded) const Spacer(flex: 2),
+          _buildIcon(icon, iconColor, bgColor, gradient, isDark, isEmbedded),
+          const SizedBox(height: 32),
+          Text(
+            title,
+            style: (isEmbedded ? AppTextStyles.title : AppTextStyles.headline4).copyWith(
+              fontWeight: FontWeight.w800,
+              color: context.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              subtitle!,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: context.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          if (!isEmbedded) const Spacer(flex: 2),
+          if (isEmbedded) const SizedBox(height: 24),
+          if (onAction != null || onRetry != null)
+            SizedBox(
+              width: double.infinity,
+              child: WaveButton(
+                text: actionLabel ?? (onRetry != null ? 'Try Again' : 'Continue'),
+                onPressed: onAction ?? onRetry,
+                isFullWidth: true,
+                height: 52,
+              ),
+            ),
+          if (!isEmbedded) const SizedBox(height: 16),
+        ],
+      ),
+    );
+
+    if (isEmbedded) {
+      return Center(child: SingleChildScrollView(child: content));
+    }
+
     return Scaffold(
       backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              if (showBackButton)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    onPressed: onBack ?? () => Navigator.of(context).pop(),
-                    icon: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColors.navy800 : AppColors.zinc100,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.arrow_back_ios_new, size: 18),
-                    ),
-                  ),
-                ),
-              const Spacer(flex: 2),
-              _buildIcon(icon, iconColor, bgColor, gradient, isDark),
-              const SizedBox(height: 32),
-              Text(
-                title,
-                style: AppTextStyles.headline4.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: context.textPrimary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              if (subtitle != null) ...[
-                const SizedBox(height: 12),
-                Text(
-                  subtitle!,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: context.textSecondary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-              const Spacer(flex: 2),
-              if (onAction != null || onRetry != null)
-                SizedBox(
-                  width: double.infinity,
-                  child: WaveButton(
-                    text: actionLabel ?? (onRetry != null ? 'Try Again' : 'Continue'),
-                    onPressed: onAction ?? onRetry,
-                    isFullWidth: true,
-                    height: 52,
-                  ),
-                ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        ),
+        child: content,
       ),
     );
   }
 
-  Widget _buildIcon(IconData icon, Color iconColor, Color bgColor, LinearGradient? gradient, bool isDark) {
+  Widget _buildIcon(IconData icon, Color iconColor, Color bgColor, LinearGradient? gradient, bool isDark, bool isEmbedded) {
+    final size = isEmbedded ? 80.0 : 120.0;
     return Container(
-      width: 120,
-      height: 120,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         gradient: gradient,
         color: gradient == null ? bgColor : null,
@@ -561,14 +524,14 @@ class WaveMessageScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: iconColor.withOpacity(0.3),
-            blurRadius: 30,
+            blurRadius: isEmbedded ? 20 : 30,
             offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Icon(
         customIcon ?? icon,
-        size: 56,
+        size: isEmbedded ? 40 : 56,
         color: iconColor,
       ),
     );

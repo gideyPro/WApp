@@ -50,6 +50,9 @@ class FcmService {
       } else if (type == 'message') {
         _ref.read(unreadMessagesCountProvider.notifier).refresh();
         
+        // Instant List Update: Refresh the conversations list so the snippet update is visible
+        _ref.read(conversationsProvider.notifier).loadConversations();
+        
         // Phase 2: Refresh chat messages if we are in a conversation
         final conversationIdStr = message.data['conversation_id'];
         if (conversationIdStr != null) {
@@ -60,7 +63,11 @@ class FcmService {
           }
         }
       } else {
+        // General Notification
         _ref.read(unreadCountProvider.notifier).refresh();
+        
+        // Refresh the notifications list if the user is on that screen
+        _ref.read(notificationProvider.notifier).loadNotifications();
       }
 
       // Show local notification for foreground visibility if available

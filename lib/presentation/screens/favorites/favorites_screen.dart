@@ -85,8 +85,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
 
     // Error state
     if (state.errorMessage != null) {
-      return WaveErrorBanner(
-        message: state.errorMessage!,
+      return WaveMessageScreen.error(
+        title: 'Error Loading Favorites',
+        subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(favoritesProvider.notifier).loadFavorites();
         },

@@ -90,8 +90,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
     // Error state
     if (state.errorMessage != null && state.notifications.isEmpty) {
-      return WaveErrorBanner(
-        message: state.errorMessage!,
+      return WaveMessageScreen.error(
+        title: 'Error Loading Notifications',
+        subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(notificationsProvider.notifier).loadNotifications();
         },
