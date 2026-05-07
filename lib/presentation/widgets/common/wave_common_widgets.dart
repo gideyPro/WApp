@@ -314,6 +314,15 @@ class WaveToast {
     );
   }
 
+  static void showWarning(BuildContext context, String message) {
+    _showSnackBar(
+      context,
+      message,
+      AppColors.warning,
+      Icons.warning_amber_rounded,
+    );
+  }
+
   static void _showSnackBar(
     BuildContext context,
     String message,
@@ -345,6 +354,278 @@ class WaveToast {
         duration: const Duration(seconds: 3),
       ),
     );
+  }
+}
+
+/// Message type for WaveMessageScreen
+enum WaveMessageType {
+  error,
+  warning,
+  success,
+  info,
+  networkError,
+  empty,
+  custom,
+}
+
+/// WaveMart Full-Screen Message - Reusable for all message types
+class WaveMessageScreen extends StatelessWidget {
+  final WaveMessageType type;
+  final String title;
+  final String? subtitle;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+  final VoidCallback? onRetry;
+  final IconData? customIcon;
+  final Color? customIconColor;
+  final bool showBackButton;
+  final VoidCallback? onBack;
+
+  const WaveMessageScreen({
+    super.key,
+    required this.type,
+    required this.title,
+    this.subtitle,
+    this.actionLabel,
+    this.onAction,
+    this.onRetry,
+    this.customIcon,
+    this.customIconColor,
+    this.showBackButton = false,
+    this.onBack,
+  });
+
+  factory WaveMessageScreen.error({
+    required String title,
+    String? subtitle,
+    String? actionLabel,
+    VoidCallback? onAction,
+    VoidCallback? onRetry,
+  }) {
+    return WaveMessageScreen(
+      type: WaveMessageType.error,
+      title: title,
+      subtitle: subtitle,
+      actionLabel: actionLabel ?? 'Retry',
+      onAction: onRetry ?? onAction,
+    );
+  }
+
+  factory WaveMessageScreen.networkError({
+    VoidCallback? onRetry,
+  }) {
+    return WaveMessageScreen(
+      type: WaveMessageType.networkError,
+      title: 'No Internet Connection',
+      subtitle: 'Please check your internet connection and try again.',
+      actionLabel: 'Try Again',
+      onRetry: onRetry,
+    );
+  }
+
+  factory WaveMessageScreen.warning({
+    required String title,
+    String? subtitle,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    return WaveMessageScreen(
+      type: WaveMessageType.warning,
+      title: title,
+      subtitle: subtitle,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
+  }
+
+  factory WaveMessageScreen.success({
+    required String title,
+    String? subtitle,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    return WaveMessageScreen(
+      type: WaveMessageType.success,
+      title: title,
+      subtitle: subtitle,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
+  }
+
+  factory WaveMessageScreen.info({
+    required String title,
+    String? subtitle,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    return WaveMessageScreen(
+      type: WaveMessageType.info,
+      title: title,
+      subtitle: subtitle,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
+  }
+
+  factory WaveMessageScreen.empty({
+    required String title,
+    String? subtitle,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    return WaveMessageScreen(
+      type: WaveMessageType.empty,
+      title: title,
+      subtitle: subtitle,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final (icon, iconColor, bgColor, gradient) = _getTypeConfig();
+
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              if (showBackButton)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    onPressed: onBack ?? () => Navigator.of(context).pop(),
+                    icon: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.navy800 : AppColors.zinc100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.arrow_back_ios_new, size: 18),
+                    ),
+                  ),
+                ),
+              const Spacer(flex: 2),
+              _buildIcon(icon, iconColor, bgColor, gradient, isDark),
+              const SizedBox(height: 32),
+              Text(
+                title,
+                style: AppTextStyles.headline4.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: context.textPrimary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  subtitle!,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: context.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              const Spacer(flex: 2),
+              if (onAction != null || onRetry != null)
+                SizedBox(
+                  width: double.infinity,
+                  child: WaveButton(
+                    text: actionLabel ?? (onRetry != null ? 'Try Again' : 'Continue'),
+                    onPressed: onAction ?? onRetry,
+                    isFullWidth: true,
+                    height: 52,
+                  ),
+                ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIcon(IconData icon, Color iconColor, Color bgColor, LinearGradient? gradient, bool isDark) {
+    return Container(
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+        gradient: gradient,
+        color: gradient == null ? bgColor : null,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: iconColor.withOpacity(0.3),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Icon(
+        customIcon ?? icon,
+        size: 56,
+        color: iconColor,
+      ),
+    );
+  }
+
+  (IconData, Color, Color, LinearGradient?) _getTypeConfig() {
+    switch (type) {
+      case WaveMessageType.error:
+        return (
+          Icons.error_outline_rounded,
+          Colors.white,
+          AppColors.error,
+          AppColors.gradientEmerald,
+        );
+      case WaveMessageType.warning:
+        return (
+          Icons.warning_amber_rounded,
+          AppColors.warning,
+          AppColors.warning.withOpacity(0.15),
+          null,
+        );
+      case WaveMessageType.success:
+        return (
+          Icons.check_circle_outline_rounded,
+          Colors.white,
+          AppColors.emerald600,
+          AppColors.gradientEmerald,
+        );
+      case WaveMessageType.info:
+        return (
+          Icons.info_outline_rounded,
+          AppColors.wave600,
+          AppColors.wave500.withOpacity(0.15),
+          null,
+        );
+      case WaveMessageType.networkError:
+        return (
+          Icons.wifi_off_rounded,
+          AppColors.zinc600,
+          AppColors.zinc200,
+          null,
+        );
+      case WaveMessageType.empty:
+        return (
+          Icons.inbox_outlined,
+          AppColors.zinc400,
+          AppColors.zinc200,
+          null,
+        );
+      case WaveMessageType.custom:
+        return (
+          customIcon ?? Icons.help_outline,
+          customIconColor ?? AppColors.navy600,
+          AppColors.navy50,
+          null,
+        );
+    }
   }
 }
 

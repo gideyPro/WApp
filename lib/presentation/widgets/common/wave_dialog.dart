@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -157,6 +158,7 @@ class WaveBottomSheet extends StatelessWidget {
   final List<Widget>? actions;
   final double? height;
   final bool isDismissible;
+  final bool isGlass;
 
   const WaveBottomSheet({
     super.key,
@@ -165,6 +167,7 @@ class WaveBottomSheet extends StatelessWidget {
     this.actions,
     this.height,
     this.isDismissible = true,
+    this.isGlass = false,
   });
 
   static Future<T?> show<T>({
@@ -174,6 +177,7 @@ class WaveBottomSheet extends StatelessWidget {
     List<Widget>? actions,
     double? height,
     bool isDismissible = true,
+    bool isGlass = false,
   }) {
     return showModalBottomSheet<T>(
       context: context,
@@ -186,7 +190,27 @@ class WaveBottomSheet extends StatelessWidget {
         actions: actions,
         height: height,
         isDismissible: isDismissible,
+        isGlass: isGlass,
       ),
+    );
+  }
+
+  static Future<T?> showGlass<T>({
+    required BuildContext context,
+    String? title,
+    required Widget content,
+    List<Widget>? actions,
+    double? height,
+    bool isDismissible = true,
+  }) {
+    return show<T>(
+      context: context,
+      title: title,
+      content: content,
+      actions: actions,
+      height: height,
+      isDismissible: isDismissible,
+      isGlass: true,
     );
   }
 
@@ -197,13 +221,18 @@ class WaveBottomSheet extends StatelessWidget {
     final screenHeight = mediaQuery.size.height;
     final bottomInset = mediaQuery.viewInsets.bottom;
 
-    return Container(
+    Widget sheetContent = Container(
       height: height ?? (screenHeight * 0.7),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.zinc900 : Colors.white,
+        color: isGlass 
+            ? (isDark ? Colors.black.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.85))
+            : (isDark ? AppColors.zinc900 : Colors.white),
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppSpacing.borderRadiusXl),
         ),
+        border: isGlass 
+            ? Border.all(color: Colors.white.withValues(alpha: 0.2))
+            : null,
       ),
       child: Column(
         children: [
@@ -212,7 +241,9 @@ class WaveBottomSheet extends StatelessWidget {
             height: 4,
             margin: EdgeInsets.only(top: AppSpacing.sm),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.zinc700 : AppColors.zinc300,
+              color: isGlass 
+                  ? (isDark ? Colors.white.withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.5))
+                  : (isDark ? AppColors.zinc700 : AppColors.zinc300),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -233,7 +264,9 @@ class WaveBottomSheet extends StatelessWidget {
                     onPressed: () => Navigator.of(context).pop(),
                     icon: Icon(
                       Icons.close,
-                      color: isDark ? AppColors.zinc400 : AppColors.zinc500,
+                      color: isGlass 
+                          ? (isDark ? Colors.white.withValues(alpha: 0.7) : AppColors.navy700)
+                          : (isDark ? AppColors.zinc400 : AppColors.zinc500),
                     ),
                   ),
                 ],
@@ -251,7 +284,9 @@ class WaveBottomSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
-                    color: isDark ? AppColors.zinc800 : AppColors.zinc100,
+                    color: isGlass 
+                        ? (isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05))
+                        : (isDark ? AppColors.zinc800 : AppColors.zinc100),
                   ),
                 ),
               ),
@@ -263,5 +298,19 @@ class WaveBottomSheet extends StatelessWidget {
         ],
       ),
     );
+
+    if (isGlass) {
+      return ClipRRect(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.borderRadiusXl),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: sheetContent,
+        ),
+      );
+    }
+
+    return sheetContent;
   }
 }

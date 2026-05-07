@@ -17,6 +17,7 @@ class WaveButton extends StatefulWidget {
   final double? width;
   final double height;
   final List<TextInputFormatter>? inputFormatters;
+  final ButtonSize size;
 
   const WaveButton({
     super.key,
@@ -29,7 +30,52 @@ class WaveButton extends StatefulWidget {
     this.width,
     this.height = 48,
     this.inputFormatters,
+    this.size = ButtonSize.medium,
   });
+
+  factory WaveButton.compact({
+    required String text,
+    VoidCallback? onPressed,
+    IconData? icon,
+    bool isLoading = false,
+    bool isFullWidth = false,
+    ButtonVariant variant = ButtonVariant.primary,
+    double? width,
+  }) {
+    return WaveButton(
+      text: text,
+      onPressed: onPressed,
+      icon: icon,
+      isLoading: isLoading,
+      isFullWidth: isFullWidth,
+      variant: variant,
+      width: width,
+      height: 40,
+      size: ButtonSize.compact,
+    );
+  }
+
+  factory WaveButton.small({
+    required String text,
+    VoidCallback? onPressed,
+    IconData? icon,
+    bool isLoading = false,
+    bool isFullWidth = false,
+    ButtonVariant variant = ButtonVariant.primary,
+    double? width,
+  }) {
+    return WaveButton(
+      text: text,
+      onPressed: onPressed,
+      icon: icon,
+      isLoading: isLoading,
+      isFullWidth: isFullWidth,
+      variant: variant,
+      width: width,
+      height: 36,
+      size: ButtonSize.small,
+    );
+  }
 
   @override
   State<WaveButton> createState() => _WaveButtonState();
@@ -42,6 +88,12 @@ enum ButtonVariant {
   ghost,
   success,
   danger,
+}
+
+enum ButtonSize {
+  small,
+  compact,
+  medium,
 }
 
 class _WaveButtonState extends State<WaveButton> {
@@ -102,16 +154,16 @@ class _WaveButtonState extends State<WaveButton> {
                             if (widget.icon != null) ...[
                               Icon(
                                 widget.icon,
-                                size: 18,
+                                size: _getIconSize(),
                                 color: _getTextColor(),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 6),
                             ],
                             Text(
                               widget.text.toUpperCase(),
                               style: AppTextStyles.buttonMedium.copyWith(
                                 color: _getTextColor(),
-                                fontSize: widget.height < 48 ? 12 : 14,
+                                fontSize: _getFontSize(),
                               ),
                             ),
                           ],
@@ -133,6 +185,28 @@ class _WaveButtonState extends State<WaveButton> {
         return AppColors.gradientEmerald;
       default:
         return null;
+    }
+  }
+
+  double _getIconSize() {
+    switch (widget.size) {
+      case ButtonSize.small:
+        return 14;
+      case ButtonSize.compact:
+        return 16;
+      case ButtonSize.medium:
+        return 18;
+    }
+  }
+
+  double _getFontSize() {
+    switch (widget.size) {
+      case ButtonSize.small:
+        return 10;
+      case ButtonSize.compact:
+        return 11;
+      case ButtonSize.medium:
+        return 14;
     }
   }
 
@@ -240,6 +314,7 @@ class WaveTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
+  final bool isCompact;
 
   const WaveTextField({
     super.key,
@@ -258,27 +333,67 @@ class WaveTextField extends StatelessWidget {
     this.onTap,
     this.inputFormatters,
     this.validator,
+    this.isCompact = false,
   });
+
+  factory WaveTextField.compact({
+    required String label,
+    String? hint,
+    IconData? prefixIcon,
+    Widget? suffixIcon,
+    TextEditingController? controller,
+    String? errorText,
+    bool obscureText = false,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+    int? maxLength,
+    bool enabled = true,
+    ValueChanged<String>? onChanged,
+    VoidCallback? onTap,
+    List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
+  }) {
+    return WaveTextField(
+      label: label,
+      hint: hint,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      controller: controller,
+      errorText: errorText,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      maxLength: maxLength,
+      enabled: enabled,
+      onChanged: onChanged,
+      onTap: onTap,
+      inputFormatters: inputFormatters,
+      validator: validator,
+      isCompact: true,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final verticalPadding = isCompact ? AppSpacing.md : AppSpacing.lg;
+    final labelSize = isCompact ? 12.0 : 14.0;
+    final iconSize = isCompact ? 18.0 : 20.0;
+    final fontSize = isCompact ? 14.0 : 15.0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label
         Text(
           label,
-          style: AppTextStyles.labelMedium,
+          style: AppTextStyles.labelMedium.copyWith(fontSize: labelSize),
         ),
-        const SizedBox(height: AppSpacing.sm),
-
-        // Input Field
+        SizedBox(height: isCompact ? AppSpacing.xs : AppSpacing.sm),
         Container(
           decoration: BoxDecoration(
             color: enabled
                 ? AppColors.zinc50.withOpacity(0.5)
                 : AppColors.zinc100,
-            borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
+            borderRadius: BorderRadius.circular(isCompact ? 8 : AppSpacing.borderRadiusSm),
             border: Border.all(
               color: errorText != null
                   ? AppColors.error
@@ -300,40 +415,40 @@ class WaveTextField extends StatelessWidget {
             inputFormatters: inputFormatters,
             validator: validator,
             style: AppTextStyles.bodyMedium.copyWith(
+              fontSize: fontSize,
               color: enabled ? AppColors.zinc700 : AppColors.zinc400,
             ),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: AppTextStyles.bodyMedium.copyWith(
+                fontSize: fontSize,
                 color: AppColors.navy400,
               ),
               prefixIcon: prefixIcon != null
                   ? Padding(
-                      padding: const EdgeInsets.all(AppSpacing.md),
+                      padding: EdgeInsets.all(isCompact ? AppSpacing.sm : AppSpacing.md),
                       child: Icon(
                         prefixIcon,
-                        size: 20,
-                         color: enabled
-                             ? context.theme.textMuted.withOpacity(0.5)
-                             : AppColors.zinc300,
+                        size: iconSize,
+                        color: enabled
+                            ? context.theme.textMuted.withOpacity(0.5)
+                            : AppColors.zinc300,
                       ),
                     )
                   : null,
               suffixIcon: suffixIcon,
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(
-                left: prefixIcon != null ? 8 : AppSpacing.lg,
-                right: suffixIcon != null ? 8 : AppSpacing.lg,
-                top: AppSpacing.lg,
-                bottom: AppSpacing.lg,
+                left: prefixIcon != null ? 4 : (isCompact ? AppSpacing.md : AppSpacing.lg),
+                right: suffixIcon != null ? 4 : (isCompact ? AppSpacing.md : AppSpacing.lg),
+                top: verticalPadding,
+                bottom: verticalPadding,
               ),
               errorText: null,
               errorStyle: const TextStyle(height: 0),
             ),
           ),
         ),
-
-        // Error Text
         if (errorText != null) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(

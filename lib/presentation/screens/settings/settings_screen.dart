@@ -196,20 +196,20 @@ final settingsAsync = ref.watch(appSettingsProvider);
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            _buildMenuSection(
-              title: l10n.settingsSectionAuth,
-              items: [
-                _MenuItemData(
-                  icon: Icons.logout,
-                  title: l10n.settingsLogout,
-                  subtitle: l10n.settingsLogoutSubtitle,
-                  textColor: AppColors.error,
-                  onTap: () => _showLogoutConfirmation(context, ref),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
+const SizedBox(height: 24),
+              _buildMenuSection(
+                title: l10n.settingsSectionAuth,
+                items: [
+                  _MenuItemData(
+                    icon: Icons.logout,
+                    title: l10n.settingsLogout,
+                    subtitle: l10n.settingsLogoutSubtitle,
+                    textColor: AppColors.error,
+                    onTap: () => _showLogoutConfirmation(context, ref),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 100),
           ],
         ),
       ),
