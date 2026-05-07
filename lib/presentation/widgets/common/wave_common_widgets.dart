@@ -442,97 +442,196 @@ class WaveMessageScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final (icon, iconColor, bgColor, gradient) = _getTypeConfig();
 
-    final content = Padding(
-      padding: EdgeInsets.all(isEmbedded ? 16 : 24),
+    final content = Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(isEmbedded ? 24 : 32),
       child: Column(
         mainAxisSize: isEmbedded ? MainAxisSize.min : MainAxisSize.max,
         children: [
           if (showBackButton && !isEmbedded)
             Align(
               alignment: Alignment.centerLeft,
-              child: IconButton(
-                onPressed: onBack ?? () => Navigator.of(context).pop(),
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.navy800 : AppColors.zinc100,
-                    borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: IconButton(
+                  onPressed: onBack ?? () => Navigator.of(context).pop(),
+                  icon: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.1),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      size: 18,
+                      color: context.textPrimary,
+                    ),
                   ),
-                  child: const Icon(Icons.arrow_back_ios_new, size: 18),
                 ),
               ),
             ),
-          if (!isEmbedded) const Spacer(flex: 2),
-          _buildIcon(icon, iconColor, bgColor, gradient, isDark, isEmbedded),
-          const SizedBox(height: 32),
+          if (!isEmbedded) const Spacer(flex: 3),
+          _buildElegantIcon(icon, iconColor, bgColor, gradient, isDark, isEmbedded),
+          const SizedBox(height: 40),
           Text(
             title,
-            style: (isEmbedded ? AppTextStyles.title : AppTextStyles.headline4).copyWith(
-              fontWeight: FontWeight.w800,
+            style: (isEmbedded ? AppTextStyles.headline5 : AppTextStyles.headline4).copyWith(
+              fontWeight: FontWeight.w900,
               color: context.textPrimary,
+              letterSpacing: -1,
+              height: 1.1,
             ),
             textAlign: TextAlign.center,
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 12),
-            Text(
-              subtitle!,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: context.textSecondary,
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                subtitle!,
+                style: AppTextStyles.bodyLarge.copyWith(
+                  color: context.textSecondary,
+                  height: 1.5,
+                  letterSpacing: 0.2,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
-          if (!isEmbedded) const Spacer(flex: 2),
-          if (isEmbedded) const SizedBox(height: 24),
-          if (onAction != null || onRetry != null)
-            SizedBox(
-              width: double.infinity,
-              child: WaveButton(
-                text: actionLabel ?? (onRetry != null ? 'Try Again' : 'Continue'),
-                onPressed: onAction ?? onRetry,
-                isFullWidth: true,
-                height: 52,
-              ),
-            ),
+          if (!isEmbedded) const Spacer(flex: 4),
+          if (isEmbedded) const SizedBox(height: 40),
+          
+          // Action Buttons
+          Column(
+            children: [
+              if (onRetry != null)
+                WaveButton(
+                  text: actionLabel ?? 'Retry',
+                  icon: Icons.refresh_rounded,
+                  onPressed: onRetry,
+                  isFullWidth: true,
+                  height: 56,
+                ),
+              if (onAction != null && onRetry != null) const SizedBox(height: 12),
+              if (onAction != null)
+                WaveButton(
+                  text: onRetry != null ? 'Continue' : (actionLabel ?? 'Continue'),
+                  onPressed: onAction,
+                  variant: onRetry != null ? ButtonVariant.ghost : ButtonVariant.primary,
+                  isFullWidth: true,
+                  height: 56,
+                ),
+              // Default "Continue" if no actions provided and not embedded
+              if (onAction == null && onRetry == null && !isEmbedded)
+                WaveButton(
+                  text: 'Dismiss',
+                  onPressed: () => Navigator.of(context).pop(),
+                  variant: ButtonVariant.ghost,
+                  isFullWidth: true,
+                  height: 56,
+                ),
+            ],
+          ),
           if (!isEmbedded) const SizedBox(height: 16),
         ],
       ),
     );
 
     if (isEmbedded) {
-      return Center(child: SingleChildScrollView(child: content));
+      return Center(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: content,
+        ),
+      );
     }
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
-      body: SafeArea(
-        child: content,
+      body: Stack(
+        children: [
+          // Background Decorative Elements
+          Positioned(
+            top: -100,
+            right: -100,
+            child: _buildBackgroundCircle(iconColor.withOpacity(0.05), 300),
+          ),
+          Positioned(
+            bottom: -50,
+            left: -50,
+            child: _buildBackgroundCircle(iconColor.withOpacity(0.03), 200),
+          ),
+          SafeArea(child: content),
+        ],
       ),
     );
   }
 
-  Widget _buildIcon(IconData icon, Color iconColor, Color bgColor, LinearGradient? gradient, bool isDark, bool isEmbedded) {
-    final size = isEmbedded ? 80.0 : 120.0;
+  Widget _buildBackgroundCircle(Color color, double size) {
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        gradient: gradient,
-        color: gradient == null ? bgColor : null,
+        color: color,
         shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: iconColor.withOpacity(0.3),
-            blurRadius: isEmbedded ? 20 : 30,
-            offset: const Offset(0, 10),
+      ),
+    );
+  }
+
+  Widget _buildElegantIcon(IconData icon, Color iconColor, Color bgColor, LinearGradient? gradient, bool isDark, bool isEmbedded) {
+    final size = isEmbedded ? 100.0 : 160.0;
+    final iconSize = isEmbedded ? 48.0 : 72.0;
+
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Outer Glow
+          Container(
+            width: size + 40,
+            height: size + 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  iconColor.withOpacity(0.15),
+                  iconColor.withOpacity(0),
+                ],
+              ),
+            ),
+          ),
+          // Main Container
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              gradient: gradient ?? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  bgColor,
+                  bgColor.withOpacity(0.8),
+                ],
+              ),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: iconColor.withOpacity(0.4),
+                  blurRadius: 30,
+                  offset: const Offset(0, 15),
+                ),
+              ],
+            ),
+            child: Icon(
+              customIcon ?? icon,
+              size: iconSize,
+              color: iconColor == Colors.white ? Colors.white : iconColor,
+            ),
           ),
         ],
-      ),
-      child: Icon(
-        customIcon ?? icon,
-        size: isEmbedded ? 40 : 56,
-        color: iconColor,
       ),
     );
   }

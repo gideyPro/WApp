@@ -517,6 +517,8 @@ class _SubscriptionPlansScreenState
               title: failureTitle,
               subtitle: failureSubtitle,
               actionLabel: 'Retry Payment',
+              onRetry: () => Navigator.of(context).pop('retry'),
+              onAction: () => Navigator.of(context).pop('cancelled'),
             ),
           ),
         );
