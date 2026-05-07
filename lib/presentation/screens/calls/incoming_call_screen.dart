@@ -8,7 +8,6 @@ import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../../data/services/conference_service.dart';
-import '../../../core/network/api_constants.dart';
 import 'webview_jitsi_screen.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {
@@ -155,14 +154,6 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     _stopRinging();
 
     ref.read(incomingCallProvider.notifier).markDeclined(widget.conferenceId);
-
-    try {
-      final service = ConferenceService();
-      await service.updateConferenceStatus(
-        conferenceId: widget.conferenceId,
-        status: 'cancelled',
-      );
-    } catch (_) {}
 
     if (mounted) {
       ref.read(incomingCallProvider.notifier).clearIncomingCall();
