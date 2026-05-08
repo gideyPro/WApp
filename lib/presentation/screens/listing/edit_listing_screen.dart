@@ -97,9 +97,9 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     final errors = _validateCurrentStep();
     if (errors.isNotEmpty) {
       setState(() => _stepErrors[_currentStep] = errors);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errors.first), backgroundColor: AppColors.error),
-      );
+      if (mounted) {
+        WaveToast.showError(context, errors.first);
+      }
       return;
     }
     setState(() => _stepErrors.remove(_currentStep));
@@ -122,11 +122,30 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       case 1:
         return _formData.validateStep2();
       case 2:
-        // Skip media validation on edit if there are existing images
-        if (_formData.existingImages.length > _formData.removedImageIds.length) {
-          return [];
+        final errors = <String>[];
+        
+        // 1. Check images (must have at least one either existing or new)
+        final hasImages = _formData.images.isNotEmpty || 
+            (_formData.existingImages.length > _formData.removedImageIds.length);
+        if (!hasImages) errors.add('At least one property image is required');
+
+        // 2. Site Plan is mandatory (Industry Standard #3)
+        final hasSitePlan = _formData.sitePlans.isNotEmpty || _formData.existingSitePlanUrl != null;
+        if (!hasSitePlan) errors.add('A site plan is required');
+
+        // 3. Ownership Proof for Cooperative (Industry Standard #3)
+        if (_formData.holdingType == 'Cooperative') {
+          final hasOwnership = _formData.ownershipProof != null || _formData.existingOwnershipProofUrl != null;
+          if (!hasOwnership) errors.add('Ownership proof is required for cooperative properties');
         }
-        return _formData.validateStep3();
+
+        // 4. Lease Contract for Lease Hold (Industry Standard #3)
+        if (_formData.holdingType == 'Lease Hold') {
+          final hasLease = _formData.leaseContract != null || _formData.existingLeaseContractUrl != null;
+          if (!hasLease) errors.add('Lease contract is required for lease hold properties');
+        }
+
+        return errors;
       case 3:
         return _formData.validateStep4();
       default:
@@ -146,21 +165,15 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       
       if (mounted) {
         if (result.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Listing updated successfully'), backgroundColor: AppColors.success),
-          );
+          WaveToast.showSuccess(context, 'Listing updated successfully');
           Navigator.of(context).pop(true);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(result.message), backgroundColor: AppColors.error),
-          );
+          WaveToast.showError(context, result.message);
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update: $e'), backgroundColor: AppColors.error),
-        );
+        WaveToast.showError(context, 'Failed to update: $e');
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);

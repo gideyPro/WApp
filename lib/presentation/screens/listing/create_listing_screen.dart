@@ -79,12 +79,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     if (errors.isNotEmpty) {
       setState(() => _stepErrors[_currentStep] = errors);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errors.first),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, errors.first);
       }
       return;
     }
@@ -126,29 +121,16 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       if (mounted) {
         if (response.success) {
           await _clearDraft();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content:
-                  Text(l10n.listingSuccess),
-              backgroundColor: AppColors.success,
-            ),
-          );
+          WaveToast.showSuccess(context, l10n.listingSuccess);
           Navigator.of(context).pop(true);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(response.message),
-                backgroundColor: AppColors.error),
-          );
+          WaveToast.showError(context, response.message);
         }
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(l10n.listingError(e.toString())), backgroundColor: AppColors.error),
-        );
+        WaveToast.showError(context, l10n.listingError(e.toString()));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
