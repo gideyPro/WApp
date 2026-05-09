@@ -35,8 +35,9 @@ class ListingFormData {
   int? bathrooms;
   int? kitchens;
   int? salons;
+  int? floors;
   int? yearBuilt;
-  String? houseType;
+  String? houseType; // 'villa' | 'apartment' | 'condominium' | 'townhouse' | 'bungalow' | 'cooperative_140' | ...
   bool electricity = false;
   bool water = false;
   bool parkingAvailable = false;
@@ -47,8 +48,9 @@ class ListingFormData {
   double? sideAreaSqm;
 
   // --- Common ---
-  String? facingDirection;
+  String? facingDirection; // 'north' | 'south' | 'east' | 'west' | ...
   String? description;
+  String? serviceType;
 
   // --- Address ---
   String? addressRegion;
@@ -60,6 +62,10 @@ class ListingFormData {
   // --- Debt ---
   bool hasDebtOrEncumbrance = false;
   double? debtAmount;
+  String? debtHolder;
+
+  // --- Lease ---
+  int? leaseExpiryYear;
 
   // --- Terms ---
   bool termsAccepted = false;
@@ -102,6 +108,7 @@ class ListingFormData {
     this.bathrooms,
     this.kitchens,
     this.salons,
+    this.floors,
     this.yearBuilt,
     this.houseType,
     this.electricity = false,
@@ -112,6 +119,7 @@ class ListingFormData {
     this.sideAreaSqm,
     this.facingDirection,
     this.description,
+    this.serviceType,
     this.addressRegion,
     this.addressZone,
     this.addressWoreda,
@@ -119,6 +127,8 @@ class ListingFormData {
     this.addressId,
     this.hasDebtOrEncumbrance = false,
     this.debtAmount,
+    this.debtHolder,
+    this.leaseExpiryYear,
     this.termsAccepted = false,
     this.existingImages = const [],
     this.removedImageIds = const [],
@@ -157,6 +167,7 @@ class ListingFormData {
         'bathrooms': bathrooms,
         'kitchens': kitchens,
         'salons': salons,
+        'floors': floors,
         'yearBuilt': yearBuilt,
         'houseType': houseType,
         'electricity': electricity,
@@ -167,6 +178,7 @@ class ListingFormData {
         'sideAreaSqm': sideAreaSqm,
         'facingDirection': facingDirection,
         'description': description,
+        'serviceType': serviceType,
         'addressRegion': addressRegion,
         'addressZone': addressZone,
         'addressWoreda': addressWoreda,
@@ -174,6 +186,8 @@ class ListingFormData {
         'addressId': addressId,
         'hasDebtOrEncumbrance': hasDebtOrEncumbrance,
         'debtAmount': debtAmount,
+        'debtHolder': debtHolder,
+        'leaseExpiryYear': leaseExpiryYear,
         'termsAccepted': termsAccepted,
         'savedAt': DateTime.now().toIso8601String(),
       };
@@ -222,6 +236,7 @@ class ListingFormData {
         bathrooms: data['bathrooms'],
         kitchens: data['kitchens'],
         salons: data['salons'],
+        floors: data['floors'],
         yearBuilt: data['yearBuilt'],
         houseType: data['houseType'],
         electricity: data['electricity'] ?? false,
@@ -232,6 +247,7 @@ class ListingFormData {
         sideAreaSqm: data['sideAreaSqm'],
         facingDirection: data['facingDirection'],
         description: data['description'],
+        serviceType: data['serviceType'],
         addressRegion: data['addressRegion'],
         addressZone: data['addressZone'],
         addressWoreda: data['addressWoreda'],
@@ -239,6 +255,8 @@ class ListingFormData {
         addressId: data['addressId'],
         hasDebtOrEncumbrance: data['hasDebtOrEncumbrance'] ?? false,
         debtAmount: data['debtAmount'],
+        debtHolder: data['debtHolder'],
+        leaseExpiryYear: data['leaseExpiryYear'],
         termsAccepted: data['termsAccepted'] ?? false,
       );
     } catch (_) {
@@ -277,6 +295,7 @@ class ListingFormData {
     int? bathrooms,
     int? kitchens,
     int? salons,
+    int? floors,
     int? yearBuilt,
     String? houseType,
     bool? electricity,
@@ -287,6 +306,7 @@ class ListingFormData {
     double? sideAreaSqm,
     String? facingDirection,
     String? description,
+    String? serviceType,
     String? addressRegion,
     String? addressZone,
     String? addressWoreda,
@@ -294,6 +314,8 @@ class ListingFormData {
     int? addressId,
     bool? hasDebtOrEncumbrance,
     double? debtAmount,
+    String? debtHolder,
+    int? leaseExpiryYear,
     bool? termsAccepted,
     List<XFile>? images,
     List<XFile>? sitePlans,
@@ -331,6 +353,7 @@ class ListingFormData {
       bathrooms: bathrooms ?? this.bathrooms,
       kitchens: kitchens ?? this.kitchens,
       salons: salons ?? this.salons,
+      floors: floors ?? this.floors,
       yearBuilt: yearBuilt ?? this.yearBuilt,
       houseType: houseType ?? this.houseType,
       electricity: electricity ?? this.electricity,
@@ -341,6 +364,7 @@ class ListingFormData {
       sideAreaSqm: sideAreaSqm ?? this.sideAreaSqm,
       facingDirection: facingDirection ?? this.facingDirection,
       description: description ?? this.description,
+      serviceType: serviceType ?? this.serviceType,
       addressRegion: addressRegion ?? this.addressRegion,
       addressZone: addressZone ?? this.addressZone,
       addressWoreda: addressWoreda ?? this.addressWoreda,
@@ -348,6 +372,8 @@ class ListingFormData {
       addressId: addressId ?? this.addressId,
       hasDebtOrEncumbrance: hasDebtOrEncumbrance ?? this.hasDebtOrEncumbrance,
       debtAmount: debtAmount ?? this.debtAmount,
+      debtHolder: debtHolder ?? this.debtHolder,
+      leaseExpiryYear: leaseExpiryYear ?? this.leaseExpiryYear,
       termsAccepted: termsAccepted ?? this.termsAccepted,
       existingImages: existingImages ?? this.existingImages,
       removedImageIds: removedImageIds ?? this.removedImageIds,

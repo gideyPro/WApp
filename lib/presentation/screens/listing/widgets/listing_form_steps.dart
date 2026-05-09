@@ -378,47 +378,72 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           ),
           const SizedBox(height: 20),
 
+          _sectionTitle(l10n.listingListingType),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              _radioCard(l10n.listingForSale, Icons.sell_rounded, 'sale'),
+              const SizedBox(width: 12),
+              _radioCard(l10n.listingForRent, Icons.key_rounded, 'rental'),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          if (widget.formData.listingType == 'rental') ...[
+            _sectionTitle(l10n.listingRentalPeriod),
+            const SizedBox(height: 8),
+            _dropdownFieldWithKeys(
+              value: widget.formData.rentalPeriodUnit,
+              items: {
+                'day': 'Day',
+                'week': 'Week',
+                'month': 'Month',
+                'year': 'Year',
+              },
+              label: l10n.listingRentalPeriod,
+              onChanged: (v) => widget.onUpdate(
+                  widget.formData.copyWith(rentalPeriodUnit: v)),
+            ),
+            const SizedBox(height: 20),
+          ],
+
           _sectionTitle(l10n.listingHoldingType),
           const SizedBox(height: 8),
-          _dropdownField(
-            value: widget.formData.holdingType.isEmpty
-                ? null
-                : widget.formData.holdingType,
-            items: [
-              l10n.listingFreeHold,
-              l10n.listingLeaseHold,
-              l10n.listingCooperative
-            ],
+          _dropdownFieldWithKeys(
+            value: widget.formData.holdingType,
+            items: {
+              'Free Hold': l10n.listingFreeHold,
+              'Lease Hold': l10n.listingLeaseHold,
+              'Cooperative': l10n.listingCooperative,
+            },
             label: l10n.listingSelectHolding,
             onChanged: (v) => widget.onUpdate(widget.formData
-                .copyWith(holdingType: v ?? l10n.listingFreeHold)),
+                .copyWith(holdingType: v ?? 'Free Hold')),
           ),
           const SizedBox(height: 16),
 
           // Conditional Holding Details
-          if (widget.formData.holdingType == l10n.listingFreeHold)
+          if (widget.formData.holdingType == 'Free Hold')
             _buildFreeHoldFields(),
-          if (widget.formData.holdingType == l10n.listingLeaseHold)
+          if (widget.formData.holdingType == 'Lease Hold')
             _buildLeaseHoldFields(),
-          if (widget.formData.holdingType == l10n.listingCooperative)
+          if (widget.formData.holdingType == 'Cooperative')
             _buildCooperativeFields(),
 
           const SizedBox(height: 20),
           _sectionTitle(l10n.listingUseType),
           const SizedBox(height: 8),
-          _dropdownField(
-            value: widget.formData.useType.isEmpty
-                ? null
-                : widget.formData.useType,
-            items: [
-              l10n.listingResidential,
-              l10n.listingCommercial,
-              l10n.listingMixed,
-              l10n.listingInvestment
-            ],
+          _dropdownFieldWithKeys(
+            value: widget.formData.useType,
+            items: {
+              'Residential': l10n.listingResidential,
+              'Commercial': l10n.listingCommercial,
+              'Mixed': l10n.listingMixed,
+              'Investment': l10n.listingInvestment,
+            },
             label: l10n.listingSelectUse,
             onChanged: (v) => widget.onUpdate(widget.formData
-                .copyWith(useType: v ?? l10n.listingResidential)),
+                .copyWith(useType: v ?? 'Residential')),
           ),
           const SizedBox(height: 20),
 
@@ -459,6 +484,33 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           const SizedBox(height: 32),
         ],
       ),
+    );
+  }
+
+  Widget _dropdownFieldWithKeys({
+    required String? value,
+    required Map<String, String> items,
+    required String label,
+    required Function(String?) onChanged,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: items.containsKey(value) ? value : null,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+      dropdownColor: context.sheetBg,
+      items: items.entries
+          .map((e) => DropdownMenuItem(
+                value: e.key,
+                child: Text(e.value,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.normal, fontSize: 14)),
+              ))
+          .toList(),
+      onChanged: onChanged,
+      isExpanded: true,
     );
   }
 
@@ -532,15 +584,15 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             },
           ),
           const SizedBox(height: 8),
-          _dropdownField(
+          _dropdownFieldWithKeys(
             value: widget.formData.acquisitionClarification,
-            items: [
-              l10n.listingPurchased,
-              l10n.listingInherited,
-              l10n.listingGift,
-              l10n.listingAssignment,
-              l10n.listingOther
-            ],
+            items: {
+              'Purchased': l10n.listingPurchased,
+              'Inherited': l10n.listingInherited,
+              'Gift': l10n.listingGift,
+              'Assignment': l10n.listingAssignment,
+              'Other': l10n.listingOther,
+            },
             label: l10n.listingAcquisition,
             onChanged: (v) => widget.onUpdate(
                 widget.formData.copyWith(acquisitionClarification: v)),
@@ -646,11 +698,12 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                 widget.onUpdate(widget.formData.copyWith(cooperativeCode: v)),
           ),
           const SizedBox(height: 8),
-          _dropdownField(
-            value: widget.formData.buildingStatus?.isEmpty ?? true
-                ? null
-                : widget.formData.buildingStatus,
-            items: [l10n.listingFinished, l10n.listingUnfinished],
+          _dropdownFieldWithKeys(
+            value: widget.formData.buildingStatus,
+            items: {
+              'Finished': l10n.listingFinished,
+              'Unfinished': l10n.listingUnfinished,
+            },
             label: l10n.listingBuildingStatus,
             onChanged: (v) =>
                 widget.onUpdate(widget.formData.copyWith(buildingStatus: v)),
@@ -950,9 +1003,46 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     super.dispose();
   }
 
+  void _onHouseTypeChanged(String? v) {
+    double? newArea = widget.formData.totalSquareMeters;
+    if (v == 'cooperative_140') {
+      newArea = 140;
+    } else if (v == 'cooperative_84') {
+      newArea = 84;
+    } else if (v == 'cooperative_70') {
+      newArea = 70;
+    }
+
+    if (newArea != widget.formData.totalSquareMeters) {
+      _totalAreaController.text = newArea?.toStringAsFixed(0) ?? '';
+    }
+
+    widget.onUpdate(widget.formData.copyWith(
+      houseType: v,
+      totalSquareMeters: newArea,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final isCooperative = widget.formData.holdingType == 'Cooperative';
+
+    final Map<String, String> houseTypeItems = isCooperative
+        ? {
+            'cooperative_140': 'Cooperative 140m²',
+            'cooperative_84': 'Cooperative 84m²',
+            'cooperative_70': 'Cooperative 70m²',
+            'market_place': 'Market Place',
+          }
+        : {
+            'villa': l10n.listingVilla,
+            'apartment': l10n.listingApartment,
+            'condominium': l10n.listingCondominium,
+            'townhouse': l10n.listingTownhouse,
+            'bungalow': l10n.listingBungalow,
+          };
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -1035,20 +1125,11 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
             const SizedBox(height: 16),
             _sectionTitle(l10n.listingHouseType),
             const SizedBox(height: 8),
-            _dropdownField(
-              value: widget.formData.houseType?.isEmpty ?? true
-                  ? null
-                  : widget.formData.houseType,
-              items: [
-                l10n.listingVilla,
-                l10n.listingApartment,
-                l10n.listingCondominium,
-                l10n.listingTownhouse,
-                l10n.listingBungalow
-              ],
+            _dropdownFieldWithKeys(
+              value: widget.formData.houseType,
+              items: houseTypeItems,
               label: l10n.listingSelectHouseType,
-              onChanged: (v) =>
-                  widget.onUpdate(widget.formData.copyWith(houseType: v)),
+              onChanged: _onHouseTypeChanged,
             ),
             const SizedBox(height: 16),
             _sectionTitle(l10n.listingYearBuilt),
@@ -1136,20 +1217,18 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
           const SizedBox(height: 16),
           _sectionTitle(l10n.listingFacingDirection),
           const SizedBox(height: 8),
-          _dropdownField(
-            value: widget.formData.facingDirection?.isEmpty ?? true
-                ? null
-                : widget.formData.facingDirection,
-            items: [
-              l10n.listingNorth,
-              l10n.listingSouth,
-              l10n.listingEast,
-              l10n.listingWest,
-              l10n.listingNorthEast,
-              l10n.listingNorthWest,
-              l10n.listingSouthEast,
-              l10n.listingSouthWest
-            ],
+          _dropdownFieldWithKeys(
+            value: widget.formData.facingDirection,
+            items: {
+              'north': l10n.listingNorth,
+              'south': l10n.listingSouth,
+              'east': l10n.listingEast,
+              'west': l10n.listingWest,
+              'north_east': l10n.listingNorthEast,
+              'north_west': l10n.listingNorthWest,
+              'south_east': l10n.listingSouthEast,
+              'south_west': l10n.listingSouthWest,
+            },
             label: l10n.listingSelectDirection,
             onChanged: (v) =>
                 widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
@@ -1215,36 +1294,28 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     );
   }
 
-  Widget _dropdownField(
+  Widget _dropdownFieldWithKeys(
       {required String? value,
-      required List<String> items,
+      required Map<String, String> items,
       required String label,
       required Function(String?) onChanged}) {
-    final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
-      value: items.contains(value) ? value : null,
+      value: items.containsKey(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       dropdownColor: context.sheetBg,
-      items: items.isEmpty
-          ? [
-              DropdownMenuItem(
-                  value: null,
-                  child: Text(l10n.listingSelect, style: const TextStyle(
-                          color: Colors.grey, fontWeight: FontWeight.normal)))
-            ]
-          : items
-              .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(e,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 14)),
-                  ))
-              .toList(),
-      onChanged: items.isEmpty ? null : onChanged,
+      items: items.entries
+          .map((e) => DropdownMenuItem(
+                value: e.key,
+                child: Text(e.value,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.normal, fontSize: 14)),
+              ))
+          .toList(),
+      onChanged: onChanged,
       isExpanded: true,
     );
   }
@@ -1289,8 +1360,15 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   }
 
   Future<void> _pickSingleFile(String type) async {
-    final file = await _picker.pickImage(
-        imageQuality: 85, maxWidth: 1920, source: ImageSource.gallery);
+    final XFile? file;
+    if (type == 'video') {
+      file = await _picker.pickVideo(
+          source: ImageSource.gallery, maxDuration: const Duration(minutes: 5));
+    } else {
+      file = await _picker.pickImage(
+          imageQuality: 85, maxWidth: 1920, source: ImageSource.gallery);
+    }
+
     if (file != null) {
       switch (type) {
         case 'ownership':
@@ -1298,6 +1376,12 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
           break;
         case 'lease':
           widget.onUpdate(widget.formData.copyWith(leaseContract: file));
+          break;
+        case 'debt':
+          widget.onUpdate(widget.formData.copyWith(debtDocument: file));
+          break;
+        case 'video':
+          widget.onUpdate(widget.formData.copyWith(videoFile: file));
           break;
       }
     }
@@ -1319,19 +1403,29 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
           const SizedBox(height: 8),
           _buildSitePlanView(),
           const SizedBox(height: 16),
-          if (widget.formData.holdingType == l10n.listingCooperative) ...[
+          if (widget.formData.holdingType == 'Cooperative') ...[
             _sectionTitle(l10n.listingOwnershipProof),
             const SizedBox(height: 8),
             _buildOwnershipProofView(),
             const SizedBox(height: 16),
           ],
-          if (widget.formData.holdingType == l10n.listingLeaseHold) ...[
+          if (widget.formData.holdingType == 'Lease Hold') ...[
             _sectionTitle(l10n.listingLeaseContract),
             const SizedBox(height: 8),
             _buildLeaseContractView(),
             const SizedBox(height: 16),
           ],
+          if (widget.formData.hasDebtOrEncumbrance) ...[
+            _sectionTitle('Debt/Encumbrance Document'),
+            const SizedBox(height: 8),
+            _buildDebtDocumentView(),
+            const SizedBox(height: 16),
+          ],
+          _sectionTitle('Video Tour'),
+          const SizedBox(height: 8),
+          _buildVideoTourView(),
           const SizedBox(height: 32),
+
         ],
       ),
     );
@@ -1448,6 +1542,31 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     );
   }
 
+  Widget _buildDebtDocumentView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.formData.existingDebtDocumentUrl != null && widget.formData.debtDocument == null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text("Current document: ${widget.formData.existingDebtDocumentUrl!.split('/').last}", style: AppTextStyles.caption),
+          ),
+        _buildSingleFilePicker('debt', widget.formData.debtDocument),
+      ],
+    );
+  }
+
+  Widget _buildVideoTourView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text("Max 100MB", style: AppTextStyles.caption),
+        const SizedBox(height: 4),
+        _buildSingleFilePicker('video', widget.formData.videoFile),
+      ],
+    );
+  }
+
   Widget _buildFileList(List<String> files, {bool isSitePlan = false}) {
     final l10n = AppLocalizations.of(context);
     return Column(
@@ -1544,11 +1663,11 @@ class ListingStep4Review extends StatelessWidget {
             crossAxisSpacing: 8,
             children: [
               _summaryCard(l10n.listingSummaryProperty,
-                  '${formData.type == 'house' ? '🏠 ${l10n.listingHouse}' : '🌄 ${l10n.listingLand}'}\n${formData.houseType ?? ''}'),
+                  '${formData.type == 'house' ? '🏠 ${l10n.listingHouse}' : '🌄 ${l10n.listingLand}'}\n${_getLocalizedHouseType(formData.houseType, l10n)}'),
               _summaryCard(l10n.listingLocation,
                   '${formData.addressRegion ?? ''}\n${formData.addressZone ?? ''}'),
               _summaryCard(l10n.listingFinancial,
-                  '${formData.priceFixed != null ? "${_formatPrice(formData.priceFixed!)} ETB" : l10n.listingPriceOnRequest}\n${formData.holdingType}'),
+                  '${formData.priceFixed != null ? "${_formatPrice(formData.priceFixed!)} ETB" : l10n.listingPriceOnRequest}\n${_getLocalizedHoldingType(formData.holdingType, l10n)}'),
               _summaryCard(l10n.listingStepMedia,
                   '${formData.images.length + formData.existingImages.length - formData.removedImageIds.length} ${l10n.listingImagesSelected(formData.images.length + formData.existingImages.length - formData.removedImageIds.length)}\n${formData.sitePlans.length} ${l10n.listingSitePlans}'),
             ],
@@ -1611,5 +1730,26 @@ class ListingStep4Review extends StatelessWidget {
   String _formatPrice(double price) {
     return price.toStringAsFixed(0).replaceAllMapped(
         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},');
+  }
+
+  String _getLocalizedHouseType(String? type, AppLocalizations l10n) {
+    if (type == null) return '';
+    switch (type) {
+      case 'villa': return l10n.listingVilla;
+      case 'apartment': return l10n.listingApartment;
+      case 'condominium': return l10n.listingCondominium;
+      case 'townhouse': return l10n.listingTownhouse;
+      case 'bungalow': return l10n.listingBungalow;
+      default: return type;
+    }
+  }
+
+  String _getLocalizedHoldingType(String type, AppLocalizations l10n) {
+    switch (type) {
+      case 'Free Hold': return l10n.listingFreeHold;
+      case 'Lease Hold': return l10n.listingLeaseHold;
+      case 'Cooperative': return l10n.listingCooperative;
+      default: return type;
+    }
   }
 }

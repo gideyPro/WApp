@@ -276,16 +276,22 @@ class ListingService {
       MapEntry('use_type', formData.useType),
       if (formData.specificLocation != null) MapEntry('specific_location', formData.specificLocation!),
       if (formData.priceFixed != null) MapEntry('price_fixed', formData.priceFixed.toString()),
-      if (formData.rentalPeriodUnit != null) MapEntry('rental_period_unit', formData.rentalPeriodUnit!),
+      if (formData.rentalPeriodUnit != null && formData.rentalPeriodUnit != 'week') 
+        MapEntry('rental_period_unit', formData.rentalPeriodUnit!),
       if (formData.facingDirection != null) MapEntry('facing_direction', formData.facingDirection!),
       if (formData.description != null) MapEntry('description', formData.description!),
+      if (formData.serviceType != null) MapEntry('service_type', formData.serviceType!),
       if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),
       MapEntry('has_debt_or_encumbrance', formData.hasDebtOrEncumbrance ? '1' : '0'),
       if (formData.debtAmount != null) MapEntry('debt_amount', formData.debtAmount.toString()),
+      if (formData.debtHolder != null) MapEntry('debt_holder', formData.debtHolder!),
       MapEntry('electricity', formData.electricity ? '1' : '0'),
       MapEntry('water', formData.water ? '1' : '0'),
       MapEntry('parking_available', formData.parkingAvailable ? '1' : '0'),
-      if (formData.totalSquareMeters != null) MapEntry('total_square_meters', formData.totalSquareMeters.toString()),
+      if (formData.totalSquareMeters != null) ...[
+        MapEntry('total_square_meters', formData.totalSquareMeters.toString()),
+        MapEntry('area', formData.totalSquareMeters.toString()),
+      ],
       if (formData.frontAreaSqm != null) MapEntry('front_area_sqm', formData.frontAreaSqm.toString()),
       if (formData.sideAreaSqm != null) MapEntry('side_area_sqm', formData.sideAreaSqm.toString()),
     ]);
@@ -297,6 +303,7 @@ class ListingService {
       if (formData.bathrooms != null) dioFormData.fields.add(MapEntry('bathrooms', formData.bathrooms.toString()));
       if (formData.kitchens != null) dioFormData.fields.add(MapEntry('kitchens', formData.kitchens.toString()));
       if (formData.salons != null) dioFormData.fields.add(MapEntry('salons', formData.salons.toString()));
+      if (formData.floors != null) dioFormData.fields.add(MapEntry('floors', formData.floors.toString()));
       if (formData.houseType != null) dioFormData.fields.add(MapEntry('house_type', formData.houseType!));
       if (formData.yearBuilt != null) dioFormData.fields.add(MapEntry('year_built', formData.yearBuilt.toString()));
     }
@@ -307,7 +314,8 @@ class ListingService {
       if (formData.acquisitionClarification != null) dioFormData.fields.add(MapEntry('acquisition_clarification', formData.acquisitionClarification!));
     } else if (formData.holdingType == 'Lease Hold') {
       if (formData.leasedYear != null) dioFormData.fields.add(MapEntry('leased_year', formData.leasedYear.toString()));
-      if (formData.leasePricePerSqm != null) dioFormData.fields.add(MapEntry('lease_price_per_sqm', formData.leasePricePerSqm.toString()));
+      if (formData.leaseExpiryYear != null) dioFormData.fields.add(MapEntry('lease_expiry_year', formData.leaseExpiryYear.toString()));
+      if (formData.leasePricePerSqm != null) dioFormData.fields.add(MapEntry('price_per_sqm', formData.leasePricePerSqm.toString()));
       if (formData.buildType != null) dioFormData.fields.add(MapEntry('build_type', formData.buildType!));
       if (formData.annualPayment != null) dioFormData.fields.add(MapEntry('annual_payment', formData.annualPayment.toString()));
     } else if (formData.holdingType == 'Cooperative') {
