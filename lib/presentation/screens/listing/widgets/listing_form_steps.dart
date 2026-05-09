@@ -1560,7 +1560,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Max 100MB", style: AppTextStyles.caption),
+        Text("Max 100MB", style: AppTextStyles.caption),
         const SizedBox(height: 4),
         _buildSingleFilePicker('video', widget.formData.videoFile),
       ],
