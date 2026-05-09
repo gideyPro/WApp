@@ -747,7 +747,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     final isScrolled = overlapsContent;
     final l10n = AppLocalizations.of(context);
 
-    final String greetingText = authState.isAuthenticated && user?.firstName != null
+    final String greetingText = user?.firstName != null
         ? l10n.homeGreeting(user!.firstName)
         : 'Welcome';
 

@@ -38,7 +38,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state = AuthState.unauthenticated();
       }
     } catch (e) {
-      state = AuthState.unauthenticated();
+      // Keep existing user data on network errors - don't wipe cached state
+      if (state.user == null) {
+        state = AuthState.unauthenticated();
+      } else {
+        state = state.copyWith(isLoading: false);
+      }
     }
   }
 
