@@ -95,6 +95,30 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
+  static const LinearGradient gradientError = LinearGradient(
+    colors: [Color(0xFFef4444), Color(0xFFdc2626)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient gradientWarning = LinearGradient(
+    colors: [Color(0xFFf59e0b), Color(0xFFd97706)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient gradientInfo = LinearGradient(
+    colors: [Color(0xFF3b82f6), Color(0xFF2563eb)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient gradientNetwork = LinearGradient(
+    colors: [zinc500, zinc600],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   // Shadow Definitions
   static List<BoxShadow> get shadowSm => [
         BoxShadow(

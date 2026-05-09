@@ -397,7 +397,6 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
   }
 }
 
-/// Message type for WaveMessageScreen
 enum WaveMessageType {
   error,
   warning,
@@ -408,7 +407,51 @@ enum WaveMessageType {
   custom,
 }
 
-/// WaveMart Full-Screen Message - Reusable for all message types
+final _typeConfig = {
+  WaveMessageType.error: _MessageConfig(
+    icon: Icons.error_outline_rounded,
+    bgColor: const Color(0xFFef4444),
+    gradient: AppColors.gradientError,
+  ),
+  WaveMessageType.warning: _MessageConfig(
+    icon: Icons.warning_amber_rounded,
+    bgColor: const Color(0xFFf59e0b),
+    gradient: AppColors.gradientWarning,
+  ),
+  WaveMessageType.success: _MessageConfig(
+    icon: Icons.check_circle_outline_rounded,
+    bgColor: AppColors.emerald600,
+    gradient: AppColors.gradientEmerald,
+  ),
+  WaveMessageType.info: _MessageConfig(
+    icon: Icons.info_outline_rounded,
+    bgColor: const Color(0xFF3b82f6),
+    gradient: AppColors.gradientInfo,
+  ),
+  WaveMessageType.networkError: _MessageConfig(
+    icon: Icons.wifi_off_rounded,
+    bgColor: AppColors.zinc500,
+    gradient: AppColors.gradientNetwork,
+  ),
+  WaveMessageType.empty: _MessageConfig(
+    icon: Icons.inbox_outlined,
+    bgColor: AppColors.zinc400,
+    gradient: null,
+  ),
+  WaveMessageType.custom: _MessageConfig(
+    icon: Icons.help_outline,
+    bgColor: AppColors.navy500,
+    gradient: null,
+  ),
+};
+
+class _MessageConfig {
+  final IconData icon;
+  final Color bgColor;
+  final LinearGradient? gradient;
+  const _MessageConfig({required this.icon, required this.bgColor, this.gradient});
+}
+
 class WaveMessageScreen extends StatelessWidget {
   final WaveMessageType type;
   final String title;
@@ -444,30 +487,26 @@ class WaveMessageScreen extends StatelessWidget {
     VoidCallback? onAction,
     VoidCallback? onRetry,
     bool isEmbedded = false,
-  }) {
-    return WaveMessageScreen(
-      type: WaveMessageType.error,
-      title: title,
-      subtitle: subtitle,
-      actionLabel: actionLabel ?? 'Retry',
-      onAction: onRetry ?? onAction,
-      isEmbedded: isEmbedded,
-    );
-  }
+  }) =>
+      WaveMessageScreen(
+        type: WaveMessageType.error,
+        title: title,
+        subtitle: subtitle,
+        actionLabel: actionLabel ?? 'Retry',
+        onAction: onRetry ?? onAction,
+        onRetry: onRetry,
+        isEmbedded: isEmbedded,
+      );
 
-  factory WaveMessageScreen.networkError({
-    VoidCallback? onRetry,
-    bool isEmbedded = false,
-  }) {
-    return WaveMessageScreen(
-      type: WaveMessageType.networkError,
-      title: 'No Internet Connection',
-      subtitle: 'Please check your internet connection and try again.',
-      actionLabel: 'Try Again',
-      onRetry: onRetry,
-      isEmbedded: isEmbedded,
-    );
-  }
+  factory WaveMessageScreen.networkError({VoidCallback? onRetry, bool isEmbedded = false}) =>
+      WaveMessageScreen(
+        type: WaveMessageType.networkError,
+        title: 'No Internet Connection',
+        subtitle: 'Please check your internet connection and try again.',
+        actionLabel: 'Try Again',
+        onRetry: onRetry,
+        isEmbedded: isEmbedded,
+      );
 
   factory WaveMessageScreen.warning({
     required String title,
@@ -475,16 +514,15 @@ class WaveMessageScreen extends StatelessWidget {
     String? actionLabel,
     VoidCallback? onAction,
     bool isEmbedded = false,
-  }) {
-    return WaveMessageScreen(
-      type: WaveMessageType.warning,
-      title: title,
-      subtitle: subtitle,
-      actionLabel: actionLabel,
-      onAction: onAction,
-      isEmbedded: isEmbedded,
-    );
-  }
+  }) =>
+      WaveMessageScreen(
+        type: WaveMessageType.warning,
+        title: title,
+        subtitle: subtitle,
+        actionLabel: actionLabel,
+        onAction: onAction,
+        isEmbedded: isEmbedded,
+      );
 
   factory WaveMessageScreen.success({
     required String title,
@@ -492,16 +530,15 @@ class WaveMessageScreen extends StatelessWidget {
     String? actionLabel,
     VoidCallback? onAction,
     bool isEmbedded = false,
-  }) {
-    return WaveMessageScreen(
-      type: WaveMessageType.success,
-      title: title,
-      subtitle: subtitle,
-      actionLabel: actionLabel,
-      onAction: onAction,
-      isEmbedded: isEmbedded,
-    );
-  }
+  }) =>
+      WaveMessageScreen(
+        type: WaveMessageType.success,
+        title: title,
+        subtitle: subtitle,
+        actionLabel: actionLabel,
+        onAction: onAction,
+        isEmbedded: isEmbedded,
+      );
 
   factory WaveMessageScreen.info({
     required String title,
@@ -509,16 +546,15 @@ class WaveMessageScreen extends StatelessWidget {
     String? actionLabel,
     VoidCallback? onAction,
     bool isEmbedded = false,
-  }) {
-    return WaveMessageScreen(
-      type: WaveMessageType.info,
-      title: title,
-      subtitle: subtitle,
-      actionLabel: actionLabel,
-      onAction: onAction,
-      isEmbedded: isEmbedded,
-    );
-  }
+  }) =>
+      WaveMessageScreen(
+        type: WaveMessageType.info,
+        title: title,
+        subtitle: subtitle,
+        actionLabel: actionLabel,
+        onAction: onAction,
+        isEmbedded: isEmbedded,
+      );
 
   factory WaveMessageScreen.empty({
     required String title,
@@ -526,209 +562,139 @@ class WaveMessageScreen extends StatelessWidget {
     String? actionLabel,
     VoidCallback? onAction,
     bool isEmbedded = false,
-  }) {
-    return WaveMessageScreen(
-      type: WaveMessageType.empty,
-      title: title,
-      subtitle: subtitle,
-      actionLabel: actionLabel,
-      onAction: onAction,
-      isEmbedded: isEmbedded,
-    );
-  }
+  }) =>
+      WaveMessageScreen(
+        type: WaveMessageType.empty,
+        title: title,
+        subtitle: subtitle,
+        actionLabel: actionLabel,
+        onAction: onAction,
+        isEmbedded: isEmbedded,
+      );
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final (icon, iconColor, bgColor, gradient) = _getTypeConfig();
+    final cfg = type == WaveMessageType.custom
+        ? _MessageConfig(
+            icon: customIcon ?? Icons.help_outline,
+            bgColor: customIconColor ?? AppColors.navy500,
+            gradient: null,
+          )
+        : _typeConfig[type]!;
+    final iconColor = _usesDarkIcon(cfg.bgColor) ? Colors.white : context.textPrimary;
+    final bg = isDark ? AppColors.navy950 : AppColors.zinc50;
+    final iconSize = isEmbedded ? 48.0 : 72.0;
+    final containerSize = isEmbedded ? 100.0 : 140.0;
 
-    final content = Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(isEmbedded ? 24 : 32),
-      child: Column(
-        mainAxisSize: isEmbedded ? MainAxisSize.min : MainAxisSize.max,
-        children: [
-          if (showBackButton && !isEmbedded)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 24),
-                child: IconButton(
-                  onPressed: onBack ?? () => Navigator.of(context).pop(),
-                  icon: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.1),
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_ios_new,
-                      size: 18,
-                      color: context.textPrimary,
+    final content = Column(
+      mainAxisSize: isEmbedded ? MainAxisSize.min : MainAxisSize.max,
+      children: [
+        if (showBackButton && !isEmbedded)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: IconButton(
+                onPressed: onBack ?? () => Navigator.of(context).pop(),
+                icon: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.05)
+                        : Colors.black.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : Colors.black.withValues(alpha: 0.1),
                     ),
                   ),
+                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: context.textPrimary),
                 ),
               ),
             ),
-          if (!isEmbedded) const Spacer(flex: 3),
-          _buildElegantIcon(icon, iconColor, bgColor, gradient, isDark, isEmbedded),
-          const SizedBox(height: 40),
-          Text(
-            title,
-            style: (isEmbedded ? AppTextStyles.headline5 : AppTextStyles.headline4).copyWith(
-              fontWeight: FontWeight.w900,
-              color: context.textPrimary,
-              letterSpacing: -1,
-              height: 1.1,
-            ),
-            textAlign: TextAlign.center,
           ),
-          if (subtitle != null) ...[
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                subtitle!,
-                style: AppTextStyles.bodyLarge.copyWith(
-                  color: context.textSecondary,
-                  height: 1.5,
-                  letterSpacing: 0.2,
-                ),
-                textAlign: TextAlign.center,
+        if (!isEmbedded) const Spacer(flex: 3),
+        _buildIconContainer(cfg, iconColor, iconSize, containerSize),
+        const SizedBox(height: 32),
+        Text(
+          title,
+          style: AppTextStyles.headline4.copyWith(
+            fontWeight: FontWeight.w800,
+            color: context.textPrimary,
+            letterSpacing: -0.5,
+            height: 1.2,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              subtitle!,
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: context.textSecondary,
+                height: 1.6,
               ),
+              textAlign: TextAlign.center,
             ),
-          ],
-          if (!isEmbedded) const Spacer(flex: 4),
-          if (isEmbedded) const SizedBox(height: 40),
-          
-          // Action Buttons
-          Column(
-            children: [
-              if (onRetry != null)
-                WaveButton(
-                  text: actionLabel ?? 'Retry',
-                  icon: Icons.refresh_rounded,
-                  onPressed: onRetry,
-                  isFullWidth: true,
-                  height: 56,
-                ),
-              if (onAction != null && onRetry != null) const SizedBox(height: 12),
-              if (onAction != null)
-                WaveButton(
-                  text: onRetry != null ? 'Continue' : (actionLabel ?? 'Continue'),
-                  onPressed: onAction,
-                  variant: onRetry != null ? ButtonVariant.ghost : ButtonVariant.primary,
-                  isFullWidth: true,
-                  height: 56,
-                ),
-              // Default "Continue" if no actions provided and not embedded
-              if (onAction == null && onRetry == null && !isEmbedded)
-                WaveButton(
-                  text: 'Dismiss',
-                  onPressed: () => Navigator.of(context).pop(),
-                  variant: ButtonVariant.ghost,
-                  isFullWidth: true,
-                  height: 56,
-                ),
-            ],
           ),
-          if (!isEmbedded) const SizedBox(height: 16),
         ],
-      ),
+        if (!isEmbedded) const Spacer(flex: 3),
+        if (isEmbedded) const SizedBox(height: 32),
+        _buildActions(context),
+        if (!isEmbedded) const SizedBox(height: 16),
+      ],
     );
 
     if (isEmbedded) {
       return Center(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(24),
           child: content,
         ),
       );
     }
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: bg,
       body: Stack(
         children: [
-          // Background Decorative Elements
           Positioned(
-            top: -100,
-            right: -100,
-            child: _buildBackgroundCircle(iconColor.withOpacity(0.05), 300),
-          ),
-          Positioned(
-            bottom: -50,
-            left: -50,
-            child: _buildBackgroundCircle(iconColor.withOpacity(0.03), 200),
-          ),
-          SafeArea(child: content),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBackgroundCircle(Color color, double size) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
-    );
-  }
-
-  Widget _buildElegantIcon(IconData icon, Color iconColor, Color bgColor, LinearGradient? gradient, bool isDark, bool isEmbedded) {
-    final size = isEmbedded ? 100.0 : 160.0;
-    final iconSize = isEmbedded ? 48.0 : 72.0;
-
-    return Center(
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Outer Glow
-          Container(
-            width: size + 40,
-            height: size + 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  iconColor.withOpacity(0.15),
-                  iconColor.withOpacity(0),
-                ],
-              ),
-            ),
-          ),
-          // Main Container
-          Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              gradient: gradient ?? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  bgColor,
-                  bgColor.withOpacity(0.8),
-                ],
-              ),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: iconColor.withOpacity(0.4),
-                  blurRadius: 30,
-                  offset: const Offset(0, 15),
+            top: -80,
+            right: -80,
+            child: Container(
+              width: 240,
+              height: 240,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [cfg.bgColor.withValues(alpha: 0.12), cfg.bgColor.withValues(alpha: 0)],
                 ),
-              ],
+              ),
             ),
-            child: Icon(
-              customIcon ?? icon,
-              size: iconSize,
-              color: iconColor == Colors.white ? Colors.white : iconColor,
+          ),
+          Positioned(
+            bottom: -40,
+            left: -40,
+            child: Container(
+              width: 160,
+              height: 160,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [cfg.bgColor.withValues(alpha: 0.06), cfg.bgColor.withValues(alpha: 0)],
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: content,
             ),
           ),
         ],
@@ -736,58 +702,75 @@ class WaveMessageScreen extends StatelessWidget {
     );
   }
 
-  (IconData, Color, Color, LinearGradient?) _getTypeConfig() {
-    switch (type) {
-      case WaveMessageType.error:
-        return (
-          Icons.error_outline_rounded,
-          Colors.white,
-          AppColors.error,
-          AppColors.gradientEmerald,
-        );
-      case WaveMessageType.warning:
-        return (
-          Icons.warning_amber_rounded,
-          AppColors.warning,
-          AppColors.warning.withOpacity(0.15),
-          null,
-        );
-      case WaveMessageType.success:
-        return (
-          Icons.check_circle_outline_rounded,
-          Colors.white,
-          AppColors.emerald600,
-          AppColors.gradientEmerald,
-        );
-      case WaveMessageType.info:
-        return (
-          Icons.info_outline_rounded,
-          AppColors.wave600,
-          AppColors.wave500.withOpacity(0.15),
-          null,
-        );
-      case WaveMessageType.networkError:
-        return (
-          Icons.wifi_off_rounded,
-          AppColors.zinc600,
-          AppColors.zinc200,
-          null,
-        );
-      case WaveMessageType.empty:
-        return (
-          Icons.inbox_outlined,
-          AppColors.zinc400,
-          AppColors.zinc200,
-          null,
-        );
-      case WaveMessageType.custom:
-        return (
-          customIcon ?? Icons.help_outline,
-          customIconColor ?? AppColors.navy600,
-          AppColors.navy50,
-          null,
-        );
+  Widget _buildIconContainer(_MessageConfig cfg, Color iconColor, double iconSize, double containerSize) {
+    return Container(
+      width: containerSize,
+      height: containerSize,
+      decoration: BoxDecoration(
+        gradient: cfg.gradient ??
+            LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [cfg.bgColor, cfg.bgColor.withValues(alpha: 0.7)],
+            ),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: cfg.bgColor.withValues(alpha: 0.4),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: Icon(
+        customIcon ?? cfg.icon,
+        size: iconSize,
+        color: iconColor,
+      ),
+    );
+  }
+
+  Widget _buildActions(BuildContext ctx) {
+    final hasRetry = onRetry != null;
+    final hasAction = onAction != null;
+
+    if (!hasRetry && !hasAction) {
+      return WaveButton(
+        text: 'Dismiss',
+        onPressed: () => Navigator.of(ctx).pop(),
+        variant: ButtonVariant.ghost,
+        isFullWidth: true,
+        height: 52,
+      );
     }
+
+    return Column(
+      children: [
+        if (hasRetry)
+          WaveButton(
+            text: actionLabel ?? 'Try Again',
+            icon: Icons.refresh_rounded,
+            onPressed: onRetry,
+            isFullWidth: true,
+            height: 52,
+          ),
+        if (hasAction) ...[
+          const SizedBox(height: 12),
+          WaveButton(
+            text: hasRetry ? 'Continue' : (actionLabel ?? 'Continue'),
+            onPressed: onAction,
+            variant: hasRetry ? ButtonVariant.ghost : ButtonVariant.primary,
+            isFullWidth: true,
+            height: 52,
+          ),
+        ],
+      ],
+    );
+  }
+
+  static bool _usesDarkIcon(Color bgColor) {
+    final luminance = bgColor.computeLuminance();
+    return luminance > 0.5;
   }
 }
 
