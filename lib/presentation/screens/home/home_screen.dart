@@ -30,7 +30,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin, RouteAware {
   final ScrollController _scrollController = ScrollController();
   final Set<int> _togglingFavorites = {};
   late AnimationController _headerAnimationController;
@@ -41,7 +41,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _headerAnimationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -70,17 +69,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final wasOnSearch = ModalRoute.of(context)?.settings.name == '/search';
-    if (_wasOnSearchScreen && !wasOnSearch && mounted) {
-      ref.read(listingsProvider.notifier).loadListings();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
     }
-    _wasOnSearchScreen = wasOnSearch;
+    final isOnSearch = route?.settings.name == '/search';
+    if (isOnSearch) {
+      _wasOnSearchScreen = true;
+    }
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+  void didPopNext() {
+    if (_wasOnSearchScreen && mounted) {
       ref.read(listingsProvider.notifier).loadListings();
+      _wasOnSearchScreen = false;
     }
   }
 
@@ -99,7 +102,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _headerAnimationController.dispose();
