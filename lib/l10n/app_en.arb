@@ -486,5 +486,21 @@
   "paymentsSubscription": "Subscription Payment",
   "paymentsFeatured": "Featured Listing",
   "paymentsDirect": "Direct Payment",
-  "paymentsGeneral": "Payment"
+  "paymentsGeneral": "Payment",
+
+  "messageRetry": "Try Again",
+  "messageGoBack": "Go Back",
+  "messageDismiss": "Dismiss",
+  "messageNetworkTitle": "No Internet Connection",
+  "messageNetworkSubtitle": "Check your connection and try again.",
+  "messageEmptyTitle": "Nothing Here",
+  "messageEmptySubtitle": "There's nothing to show right now.",
+  "messageErrorTitle": "Something Went Wrong",
+  "messageErrorSubtitle": "We couldn't complete your request.",
+  "messageSuccessTitle": "Success!",
+  "messageSuccessSubtitle": "Your action was completed successfully.",
+  "messageInfoTitle": "Info",
+  "messageInfoSubtitle": "Here is some important information.",
+  "messageWarningTitle": "Warning",
+  "messageWarningSubtitle": "Please review this important message."
 }

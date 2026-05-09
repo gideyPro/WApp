@@ -407,54 +407,69 @@ enum WaveMessageType {
   custom,
 }
 
-final _typeConfig = {
-  WaveMessageType.error: _MessageConfig(
+class _MessageStyle {
+  final IconData icon;
+  final Color iconBg;
+  final Color iconColor;
+  final String? defaultTitle;
+  final String? defaultSubtitle;
+  const _MessageStyle({
+    required this.icon,
+    required this.iconBg,
+    required this.iconColor,
+    this.defaultTitle,
+    this.defaultSubtitle,
+  });
+}
+
+final _typeStyles = {
+  WaveMessageType.error: const _MessageStyle(
     icon: Icons.error_outline_rounded,
-    bgColor: const Color(0xFFef4444),
-    gradient: AppColors.gradientError,
+    iconBg: Color(0xFFfee2e2),
+    iconColor: Color(0xFFef4444),
+    defaultTitle: 'Something Went Wrong',
+    defaultSubtitle: "We couldn't complete your request.",
   ),
-  WaveMessageType.warning: _MessageConfig(
+  WaveMessageType.warning: const _MessageStyle(
     icon: Icons.warning_amber_rounded,
-    bgColor: const Color(0xFFf59e0b),
-    gradient: AppColors.gradientWarning,
+    iconBg: Color(0xFFfef3c7),
+    iconColor: Color(0xFFf59e0b),
+    defaultTitle: 'Warning',
+    defaultSubtitle: 'Please review this important message.',
   ),
-  WaveMessageType.success: _MessageConfig(
+  WaveMessageType.success: const _MessageStyle(
     icon: Icons.check_circle_outline_rounded,
-    bgColor: AppColors.emerald600,
-    gradient: AppColors.gradientEmerald,
+    iconBg: Color(0xFFd1fae5),
+    iconColor: Color(0xFF10b981),
+    defaultTitle: 'Success!',
+    defaultSubtitle: 'Your action was completed successfully.',
   ),
-  WaveMessageType.info: _MessageConfig(
+  WaveMessageType.info: const _MessageStyle(
     icon: Icons.info_outline_rounded,
-    bgColor: const Color(0xFF3b82f6),
-    gradient: AppColors.gradientInfo,
+    iconBg: Color(0xFFdbeafe),
+    iconColor: Color(0xFF3b82f6),
+    defaultTitle: 'Info',
+    defaultSubtitle: 'Here is some important information.',
   ),
-  WaveMessageType.networkError: _MessageConfig(
+  WaveMessageType.networkError: const _MessageStyle(
     icon: Icons.wifi_off_rounded,
-    bgColor: AppColors.zinc500,
-    gradient: AppColors.gradientNetwork,
+    iconBg: Color(0xFFe7e5e4),
+    iconColor: Color(0xFF78716c),
+    defaultTitle: 'No Internet Connection',
+    defaultSubtitle: 'Check your connection and try again.',
   ),
-  WaveMessageType.empty: _MessageConfig(
+  WaveMessageType.empty: const _MessageStyle(
     icon: Icons.inbox_outlined,
-    bgColor: AppColors.zinc400,
-    gradient: null,
-  ),
-  WaveMessageType.custom: _MessageConfig(
-    icon: Icons.help_outline,
-    bgColor: AppColors.navy500,
-    gradient: null,
+    iconBg: Color(0xFFf5f5f4),
+    iconColor: Color(0xFFa8a29e),
+    defaultTitle: 'Nothing Here',
+    defaultSubtitle: "There's nothing to show right now.",
   ),
 };
 
-class _MessageConfig {
-  final IconData icon;
-  final Color bgColor;
-  final LinearGradient? gradient;
-  const _MessageConfig({required this.icon, required this.bgColor, this.gradient});
-}
-
 class WaveMessageScreen extends StatelessWidget {
   final WaveMessageType type;
-  final String title;
+  final String? title;
   final String? subtitle;
   final String? actionLabel;
   final VoidCallback? onAction;
@@ -468,7 +483,7 @@ class WaveMessageScreen extends StatelessWidget {
   const WaveMessageScreen({
     super.key,
     required this.type,
-    required this.title,
+    this.title,
     this.subtitle,
     this.actionLabel,
     this.onAction,
@@ -481,9 +496,8 @@ class WaveMessageScreen extends StatelessWidget {
   });
 
   factory WaveMessageScreen.error({
-    required String title,
+    String? title,
     String? subtitle,
-    String? actionLabel,
     VoidCallback? onAction,
     VoidCallback? onRetry,
     bool isEmbedded = false,
@@ -492,26 +506,24 @@ class WaveMessageScreen extends StatelessWidget {
         type: WaveMessageType.error,
         title: title,
         subtitle: subtitle,
-        actionLabel: actionLabel ?? 'Retry',
         onAction: onRetry ?? onAction,
         onRetry: onRetry,
         isEmbedded: isEmbedded,
       );
 
-  factory WaveMessageScreen.networkError({VoidCallback? onRetry, bool isEmbedded = false}) =>
+  factory WaveMessageScreen.networkError({
+    VoidCallback? onRetry,
+    bool isEmbedded = false,
+  }) =>
       WaveMessageScreen(
         type: WaveMessageType.networkError,
-        title: 'No Internet Connection',
-        subtitle: 'Please check your internet connection and try again.',
-        actionLabel: 'Try Again',
         onRetry: onRetry,
         isEmbedded: isEmbedded,
       );
 
   factory WaveMessageScreen.warning({
-    required String title,
+    String? title,
     String? subtitle,
-    String? actionLabel,
     VoidCallback? onAction,
     bool isEmbedded = false,
   }) =>
@@ -519,15 +531,13 @@ class WaveMessageScreen extends StatelessWidget {
         type: WaveMessageType.warning,
         title: title,
         subtitle: subtitle,
-        actionLabel: actionLabel,
         onAction: onAction,
         isEmbedded: isEmbedded,
       );
 
   factory WaveMessageScreen.success({
-    required String title,
+    String? title,
     String? subtitle,
-    String? actionLabel,
     VoidCallback? onAction,
     bool isEmbedded = false,
   }) =>
@@ -535,15 +545,13 @@ class WaveMessageScreen extends StatelessWidget {
         type: WaveMessageType.success,
         title: title,
         subtitle: subtitle,
-        actionLabel: actionLabel,
         onAction: onAction,
         isEmbedded: isEmbedded,
       );
 
   factory WaveMessageScreen.info({
-    required String title,
+    String? title,
     String? subtitle,
-    String? actionLabel,
     VoidCallback? onAction,
     bool isEmbedded = false,
   }) =>
@@ -551,15 +559,13 @@ class WaveMessageScreen extends StatelessWidget {
         type: WaveMessageType.info,
         title: title,
         subtitle: subtitle,
-        actionLabel: actionLabel,
         onAction: onAction,
         isEmbedded: isEmbedded,
       );
 
   factory WaveMessageScreen.empty({
-    required String title,
+    String? title,
     String? subtitle,
-    String? actionLabel,
     VoidCallback? onAction,
     bool isEmbedded = false,
   }) =>
@@ -567,7 +573,6 @@ class WaveMessageScreen extends StatelessWidget {
         type: WaveMessageType.empty,
         title: title,
         subtitle: subtitle,
-        actionLabel: actionLabel,
         onAction: onAction,
         isEmbedded: isEmbedded,
       );
@@ -575,202 +580,177 @@ class WaveMessageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cfg = type == WaveMessageType.custom
-        ? _MessageConfig(
+    final style = type == WaveMessageType.custom
+        ? _MessageStyle(
             icon: customIcon ?? Icons.help_outline,
-            bgColor: customIconColor ?? AppColors.navy500,
-            gradient: null,
+            iconBg: (customIconColor ?? AppColors.navy500).withValues(alpha: 0.12),
+            iconColor: customIconColor ?? AppColors.navy500,
           )
-        : _typeConfig[type]!;
-    final iconColor = _usesDarkIcon(cfg.bgColor) ? Colors.white : context.textPrimary;
-    final bg = isDark ? AppColors.navy950 : AppColors.zinc50;
-    final iconSize = isEmbedded ? 48.0 : 72.0;
-    final containerSize = isEmbedded ? 100.0 : 140.0;
+        : _typeStyles[type]!;
 
-    final content = Column(
-      mainAxisSize: isEmbedded ? MainAxisSize.min : MainAxisSize.max,
-      children: [
-        if (showBackButton && !isEmbedded)
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 24),
-              child: IconButton(
-                onPressed: onBack ?? () => Navigator.of(context).pop(),
-                icon: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.05)
-                        : Colors.black.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.1)
-                          : Colors.black.withValues(alpha: 0.1),
-                    ),
-                  ),
-                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: context.textPrimary),
-                ),
-              ),
+    final effectiveTitle = title ?? style.defaultTitle ?? '';
+    final effectiveSubtitle = subtitle ?? style.defaultSubtitle ?? '';
+
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      body: Stack(
+        children: [
+          if (showBackButton)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 8,
+              left: 16,
+              child: _buildBackButton(context, isDark),
+            ),
+          Center(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: _buildCard(style, effectiveTitle, effectiveSubtitle, context, isDark),
             ),
           ),
-        if (!isEmbedded) const Spacer(flex: 3),
-        _buildIconContainer(cfg, iconColor, iconSize, containerSize),
-        const SizedBox(height: 32),
-        Text(
-          title,
-          style: AppTextStyles.headline4.copyWith(
-            fontWeight: FontWeight.w800,
-            color: context.textPrimary,
-            letterSpacing: -0.5,
-            height: 1.2,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCard(
+    _MessageStyle style,
+    String effectiveTitle,
+    String effectiveSubtitle,
+    BuildContext context,
+    bool isDark,
+  ) {
+    final cardBg = isDark ? AppColors.navy900 : Colors.white;
+    final shadow = isDark
+        ? [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ]
+        : AppColors.shadowLg;
+
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxWidth: 340),
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: shadow,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: style.iconBg,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              style.icon,
+              size: 32,
+              color: style.iconColor,
+            ),
           ),
-          textAlign: TextAlign.center,
-        ),
-        if (subtitle != null) ...[
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text(
-              subtitle!,
-              style: AppTextStyles.bodyLarge.copyWith(
+          const SizedBox(height: 24),
+          Text(
+            effectiveTitle,
+            style: AppTextStyles.headline4.copyWith(
+              fontWeight: FontWeight.w800,
+              color: context.textPrimary,
+              letterSpacing: -0.5,
+              height: 1.2,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          if (effectiveSubtitle.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              effectiveSubtitle,
+              style: AppTextStyles.bodyMedium.copyWith(
                 color: context.textSecondary,
-                height: 1.6,
+                height: 1.5,
               ),
               textAlign: TextAlign.center,
             ),
-          ),
-        ],
-        if (!isEmbedded) const Spacer(flex: 3),
-        if (isEmbedded) const SizedBox(height: 32),
-        _buildActions(context),
-        if (!isEmbedded) const SizedBox(height: 16),
-      ],
-    );
-
-    if (isEmbedded) {
-      return Center(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(24),
-          child: content,
-        ),
-      );
-    }
-
-    return Scaffold(
-      backgroundColor: bg,
-      body: Stack(
-        children: [
-          Positioned(
-            top: -80,
-            right: -80,
-            child: Container(
-              width: 240,
-              height: 240,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [cfg.bgColor.withValues(alpha: 0.12), cfg.bgColor.withValues(alpha: 0)],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -40,
-            left: -40,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [cfg.bgColor.withValues(alpha: 0.06), cfg.bgColor.withValues(alpha: 0)],
-                ),
-              ),
-            ),
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: content,
-            ),
-          ),
+          ],
+          const SizedBox(height: 28),
+          _buildAction(context),
         ],
       ),
     );
   }
 
-  Widget _buildIconContainer(_MessageConfig cfg, Color iconColor, double iconSize, double containerSize) {
-    return Container(
-      width: containerSize,
-      height: containerSize,
-      decoration: BoxDecoration(
-        gradient: cfg.gradient ??
-            LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [cfg.bgColor, cfg.bgColor.withValues(alpha: 0.7)],
-            ),
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: cfg.bgColor.withValues(alpha: 0.4),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: Icon(
-        customIcon ?? cfg.icon,
-        size: iconSize,
-        color: iconColor,
-      ),
-    );
-  }
-
-  Widget _buildActions(BuildContext ctx) {
+  Widget _buildAction(BuildContext context) {
     final hasRetry = onRetry != null;
     final hasAction = onAction != null;
 
     if (!hasRetry && !hasAction) {
-      return WaveButton(
-        text: 'Dismiss',
-        onPressed: () => Navigator.of(ctx).pop(),
-        variant: ButtonVariant.ghost,
-        isFullWidth: true,
-        height: 52,
+      return GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: Text(
+          'Dismiss',
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.wave600,
+            fontWeight: FontWeight.w600,
+            decoration: TextDecoration.underline,
+            decorationColor: AppColors.wave600.withValues(alpha: 0.5),
+          ),
+        ),
       );
     }
 
-    return Column(
-      children: [
-        if (hasRetry)
-          WaveButton(
-            text: actionLabel ?? 'Try Again',
-            icon: Icons.refresh_rounded,
-            onPressed: onRetry,
-            isFullWidth: true,
-            height: 52,
+    final callback = hasRetry ? onRetry! : onAction!;
+    final label = actionLabel ?? (hasRetry ? 'Try Again' : 'Continue');
+
+    return GestureDetector(
+      onTap: callback,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.refresh_rounded,
+            size: 18,
+            color: AppColors.wave600,
           ),
-        if (hasAction) ...[
-          const SizedBox(height: 12),
-          WaveButton(
-            text: hasRetry ? 'Continue' : (actionLabel ?? 'Continue'),
-            onPressed: onAction,
-            variant: hasRetry ? ButtonVariant.ghost : ButtonVariant.primary,
-            isFullWidth: true,
-            height: 52,
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.wave600,
+              fontWeight: FontWeight.w600,
+              decoration: TextDecoration.underline,
+              decorationColor: AppColors.wave600.withValues(alpha: 0.5),
+            ),
           ),
         ],
-      ],
+      ),
     );
   }
 
-  static bool _usesDarkIcon(Color bgColor) {
-    final luminance = bgColor.computeLuminance();
-    return luminance > 0.5;
+  Widget _buildBackButton(BuildContext context, bool isDark) {
+    return GestureDetector(
+      onTap: onBack ?? () => Navigator.of(context).pop(),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.black.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Icon(
+          Icons.arrow_back_ios_new,
+          size: 18,
+          color: context.textPrimary,
+        ),
+      ),
+    );
   }
 }
 
