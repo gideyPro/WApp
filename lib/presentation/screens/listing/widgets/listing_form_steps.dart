@@ -368,7 +368,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(l10n.listingPropertyType),
+          _compactSectionLabel(l10n.listingPropertyType),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -393,9 +393,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
-          _sectionTitle(l10n.listingListingType),
+          _compactSectionLabel(l10n.listingListingType),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -420,12 +420,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
           if (widget.formData.listingType == 'rental') ...[
-            _sectionTitle(l10n.listingRentalPeriod),
-            const SizedBox(height: 8),
-            _dropdownFieldWithKeys(
+            _compactDropdown(
               value: widget.formData.rentalPeriodUnit,
               items: {
                 'day': 'Day',
@@ -434,28 +432,27 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                 'year': 'Year',
               },
               label: l10n.listingRentalPeriod,
+              hintText: 'Select rental period',
               onChanged: (v) => widget.onUpdate(
                   widget.formData.copyWith(rentalPeriodUnit: v)),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
           ],
 
-          _sectionTitle(l10n.listingHoldingType),
-          const SizedBox(height: 8),
-          _dropdownFieldWithKeys(
+          _compactDropdown(
             value: widget.formData.holdingType,
             items: {
               'Free Hold': l10n.listingFreeHold,
               'Lease Hold': l10n.listingLeaseHold,
               'Cooperative': l10n.listingCooperative,
             },
-            label: l10n.listingSelectHolding,
+            label: l10n.listingHoldingType,
+            hintText: 'Select holding type',
             onChanged: (v) => widget.onUpdate(widget.formData
                 .copyWith(holdingType: v ?? 'Free Hold')),
           ),
           const SizedBox(height: 16),
 
-          // Conditional Holding Details
           if (widget.formData.holdingType == 'Free Hold')
             _buildFreeHoldFields(),
           if (widget.formData.holdingType == 'Lease Hold')
@@ -463,10 +460,8 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           if (widget.formData.holdingType == 'Cooperative')
             _buildCooperativeFields(),
 
-          const SizedBox(height: 20),
-          _sectionTitle(l10n.listingUseType),
-          const SizedBox(height: 8),
-          _dropdownFieldWithKeys(
+          const SizedBox(height: 16),
+          _compactDropdown(
             value: widget.formData.useType,
             items: {
               'Residential': l10n.listingResidential,
@@ -474,23 +469,21 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               'Mixed': l10n.listingMixed,
               'Investment': l10n.listingInvestment,
             },
-            label: l10n.listingSelectUse,
+            label: l10n.listingUseType,
+            hintText: 'Select use type',
             onChanged: (v) => widget.onUpdate(widget.formData
                 .copyWith(useType: v ?? 'Residential')),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
-          _sectionTitle(l10n.listingLocation),
+          _compactSectionLabel(l10n.listingLocation),
           const SizedBox(height: 8),
           _buildAddressDropdowns(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
-          _sectionTitle(l10n.listingPriceEtb),
-          const SizedBox(height: 8),
-          _buildPriceField(),
-          const SizedBox(height: 20),
+          _buildCompactPriceField(),
+          const SizedBox(height: 16),
 
-          // Debt section
           CheckboxListTile(
             title: Text(l10n.listingHasDebt),
             value: widget.formData.hasDebtOrEncumbrance,
@@ -504,7 +497,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           ),
           if (widget.formData.hasDebtOrEncumbrance) ...[
             const SizedBox(height: 8),
-            _buildFormattedField(
+            _compactTextField(
               label: l10n.listingDebtAmount,
               controller: _debtAmountController,
               onSubmitted: (v) {
@@ -514,32 +507,41 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               },
             ),
           ],
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  Widget _dropdownFieldWithKeys({
+  Widget _compactSectionLabel(String title) {
+    return Text(title, style: AppTextStyles.labelMedium.copyWith(
+      fontWeight: FontWeight.w600,
+      color: context.textSecondary,
+      letterSpacing: 0.3,
+    ));
+  }
+
+  Widget _compactDropdown({
     required String? value,
     required Map<String, String> items,
     required String label,
+    required String hintText,
     required Function(String?) onChanged,
   }) {
     return DropdownButtonFormField<String>(
       value: items.containsKey(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        hintText: hintText,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
       dropdownColor: context.sheetBg,
       items: items.entries
           .map((e) => DropdownMenuItem(
                 value: e.key,
                 child: Text(e.value,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.normal, fontSize: 14)),
+                    style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14)),
               ))
           .toList(),
       onChanged: onChanged,
@@ -547,10 +549,88 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     );
   }
 
-  Widget _sectionTitle(String title) {
-    return Text(title,
-        style: AppTextStyles.titleSmall
-            .copyWith(fontWeight: FontWeight.w700, fontSize: 16));
+  Widget _compactTextField({
+    required String label,
+    required TextEditingController controller,
+    TextInputType? keyboardType,
+    bool readOnly = false,
+    required void Function(String) onSubmitted,
+  }) {
+    return Focus(
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) {
+          onSubmitted(controller.text);
+        }
+      },
+      child: TextFormField(
+        controller: controller,
+        readOnly: readOnly,
+        decoration: InputDecoration(
+          labelText: label,
+          filled: readOnly,
+          fillColor: readOnly ? AppColors.zinc100 : null,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        ),
+        keyboardType: keyboardType,
+        textInputAction: TextInputAction.done,
+        onFieldSubmitted: onSubmitted,
+      ),
+    );
+  }
+
+  Widget _buildCompactPriceField() {
+    final price = widget.formData.priceFixed;
+    Color borderColor = AppColors.zinc300;
+    if (price != null) {
+      if (price < 10000) {
+        borderColor = Colors.red;
+      } else if (price < 100000) {
+        borderColor = Colors.amber;
+      } else {
+        borderColor = AppColors.emerald500;
+      }
+    }
+    return Focus(
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) {
+          final cleaned = _priceController.text.replaceAll(',', '');
+          final parsed = double.tryParse(cleaned);
+          if (parsed != null && parsed > 0) {
+            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
+          }
+        }
+      },
+      child: TextFormField(
+        controller: _priceController,
+        decoration: InputDecoration(
+          labelText: 'Price (ETB)',
+          prefixIcon: const Icon(Icons.attach_money, size: 20),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: borderColor)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: borderColor, width: 2)),
+        ),
+        keyboardType: TextInputType.number,
+        textInputAction: TextInputAction.done,
+        onChanged: (v) {
+          final cleaned = v.replaceAll(',', '');
+          final parsed = double.tryParse(cleaned);
+          if (parsed != null && parsed > 0) {
+            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
+          }
+        },
+        onFieldSubmitted: (v) {
+          final cleaned = v.replaceAll(',', '');
+          final parsed = double.tryParse(cleaned);
+          if (parsed != null && parsed > 0) {
+            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
+          }
+        },
+      ),
+    );
   }
 
   Widget _radioCard({
@@ -602,10 +682,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget _buildFreeHoldFields() {
     final l10n = AppLocalizations.of(context);
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
           color: AppColors.navy50,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.navy100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -613,31 +693,40 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           Text(l10n.listingFreeHoldDetails,
               style: AppTextStyles.labelMedium.copyWith(
                   color: AppColors.navy700, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
-          _buildPersistedField(
-            label: l10n.listingTaxPaidYear,
-            controller: _taxPaidUntilController,
-            keyboardType: TextInputType.number,
-            onSubmitted: (v) {
-              final n = int.tryParse(v);
-              if (n != null) {
-                widget.onUpdate(widget.formData.copyWith(taxPaidUntilYear: n));
-              }
-            },
-          ),
-          const SizedBox(height: 8),
-          _dropdownFieldWithKeys(
-            value: widget.formData.acquisitionClarification,
-            items: {
-              'Purchased': l10n.listingPurchased,
-              'Inherited': l10n.listingInherited,
-              'Gift': l10n.listingGift,
-              'Assignment': l10n.listingAssignment,
-              'Other': l10n.listingOther,
-            },
-            label: l10n.listingAcquisition,
-            onChanged: (v) => widget.onUpdate(
-                widget.formData.copyWith(acquisitionClarification: v)),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _compactTextField(
+                  label: l10n.listingTaxPaidYear,
+                  controller: _taxPaidUntilController,
+                  keyboardType: TextInputType.number,
+                  onSubmitted: (v) {
+                    final n = int.tryParse(v);
+                    if (n != null) {
+                      widget.onUpdate(widget.formData.copyWith(taxPaidUntilYear: n));
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _compactDropdown(
+                  value: widget.formData.acquisitionClarification,
+                  items: {
+                    'Purchased': l10n.listingPurchased,
+                    'Inherited': l10n.listingInherited,
+                    'Gift': l10n.listingGift,
+                    'Assignment': l10n.listingAssignment,
+                    'Other': l10n.listingOther,
+                  },
+                  label: l10n.listingAcquisition,
+                  hintText: 'Select',
+                  onChanged: (v) => widget.onUpdate(
+                      widget.formData.copyWith(acquisitionClarification: v)),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -647,10 +736,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget _buildLeaseHoldFields() {
     final l10n = AppLocalizations.of(context);
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
           color: Colors.purple.shade50,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.purple.shade100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -658,51 +747,64 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           Text(l10n.listingLeaseHoldDetails,
               style: AppTextStyles.labelMedium.copyWith(
                   color: Colors.purple.shade700, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
-          _buildPersistedField(
-            label: l10n.listingLeasedYear,
-            controller: _leasedYearController,
-            keyboardType: TextInputType.number,
-            onSubmitted: (v) {
-              final n = int.tryParse(v);
-              if (n != null) {
-                widget.onUpdate(widget.formData.copyWith(leasedYear: n));
-              }
-            },
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _compactTextField(
+                  label: l10n.listingLeasedYear,
+                  controller: _leasedYearController,
+                  keyboardType: TextInputType.number,
+                  onSubmitted: (v) {
+                    final n = int.tryParse(v);
+                    if (n != null) {
+                      widget.onUpdate(widget.formData.copyWith(leasedYear: n));
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _compactTextField(
+                  label: l10n.listingLeasePrice,
+                  controller: _leasePriceController,
+                  keyboardType: TextInputType.number,
+                  onSubmitted: (v) {
+                    final cleaned = v.replaceAll(',', '');
+                    final n = double.tryParse(cleaned);
+                    if (n != null) {
+                      widget.onUpdate(widget.formData.copyWith(leasePricePerSqm: n));
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
-          _buildPersistedField(
-            label: l10n.listingLeasePrice,
-            controller: _leasePriceController,
-            keyboardType: TextInputType.number,
-            onSubmitted: (v) {
-              final cleaned = v.replaceAll(',', '');
-              final n = double.tryParse(cleaned);
-              if (n != null) {
-                widget.onUpdate(widget.formData.copyWith(leasePricePerSqm: n));
-              }
-            },
-          ),
-          const SizedBox(height: 8),
-          _buildPersistedField(
-            label: l10n.listingBuildType,
-            controller: _buildTypeController,
-            keyboardType: TextInputType.text,
-            onSubmitted: (v) =>
-                widget.onUpdate(widget.formData.copyWith(buildType: v)),
-          ),
-          const SizedBox(height: 8),
-          _buildPersistedField(
-            label: l10n.listingAnnualPayment,
-            controller: _annualPaymentController,
-            keyboardType: TextInputType.number,
-            onSubmitted: (v) {
-              final cleaned = v.replaceAll(',', '');
-              final n = double.tryParse(cleaned);
-              if (n != null) {
-                widget.onUpdate(widget.formData.copyWith(annualPayment: n));
-              }
-            },
+          Row(
+            children: [
+              Expanded(
+                child: _compactTextField(
+                  label: l10n.listingBuildType,
+                  controller: _buildTypeController,
+                  keyboardType: TextInputType.text,
+                  onSubmitted: (v) => widget.onUpdate(widget.formData.copyWith(buildType: v)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _compactTextField(
+                  label: l10n.listingAnnualPayment,
+                  controller: _annualPaymentController,
+                  keyboardType: TextInputType.number,
+                  onSubmitted: (v) {
+                    final cleaned = v.replaceAll(',', '');
+                    final n = double.tryParse(cleaned);
+                    if (n != null) widget.onUpdate(widget.formData.copyWith(annualPayment: n));
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -712,10 +814,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget _buildCooperativeFields() {
     final l10n = AppLocalizations.of(context);
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
           color: AppColors.wave50,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.wave100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -723,65 +825,43 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           Text(l10n.listingCooperativeDetails,
               style: AppTextStyles.labelMedium.copyWith(
                   color: AppColors.wave700, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
-          _buildPersistedField(
-            label: l10n.listingCooperativeName,
-            controller: _cooperativeNameController,
-            keyboardType: TextInputType.text,
-            onSubmitted: (v) =>
-                widget.onUpdate(widget.formData.copyWith(cooperativeName: v)),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _compactTextField(
+                  label: l10n.listingCooperativeName,
+                  controller: _cooperativeNameController,
+                  keyboardType: TextInputType.text,
+                  onSubmitted: (v) =>
+                      widget.onUpdate(widget.formData.copyWith(cooperativeName: v)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _compactTextField(
+                  label: l10n.listingCooperativeCode,
+                  controller: _cooperativeCodeController,
+                  keyboardType: TextInputType.text,
+                  onSubmitted: (v) =>
+                      widget.onUpdate(widget.formData.copyWith(cooperativeCode: v)),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
-          _buildPersistedField(
-            label: l10n.listingCooperativeCode,
-            controller: _cooperativeCodeController,
-            keyboardType: TextInputType.text,
-            onSubmitted: (v) =>
-                widget.onUpdate(widget.formData.copyWith(cooperativeCode: v)),
-          ),
-          const SizedBox(height: 8),
-          _dropdownFieldWithKeys(
+          _compactDropdown(
             value: widget.formData.buildingStatus,
             items: {
               'Finished': l10n.listingFinished,
               'Unfinished': l10n.listingUnfinished,
             },
             label: l10n.listingBuildingStatus,
+            hintText: 'Select status',
             onChanged: (v) =>
                 widget.onUpdate(widget.formData.copyWith(buildingStatus: v)),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildPersistedField({
-    required String label,
-    required TextEditingController controller,
-    TextInputType? keyboardType,
-    bool readOnly = false,
-    required void Function(String) onSubmitted,
-  }) {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        if (!hasFocus) {
-          onSubmitted(controller.text);
-        }
-      },
-      child: TextFormField(
-        controller: controller,
-        readOnly: readOnly,
-        decoration: InputDecoration(
-          labelText: label,
-          filled: readOnly,
-          fillColor: readOnly ? AppColors.zinc100 : null,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        ),
-        keyboardType: keyboardType,
-        textInputAction: TextInputAction.done,
-        onFieldSubmitted: onSubmitted,
       ),
     );
   }
@@ -792,200 +872,53 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       children: [
         Row(
           children: [
-            Expanded(
-                child: _dropdownField(
-                    value: _selectedRegion,
-                    items: _regions,
-                    label: l10n.listingRegion,
-                    onChanged: _onRegionSelected,
-                    isLoading: false)),
+            Expanded(child: _compactDropdownField(value: _selectedRegion, items: _regions, label: l10n.listingRegion, onChanged: _onRegionSelected, isLoading: false)),
             const SizedBox(width: 8),
-            Expanded(
-                child: _dropdownField(
-                    value: _selectedZone,
-                    items: _zones,
-                    label: l10n.listingZone,
-                    onChanged: _onZoneSelected,
-                    isLoading: _loadingZones)),
+            Expanded(child: _compactDropdownField(value: _selectedZone, items: _zones, label: l10n.listingZone, onChanged: _onZoneSelected, isLoading: _loadingZones)),
           ],
         ),
         const SizedBox(height: 8),
         Row(
           children: [
-            Expanded(
-                child: _dropdownField(
-                    value: _selectedWoreda,
-                    items: _woredas,
-                    label: l10n.listingWoreda,
-                    onChanged: _onWoredaSelected,
-                    isLoading: _loadingWoredas)),
+            Expanded(child: _compactDropdownField(value: _selectedWoreda, items: _woredas, label: l10n.listingWoreda, onChanged: _onWoredaSelected, isLoading: _loadingWoredas)),
             const SizedBox(width: 8),
-            Expanded(
-                child: _dropdownField(
-                    value: _selectedKebele,
-                    items: _kebeles,
-                    label: l10n.listingKebele,
-                    onChanged: _onKebeleSelected,
-                    isLoading: _loadingKebeles)),
+            Expanded(child: _compactDropdownField(value: _selectedKebele, items: _kebeles, label: l10n.listingKebele, onChanged: _onKebeleSelected, isLoading: _loadingKebeles)),
           ],
         ),
         const SizedBox(height: 8),
-        _buildTextField(
+        _compactTextField(
           label: l10n.listingSpecificLocation,
           controller: _specificLocationController,
-          onSubmitted: (v) =>
-              widget.onUpdate(widget.formData.copyWith(specificLocation: v)),
+          onSubmitted: (v) => widget.onUpdate(widget.formData.copyWith(specificLocation: v)),
         ),
       ],
     );
   }
 
-  Widget _buildPriceField() {
-    final price = widget.formData.priceFixed;
-    Color borderColor = AppColors.zinc300;
-    if (price != null) {
-      if (price < 10000) {
-        borderColor = Colors.red;
-      } else if (price < 100000) {
-        borderColor = Colors.amber;
-      } else {
-        borderColor = AppColors.emerald500;
-      }
-    }
-    return Focus(
-      onFocusChange: (hasFocus) {
-        if (!hasFocus) {
-          final cleaned = _priceController.text.replaceAll(',', '');
-          final parsed = double.tryParse(cleaned);
-          if (parsed != null && parsed > 0) {
-            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
-          }
-        }
-      },
-      child: TextFormField(
-        controller: _priceController,
-        decoration: InputDecoration(
-          labelText: 'Price',
-          prefixIcon: const Icon(Icons.attach_money, size: 20),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: borderColor)),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: borderColor, width: 2)),
-        ),
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
-        onChanged: (v) {
-          final cleaned = v.replaceAll(',', '');
-          final parsed = double.tryParse(cleaned);
-          if (parsed != null && parsed > 0) {
-            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
-          }
-        },
-        onFieldSubmitted: (v) {
-          final cleaned = v.replaceAll(',', '');
-          final parsed = double.tryParse(cleaned);
-          if (parsed != null && parsed > 0) {
-            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildFormattedField({
-    required String label,
-    required TextEditingController controller,
-    required void Function(String) onSubmitted,
-  }) {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        if (!hasFocus) {
-          onSubmitted(controller.text);
-        }
-      },
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        ),
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
-        onFieldSubmitted: onSubmitted,
-      ),
-    );
-  }
-
-  Widget _dropdownField({
+  Widget _compactDropdownField({
     required String? value,
     required List<String> items,
     required String label,
     required Function(String?) onChanged,
     bool isLoading = false,
-}) {
+  }) {
     final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
       value: items.contains(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         suffixIcon: isLoading
-            ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2))
+            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
             : null,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [
-              DropdownMenuItem(
-                  value: null,
-                  child: Text(l10n.listingNoOptions,
-                      style: const TextStyle(color: Colors.grey)))
-            ]
-          : items
-              .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(e,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 14)),
-                  ))
-              .toList(),
+          ? [DropdownMenuItem(value: null, child: Text(l10n.listingNoOptions, style: const TextStyle(color: Colors.grey)))]
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14)))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
-    );
-  }
-
-  Widget _buildTextField({
-    required String label,
-    TextEditingController? controller,
-    void Function(String)? onSubmitted,
-    TextInputType? keyboardType,
-  }) {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        if (!hasFocus && onSubmitted != null && controller != null) {
-          onSubmitted(controller.text);
-        }
-      },
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        ),
-        keyboardType: keyboardType ?? TextInputType.text,
-        textInputAction: TextInputAction.done,
-        onFieldSubmitted: onSubmitted,
-      ),
     );
   }
 }
@@ -1099,176 +1032,99 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.formData.type == 'house') ...[
-            _sectionTitle(l10n.listingRoomConfig),
-            const SizedBox(height: 8),
-            _buildPersistedField(
-              label: l10n.listingTotalRooms,
-              controller: _totalRoomsController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (v) {
-                final n = int.tryParse(v);
-                if (n != null) {
-                  widget.onUpdate(widget.formData.copyWith(totalRooms: n));
-                }
-              },
-            ),
-            const SizedBox(height: 8),
+            _compactSectionLabel(l10n.listingRoomConfig),
+            const SizedBox(height: 10),
             Row(
               children: [
-                Expanded(
-                    child: _buildPersistedField(
-                  label: l10n.listingBedrooms,
-                  controller: _bedroomsController,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) {
-                      widget.onUpdate(widget.formData.copyWith(bedrooms: n));
-                    }
-                  },
-                )),
-                const SizedBox(width: 8),
-                Expanded(
-                    child: _buildPersistedField(
-                  label: l10n.listingBathrooms,
-                  controller: _bathroomsController,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) {
-                      widget.onUpdate(widget.formData.copyWith(bathrooms: n));
-                    }
-                  },
-                )),
+                Expanded(child: _compactTextField(label: l10n.listingTotalRooms, controller: _totalRoomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                  final n = int.tryParse(v);
+                  if (n != null) widget.onUpdate(widget.formData.copyWith(totalRooms: n));
+                })),
               ],
             ),
             const SizedBox(height: 8),
             Row(
               children: [
-                Expanded(
-                    child: _buildPersistedField(
-                  label: l10n.listingKitchens,
-                  controller: _kitchensController,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) {
-                      widget.onUpdate(widget.formData.copyWith(kitchens: n));
-                    }
-                  },
-                )),
+                Expanded(child: _compactTextField(label: l10n.listingBedrooms, controller: _bedroomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                  final n = int.tryParse(v);
+                  if (n != null) widget.onUpdate(widget.formData.copyWith(bedrooms: n));
+                })),
                 const SizedBox(width: 8),
-                Expanded(
-                    child: _buildPersistedField(
-                  label: l10n.listingSalons,
-                  controller: _salonsController,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) {
-                      widget.onUpdate(widget.formData.copyWith(salons: n));
-                    }
-                  },
-                )),
+                Expanded(child: _compactTextField(label: l10n.listingBathrooms, controller: _bathroomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                  final n = int.tryParse(v);
+                  if (n != null) widget.onUpdate(widget.formData.copyWith(bathrooms: n));
+                })),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(child: _compactTextField(label: l10n.listingKitchens, controller: _kitchensController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                  final n = int.tryParse(v);
+                  if (n != null) widget.onUpdate(widget.formData.copyWith(kitchens: n));
+                })),
+                const SizedBox(width: 8),
+                Expanded(child: _compactTextField(label: l10n.listingSalons, controller: _salonsController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                  final n = int.tryParse(v);
+                  if (n != null) widget.onUpdate(widget.formData.copyWith(salons: n));
+                })),
               ],
             ),
             const SizedBox(height: 16),
-            _sectionTitle(l10n.listingHouseType),
-            const SizedBox(height: 8),
-            _dropdownFieldWithKeys(
+            _compactDropdown(
               value: widget.formData.houseType,
               items: houseTypeItems,
-              label: l10n.listingSelectHouseType,
+              label: l10n.listingHouseType,
+              hintText: 'Select house type',
               onChanged: _onHouseTypeChanged,
             ),
             const SizedBox(height: 16),
-            _sectionTitle(l10n.listingYearBuilt),
-            const SizedBox(height: 8),
-            _buildPersistedField(
-              label: l10n.listingYearBuilt,
-              controller: _yearBuiltController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (v) {
-                final n = int.tryParse(v);
-                if (n != null) {
-                  widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
-                }
-              },
-            ),
+            _compactTextField(label: l10n.listingYearBuilt, controller: _yearBuiltController, keyboardType: TextInputType.number, onSubmitted: (v) {
+              final n = int.tryParse(v);
+              if (n != null) widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
+            }),
             const SizedBox(height: 16),
-            _sectionTitle(l10n.listingAmenities),
+            _compactSectionLabel(l10n.listingAmenities),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               children: [
-                _amenityChip(
-                    l10n.listingElectricity,
-                    widget.formData.electricity,
-                    (v) => widget
-                        .onUpdate(widget.formData.copyWith(electricity: v))),
-                _amenityChip(l10n.listingWater, widget.formData.water,
-                    (v) => widget.onUpdate(widget.formData.copyWith(water: v))),
-                _amenityChip(
-                    l10n.listingParking,
-                    widget.formData.parkingAvailable,
-                    (v) => widget.onUpdate(
-                        widget.formData.copyWith(parkingAvailable: v))),
+                _amenityChip(l10n.listingElectricity, widget.formData.electricity, (v) => widget.onUpdate(widget.formData.copyWith(electricity: v))),
+                _amenityChip(l10n.listingWater, widget.formData.water, (v) => widget.onUpdate(widget.formData.copyWith(water: v))),
+                _amenityChip(l10n.listingParking, widget.formData.parkingAvailable, (v) => widget.onUpdate(widget.formData.copyWith(parkingAvailable: v))),
               ],
             ),
             const SizedBox(height: 16),
           ],
-          _sectionTitle(l10n.listingAreaDimensions),
-          const SizedBox(height: 8),
-          _buildPersistedField(
+          _compactSectionLabel(l10n.listingAreaDimensions),
+          const SizedBox(height: 10),
+          _compactTextField(
             label: l10n.listingTotalArea,
             controller: _totalAreaController,
             keyboardType: TextInputType.number,
             readOnly: isAreaReadOnly,
             onSubmitted: (v) {
               final n = int.tryParse(v);
-              if (n != null) {
-                widget.onUpdate(
-                    widget.formData.copyWith(totalSquareMeters: n.toDouble()));
-              }
+              if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n.toDouble()));
             },
           ),
           const SizedBox(height: 8),
           Row(
             children: [
-              Expanded(
-                  child: _buildPersistedField(
-                label: l10n.listingFrontArea,
-                controller: _frontAreaController,
-                keyboardType: TextInputType.number,
-                onSubmitted: (v) {
-                  final n = int.tryParse(v);
-                  if (n != null) {
-                    widget.onUpdate(
-                        widget.formData.copyWith(frontAreaSqm: n.toDouble()));
-                  }
-                },
-              )),
+              Expanded(child: _compactTextField(label: l10n.listingFrontArea, controller: _frontAreaController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                final n = int.tryParse(v);
+                if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n.toDouble()));
+              })),
               const SizedBox(width: 8),
-              Expanded(
-                  child: _buildPersistedField(
-                label: l10n.listingSideArea,
-                controller: _sideAreaController,
-                keyboardType: TextInputType.number,
-                onSubmitted: (v) {
-                  final n = int.tryParse(v);
-                  if (n != null) {
-                    widget.onUpdate(
-                        widget.formData.copyWith(sideAreaSqm: n.toDouble()));
-                  }
-                },
-              )),
+              Expanded(child: _compactTextField(label: l10n.listingSideArea, controller: _sideAreaController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                final n = int.tryParse(v);
+                if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n.toDouble()));
+              })),
             ],
           ),
           const SizedBox(height: 16),
-          _sectionTitle(l10n.listingFacingDirection),
-          const SizedBox(height: 8),
-          _dropdownFieldWithKeys(
+          _compactDropdown(
             value: widget.formData.facingDirection,
             items: {
               'north': l10n.listingNorth,
@@ -1280,45 +1136,44 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
               'south_east': l10n.listingSouthEast,
               'south_west': l10n.listingSouthWest,
             },
-            label: l10n.listingSelectDirection,
-            onChanged: (v) =>
-                widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
+            label: l10n.listingFacingDirection,
+            hintText: 'Select direction',
+            onChanged: (v) => widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
           ),
           const SizedBox(height: 16),
-          _sectionTitle(l10n.listingDescriptionLabel),
-          const SizedBox(height: 8),
+          _compactSectionLabel(l10n.listingDescriptionLabel),
+          const SizedBox(height: 10),
           Focus(
             onFocusChange: (hasFocus) {
-              if (!hasFocus) {
-                widget.onUpdate(widget.formData
-                    .copyWith(description: widget.formData.description));
-              }
+              if (!hasFocus) widget.onUpdate(widget.formData.copyWith(description: widget.formData.description));
             },
             child: TextFormField(
               initialValue: widget.formData.description,
               maxLines: 4,
               decoration: InputDecoration(
-                labelText: l10n.listingDescribeProperty,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                labelText: l10n.listingDescriptionLabel,
+                hintText: 'Describe your property...',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               ),
-              onChanged: (v) =>
-                  widget.onUpdate(widget.formData.copyWith(description: v)),
+              onChanged: (v) => widget.onUpdate(widget.formData.copyWith(description: v)),
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  Widget _sectionTitle(String title) {
-    return Text(title,
-        style: AppTextStyles.titleSmall
-            .copyWith(fontWeight: FontWeight.w700, fontSize: 16));
+  Widget _compactSectionLabel(String title) {
+    return Text(title, style: AppTextStyles.labelMedium.copyWith(
+      fontWeight: FontWeight.w600,
+      color: context.textSecondary,
+      letterSpacing: 0.3,
+    ));
   }
 
-  Widget _buildPersistedField({
+  Widget _compactTextField({
     required String label,
     required TextEditingController controller,
     TextInputType? keyboardType,
@@ -1327,9 +1182,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
   }) {
     return Focus(
       onFocusChange: (hasFocus) {
-        if (!hasFocus) {
-          onSubmitted(controller.text);
-        }
+        if (!hasFocus) onSubmitted(controller.text);
       },
       child: TextFormField(
         controller: controller,
@@ -1338,9 +1191,8 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
           labelText: label,
           filled: readOnly,
           fillColor: readOnly ? AppColors.zinc100 : null,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         ),
         keyboardType: keyboardType,
         textInputAction: TextInputAction.done,
@@ -1349,26 +1201,24 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     );
   }
 
-  Widget _dropdownFieldWithKeys(
-      {required String? value,
-      required Map<String, String> items,
-      required String label,
-      required Function(String?) onChanged}) {
+  Widget _compactDropdown({
+    required String? value,
+    required Map<String, String> items,
+    required String label,
+    required String hintText,
+    required Function(String?) onChanged,
+  }) {
     return DropdownButtonFormField<String>(
       value: items.containsKey(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        hintText: hintText,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
       dropdownColor: context.sheetBg,
       items: items.entries
-          .map((e) => DropdownMenuItem(
-                value: e.key,
-                child: Text(e.value,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.normal, fontSize: 14)),
-              ))
+          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14))))
           .toList(),
       onChanged: onChanged,
       isExpanded: true,
