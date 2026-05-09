@@ -562,22 +562,23 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   }) {
     final isSelected = groupValue == value;
     final isEnabled = onChanged != null;
+    final bgColor = isSelected
+        ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
+        : context.cardBg;
+
     return Expanded(
       child: GestureDetector(
         onTap: isEnabled ? () => onChanged(value) : null,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           decoration: BoxDecoration(
-            color: isSelected
-                ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
-                : context.cardBg,
+            color: bgColor.withValues(alpha: isEnabled ? 1.0 : 0.6),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
                 color: isSelected
                     ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
                     : context.divider,
                 width: 1.5),
-            opacity: isEnabled ? 1.0 : 0.6,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

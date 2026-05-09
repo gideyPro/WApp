@@ -322,7 +322,6 @@ class ListingService {
       if (formData.cooperativeName != null) dioFormData.fields.add(MapEntry('cooperative_name', formData.cooperativeName!));
       if (formData.cooperativeCode != null) dioFormData.fields.add(MapEntry('cooperative_code', formData.cooperativeCode!));
       if (formData.buildingStatus != null) dioFormData.fields.add(MapEntry('building_status', formData.buildingStatus!));
-      if (formData.sitePlanType != null) dioFormData.fields.add(MapEntry('site_plan_type', formData.sitePlanType!));
     }
 
     // Add new images
