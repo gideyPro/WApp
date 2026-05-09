@@ -332,6 +332,10 @@ class Listing extends ChangeNotifier {
 
       // Additional property details
       yearBuilt: _safeInt(property is Map ? property['year_built'] : json['year_built']),
+      houseType: property is Map ? property['house_type'] : json['house_type'],
+      electricity: _safeBool(property is Map ? property['electricity'] : json['electricity']),
+      water: _safeBool(property is Map ? property['water'] : json['water']),
+      parkingAvailable: _safeBool(property is Map ? property['parking_available'] : json['parking_available']),
 
       description: json['description'] ??
           (property is Map ? property['description'] : null),

@@ -227,11 +227,10 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   ListingStep1Basics(
-                    formData: _formData, 
-                    onUpdate: _updateFormData, 
-                    addressService: _addressService
-                  ),
-                  ListingStep2Details(formData: _formData, onUpdate: _updateFormData),
+                      formData: _formData,
+                      onUpdate: _updateFormData,
+                      addressService: _addressService,
+                      isEditMode: true),                  ListingStep2Details(formData: _formData, onUpdate: _updateFormData),
                   ListingStep3Media(formData: _formData, onUpdate: _updateFormData),
                   ListingStep4Review(formData: _formData, onUpdate: _updateFormData),
                 ],

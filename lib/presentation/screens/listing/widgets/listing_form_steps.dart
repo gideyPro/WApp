@@ -105,12 +105,13 @@ class ListingStep1Basics extends ConsumerStatefulWidget {
   final ListingFormData formData;
   final Function(ListingFormData) onUpdate;
   final AddressService addressService;
+  final bool isEditMode;
   const ListingStep1Basics(
-      {super.key, 
+      {super.key,
       required this.formData,
       required this.onUpdate,
-      required this.addressService});
-
+      required this.addressService,
+      this.isEditMode = false});
   @override
   ConsumerState<ListingStep1Basics> createState() => _ListingStep1BasicsState();
 }
@@ -376,8 +377,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                 icon: Icons.home_rounded,
                 value: 'house',
                 groupValue: widget.formData.type,
-                onChanged: (v) =>
-                    widget.onUpdate(widget.formData.copyWith(type: v)),
+                onChanged: widget.isEditMode
+                    ? null
+                    : (v) => widget.onUpdate(widget.formData.copyWith(type: v)),
               ),
               const SizedBox(width: 12),
               _radioCard(
@@ -385,8 +387,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                 icon: Icons.landscape_rounded,
                 value: 'land',
                 groupValue: widget.formData.type,
-                onChanged: (v) =>
-                    widget.onUpdate(widget.formData.copyWith(type: v)),
+                onChanged: widget.isEditMode
+                    ? null
+                    : (v) => widget.onUpdate(widget.formData.copyWith(type: v)),
               ),
             ],
           ),
@@ -401,8 +404,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                 icon: Icons.sell_rounded,
                 value: 'sale',
                 groupValue: widget.formData.listingType,
-                onChanged: (v) =>
-                    widget.onUpdate(widget.formData.copyWith(listingType: v)),
+                onChanged: widget.isEditMode
+                    ? null
+                    : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
               ),
               const SizedBox(width: 12),
               _radioCard(
@@ -410,8 +414,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                 icon: Icons.key_rounded,
                 value: 'rental',
                 groupValue: widget.formData.listingType,
-                onChanged: (v) =>
-                    widget.onUpdate(widget.formData.copyWith(listingType: v)),
+                onChanged: widget.isEditMode
+                    ? null
+                    : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
               ),
             ],
           ),
@@ -553,12 +558,13 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     required IconData icon,
     required String value,
     required String groupValue,
-    required Function(String) onChanged,
+    required Function(String)? onChanged,
   }) {
     final isSelected = groupValue == value;
+    final isEnabled = onChanged != null;
     return Expanded(
       child: GestureDetector(
-        onTap: () => onChanged(value),
+        onTap: isEnabled ? () => onChanged(value) : null,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           decoration: BoxDecoration(
@@ -571,6 +577,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                     ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
                     : context.divider,
                 width: 1.5),
+            opacity: isEnabled ? 1.0 : 0.6,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -741,17 +748,6 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             label: l10n.listingBuildingStatus,
             onChanged: (v) =>
                 widget.onUpdate(widget.formData.copyWith(buildingStatus: v)),
-          ),
-          const SizedBox(height: 8),
-          _dropdownFieldWithKeys(
-            value: widget.formData.sitePlanType,
-            items: {
-              'Individual': 'Individual',
-              'Cooperative': 'Cooperative',
-            },
-            label: 'Site Plan Type',
-            onChanged: (v) =>
-                widget.onUpdate(widget.formData.copyWith(sitePlanType: v)),
           ),
         ],
       ),

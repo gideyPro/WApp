@@ -28,7 +28,6 @@ class ListingFormData {
   String? cooperativeName;
   String? cooperativeCode;
   String? buildingStatus; // 'Finished' | 'Unfinished'
-  String? sitePlanType; // 'Individual' | 'Cooperative'
 
   // --- House Details ---
   int? totalRooms;
@@ -112,7 +111,6 @@ class ListingFormData {
     this.cooperativeName,
     this.cooperativeCode,
     this.buildingStatus,
-    this.sitePlanType,
     this.totalRooms,
     this.bedrooms,
     this.bathrooms,
@@ -306,7 +304,6 @@ class ListingFormData {
     String? cooperativeName,
     String? cooperativeCode,
     String? buildingStatus,
-    String? sitePlanType,
     int? totalRooms,
     int? bedrooms,
     int? bathrooms,
@@ -373,7 +370,6 @@ class ListingFormData {
       cooperativeName: cooperativeName ?? this.cooperativeName,
       cooperativeCode: cooperativeCode ?? this.cooperativeCode,
       buildingStatus: buildingStatus ?? this.buildingStatus,
-      sitePlanType: sitePlanType ?? this.sitePlanType,
       totalRooms: totalRooms ?? this.totalRooms,
       bedrooms: bedrooms ?? this.bedrooms,
       bathrooms: bathrooms ?? this.bathrooms,
