@@ -30,16 +30,18 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final ScrollController _scrollController = ScrollController();
   final Set<int> _togglingFavorites = {};
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  bool _wasOnSearchScreen = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _headerAnimationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -65,6 +67,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     _scrollController.addListener(_onScroll);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final wasOnSearch = ModalRoute.of(context)?.settings.name == '/search';
+    if (_wasOnSearchScreen && !wasOnSearch && mounted) {
+      ref.read(listingsProvider.notifier).loadListings();
+    }
+    _wasOnSearchScreen = wasOnSearch;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ref.read(listingsProvider.notifier).loadListings();
+    }
+  }
+
   void _onScroll() {
     final state = ref.read(listingsProvider);
     if (_scrollController.position.pixels >=
@@ -80,6 +99,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _headerAnimationController.dispose();
@@ -129,7 +149,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 authState: authState,
                 unreadCount: unreadCountAsync,
                 onSearchTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const SearchScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const SearchScreen(),
+                    settings: const RouteSettings(name: '/search'),
+                  ),
                 ),
                 onProfileTap: () => _showProfileModal(context, ref, authState),
                 onNotificationsTap: () => Navigator.of(context).push(
@@ -467,6 +490,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 context,
                 MaterialPageRoute(
                   builder: (_) => SearchScreen(isFeatured: isFeatured),
+                  settings: const RouteSettings(name: '/search'),
                 ),
               );
             },
