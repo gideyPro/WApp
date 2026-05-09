@@ -157,7 +157,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     settings: const RouteSettings(name: '/search'),
                   ),
                 ),
-                onProfileTap: () => _showProfileModal(context, ref, authState),
+                onProfileTap: () async {
+                  await ref.read(profileProvider.notifier).loadProfile();
+                  if (mounted) _showProfileModal(context, ref, authState);
+                },
                 onNotificationsTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
                       builder: (_) => const NotificationsScreen()),
@@ -740,10 +743,13 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     final user = authState.user;
-    final userFirstName = user?.firstName ?? 'WaveMart';
     final userInitials = _getInitials(context, user?.firstName, user?.lastName);
     final isScrolled = overlapsContent;
     final l10n = AppLocalizations.of(context);
+
+    final String greetingText = authState.isAuthenticated && user?.firstName != null
+        ? l10n.homeGreeting(user!.firstName)
+        : 'Welcome';
 
     return WaveGlass(
       blur: 20,
@@ -775,7 +781,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  l10n.homeGreeting(userFirstName),
+                                  greetingText,
                                   style: AppTextStyles.title.copyWith(
                                     fontWeight: FontWeight.w800,
                                     color: context.theme.textPrimary,

@@ -29,6 +29,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
 
   /// Pre-flight check before opening Create Listing — KYC then Subscription
   Future<void> _onCreateListingTap() async {
+    await ref.read(kycStatusProvider.notifier).loadKycStatus();
     final kycState = ref.read(kycStatusProvider);
     final subState = ref.read(subscriptionProvider);
     final settingsAsync = ref.read(appSettingsProvider);
