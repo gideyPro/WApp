@@ -71,10 +71,25 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       addressKebele: listing.address?.kebele,
       addressId: listing.addressId,
       existingImages: listing.images,
-      existingSitePlanUrl: listing.sitePlanImageLink != null ? 'https://wavemart.et/storage/${listing.sitePlanImageLink}' : null,
-      existingOwnershipProofUrl: listing.ownershipProofLink != null ? 'https://wavemart.et/storage/${listing.ownershipProofLink}' : null,
-      existingLeaseContractUrl: listing.leaseContractLink != null ? 'https://wavemart.et/storage/${listing.leaseContractLink}' : null,
-      existingDebtDocumentUrl: listing.debtEncumbranceFileLink != null ? 'https://wavemart.et/storage/${listing.debtEncumbranceFileLink}' : null,
+      existingSitePlanUrl: listing.sitePlanImageLink != null
+          ? 'https://wavemart.et/storage/${listing.sitePlanImageLink}'
+          : null,
+      existingOwnershipProofUrl: listing.ownershipProofLink != null
+          ? 'https://wavemart.et/storage/${listing.ownershipProofLink}'
+          : null,
+      existingCertificationUrl: listing.certificationLink != null
+          ? 'https://wavemart.et/storage/${listing.certificationLink}'
+          : null,
+      existingMemberListUrl: listing.memberListLink != null
+          ? 'https://wavemart.et/storage/${listing.memberListLink}'
+          : null,
+      existingLeaseContractUrl: listing.leaseContractLink != null
+          ? 'https://wavemart.et/storage/${listing.leaseContractLink}'
+          : null,
+      existingDebtDocumentUrl: listing.debtEncumbranceFileLink != null
+          ? 'https://wavemart.et/storage/${listing.debtEncumbranceFileLink}'
+          : null,
+      existingVideoUrl: listing.videoUrl,
     );
   }
 
@@ -130,7 +145,9 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         if (!hasImages) errors.add('At least one property image is required');
 
         // 2. Site Plan is mandatory (Industry Standard #3)
-        final hasSitePlan = _formData.sitePlans.isNotEmpty || _formData.existingSitePlanUrl != null;
+        final hasSitePlan = _formData.sitePlan != null ||
+            (_formData.existingSitePlanUrl != null &&
+                !_formData.removeExistingSitePlan);
         if (!hasSitePlan) errors.add('A site plan is required');
 
         // 3. Ownership Proof for Cooperative (Industry Standard #3)

@@ -68,3 +68,4 @@ htmlcov/
 .agent/
 .gemini/
 .kilo/
+.qwen/

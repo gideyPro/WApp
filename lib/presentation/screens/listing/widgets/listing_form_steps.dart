@@ -371,9 +371,23 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           const SizedBox(height: 8),
           Row(
             children: [
-              _radioCard(l10n.listingHouse, Icons.home_rounded, 'house'),
+              _radioCard(
+                label: l10n.listingHouse,
+                icon: Icons.home_rounded,
+                value: 'house',
+                groupValue: widget.formData.type,
+                onChanged: (v) =>
+                    widget.onUpdate(widget.formData.copyWith(type: v)),
+              ),
               const SizedBox(width: 12),
-              _radioCard(l10n.listingLand, Icons.landscape_rounded, 'land'),
+              _radioCard(
+                label: l10n.listingLand,
+                icon: Icons.landscape_rounded,
+                value: 'land',
+                groupValue: widget.formData.type,
+                onChanged: (v) =>
+                    widget.onUpdate(widget.formData.copyWith(type: v)),
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -382,9 +396,23 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           const SizedBox(height: 8),
           Row(
             children: [
-              _radioCard(l10n.listingForSale, Icons.sell_rounded, 'sale'),
+              _radioCard(
+                label: l10n.listingForSale,
+                icon: Icons.sell_rounded,
+                value: 'sale',
+                groupValue: widget.formData.listingType,
+                onChanged: (v) =>
+                    widget.onUpdate(widget.formData.copyWith(listingType: v)),
+              ),
               const SizedBox(width: 12),
-              _radioCard(l10n.listingForRent, Icons.key_rounded, 'rental'),
+              _radioCard(
+                label: l10n.listingForRent,
+                icon: Icons.key_rounded,
+                value: 'rental',
+                groupValue: widget.formData.listingType,
+                onChanged: (v) =>
+                    widget.onUpdate(widget.formData.copyWith(listingType: v)),
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -520,21 +548,27 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             .copyWith(fontWeight: FontWeight.w700, fontSize: 16));
   }
 
-  Widget _radioCard(String label, IconData icon, String value) {
-    final isSelected = widget.formData.type == value;
+  Widget _radioCard({
+    required String label,
+    required IconData icon,
+    required String value,
+    required String groupValue,
+    required Function(String) onChanged,
+  }) {
+    final isSelected = groupValue == value;
     return Expanded(
       child: GestureDetector(
-        onTap: () => widget.onUpdate(widget.formData.copyWith(type: value)),
+        onTap: () => onChanged(value),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           decoration: BoxDecoration(
-            color: isSelected 
-                ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950) 
+            color: isSelected
+                ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
                 : context.cardBg,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-                color: isSelected 
-                    ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950) 
+                color: isSelected
+                    ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
                     : context.divider,
                 width: 1.5),
           ),
@@ -708,6 +742,17 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             onChanged: (v) =>
                 widget.onUpdate(widget.formData.copyWith(buildingStatus: v)),
           ),
+          const SizedBox(height: 8),
+          _dropdownFieldWithKeys(
+            value: widget.formData.sitePlanType,
+            items: {
+              'Individual': 'Individual',
+              'Cooperative': 'Cooperative',
+            },
+            label: 'Site Plan Type',
+            onChanged: (v) =>
+                widget.onUpdate(widget.formData.copyWith(sitePlanType: v)),
+          ),
         ],
       ),
     );
@@ -717,6 +762,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     required String label,
     required TextEditingController controller,
     TextInputType? keyboardType,
+    bool readOnly = false,
     required void Function(String) onSubmitted,
   }) {
     return Focus(
@@ -727,8 +773,11 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       },
       child: TextFormField(
         controller: controller,
+        readOnly: readOnly,
         decoration: InputDecoration(
           labelText: label,
+          filled: readOnly,
+          fillColor: readOnly ? AppColors.zinc100 : null,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -1030,9 +1079,9 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
 
     final Map<String, String> houseTypeItems = isCooperative
         ? {
-            'cooperative_140': 'Cooperative 140m²',
-            'cooperative_84': 'Cooperative 84m²',
-            'cooperative_70': 'Cooperative 70m²',
+            'cooperative_140': 'Cooperative (140m²)',
+            'cooperative_84': 'Cooperative (84m²)',
+            'cooperative_70': 'Cooperative (70m²)',
             'market_place': 'Market Place',
           }
         : {
@@ -1042,6 +1091,10 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
             'townhouse': l10n.listingTownhouse,
             'bungalow': l10n.listingBungalow,
           };
+
+    final bool isAreaReadOnly = isCooperative &&
+        widget.formData.houseType != null &&
+        widget.formData.houseType != 'market_place';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -1174,6 +1227,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
             label: l10n.listingTotalArea,
             controller: _totalAreaController,
             keyboardType: TextInputType.number,
+            readOnly: isAreaReadOnly,
             onSubmitted: (v) {
               final n = int.tryParse(v);
               if (n != null) {
@@ -1271,6 +1325,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     required String label,
     required TextEditingController controller,
     TextInputType? keyboardType,
+    bool readOnly = false,
     required void Function(String) onSubmitted,
   }) {
     return Focus(
@@ -1281,8 +1336,11 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       },
       child: TextFormField(
         controller: controller,
+        readOnly: readOnly,
         decoration: InputDecoration(
           labelText: label,
+          filled: readOnly,
+          fillColor: readOnly ? AppColors.zinc100 : null,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -1346,13 +1404,16 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   final _picker = ImagePicker();
 
   Future<void> _pickImages(bool isSitePlan) async {
-    final files =
-        await _picker.pickMultiImage(imageQuality: 85, maxWidth: 1920);
-    if (files.isNotEmpty) {
-      if (isSitePlan) {
-        widget.onUpdate(widget.formData
-            .copyWith(sitePlans: [...widget.formData.sitePlans, ...files]));
-      } else {
+    if (isSitePlan) {
+      final file = await _picker.pickImage(
+          imageQuality: 85, maxWidth: 1920, source: ImageSource.gallery);
+      if (file != null) {
+        widget.onUpdate(widget.formData.copyWith(sitePlan: file));
+      }
+    } else {
+      final files =
+          await _picker.pickMultiImage(imageQuality: 85, maxWidth: 1920);
+      if (files.isNotEmpty) {
         widget.onUpdate(widget.formData
             .copyWith(images: [...widget.formData.images, ...files]));
       }
@@ -1371,8 +1432,17 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
 
     if (file != null) {
       switch (type) {
+        case 'sitePlan':
+          widget.onUpdate(widget.formData.copyWith(sitePlan: file));
+          break;
         case 'ownership':
           widget.onUpdate(widget.formData.copyWith(ownershipProof: file));
+          break;
+        case 'certification':
+          widget.onUpdate(widget.formData.copyWith(certificationImage: file));
+          break;
+        case 'memberList':
+          widget.onUpdate(widget.formData.copyWith(memberListImage: file));
           break;
         case 'lease':
           widget.onUpdate(widget.formData.copyWith(leaseContract: file));
@@ -1407,6 +1477,14 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             _sectionTitle(l10n.listingOwnershipProof),
             const SizedBox(height: 8),
             _buildOwnershipProofView(),
+            const SizedBox(height: 16),
+            _sectionTitle('Certification Document'),
+            const SizedBox(height: 8),
+            _buildCertificationView(),
+            const SizedBox(height: 16),
+            _sectionTitle('Member List Document'),
+            const SizedBox(height: 8),
+            _buildMemberListView(),
             const SizedBox(height: 16),
           ],
           if (widget.formData.holdingType == 'Lease Hold') ...[
@@ -1501,15 +1579,37 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.formData.existingSitePlanUrl != null && widget.formData.sitePlans.isEmpty)
+        if (widget.formData.existingSitePlanUrl != null &&
+            widget.formData.sitePlan == null &&
+            !widget.formData.removeExistingSitePlan)
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(widget.formData.existingSitePlanUrl!, height: 100, width: 100, fit: BoxFit.cover),
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(widget.formData.existingSitePlanUrl!,
+                      height: 100, width: 100, fit: BoxFit.cover),
+                ),
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: GestureDetector(
+                    onTap: () => widget.onUpdate(
+                        widget.formData.copyWith(removeExistingSitePlan: true)),
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
+                          color: Colors.red, shape: BoxShape.circle),
+                      child:
+                          const Icon(Icons.close, size: 14, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        _buildFileList(widget.formData.sitePlans.map((f) => f.path).toList(), isSitePlan: true),
+        _buildSingleFilePicker('sitePlan', widget.formData.sitePlan),
       ],
     );
   }
@@ -1524,6 +1624,34 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             child: Text("Current proof: ${widget.formData.existingOwnershipProofUrl!.split('/').last}", style: AppTextStyles.caption),
           ),
         _buildSingleFilePicker('ownership', widget.formData.ownershipProof),
+      ],
+    );
+  }
+
+  Widget _buildCertificationView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+         if (widget.formData.existingCertificationUrl != null && widget.formData.certificationImage == null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text("Current certification: ${widget.formData.existingCertificationUrl!.split('/').last}", style: AppTextStyles.caption),
+          ),
+        _buildSingleFilePicker('certification', widget.formData.certificationImage),
+      ],
+    );
+  }
+
+  Widget _buildMemberListView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+         if (widget.formData.existingMemberListUrl != null && widget.formData.memberListImage == null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text("Current member list: ${widget.formData.existingMemberListUrl!.split('/').last}", style: AppTextStyles.caption),
+          ),
+        _buildSingleFilePicker('memberList', widget.formData.memberListImage),
       ],
     );
   }
@@ -1546,10 +1674,24 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.formData.existingDebtDocumentUrl != null && widget.formData.debtDocument == null)
+        if (widget.formData.existingDebtDocumentUrl != null &&
+            widget.formData.debtDocument == null &&
+            !widget.formData.deleteDebtFile)
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text("Current document: ${widget.formData.existingDebtDocumentUrl!.split('/').last}", style: AppTextStyles.caption),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text(
+                        "Current document: ${widget.formData.existingDebtDocumentUrl!.split('/').last}",
+                        style: AppTextStyles.caption)),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                  onPressed: () => widget.onUpdate(
+                      widget.formData.copyWith(deleteDebtFile: true)),
+                ),
+              ],
+            ),
           ),
         _buildSingleFilePicker('debt', widget.formData.debtDocument),
       ],
@@ -1560,29 +1702,30 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (widget.formData.existingVideoUrl != null &&
+            widget.formData.videoFile == null &&
+            !widget.formData.deleteVideo)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Row(
+              children: [
+                const Icon(Icons.video_collection, color: AppColors.navy400),
+                const SizedBox(width: 8),
+                Expanded(
+                    child: Text(
+                        "Current video: ${widget.formData.existingVideoUrl!.split('/').last}",
+                        style: AppTextStyles.caption)),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                  onPressed: () => widget.onUpdate(
+                      widget.formData.copyWith(deleteVideo: true)),
+                ),
+              ],
+            ),
+          ),
         Text("Max 100MB", style: AppTextStyles.caption),
         const SizedBox(height: 4),
         _buildSingleFilePicker('video', widget.formData.videoFile),
-      ],
-    );
-  }
-
-  Widget _buildFileList(List<String> files, {bool isSitePlan = false}) {
-    final l10n = AppLocalizations.of(context);
-    return Column(
-      children: [
-        ElevatedButton.icon(
-          onPressed: () => _pickImages(isSitePlan),
-          icon: const Icon(Icons.upload_file),
-          label: Text(l10n.listingBrowseFiles),
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.navy950),
-        ),
-        if (files.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          ...files.map((f) => Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(f.split('/').last, style: AppTextStyles.caption))),
-        ],
       ],
     );
   }
@@ -1669,7 +1812,7 @@ class ListingStep4Review extends StatelessWidget {
               _summaryCard(l10n.listingFinancial,
                   '${formData.priceFixed != null ? "${_formatPrice(formData.priceFixed!)} ETB" : l10n.listingPriceOnRequest}\n${_getLocalizedHoldingType(formData.holdingType, l10n)}'),
               _summaryCard(l10n.listingStepMedia,
-                  '${formData.images.length + formData.existingImages.length - formData.removedImageIds.length} ${l10n.listingImagesSelected(formData.images.length + formData.existingImages.length - formData.removedImageIds.length)}\n${formData.sitePlans.length} ${l10n.listingSitePlans}'),
+                  '${formData.images.length + formData.existingImages.length - formData.removedImageIds.length} ${l10n.listingImagesSelected(formData.images.length + formData.existingImages.length - formData.removedImageIds.length)}\n${(formData.sitePlan != null || (formData.existingSitePlanUrl != null && !formData.removeExistingSitePlan)) ? "1" : "0"} ${l10n.listingSitePlans}'),
             ],
           ),
           const SizedBox(height: 16),

@@ -322,6 +322,7 @@ class ListingService {
       if (formData.cooperativeName != null) dioFormData.fields.add(MapEntry('cooperative_name', formData.cooperativeName!));
       if (formData.cooperativeCode != null) dioFormData.fields.add(MapEntry('cooperative_code', formData.cooperativeCode!));
       if (formData.buildingStatus != null) dioFormData.fields.add(MapEntry('building_status', formData.buildingStatus!));
+      if (formData.sitePlanType != null) dioFormData.fields.add(MapEntry('site_plan_type', formData.sitePlanType!));
     }
 
     // Add new images
@@ -333,28 +334,48 @@ class ListingService {
       ));
     }
 
-    // Add site plans
-    for (int i = 0; i < formData.sitePlans.length; i++) {
-      final file = formData.sitePlans[i];
-      dioFormData.files.add(MapEntry(
-        'site_plans[]',
-        await MultipartFile.fromFile(file.path, filename: 'site_plan_${i}.jpg'),
-      ));
+    // Add site plan
+    if (formData.sitePlan != null) {
+      if (isUpdate) {
+        // Backend update expects 'site_plan_image' for a single replacement
+        dioFormData.files.add(MapEntry(
+          'site_plan_image',
+          await MultipartFile.fromFile(formData.sitePlan!.path,
+              filename: 'site_plan_update.jpg'),
+        ));
+      } else {
+        // Backend store expects 'site_plans[]' array
+        dioFormData.files.add(MapEntry(
+          'site_plans[]',
+          await MultipartFile.fromFile(formData.sitePlan!.path,
+              filename: 'site_plan.jpg'),
+        ));
+      }
     }
 
     // Add conditional files
     if (formData.ownershipProof != null) {
+      final fieldName = (isUpdate && formData.holdingType == 'Cooperative') 
+          ? 'certification_image' // API update expects this for cooperative
+          : 'ownership_proof[]';
+      
       dioFormData.files.add(MapEntry(
-        'ownership_proof[]',
+        fieldName,
         await MultipartFile.fromFile(formData.ownershipProof!.path, filename: 'ownership_proof.jpg'),
       ));
     }
+    
     if (formData.leaseContract != null) {
+      final fieldName = (isUpdate && formData.holdingType == 'Lease Hold')
+          ? 'lease_contract_image' // API update expects this for lease hold
+          : 'lease_contract[]';
+
       dioFormData.files.add(MapEntry(
-        'lease_contract[]',
+        fieldName,
         await MultipartFile.fromFile(formData.leaseContract!.path, filename: 'lease_contract.jpg'),
       ));
     }
+
     if (formData.debtDocument != null) {
       dioFormData.files.add(MapEntry(
         'debt_encumbrance_file',
@@ -371,17 +392,72 @@ class ListingService {
     // Update-specific fields
     if (isUpdate) {
       dioFormData.fields.add(MapEntry('_method', 'PUT'));
+      
+      // Sync with backend parameter names: delete_images instead of removed_image_ids
       for (final id in formData.removedImageIds) {
-        dioFormData.fields.add(MapEntry('removed_image_ids[]', id.toString()));
+        dioFormData.fields.add(MapEntry('delete_images[]', id.toString()));
+      }
+      
+      if (formData.removeExistingSitePlan) {
+        dioFormData.fields.add(MapEntry('delete_site_plans[]', '0'));
+        // I use '0' as a marker to delete the main site_plan_image_link too in backend.
+      }
+      
+      if (formData.deleteVideo) {
+        dioFormData.fields.add(MapEntry('delete_video', '1'));
+      }
+      if (formData.deleteDebtFile) {
+        dioFormData.fields.add(MapEntry('delete_debt_file', '1'));
       }
     }
 
     return dioFormData;
   }
 
+  /// Calculate total size of files to be uploaded
+  Future<int> _calculateTotalSize(ListingFormData formData) async {
+    int totalSize = 0;
+    
+    for (final file in formData.images) {
+      totalSize += await File(file.path).length();
+    }
+    if (formData.sitePlan != null) {
+      totalSize += await File(formData.sitePlan!.path).length();
+    }
+    if (formData.ownershipProof != null) {
+      totalSize += await File(formData.ownershipProof!.path).length();
+    }
+    if (formData.certificationImage != null) {
+      totalSize += await File(formData.certificationImage!.path).length();
+    }
+    if (formData.memberListImage != null) {
+      totalSize += await File(formData.memberListImage!.path).length();
+    }
+    if (formData.leaseContract != null) {
+      totalSize += await File(formData.leaseContract!.path).length();
+    }
+    if (formData.debtDocument != null) {
+      totalSize += await File(formData.debtDocument!.path).length();
+    }
+    if (formData.videoFile != null) {
+      totalSize += await File(formData.videoFile!.path).length();
+    }
+    
+    return totalSize;
+  }
+
   /// Create a new listing
   Future<ListingResponse> createListing({required ListingFormData formData}) async {
     try {
+      // Validate total upload size (150MB limit)
+      final totalSize = await _calculateTotalSize(formData);
+      if (totalSize > 150 * 1024 * 1024) {
+        return ListingResponse(
+          success: false, 
+          message: 'Total upload size exceeds 150MB limit. Please reduce file sizes.'
+        );
+      }
+
       final dioFormData = await _buildFormData(formData);
       final response = await _apiClient.dio.post(
         ApiConstants.createListing,
@@ -420,6 +496,15 @@ class ListingService {
       String url = '${ApiConstants.updateListing}/$listingId';
 
       if (formData != null) {
+        // Validate total upload size (150MB limit)
+        final totalSize = await _calculateTotalSize(formData);
+        if (totalSize > 150 * 1024 * 1024) {
+          return ListingResponse(
+            success: false, 
+            message: 'Total upload size exceeds 150MB limit. Please reduce file sizes.'
+          );
+        }
+
         // If we have files, we must use POST with _method=PUT
         data = await _buildFormData(formData, isUpdate: true);
         method = 'POST';

@@ -84,10 +84,20 @@ class SitePlan {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'image_path': imagePath,
+      'site_planable_type': sitePlanableType,
+      'site_planable_id': sitePlanableId,
+      'created_at': createdAt?.toIso8601String(),
+    };
+  }
+
   String get imageUrl {
     if (imagePath.startsWith('http')) {
       return imagePath;
     }
-    return 'storage/$imagePath';
+    return 'https://wavemart.et/storage/$imagePath';
   }
 }

@@ -28,6 +28,7 @@ class ListingFormData {
   String? cooperativeName;
   String? cooperativeCode;
   String? buildingStatus; // 'Finished' | 'Unfinished'
+  String? sitePlanType; // 'Individual' | 'Cooperative'
 
   // --- House Details ---
   int? totalRooms;
@@ -72,8 +73,10 @@ class ListingFormData {
 
   // --- Media (not persisted to Hive, kept in memory only) ---
   List<XFile> images = [];
-  List<XFile> sitePlans = [];
+  XFile? sitePlan;
   XFile? ownershipProof;
+  XFile? certificationImage; // For Cooperative Update
+  XFile? memberListImage; // For Cooperative Update
   XFile? leaseContract;
   XFile? debtDocument;
   XFile? videoFile;
@@ -82,9 +85,15 @@ class ListingFormData {
   List<ImageModel> existingImages = [];
   List<int> removedImageIds = [];
   String? existingSitePlanUrl;
+  bool removeExistingSitePlan = false;
+  bool deleteVideo = false;
+  bool deleteDebtFile = false;
   String? existingOwnershipProofUrl;
+  String? existingCertificationUrl;
+  String? existingMemberListUrl;
   String? existingLeaseContractUrl;
   String? existingDebtDocumentUrl;
+  String? existingVideoUrl;
 
   ListingFormData({
     this.type = 'house',
@@ -103,6 +112,7 @@ class ListingFormData {
     this.cooperativeName,
     this.cooperativeCode,
     this.buildingStatus,
+    this.sitePlanType,
     this.totalRooms,
     this.bedrooms,
     this.bathrooms,
@@ -133,9 +143,15 @@ class ListingFormData {
     this.existingImages = const [],
     this.removedImageIds = const [],
     this.existingSitePlanUrl,
+    this.removeExistingSitePlan = false,
+    this.deleteVideo = false,
+    this.deleteDebtFile = false,
     this.existingOwnershipProofUrl,
+    this.existingCertificationUrl,
+    this.existingMemberListUrl,
     this.existingLeaseContractUrl,
     this.existingDebtDocumentUrl,
+    this.existingVideoUrl,
   });
 
   /// Create empty form data with defaults
@@ -290,6 +306,7 @@ class ListingFormData {
     String? cooperativeName,
     String? cooperativeCode,
     String? buildingStatus,
+    String? sitePlanType,
     int? totalRooms,
     int? bedrooms,
     int? bathrooms,
@@ -318,17 +335,25 @@ class ListingFormData {
     int? leaseExpiryYear,
     bool? termsAccepted,
     List<XFile>? images,
-    List<XFile>? sitePlans,
+    XFile? sitePlan,
     XFile? ownershipProof,
+    XFile? certificationImage,
+    XFile? memberListImage,
     XFile? leaseContract,
     XFile? debtDocument,
     XFile? videoFile,
     List<ImageModel>? existingImages,
     List<int>? removedImageIds,
     String? existingSitePlanUrl,
+    bool? removeExistingSitePlan,
+    bool? deleteVideo,
+    bool? deleteDebtFile,
     String? existingOwnershipProofUrl,
+    String? existingCertificationUrl,
+    String? existingMemberListUrl,
     String? existingLeaseContractUrl,
     String? existingDebtDocumentUrl,
+    String? existingVideoUrl,
   }) {
     return ListingFormData(
       type: type ?? this.type,
@@ -348,6 +373,7 @@ class ListingFormData {
       cooperativeName: cooperativeName ?? this.cooperativeName,
       cooperativeCode: cooperativeCode ?? this.cooperativeCode,
       buildingStatus: buildingStatus ?? this.buildingStatus,
+      sitePlanType: sitePlanType ?? this.sitePlanType,
       totalRooms: totalRooms ?? this.totalRooms,
       bedrooms: bedrooms ?? this.bedrooms,
       bathrooms: bathrooms ?? this.bathrooms,
@@ -378,16 +404,27 @@ class ListingFormData {
       existingImages: existingImages ?? this.existingImages,
       removedImageIds: removedImageIds ?? this.removedImageIds,
       existingSitePlanUrl: existingSitePlanUrl ?? this.existingSitePlanUrl,
+      removeExistingSitePlan:
+          removeExistingSitePlan ?? this.removeExistingSitePlan,
+      deleteVideo: deleteVideo ?? this.deleteVideo,
+      deleteDebtFile: deleteDebtFile ?? this.deleteDebtFile,
       existingOwnershipProofUrl:
           existingOwnershipProofUrl ?? this.existingOwnershipProofUrl,
+      existingCertificationUrl:
+          existingCertificationUrl ?? this.existingCertificationUrl,
+      existingMemberListUrl:
+          existingMemberListUrl ?? this.existingMemberListUrl,
       existingLeaseContractUrl:
           existingLeaseContractUrl ?? this.existingLeaseContractUrl,
       existingDebtDocumentUrl:
           existingDebtDocumentUrl ?? this.existingDebtDocumentUrl,
+      existingVideoUrl: existingVideoUrl ?? this.existingVideoUrl,
     )
       ..images = images ?? this.images
-      ..sitePlans = sitePlans ?? this.sitePlans
+      ..sitePlan = sitePlan ?? this.sitePlan
       ..ownershipProof = ownershipProof ?? this.ownershipProof
+      ..certificationImage = certificationImage ?? this.certificationImage
+      ..memberListImage = memberListImage ?? this.memberListImage
       ..leaseContract = leaseContract ?? this.leaseContract
       ..debtDocument = debtDocument ?? this.debtDocument
       ..videoFile = videoFile ?? this.videoFile;
@@ -455,8 +492,9 @@ class ListingFormData {
             existingImages.length > removedImageIds.length);
     if (!hasImages) errors.add('At least one property image is required');
 
-    // Check new site plans OR existing site plan URL
-    final hasSitePlan = sitePlans.isNotEmpty || existingSitePlanUrl != null;
+    // Check new site plan OR existing site plan that wasn't removed
+    final hasSitePlan =
+        sitePlan != null || (existingSitePlanUrl != null && !removeExistingSitePlan);
     if (!hasSitePlan) errors.add('At least one site plan is required');
 
     // Ownership proof - check new upload OR existing URL

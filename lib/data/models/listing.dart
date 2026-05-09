@@ -104,6 +104,8 @@ class Listing extends ChangeNotifier {
 
   final String? sitePlanImageLink;
   final String? ownershipProofLink;
+  final String? certificationLink;
+  final String? memberListLink;
   final String? leaseContractLink;
   final String? holdingType;
 
@@ -177,6 +179,8 @@ class Listing extends ChangeNotifier {
     this.videoLink,
     this.sitePlanImageLink,
     this.ownershipProofLink,
+    this.certificationLink,
+    this.memberListLink,
     this.leaseContractLink,
     this.holdingType,
     this.taxPaidUntilYear,
@@ -213,15 +217,19 @@ class Listing extends ChangeNotifier {
   factory Listing.fromJson(Map<String, dynamic> json) {
     // Images may be directly on listing or nested under property
     List<ImageModel> images = [];
+
     if (json['images'] is List) {
       images =
           (json['images'] as List).map((e) => ImageModel.fromJson(e)).toList();
     }
+
     final property = json['property'];
-    if (property is Map && property['images'] is List) {
-      images = (property['images'] as List)
-          .map((e) => ImageModel.fromJson(e))
-          .toList();
+    if (property is Map) {
+      if (property['images'] is List) {
+        images = (property['images'] as List)
+            .map((e) => ImageModel.fromJson(e))
+            .toList();
+      }
     }
 
     return Listing(
@@ -253,42 +261,77 @@ class Listing extends ChangeNotifier {
       totalSquareMeters: _parseDouble(json['total_square_meters']),
       frontAreaSqm: _parseDouble(json['front_area_sqm']),
       sideAreaSqm: _parseDouble(json['side_area_sqm']),
-      hasDebtOrEncumbrance: json['has_debt_or_encumbrance'] ?? false,
+      hasDebtOrEncumbrance: _safeBool(json['has_debt_or_encumbrance']),
       debtAmount: _parseDouble(json['debt_amount']),
       debtEncumbranceFileLink: json['debt_encumbrance_file_link'],
       priceRevisionPossible: json['price_revision_possible'] ?? false,
       videoLink: json['video_link'],
       sitePlanImageLink: json['site_plan_image_link'],
       ownershipProofLink: json['ownership_proof_link'],
-      leaseContractLink: json['lease_contract_link'],
+      certificationLink: json['certification_image_link'],
+      memberListLink: json['member_list_name_image_link'],
+      leaseContractLink:
+          json['lease_contract_link'] ?? json['lease_contract_image_link'],
       holdingType: json['holding_type'],
 
-      // Free Hold details
-      taxPaidUntilYear: _safeInt(json['tax_paid_until_year']),
-      acquisitionType: json['acquisition_clarification'],
+      // Holding Details from nested objects (API show method with relation)
+      taxPaidUntilYear: _safeInt(json['tax_paid_until_year'] ??
+          (json['private_holding_detail'] is Map
+              ? json['private_holding_detail']['tax_paid_until_year']
+              : null)),
+      acquisitionType: json['acquisition_clarification'] ??
+          (json['private_holding_detail'] is Map
+              ? json['private_holding_detail']['acquisition_clarification']
+              : null),
 
       // Lease Hold details
       leaseHolderName: json['leaseholder_name'],
       leaseOrganization: json['lease_organization'],
       leaseExpiryDate: json['lease_expiry_date'] != null
           ? DateTime.tryParse(json['lease_expiry_date'])
-          : null,
+          : (json['lease_holding_detail'] is Map &&
+                  json['lease_holding_detail']['lease_expiry_date'] != null
+              ? DateTime.tryParse(
+                  json['lease_holding_detail']['lease_expiry_date'])
+              : null),
+      leasedYear: _safeInt(property is Map ? property['leased_year'] : null) ??
+          _safeInt(json['leased_year']) ??
+          _safeInt(json['lease_holding_detail'] is Map
+              ? json['lease_holding_detail']['leased_year']
+              : null),
+      leasePricePerSqm: _parseDouble(property is Map ? property['lease_price_per_sqm'] : null) ??
+          _parseDouble(json['lease_price_per_sqm']) ??
+          _parseDouble(json['lease_holding_detail'] is Map
+              ? json['lease_holding_detail']['lease_price_per_sqm']
+              : null),
+      buildType: (property is Map ? property['build_type'] : null) ??
+          json['build_type'] ??
+          (json['lease_holding_detail'] is Map
+              ? json['lease_holding_detail']['build_type']
+              : null),
+      annualPayment: _parseDouble(property is Map ? property['annual_payment'] : null) ??
+          _parseDouble(json['annual_payment']) ??
+          _parseDouble(json['lease_holding_detail'] is Map
+              ? json['lease_holding_detail']['annual_payment']
+              : null),
 
       // Cooperative details
-      cooperativeName: json['cooperative_name'],
-      cooperativeCode: json['cooperative_code'],
+      cooperativeName: json['cooperative_name'] ??
+          (json['cooperative_holding_detail'] is Map
+              ? json['cooperative_holding_detail']['cooperative_name']
+              : null),
+      cooperativeCode: json['cooperative_code'] ??
+          (json['cooperative_holding_detail'] is Map
+              ? json['cooperative_holding_detail']['cooperative_code']
+              : null),
+      buildingStatus: (property is Map ? property['building_status'] : null) ??
+          json['building_status'] ??
+          (json['cooperative_holding_detail'] is Map
+              ? json['cooperative_holding_detail']['building_status']
+              : null),
 
       // Additional property details
       yearBuilt: _safeInt(property is Map ? property['year_built'] : json['year_built']),
-      houseType: property is Map ? property['house_type'] : json['house_type'],
-      electricity: _safeBool(property is Map ? property['electricity'] : json['electricity']),
-      water: _safeBool(property is Map ? property['water'] : json['water']),
-      parkingAvailable: _safeBool(property is Map ? property['parking_available'] : json['parking_available']),
-      buildingStatus: property is Map ? property['building_status'] : json['building_status'],
-      leasedYear: _safeInt(property is Map ? property['leased_year'] : json['leased_year']),
-      leasePricePerSqm: _parseDouble(property is Map ? property['lease_price_per_sqm'] : json['lease_price_per_sqm']),
-      buildType: property is Map ? property['build_type'] : json['build_type'],
-      annualPayment: _parseDouble(property is Map ? property['annual_payment'] : json['annual_payment']),
 
       description: json['description'] ??
           (property is Map ? property['description'] : null),
@@ -346,6 +389,8 @@ class Listing extends ChangeNotifier {
       'video_link': videoLink,
       'site_plan_image_link': sitePlanImageLink,
       'ownership_proof_link': ownershipProofLink,
+      'certification_image_link': certificationLink,
+      'member_list_name_image_link': memberListLink,
       'lease_contract_link': leaseContractLink,
       'holding_type': holdingType,
       'description': description,
