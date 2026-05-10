@@ -527,6 +527,8 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
   final MessageService _messageService;
   final int conversationId;
   final int? _currentUserId;
+  final Ref _ref;
+  Timer? _pollingTimer;
 
   ChatMessagesNotifier(
       this._messageService, this.conversationId, this._currentUserId, this._ref)
@@ -536,9 +538,40 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
       _ref.read(activeConversationIdProvider.notifier).state = conversationId;
     });
     loadMessages();
+    _startPolling();
   }
 
-  final Ref _ref;
+  void _startPolling() {
+    _pollingTimer?.cancel();
+    _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      fetchNewMessages();
+    });
+  }
+
+  Future<void> fetchNewMessages() async {
+    // If already loading or no messages yet, skip polling fetch
+    if (state.isLoading || state.messages.isEmpty) return;
+
+    final lastMessage = state.messages.last;
+    final response = await _messageService.fetchNewMessages(
+      conversationId: conversationId,
+      lastMessageId: lastMessage.id,
+    );
+
+    if (response.success && response.messages.isNotEmpty && mounted) {
+      // Filter out messages that might already be in state (though backend should handle this)
+      final existingIds = state.messages.map((m) => m.id).toSet();
+      final trulyNew = response.messages.where((m) => !existingIds.contains(m.id)).toList();
+
+      if (trulyNew.isNotEmpty) {
+        state = state.copyWith(
+          messages: [...state.messages, ...trulyNew],
+        );
+        // Refresh global unread count
+        _ref.read(unreadMessagesCountProvider.notifier).refresh();
+      }
+    }
+  }
 
   Future<void> loadMessages({int page = 1}) async {
     if (page == 1) {
@@ -586,6 +619,7 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
 
   @override
   void dispose() {
+    _pollingTimer?.cancel();
     // Clear active conversation ID when user leaves chat
     Future.microtask(() {
       if (_ref.read(activeConversationIdProvider) == conversationId) {

@@ -308,12 +308,12 @@ class MessageService {
   /// Fetch new messages (for polling)
   Future<MessageResponse> fetchNewMessages({
     required int conversationId,
-    DateTime? after,
+    int? lastMessageId,
   }) async {
     try {
       final queryParams = <String, dynamic>{};
-      if (after != null) {
-        queryParams['last_message_id'] = after.toIso8601String();
+      if (lastMessageId != null) {
+        queryParams['last_message_id'] = lastMessageId;
       }
 
       final response = await _apiClient.dio.get(
