@@ -523,6 +523,13 @@ class Listing extends ChangeNotifier {
     return '';
   }
 
+  String get mainThumbnailUrl {
+    if (images.isNotEmpty) {
+      return images.first.thumbnailUrl;
+    }
+    return '';
+  }
+
   bool get isNew {
     final daysOld = DateTime.now().difference(createdAt).inDays;
     return daysOld <= 7;

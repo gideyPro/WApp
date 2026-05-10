@@ -48,8 +48,19 @@ class ImageModel {
   }
 
   String get thumbnailUrl {
-    // Return thumbnail version if available
-    return imageUrl; // TODO: Implement thumbnail URL generation
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    // Extract filename and directory
+    final parts = imagePath.split('/');
+    if (parts.isEmpty) return imageUrl;
+
+    final filename = parts.last;
+    final directory = parts.take(parts.length - 1).join('/');
+
+    final thumbPath =
+        directory.isEmpty ? 'thumb_$filename' : '$directory/thumb_$filename';
+    return 'https://wavemart.et/storage/$thumbPath';
   }
 
   @override
