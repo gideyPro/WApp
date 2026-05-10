@@ -50,7 +50,6 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(favoritesProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
@@ -91,6 +90,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
         onRetry: () {
           ref.read(favoritesProvider.notifier).loadFavorites();
         },
+        isEmbedded: true,
       );
     }
 

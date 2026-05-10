@@ -119,6 +119,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
         title: 'Error Loading Listings',
         subtitle: _errorMessage!,
         onRetry: () => _loadMyListings(),
+        isEmbedded: true,
       );
     }
 

@@ -591,6 +591,21 @@ class WaveMessageScreen extends StatelessWidget {
     final effectiveTitle = title ?? style.defaultTitle ?? '';
     final effectiveSubtitle = subtitle ?? style.defaultSubtitle ?? '';
 
+    final card = _buildCard(style, effectiveTitle, effectiveSubtitle, context, isDark);
+
+    if (isEmbedded) {
+      return Center(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+          child: Material(
+            color: Colors.transparent,
+            child: card,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
       body: Stack(
@@ -604,8 +619,8 @@ class WaveMessageScreen extends StatelessWidget {
           Center(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: _buildCard(style, effectiveTitle, effectiveSubtitle, context, isDark),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+              child: card,
             ),
           ),
         ],
@@ -633,33 +648,34 @@ class WaveMessageScreen extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(maxWidth: 340),
-      padding: const EdgeInsets.all(32),
+      constraints: BoxConstraints(maxWidth: isEmbedded ? 400 : 340),
+      padding: EdgeInsets.all(isEmbedded ? 24 : 32),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(isEmbedded ? 20 : 24),
         boxShadow: shadow,
+        border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.05)) : null,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 64,
-            height: 64,
+            width: isEmbedded ? 56 : 64,
+            height: isEmbedded ? 56 : 64,
             decoration: BoxDecoration(
               color: style.iconBg,
               shape: BoxShape.circle,
             ),
             child: Icon(
               style.icon,
-              size: 32,
+              size: isEmbedded ? 28 : 32,
               color: style.iconColor,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: isEmbedded ? 20 : 24),
           Text(
             effectiveTitle,
-            style: AppTextStyles.headline4.copyWith(
+            style: (isEmbedded ? AppTextStyles.title : AppTextStyles.headline4).copyWith(
               fontWeight: FontWeight.w800,
               color: context.textPrimary,
               letterSpacing: -0.5,
@@ -678,7 +694,7 @@ class WaveMessageScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ],
-          const SizedBox(height: 28),
+          SizedBox(height: isEmbedded ? 24 : 28),
           _buildAction(context),
         ],
       ),

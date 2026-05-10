@@ -84,6 +84,7 @@ class _SubscriptionPlansScreenState
         title: 'Subscription Error',
         subtitle: state.errorMessage!,
         onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
+        isEmbedded: true,
       );
     }
 

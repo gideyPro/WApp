@@ -112,6 +112,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
         onRetry: () {
           ref.read(conversationsProvider.notifier).loadConversations();
         },
+        isEmbedded: true,
       );
     }
 

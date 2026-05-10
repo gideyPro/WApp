@@ -675,6 +675,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         title: 'Search Error',
         subtitle: state.errorMessage!,
         onRetry: _performSearch,
+        isEmbedded: true,
       );
     }
 

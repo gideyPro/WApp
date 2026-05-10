@@ -69,6 +69,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
         onRetry: () {
           ref.read(paymentHistoryProvider.notifier).loadPayments();
         },
+        isEmbedded: true,
       );
     }
 

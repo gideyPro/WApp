@@ -96,6 +96,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         onRetry: () {
           ref.read(notificationsProvider.notifier).loadNotifications();
         },
+        isEmbedded: true,
       );
     }
 
