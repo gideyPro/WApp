@@ -9,6 +9,7 @@ import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import 'common/wave_card.dart';
 
+/// Property Listing Card Widget
 class PropertyListingCard extends StatelessWidget {
   final Listing? listing;
   final VoidCallback? onTap;
@@ -74,7 +75,12 @@ class PropertyListingCard extends StatelessWidget {
   Widget _buildSkeleton() {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: AppColors.zinc200), boxShadow: AppColors.shadowMd),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.zinc200),
+        boxShadow: AppColors.shadowMd,
+      ),
       child: Shimmer.fromColors(
         baseColor: Colors.grey[200]!,
         highlightColor: Colors.grey[100]!,
@@ -111,17 +117,26 @@ class PropertyListingCard extends StatelessWidget {
               child: CachedNetworkImage(
                 imageUrl: listing?.mainThumbnailUrl ?? '',
                 fit: BoxFit.cover,
-                errorWidget: (_, __, ___) => Container(color: AppColors.navy100, child: const Icon(Icons.home_outlined, size: 64, color: AppColors.navy300)),
+                errorWidget: (_, __, ___) => Container(
+                  color: AppColors.navy100,
+                  child: const Icon(Icons.home_outlined, size: 64, color: AppColors.navy300),
+                ),
               ),
             ),
           ),
         ),
         Positioned(
-          top: AppSpacing.md, left: AppSpacing.md,
+          top: AppSpacing.md,
+          left: AppSpacing.md,
           child: Row(
             children: [
-              if (listing?.isNew ?? false) _buildBadge(l10n.listingNew, AppColors.emerald500),
-              if (listing?.isFeatured ?? false) Padding(padding: const EdgeInsets.only(left: AppSpacing.xs), child: _buildBadge(l10n.listingFeatured, AppColors.wave500)),
+              if (listing?.isNew ?? false)
+                _buildBadge(l10n.listingNew, AppColors.emerald500),
+              if (listing?.isFeatured ?? false)
+                Padding(
+                  padding: const EdgeInsets.only(left: AppSpacing.xs),
+                  child: _buildBadge(l10n.listingFeatured, AppColors.wave500),
+                ),
             ],
           ),
         ),
@@ -132,18 +147,29 @@ class PropertyListingCard extends StatelessWidget {
   Widget _buildBadge(String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm)),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
+      ),
       child: Text(text, style: AppTextStyles.badge.copyWith(color: Colors.white)),
     );
   }
 
   Widget _buildPrice(BuildContext context) {
-    return Text(listing?.getLocalizedPrice(context) ?? AppLocalizations.of(context).listingPriceOnRequest, style: AppTextStyles.priceMedium);
+    return Text(
+      listing?.getLocalizedPrice(context) ?? AppLocalizations.of(context).listingPriceOnRequest,
+      style: AppTextStyles.priceMedium,
+    );
   }
 
   Widget _buildDescription() {
     final description = listing?.description;
-    return Text(description ?? '', style: AppTextStyles.bodySmall.copyWith(color: AppColors.zinc600), maxLines: 2, overflow: TextOverflow.ellipsis);
+    return Text(
+      description ?? '',
+      style: AppTextStyles.bodySmall.copyWith(color: AppColors.zinc600),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   Widget _buildLocation(BuildContext context) {
@@ -153,7 +179,14 @@ class PropertyListingCard extends StatelessWidget {
         const Icon(Icons.location_on_outlined, size: 14, color: AppColors.wave500),
         const SizedBox(width: 4),
         Expanded(
-          child: Text(listing?.address?.getLocalizedAddress(context) ?? listing?.address?.region ?? l10n.listingUnknownLocation, style: AppTextStyles.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+          child: Text(
+            listing?.address?.getLocalizedAddress(context) ??
+                listing?.address?.region ??
+                l10n.listingUnknownLocation,
+            style: AppTextStyles.bodySmall,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );
@@ -163,7 +196,10 @@ class PropertyListingCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return Row(
       children: [
-        _buildFeatureChip(Icons.sell_outlined, listing?.listingType == ListingType.sale ? l10n.listingSale : l10n.listingRent),
+        _buildFeatureChip(
+          Icons.sell_outlined,
+          listing?.listingType == ListingType.sale ? l10n.listingSale : l10n.listingRent,
+        ),
       ],
     );
   }
@@ -180,23 +216,62 @@ class PropertyListingCard extends StatelessWidget {
   }
 }
 
+/// Featured Listing Card - Horizontal layout with image on the left
 class FeaturedListingCard extends StatelessWidget {
   final Listing? listing;
   final VoidCallback? onTap;
+  final bool isFavorite;
+  final VoidCallback? onFavorite;
+  final bool isTogglingFavorite;
+  final bool isLoading;
 
-  const FeaturedListingCard({super.key, this.listing, this.onTap});
+  const FeaturedListingCard({
+    super.key,
+    this.listing,
+    this.onTap,
+    this.isFavorite = false,
+    this.onFavorite,
+    this.isTogglingFavorite = false,
+    this.isLoading = false,
+  });
+
+  void _handleTap() {
+    if (onTap != null) {
+      HapticFeedback.lightImpact();
+      onTap!();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading || listing == null) return _buildSkeleton();
+
     return WaveCard(
-      onTap: onTap,
+      onTap: _handleTap,
       margin: const EdgeInsets.only(bottom: 20),
       borderRadius: 24,
       padding: EdgeInsets.zero,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(flex: 2, child: _buildImageSection()),
-          Expanded(flex: 3, child: Padding(padding: const EdgeInsets.all(16), child: Text(listing?.getLocalizedTitle(context) ?? '', style: AppTextStyles.titleSmall))),
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildPrice(context),
+                  const SizedBox(height: 6),
+                  _buildDescription(),
+                  const SizedBox(height: 10),
+                  _buildLocation(context),
+                  const SizedBox(height: 8),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -206,8 +281,154 @@ class FeaturedListingCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
       child: SizedBox(
-        width: 130, height: 140,
-        child: CachedNetworkImage(imageUrl: listing?.mainThumbnailUrl ?? '', fit: BoxFit.cover),
+        width: 130,
+        height: 140,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: CachedNetworkImage(
+                imageUrl: listing?.mainThumbnailUrl ?? '',
+                fit: BoxFit.cover,
+                errorWidget: (_, __, ___) => Container(
+                  color: AppColors.navy100,
+                  child: const Icon(Icons.home_outlined, size: 36, color: AppColors.navy300),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 8,
+              right: 8,
+              child: GestureDetector(
+                onTap: isTogglingFavorite ? null : onFavorite,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: isFavorite
+                        ? Colors.red.withValues(alpha: 0.85)
+                        : Colors.black.withValues(alpha: 0.6),
+                    shape: BoxShape.circle,
+                  ),
+                  child: isTogglingFavorite
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPrice(BuildContext context) {
+    return Text(
+      listing?.getLocalizedPrice(context) ?? AppLocalizations.of(context).listingPriceOnRequest,
+      style: AppTextStyles.priceMedium.copyWith(fontSize: 17, fontWeight: FontWeight.w700),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget _buildDescription() {
+    final description = listing?.description;
+    if (description == null || description.isEmpty) return const SizedBox.shrink();
+    return Text(
+      description,
+      style: AppTextStyles.bodySmall.copyWith(fontSize: 11, color: AppColors.zinc600),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget _buildLocation(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Row(
+      children: [
+        const Icon(Icons.location_on_outlined, size: 12, color: AppColors.wave500),
+        const SizedBox(width: 3),
+        Expanded(
+          child: Text(
+            listing?.address?.getLocalizedAddress(context) ??
+                listing?.address?.region ??
+                l10n.listingUnknownLocation,
+            style: AppTextStyles.bodySmall.copyWith(fontSize: 11),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSkeleton() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.zinc200),
+        boxShadow: AppColors.shadowMd,
+      ),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[200]!,
+        highlightColor: Colors.grey[100]!,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+              child: Container(width: 130, height: 140, color: Colors.grey[300]),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 18,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 12,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 12,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
