@@ -90,12 +90,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _onScroll() {
-    final state = ref.read(listingsProvider);
+    final state = ref.read(searchResultsProvider);
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200 &&
         !state.isLoadingMore &&
         state.hasMore) {
-      ref.read(listingsProvider.notifier).loadListings(
+      ref.read(searchResultsProvider.notifier).loadListings(
             page: state.currentPage + 1,
             filters: _activeFilters,
           );
@@ -128,7 +128,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       _activeFilters['price_max'] = _selectedPriceMax!;
 
     setState(() => _hasSearched = true);
-    ref.read(listingsProvider.notifier).loadListings(filters: _activeFilters);
+    ref.read(searchResultsProvider.notifier).loadListings(filters: _activeFilters);
   }
 
   void _clearAllFilters() {
@@ -144,6 +144,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       _hasSearched = false;
       _searchController.clear();
     });
+    // Reset the provider to initial state
+    ref.invalidate(searchResultsProvider);
   }
 
   /// Remove a filter, re-search with remaining filters, or reset if none left
@@ -168,7 +170,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final listingsState = ref.watch(listingsProvider);
+    final listingsState = ref.watch(searchResultsProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -795,22 +797,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         );
       },
     );
-  }
-
-  String _getSortLabel(String sort) {
-    final l10n = AppLocalizations.of(context);
-    switch (sort) {
-      case 'price_low':
-        return l10n.searchSortPriceLow;
-      case 'price_high':
-        return l10n.searchSortPriceHigh;
-      case 'newest':
-        return l10n.searchSortNewest;
-      case 'oldest':
-        return l10n.searchSortOldest;
-      default:
-        return l10n.searchSortBy;
-    }
   }
 
   void _showFilterModal() {

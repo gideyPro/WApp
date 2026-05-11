@@ -7,8 +7,13 @@ final listingServiceProvider = Provider<ListingService>((ref) {
   return ListingService();
 });
 
-/// All listings with pagination
+/// All listings with pagination (Home Screen)
 final listingsProvider = StateNotifierProvider<ListingsNotifier, ListingsState>((ref) {
+  return ListingsNotifier(ref.watch(listingServiceProvider));
+});
+
+/// Search results provider (Search Screen)
+final searchResultsProvider = StateNotifierProvider.autoDispose<ListingsNotifier, ListingsState>((ref) {
   return ListingsNotifier(ref.watch(listingServiceProvider));
 });
 

@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
@@ -7,7 +6,6 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/listing_card.dart';
 import '../search/search_screen.dart';
-import '../kyc/kyc_verification_screen.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
@@ -36,7 +34,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  bool _wasOnSearchScreen = false;
 
   @override
   void initState() {
@@ -73,17 +70,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (route is PageRoute) {
       routeObserver.subscribe(this, route);
     }
-    final isOnSearch = route?.settings.name == '/search';
-    if (isOnSearch) {
-      _wasOnSearchScreen = true;
-    }
   }
 
   @override
   void didPopNext() {
-    if (_wasOnSearchScreen && mounted) {
+    if (mounted) {
+      // Reload listings to ensure we show the latest, unfiltered data
+      // when returning from search or detail screens.
       ref.read(listingsProvider.notifier).loadListings();
-      _wasOnSearchScreen = false;
     }
   }
 
