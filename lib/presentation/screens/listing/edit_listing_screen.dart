@@ -71,24 +71,12 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       addressKebele: listing.address?.kebele,
       addressId: listing.addressId,
       existingImages: listing.images,
-      existingSitePlanUrl: listing.sitePlanImageLink != null
-          ? 'https://wavemart.et/storage/${listing.sitePlanImageLink}'
-          : null,
-      existingOwnershipProofUrl: listing.ownershipProofLink != null
-          ? 'https://wavemart.et/storage/${listing.ownershipProofLink}'
-          : null,
-      existingCertificationUrl: listing.certificationLink != null
-          ? 'https://wavemart.et/storage/${listing.certificationLink}'
-          : null,
-      existingMemberListUrl: listing.memberListLink != null
-          ? 'https://wavemart.et/storage/${listing.memberListLink}'
-          : null,
-      existingLeaseContractUrl: listing.leaseContractLink != null
-          ? 'https://wavemart.et/storage/${listing.leaseContractLink}'
-          : null,
-      existingDebtDocumentUrl: listing.debtEncumbranceFileLink != null
-          ? 'https://wavemart.et/storage/${listing.debtEncumbranceFileLink}'
-          : null,
+      existingSitePlanUrl: listing.sitePlanUrl,
+      existingOwnershipProofUrl: listing.ownershipProofUrl,
+      existingCertificationUrl: listing.certificationUrl,
+      existingMemberListUrl: listing.memberListUrl,
+      existingLeaseContractUrl: listing.leaseContractUrl,
+      existingDebtDocumentUrl: listing.debtDocumentUrl,
       existingVideoUrl: listing.videoUrl,
     );
   }

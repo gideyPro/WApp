@@ -315,7 +315,10 @@ class ListingService {
     } else if (formData.holdingType == 'Lease Hold') {
       if (formData.leasedYear != null) dioFormData.fields.add(MapEntry('leased_year', formData.leasedYear.toString()));
       if (formData.leaseExpiryYear != null) dioFormData.fields.add(MapEntry('lease_expiry_year', formData.leaseExpiryYear.toString()));
-      if (formData.leasePricePerSqm != null) dioFormData.fields.add(MapEntry('price_per_sqm', formData.leasePricePerSqm.toString()));
+      if (formData.leasePricePerSqm != null) {
+        dioFormData.fields.add(MapEntry('lease_price_per_sqm', formData.leasePricePerSqm.toString()));
+        dioFormData.fields.add(MapEntry('price_per_sqm', formData.leasePricePerSqm.toString()));
+      }
       if (formData.buildType != null) dioFormData.fields.add(MapEntry('build_type', formData.buildType!));
       if (formData.annualPayment != null) dioFormData.fields.add(MapEntry('annual_payment', formData.annualPayment.toString()));
     } else if (formData.holdingType == 'Cooperative') {

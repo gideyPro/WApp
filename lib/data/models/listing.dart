@@ -94,12 +94,32 @@ class Listing extends ChangeNotifier {
   final String? videoLink;
 
   /// Returns the full video URL by prepending base URL if needed
-  String? get videoUrl {
-    if (videoLink == null || videoLink!.isEmpty) return null;
-    // If already a full URL, return as-is
-    if (videoLink!.startsWith('http')) return videoLink;
-    // Otherwise, prepend the base URL with /storage path
-    return 'https://wavemart.et/storage/$videoLink';
+  String? get videoUrl => _formatUrl(videoLink);
+
+  /// Returns full URL for site plan
+  String? get sitePlanUrl => _formatUrl(sitePlanImageLink);
+
+  /// Returns full URL for ownership proof
+  String? get ownershipProofUrl => _formatUrl(ownershipProofLink);
+
+  /// Returns full URL for certification
+  String? get certificationUrl => _formatUrl(certificationLink);
+
+  /// Returns full URL for member list
+  String? get memberListUrl => _formatUrl(memberListLink);
+
+  /// Returns full URL for lease contract
+  String? get leaseContractUrl => _formatUrl(leaseContractLink);
+
+  /// Returns full URL for debt document
+  String? get debtDocumentUrl => _formatUrl(debtEncumbranceFileLink);
+
+  String? _formatUrl(String? link) {
+    if (link == null || link.isEmpty) return null;
+    if (link.startsWith('http')) return link;
+    // Remove leading slash if present
+    final cleanLink = link.startsWith('/') ? link.substring(1) : link;
+    return 'https://wavemart.et/storage/$cleanLink';
   }
 
   final String? sitePlanImageLink;
@@ -255,24 +275,34 @@ class Listing extends ChangeNotifier {
           ? DateTime.parse(json['featured_until'])
           : null,
       addressId: _safeInt(json['address_id']),
-      specificLocation: json['specific_location'],
-      useType: json['use_type'],
-      facingDirection: json['facing_direction'],
-      totalSquareMeters: _parseDouble(json['total_square_meters']),
-      frontAreaSqm: _parseDouble(json['front_area_sqm']),
-      sideAreaSqm: _parseDouble(json['side_area_sqm']),
+      specificLocation: json['specific_location'] ?? (property is Map ? property['specific_location'] : null),
+      useType: json['use_type'] ?? (property is Map ? property['use_type'] : null),
+      facingDirection: json['facing_direction'] ?? (property is Map ? property['facing_direction'] : null),
+      totalSquareMeters: _parseDouble(json['total_square_meters'] ?? json['area']) ??
+          (property is Map ? _parseDouble(property['total_square_meters'] ?? property['area']) : null),
+      frontAreaSqm: _parseDouble(json['front_area_sqm']) ?? (property is Map ? _parseDouble(property['front_area_sqm']) : null),
+      sideAreaSqm: _parseDouble(json['side_area_sqm']) ?? (property is Map ? _parseDouble(property['side_area_sqm']) : null),
       hasDebtOrEncumbrance: _safeBool(json['has_debt_or_encumbrance']),
       debtAmount: _parseDouble(json['debt_amount']),
-      debtEncumbranceFileLink: json['debt_encumbrance_file_link'],
+      debtEncumbranceFileLink: json['debt_encumbrance_file_link'] ?? (property is Map ? property['debt_encumbrance_file_link'] : null),
       priceRevisionPossible: json['price_revision_possible'] ?? false,
-      videoLink: json['video_link'],
-      sitePlanImageLink: json['site_plan_image_link'],
-      ownershipProofLink: json['ownership_proof_link'],
-      certificationLink: json['certification_image_link'],
-      memberListLink: json['member_list_name_image_link'],
-      leaseContractLink:
-          json['lease_contract_link'] ?? json['lease_contract_image_link'],
-      holdingType: json['holding_type'],
+      videoLink: json['video_link'] ?? (property is Map ? property['video_link'] : null),
+      sitePlanImageLink: json['site_plan_image_link'] ?? 
+          (property is Map ? property['site_plan_image_link'] : null),
+      ownershipProofLink: json['ownership_proof_link'] ?? 
+          (property is Map ? property['ownership_proof_link'] : null) ??
+          (json['cooperative_holding_detail'] is Map ? json['cooperative_holding_detail']['ownership_proof_link'] : null),
+      certificationLink: json['certification_image_link'] ?? 
+          (property is Map ? property['certification_image_link'] : null) ??
+          (json['cooperative_holding_detail'] is Map ? json['cooperative_holding_detail']['certification_image_link'] : null),
+      memberListLink: json['member_list_name_image_link'] ?? 
+          (property is Map ? property['member_list_name_image_link'] : null) ??
+          (json['cooperative_holding_detail'] is Map ? json['cooperative_holding_detail']['member_list_name_image_link'] : null),
+      leaseContractLink: json['lease_contract_link'] ?? 
+          json['lease_contract_image_link'] ??
+          (property is Map ? (property['lease_contract_link'] ?? property['lease_contract_image_link']) : null) ??
+          (json['lease_holding_detail'] is Map ? (json['lease_holding_detail']['lease_contract_link'] ?? json['lease_holding_detail']['lease_contract_image_link']) : null),
+      holdingType: json['holding_type'] ?? (property is Map ? property['holding_type'] : null),
 
       // Holding Details from nested objects (API show method with relation)
       taxPaidUntilYear: _safeInt(json['tax_paid_until_year'] ??
@@ -299,10 +329,10 @@ class Listing extends ChangeNotifier {
           _safeInt(json['lease_holding_detail'] is Map
               ? json['lease_holding_detail']['leased_year']
               : null),
-      leasePricePerSqm: _parseDouble(property is Map ? property['lease_price_per_sqm'] : null) ??
-          _parseDouble(json['lease_price_per_sqm']) ??
+      leasePricePerSqm: _parseDouble(property is Map ? (property['lease_price_per_sqm'] ?? property['price_per_sqm']) : null) ??
+          _parseDouble(json['lease_price_per_sqm'] ?? json['price_per_sqm']) ??
           _parseDouble(json['lease_holding_detail'] is Map
-              ? json['lease_holding_detail']['lease_price_per_sqm']
+              ? (json['lease_holding_detail']['lease_price_per_sqm'] ?? json['lease_holding_detail']['price_per_sqm'])
               : null),
       buildType: (property is Map ? property['build_type'] : null) ??
           json['build_type'] ??
@@ -317,10 +347,12 @@ class Listing extends ChangeNotifier {
 
       // Cooperative details
       cooperativeName: json['cooperative_name'] ??
+          (property is Map ? property['cooperative_name'] : null) ??
           (json['cooperative_holding_detail'] is Map
               ? json['cooperative_holding_detail']['cooperative_name']
               : null),
       cooperativeCode: json['cooperative_code'] ??
+          (property is Map ? property['cooperative_code'] : null) ??
           (json['cooperative_holding_detail'] is Map
               ? json['cooperative_holding_detail']['cooperative_code']
               : null),

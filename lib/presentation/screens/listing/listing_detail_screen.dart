@@ -770,6 +770,30 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
       // Lease Hold details
       if (listing.holdingType == 'Lease Hold') {
+        if (listing.leasedYear != null) {
+          details.add({
+            'label': l10n.listingLeasedYear,
+            'value': listing.leasedYear.toString()
+          });
+        }
+        if (listing.leasePricePerSqm != null) {
+          details.add({
+            'label': l10n.listingLeasePrice,
+            'value': '${listing.leasePricePerSqm!.toInt()} ETB'
+          });
+        }
+        if (listing.annualPayment != null) {
+          details.add({
+            'label': l10n.listingAnnualPayment,
+            'value': '${listing.annualPayment!.toInt()} ETB'
+          });
+        }
+        if (listing.buildType != null) {
+          details.add({
+            'label': l10n.listingBuildType,
+            'value': listing.buildType!
+          });
+        }
         if (listing.leaseHolderName != null) {
           details.add({
             'label': l10n.listingLeaseHolder,
@@ -802,6 +826,12 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           details.add({
             'label': l10n.listingCooperativeCode,
             'value': listing.cooperativeCode!
+          });
+        }
+        if (listing.buildingStatus != null) {
+          details.add({
+            'label': l10n.listingBuildingStatus,
+            'value': listing.buildingStatus == 'Finished' ? l10n.listingFinished : l10n.listingUnfinished
           });
         }
       }
