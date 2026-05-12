@@ -14,7 +14,7 @@ double? _parseDouble(dynamic value) {
 }
 
 // Helper to safely parse ints from strings or numbers
-int? _safeInt(dynamic value, {int defaultValue = 0}) {
+int? _safeInt(dynamic value, {int? defaultValue}) {
   if (value == null) return defaultValue;
   if (value is int) return value;
   if (value is double) return value.toInt();
@@ -372,12 +372,12 @@ class Listing extends ChangeNotifier {
       description: json['description'] ??
           (property is Map ? property['description'] : null),
       bedrooms:
-          _safeInt(property is Map ? property['bedrooms'] : json['bedrooms']),
+          _safeInt(property is Map ? property['bedrooms'] : json['bedrooms'], defaultValue: 0),
       bathrooms:
-          _safeInt(property is Map ? property['bathrooms'] : json['bathrooms']),
-      salons: _safeInt(property is Map ? property['salons'] : json['salons']),
+          _safeInt(property is Map ? property['bathrooms'] : json['bathrooms'], defaultValue: 0),
+      salons: _safeInt(property is Map ? property['salons'] : json['salons'], defaultValue: 0),
       kitchens:
-          _safeInt(property is Map ? property['kitchens'] : json['kitchens']),
+          _safeInt(property is Map ? property['kitchens'] : json['kitchens'], defaultValue: 0),
       imageCount: images.isNotEmpty
           ? images.length
           : _safeInt(json['image_count'] ??
