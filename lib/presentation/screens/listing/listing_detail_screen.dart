@@ -562,11 +562,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   Widget _buildLocation(Listing listing) {
     final l10n = AppLocalizations.of(context);
-    final parts = [
-      listing.address?.zone,
-      listing.address?.woreda,
-      listing.address?.region,
-    ].where((e) => e != null && e.isNotEmpty).join(', ');
+    final location = listing.address?.getLocalizedAddress(context) ??
+        l10n.listingUnknownLocation;
 
     return Row(
       children: [
@@ -574,7 +571,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         const SizedBox(width: 4),
         Expanded(
           child: Text(
-            parts.isNotEmpty ? parts : l10n.listingUnknownLocation,
+            location,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.navy600,
             ),

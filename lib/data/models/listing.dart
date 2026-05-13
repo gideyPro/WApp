@@ -503,13 +503,22 @@ class Listing extends ChangeNotifier {
 
   String getLocalizedTitle(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode;
     final type = propertyType == PropertyType.house
         ? l10n.listingHouse
         : l10n.listingLand;
     final action = listingType == ListingType.sale
         ? l10n.listingForSale
         : l10n.listingForRent;
-    final location = address?.region ?? l10n.listingUnknownLocation;
+    
+    String location = l10n.listingUnknownLocation;
+    if (address != null) {
+      if (locale == 'en') {
+        location = address!.region ?? l10n.listingUnknownLocation;
+      } else {
+        location = address!.localizedRegion ?? address!.region ?? l10n.listingUnknownLocation;
+      }
+    }
 
     return l10n.listingsTitleTemplate(action, location, type);
   }

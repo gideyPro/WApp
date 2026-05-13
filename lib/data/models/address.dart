@@ -97,41 +97,49 @@ class Address {
     return parts.join(', ');
   }
 
+  String? get localizedRegion {
+    if (regionLocalized != null) return regionLocalized;
+    // Map common regions if localization is missing from API
+    final r = region?.toLowerCase();
+    if (r == 'tigray') return 'ትግራይ';
+    if (r == 'amhara') return 'አማራ';
+    if (r == 'oromia') return 'ኦሮሚያ';
+    if (r == 'addis ababa') return 'አዲስ አበባ';
+    return region;
+  }
+
   /// Get address string localized for the current app locale
   String getLocalizedAddress(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
 
-    // Use localized values if available, otherwise fall back to original values
-    String? localizedZone;
-    String? localizedWoreda;
-    String? localizedKebele;
-    String? localizedSpecificLocation;
+    // Use localized values if available
+    String? r = regionLocalized ?? region;
+    String? z = zoneLocalized ?? zone;
+    String? w = woredaLocalized ?? woreda;
+    String? k = kebeleLocalized ?? kebele;
+    String? s = specificLocationLocalized ?? specificLocation;
 
-    if (locale == 'am') {
-      localizedZone = zoneLocalized ?? zone;
-      localizedWoreda = woredaLocalized ?? woreda;
-      localizedKebele = kebeleLocalized ?? kebele;
-      localizedSpecificLocation = specificLocationLocalized ?? specificLocation;
-    } else if (locale == 'ti') {
-      localizedZone = zoneLocalized ?? zone;
-      localizedWoreda = woredaLocalized ?? woreda;
-      localizedKebele = kebeleLocalized ?? kebele;
-      localizedSpecificLocation = specificLocationLocalized ?? specificLocation;
-    } else {
-      // Default to English/original values
-      localizedZone = zone;
-      localizedWoreda = woreda;
-      localizedKebele = kebele;
-      localizedSpecificLocation = specificLocation;
+    // If it's English, we just return the standard join
+    if (locale == 'en') {
+      final parts = [z, w, k, s]
+          .where((e) => e != null && e.isNotEmpty)
+          .toList();
+      return parts.isEmpty ? (region ?? '') : parts.join(', ');
     }
 
-    // Build address using localized values
-    final parts = [
-      localizedZone,
-      localizedWoreda,
-      localizedKebele,
-      localizedSpecificLocation
-    ].where((e) => e != null && e.isNotEmpty).toList();
+    // For AM/TI, if localized fields are null, the backend didn't provide them.
+    // However, we want to at least show the available parts.
+    final parts = [z, w, k, s]
+        .where((e) => e != null && e.isNotEmpty)
+        .toList();
+    
+    if (parts.isEmpty) return r ?? '';
+    
+    // Append region at the end if it exists and isn't already the only part
+    if (r != null && r.isNotEmpty) {
+      parts.add(r);
+    }
+    
     return parts.join(', ');
   }
 
