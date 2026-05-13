@@ -323,6 +323,30 @@ class PropertyListingCard extends ConsumerWidget {
             ),
           ),
 
+        // Image Count Badge
+        if ((listing?.imageCount ?? 0) > 1)
+          Positioned(
+            top: AppSpacing.md,
+            right: AppSpacing.xl + 32,
+            child: WaveGlass(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.photo_library,
+                      size: 12, color: context.textPrimary),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    '${listing?.imageCount ?? 0}',
+                    style: AppTextStyles.labelSmall
+                        .copyWith(color: context.textPrimary),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
         // Property Type Badge
         Positioned(
           bottom: AppSpacing.md,
