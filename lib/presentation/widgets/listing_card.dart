@@ -929,8 +929,18 @@ class FeaturedListingCard extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    // Date posted
+                    Container(
+                      height: 10,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
                     const Spacer(),
-                    // Features
+                    // Features (2 chips)
                     Row(
                       children: [
                         Container(
