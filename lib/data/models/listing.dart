@@ -191,8 +191,6 @@ class Listing extends ChangeNotifier {
     this.videoLink,
     this.sitePlanImageLink,
     this.ownershipProofLink,
-    this.certificationLink,
-    this.memberListLink,
     this.leaseContractLink,
     this.holdingType,
     this.taxPaidUntilYear,
