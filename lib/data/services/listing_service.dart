@@ -374,12 +374,6 @@ class ListingService {
       ));
     }
 
-    if (formData.debtDocument != null) {
-      dioFormData.files.add(MapEntry(
-        'debt_encumbrance_file',
-        await MultipartFile.fromFile(formData.debtDocument!.path, filename: 'debt_document.jpg'),
-      ));
-    }
     if (formData.videoFile != null) {
       dioFormData.files.add(MapEntry(
         'video_file',
@@ -404,9 +398,6 @@ class ListingService {
       if (formData.deleteVideo) {
         dioFormData.fields.add(MapEntry('delete_video', '1'));
       }
-      if (formData.deleteDebtFile) {
-        dioFormData.fields.add(MapEntry('delete_debt_file', '1'));
-      }
     }
 
     return dioFormData;
@@ -427,9 +418,6 @@ class ListingService {
     }
     if (formData.leaseContract != null) {
       totalSize += await File(formData.leaseContract!.path).length();
-    }
-    if (formData.debtDocument != null) {
-      totalSize += await File(formData.debtDocument!.path).length();
     }
     if (formData.videoFile != null) {
       totalSize += await File(formData.videoFile!.path).length();

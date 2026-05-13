@@ -75,7 +75,6 @@ class ListingFormData {
   XFile? sitePlan;
   XFile? ownershipProof;
   XFile? leaseContract;
-  XFile? debtDocument;
   XFile? videoFile;
 
   // --- Existing Media (for Edit mode) ---
@@ -84,10 +83,8 @@ class ListingFormData {
   String? existingSitePlanUrl;
   bool removeExistingSitePlan = false;
   bool deleteVideo = false;
-  bool deleteDebtFile = false;
   String? existingOwnershipProofUrl;
   String? existingLeaseContractUrl;
-  String? existingDebtDocumentUrl;
   String? existingVideoUrl;
 
   ListingFormData({
@@ -139,10 +136,8 @@ class ListingFormData {
     this.existingSitePlanUrl,
     this.removeExistingSitePlan = false,
     this.deleteVideo = false,
-    this.deleteDebtFile = false,
     this.existingOwnershipProofUrl,
     this.existingLeaseContractUrl,
-    this.existingDebtDocumentUrl,
     this.existingVideoUrl,
   });
 
@@ -329,17 +324,14 @@ class ListingFormData {
     XFile? sitePlan,
     XFile? ownershipProof,
     XFile? leaseContract,
-    XFile? debtDocument,
     XFile? videoFile,
     List<ImageModel>? existingImages,
     List<int>? removedImageIds,
     String? existingSitePlanUrl,
     bool? removeExistingSitePlan,
     bool? deleteVideo,
-    bool? deleteDebtFile,
     String? existingOwnershipProofUrl,
     String? existingLeaseContractUrl,
-    String? existingDebtDocumentUrl,
     String? existingVideoUrl,
   }) {
     return ListingFormData(
@@ -393,20 +385,16 @@ class ListingFormData {
       removeExistingSitePlan:
           removeExistingSitePlan ?? this.removeExistingSitePlan,
       deleteVideo: deleteVideo ?? this.deleteVideo,
-      deleteDebtFile: deleteDebtFile ?? this.deleteDebtFile,
       existingOwnershipProofUrl:
           existingOwnershipProofUrl ?? this.existingOwnershipProofUrl,
       existingLeaseContractUrl:
           existingLeaseContractUrl ?? this.existingLeaseContractUrl,
-      existingDebtDocumentUrl:
-          existingDebtDocumentUrl ?? this.existingDebtDocumentUrl,
       existingVideoUrl: existingVideoUrl ?? this.existingVideoUrl,
     )
       ..images = images ?? this.images
       ..sitePlan = sitePlan ?? this.sitePlan
       ..ownershipProof = ownershipProof ?? this.ownershipProof
       ..leaseContract = leaseContract ?? this.leaseContract
-      ..debtDocument = debtDocument ?? this.debtDocument
       ..videoFile = videoFile ?? this.videoFile;
   }
 

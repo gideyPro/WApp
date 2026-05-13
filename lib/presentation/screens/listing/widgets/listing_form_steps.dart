@@ -71,7 +71,6 @@ class ListingStepIndicator extends StatelessWidget {
                                       : AppColors.zinc500,
                                 ),
                               ),
-                      ),
                     ),
                     const SizedBox(width: 4),
                     Flexible(
@@ -1288,9 +1287,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
         case 'lease':
           widget.onUpdate(widget.formData.copyWith(leaseContract: file));
           break;
-        case 'debt':
-          widget.onUpdate(widget.formData.copyWith(debtDocument: file));
-          break;
         case 'video':
           widget.onUpdate(widget.formData.copyWith(videoFile: file));
           break;
@@ -1324,12 +1320,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             _sectionTitle(l10n.listingLeaseContract),
             const SizedBox(height: 8),
             _buildLeaseContractView(),
-            const SizedBox(height: 16),
-          ],
-          if (widget.formData.hasDebtOrEncumbrance) ...[
-            _sectionTitle('Debt/Encumbrance Document'),
-            const SizedBox(height: 8),
-            _buildDebtDocumentView(),
             const SizedBox(height: 16),
           ],
           _sectionTitle('Video Tour'),
@@ -1471,34 +1461,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             child: Text("Current contract: ${widget.formData.existingLeaseContractUrl!.split('/').last}", style: AppTextStyles.caption),
           ),
         _buildSingleFilePicker('lease', widget.formData.leaseContract),
-      ],
-    );
-  }
-
-  Widget _buildDebtDocumentView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.formData.existingDebtDocumentUrl != null &&
-            widget.formData.debtDocument == null &&
-            !widget.formData.deleteDebtFile)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              children: [
-                Expanded(
-                    child: Text(
-                        "Current document: ${widget.formData.existingDebtDocumentUrl!.split('/').last}",
-                        style: AppTextStyles.caption)),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                  onPressed: () => widget.onUpdate(
-                      widget.formData.copyWith(deleteDebtFile: true)),
-                ),
-              ],
-            ),
-          ),
-        _buildSingleFilePicker('debt', widget.formData.debtDocument),
       ],
     );
   }

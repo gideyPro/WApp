@@ -74,7 +74,6 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       existingSitePlanUrl: listing.sitePlanUrl,
       existingOwnershipProofUrl: listing.ownershipProofUrl,
       existingLeaseContractUrl: listing.leaseContractUrl,
-      existingDebtDocumentUrl: listing.debtDocumentUrl,
       existingVideoUrl: listing.videoUrl,
     );
   }
