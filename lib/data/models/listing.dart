@@ -501,7 +501,7 @@ class Listing extends ChangeNotifier {
     }
   }
 
-  String getLocalizedTitle(BuildContext context) {
+  String getLocalizedTitle(BuildContext context, [Map<String, String>? cache]) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).languageCode;
     final type = propertyType == PropertyType.house
@@ -516,7 +516,7 @@ class Listing extends ChangeNotifier {
       if (locale == 'en') {
         location = address!.region ?? l10n.listingUnknownLocation;
       } else {
-        location = address!.localizedRegion ?? address!.region ?? l10n.listingUnknownLocation;
+        location = cache?[address!.region] ?? address!.regionLocalized ?? address!.region ?? l10n.listingUnknownLocation;
       }
     }
 

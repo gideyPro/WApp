@@ -1093,14 +1093,19 @@ final kebelesProvider =
       woreda: params['woreda']!);
 });
 
+/// Global cache for localized address names
+/// Structure: { 'en_name': 'localized_name' }
+final addressCacheProvider = StateProvider<Map<String, String>>((ref) => {});
+
 /// Locale Provider
 final localeProvider =
     StateNotifierProvider<LocaleNotifier, LocaleState>((ref) {
-  return LocaleNotifier();
+  return LocaleNotifier(ref);
 });
 
 class LocaleNotifier extends StateNotifier<LocaleState> {
-  LocaleNotifier() : super(const LocaleState.initial()) {
+  final Ref _ref;
+  LocaleNotifier(this._ref) : super(const LocaleState.initial()) {
     _loadSavedLocale();
   }
 
@@ -1126,6 +1131,7 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
     // Sync to API Client
     if (state.locale != null) {
       ApiClient.currentLocale = state.locale!.languageCode;
+      _warmupAddressCache();
     }
   }
 
@@ -1137,6 +1143,38 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
     
     // Sync to API Client
     ApiClient.currentLocale = locale.languageCode;
+    _warmupAddressCache();
+  }
+
+  /// Prefetch localized region/zone names to populate the cache
+  Future<void> _warmupAddressCache() async {
+    final locale = state.locale?.languageCode ?? 'en';
+    if (locale == 'en') return;
+
+    try {
+      final service = _ref.read(addressServiceProvider);
+      
+      // 1. Fetch Regions
+      final regResp = await service.getRegions(locale: 'en'); // Get EN keys
+      final locRegResp = await service.getRegions(locale: locale); // Get Loc keys
+      
+      if (regResp.success && locRegResp.success) {
+        final cache = {..._ref.read(addressCacheProvider)};
+        final enNames = regResp.regions.map((r) => r.region).toList();
+        final locNames = locRegResp.regions.map((r) => r.region).toList();
+        
+        for (int i = 0; i < enNames.length && i < locNames.length; i++) {
+          if (enNames[i] != null && locNames[i] != null) {
+            cache[enNames[i]!] = locNames[i]!;
+          }
+        }
+
+        // 2. Fetch common Zones (optional but helpful for speed)
+        // For brevity, we focus on regions first as they are most visible
+        
+        _ref.read(addressCacheProvider.notifier).state = cache;
+      }
+    } catch (_) {}
   }
 }
 

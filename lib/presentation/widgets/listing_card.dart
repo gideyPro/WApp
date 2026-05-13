@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../presentation/providers/app_providers.dart';
 import 'common/wave_card.dart';
 import 'common/wave_glass.dart';
 
 /// Property Listing Card Widget
-class PropertyListingCard extends StatelessWidget {
+class PropertyListingCard extends ConsumerWidget {
   final Listing? listing;
   final VoidCallback? onTap;
   final VoidCallback? onFavorite;
@@ -39,7 +41,7 @@ class PropertyListingCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (isLoading) return _buildSkeleton();
 
     return WaveCard(
@@ -66,7 +68,7 @@ class PropertyListingCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(child: _buildLocation(context)),
+                    Expanded(child: _buildLocation(context, ref)),
                     _buildDatePosted(context),
                   ],
                 ),
@@ -405,9 +407,10 @@ class PropertyListingCard extends StatelessWidget {
     );
   }
 
-  Widget _buildLocation(BuildContext context) {
+  Widget _buildLocation(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final location = listing?.address?.getLocalizedAddress(context) ??
+    final cache = ref.watch(addressCacheProvider);
+    final location = listing?.address?.getLocalizedAddress(context, cache) ??
         listing?.address?.region ??
         l10n.listingUnknownLocation;
     return Row(
@@ -518,7 +521,7 @@ class PropertyListingCard extends StatelessWidget {
 }
 
 /// Featured Listing Card - Horizontal layout with image on the left
-class FeaturedListingCard extends StatelessWidget {
+class FeaturedListingCard extends ConsumerWidget {
   final Listing? listing;
   final VoidCallback? onTap;
   final bool isFavorite;
@@ -544,7 +547,7 @@ class FeaturedListingCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (isLoading || listing == null) return _buildSkeleton();
 
     return WaveCard(
@@ -579,7 +582,7 @@ class FeaturedListingCard extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // Location
-                  _buildLocation(context),
+                  _buildLocation(context, ref),
                   const SizedBox(height: 8),
 
                   // Features Row
@@ -759,8 +762,9 @@ class FeaturedListingCard extends StatelessWidget {
     );
   }
 
-  Widget _buildLocation(BuildContext context) {
+  Widget _buildLocation(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final cache = ref.watch(addressCacheProvider);
     return Row(
       children: [
         const Icon(
@@ -771,7 +775,7 @@ class FeaturedListingCard extends StatelessWidget {
         const SizedBox(width: 3),
         Expanded(
           child: Text(
-            listing?.address?.getLocalizedAddress(context) ??
+            listing?.address?.getLocalizedAddress(context, cache) ??
                 listing?.address?.region ??
                 l10n.listingUnknownLocation,
             style: AppTextStyles.bodySmall.copyWith(

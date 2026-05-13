@@ -97,45 +97,33 @@ class Address {
     return parts.join(', ');
   }
 
-  String? get localizedRegion {
-    if (regionLocalized != null) return regionLocalized;
-    // Map common regions if localization is missing from API
-    final r = region?.toLowerCase();
-    if (r == 'tigray') return 'ትግራይ';
-    if (r == 'amhara') return 'አማራ';
-    if (r == 'oromia') return 'ኦሮሚያ';
-    if (r == 'addis ababa') return 'አዲስ አበባ';
-    return region;
-  }
-
   /// Get address string localized for the current app locale
-  String getLocalizedAddress(BuildContext context) {
+  /// [cache] - Optional map of English names to localized names fetched from API
+  String getLocalizedAddress(BuildContext context, [Map<String, String>? cache]) {
     final locale = Localizations.localeOf(context).languageCode;
 
-    // Use localized values if available
-    String? r = regionLocalized ?? region;
-    String? z = zoneLocalized ?? zone;
-    String? w = woredaLocalized ?? woreda;
-    String? k = kebeleLocalized ?? kebele;
-    String? s = specificLocationLocalized ?? specificLocation;
-
-    // If it's English, we just return the standard join
-    if (locale == 'en') {
-      final parts = [z, w, k, s]
-          .where((e) => e != null && e.isNotEmpty)
-          .toList();
-      return parts.isEmpty ? (region ?? '') : parts.join(', ');
+    // Helper to get name from cache or fallback to original
+    String? translate(String? original) {
+      if (original == null || original.isEmpty) return null;
+      if (locale == 'en') return original;
+      return cache?[original] ?? original;
     }
 
-    // For AM/TI, if localized fields are null, the backend didn't provide them.
-    // However, we want to at least show the available parts.
+    // Use localized values if available from the API response object itself
+    // otherwise check our global cache fetched from cascading dropdown endpoints
+    String? r = regionLocalized ?? translate(region);
+    String? z = zoneLocalized ?? translate(zone);
+    String? w = woredaLocalized ?? translate(woreda);
+    String? k = kebeleLocalized ?? translate(kebele);
+    String? s = specificLocationLocalized ?? translate(specificLocation);
+
     final parts = [z, w, k, s]
         .where((e) => e != null && e.isNotEmpty)
         .toList();
     
     if (parts.isEmpty) return r ?? '';
     
-    // Append region at the end if it exists and isn't already the only part
+    // Append region at the end if it exists
     if (r != null && r.isNotEmpty) {
       parts.add(r);
     }

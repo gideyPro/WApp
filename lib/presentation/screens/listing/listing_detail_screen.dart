@@ -483,6 +483,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   }
 
   Widget _buildPriceAndTitle(Listing listing) {
+    final cache = ref.watch(addressCacheProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -494,7 +495,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          listing.getLocalizedTitle(context),
+          listing.getLocalizedTitle(context, cache),
           style: AppTextStyles.headline4,
         ),
       ],
@@ -562,7 +563,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   Widget _buildLocation(Listing listing) {
     final l10n = AppLocalizations.of(context);
-    final location = listing.address?.getLocalizedAddress(context) ??
+    final cache = ref.watch(addressCacheProvider);
+    final location = listing.address?.getLocalizedAddress(context, cache) ??
         l10n.listingUnknownLocation;
 
     return Row(
