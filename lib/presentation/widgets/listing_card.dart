@@ -258,25 +258,6 @@ class PropertyListingCard extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.8),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'THUMB',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
