@@ -71,6 +71,7 @@ class ListingStepIndicator extends StatelessWidget {
                                       : AppColors.zinc500,
                                 ),
                               ),
+                            ),
                     ),
                     const SizedBox(width: 4),
                     Flexible(
