@@ -102,12 +102,6 @@ class Listing extends ChangeNotifier {
   /// Returns full URL for ownership proof
   String? get ownershipProofUrl => _formatUrl(ownershipProofLink);
 
-  /// Returns full URL for certification
-  String? get certificationUrl => _formatUrl(certificationLink);
-
-  /// Returns full URL for member list
-  String? get memberListUrl => _formatUrl(memberListLink);
-
   /// Returns full URL for lease contract
   String? get leaseContractUrl => _formatUrl(leaseContractLink);
 
@@ -124,8 +118,6 @@ class Listing extends ChangeNotifier {
 
   final String? sitePlanImageLink;
   final String? ownershipProofLink;
-  final String? certificationLink;
-  final String? memberListLink;
   final String? leaseContractLink;
   final String? holdingType;
 
@@ -292,12 +284,6 @@ class Listing extends ChangeNotifier {
       ownershipProofLink: json['ownership_proof_link'] ?? 
           (property is Map ? property['ownership_proof_link'] : null) ??
           (json['cooperative_holding_detail'] is Map ? json['cooperative_holding_detail']['ownership_proof_link'] : null),
-      certificationLink: json['certification_image_link'] ?? 
-          (property is Map ? property['certification_image_link'] : null) ??
-          (json['cooperative_holding_detail'] is Map ? json['cooperative_holding_detail']['certification_image_link'] : null),
-      memberListLink: json['member_list_name_image_link'] ?? 
-          (property is Map ? property['member_list_name_image_link'] : null) ??
-          (json['cooperative_holding_detail'] is Map ? json['cooperative_holding_detail']['member_list_name_image_link'] : null),
       leaseContractLink: json['lease_contract_link'] ?? 
           json['lease_contract_image_link'] ??
           (property is Map ? (property['lease_contract_link'] ?? property['lease_contract_image_link']) : null) ??
@@ -425,8 +411,6 @@ class Listing extends ChangeNotifier {
       'video_link': videoLink,
       'site_plan_image_link': sitePlanImageLink,
       'ownership_proof_link': ownershipProofLink,
-      'certification_image_link': certificationLink,
-      'member_list_name_image_link': memberListLink,
       'lease_contract_link': leaseContractLink,
       'holding_type': holdingType,
       'description': description,

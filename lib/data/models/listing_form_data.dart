@@ -74,8 +74,6 @@ class ListingFormData {
   List<XFile> images = [];
   XFile? sitePlan;
   XFile? ownershipProof;
-  XFile? certificationImage; // For Cooperative Update
-  XFile? memberListImage; // For Cooperative Update
   XFile? leaseContract;
   XFile? debtDocument;
   XFile? videoFile;
@@ -88,8 +86,6 @@ class ListingFormData {
   bool deleteVideo = false;
   bool deleteDebtFile = false;
   String? existingOwnershipProofUrl;
-  String? existingCertificationUrl;
-  String? existingMemberListUrl;
   String? existingLeaseContractUrl;
   String? existingDebtDocumentUrl;
   String? existingVideoUrl;
@@ -145,8 +141,6 @@ class ListingFormData {
     this.deleteVideo = false,
     this.deleteDebtFile = false,
     this.existingOwnershipProofUrl,
-    this.existingCertificationUrl,
-    this.existingMemberListUrl,
     this.existingLeaseContractUrl,
     this.existingDebtDocumentUrl,
     this.existingVideoUrl,
@@ -334,8 +328,6 @@ class ListingFormData {
     List<XFile>? images,
     XFile? sitePlan,
     XFile? ownershipProof,
-    XFile? certificationImage,
-    XFile? memberListImage,
     XFile? leaseContract,
     XFile? debtDocument,
     XFile? videoFile,
@@ -346,8 +338,6 @@ class ListingFormData {
     bool? deleteVideo,
     bool? deleteDebtFile,
     String? existingOwnershipProofUrl,
-    String? existingCertificationUrl,
-    String? existingMemberListUrl,
     String? existingLeaseContractUrl,
     String? existingDebtDocumentUrl,
     String? existingVideoUrl,
@@ -406,10 +396,6 @@ class ListingFormData {
       deleteDebtFile: deleteDebtFile ?? this.deleteDebtFile,
       existingOwnershipProofUrl:
           existingOwnershipProofUrl ?? this.existingOwnershipProofUrl,
-      existingCertificationUrl:
-          existingCertificationUrl ?? this.existingCertificationUrl,
-      existingMemberListUrl:
-          existingMemberListUrl ?? this.existingMemberListUrl,
       existingLeaseContractUrl:
           existingLeaseContractUrl ?? this.existingLeaseContractUrl,
       existingDebtDocumentUrl:
@@ -419,8 +405,6 @@ class ListingFormData {
       ..images = images ?? this.images
       ..sitePlan = sitePlan ?? this.sitePlan
       ..ownershipProof = ownershipProof ?? this.ownershipProof
-      ..certificationImage = certificationImage ?? this.certificationImage
-      ..memberListImage = memberListImage ?? this.memberListImage
       ..leaseContract = leaseContract ?? this.leaseContract
       ..debtDocument = debtDocument ?? this.debtDocument
       ..videoFile = videoFile ?? this.videoFile;

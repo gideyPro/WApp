@@ -1285,12 +1285,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
         case 'ownership':
           widget.onUpdate(widget.formData.copyWith(ownershipProof: file));
           break;
-        case 'certification':
-          widget.onUpdate(widget.formData.copyWith(certificationImage: file));
-          break;
-        case 'memberList':
-          widget.onUpdate(widget.formData.copyWith(memberListImage: file));
-          break;
         case 'lease':
           widget.onUpdate(widget.formData.copyWith(leaseContract: file));
           break;
@@ -1324,14 +1318,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             _sectionTitle(l10n.listingOwnershipProof),
             const SizedBox(height: 8),
             _buildOwnershipProofView(),
-            const SizedBox(height: 16),
-            _sectionTitle('Certification Document'),
-            const SizedBox(height: 8),
-            _buildCertificationView(),
-            const SizedBox(height: 16),
-            _sectionTitle('Member List Document'),
-            const SizedBox(height: 8),
-            _buildMemberListView(),
             const SizedBox(height: 16),
           ],
           if (widget.formData.holdingType == 'Lease Hold') ...[
@@ -1471,34 +1457,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             child: Text("Current proof: ${widget.formData.existingOwnershipProofUrl!.split('/').last}", style: AppTextStyles.caption),
           ),
         _buildSingleFilePicker('ownership', widget.formData.ownershipProof),
-      ],
-    );
-  }
-
-  Widget _buildCertificationView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-         if (widget.formData.existingCertificationUrl != null && widget.formData.certificationImage == null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text("Current certification: ${widget.formData.existingCertificationUrl!.split('/').last}", style: AppTextStyles.caption),
-          ),
-        _buildSingleFilePicker('certification', widget.formData.certificationImage),
-      ],
-    );
-  }
-
-  Widget _buildMemberListView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-         if (widget.formData.existingMemberListUrl != null && widget.formData.memberListImage == null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text("Current member list: ${widget.formData.existingMemberListUrl!.split('/').last}", style: AppTextStyles.caption),
-          ),
-        _buildSingleFilePicker('memberList', widget.formData.memberListImage),
       ],
     );
   }

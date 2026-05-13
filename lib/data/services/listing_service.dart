@@ -357,12 +357,8 @@ class ListingService {
 
     // Add conditional files
     if (formData.ownershipProof != null) {
-      final fieldName = (isUpdate && formData.holdingType == 'Cooperative') 
-          ? 'certification_image' // API update expects this for cooperative
-          : 'ownership_proof[]';
-      
       dioFormData.files.add(MapEntry(
-        fieldName,
+        'ownership_proof[]',
         await MultipartFile.fromFile(formData.ownershipProof!.path, filename: 'ownership_proof.jpg'),
       ));
     }
@@ -428,12 +424,6 @@ class ListingService {
     }
     if (formData.ownershipProof != null) {
       totalSize += await File(formData.ownershipProof!.path).length();
-    }
-    if (formData.certificationImage != null) {
-      totalSize += await File(formData.certificationImage!.path).length();
-    }
-    if (formData.memberListImage != null) {
-      totalSize += await File(formData.memberListImage!.path).length();
     }
     if (formData.leaseContract != null) {
       totalSize += await File(formData.leaseContract!.path).length();
