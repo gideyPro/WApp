@@ -2,6 +2,7 @@
 class ImageModel {
   final int id;
   final String imagePath;
+  final String? thumbnailPath;
   final String? imageableType;
   final int? imageableId;
   final int? sortOrder;
@@ -10,6 +11,7 @@ class ImageModel {
   ImageModel({
     required this.id,
     required this.imagePath,
+    this.thumbnailPath,
     this.imageableType,
     this.imageableId,
     this.sortOrder,
@@ -20,6 +22,7 @@ class ImageModel {
     return ImageModel(
       id: json['id'] ?? 0,
       imagePath: json['image_path'] ?? '',
+      thumbnailPath: json['thumbnail_path'],
       imageableType: json['imageable_type'],
       imageableId: json['imageable_id'],
       sortOrder: json['sort_order'],
@@ -33,6 +36,7 @@ class ImageModel {
     return {
       'id': id,
       'image_path': imagePath,
+      'thumbnail_path': thumbnailPath,
       'imageable_type': imageableType,
       'imageable_id': imageableId,
       'sort_order': sortOrder,
@@ -48,10 +52,13 @@ class ImageModel {
   }
 
   String get thumbnailUrl {
+    if (thumbnailPath != null) {
+      if (thumbnailPath!.startsWith('http')) return thumbnailPath!;
+      return 'https://wavemart.et/storage/$thumbnailPath';
+    }
     if (imagePath.startsWith('http')) {
       return imagePath;
     }
-    // Extract filename and directory
     final parts = imagePath.split('/');
     if (parts.isEmpty) return imageUrl;
 

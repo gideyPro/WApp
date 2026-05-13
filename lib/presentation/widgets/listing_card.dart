@@ -248,6 +248,37 @@ class PropertyListingCard extends ConsumerWidget {
                     color: AppColors.navy300,
                   ),
                 ),
+                imageBuilder: (context, imageProvider) => Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withValues(alpha: 0.8),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          'THUMB',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -601,7 +632,7 @@ class FeaturedListingCard extends ConsumerWidget {
       borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
       child: SizedBox(
         width: 130,
-        height: 140, // Match skeleton height
+        height: double.infinity,
         child: Stack(
           children: [
             // Main Image (Using Thumbnail)
