@@ -5,6 +5,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_card.dart';
 
 /// Payment History Screen
 class PaymentHistoryScreen extends ConsumerStatefulWidget {
@@ -114,7 +115,9 @@ class _PaymentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return ListTile(
+    return WaveCard(
+      isGlass: true,
+      child: ListTile(
       leading: Container(
         width: 48,
         height: 48,
@@ -190,6 +193,7 @@ class _PaymentTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

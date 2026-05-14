@@ -12,6 +12,7 @@ import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_chip.dart';
 import '../../widgets/common/wave_webview_page.dart';
+import '../../widgets/common/wave_card.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Subscription Plans Screen
@@ -633,21 +634,9 @@ class _PlanCard extends StatelessWidget {
     final isPopular = plan.slug == 'basic' || plan.slug == 'premium';
     final l10n = AppLocalizations.of(context);
 
-    return Container(
+    return WaveCard(
+      isGlass: true,
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusLg),
-        border: Border.all(
-          color: isCurrentPlan
-              ? AppColors.accent400
-              : isPopular
-                  ? AppColors.accent200
-                  : AppColors.zinc200,
-          width: isCurrentPlan || isPopular ? 2 : 1,
-        ),
-        boxShadow: isCurrentPlan || isPopular ? AppColors.shadowAccent : AppColors.shadowSm,
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

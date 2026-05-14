@@ -7,6 +7,7 @@ import '../../../../data/models/notification.dart' as app;
 import '../../../../data/services/notification_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_card.dart';
 import '../listing/listing_detail_screen.dart';
 import '../messages/messages_screen.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -240,8 +241,9 @@ class _NotificationTile extends StatelessWidget {
         );
       },
       onDismissed: (direction) => onDismissed(),
-      child: Material(
-        color: notification.isRead ? context.theme.surface : (context.theme.isDark ? AppColors.primary800 : AppColors.accent50),
+      child: WaveCard(
+        isGlass: true,
+        showBorder: false,
         child: ListTile(
           leading: Container(
             width: 48,

@@ -5,6 +5,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_card.dart';
 import '../auth/otp_login_screen.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -260,13 +261,9 @@ class ProfileScreen extends ConsumerWidget {
 
   Widget _buildStatItem({required String value, required String label, bool isDark = false}) {
     return Expanded(
-      child: Container(
+      child: WaveCard(
+        isGlass: true,
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.primary900 : Colors.white,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: isDark ? AppColors.primary800 : AppColors.zinc200),
-        ),
         child: Column(
           children: [
             Text(
@@ -306,12 +303,8 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: context.cardBg,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: context.divider.withOpacity(0.5)),
-          ),
+        WaveCard(
+          isGlass: true,
           child: Column(
             children: items.asMap().entries.map((entry) {
               final index = entry.key;

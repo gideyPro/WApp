@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
+import '../../widgets/common/wave_card.dart';
 import '../../../../data/services/interest_service.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../providers/listing_provider.dart';
@@ -862,12 +863,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         if (hasVideo) _buildVideoTourSection(listing.videoUrl!),
         Text(l10n.listingsPropertyDetails, style: AppTextStyles.title),
         const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: AppColors.zinc200),
-          ),
+        WaveCard(
+          isGlass: true,
+          showBorder: false,
+          padding: EdgeInsets.zero,
           child: Column(
             children: details.asMap().entries.map((entry) {
               final index = entry.key;
@@ -1034,19 +1033,11 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     final isPending = interestStatus == 'pending';
     final isAccepted = interestStatus == 'accepted';
 
-    return Container(
+    return WaveCard(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      isGlass: !isDark,
+      color: isDark ? AppColors.primary800 : null,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.primary900 : Colors.white,
-        borderRadius: BorderRadius.circular(4),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
       child: Column(
         children: [
           // Owner action buttons

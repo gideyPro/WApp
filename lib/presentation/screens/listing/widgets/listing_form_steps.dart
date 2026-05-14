@@ -10,6 +10,7 @@ import '../../../../data/models/image.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_common_widgets.dart';
+import '../../../widgets/common/wave_card.dart';
 import '../../../providers/app_providers.dart';
 
 // ===================== STEP INDICATOR =====================
@@ -681,12 +682,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
 
   Widget _buildFreeHoldFields() {
     final l10n = AppLocalizations.of(context);
-    return Container(
+    return WaveCard(
+      isGlass: true,
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-          color: AppColors.primary50,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: AppColors.primary100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -735,12 +733,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
 
   Widget _buildLeaseHoldFields() {
     final l10n = AppLocalizations.of(context);
-    return Container(
+    return WaveCard(
+      isGlass: true,
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-          color: Colors.purple.shade50,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Colors.purple.shade100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -813,12 +808,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
 
   Widget _buildCooperativeFields() {
     final l10n = AppLocalizations.of(context);
-    return Container(
+    return WaveCard(
+      isGlass: true,
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-          color: AppColors.accent50,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: AppColors.accent100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1615,12 +1607,9 @@ class ListingStep4Review extends StatelessWidget {
   }
 
   Widget _summaryCard(String title, String content) {
-    return Container(
+    return WaveCard(
+      isGlass: true,
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: AppColors.primary50,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppColors.primary100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
