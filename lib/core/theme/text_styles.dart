@@ -10,69 +10,66 @@ class AppTextStyles {
   static const String _headingFont = 'Cinzel';
   static const String _bodyFont = 'Montserrat';
 
-  // Headings
+  // Headings - Using Cinzel sparingly for premium drama
   static TextStyle get headline1 => const TextStyle(
         fontFamily: _headingFont,
-        fontSize: 48,
+        fontSize: 40, // Slightly reduced for mobile elegance
         fontWeight: FontWeight.w700,
-        height: 1.1,
-        letterSpacing: -1.0,
+        height: 1.2,
+        letterSpacing: -0.5,
       );
 
   static TextStyle get headline2 => const TextStyle(
         fontFamily: _headingFont,
-        fontSize: 36,
+        fontSize: 32,
         fontWeight: FontWeight.w700,
         height: 1.2,
-        letterSpacing: -0.8,
+        letterSpacing: -0.2,
       );
 
   static TextStyle get headline3 => const TextStyle(
         fontFamily: _headingFont,
-        fontSize: 28,
+        fontSize: 26,
         fontWeight: FontWeight.w700,
-        height: 1.25,
-        letterSpacing: -0.5,
+        height: 1.3,
       );
 
   static TextStyle get headline4 => const TextStyle(
         fontFamily: _headingFont,
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
         height: 1.3,
-        letterSpacing: -0.3,
+      );
+
+  static TextStyle get headline5 => const TextStyle(
+        fontFamily: _headingFont,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        height: 1.3,
       );
 
   static TextStyle get title => const TextStyle(
         fontFamily: _headingFont,
         fontSize: 20,
-        fontWeight: FontWeight.w600,
-        height: 1.35,
-        letterSpacing: -0.2,
+        fontWeight: FontWeight.w700,
+        height: 1.4,
+        letterSpacing: 0.2,
       );
 
   static TextStyle get titleSmall => const TextStyle(
         fontFamily: _headingFont,
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
         height: 1.4,
       );
 
-  static TextStyle get headline5 => const TextStyle(
-        fontFamily: _headingFont,
-        fontSize: 26,
-        fontWeight: FontWeight.w700,
-        height: 1.3,
-        letterSpacing: -0.2,
-      );
-
-  // Eyebrow label (matches web: text-sm font-medium tracking-luxury)
+  // Eyebrow label - Pure luxury (Spaced out)
   static TextStyle get eyebrow => const TextStyle(
         fontFamily: _bodyFont,
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 3.0,
-        color: AppColors.primary600,
+        fontSize: 10,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 4.0, // High spacing for luxury feel
+        color: AppColors.primary700,
       );
 
   static TextStyle get subtitle => const TextStyle(
@@ -89,33 +86,26 @@ class AppTextStyles {
         height: 1.5,
       );
 
-  static TextStyle get captionSmall => const TextStyle(
-        fontFamily: _bodyFont,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: AppColors.zinc600,
-        height: 1.4,
-      );
-
-  // Body Text
+  // Body Text - Montserrat for clean legibility
   static TextStyle get bodyLarge => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 1.5,
+        fontWeight: FontWeight.w500, // Medium weight for better legibility
+        height: 1.6,
+        letterSpacing: 0.1,
       );
 
   static TextStyle get bodyMedium => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.5,
+        fontWeight: FontWeight.w500,
+        height: 1.6,
       );
 
   static TextStyle get bodySmall => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 12,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         height: 1.5,
       );
 
@@ -173,8 +163,8 @@ class AppTextStyles {
   static TextStyle get caption => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: AppColors.zinc600,
+        fontWeight: FontWeight.w500,
+        color: AppColors.stone600,
         height: 1.4,
       );
 
@@ -186,23 +176,22 @@ class AppTextStyles {
         letterSpacing: 3.0,
       );
 
-  // Price Display
+  // Price Display - Shifting to Montserrat for Trust & Clarity
   static TextStyle get priceLarge => const TextStyle(
-        fontFamily: _headingFont,
-        fontSize: 28,
+        fontFamily: _bodyFont, // Changed from _headingFont for better trust
+        fontSize: 24,
         fontWeight: FontWeight.w800,
-        color: AppColors.accent600,
+        color: AppColors.primary900,
         height: 1.2,
         letterSpacing: -0.5,
       );
 
   static TextStyle get priceMedium => const TextStyle(
-        fontFamily: _headingFont,
-        fontSize: 20,
+        fontFamily: _bodyFont,
+        fontSize: 18,
         fontWeight: FontWeight.w700,
-        color: AppColors.accent600,
+        color: AppColors.primary800,
         height: 1.3,
-        letterSpacing: -0.2,
       );
 
   // Badge/Pill Text

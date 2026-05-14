@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
 /// WaveMart Brand Colors
-/// Based on the web application's Tailwind CSS color palette
+/// Refined for a "Modern Elegant" aesthetic: Midnight Teal & Aged Gold
 class AppColors {
   AppColors._();
 
-  // Primary Brand - Teal (from web: #0F766E)
-  static const Color primary50 = Color(0xFFF0FDFA);
-  static const Color primary100 = Color(0xFFCCFBF1);
-  static const Color primary200 = Color(0xFF99F6E4);
-  static const Color primary300 = Color(0xFF5EEAD4);
-  static const Color primary400 = Color(0xFF2DD4BF);
-  static const Color primary500 = Color(0xFF14B8A6);
-  static const Color primary600 = Color(0xFF0F766E);
-  static const Color primary700 = Color(0xFF115E59);
-  static const Color primary800 = Color(0xFF134E4A);
+  // Primary Brand - Midnight Teal (Refined for depth)
+  static const Color primary50 = Color(0xFFF0F5F5);
+  static const Color primary100 = Color(0xFFD1DFDF);
+  static const Color primary200 = Color(0xFFA3BFBF);
+  static const Color primary300 = Color(0xFF759F9F);
+  static const Color primary400 = Color(0xFF477F7F);
+  static const Color primary500 = Color(0xFF0F766E); // Brand Core
+  static const Color primary600 = Color(0xFF0D665F);
+  static const Color primary700 = Color(0xFF0A514B);
+  static const Color primary800 = Color(0xFF073C38);
   static const Color primary900 = Color(0xFF042F2E);
 
-  // Deprecated aliases (for migration compatibility, remove later)
+  // Deprecated aliases for compatibility
   static const Color navy50 = primary50;
   static const Color navy100 = primary100;
   static const Color navy200 = primary200;
@@ -30,20 +30,20 @@ class AppColors {
   static const Color navy900 = primary900;
   static const Color navy950 = primary900;
 
-  // Accent - Emerald (matches web: #059669)
-  static const Color accent50 = Color(0xFFecfdf5);
-  static const Color accent100 = Color(0xFFd1fae5);
-  static const Color accent200 = Color(0xFFa7f3d0);
-  static const Color accent300 = Color(0xFF6ee7b7);
-  static const Color accent400 = Color(0xFF34d399);
-  static const Color accent500 = Color(0xFF10b981);
-  static const Color accent600 = Color(0xFF059669);
-  static const Color accent700 = Color(0xFF047857);
-  static const Color accent800 = Color(0xFF065f46);
-  static const Color accent900 = Color(0xFF064e3b);
-  static const Color accent950 = Color(0xFF022c22);
+  // Accent - Aged Gold (Premium luxury feel)
+  static const Color accent50 = Color(0xFFFCF9F1);
+  static const Color accent100 = Color(0xFFF7F0DC);
+  static const Color accent200 = Color(0xFFEFE1B9);
+  static const Color accent300 = Color(0xFFE7D296);
+  static const Color accent400 = Color(0xFFDFC373);
+  static const Color accent500 = Color(0xFFD7B450);
+  static const Color accent600 = Color(0xFFB8860B); // Premium Gold
+  static const Color accent700 = Color(0xFF916A09);
+  static const Color accent800 = Color(0xFF6B4E07);
+  static const Color accent900 = Color(0xFF453205);
+  static const Color accent950 = Color(0xFF2D2103);
 
-  // Deprecated aliases (for migration compatibility, remove later)
+  // Deprecated aliases for compatibility
   static const Color wave50 = accent50;
   static const Color wave100 = accent100;
   static const Color wave200 = accent200;
@@ -56,9 +56,9 @@ class AppColors {
   static const Color wave900 = accent900;
   static const Color wave950 = accent950;
 
-  // CTA Blue (matches web: #0369A1)
-  static const Color cta50 = Color(0xFFF0F9FF);
-  static const Color cta100 = Color(0xFFE0F2FE);
+  // CTA Blue (Professional Trust)
+  static const Color cta50 = Color(0xFFF8FAFC);
+  static const Color cta100 = Color(0xFFF1F5F9);
   static const Color cta200 = Color(0xFFBAE6FD);
   static const Color cta300 = Color(0xFF7DD3FC);
   static const Color cta400 = Color(0xFF38BDF8);
@@ -69,48 +69,60 @@ class AppColors {
   static const Color cta900 = Color(0xFF0C4A6E);
   static const Color cta950 = Color(0xFF082f49);
 
-  // Success - Emerald
-  static const Color emerald50 = Color(0xFFecfdf5);
-  static const Color emerald100 = Color(0xFFd1fae5);
-  static const Color emerald200 = Color(0xFFa7f3d0);
-  static const Color emerald300 = Color(0xFF6ee7b7);
-  static const Color emerald400 = Color(0xFF34d399);
-  static const Color emerald500 = Color(0xFF10b981);
+  // Success - Deep Emerald
+  static const Color emerald50 = Color(0xFFECFDF5);
+  static const Color emerald100 = Color(0xFFD1FAE5);
+  static const Color emerald200 = Color(0xFFA7F3D0);
+  static const Color emerald300 = Color(0xFF6EE7B7);
+  static const Color emerald400 = Color(0xFF34D399);
+  static const Color emerald500 = Color(0xFF10B981);
   static const Color emerald600 = Color(0xFF059669);
   static const Color emerald700 = Color(0xFF047857);
-  static const Color emerald800 = Color(0xFF065f46);
-  static const Color emerald900 = Color(0xFF064e3b);
+  static const Color emerald800 = Color(0xFF065F46);
+  static const Color emerald900 = Color(0xFF064E3B);
 
-  // Neutrals - Zinc (Warm grays)
-  static const Color zinc50 = Color(0xFFfafaf9);
-  static const Color zinc100 = Color(0xFFf5f5f4);
-  static const Color zinc200 = Color(0xFFe7e5e4);
-  static const Color zinc300 = Color(0xFFd6d3d1);
-  static const Color zinc400 = Color(0xFFa8a29e);
-  static const Color zinc500 = Color(0xFF78716c);
-  static const Color zinc600 = Color(0xFF57534e);
-  static const Color zinc700 = Color(0xFF44403c);
-  static const Color zinc800 = Color(0xFF292524);
-  static const Color zinc900 = Color(0xFF1c1917);
+  // Neutrals - Stone (Warmer, more premium than Zinc)
+  static const Color stone50 = Color(0xFFFAFAF9);
+  static const Color stone100 = Color(0xFFF5F5F4);
+  static const Color stone200 = Color(0xFFE7E5E4);
+  static const Color stone300 = Color(0xFFD6D3D1);
+  static const Color stone400 = Color(0xFFA8A29E);
+  static const Color stone500 = Color(0xFF78716C);
+  static const Color stone600 = Color(0xFF57534E);
+  static const Color stone700 = Color(0xFF44403C);
+  static const Color stone800 = Color(0xFF292524);
+  static const Color stone900 = Color(0xFF1C1917);
+
+  // Backward compatibility for Zinc (Aliases)
+  static const Color zinc50 = stone50;
+  static const Color zinc100 = stone100;
+  static const Color zinc200 = stone200;
+  static const Color zinc300 = stone300;
+  static const Color zinc400 = stone400;
+  static const Color zinc500 = stone500;
+  static const Color zinc600 = stone600;
+  static const Color zinc700 = stone700;
+  static const Color zinc800 = stone800;
+  static const Color zinc900 = stone900;
 
   // Semantic Colors
-  static const Color error = Color(0xFFdc2626);
-  static const Color errorLight = Color(0xFFfee2e2);
-  static const Color warning = Color(0xFFf59e0b);
-  static const Color warningLight = Color(0xFFfef3c7);
-  static const Color success = Color(0xFF10b981);
-  static const Color successLight = Color(0xFFd1fae5);
-  static const Color info = Color(0xFF3b82f6);
-  static const Color infoLight = Color(0xFFdbeafe);
+  static const Color error = Color(0xFF991B1B);
+  static const Color errorLight = Color(0xFFFEE2E2);
+  static const Color warning = Color(0xFF92400E);
+  static const Color warningLight = Color(0xFFFEF3C7);
+  static const Color success = Color(0xFF065F46);
+  static const Color successLight = Color(0xFFD1FAE5);
+  static const Color info = Color(0xFF1E3A8A);
+  static const Color infoLight = Color(0xFFDBEAFE);
 
-  // Background Colors
-  static const Color background = primary50;
+  // Background Colors - Warm Alabaster foundation
+  static const Color background = Color(0xFFF9F9F7);
   static const Color surface = Colors.white;
-  static const Color surfaceVariant = primary50;
+  static const Color surfaceVariant = Color(0xFFF3F4F1);
 
   // Gradient Definitions
   static const LinearGradient gradientPrimary = LinearGradient(
-    colors: [primary600, primary700],
+    colors: [primary700, primary900],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
@@ -158,69 +170,52 @@ class AppColors {
   );
 
   static const LinearGradient gradientNetwork = LinearGradient(
-    colors: [zinc500, zinc600],
+    colors: [stone500, stone600],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Shadow Definitions
+  // Shadow Definitions - "Quiet Luxury" Ambient Shadows
   static List<BoxShadow> get shadowSm => [
         BoxShadow(
-          color: primary700.withValues(alpha: 0.10),
+          color: Colors.black.withValues(alpha: 0.02),
           blurRadius: 4,
-          offset: const Offset(0, 1),
+          offset: const Offset(0, 2),
         ),
       ];
 
   static List<BoxShadow> get shadowMd => [
         BoxShadow(
-          color: primary700.withValues(alpha: 0.18),
-          blurRadius: 10,
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 12,
           offset: const Offset(0, 4),
         ),
       ];
 
   static List<BoxShadow> get shadowLg => [
         BoxShadow(
-          color: primary700.withValues(alpha: 0.22),
-          blurRadius: 20,
-          offset: const Offset(0, 6),
-        ),
-      ];
-
-  static List<BoxShadow> get shadowAccent => [
-        BoxShadow(
-          color: accent600.withValues(alpha: 0.30),
-          blurRadius: 20,
-          offset: const Offset(0, 6),
-        ),
-      ];
-
-  static List<BoxShadow> get shadowGlow => [
-        BoxShadow(
-          color: accent600.withValues(alpha: 0.40),
-          blurRadius: 24,
-          spreadRadius: 2,
-        ),
-      ];
-
-  // Premium Shadows
-  static List<BoxShadow> get shadowPremium => [
-        BoxShadow(
-          color: primary700.withValues(alpha: 0.12),
+          color: Colors.black.withValues(alpha: 0.06),
           blurRadius: 24,
           offset: const Offset(0, 8),
         ),
+      ];
+
+  static List<BoxShadow> get shadowPremium => [
         BoxShadow(
-          color: primary700.withValues(alpha: 0.06),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
+          color: primary900.withValues(alpha: 0.05),
+          blurRadius: 40,
+          offset: const Offset(0, 20),
+        ),
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.02),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
         ),
       ];
 
   static List<BoxShadow> shadowDarkPremium(Color color) => [
         BoxShadow(
-          color: color.withOpacity(0.2),
+          color: color.withValues(alpha: 0.2),
           blurRadius: 20,
           offset: const Offset(0, 10),
           spreadRadius: -5,
@@ -232,20 +227,20 @@ class AppColors {
 extension AppColorsExtension on BuildContext {
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 
-  Color get scaffoldBg => isDarkMode ? AppColors.primary900 : AppColors.primary50;
+  Color get scaffoldBg => isDarkMode ? AppColors.primary900 : AppColors.background;
   Color get cardBg => isDarkMode ? AppColors.primary800 : Colors.white;
-  Color get cardBgElevated => isDarkMode ? AppColors.navy950 : Colors.white;
-  Color get textPrimary => isDarkMode ? Colors.white : AppColors.primary800;
-  Color get textSecondary => isDarkMode ? AppColors.primary200 : AppColors.primary600;
-  Color get textMuted => isDarkMode ? AppColors.primary300 : AppColors.primary500;
+  Color get cardBgElevated => isDarkMode ? AppColors.primary900 : Colors.white;
+  Color get textPrimary => isDarkMode ? Colors.white : AppColors.stone900;
+  Color get textSecondary => isDarkMode ? AppColors.primary200 : AppColors.stone600;
+  Color get textMuted => isDarkMode ? AppColors.primary400 : AppColors.stone400;
   Color get iconPrimary => isDarkMode ? Colors.white : AppColors.primary700;
-  Color get divider => isDarkMode ? AppColors.primary700 : AppColors.primary200;
-  Color get inputBg => isDarkMode ? AppColors.primary800 : AppColors.primary50.withOpacity(0.5);
+  Color get divider => isDarkMode ? AppColors.primary700 : AppColors.stone200;
+  Color get inputBg => isDarkMode ? AppColors.primary800 : AppColors.stone50;
   Color get sheetBg => isDarkMode ? AppColors.primary800 : Colors.white;
-  Color get shimmerBase => isDarkMode ? AppColors.navy950 : Colors.grey[300]!;
+  Color get shimmerBase => isDarkMode ? AppColors.primary900 : Colors.grey[300]!;
   Color get shimmerHighlight => isDarkMode ? AppColors.primary700 : Colors.grey[100]!;
 
   // Glassmorphism helpers
-  Color get glassBg => isDarkMode ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.7);
-  Color get glassBorder => isDarkMode ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.8);
+  Color get glassBg => isDarkMode ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.7);
+  Color get glassBorder => isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.8);
 }
