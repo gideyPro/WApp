@@ -42,10 +42,10 @@ class WaveCard extends StatelessWidget {
     List<BoxShadow>? shadows;
 
     if (isGlass) {
-      // Visual glass: translucent white background + white border + premium shadow
+      // Visual glass: translucent white background + visible border + premium shadow
       cardColor = isDark
           ? Colors.white.withValues(alpha: 0.08)
-          : Colors.white.withValues(alpha: 0.7);
+          : Colors.white.withValues(alpha: 0.75);
       shadows = AppColors.shadowPremium;
     } else {
       cardColor = color ?? (isDark ? AppColors.primary800 : Colors.white);
@@ -66,7 +66,7 @@ class WaveCard extends StatelessWidget {
                 color: isGlass
                     ? (isDark
                         ? Colors.white.withValues(alpha: 0.15)
-                        : Colors.white.withValues(alpha: 0.8))
+                        : AppColors.primary100.withValues(alpha: 0.8))
                     : (isDark
                         ? Colors.white.withValues(alpha: 0.05)
                         : AppColors.primary200),

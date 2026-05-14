@@ -166,7 +166,7 @@ class AppColors {
   // Shadow Definitions
   static List<BoxShadow> get shadowSm => [
         BoxShadow(
-          color: primary700.withOpacity(0.08),
+          color: primary700.withValues(alpha: 0.10),
           blurRadius: 4,
           offset: const Offset(0, 1),
         ),
@@ -174,45 +174,45 @@ class AppColors {
 
   static List<BoxShadow> get shadowMd => [
         BoxShadow(
-          color: primary700.withOpacity(0.12),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
+          color: primary700.withValues(alpha: 0.18),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
         ),
       ];
 
   static List<BoxShadow> get shadowLg => [
         BoxShadow(
-          color: primary700.withOpacity(0.16),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
+          color: primary700.withValues(alpha: 0.22),
+          blurRadius: 20,
+          offset: const Offset(0, 6),
         ),
       ];
 
   static List<BoxShadow> get shadowAccent => [
         BoxShadow(
-          color: accent600.withOpacity(0.22),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
+          color: accent600.withValues(alpha: 0.30),
+          blurRadius: 20,
+          offset: const Offset(0, 6),
         ),
       ];
 
   static List<BoxShadow> get shadowGlow => [
         BoxShadow(
-          color: accent600.withOpacity(0.35),
-          blurRadius: 20,
-          spreadRadius: 0,
+          color: accent600.withValues(alpha: 0.40),
+          blurRadius: 24,
+          spreadRadius: 2,
         ),
       ];
 
   // Premium Shadows
   static List<BoxShadow> get shadowPremium => [
         BoxShadow(
-          color: primary700.withOpacity(0.04),
+          color: primary700.withValues(alpha: 0.12),
           blurRadius: 24,
           offset: const Offset(0, 8),
         ),
         BoxShadow(
-          color: primary700.withOpacity(0.02),
+          color: primary700.withValues(alpha: 0.06),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),

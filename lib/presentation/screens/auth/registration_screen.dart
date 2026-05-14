@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/countries.dart';
@@ -9,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
+import '../../widgets/common/otp_input_field.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
 import 'otp_login_screen.dart';
@@ -25,9 +25,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final List<TextEditingController> _otpControllers =
-      List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
+  String _otpCode = '';
 
   String? _selectedGender = 'Male';
   CountryCode _selectedCountry = Countries.defaultCountry;
@@ -45,11 +43,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authStateProvider.notifier).clearError();
     });
-    // Listen for user input
     _firstNameController.addListener(_markDataEntered);
     _lastNameController.addListener(_markDataEntered);
     _phoneController.addListener(_markDataEntered);
-    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
   }
 
   void _markDataEntered() {
@@ -64,30 +60,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _lastNameController.dispose();
     _phoneController.dispose();
     _countdownTimer?.cancel();
-    for (var controller in _otpControllers) {
-      controller.dispose();
-    }
-    for (var node in _otpFocusNodes) {
-      node.dispose();
-    }
-    HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
     super.dispose();
-  }
-
-  bool _handleKeyEvent(KeyEvent event) {
-    if (event is KeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.backspace) {
-      for (int i = 0; i < _otpFocusNodes.length; i++) {
-        if (_otpFocusNodes[i].hasFocus) {
-          if (_otpControllers[i].text.isEmpty && i > 0) {
-            _otpFocusNodes[i - 1].requestFocus();
-            return true;
-          }
-          break;
-        }
-      }
-    }
-    return false;
   }
 
   void _startCountdown() {
@@ -453,69 +426,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Widget _buildOtpInput() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmall = screenWidth < 360;
-    final fieldWidth = isSmall ? 38.0 : 42.0;
-    final fieldHeight = isSmall ? 46.0 : 50.0;
-    final gap = isSmall ? 3.0 : 4.0;
-    final fontSize = isSmall ? 18.0 : 20.0;
-    final borderRadius = isSmall ? 8.0 : 10.0;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(6, (index) {
-        return Padding(
-          padding: EdgeInsets.only(right: index < 5 ? gap : 0),
-          child: SizedBox(
-            width: fieldWidth,
-            height: fieldHeight,
-            child: TextField(
-              controller: _otpControllers[index],
-              focusNode: _otpFocusNodes[index],
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              maxLength: 1,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary900,
-              ),
-              decoration: InputDecoration(
-                counterText: '',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: AppColors.primary50.withValues(alpha: 0.5),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  borderSide: const BorderSide(color: AppColors.primary200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  borderSide:
-                      const BorderSide(color: AppColors.accent500, width: 2),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 2,
-                  vertical: isSmall ? 10 : 12,
-                ),
-              ),
-              onChanged: (value) {
-                if (value.isEmpty && index > 0) {
-                  _otpFocusNodes[index - 1].requestFocus();
-                } else if (value.isNotEmpty && index < 5) {
-                  _otpFocusNodes[index + 1].requestFocus();
-                } else if (value.isNotEmpty && index == 5) {
-                  FocusScope.of(context).unfocus();
-                }
-              },
-            ),
-          ),
-        );
-      }),
+    return OtpInputField(
+      onChanged: (value) => _otpCode = value,
+      hasError: ref.watch(authStateProvider).errorMessage != null,
     );
   }
 
@@ -647,9 +560,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Future<void> _verifyAndRegister() async {
-    final otp = _otpControllers.map((c) => c.text).join();
     final l10n = AppLocalizations.of(context);
-    if (otp.length != 6) {
+    if (_otpCode.length != 6) {
       _showErrorSnackBar(l10n.authEnterOtpPrompt);
       return;
     }
@@ -662,7 +574,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             lastName: _lastNameController.text.trim(),
             phoneNumber: '${_selectedCountry.code}${_phoneController.text.trim()}',
             gender: _selectedGender!,
-            otpCode: otp,
+            otpCode: _otpCode,
           );
 
       if (response.success && mounted) {
