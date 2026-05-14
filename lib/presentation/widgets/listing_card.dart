@@ -846,14 +846,10 @@ class FeaturedListingCard extends ConsumerWidget {
   }
 
   Widget _buildSkeleton() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.zinc200),
-        boxShadow: AppColors.shadowMd,
-      ),
+    return WaveCard(
+      margin: const EdgeInsets.only(bottom: 20),
+      borderRadius: 24,
+      padding: EdgeInsets.zero,
       child: Shimmer.fromColors(
         baseColor: Colors.grey[200]!,
         highlightColor: Colors.grey[100]!,
@@ -861,19 +857,25 @@ class FeaturedListingCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image skeleton (left)
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.horizontal(left: Radius.circular(16)),
-              child: Container(
-                width: 130,
-                height: 140,
-                color: Colors.grey[300],
+            Expanded(
+              flex: 2,
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.horizontal(left: Radius.circular(16)),
+                child: SizedBox(
+                  width: 130,
+                  height: double.infinity,
+                  child: Container(
+                    color: Colors.grey[300],
+                  ),
+                ),
               ),
             ),
             // Content skeleton (right)
             Expanded(
+              flex: 3,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -899,7 +901,7 @@ class FeaturedListingCard extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     // Price
                     Container(
                       height: 18,
@@ -909,7 +911,7 @@ class FeaturedListingCard extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     // Description
                     Container(
                       height: 12,
@@ -919,7 +921,7 @@ class FeaturedListingCard extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     // Location
                     Container(
                       height: 12,
@@ -930,17 +932,7 @@ class FeaturedListingCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // Date posted
-                    Container(
-                      height: 10,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    const Spacer(),
-                    // Features (2 chips)
+                    // Features
                     Row(
                       children: [
                         Container(
