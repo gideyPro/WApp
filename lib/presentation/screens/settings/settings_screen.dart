@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/wave_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -281,12 +282,9 @@ const SizedBox(height: 24),
             ),
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: context.cardBg,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: context.divider.withOpacity(0.5)),
-          ),
+        WaveCard(
+          isGlass: true,
+          showBorder: false,
           child: Column(
             children: items.asMap().entries.map((entry) {
               final index = entry.key;
