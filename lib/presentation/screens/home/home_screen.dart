@@ -129,17 +129,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await Future.wait([
-            ref.read(featuredListingsProvider.notifier).loadFeaturedListings(),
-            ref.read(listingsProvider.notifier).loadListings(),
-            ref.read(authStateProvider.notifier).loadUser(),
-          ]);
-        },
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
+      body: Stack(
+        children: [
+          // Decorative background elements for glassmorphism depth
+          Positioned(
+            top: -100,
+            left: -60,
+            width: 280,
+            height: 280,
+            child: IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.primary500.withValues(alpha: 0.1),
+                      AppColors.primary500.withValues(alpha: 0.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 100,
+            right: -80,
+            width: 240,
+            height: 240,
+            child: IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.accent500.withValues(alpha: 0.08),
+                      AppColors.accent500.withValues(alpha: 0.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Main scrollable content
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: [
             SliverPersistentHeader(
               pinned: true,
               delegate: _HeaderDelegate(
@@ -181,6 +215,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             _buildLatestListings(listingsState),
           ],
         ),
+        ],
       ),
     );
   }

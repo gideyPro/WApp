@@ -4,7 +4,8 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 
 /// A universal premium card component for WaveMart
-/// Supports glassmorphism effects, tap feedback, and theme-aware shadows
+/// Defaults to visual glassmorphism (translucent + shadow + border)
+/// Use [useBackdropFilter] to enable real frosted blur (works best outside scroll views)
 class WaveCard extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
@@ -13,6 +14,7 @@ class WaveCard extends StatelessWidget {
   final bool showBorder;
   final bool showShadow;
   final bool isGlass;
+  final bool useBackdropFilter;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final Clip clipBehavior;
@@ -26,6 +28,7 @@ class WaveCard extends StatelessWidget {
     this.showBorder = true,
     this.showShadow = true,
     this.isGlass = true,
+    this.useBackdropFilter = false,
     this.padding,
     this.margin,
     this.clipBehavior = Clip.antiAlias,
@@ -35,45 +38,57 @@ class WaveCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    Widget content = Container(
+    Color cardColor;
+    List<BoxShadow>? shadows;
+
+    if (isGlass) {
+      // Visual glass: translucent white background + white border + premium shadow
+      cardColor = isDark
+          ? Colors.white.withValues(alpha: 0.08)
+          : Colors.white.withValues(alpha: 0.7);
+      shadows = AppColors.shadowPremium;
+    } else {
+      cardColor = color ?? (isDark ? AppColors.primary800 : Colors.white);
+      shadows = showShadow
+          ? (isDark
+              ? AppColors.shadowDarkPremium(AppColors.accent900)
+              : AppColors.shadowPremium)
+          : null;
+    }
+
+    Widget cardBody = Container(
       padding: padding,
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: showBorder
+            ? Border.all(
+                color: isGlass
+                    ? (isDark
+                        ? Colors.white.withValues(alpha: 0.15)
+                        : Colors.white.withValues(alpha: 0.8))
+                    : (isDark
+                        ? Colors.white.withValues(alpha: 0.05)
+                        : AppColors.primary200),
+              )
+            : null,
+        boxShadow: shadows,
+      ),
       child: child,
     );
 
-    if (isGlass) {
-      content = ClipRRect(
+    if (isGlass && useBackdropFilter) {
+      cardBody = ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              color: context.glassBg,
-              borderRadius: BorderRadius.circular(borderRadius),
-              border: Border.all(color: context.glassBorder),
-            ),
-            child: child,
-          ),
+          child: cardBody,
         ),
       );
     }
 
     return Container(
       margin: margin,
-      decoration: BoxDecoration(
-        color: isGlass ? Colors.transparent : (color ?? context.cardBg),
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: showBorder && !isGlass
-            ? Border.all(
-                color: isDark
-                    ? Colors.white.withOpacity(0.05)
-                    : const Color(0xFFF1F5F9),
-              )
-            : null,
-        boxShadow: showShadow && !isGlass
-            ? (isDark ? AppColors.shadowDarkPremium(AppColors.accent900) : AppColors.shadowPremium)
-            : null,
-      ),
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(borderRadius),
@@ -81,10 +96,7 @@ class WaveCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
-          child: isGlass ? content : Padding(
-            padding: padding ?? EdgeInsets.zero,
-            child: child,
-          ),
+          child: cardBody,
         ),
       ),
     );

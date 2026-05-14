@@ -799,6 +799,71 @@ class WaveMessageScreen extends StatelessWidget {
   }
 }
 
+/// WaveMart Section Background with decorative radial gradients
+/// Provides visual depth for glassmorphism effects on cards above it
+class WaveSectionBg extends StatelessWidget {
+  final Widget child;
+  final bool isFeatured;
+
+  const WaveSectionBg({
+    super.key,
+    required this.child,
+    this.isFeatured = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // Decorative radial gradient circles (only visible when there's content to overlay)
+        Positioned(
+          top: -80,
+          left: -40,
+          width: 200,
+          height: 200,
+          child: IgnorePointer(
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    (isFeatured ? AppColors.accent500 : AppColors.primary500)
+                        .withValues(alpha: 0.12),
+                    (isFeatured ? AppColors.accent500 : AppColors.primary500)
+                        .withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -60,
+          right: -60,
+          width: 180,
+          height: 180,
+          child: IgnorePointer(
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    (isFeatured ? AppColors.primary400 : AppColors.accent400)
+                        .withValues(alpha: 0.08),
+                    (isFeatured ? AppColors.primary400 : AppColors.accent400)
+                        .withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        child,
+      ],
+    );
+  }
+}
+
 /// WaveMart Divider with Text
 class WaveDivider extends StatelessWidget {
   final String? text;
