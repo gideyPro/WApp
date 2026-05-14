@@ -53,6 +53,18 @@ class _OtpInputFieldState extends State<OtpInputField> {
 
   bool get isComplete => _completed;
 
+  void _handleTapUp(TapUpDetails details) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bool isSmall = screenWidth < 360;
+    final double fieldWidth = isSmall ? 38.0 : 42.0;
+    final double gap = isSmall ? 3.0 : 4.0;
+
+    final double rawIndex = details.localPosition.dx / (fieldWidth + gap);
+    final int index = rawIndex.floor().clamp(0, widget.length);
+    _controller.selection = TextSelection.collapsed(offset: index);
+    _focusNode.requestFocus();
+  }
+
   void _onValueChanged() {
     setState(() {});
 
@@ -85,60 +97,43 @@ class _OtpInputFieldState extends State<OtpInputField> {
       width: totalWidth,
       height: fieldHeight,
       child: Stack(
-        alignment: Alignment.center,
         children: [
+          Center(child: _buildBoxes(fieldWidth, fieldHeight, gap, borderRadius, fontSize)),
           Positioned.fill(
-            child: IgnorePointer(
-              ignoring: true,
-              child: Center(
-                child: GestureDetector(
-                  onTapUp: (details) {
-                    final double rawIndex =
-                        details.localPosition.dx / (fieldWidth + gap);
-                    final int index =
-                        rawIndex.floor().clamp(0, widget.length);
-                    _controller.selection =
-                        TextSelection.collapsed(offset: index);
-                    _focusNode.requestFocus();
-                  },
-                  child: _buildBoxes(
-                    fieldWidth,
-                    fieldHeight,
-                    gap,
-                    borderRadius,
-                    fontSize,
-                  ),
-                ),
-              ),
+            child: GestureDetector(
+              onTapUp: _handleTapUp,
+              child: Container(color: Colors.transparent),
             ),
           ),
-          SizedBox(
-            width: totalWidth,
-            height: fieldHeight,
-            child: TextField(
-              controller: _controller,
-              focusNode: _focusNode,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(widget.length),
-              ],
-              enabled: widget.enabled,
-              autofocus: widget.autofocus,
-              enableSuggestions: false,
-              cursorColor: Colors.transparent,
-              style: const TextStyle(
-                color: Colors.transparent,
-                fontSize: 1,
-              ),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
-                isDense: true,
-                counterText: '',
+          IgnorePointer(
+            child: SizedBox(
+              width: totalWidth,
+              height: fieldHeight,
+              child: TextField(
+                controller: _controller,
+                focusNode: _focusNode,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(widget.length),
+                ],
+                enabled: widget.enabled,
+                autofocus: widget.autofocus,
+                enableSuggestions: false,
+                cursorColor: Colors.transparent,
+                style: const TextStyle(
+                  color: Colors.transparent,
+                  fontSize: 1,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                  counterText: '',
+                ),
               ),
             ),
           ),
@@ -256,10 +251,7 @@ class _OtpBox extends StatelessWidget {
                 ),
               ),
             if (isActive)
-              const Positioned(
-                bottom: 4,
-                child: _BlinkingCursor(),
-              ),
+              const Center(child: _BlinkingCursor()),
           ],
         ),
       ),
