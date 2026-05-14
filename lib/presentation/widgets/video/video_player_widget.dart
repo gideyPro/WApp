@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import '../../../core/constants/app_colors.dart';
+import 'minimal_video_controls.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
@@ -22,7 +23,7 @@ class VideoPlayerWidget extends StatefulWidget {
 }
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _videoController;
+  VideoPlayerController? _videoController;
   ChewieController? _chewieController;
   bool _isLoading = true;
   bool _hasError = false;
@@ -33,22 +34,41 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _initializeVideo();
   }
 
+  @override
+  void didUpdateWidget(VideoPlayerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.videoUrl != widget.videoUrl) {
+      _disposeControllers();
+      setState(() {
+        _isLoading = true;
+        _hasError = false;
+      });
+      _initializeVideo();
+    }
+  }
+
   Future<void> _initializeVideo() async {
     try {
-      _videoController = VideoPlayerController.networkUrl(
+      final controller = VideoPlayerController.networkUrl(
         Uri.parse(widget.videoUrl),
       );
 
-      await _videoController.initialize();
+      await controller.initialize();
 
+      if (!mounted) {
+        controller.dispose();
+        return;
+      }
+
+      _videoController = controller;
       _chewieController = ChewieController(
-        videoPlayerController: _videoController,
+        videoPlayerController: controller,
         autoPlay: widget.autoPlay,
         looping: widget.looping,
-        aspectRatio: _videoController.value.aspectRatio,
+        aspectRatio: controller.value.aspectRatio,
         allowFullScreen: true,
-        allowMuting: true,
         showControls: true,
+        showOptions: false,
         placeholder: Container(
           color: AppColors.zinc100,
           child: const Center(
@@ -66,6 +86,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           backgroundColor: AppColors.zinc300,
           bufferedColor: AppColors.zinc300,
         ),
+        customControls: const MinimalVideoControls(),
       );
 
       if (mounted) {
@@ -83,10 +104,25 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     }
   }
 
+  void _retry() {
+    _disposeControllers();
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
+    _initializeVideo();
+  }
+
+  void _disposeControllers() {
+    _chewieController?.dispose();
+    _chewieController = null;
+    _videoController?.dispose();
+    _videoController = null;
+  }
+
   @override
   void dispose() {
-    _videoController.dispose();
-    _chewieController?.dispose();
+    _disposeControllers();
     super.dispose();
   }
 
@@ -103,7 +139,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: AspectRatio(
-        aspectRatio: _videoController.value.aspectRatio,
+        aspectRatio: _videoController!.value.aspectRatio,
         child: Chewie(controller: _chewieController!),
       ),
     );
@@ -131,22 +167,28 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         color: AppColors.zinc100,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               size: 48,
               color: AppColors.error,
             ),
-            SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 8),
+            const Text(
               'Failed to load video',
               style: TextStyle(
                 color: AppColors.navy600,
                 fontSize: 14,
               ),
+            ),
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: _retry,
+              icon: const Icon(Icons.refresh, size: 18),
+              label: const Text('Retry'),
             ),
           ],
         ),
