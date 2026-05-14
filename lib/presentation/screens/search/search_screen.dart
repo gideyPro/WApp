@@ -225,9 +225,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 child: Container(
                   height: 42,
                   decoration: BoxDecoration(
-                    color: AppColors.zinc50,
+                    color: AppColors.primary50.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: AppColors.zinc200),
+                    border: Border.all(color: AppColors.primary200),
                   ),
                   child: Row(
                     children: [
@@ -238,7 +238,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             const Padding(
                               padding: EdgeInsets.only(left: 12),
                               child: Icon(Icons.search,
-                                  size: 18, color: AppColors.zinc400),
+                                  size: 18, color: AppColors.primary500),
                             ),
                             Expanded(
                               child: TextField(
@@ -246,7 +246,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 decoration: InputDecoration(
                                   hintText: l10n.searchPlaceholder,
                                   hintStyle: const TextStyle(
-                                      fontSize: 14, color: AppColors.zinc400),
+                                      fontSize: 14, color: AppColors.primary500),
                                   border: InputBorder.none,
                                   filled: false,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -262,7 +262,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ),
                       ),
                       // Vertical divider
-                      Container(width: 1, height: 24, color: AppColors.zinc200),
+                      Container(width: 1, height: 24, color: AppColors.primary200),
                       // Filter button
                       GestureDetector(
                         onTap: () => _showFilterModal(),
@@ -274,8 +274,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 ? AppColors.accent50
                                 : Colors.transparent,
                             borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(12),
-                              bottomRight: Radius.circular(12),
+                              topRight: Radius.circular(4),
+                              bottomRight: Radius.circular(4),
                             ),
                           ),
                           child: Icon(
@@ -283,12 +283,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             size: 20,
                             color: _hasActiveFilters
                                 ? AppColors.accent600
-                                : AppColors.zinc500,
+                                : AppColors.primary500,
                           ),
                         ),
                       ),
                       // Vertical divider
-                      Container(width: 1, height: 24, color: AppColors.zinc200),
+                      Container(width: 1, height: 24, color: AppColors.primary200),
                       // Search button
                       GestureDetector(
                         onTap: _performSearch,
@@ -368,20 +368,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.zinc100,
+                  color: AppColors.primary50,
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: AppColors.zinc300),
+                  border: Border.all(color: AppColors.primary200),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.close, size: 14, color: AppColors.zinc600),
+                    const Icon(Icons.close, size: 14, color: AppColors.primary600),
                     const SizedBox(width: 4),
                     Text(
                       l10n.searchClearAll,
                       style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.zinc600),
+                          color: AppColors.primary600),
                     ),
                   ],
                 ),
@@ -457,7 +457,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
               l10n.searchWelcomeSubtitle,
-              style: AppTextStyles.bodyLarge.copyWith(color: AppColors.zinc500),
+              style: AppTextStyles.bodyLarge.copyWith(color: AppColors.primary500),
               textAlign: TextAlign.center,
             ),
           ),
@@ -552,7 +552,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: AppColors.zinc300),
+          border: Border.all(color: AppColors.primary200),
         ),
         child: Text(
           label,
@@ -631,7 +631,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       onPressed: () => Navigator.pop(ctx, false),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: AppColors.zinc300),
+                        side: BorderSide(color: AppColors.primary200),
                         foregroundColor: AppColors.primary600,
                       ),
                       child: const Text('Cancel'),
@@ -695,7 +695,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             l10n.searchFoundCount(state.total),
-            style: AppTextStyles.bodySmall.copyWith(color: AppColors.zinc500),
+            style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary500),
           ),
         ),
         const Divider(height: 1),
@@ -836,7 +836,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             });
                           },
                           child: Text(l10n.searchReset,
-                              style: const TextStyle(color: AppColors.zinc500)),
+                               style: const TextStyle(color: AppColors.primary500)),
                         ),
                       ],
                     ),
@@ -999,7 +999,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.accent500 : AppColors.zinc100,
+                              color: isSelected ? AppColors.accent500 : AppColors.primary50,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
@@ -1007,7 +1007,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : AppColors.zinc700,
+                color: isSelected ? Colors.white : AppColors.primary700,
               ),
             ),
           ),
