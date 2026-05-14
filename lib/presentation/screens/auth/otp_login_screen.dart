@@ -9,6 +9,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
+import '../../widgets/common/otp_input_field.dart';
 import 'registration_screen.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -23,9 +24,7 @@ class OtpLoginScreen extends ConsumerStatefulWidget {
 
 class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
-  final List<TextEditingController> _otpControllers =
-      List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
+  String _otpCode = '';
 
   int _resendCountdown = 0;
   Timer? _countdownTimer;
@@ -39,37 +38,13 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authStateProvider.notifier).clearError();
     });
-    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
   }
 
   @override
   void dispose() {
     _phoneController.dispose();
     _countdownTimer?.cancel();
-    for (var controller in _otpControllers) {
-      controller.dispose();
-    }
-    for (var node in _otpFocusNodes) {
-      node.dispose();
-    }
-    HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
     super.dispose();
-  }
-
-  bool _handleKeyEvent(KeyEvent event) {
-    if (event is KeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.backspace) {
-      for (int i = 0; i < _otpFocusNodes.length; i++) {
-        if (_otpFocusNodes[i].hasFocus) {
-          if (_otpControllers[i].text.isEmpty && i > 0) {
-            _otpFocusNodes[i - 1].requestFocus();
-            return true;
-          }
-          break;
-        }
-      }
-    }
-    return false;
   }
 
   void _startCountdown() {
@@ -267,70 +242,10 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Widget _buildOtpInput() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmall = screenWidth < 360;
-    final fieldWidth = isSmall ? 38.0 : 42.0;
-    final fieldHeight = isSmall ? 46.0 : 50.0;
-    final gap = isSmall ? 3.0 : 4.0;
-    final fontSize = isSmall ? 18.0 : 20.0;
-    final borderRadius = isSmall ? 8.0 : 10.0;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(6, (index) {
-        return Padding(
-          padding: EdgeInsets.only(right: index < 5 ? gap : 0),
-          child: SizedBox(
-            width: fieldWidth,
-            height: fieldHeight,
-            child: TextField(
-              controller: _otpControllers[index],
-              focusNode: _otpFocusNodes[index],
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              maxLength: 1,
-              style: AppTextStyles.title.copyWith(
-                fontWeight: FontWeight.w800,
-                color: AppColors.primary900,
-              ),
-              decoration: InputDecoration(
-                counterText: '',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: AppColors.primary50.withValues(alpha: 0.5),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  borderSide: const BorderSide(color: AppColors.primary200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  borderSide:
-                      const BorderSide(color: AppColors.accent500, width: 2),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 2,
-                  vertical: isSmall ? 10 : 12,
-                ),
-              ),
-              onChanged: (value) {
-                if (value.isNotEmpty) {
-                  if (index < 5) {
-                    _otpFocusNodes[index + 1].requestFocus();
-                  } else if (index == 5) {
-                    FocusScope.of(context).unfocus();
-                  }
-                } else if (value.isEmpty && index > 0) {
-                  _otpFocusNodes[index - 1].requestFocus();
-                }
-              },
-            ),
-          ),
-        );
-      }),
+    final hasError = ref.watch(authStateProvider).errorMessage != null;
+    return OtpInputField(
+      onChanged: (value) => _otpCode = value,
+      hasError: hasError,
     );
   }
 
@@ -454,9 +369,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Future<void> _verifyOtp() async {
-    final otp = _otpControllers.map((c) => c.text).join();
     final l10n = AppLocalizations.of(context);
-    if (otp.length != 6) {
+    if (_otpCode.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.authEnterOtpPrompt),
@@ -466,7 +380,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       return;
     }
 
-    final response = await ref.read(authStateProvider.notifier).login(otp);
+    final response =
+        await ref.read(authStateProvider.notifier).login(_otpCode);
 
     if (mounted && response.success) {
       Navigator.of(context).pushReplacement(
