@@ -309,7 +309,7 @@ const SizedBox(height: 24),
             height: 40,
             decoration: BoxDecoration(
               color: context.theme.isDark ? AppColors.primary800 : AppColors.primary50,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Icon(
               item.icon,
@@ -336,7 +336,7 @@ const SizedBox(height: 24),
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: context.theme.isDark ? AppColors.accent950 : AppColors.accent100,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(4),
                     border: Border.all(color: AppColors.accent500.withOpacity(0.3)),
                   ),
                   child: Text(
@@ -383,7 +383,7 @@ void _showLanguageSelectionDialog(BuildContext context, WidgetRef ref) {
     context: context,
     backgroundColor: context.sheetBg,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
     ),
     builder: (context) => Container(
       padding: const EdgeInsets.all(24),

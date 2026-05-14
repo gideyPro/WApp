@@ -58,8 +58,8 @@ class WaveDialog extends StatelessWidget {
       child: Container(
         constraints: const BoxConstraints(maxWidth: 400),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.zinc900 : Colors.white,
-          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusLg),
+          color: isDark ? AppColors.primary800 : Colors.white,
+          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
           boxShadow: AppColors.shadowLg,
         ),
         child: Column(
@@ -87,7 +87,7 @@ class WaveDialog extends StatelessWidget {
                   Text(
                     message ?? '',
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: isDark ? AppColors.zinc300 : AppColors.primary600,
+                      color: isDark ? AppColors.primary300 : AppColors.primary600,
                     ),
                   ),
             ),
@@ -226,9 +226,9 @@ class WaveBottomSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: isGlass 
             ? (isDark ? Colors.black.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.85))
-            : (isDark ? AppColors.zinc900 : Colors.white),
+            : (isDark ? AppColors.primary800 : Colors.white),
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSpacing.borderRadiusXl),
+          top: Radius.circular(AppSpacing.borderRadiusSm),
         ),
         border: isGlass 
             ? Border.all(color: Colors.white.withValues(alpha: 0.2))
@@ -243,7 +243,7 @@ class WaveBottomSheet extends StatelessWidget {
             decoration: BoxDecoration(
               color: isGlass 
                   ? (isDark ? Colors.white.withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.5))
-                  : (isDark ? AppColors.zinc700 : AppColors.zinc300),
+                  : (isDark ? AppColors.primary700 : AppColors.primary300),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -266,7 +266,7 @@ class WaveBottomSheet extends StatelessWidget {
                       Icons.close,
                       color: isGlass 
                           ? (isDark ? Colors.white.withValues(alpha: 0.7) : AppColors.primary700)
-                          : (isDark ? AppColors.zinc400 : AppColors.zinc500),
+                          : (isDark ? AppColors.primary500 : AppColors.primary500),
                     ),
                   ),
                 ],
@@ -286,7 +286,7 @@ class WaveBottomSheet extends StatelessWidget {
                   top: BorderSide(
                     color: isGlass 
                         ? (isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05))
-                        : (isDark ? AppColors.zinc800 : AppColors.zinc100),
+                        : (isDark ? AppColors.primary800 : AppColors.primary100),
                   ),
                 ),
               ),
@@ -302,10 +302,10 @@ class WaveBottomSheet extends StatelessWidget {
     if (isGlass) {
       return ClipRRect(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSpacing.borderRadiusXl),
+          top: Radius.circular(AppSpacing.borderRadiusSm),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: sheetContent,
         ),
       );

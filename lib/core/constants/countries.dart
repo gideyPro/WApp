@@ -395,7 +395,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: BoxDecoration(
         color: isDark ? AppColors.zinc900 : Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
       ),
       child: Column(
         children: [
@@ -404,7 +404,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
             height: 4,
             margin: const EdgeInsets.only(top: 12),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.zinc700 : AppColors.zinc300,
+              color: isDark ? AppColors.primary700 : AppColors.primary300,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -416,32 +416,32 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                 Text(
                   'Select Country',
                   style: AppTextStyles.title.copyWith(
-                    color: isDark ? Colors.white : AppColors.navy900,
-                  ),
+                  color: isDark ? Colors.white : AppColors.primary900,
                 ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.zinc800 : AppColors.zinc100,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: _filter,
-                    decoration: InputDecoration(
-                      hintText: 'Search country...',
-                      hintStyle: TextStyle(
-                        color: isDark ? AppColors.zinc500 : AppColors.zinc400,
-                      ),
-                      icon: Icon(
-                        Icons.search,
-                        color: isDark ? AppColors.zinc500 : AppColors.zinc400,
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: _filter,
+                  decoration: InputDecoration(
+                    hintText: 'Search country...',
+                    hintStyle: TextStyle(
+                      color: isDark ? AppColors.primary500 : AppColors.primary500,
+                    ),
+                    icon: Icon(
+                      Icons.search,
+                      color: isDark ? AppColors.primary500 : AppColors.primary500,
                       ),
                       border: InputBorder.none,
                     ),
                     style: TextStyle(
-                      color: isDark ? Colors.white : AppColors.navy900,
+                      color: isDark ? Colors.white : AppColors.primary900,
                     ),
                   ),
                 ),
@@ -464,14 +464,14 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                   title: Text(
                     country.name,
                     style: TextStyle(
-                      color: isDark ? Colors.white : AppColors.navy900,
+                      color: isDark ? Colors.white : AppColors.primary900,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                     ),
                   ),
                   subtitle: Text(
                     country.example,
                     style: TextStyle(
-                      color: isDark ? AppColors.zinc400 : AppColors.zinc500,
+                      color: isDark ? AppColors.primary500 : AppColors.primary600,
                       fontSize: 12,
                     ),
                   ),
@@ -480,7 +480,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                       : Text(
                           country.code,
                           style: TextStyle(
-                            color: isDark ? AppColors.zinc400 : AppColors.zinc500,
+                            color: isDark ? AppColors.primary500 : AppColors.primary600,
                           ),
                         ),
                 );

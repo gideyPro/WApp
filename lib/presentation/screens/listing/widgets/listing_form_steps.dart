@@ -653,7 +653,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           decoration: BoxDecoration(
             color: bgColor.withValues(alpha: isEnabled ? 1.0 : 0.6),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(
                 color: isSelected
                     ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
@@ -685,7 +685,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
           color: AppColors.primary50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(color: AppColors.primary100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -739,7 +739,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
           color: Colors.purple.shade50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(color: Colors.purple.shade100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -817,7 +817,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
           color: AppColors.accent50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(color: AppColors.accent100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1350,7 +1350,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             decoration: BoxDecoration(
               border: Border.all(
                   color: AppColors.zinc300, width: 2, style: BorderStyle.solid),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Center(
                 child: Column(

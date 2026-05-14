@@ -137,7 +137,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(4),
       child: AspectRatio(
         aspectRatio: _videoController!.value.aspectRatio,
         child: Chewie(controller: _chewieController!),
@@ -150,7 +150,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       height: 200,
       decoration: BoxDecoration(
         color: AppColors.zinc100,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: const Center(
         child: CircularProgressIndicator(
@@ -165,7 +165,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       height: 200,
       decoration: BoxDecoration(
         color: AppColors.zinc100,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Center(
         child: Column(

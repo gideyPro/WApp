@@ -326,9 +326,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.zinc800 : AppColors.zinc50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: isDark ? AppColors.zinc700 : AppColors.zinc200),
+        color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: isDark ? AppColors.primary700 : AppColors.primary200),
       ),
       child: Row(
         children: [
@@ -366,15 +366,15 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.zinc50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.zinc200),
+        color: AppColors.primary50.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: AppColors.primary200),
       ),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(color: AppColors.zinc400, fontSize: 14),
+          hintStyle: const TextStyle(color: AppColors.primary500, fontSize: 14),
           prefixIcon: Icon(icon, color: AppColors.primary600, size: 20),
           border: InputBorder.none,
           contentPadding:
@@ -422,10 +422,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.accent50 : AppColors.zinc50,
-          borderRadius: BorderRadius.circular(12),
+          color: isSelected ? AppColors.accent50 : AppColors.primary50.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(
-            color: isSelected ? AppColors.accent500 : AppColors.zinc200,
+            color: isSelected ? AppColors.accent500 : AppColors.primary200,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -435,7 +435,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             Icon(
               icon,
               size: 18,
-              color: isSelected ? AppColors.accent600 : AppColors.zinc500,
+              color: isSelected ? AppColors.accent600 : AppColors.primary500,
             ),
             const SizedBox(width: 8),
             Text(
@@ -443,7 +443,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? AppColors.accent700 : AppColors.zinc600,
+                color: isSelected ? AppColors.accent700 : AppColors.primary600,
               ),
             ),
           ],
@@ -488,10 +488,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: AppColors.zinc50,
+                fillColor: AppColors.primary50.withValues(alpha: 0.5),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(borderRadius),
-                  borderSide: const BorderSide(color: AppColors.zinc200),
+                  borderSide: const BorderSide(color: AppColors.primary200),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(borderRadius),
@@ -524,7 +524,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       return Text(
         'Resend code in ${_resendCountdown}s',
         style: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.zinc400,
+          color: AppColors.primary500,
         ),
       );
     }
@@ -580,7 +580,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.error.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(
           color: AppColors.error.withOpacity(0.2),
         ),

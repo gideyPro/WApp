@@ -390,7 +390,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
             color: onTap != null ? AppColors.accent50 : AppColors.zinc50,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(color: AppColors.zinc200),
           ),
           child: Column(

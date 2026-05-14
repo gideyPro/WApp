@@ -345,7 +345,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.red[50],
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(4),
                   border: Border.all(color: Colors.red[200]!),
                 ),
                 child: Text(
@@ -395,7 +395,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppColors.primary50,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(4),
               border: Border.all(color: AppColors.primary200),
             ),
             child: Row(
@@ -512,7 +512,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: context.cardBg,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(
             color: image != null ? AppColors.accent300 : AppColors.zinc200,
           ),
@@ -592,7 +592,7 @@ class _DocumentTypeChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.accent50 : context.cardBg,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(
             color: isSelected ? AppColors.accent400 : AppColors.zinc200,
             width: 2,

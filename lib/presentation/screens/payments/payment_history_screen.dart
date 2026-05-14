@@ -124,7 +124,7 @@ class _PaymentTile extends StatelessWidget {
               : payment.isFailed
                   ? Colors.red[50]!
                   : AppColors.accent50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Icon(
           payment.isSuccess

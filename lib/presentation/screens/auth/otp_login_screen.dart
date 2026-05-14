@@ -234,9 +234,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.zinc800 : AppColors.zinc50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: isDark ? AppColors.zinc700 : AppColors.zinc200),
+        color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: isDark ? AppColors.primary700 : AppColors.primary200),
       ),
       child: Row(
         children: [
@@ -301,10 +301,10 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: AppColors.zinc50,
+                fillColor: AppColors.primary50.withValues(alpha: 0.5),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(borderRadius),
-                  borderSide: const BorderSide(color: AppColors.zinc200),
+                  borderSide: const BorderSide(color: AppColors.primary200),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(borderRadius),
@@ -340,7 +340,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       return Text(
         l10n.authResendCountdown(_resendCountdown),
         style: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.zinc400,
+          color: AppColors.primary500,
         ),
       );
     }
@@ -395,7 +395,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.error.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(
           color: AppColors.error.withOpacity(0.2),
         ),

@@ -84,7 +84,7 @@ class ProfileScreen extends ConsumerWidget {
                   side: const BorderSide(color: AppColors.error),
                   padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
               ),
@@ -264,7 +264,7 @@ class ProfileScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isDark ? AppColors.primary900 : Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(color: isDark ? AppColors.primary800 : AppColors.zinc200),
         ),
         child: Column(
@@ -309,7 +309,7 @@ class ProfileScreen extends ConsumerWidget {
         Container(
           decoration: BoxDecoration(
             color: context.cardBg,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(color: context.divider.withOpacity(0.5)),
           ),
           child: Column(

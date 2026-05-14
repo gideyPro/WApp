@@ -226,7 +226,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   height: 42,
                   decoration: BoxDecoration(
                     color: AppColors.zinc50,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(4),
                     border: Border.all(color: AppColors.zinc200),
                   ),
                   child: Row(
@@ -760,7 +760,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               children: [
                 ClipRRect(
                   borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(16)),
+                      const BorderRadius.vertical(top: Radius.circular(4)),
                   child: AspectRatio(
                     aspectRatio: 4 / 3,
                     child: Container(color: AppColors.zinc200),
@@ -805,7 +805,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
       ),
       builder: (context) {
         return StatefulBuilder(
@@ -939,7 +939,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           backgroundColor: AppColors.accent500,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                              borderRadius: BorderRadius.circular(4)),
                         ),
                         child: Text(
                             l10n.searchApplyFilters,

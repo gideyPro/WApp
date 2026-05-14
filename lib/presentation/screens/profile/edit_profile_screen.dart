@@ -226,7 +226,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         labelText: label,
         prefixIcon: Icon(icon, size: 20),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
         ),
       ),
       keyboardType: keyboardType,
@@ -246,7 +246,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         labelText: label,
         prefixIcon: Icon(icon, size: 20),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
         ),
         filled: true,
         fillColor: AppColors.zinc50,
@@ -262,7 +262,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         labelText: l10n.profileGender,
         prefixIcon: const Icon(Icons.wc_outlined, size: 20),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
         ),
       ),
       items: [

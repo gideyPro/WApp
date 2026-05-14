@@ -83,7 +83,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       )
                     : null,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 filled: true,
                 fillColor: AppColors.zinc50,
@@ -174,7 +174,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(color: AppColors.zinc200),
           ),
           child: Column(
@@ -340,7 +340,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         builder: (_, controller) => Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
           ),
           child: Column(
             children: [

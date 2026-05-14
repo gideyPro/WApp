@@ -98,7 +98,7 @@ class EmptyStateWidget extends StatelessWidget {
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
         ),
       ),
       child: Text(actionText!.toUpperCase()),

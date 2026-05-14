@@ -295,7 +295,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                 )
@@ -314,7 +314,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                 ),
@@ -865,7 +865,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(color: AppColors.zinc200),
           ),
           child: Column(

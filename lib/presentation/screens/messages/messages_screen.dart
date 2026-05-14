@@ -689,7 +689,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   color: context.isDarkMode
                       ? AppColors.accent950
                       : AppColors.accent100,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   l10n.messagesEmpty,
@@ -927,8 +927,8 @@ Widget _buildMessagesSkeleton() {
               decoration: BoxDecoration(
                 color: AppColors.zinc200,
                 borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(16),
-                  topRight: const Radius.circular(16),
+                  topLeft: const Radius.circular(4),
+                  topRight: const Radius.circular(4),
                   bottomLeft: Radius.circular(isLeft ? 16 : 4),
                   bottomRight: Radius.circular(isLeft ? 4 : 16),
                 ),
@@ -1045,8 +1045,8 @@ class _MessageBubble extends ConsumerWidget {
                             : AppColors.primary600)
                         : context.cardBg,
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(16),
-                      topRight: const Radius.circular(16),
+                      topLeft: const Radius.circular(4),
+                      topRight: const Radius.circular(4),
                       bottomLeft: Radius.circular(isOwn ? 16 : 4),
                       bottomRight: Radius.circular(isOwn ? 4 : 16),
                     ),
