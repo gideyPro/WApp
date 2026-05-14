@@ -174,7 +174,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
       body: Column(
         children: [
           // Search Header
@@ -199,7 +199,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.navy900 : Colors.white,
+        color: isDark ? AppColors.primary900 : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -271,7 +271,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           height: 42,
                           decoration: BoxDecoration(
                             color: _hasActiveFilters
-                                ? AppColors.wave50
+                                ? AppColors.accent50
                                 : Colors.transparent,
                             borderRadius: const BorderRadius.only(
                               topRight: Radius.circular(12),
@@ -282,7 +282,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             Icons.tune,
                             size: 20,
                             color: _hasActiveFilters
-                                ? AppColors.wave600
+                                ? AppColors.accent600
                                 : AppColors.zinc500,
                           ),
                         ),
@@ -296,7 +296,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           width: 42,
                           height: 42,
                           decoration: const BoxDecoration(
-                            color: AppColors.wave500,
+                            color: AppColors.accent500,
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(12),
                               bottomRight: Radius.circular(12),
@@ -369,7 +369,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.zinc100,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(4),
                   border: Border.all(color: AppColors.zinc300),
                 ),
                 child: Row(
@@ -411,9 +411,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: AppColors.wave50,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.wave200),
+          color: AppColors.accent50,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: AppColors.accent200),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -423,13 +423,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.wave700),
+                  color: AppColors.accent700),
             ),
             const SizedBox(width: 6),
             GestureDetector(
               onTap: onRemove,
               child:
-                  const Icon(Icons.close, size: 14, color: AppColors.wave600),
+                  const Icon(Icons.close, size: 14, color: AppColors.accent600),
             ),
           ],
         ),
@@ -443,7 +443,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_rounded, size: 80, color: AppColors.navy200),
+          Icon(Icons.search_rounded, size: 80, color: AppColors.primary200),
           const SizedBox(height: 24),
           Text(
             l10n.searchFindProperty,
@@ -468,7 +468,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: AppColors.navy800),
+                color: AppColors.primary800),
           ),
           const SizedBox(height: 16),
           Wrap(
@@ -551,7 +551,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(color: AppColors.zinc300),
         ),
         child: Text(
@@ -559,7 +559,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppColors.navy700),
+              color: AppColors.primary700),
         ),
       ),
     );
@@ -595,7 +595,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -605,11 +605,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.wave500.withOpacity(0.1),
+                  color: AppColors.accent500.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.workspace_premium_outlined,
-                    size: 32, color: AppColors.wave600),
+                    size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -620,7 +620,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               const SizedBox(height: 10),
               const Text(
                 'You need an active subscription to view property details and contact owners.',
-                style: TextStyle(color: AppColors.navy500),
+                style: TextStyle(color: AppColors.primary500),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -632,7 +632,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
                         side: BorderSide(color: AppColors.zinc300),
-                        foregroundColor: AppColors.navy600,
+                        foregroundColor: AppColors.primary600,
                       ),
                       child: const Text('Cancel'),
                     ),
@@ -643,7 +643,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       onPressed: () => Navigator.pop(ctx, true),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        backgroundColor: AppColors.wave500,
+                        backgroundColor: AppColors.accent500,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text('View Plans'),
@@ -752,7 +752,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(4),
               border: Border.all(color: AppColors.zinc200),
             ),
             child: Column(
@@ -936,7 +936,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           _performSearch();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.wave500,
+                          backgroundColor: AppColors.accent500,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
@@ -999,8 +999,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.wave500 : AppColors.zinc100,
-              borderRadius: BorderRadius.circular(20),
+              color: isSelected ? AppColors.accent500 : AppColors.zinc100,
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               label,

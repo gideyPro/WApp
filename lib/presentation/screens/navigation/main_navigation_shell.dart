@@ -61,7 +61,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     if (subscriptionEnabled && !subState.canCreateListing) {
       final goSub = await _showAccessDialog(
         icon: Icons.workspace_premium_outlined,
-        iconColor: AppColors.wave500,
+        iconColor: AppColors.accent500,
         title: 'Subscription Required',
         message: 'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
         actionLabel: 'View Plans',
@@ -94,7 +94,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     return showDialog<bool>(
       context: context,
       builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -118,7 +118,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               const SizedBox(height: 10),
               Text(
                 message,
-                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.navy500),
+                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -129,8 +129,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                       onPressed: () => Navigator.pop(ctx, false),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: AppColors.zinc300),
-                        foregroundColor: AppColors.navy600,
+                        side: BorderSide(color: AppColors.primary200),
+                        foregroundColor: AppColors.primary600,
                       ),
                       child: const Text('Cancel'),
                     ),
@@ -178,7 +178,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
       extendBody: true,
       body: IndexedStack(
         index: selectedIndex,
@@ -230,7 +230,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           children: [
             Icon(
               icon,
-              color: isSelected ? context.iconPrimary : context.textMuted,
+              color: isSelected ? AppColors.accent600 : AppColors.primary400,
               size: 26,
             ),
             const SizedBox(height: 4),
@@ -238,7 +238,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               label,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? context.textPrimary : AppColors.zinc500,
+                color: isSelected ? AppColors.primary800 : AppColors.primary500,
               ),
             ),
           ],
@@ -268,19 +268,19 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                     fontSize: unreadCount > 99 ? 8 : 10,
                   ),
                 ),
-                backgroundColor: AppColors.wave500,
+                backgroundColor: AppColors.accent600,
                 textColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Icon(
                   Icons.chat_bubble_outline_rounded,
-                  color: isSelected ? context.iconPrimary : context.textMuted,
+                  color: isSelected ? AppColors.accent600 : AppColors.primary400,
                   size: 26,
                 ),
               )
             else
               Icon(
                 Icons.chat_bubble_outline_rounded,
-                color: isSelected ? context.iconPrimary : context.textMuted,
+                color: isSelected ? AppColors.accent600 : AppColors.primary400,
                 size: 26,
               ),
             const SizedBox(height: 4),
@@ -288,7 +288,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               AppLocalizations.of(context).navMessages,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? context.textPrimary : context.textMuted,
+                color: isSelected ? AppColors.primary800 : AppColors.primary500,
               ),
             ),
           ],
@@ -309,7 +309,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           children: [
             Icon(
               Icons.settings_outlined,
-              color: isSelected ? context.iconPrimary : AppColors.zinc400,
+              color: isSelected ? AppColors.accent600 : AppColors.primary400,
               size: 26,
             ),
             const SizedBox(height: 4),
@@ -317,7 +317,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               AppLocalizations.of(context).navSettings,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? context.textPrimary : AppColors.zinc500,
+                color: isSelected ? AppColors.primary800 : AppColors.primary500,
               ),
             ),
           ],

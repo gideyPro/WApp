@@ -128,7 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
       body: RefreshIndicator(
         onRefresh: () async {
           await Future.wait([
@@ -215,7 +215,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         builder: (_, controller) => Container(
           decoration: BoxDecoration(
             color: context.sheetBg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
@@ -251,11 +251,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [AppColors.wave500, AppColors.wave600],
+                              colors: [AppColors.accent500, AppColors.accent600],
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.wave500.withOpacity(0.3),
+                                color: AppColors.accent500.withOpacity(0.3),
                                 blurRadius: 12,
                                 spreadRadius: 1,
                               ),
@@ -289,7 +289,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 phone,
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: AppColors.navy400,
+                                  color: AppColors.primary400,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -389,7 +389,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: onTap != null ? AppColors.wave50 : AppColors.zinc50,
+            color: onTap != null ? AppColors.accent50 : AppColors.zinc50,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.zinc200),
           ),
@@ -398,7 +398,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               Text(
                 value,
                 style: AppTextStyles.titleSmall.copyWith(
-                  color: valueColor ?? AppColors.wave600,
+                  color: valueColor ?? AppColors.accent600,
                 ),
               ),
               const SizedBox(height: 2),
@@ -433,7 +433,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             Icon(
               icon,
               size: 20,
-              color: iconColor ?? AppColors.navy600,
+              color: iconColor ?? AppColors.primary600,
             ),
             const SizedBox(width: 12),
             Text(
@@ -456,7 +456,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }) {
     final l10n = AppLocalizations.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -465,21 +465,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
+                isFeatured
+                    ? l10n.homeFeaturedPremium.toUpperCase()
+                    : l10n.homeLatestRecently.toUpperCase(),
+                style: AppTextStyles.eyebrow,
+              ),
+              const SizedBox(height: 6),
+              Text(
                 title,
                 style: AppTextStyles.title.copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: -0.5,
                   color: context.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                isFeatured
-                    ? l10n.homeFeaturedPremium
-                    : l10n.homeLatestRecently,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: context.textSecondary,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -497,15 +494,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.wave50,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.wave200),
+                color: AppColors.primary50,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: AppColors.primary200),
               ),
               child: Text(
                 l10n.homeViewAll,
                 style: TextStyle(
                   fontSize: 12,
-                  color: AppColors.wave700,
+                  color: AppColors.primary700,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -546,7 +543,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -556,11 +553,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.wave500.withOpacity(0.1),
+                  color: AppColors.accent500.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.workspace_premium_outlined,
-                    size: 32, color: AppColors.wave600),
+                    size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -571,7 +568,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               const SizedBox(height: 10),
               const Text(
                 'You need an active subscription to view property details and contact owners.',
-                style: TextStyle(color: AppColors.navy500),
+                style: TextStyle(color: AppColors.primary600),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -582,8 +579,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       onPressed: () => Navigator.pop(ctx, false),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: AppColors.zinc300),
-                        foregroundColor: AppColors.navy600,
+                        side: BorderSide(color: AppColors.primary200),
+                        foregroundColor: AppColors.primary600,
                       ),
                       child: const Text('Cancel'),
                     ),
@@ -594,7 +591,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       onPressed: () => Navigator.pop(ctx, true),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        backgroundColor: AppColors.wave500,
+                        backgroundColor: AppColors.accent600,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text('View Plans'),
@@ -830,11 +827,11 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.wave500, AppColors.wave600],
+          colors: [AppColors.accent500, AppColors.accent600],
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.wave500.withOpacity(0.35),
+            color: AppColors.accent500.withOpacity(0.35),
             blurRadius: 16,
             spreadRadius: 2,
           ),
@@ -906,7 +903,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                   fontSize: badgeValue > 99 ? 8 : 10,
                 ),
               ),
-              backgroundColor: AppColors.wave500,
+              backgroundColor: AppColors.accent500,
               textColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: container,
@@ -926,14 +923,14 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.wave500.withOpacity(0.9),
-              AppColors.wave600,
+              AppColors.accent500.withOpacity(0.9),
+              AppColors.accent600,
             ],
           ),
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: AppColors.wave500.withOpacity(0.3),
+              color: AppColors.accent500.withOpacity(0.3),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),

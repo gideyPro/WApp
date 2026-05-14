@@ -59,13 +59,13 @@ class EmptyStateWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.navy50,
+        color: AppColors.primary50,
         shape: BoxShape.circle,
       ),
       child: Icon(
         iconData,
         size: 48,
-        color: AppColors.navy400,
+        color: AppColors.primary400,
       ),
     );
   }
@@ -74,7 +74,7 @@ class EmptyStateWidget extends StatelessWidget {
     return Text(
       title ?? _getDefaultTitle(),
       style: AppTextStyles.title.copyWith(
-        color: AppColors.navy800,
+        color: AppColors.primary800,
       ),
       textAlign: TextAlign.center,
     );
@@ -84,7 +84,7 @@ class EmptyStateWidget extends StatelessWidget {
     return Text(
       message ?? _getDefaultMessage(),
       style: AppTextStyles.bodyMedium.copyWith(
-        color: AppColors.navy500,
+        color: AppColors.primary500,
       ),
       textAlign: TextAlign.center,
     );
@@ -94,7 +94,7 @@ class EmptyStateWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: onAction,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.wave600,
+        backgroundColor: AppColors.accent600,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         shape: RoundedRectangleBorder(

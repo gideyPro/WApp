@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
 /// WaveMart Text Styles
-/// Using Lora for headings and Nunito for body text
+/// Using Cinzel for headings and Montserrat for body text
 /// Fonts are bundled locally - no network fetching required
 class AppTextStyles {
   AppTextStyles._();
 
-  static const String _headingFont = 'Lora';
-  static const String _bodyFont = 'Nunito';
+  static const String _headingFont = 'Cinzel';
+  static const String _bodyFont = 'Montserrat';
 
   // Headings
   static TextStyle get headline1 => const TextStyle(
         fontFamily: _headingFont,
         fontSize: 48,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w700,
         height: 1.1,
         letterSpacing: -1.0,
       );
@@ -64,6 +64,15 @@ class AppTextStyles {
         fontWeight: FontWeight.w700,
         height: 1.3,
         letterSpacing: -0.2,
+      );
+
+  // Eyebrow label (matches web: text-sm font-medium tracking-luxury)
+  static TextStyle get eyebrow => const TextStyle(
+        fontFamily: _bodyFont,
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 3.0,
+        color: AppColors.primary600,
       );
 
   static TextStyle get subtitle => const TextStyle(
@@ -140,7 +149,7 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: AppColors.navy700,
+        color: AppColors.primary800,
         letterSpacing: 0.2,
       );
 
@@ -148,7 +157,7 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        color: AppColors.navy700,
+        color: AppColors.primary800,
         letterSpacing: 0.2,
       );
 
@@ -156,7 +165,7 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w600,
-        color: AppColors.navy600,
+        color: AppColors.primary600,
         letterSpacing: 0.5,
       );
 
@@ -172,9 +181,9 @@ class AppTextStyles {
   static TextStyle get overline => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 10,
-        fontWeight: FontWeight.w600,
-        color: AppColors.navy600,
-        letterSpacing: 1.0,
+        fontWeight: FontWeight.w700,
+        color: AppColors.primary600,
+        letterSpacing: 3.0,
       );
 
   // Price Display
@@ -182,7 +191,7 @@ class AppTextStyles {
         fontFamily: _headingFont,
         fontSize: 28,
         fontWeight: FontWeight.w800,
-        color: AppColors.emerald600,
+        color: AppColors.accent600,
         height: 1.2,
         letterSpacing: -0.5,
       );
@@ -191,7 +200,7 @@ class AppTextStyles {
         fontFamily: _headingFont,
         fontSize: 20,
         fontWeight: FontWeight.w700,
-        color: AppColors.emerald600,
+        color: AppColors.accent600,
         height: 1.3,
         letterSpacing: -0.2,
       );
@@ -209,14 +218,14 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w700,
-        color: AppColors.wave600,
+        color: AppColors.accent600,
       );
 
   static TextStyle get navInactive => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        color: AppColors.navy500,
+        color: AppColors.primary500,
       );
 
   // Helper method to create colored variants
@@ -230,4 +239,3 @@ class AppTextStyles {
     );
   }
 }
-

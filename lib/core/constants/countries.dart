@@ -327,7 +327,7 @@ class CountrySelectorDropdown extends StatelessWidget {
             Icon(
               Icons.keyboard_arrow_down,
               size: 16,
-              color: isDark ? AppColors.zinc400 : AppColors.navy600,
+              color: isDark ? AppColors.zinc400 : AppColors.primary600,
             ),
           ],
         ),
@@ -476,7 +476,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                     ),
                   ),
                   trailing: isSelected
-                      ? const Icon(Icons.check, color: AppColors.wave500)
+                      ? const Icon(Icons.check, color: AppColors.accent500)
                       : Text(
                           country.code,
                           style: TextStyle(

@@ -141,15 +141,15 @@ class WaveChip extends StatelessWidget {
   Color _getBackgroundColor(bool isDark) {
     switch (variant) {
       case ChipVariant.featured:
-        return AppColors.wave500;
+        return AppColors.accent500;
       case ChipVariant.popular:
-        return AppColors.navy600;
+        return AppColors.primary600;
       case ChipVariant.current:
         return AppColors.emerald500;
       case ChipVariant.sale:
         return isDark ? AppColors.emerald800 : AppColors.emerald100;
       case ChipVariant.rent:
-        return isDark ? AppColors.wave800 : AppColors.wave100;
+        return isDark ? AppColors.accent800 : AppColors.accent100;
       case ChipVariant.success:
         return AppColors.emerald500;
       case ChipVariant.warning:
@@ -174,7 +174,7 @@ class WaveChip extends StatelessWidget {
       case ChipVariant.sale:
         return isDark ? AppColors.emerald300 : AppColors.emerald700;
       case ChipVariant.rent:
-        return isDark ? AppColors.wave300 : AppColors.wave700;
+        return isDark ? AppColors.accent300 : AppColors.accent700;
       case ChipVariant.outlined:
         return isDark ? AppColors.zinc300 : AppColors.zinc700;
       case ChipVariant.defaultChip:

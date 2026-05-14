@@ -171,7 +171,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: context.isDarkMode ? Colors.white.withOpacity(0.08) : Colors.white,
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
@@ -295,7 +295,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       title,
       style: AppTextStyles.titleSmall.copyWith(
         fontWeight: FontWeight.w800,
-        color: AppColors.navy900,
+        color: AppColors.primary900,
       ),
     );
   }
@@ -349,7 +349,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               keyboardType: TextInputType.phone,
               style: TextStyle(
                 fontSize: 15,
-                color: isDark ? Colors.white : AppColors.navy900,
+                color: isDark ? Colors.white : AppColors.primary900,
               ),
             ),
           ),
@@ -375,7 +375,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: AppColors.zinc400, fontSize: 14),
-          prefixIcon: Icon(icon, color: AppColors.navy600, size: 20),
+          prefixIcon: Icon(icon, color: AppColors.primary600, size: 20),
           border: InputBorder.none,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -396,7 +396,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColors.navy800,
+            color: AppColors.primary800,
           ),
         ),
         const SizedBox(height: 10),
@@ -422,10 +422,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.wave50 : AppColors.zinc50,
+          color: isSelected ? AppColors.accent50 : AppColors.zinc50,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.wave500 : AppColors.zinc200,
+            color: isSelected ? AppColors.accent500 : AppColors.zinc200,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -435,7 +435,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             Icon(
               icon,
               size: 18,
-              color: isSelected ? AppColors.wave600 : AppColors.zinc500,
+              color: isSelected ? AppColors.accent600 : AppColors.zinc500,
             ),
             const SizedBox(width: 8),
             Text(
@@ -443,7 +443,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? AppColors.wave700 : AppColors.zinc600,
+                color: isSelected ? AppColors.accent700 : AppColors.zinc600,
               ),
             ),
           ],
@@ -479,7 +479,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               style: TextStyle(
                 fontSize: fontSize,
                 fontWeight: FontWeight.bold,
-                color: AppColors.navy900,
+                color: AppColors.primary900,
               ),
               decoration: InputDecoration(
                 counterText: '',
@@ -496,7 +496,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(borderRadius),
                   borderSide:
-                      const BorderSide(color: AppColors.wave500, width: 2),
+                      const BorderSide(color: AppColors.accent500, width: 2),
                 ),
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 2,
@@ -534,7 +534,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       child: const Text(
         'Resend Code',
         style: TextStyle(
-          color: AppColors.wave600,
+          color: AppColors.accent600,
           fontWeight: FontWeight.w600,
           fontSize: 15,
         ),
@@ -565,7 +565,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           child: Text(
             l10n.authLogin,
             style: const TextStyle(
-              color: AppColors.wave600,
+              color: AppColors.accent600,
               fontWeight: FontWeight.w600,
               fontSize: 15,
             ),

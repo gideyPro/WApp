@@ -123,7 +123,7 @@ class _PaymentTile extends StatelessWidget {
               ? AppColors.emerald50
               : payment.isFailed
                   ? Colors.red[50]!
-                  : AppColors.wave50,
+                  : AppColors.accent50,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(
@@ -137,7 +137,7 @@ class _PaymentTile extends StatelessWidget {
               ? AppColors.emerald600
               : payment.isFailed
                   ? Colors.red[600]
-                  : AppColors.wave600,
+                  : AppColors.accent600,
         ),
       ),
       title: Text(
@@ -171,7 +171,7 @@ class _PaymentTile extends StatelessWidget {
             payment.displayAmount,
             style: AppTextStyles.labelMedium.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppColors.navy900,
+              color: AppColors.primary900,
             ),
           ),
           const SizedBox(height: 4),
@@ -222,6 +222,6 @@ class _PaymentTile extends StatelessWidget {
     if (payment.isSuccess) return AppColors.emerald600;
     if (payment.isFailed) return Colors.red[600]!;
     if (payment.isCancelled) return AppColors.zinc500;
-    return AppColors.wave600;
+    return AppColors.accent600;
   }
 }

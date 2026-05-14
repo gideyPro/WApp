@@ -235,7 +235,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             Text(
               l10n.kycVerifiedSubtitle,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.navy600,
+                color: AppColors.primary600,
               ),
               textAlign: TextAlign.center,
             ),
@@ -270,13 +270,13 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: AppColors.wave50,
+                color: AppColors.accent50,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.pending_actions,
                 size: 60,
-                color: AppColors.wave600,
+                color: AppColors.accent600,
               ),
             ),
             const SizedBox(height: 24),
@@ -288,7 +288,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             Text(
               l10n.kycPendingSubtitle,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.navy600,
+                color: AppColors.primary600,
               ),
               textAlign: TextAlign.center,
             ),
@@ -362,7 +362,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             Text(
               l10n.kycRejectedSubtitle,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.navy600,
+                color: AppColors.primary600,
               ),
               textAlign: TextAlign.center,
             ),
@@ -394,15 +394,15 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.navy50,
+              color: AppColors.primary50,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.navy200),
+              border: Border.all(color: AppColors.primary200),
             ),
             child: Row(
               children: [
                 const Icon(
                   Icons.info_outline,
-                  color: AppColors.navy600,
+                  color: AppColors.primary600,
                   size: 24,
                 ),
                 const SizedBox(width: 12),
@@ -410,7 +410,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                   child: Text(
                     l10n.kycInfoBanner,
                     style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.navy700,
+                      color: AppColors.primary700,
                     ),
                   ),
                 ),
@@ -514,7 +514,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           color: context.cardBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: image != null ? AppColors.wave300 : AppColors.zinc200,
+            color: image != null ? AppColors.accent300 : AppColors.zinc200,
           ),
         ),
         child: Row(
@@ -560,7 +560,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             Icon(
               image != null ? Icons.check_circle : Icons.add_circle_outline,
-              color: image != null ? AppColors.wave600 : AppColors.zinc400,
+              color: image != null ? AppColors.accent600 : AppColors.zinc400,
               size: 24,
             ),
           ],
@@ -591,10 +591,10 @@ class _DocumentTypeChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? context.theme.wave50 : context.cardBg,
+          color: isSelected ? AppColors.accent50 : context.cardBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.wave400 : AppColors.zinc200,
+            color: isSelected ? AppColors.accent400 : AppColors.zinc200,
             width: 2,
           ),
         ),
@@ -603,13 +603,13 @@ class _DocumentTypeChip extends StatelessWidget {
             Icon(
               icon,
               size: 28,
-              color: isSelected ? AppColors.wave600 : AppColors.zinc500,
+              color: isSelected ? AppColors.accent600 : AppColors.zinc500,
             ),
             const SizedBox(height: 8),
             Text(
               label,
               style: AppTextStyles.labelMedium.copyWith(
-                color: isSelected ? AppColors.wave700 : AppColors.navy600,
+                color: isSelected ? AppColors.accent700 : AppColors.primary600,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
               textAlign: TextAlign.center,

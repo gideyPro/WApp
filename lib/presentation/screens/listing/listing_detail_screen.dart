@@ -266,7 +266,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               Icon(
                 isSubscriptionError ? Icons.workspace_premium_rounded : Icons.signal_wifi_off_rounded,
                 size: 64,
-                color: isSubscriptionError ? AppColors.wave500 : AppColors.navy300,
+                color: isSubscriptionError ? AppColors.accent500 : AppColors.primary300,
               ),
               const SizedBox(height: 16),
               Text(
@@ -277,7 +277,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               Text(
                 message,
                 style:
-                    AppTextStyles.bodyMedium.copyWith(color: AppColors.navy500),
+                    AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -291,7 +291,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                   icon: const Icon(Icons.star, size: 18),
                   label: const Text('Upgrade Now'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.wave500,
+                    backgroundColor: AppColors.accent500,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                     shape: RoundedRectangleBorder(
@@ -335,14 +335,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.home_outlined, size: 64, color: AppColors.navy300),
+              Icon(Icons.home_outlined, size: 64, color: AppColors.primary300),
               const SizedBox(height: 16),
               Text(l10n.listingsNotFound, style: AppTextStyles.title),
               const SizedBox(height: 8),
               Text(
                 l10n.listingsNotFoundSubtitle,
                 style:
-                    AppTextStyles.bodyMedium.copyWith(color: AppColors.navy500),
+                    AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -444,7 +444,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               imageUrl: images[index].imageUrl,
               fit: BoxFit.cover,
               placeholder: (_, __) => Container(
-                color: AppColors.navy100,
+                color: AppColors.primary100,
                 child: const Center(
                   child: CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -452,7 +452,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                 ),
               ),
               errorWidget: (_, __, ___) => Container(
-                color: AppColors.navy100,
+                color: AppColors.primary100,
                 child: const Icon(Icons.broken_image, size: 64),
               ),
             );
@@ -466,7 +466,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.black54,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               '${_currentImageIndex + 1}/${images.length}',
@@ -516,21 +516,21 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           listing.propertyType == PropertyType.house
               ? l10n.listingHouse.toUpperCase()
               : l10n.listingLand.toUpperCase(),
-          AppColors.navy900,
+          AppColors.primary900,
         ),
         if (listing.listingType == ListingType.sale)
           _buildBadge(l10n.listingForSale.toUpperCase(), AppColors.emerald600)
         else
-          _buildBadge(l10n.listingForRent.toUpperCase(), AppColors.wave600),
+          _buildBadge(l10n.listingForRent.toUpperCase(), AppColors.accent600),
         if (listing.isFeatured)
-          _buildBadge(l10n.listingFeatured.toUpperCase(), AppColors.wave500),
+          _buildBadge(l10n.listingFeatured.toUpperCase(), AppColors.accent500),
         if (listing.isNew)
           _buildBadge(l10n.listingNew.toUpperCase(), Colors.amber[700]!),
         // Photo count badge
         if (listing.imageCount != null && listing.imageCount! > 0)
           _buildBadge(
             l10n.listingPhotosCount(listing.imageCount!),
-            AppColors.navy700,
+            AppColors.primary700,
           ),
         // Total rooms count badge (for houses only)
         if (listing.propertyType == PropertyType.house && totalRooms > 0)
@@ -569,13 +569,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
     return Row(
       children: [
-        const Icon(Icons.location_on, size: 18, color: AppColors.wave500),
+        const Icon(Icons.location_on, size: 18, color: AppColors.accent500),
         const SizedBox(width: 4),
         Expanded(
           child: Text(
             location,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.navy600,
+              color: AppColors.primary600,
             ),
           ),
         ),
@@ -679,13 +679,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: context.cardBg,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(color: context.divider.withOpacity(0.5)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppColors.wave500),
+          Icon(icon, size: 16, color: AppColors.accent500),
           const SizedBox(width: 6),
           Text(
             label,
@@ -711,7 +711,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               ? listing.description!
               : l10n.listingsNoDescription,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.navy700,
+            color: AppColors.primary700,
             height: 1.6,
           ),
         ),
@@ -882,7 +882,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                         Text(
                           detail['label']!,
                           style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.navy500,
+                            color: AppColors.primary500,
                           ),
                         ),
                         Text(
@@ -916,7 +916,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               const Icon(
                 Icons.videocam,
                 size: 20,
-                color: AppColors.wave500,
+                color: AppColors.accent500,
               ),
               const SizedBox(width: 8),
               Text(
@@ -958,7 +958,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           content: Text(
             isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded,
           ),
-          backgroundColor: success ? AppColors.wave500 : AppColors.error,
+          backgroundColor: success ? AppColors.accent500 : AppColors.error,
         ),
       );
     }
@@ -1037,8 +1037,8 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.navy900 : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: isDark ? AppColors.primary900 : Colors.white,
+        borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -1060,8 +1060,8 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                     label: Text(l10n.commonEdit),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: BorderSide(color: AppColors.navy600),
-                      foregroundColor: isDark ? AppColors.navy300 : AppColors.navy600,
+                      side: BorderSide(color: AppColors.primary600),
+                      foregroundColor: isDark ? AppColors.primary300 : AppColors.primary600,
                     ),
                   ),
                 ),
@@ -1093,8 +1093,8 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                     label: Text(l10n.listingsImInterested),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: const BorderSide(color: AppColors.wave500),
-                      foregroundColor: AppColors.wave600,
+                      side: const BorderSide(color: AppColors.accent500),
+                      foregroundColor: AppColors.accent600,
                     ),
                   ),
                 ),

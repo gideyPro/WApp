@@ -138,7 +138,7 @@ class _SubscriptionPlansScreenState
                       Text(
                         l10n.subscriptionsSelectPlanSubtitle,
                         style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.navy600,
+                          color: AppColors.primary600,
                         ),
                       ),
                     ],
@@ -180,8 +180,8 @@ class _SubscriptionPlansScreenState
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: AppColors.gradientWave,
-        borderRadius: BorderRadius.circular(16),
+        gradient: AppColors.gradientAccent,
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,7 +297,7 @@ class _SubscriptionPlansScreenState
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.zinc100,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(color: AppColors.zinc300),
       ),
       child: Column(
@@ -314,7 +314,7 @@ class _SubscriptionPlansScreenState
               Text(
                 '${sub.statusLabel} Plan: ${localPlan?.name ?? l10n.commonUnknown}',
                 style: AppTextStyles.title.copyWith(
-                  color: AppColors.navy900,
+                  color: AppColors.primary900,
                   fontSize: 15,
                 ),
               ),
@@ -365,7 +365,7 @@ class _SubscriptionPlansScreenState
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -566,7 +566,7 @@ class _SubscriptionPlansScreenState
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: AppColors.zinc100,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -587,7 +587,7 @@ class _SubscriptionPlansScreenState
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(4),
           boxShadow: isSelected
               ? [
                   BoxShadow(
@@ -601,7 +601,7 @@ class _SubscriptionPlansScreenState
         child: Text(
           currency,
           style: TextStyle(
-            color: isSelected ? AppColors.wave600 : AppColors.zinc600,
+            color: isSelected ? AppColors.accent600 : AppColors.zinc600,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             fontSize: 13,
           ),
@@ -640,13 +640,13 @@ class _PlanCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.borderRadiusLg),
         border: Border.all(
           color: isCurrentPlan
-              ? AppColors.wave400
+              ? AppColors.accent400
               : isPopular
-                  ? AppColors.wave200
+                  ? AppColors.accent200
                   : AppColors.zinc200,
           width: isCurrentPlan || isPopular ? 2 : 1,
         ),
-        boxShadow: isCurrentPlan || isPopular ? AppColors.shadowWave : AppColors.shadowSm,
+        boxShadow: isCurrentPlan || isPopular ? AppColors.shadowAccent : AppColors.shadowSm,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -655,9 +655,9 @@ class _PlanCard extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: isCurrentPlan
-                  ? AppColors.wave50
+                  ? AppColors.accent50
                   : isPopular
-                      ? AppColors.wave50
+                      ? AppColors.accent50
                       : Colors.transparent,
               borderRadius:
                   BorderRadius.vertical(top: Radius.circular(AppSpacing.borderRadiusLg)),
@@ -677,8 +677,8 @@ class _PlanCard extends StatelessWidget {
                             plan.name,
                             style: AppTextStyles.title.copyWith(
                               color: isCurrentPlan
-                                  ? AppColors.wave700
-                                  : AppColors.navy900,
+                                  ? AppColors.accent700
+                                  : AppColors.primary900,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                             ),
@@ -701,7 +701,7 @@ class _PlanCard extends StatelessWidget {
                       Text(
                         plan.description ?? '',
                         style: AppTextStyles.caption.copyWith(
-                          color: AppColors.navy600,
+                          color: AppColors.primary600,
                         ),
                       ),
                     ],
@@ -714,13 +714,13 @@ class _PlanCard extends StatelessWidget {
                     Text(
                       plan.getDisplayPrice(selectedCurrency),
                       style: AppTextStyles.headline3.copyWith(
-                        color: isCurrentPlan ? AppColors.wave600 : AppColors.navy900,
+                        color: isCurrentPlan ? AppColors.accent600 : AppColors.primary900,
                       ),
                     ),
                     Text(
                       plan.durationLabel,
                       style: AppTextStyles.caption.copyWith(
-                        color: AppColors.navy500,
+                        color: AppColors.primary500,
                       ),
                     ),
                   ],
@@ -758,7 +758,7 @@ class _PlanCard extends StatelessWidget {
                   Text(
                     l10n.subscriptionsFeatures,
                     style: AppTextStyles.titleSmall.copyWith(
-                      color: AppColors.navy800,
+                      color: AppColors.primary800,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -769,13 +769,13 @@ class _PlanCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(Icons.check_circle,
-                                size: 16, color: AppColors.wave500),
+                                size: 16, color: AppColors.accent500),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
                                 feature,
                                 style: AppTextStyles.bodySmall.copyWith(
-                                  color: AppColors.navy700,
+                                  color: AppColors.primary700,
                                 ),
                               ),
                             ),
@@ -824,13 +824,13 @@ class _PlanCard extends StatelessWidget {
         Icon(
           icon,
           size: 18,
-          color: included ? AppColors.wave600 : AppColors.zinc400,
+          color: included ? AppColors.accent600 : AppColors.zinc400,
         ),
         const SizedBox(width: 8),
         Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: included ? AppColors.navy700 : AppColors.zinc500,
+            color: included ? AppColors.primary700 : AppColors.zinc500,
             fontWeight: included ? FontWeight.w500 : FontWeight.normal,
           ),
         ),

@@ -24,7 +24,7 @@ class WaveBottomNav extends StatelessWidget {
         color: context.theme.bottomNav,
         boxShadow: [
           BoxShadow(
-            color: AppColors.navy950.withOpacity(0.1),
+            color: AppColors.primary700.withOpacity(0.1),
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -91,14 +91,14 @@ class WaveBottomNav extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.wave50.withOpacity(0.5)
+                  ? AppColors.accent50.withOpacity(0.5)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
             ),
             child: Icon(
               isSelected ? activeIcon : icon,
               size: 24,
-              color: isSelected ? AppColors.wave600 : AppColors.navy400,
+              color: isSelected ? AppColors.accent600 : AppColors.primary400,
             ),
           ),
           const SizedBox(height: 4),
@@ -139,7 +139,7 @@ class WaveLoadingIndicator extends StatelessWidget {
             child: CircularProgressIndicator(
               strokeWidth: 3,
               valueColor: AlwaysStoppedAnimation<Color>(
-                color ?? AppColors.wave500,
+                color ?? AppColors.accent500,
               ),
             ),
           ),
@@ -185,13 +185,13 @@ class WaveEmptyState extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.navy50,
+                color: AppColors.primary50,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
                 size: 40,
-                color: AppColors.navy400,
+                color: AppColors.primary400,
               ),
             ),
             const SizedBox(height: 24),
@@ -232,7 +232,7 @@ class WaveToast {
     _showToast(
       context,
       message,
-      AppColors.emerald600,
+      AppColors.accent600,
       Icons.check_circle_rounded,
     );
   }
@@ -250,7 +250,7 @@ class WaveToast {
     _showToast(
       context,
       message,
-      AppColors.navy900,
+      AppColors.primary600,
       Icons.info_outline_rounded,
     );
   }
@@ -352,9 +352,9 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: MediaQuery.of(context).padding.bottom + 32,
-      left: 16,
+      top: MediaQuery.of(context).padding.top + 80,
       right: 16,
+      left: 16,
       child: SlideTransition(
         position: _offsetAnimation,
         child: FadeTransition(
@@ -362,28 +362,57 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
           child: Material(
             color: Colors.transparent,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              constraints: const BoxConstraints(maxWidth: 400),
               decoration: BoxDecoration(
-                color: widget.bgColor,
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.white.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: Colors.white.withOpacity(0.8)),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.bgColor.withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
+                    color: AppColors.primary700.withOpacity(0.16),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: Row(
                 children: [
-                  Icon(widget.icon, color: Colors.white, size: 24),
+                  Container(
+                    width: 4,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: widget.bgColor,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        bottomLeft: Radius.circular(4),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Icon(widget.icon, color: widget.bgColor, size: 20),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      widget.message,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      child: Text(
+                        widget.message,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.primary800,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        _controller.reverse().then((_) => widget.onDismiss());
+                      },
+                      child: Icon(
+                        Icons.close,
+                        size: 16,
+                        color: AppColors.primary400,
                       ),
                     ),
                   ),
@@ -583,8 +612,8 @@ class WaveMessageScreen extends StatelessWidget {
     final style = type == WaveMessageType.custom
         ? _MessageStyle(
             icon: customIcon ?? Icons.help_outline,
-            iconBg: (customIconColor ?? AppColors.navy500).withValues(alpha: 0.12),
-            iconColor: customIconColor ?? AppColors.navy500,
+            iconBg: (customIconColor ?? AppColors.primary500).withValues(alpha: 0.12),
+            iconColor: customIconColor ?? AppColors.primary500,
           )
         : _typeStyles[type]!;
 
@@ -607,7 +636,7 @@ class WaveMessageScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
       body: Stack(
         children: [
           if (showBackButton)
@@ -635,7 +664,7 @@ class WaveMessageScreen extends StatelessWidget {
     BuildContext context,
     bool isDark,
   ) {
-    final cardBg = isDark ? AppColors.navy900 : Colors.white;
+    final cardBg = isDark ? AppColors.primary800 : Colors.white;
     final shadow = isDark
         ? [
             BoxShadow(
@@ -652,7 +681,7 @@ class WaveMessageScreen extends StatelessWidget {
       padding: EdgeInsets.all(isEmbedded ? 24 : 32),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(isEmbedded ? 20 : 24),
+        borderRadius: BorderRadius.circular(isEmbedded ? 4 : 4),
         boxShadow: shadow,
         border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.05)) : null,
       ),
@@ -711,10 +740,10 @@ class WaveMessageScreen extends StatelessWidget {
         child: Text(
           'Dismiss',
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.wave600,
+            color: AppColors.accent600,
             fontWeight: FontWeight.w600,
             decoration: TextDecoration.underline,
-            decorationColor: AppColors.wave600.withValues(alpha: 0.5),
+            decorationColor: AppColors.accent600.withValues(alpha: 0.5),
           ),
         ),
       );
@@ -732,16 +761,16 @@ class WaveMessageScreen extends StatelessWidget {
           Icon(
             Icons.refresh_rounded,
             size: 18,
-            color: AppColors.wave600,
+            color: AppColors.accent600,
           ),
           const SizedBox(width: 6),
           Text(
             label,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.wave600,
+              color: AppColors.accent600,
               fontWeight: FontWeight.w600,
               decoration: TextDecoration.underline,
-              decorationColor: AppColors.wave600.withValues(alpha: 0.5),
+              decorationColor: AppColors.accent600.withValues(alpha: 0.5),
             ),
           ),
         ],
@@ -758,7 +787,7 @@ class WaveMessageScreen extends StatelessWidget {
           color: isDark
               ? Colors.white.withValues(alpha: 0.08)
               : Colors.black.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Icon(
           Icons.arrow_back_ios_new,
@@ -787,7 +816,7 @@ class WaveDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     if (text == null) {
       return Divider(
-        color: color ?? AppColors.zinc200,
+        color: color ?? AppColors.primary200,
         thickness: thickness,
       );
     }
@@ -796,7 +825,7 @@ class WaveDivider extends StatelessWidget {
       children: [
         Expanded(
           child: Divider(
-            color: color ?? AppColors.zinc200,
+            color: color ?? AppColors.primary200,
             thickness: thickness,
           ),
         ),
@@ -809,7 +838,7 @@ class WaveDivider extends StatelessWidget {
         ),
         Expanded(
           child: Divider(
-            color: color ?? AppColors.zinc200,
+            color: color ?? AppColors.primary200,
             thickness: thickness,
           ),
         ),
@@ -855,7 +884,7 @@ class WaveSectionHeader extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [AppColors.wave500, AppColors.wave600],
+                          colors: [AppColors.primary500, AppColors.primary600],
                         ),
                         borderRadius: BorderRadius.circular(2),
                       ),
@@ -877,7 +906,7 @@ class WaveSectionHeader extends StatelessWidget {
                     child: Text(
                       subtitle!,
                       style: AppTextStyles.caption.copyWith(
-                        color: AppColors.navy400,
+                        color: AppColors.primary400,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -890,9 +919,9 @@ class WaveSectionHeader extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.wave50,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.wave200),
+                color: AppColors.primary50,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: AppColors.primary200),
               ),
               child: TextButton(
                 onPressed: onAction,
@@ -905,7 +934,7 @@ class WaveSectionHeader extends StatelessWidget {
                   actionLabel!,
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.wave700,
+                    color: AppColors.primary700,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -35,7 +35,7 @@ class ListingStepIndicator extends StatelessWidget {
           LinearProgressIndicator(
             value: (currentStep + 1) / 4,
             backgroundColor: context.divider,
-            valueColor: AlwaysStoppedAnimation<Color>(context.isDarkMode ? AppColors.wave400 : AppColors.navy950),
+            valueColor: AlwaysStoppedAnimation<Color>(context.isDarkMode ? AppColors.accent400 : AppColors.navy950),
             minHeight: 6,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -55,7 +55,7 @@ class ListingStepIndicator extends StatelessWidget {
                       height: 28,
                       decoration: BoxDecoration(
                         color: isCompleted || isCurrent
-                            ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
+                            ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
                             : context.divider,
                         shape: BoxShape.circle,
                       ),
@@ -82,7 +82,7 @@ class ListingStepIndicator extends StatelessWidget {
                           fontWeight:
                               isCurrent ? FontWeight.w700 : FontWeight.w500,
                           color: isCurrent 
-                              ? (context.isDarkMode ? AppColors.wave400 : AppColors.navy950) 
+                              ? (context.isDarkMode ? AppColors.accent400 : AppColors.navy950) 
                               : context.textMuted,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -643,7 +643,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     final isSelected = groupValue == value;
     final isEnabled = onChanged != null;
     final bgColor = isSelected
-        ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
+        ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
         : context.cardBg;
 
     return Expanded(
@@ -656,7 +656,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
                 color: isSelected
-                    ? (context.isDarkMode ? AppColors.wave500 : AppColors.navy950)
+                    ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
                     : context.divider,
                 width: 1.5),
           ),
@@ -664,14 +664,14 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon,
-                  color: isSelected ? Colors.white : AppColors.navy600,
+                  color: isSelected ? Colors.white : AppColors.primary600,
                   size: 20),
               const SizedBox(width: 6),
               Text(label,
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : AppColors.navy800)),
+                      color: isSelected ? Colors.white : AppColors.primary800)),
             ],
           ),
         ),
@@ -684,15 +684,15 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-          color: AppColors.navy50,
+          color: AppColors.primary50,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.navy100)),
+          border: Border.all(color: AppColors.primary100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(l10n.listingFreeHoldDetails,
               style: AppTextStyles.labelMedium.copyWith(
-                  color: AppColors.navy700, fontWeight: FontWeight.w600)),
+                  color: AppColors.primary700, fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -816,15 +816,15 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-          color: AppColors.wave50,
+          color: AppColors.accent50,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.wave100)),
+          border: Border.all(color: AppColors.accent100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(l10n.listingCooperativeDetails,
               style: AppTextStyles.labelMedium.copyWith(
-                  color: AppColors.wave700, fontWeight: FontWeight.w600)),
+                  color: AppColors.accent700, fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -1230,8 +1230,8 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       label: Text(label),
       selected: isSelected,
       onSelected: onChanged,
-      selectedColor: AppColors.wave100,
-      checkmarkColor: AppColors.wave600,
+      selectedColor: AppColors.accent100,
+      checkmarkColor: AppColors.accent600,
     );
   }
 }
@@ -1357,10 +1357,10 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                   Icon(Icons.add_photo_alternate,
-                      size: 32, color: AppColors.navy400),
+                      size: 32, color: AppColors.primary400),
                   const SizedBox(height: 8),
                   Text(l10n.listingTapToAdd,
-                      style: const TextStyle(color: AppColors.navy400)),
+                      style: const TextStyle(color: AppColors.primary400)),
                 ])),
           ),
         ),
@@ -1477,7 +1477,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Row(
               children: [
-                const Icon(Icons.video_collection, color: AppColors.navy400),
+                const Icon(Icons.video_collection, color: AppColors.primary400),
                 const SizedBox(width: 8),
                 Expanded(
                     child: Text(
@@ -1618,15 +1618,15 @@ class ListingStep4Review extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: AppColors.navy50,
+          color: AppColors.primary50,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppColors.navy100)),
+          border: Border.all(color: AppColors.primary100)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
               style:
-                  AppTextStyles.labelSmall.copyWith(color: AppColors.navy500)),
+                  AppTextStyles.labelSmall.copyWith(color: AppColors.primary500)),
           const SizedBox(height: 4),
           Expanded(
               child: Text(content,

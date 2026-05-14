@@ -21,11 +21,11 @@ class WaveCard extends StatelessWidget {
     super.key,
     required this.child,
     this.onTap,
-    this.borderRadius = AppSpacing.borderRadiusXxl,
+    this.borderRadius = AppSpacing.borderRadiusSm,
     this.color,
     this.showBorder = true,
     this.showShadow = true,
-    this.isGlass = false,
+    this.isGlass = true,
     this.padding,
     this.margin,
     this.clipBehavior = Clip.antiAlias,
@@ -34,7 +34,7 @@ class WaveCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     Widget content = Container(
       padding: padding,
       child: child,
@@ -44,7 +44,7 @@ class WaveCard extends StatelessWidget {
       content = ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
             padding: padding,
             decoration: BoxDecoration(
@@ -65,13 +65,13 @@ class WaveCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         border: showBorder && !isGlass
             ? Border.all(
-                color: isDark 
-                  ? Colors.white.withOpacity(0.05) 
-                  : const Color(0xFFF1F5F9)
+                color: isDark
+                    ? Colors.white.withOpacity(0.05)
+                    : const Color(0xFFF1F5F9),
               )
             : null,
         boxShadow: showShadow && !isGlass
-            ? (isDark ? AppColors.shadowDarkPremium(AppColors.wave900) : AppColors.shadowPremium)
+            ? (isDark ? AppColors.shadowDarkPremium(AppColors.accent900) : AppColors.shadowPremium)
             : null,
       ),
       child: Material(

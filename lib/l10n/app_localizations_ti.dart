@@ -1505,4 +1505,50 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get paymentsGeneral => 'ክፍሊት';
+
+  @override
+  String get messageRetry => 'Try Again';
+
+  @override
+  String get messageGoBack => 'Go Back';
+
+  @override
+  String get messageDismiss => 'Dismiss';
+
+  @override
+  String get messageNetworkTitle => 'No Internet Connection';
+
+  @override
+  String get messageNetworkSubtitle => 'Check your connection and try again.';
+
+  @override
+  String get messageEmptyTitle => 'Nothing Here';
+
+  @override
+  String get messageEmptySubtitle => 'There\'s nothing to show right now.';
+
+  @override
+  String get messageErrorTitle => 'Something Went Wrong';
+
+  @override
+  String get messageErrorSubtitle => 'We couldn\'t complete your request.';
+
+  @override
+  String get messageSuccessTitle => 'Success!';
+
+  @override
+  String get messageSuccessSubtitle =>
+      'Your action was completed successfully.';
+
+  @override
+  String get messageInfoTitle => 'Info';
+
+  @override
+  String get messageInfoSubtitle => 'Here is some important information.';
+
+  @override
+  String get messageWarningTitle => 'Warning';
+
+  @override
+  String get messageWarningSubtitle => 'Please review this important message.';
 }

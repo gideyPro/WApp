@@ -165,7 +165,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       children: [
         Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.wave600),
+            Icon(icon, size: 20, color: AppColors.accent600),
             const SizedBox(width: 8),
             Text(title, style: AppTextStyles.titleSmall),
           ],
@@ -187,7 +187,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                     leading: const Icon(
                       Icons.article_outlined,
                       size: 20,
-                      color: AppColors.navy500,
+                      color: AppColors.primary500,
                     ),
                     title: Text(
                       article.title,
@@ -232,13 +232,13 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.wave50,
+              color: AppColors.accent50,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               Icons.article_outlined,
               size: 20,
-              color: AppColors.wave600,
+              color: AppColors.accent600,
             ),
           ),
           title: Text(
@@ -263,8 +263,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: AppColors.gradientWave,
-        borderRadius: BorderRadius.circular(16),
+        gradient: AppColors.gradientAccent,
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -383,7 +383,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       article.content,
                       style: AppTextStyles.bodyMedium.copyWith(
                         height: 1.8,
-                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : AppColors.navy700,
+                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : AppColors.primary700,
                       ),
                     ),
                   ],

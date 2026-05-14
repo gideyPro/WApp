@@ -2937,6 +2937,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Payment'**
   String get paymentsGeneral;
+
+  /// No description provided for @messageRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get messageRetry;
+
+  /// No description provided for @messageGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get messageGoBack;
+
+  /// No description provided for @messageDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get messageDismiss;
+
+  /// No description provided for @messageNetworkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Internet Connection'**
+  String get messageNetworkTitle;
+
+  /// No description provided for @messageNetworkSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again.'**
+  String get messageNetworkSubtitle;
+
+  /// No description provided for @messageEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing Here'**
+  String get messageEmptyTitle;
+
+  /// No description provided for @messageEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'There\'s nothing to show right now.'**
+  String get messageEmptySubtitle;
+
+  /// No description provided for @messageErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something Went Wrong'**
+  String get messageErrorTitle;
+
+  /// No description provided for @messageErrorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t complete your request.'**
+  String get messageErrorSubtitle;
+
+  /// No description provided for @messageSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Success!'**
+  String get messageSuccessTitle;
+
+  /// No description provided for @messageSuccessSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your action was completed successfully.'**
+  String get messageSuccessSubtitle;
+
+  /// No description provided for @messageInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get messageInfoTitle;
+
+  /// No description provided for @messageInfoSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Here is some important information.'**
+  String get messageInfoSubtitle;
+
+  /// No description provided for @messageWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get messageWarningTitle;
+
+  /// No description provided for @messageWarningSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please review this important message.'**
+  String get messageWarningSubtitle;
 }
 
 class _AppLocalizationsDelegate

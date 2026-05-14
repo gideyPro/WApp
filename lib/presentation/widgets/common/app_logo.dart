@@ -35,7 +35,7 @@ class AppLogo extends StatelessWidget {
         child: Image.asset(
           'assets/images/app_icon.png',
           fit: BoxFit.contain,
-          color: AppColors.navy500,
+          color: AppColors.primary500,
         ),
       ),
     );
@@ -62,15 +62,15 @@ class GlassLogoContainer extends StatelessWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: AppColors.navy500,
+            color: AppColors.primary500,
             borderRadius: BorderRadius.circular(size * 0.24),
             border: Border.all(
-              color: AppColors.navy400.withOpacity(0.3),
+              color: AppColors.primary400.withOpacity(0.3),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.navy700.withOpacity(0.3),
+                color: AppColors.primary700.withOpacity(0.3),
                 blurRadius: 20,
                 spreadRadius: 2,
               ),

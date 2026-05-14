@@ -213,7 +213,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.navy950 : Colors.white,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
+        backgroundColor: isDark ? AppColors.primary900 : Colors.white,
         title: Text(AppLocalizations.of(context).jitsiCallTitle),
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -226,7 +226,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
                   value: _progress,
                   backgroundColor: Colors.white,
                   valueColor:
-                      const AlwaysStoppedAnimation<Color>(AppColors.wave500),
+                      const AlwaysStoppedAnimation<Color>(AppColors.accent500),
                 ),
               )
             : null,
@@ -246,13 +246,13 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.wave500),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent500),
           ),
           const SizedBox(height: 24),
           Text(
             'Setting up call...',
             style: AppTextStyles.bodyLarge.copyWith(
-              color: isDark ? Colors.white : AppColors.navy900,
+              color: isDark ? Colors.white : AppColors.primary900,
             ),
           ),
         ],
@@ -274,7 +274,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
               _errorMessage ?? AppLocalizations.of(context).commonError,
               textAlign: TextAlign.center,
               style: AppTextStyles.bodyLarge.copyWith(
-                color: isDark ? Colors.white : AppColors.navy900,
+                color: isDark ? Colors.white : AppColors.primary900,
               ),
             ),
             const SizedBox(height: 24),

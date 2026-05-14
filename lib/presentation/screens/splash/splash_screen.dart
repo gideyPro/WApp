@@ -195,7 +195,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           height: 20,
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.wave500),
+                                AppColors.accent500),
                             strokeWidth: 2.5,
                           ),
                         ),

@@ -26,9 +26,9 @@ class ProfileScreen extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
+        backgroundColor: isDark ? AppColors.primary900 : Colors.white,
         title: Text(l10n.profileTitle),
       ),
       body: RefreshIndicator(
@@ -138,7 +138,7 @@ class ProfileScreen extends ConsumerWidget {
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: AppColors.wave500,
+            color: AppColors.accent500,
             borderRadius: BorderRadius.circular(18),
           ),
             child: Center(
@@ -263,16 +263,16 @@ class ProfileScreen extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.navy900 : Colors.white,
+          color: isDark ? AppColors.primary900 : Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isDark ? AppColors.navy800 : AppColors.zinc200),
+          border: Border.all(color: isDark ? AppColors.primary800 : AppColors.zinc200),
         ),
         child: Column(
           children: [
             Text(
               value,
               style: AppTextStyles.headline4.copyWith(
-                color: AppColors.wave600,
+                color: AppColors.accent600,
               ),
             ),
             const SizedBox(height: 4),
@@ -333,13 +333,13 @@ class ProfileScreen extends ConsumerWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.navy50,
+              color: AppColors.primary50,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               item.icon,
               size: 20,
-              color: AppColors.navy600,
+              color: AppColors.primary600,
             ),
           ),
           title: Text(
@@ -359,13 +359,13 @@ class ProfileScreen extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.wave100,
+                    color: AppColors.accent100,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     item.badge!,
                     style: AppTextStyles.labelSmall.copyWith(
-                      color: AppColors.wave700,
+                      color: AppColors.accent700,
                     ),
                   ),
                 ),

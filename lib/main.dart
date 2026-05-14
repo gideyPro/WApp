@@ -60,7 +60,7 @@ void main() async {
   await Hive.openBox('listing_drafts');
   await Hive.openBox('app_preferences');
 
-  // Disable google_fonts runtime fetching - fonts are bundled locally
+  // Fonts are bundled locally in assets/fonts/
   GoogleFonts.config.allowRuntimeFetching = false;
 
   // Global error handler for crash logging

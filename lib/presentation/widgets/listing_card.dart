@@ -46,8 +46,8 @@ class PropertyListingCard extends ConsumerWidget {
 
     return WaveCard(
       onTap: _handleTap,
-      margin: const EdgeInsets.only(bottom: AppSpacing.xl),
-      borderRadius: AppSpacing.borderRadiusXxl,
+      margin: const EdgeInsets.only(bottom: 16),
+      borderRadius: 4,
       padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +55,7 @@ class PropertyListingCard extends ConsumerWidget {
           _buildImageSection(context),
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xl),
+                AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -92,8 +92,8 @@ class PropertyListingCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.zinc200),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: AppColors.primary200),
         boxShadow: AppColors.shadowMd,
       ),
       child: Shimmer.fromColors(
@@ -105,7 +105,7 @@ class PropertyListingCard extends ConsumerWidget {
             // Image skeleton
             ClipRRect(
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+                  const BorderRadius.vertical(top: Radius.circular(4)),
               child: AspectRatio(
                 aspectRatio: 4 / 3,
                 child: Container(
@@ -122,17 +122,15 @@ class PropertyListingCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Price skeleton
                   Container(
                     height: 22,
                     width: 130,
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Title skeleton
                   Container(
                     height: 16,
                     width: double.infinity,
@@ -142,7 +140,6 @@ class PropertyListingCard extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  // Description line 1
                   Container(
                     height: 14,
                     width: 200,
@@ -152,7 +149,6 @@ class PropertyListingCard extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  // Description line 2
                   Container(
                     height: 14,
                     width: 150,
@@ -162,7 +158,6 @@ class PropertyListingCard extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Location skeleton
                   Container(
                     height: 14,
                     width: 180,
@@ -172,7 +167,6 @@ class PropertyListingCard extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  // Date posted
                   Container(
                     height: 12,
                     width: 70,
@@ -182,7 +176,6 @@ class PropertyListingCard extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Features skeleton
                   Row(
                     children: [
                       _skeletonChip(55),
@@ -207,7 +200,7 @@ class PropertyListingCard extends ConsumerWidget {
       width: width,
       decoration: BoxDecoration(
         color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(4),
       ),
     );
   }
@@ -220,7 +213,7 @@ class PropertyListingCard extends ConsumerWidget {
         Hero(
           tag: 'listing_image_${listing?.id}',
           child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
             child: AspectRatio(
               aspectRatio: 4 / 3,
               child: CachedNetworkImage(
@@ -241,11 +234,11 @@ class PropertyListingCard extends ConsumerWidget {
                   ),
                 ),
                 errorWidget: (_, __, ___) => Container(
-                  color: AppColors.navy100,
+                  color: AppColors.primary100,
                   child: const Icon(
                     Icons.home_outlined,
                     size: 64,
-                    color: AppColors.navy300,
+                    color: AppColors.primary300,
                   ),
                 ),
                 imageBuilder: (context, imageProvider) => Stack(
@@ -258,6 +251,25 @@ class PropertyListingCard extends ConsumerWidget {
                         ),
                       ),
                     ),
+                    // Gradient overlay (web style)
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 80,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.6),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -267,16 +279,16 @@ class PropertyListingCard extends ConsumerWidget {
 
         // Badges Overlay
         Positioned(
-          top: AppSpacing.md,
-          left: AppSpacing.md,
+          top: AppSpacing.sm,
+          left: AppSpacing.sm,
           child: Row(
             children: [
               if (listing?.isNew ?? false)
-                _buildBadge(l10n.listingNew, AppColors.emerald500),
+                _buildBadge(l10n.listingNew, AppColors.primary600),
               if (listing?.isFeatured ?? false)
                 Padding(
                   padding: const EdgeInsets.only(left: AppSpacing.xs),
-                  child: _buildBadge(l10n.listingFeatured, AppColors.wave500),
+                  child: _buildBadge(l10n.listingFeatured, AppColors.accent600),
                 ),
             ],
           ),
@@ -285,8 +297,8 @@ class PropertyListingCard extends ConsumerWidget {
         // Favorite Button
         if (!hideFavoriteButton)
           Positioned(
-            top: AppSpacing.md,
-            right: AppSpacing.md,
+            top: AppSpacing.sm,
+            right: AppSpacing.sm,
             child: GestureDetector(
               onTap: isTogglingFavorite ? null : onFavorite,
               child: Container(
@@ -326,8 +338,8 @@ class PropertyListingCard extends ConsumerWidget {
         // Image Count Badge
         if ((listing?.imageCount ?? 0) > 1)
           Positioned(
-            top: AppSpacing.md,
-            right: AppSpacing.xl + 32,
+            top: AppSpacing.sm,
+            right: AppSpacing.md + 36,
             child: WaveGlass(
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
@@ -347,10 +359,10 @@ class PropertyListingCard extends ConsumerWidget {
             ),
           ),
 
-        // Property Type Badge
+        // Property Type Badge (bottom-left, glass overlay)
         Positioned(
-          bottom: AppSpacing.md,
-          left: AppSpacing.md,
+          bottom: AppSpacing.sm,
+          left: AppSpacing.sm,
           child: WaveGlass(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs),
@@ -413,7 +425,7 @@ class PropertyListingCard extends ConsumerWidget {
     }
     return Text(
       description,
-      style: AppTextStyles.bodySmall.copyWith(color: AppColors.zinc600),
+      style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary600),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );
@@ -430,7 +442,7 @@ class PropertyListingCard extends ConsumerWidget {
         const Icon(
           Icons.location_on_outlined,
           size: 14,
-          color: AppColors.wave500,
+          color: AppColors.primary500,
         ),
         const SizedBox(width: 4),
         Expanded(
@@ -465,11 +477,11 @@ class PropertyListingCard extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.access_time, size: 12, color: AppColors.zinc400),
+        const Icon(Icons.access_time, size: 12, color: AppColors.primary300),
         const SizedBox(width: 4),
         Text(
           dateText,
-          style: AppTextStyles.caption.copyWith(color: AppColors.zinc500),
+          style: AppTextStyles.caption.copyWith(color: AppColors.primary500),
         ),
       ],
     );
@@ -504,7 +516,7 @@ class PropertyListingCard extends ConsumerWidget {
         Icon(
           Icons.visibility_outlined,
           size: 16,
-          color: AppColors.zinc400,
+          color: AppColors.primary400,
         ),
         const SizedBox(width: 4),
         Text(
@@ -519,7 +531,7 @@ class PropertyListingCard extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: AppColors.navy500),
+        Icon(icon, size: 14, color: AppColors.primary500),
         const SizedBox(width: 4),
         Text(
           label,
@@ -565,7 +577,7 @@ class FeaturedListingCard extends ConsumerWidget {
     return WaveCard(
       onTap: _handleTap,
       margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 24,
+      borderRadius: 4,
       padding: EdgeInsets.zero,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -610,7 +622,7 @@ class FeaturedListingCard extends ConsumerWidget {
 
   Widget _buildImageSection() {
     return ClipRRect(
-      borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+      borderRadius: const BorderRadius.horizontal(left: Radius.circular(4)),
       child: SizedBox(
         width: 130,
         height: double.infinity,
@@ -629,16 +641,16 @@ class FeaturedListingCard extends ConsumerWidget {
                     child: const Icon(
                       Icons.home_rounded,
                       size: 32,
-                      color: AppColors.navy300,
+                      color: AppColors.primary300,
                     ),
                   ),
                 ),
                 errorWidget: (_, __, ___) => Container(
-                  color: AppColors.navy100,
+                  color: AppColors.primary100,
                   child: const Icon(
                     Icons.home_outlined,
                     size: 36,
-                    color: AppColors.navy300,
+                    color: AppColors.primary300,
                   ),
                 ),
               ),
@@ -690,8 +702,8 @@ class FeaturedListingCard extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(
-            color: AppColors.navy950,
-            borderRadius: BorderRadius.circular(6),
+            color: AppColors.primary600,
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -718,11 +730,11 @@ class FeaturedListingCard extends ConsumerWidget {
         ),
         const SizedBox(width: 6),
         if (listing?.isNew == true)
-          _buildBadge(l10n.listingNew, AppColors.emerald500),
+          _buildBadge(l10n.listingNew, AppColors.primary600),
         if (listing?.isFeatured == true)
           Padding(
             padding: const EdgeInsets.only(left: 4),
-            child: _buildBadge(l10n.listingFeatured, AppColors.wave500),
+            child: _buildBadge(l10n.listingFeatured, AppColors.accent600),
           ),
       ],
     );
@@ -767,7 +779,7 @@ class FeaturedListingCard extends ConsumerWidget {
       description,
       style: AppTextStyles.bodySmall.copyWith(
         fontSize: 11,
-        color: AppColors.zinc600,
+        color: AppColors.primary600,
       ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -782,7 +794,7 @@ class FeaturedListingCard extends ConsumerWidget {
         const Icon(
           Icons.location_on_outlined,
           size: 12,
-          color: AppColors.wave500,
+          color: AppColors.primary500,
         ),
         const SizedBox(width: 3),
         Expanded(
@@ -832,7 +844,7 @@ class FeaturedListingCard extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 13, color: AppColors.navy400),
+        Icon(icon, size: 13, color: AppColors.primary400),
         const SizedBox(width: 3),
         Text(
           label,
@@ -848,7 +860,7 @@ class FeaturedListingCard extends ConsumerWidget {
   Widget _buildSkeleton() {
     return WaveCard(
       margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 24,
+      borderRadius: 4,
       padding: EdgeInsets.zero,
       child: Shimmer.fromColors(
         baseColor: Colors.grey[200]!,
@@ -861,7 +873,7 @@ class FeaturedListingCard extends ConsumerWidget {
               flex: 2,
               child: ClipRRect(
                 borderRadius:
-                    const BorderRadius.horizontal(left: Radius.circular(16)),
+                    const BorderRadius.horizontal(left: Radius.circular(4)),
                 child: SizedBox(
                   width: 130,
                   height: double.infinity,
@@ -879,7 +891,6 @@ class FeaturedListingCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Badges
                     Row(
                       children: [
                         Container(
@@ -902,7 +913,6 @@ class FeaturedListingCard extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    // Price
                     Container(
                       height: 18,
                       width: 100,
@@ -912,7 +922,6 @@ class FeaturedListingCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    // Description
                     Container(
                       height: 12,
                       width: 120,
@@ -922,7 +931,6 @@ class FeaturedListingCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    // Location
                     Container(
                       height: 12,
                       width: 100,
@@ -932,7 +940,6 @@ class FeaturedListingCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // Features
                     Row(
                       children: [
                         Container(
@@ -940,7 +947,7 @@ class FeaturedListingCard extends ConsumerWidget {
                           height: 16,
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                         const SizedBox(width: 6),
@@ -949,7 +956,7 @@ class FeaturedListingCard extends ConsumerWidget {
                           height: 16,
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                       ],

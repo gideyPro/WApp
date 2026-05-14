@@ -78,12 +78,11 @@ flutter:
     - assets/lottie/
 
   fonts:
-    - family: Lora
+    - family: Cinzel
       fonts:
-        - asset: assets/fonts/lora/Lora-Regular.ttf
-        - asset: assets/fonts/lora/Lora-Bold.ttf
-    - family: Nunito
+        - asset: assets/fonts/cinzel/Cinzel-Variable.ttf
+          weight: 400
+    - family: Montserrat
       fonts:
-        - asset: assets/fonts/nunito/Nunito-Regular.ttf
-        - asset: assets/fonts/nunito/Nunito-SemiBold.ttf
-        - asset: assets/fonts/nunito/Nunito-Bold.ttf
+        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf
+          weight: 400

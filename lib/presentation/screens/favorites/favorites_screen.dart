@@ -38,7 +38,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context).favoritesRemoved),
-            backgroundColor: AppColors.wave500,
+            backgroundColor: AppColors.accent500,
           ),
         );
       }
@@ -66,7 +66,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
               child: Text(
                 '${state.favorites.length}',
                 style: AppTextStyles.labelMedium.copyWith(
-                  color: AppColors.wave600,
+                  color: AppColors.accent600,
                 ),
               ),
             ),

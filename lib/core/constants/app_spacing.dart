@@ -25,12 +25,15 @@ abstract class AppSpacing {
   static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
   static const EdgeInsets paddingVerticalLg = EdgeInsets.symmetric(vertical: lg);
 
-  static const double borderRadiusSm = 8;
-  static const double borderRadiusMd = 12;
-  static const double borderRadiusLg = 16;
-  static const double borderRadiusXl = 20;
-  static const double borderRadiusXxl = 24;
+  // Border radii matching web's rounded-sm (4px) as the base
+  static const double borderRadiusXs = 2;
+  static const double borderRadiusSm = 4;
+  static const double borderRadiusMd = 8;
+  static const double borderRadiusLg = 12;
+  static const double borderRadiusXl = 16;
+  static const double borderRadiusXxl = 20;
 
+  static const BorderRadius borderRadiusAllXs = BorderRadius.all(Radius.circular(borderRadiusXs));
   static const BorderRadius borderRadiusAllSm = BorderRadius.all(Radius.circular(borderRadiusSm));
   static const BorderRadius borderRadiusAllMd = BorderRadius.all(Radius.circular(borderRadiusMd));
   static const BorderRadius borderRadiusAllLg = BorderRadius.all(Radius.circular(borderRadiusLg));

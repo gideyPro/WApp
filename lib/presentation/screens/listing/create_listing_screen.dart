@@ -223,7 +223,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
               child: ElevatedButton(
                 onPressed: _isSubmitting ? null : _nextStep,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.wave500,
+                  backgroundColor: AppColors.accent500,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: _isSubmitting

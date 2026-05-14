@@ -6,7 +6,7 @@ import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 
 /// WaveMart Primary Button
-/// Gradient navy button with shadow effects
+/// Gradient accent button with shadow effects
 class WaveButton extends StatefulWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -125,7 +125,7 @@ class _WaveButtonState extends State<WaveButton> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(4),
               splashColor: _getSplashColor(),
               highlightColor: _getHighlightColor(),
               child: AnimatedContainer(
@@ -133,7 +133,7 @@ class _WaveButtonState extends State<WaveButton> {
                 decoration: BoxDecoration(
                   gradient: _isPressed ? null : _getGradient(),
                   color: _isPressed ? _getPressedColor() : _getBackgroundColor(),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(4),
                   boxShadow: _isPressed ? null : _getShadow(),
                 ),
                 child: Center(
@@ -180,7 +180,7 @@ class _WaveButtonState extends State<WaveButton> {
   LinearGradient? _getGradient() {
     switch (widget.variant) {
       case ButtonVariant.primary:
-        return AppColors.gradientNavy;
+        return AppColors.gradientAccent;
       case ButtonVariant.success:
         return AppColors.gradientEmerald;
       default:
@@ -213,7 +213,7 @@ class _WaveButtonState extends State<WaveButton> {
   Color _getBackgroundColor() {
     switch (widget.variant) {
       case ButtonVariant.secondary:
-        return AppColors.navy100;
+        return AppColors.accent100;
       case ButtonVariant.outline:
         return Colors.transparent;
       case ButtonVariant.ghost:
@@ -221,18 +221,18 @@ class _WaveButtonState extends State<WaveButton> {
       case ButtonVariant.danger:
         return AppColors.error;
       default:
-        return AppColors.navy950;
+        return AppColors.accent600;
     }
   }
 
   Color _getPressedColor() {
     switch (widget.variant) {
       case ButtonVariant.primary:
-        return AppColors.navy900;
+        return AppColors.accent700;
       case ButtonVariant.secondary:
-        return AppColors.navy200;
+        return AppColors.accent200;
       case ButtonVariant.outline:
-        return AppColors.zinc50;
+        return AppColors.primary50;
       case ButtonVariant.ghost:
         return Colors.transparent;
       case ButtonVariant.success:
@@ -245,10 +245,10 @@ class _WaveButtonState extends State<WaveButton> {
   Color _getTextColor() {
     switch (widget.variant) {
       case ButtonVariant.secondary:
-        return AppColors.navy700;
+        return AppColors.accent700;
       case ButtonVariant.outline:
       case ButtonVariant.ghost:
-        return AppColors.navy700;
+        return AppColors.primary700;
       default:
         return Colors.white;
     }
@@ -258,7 +258,7 @@ class _WaveButtonState extends State<WaveButton> {
     switch (widget.variant) {
       case ButtonVariant.outline:
       case ButtonVariant.ghost:
-        return AppColors.navy700;
+        return AppColors.primary700;
       default:
         return Colors.white;
     }
@@ -270,11 +270,11 @@ class _WaveButtonState extends State<WaveButton> {
       return [
         BoxShadow(
           color: (widget.variant == ButtonVariant.primary
-                  ? AppColors.navy950
+                  ? AppColors.accent600
                   : AppColors.emerald600)
-              .withOpacity(0.25),
-          blurRadius: 8,
-          offset: const Offset(0, 3),
+              .withOpacity(0.35),
+          blurRadius: 20,
+          offset: const Offset(0, 10),
         ),
       ];
     }
@@ -284,16 +284,16 @@ class _WaveButtonState extends State<WaveButton> {
   Color _getSplashColor() {
     switch (widget.variant) {
       case ButtonVariant.primary:
-        return AppColors.wave500.withOpacity(0.3);
+        return AppColors.accent500.withOpacity(0.3);
       case ButtonVariant.success:
         return AppColors.emerald500.withOpacity(0.3);
       default:
-        return AppColors.navy500.withOpacity(0.1);
+        return AppColors.primary500.withOpacity(0.1);
     }
   }
 
   Color _getHighlightColor() {
-    return AppColors.navy500.withOpacity(0.05);
+    return AppColors.primary500.withOpacity(0.05);
   }
 }
 
@@ -391,15 +391,15 @@ class WaveTextField extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: enabled
-                ? AppColors.zinc50.withOpacity(0.5)
-                : AppColors.zinc100,
-            borderRadius: BorderRadius.circular(isCompact ? 8 : AppSpacing.borderRadiusSm),
+                ? AppColors.primary50.withOpacity(0.5)
+                : AppColors.primary100,
+            borderRadius: BorderRadius.circular(isCompact ? 4 : AppSpacing.borderRadiusSm),
             border: Border.all(
               color: errorText != null
                   ? AppColors.error
                   : enabled
-                      ? AppColors.zinc300
-                      : AppColors.zinc200,
+                      ? AppColors.primary300
+                      : AppColors.primary200,
               width: 1,
             ),
           ),
@@ -416,13 +416,13 @@ class WaveTextField extends StatelessWidget {
             validator: validator,
             style: AppTextStyles.bodyMedium.copyWith(
               fontSize: fontSize,
-              color: enabled ? AppColors.zinc700 : AppColors.zinc400,
+              color: enabled ? AppColors.primary700 : AppColors.primary400,
             ),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: AppTextStyles.bodyMedium.copyWith(
                 fontSize: fontSize,
-                color: AppColors.navy400,
+                color: AppColors.primary400,
               ),
               prefixIcon: prefixIcon != null
                   ? Padding(
@@ -432,7 +432,7 @@ class WaveTextField extends StatelessWidget {
                         size: iconSize,
                         color: enabled
                             ? context.theme.textMuted.withOpacity(0.5)
-                            : AppColors.zinc300,
+                            : AppColors.primary300,
                       ),
                     )
                   : null,
@@ -489,7 +489,7 @@ class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final isLight = backgroundColor == Colors.white ||
-        backgroundColor == AppColors.background;
+        backgroundColor == AppColors.primary50;
 
     return AppBar(
       elevation: elevation,
@@ -541,7 +541,7 @@ class WaveBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: _getBackgroundColor(),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -570,13 +570,13 @@ class WaveBadge extends StatelessWidget {
   Color _getBackgroundColor() {
     switch (variant) {
       case BadgeVariant.newItem:
-        return AppColors.emerald500;
+        return AppColors.primary600;
       case BadgeVariant.featured:
-        return AppColors.wave500;
+        return AppColors.accent600;
       case BadgeVariant.sale:
-        return AppColors.emerald100;
+        return AppColors.accent100;
       case BadgeVariant.rent:
-        return AppColors.wave100;
+        return AppColors.primary100;
       case BadgeVariant.pending:
         return AppColors.warning;
       case BadgeVariant.error:
@@ -594,9 +594,9 @@ class WaveBadge extends StatelessWidget {
       case BadgeVariant.error:
         return Colors.white;
       case BadgeVariant.sale:
-        return AppColors.emerald700;
+        return AppColors.accent700;
       case BadgeVariant.rent:
-        return AppColors.wave700;
+        return AppColors.primary700;
       default:
         return AppColors.zinc700;
     }

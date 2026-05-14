@@ -94,7 +94,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.wave500),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent500),
           ),
         ),
       );
@@ -143,7 +143,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: context.isDarkMode ? Colors.white.withOpacity(0.08) : Colors.white,
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
@@ -225,7 +225,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       title,
       style: AppTextStyles.titleSmall.copyWith(
         fontWeight: FontWeight.w800,
-        color: AppColors.navy900,
+        color: AppColors.primary900,
       ),
     );
   }
@@ -257,7 +257,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               keyboardType: TextInputType.phone,
               style: TextStyle(
                 fontSize: 15,
-                color: isDark ? Colors.white : AppColors.navy900,
+                color: isDark ? Colors.white : AppColors.primary900,
               ),
             ),
           ),
@@ -292,7 +292,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               maxLength: 1,
               style: AppTextStyles.title.copyWith(
                 fontWeight: FontWeight.w800,
-                color: AppColors.navy900,
+                color: AppColors.primary900,
               ),
               decoration: InputDecoration(
                 counterText: '',
@@ -309,7 +309,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(borderRadius),
                   borderSide:
-                      const BorderSide(color: AppColors.wave500, width: 2),
+                      const BorderSide(color: AppColors.accent500, width: 2),
                 ),
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 2,
@@ -350,7 +350,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       child: Text(
         AppLocalizations.of(context).authResendOtp,
         style: TextStyle(
-          color: AppColors.wave600,
+          color: AppColors.accent600,
           fontWeight: FontWeight.w600,
           fontSize: 15,
         ),
@@ -366,7 +366,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         Text(
           l10n.authNoAccount,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.navy600,
+            color: AppColors.primary600,
           ),
         ),
         GestureDetector(
@@ -380,7 +380,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
           child: Text(
             l10n.authRegister,
             style: TextStyle(
-              color: AppColors.wave600,
+              color: AppColors.accent600,
               fontWeight: FontWeight.w600,
               fontSize: 15,
             ),

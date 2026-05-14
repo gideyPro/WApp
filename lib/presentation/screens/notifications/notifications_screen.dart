@@ -70,7 +70,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               child: Text(
                 l10n.notificationsMarkAllRead,
                 style: TextStyle(
-                  color: AppColors.wave600,
+                  color: AppColors.accent600,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -241,20 +241,20 @@ class _NotificationTile extends StatelessWidget {
       },
       onDismissed: (direction) => onDismissed(),
       child: Material(
-        color: notification.isRead ? context.theme.surface : (context.theme.isDark ? AppColors.navy800 : AppColors.wave50),
+        color: notification.isRead ? context.theme.surface : (context.theme.isDark ? AppColors.primary800 : AppColors.accent50),
         child: ListTile(
           leading: Container(
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: notification.isRead ? (context.theme.isDark ? AppColors.navy800 : AppColors.navy50) : (context.theme.isDark ? AppColors.wave900 : AppColors.wave100),
+              color: notification.isRead ? (context.theme.isDark ? AppColors.primary800 : AppColors.primary50) : (context.theme.isDark ? AppColors.accent900 : AppColors.accent100),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               notification.icon,
               size: 24,
                 color:
-                  notification.isRead ? context.theme.textSecondary : AppColors.wave600,
+                  notification.isRead ? context.theme.textSecondary : AppColors.accent600,
             ),
           ),
           title: Text(
@@ -292,7 +292,7 @@ class _NotificationTile extends StatelessWidget {
                   width: 8,
                   height: 8,
                   decoration: const BoxDecoration(
-                    color: AppColors.wave500,
+                    color: AppColors.accent500,
                     shape: BoxShape.circle,
                   ),
                 ),

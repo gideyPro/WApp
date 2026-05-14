@@ -94,9 +94,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : AppColors.zinc50,
+      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.navy900 : Colors.white,
+        backgroundColor: isDark ? AppColors.primary900 : Colors.white,
         title: Text(l10n.profileEdit),
       ),
       body: user == null
@@ -186,12 +186,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [AppColors.wave500, AppColors.wave600],
+                colors: [AppColors.accent500, AppColors.accent600],
               ),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.wave500.withOpacity(0.3),
+                  color: AppColors.accent500.withOpacity(0.3),
                   blurRadius: 16,
                   spreadRadius: 2,
                 ),

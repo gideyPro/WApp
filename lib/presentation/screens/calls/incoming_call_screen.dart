@@ -211,7 +211,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
               Text(
                 l10n.callIncoming,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.wave400,
+                  color: AppColors.accent400,
                 ),
               ),
               const Spacer(),
@@ -232,10 +232,10 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
       height: 140,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.wave600,
+        color: AppColors.accent600,
         boxShadow: [
           BoxShadow(
-            color: AppColors.wave600.withOpacity(0.4),
+            color: AppColors.accent600.withOpacity(0.4),
             blurRadius: 40,
             spreadRadius: 10,
           ),

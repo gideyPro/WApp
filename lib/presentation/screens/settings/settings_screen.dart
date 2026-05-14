@@ -284,7 +284,7 @@ const SizedBox(height: 24),
         Container(
           decoration: BoxDecoration(
             color: context.cardBg,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(color: context.divider.withOpacity(0.5)),
           ),
           child: Column(
@@ -308,13 +308,13 @@ const SizedBox(height: 24),
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: context.theme.isDark ? AppColors.navy800 : AppColors.navy50,
+              color: context.theme.isDark ? AppColors.primary800 : AppColors.primary50,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               item.icon,
               size: 20,
-              color: item.textColor ?? AppColors.navy600,
+              color: item.textColor ?? AppColors.primary600,
             ),
           ),
           title: Text(
@@ -335,14 +335,14 @@ const SizedBox(height: 24),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: context.theme.isDark ? AppColors.wave950 : AppColors.wave100,
+                    color: context.theme.isDark ? AppColors.accent950 : AppColors.accent100,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.wave500.withOpacity(0.3)),
+                    border: Border.all(color: AppColors.accent500.withOpacity(0.3)),
                   ),
                   child: Text(
                     item.badge!,
                     style: AppTextStyles.labelSmall.copyWith(
-                      color: AppColors.wave700,
+                      color: AppColors.accent700,
                     ),
                   ),
                 ),
@@ -442,7 +442,7 @@ Widget _buildLanguageOption(
       }
     },
     leading: isSelected
-        ? const Icon(Icons.check_circle, color: AppColors.wave500)
+        ? const Icon(Icons.check_circle, color: AppColors.accent500)
         : const Icon(Icons.radio_button_unchecked),
     title: Text(languageName),
   );

@@ -73,7 +73,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           color: AppColors.zinc100,
           child: const Center(
             child: CircularProgressIndicator(
-              color: AppColors.wave500,
+              color: AppColors.accent500,
             ),
           ),
         ),
@@ -81,8 +81,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           return _buildErrorWidget();
         },
         materialProgressColors: ChewieProgressColors(
-          playedColor: AppColors.wave500,
-          handleColor: AppColors.wave500,
+          playedColor: AppColors.accent500,
+          handleColor: AppColors.accent500,
           backgroundColor: AppColors.zinc300,
           bufferedColor: AppColors.zinc300,
         ),
@@ -154,7 +154,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       ),
       child: const Center(
         child: CircularProgressIndicator(
-          color: AppColors.wave500,
+          color: AppColors.accent500,
         ),
       ),
     );
@@ -180,7 +180,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             const Text(
               'Failed to load video',
               style: TextStyle(
-                color: AppColors.navy600,
+                color: AppColors.primary600,
                 fontSize: 14,
               ),
             ),

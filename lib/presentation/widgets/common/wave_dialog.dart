@@ -77,7 +77,7 @@ class WaveDialog extends StatelessWidget {
                 child: Text(
                   title!,
                   style: AppTextStyles.title.copyWith(
-                    color: isDark ? Colors.white : AppColors.navy900,
+                    color: isDark ? Colors.white : AppColors.primary900,
                   ),
                 ),
               ),
@@ -87,7 +87,7 @@ class WaveDialog extends StatelessWidget {
                   Text(
                     message ?? '',
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: isDark ? AppColors.zinc300 : AppColors.navy600,
+                      color: isDark ? AppColors.zinc300 : AppColors.primary600,
                     ),
                   ),
             ),
@@ -256,7 +256,7 @@ class WaveBottomSheet extends StatelessWidget {
                     child: Text(
                       title!,
                       style: AppTextStyles.title.copyWith(
-                        color: isDark ? Colors.white : AppColors.navy900,
+                        color: isDark ? Colors.white : AppColors.primary900,
                       ),
                     ),
                   ),
@@ -265,7 +265,7 @@ class WaveBottomSheet extends StatelessWidget {
                     icon: Icon(
                       Icons.close,
                       color: isGlass 
-                          ? (isDark ? Colors.white.withValues(alpha: 0.7) : AppColors.navy700)
+                          ? (isDark ? Colors.white.withValues(alpha: 0.7) : AppColors.primary700)
                           : (isDark ? AppColors.zinc400 : AppColors.zinc500),
                     ),
                   ),

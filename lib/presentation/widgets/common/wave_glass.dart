@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_spacing.dart';
 
 /// A utility widget for consistent glassmorphism effects across WaveMart
 class WaveGlass extends StatelessWidget {
@@ -14,8 +13,8 @@ class WaveGlass extends StatelessWidget {
   const WaveGlass({
     super.key,
     required this.child,
-    this.blur = 12,
-    this.borderRadius = AppSpacing.borderRadiusSm,
+    this.blur = 20,
+    this.borderRadius = 4,
     this.color,
     this.border,
     this.padding,
@@ -32,14 +31,14 @@ class WaveGlass extends StatelessWidget {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: color ?? (isDark 
+            color: color ?? (isDark
                 ? Colors.black.withValues(alpha: 0.3)
-                : Colors.white.withValues(alpha: 0.85)),
+                : Colors.white.withValues(alpha: 0.7)),
             borderRadius: BorderRadius.circular(borderRadius),
             border: border ?? Border.all(
-              color: isDark 
+              color: isDark
                   ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.white.withValues(alpha: 0.5),
+                  : Colors.white.withValues(alpha: 0.8),
             ),
           ),
           child: child,

@@ -255,8 +255,8 @@ class _ConversationTile extends ConsumerWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: hasUnread
-                    ? [AppColors.wave500, AppColors.wave600]
-                    : [AppColors.navy400, AppColors.navy600],
+                    ? [AppColors.accent500, AppColors.accent600]
+                    : [AppColors.primary400, AppColors.primary600],
               ),
               borderRadius: BorderRadius.circular(25),
             ),
@@ -267,7 +267,7 @@ class _ConversationTile extends ConsumerWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: context.isDarkMode
-                      ? AppColors.navy900
+                      ? AppColors.primary900
                       : AppColors.surface,
                 ),
               ),
@@ -292,7 +292,7 @@ class _ConversationTile extends ConsumerWidget {
                         : '${conversation.unreadCount}',
                     style: TextStyle(
                       color: context.isDarkMode
-                          ? AppColors.navy900
+                          ? AppColors.primary900
                           : AppColors.surface,
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
@@ -335,7 +335,7 @@ class _ConversationTile extends ConsumerWidget {
               previewText,
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: hasUnread ? FontWeight.w500 : FontWeight.normal,
-                color: hasUnread ? AppColors.navy800 : AppColors.zinc500,
+                color: hasUnread ? AppColors.primary800 : AppColors.zinc500,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -352,7 +352,7 @@ class _ConversationTile extends ConsumerWidget {
               _formatTime(conversation.lastMessageAt, l10n),
               style: TextStyle(
                 fontSize: 11,
-                color: hasUnread ? AppColors.wave600 : AppColors.zinc400,
+                color: hasUnread ? AppColors.accent600 : AppColors.zinc400,
                 fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
@@ -481,7 +481,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         constraints: const BoxConstraints(maxHeight: 320),
         decoration: BoxDecoration(
           color: context.cardBgElevated,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(4),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
@@ -492,7 +492,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           border: Border.all(color: context.divider.withOpacity(0.5)),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -503,7 +503,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 color:
-                    context.isDarkMode ? AppColors.navy900 : AppColors.zinc400,
+                    context.isDarkMode ? AppColors.primary900 : AppColors.zinc400,
                 child: Text(
                   l10n.messagesSwitchContext,
                   style: const TextStyle(
@@ -555,7 +555,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         color:
-            isSelected ? (isDark ? AppColors.navy700 : AppColors.navy50) : null,
+            isSelected ? (isDark ? AppColors.primary700 : AppColors.primary50) : null,
         child: Row(
           children: [
             // Icon/Image
@@ -564,7 +564,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               height: 36,
               decoration: BoxDecoration(
                 color: conv.isAssetChat
-                    ? (isDark ? AppColors.navy700 : AppColors.navy100)
+                    ? (isDark ? AppColors.primary700 : AppColors.primary100)
                     : (isDark ? AppColors.zinc700 : AppColors.zinc100),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -578,7 +578,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           conv.isAssetChat ? Icons.home : Icons.chat,
                           size: 18,
                           color: conv.isAssetChat
-                              ? AppColors.navy600
+                              ? AppColors.primary600
                               : AppColors.zinc500,
                         ),
                       ),
@@ -587,7 +587,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       conv.isAssetChat ? Icons.home : Icons.chat,
                       size: 18,
                       color: conv.isAssetChat
-                          ? AppColors.navy600
+                          ? AppColors.primary600
                           : AppColors.zinc500,
                     ),
             ),
@@ -638,7 +638,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               const Icon(
                 Icons.check,
                 size: 18,
-                color: AppColors.navy600,
+                color: AppColors.primary600,
               ),
           ],
         ),
@@ -687,8 +687,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
                   color: context.isDarkMode
-                      ? AppColors.wave950
-                      : AppColors.wave100,
+                      ? AppColors.accent950
+                      : AppColors.accent100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -696,7 +696,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.wave500,
+                    color: AppColors.accent500,
                   ),
                 ),
               ),
@@ -759,7 +759,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               ? Icons.keyboard_arrow_up
                               : Icons.keyboard_arrow_down,
                           size: 20,
-                          color: AppColors.navy400,
+                          color: AppColors.primary400,
                         ),
                       ],
                     ],
@@ -823,11 +823,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.chat_bubble_outline,
-                                    size: 64, color: AppColors.navy300),
+                                    size: 64, color: AppColors.primary300),
                                 const SizedBox(height: 16),
                                 Text(l10n.messagesEmpty,
                                     style: AppTextStyles.bodyLarge
-                                        .copyWith(color: AppColors.navy500)),
+                                        .copyWith(color: AppColors.primary500)),
                               ],
                             ),
                           )
@@ -839,7 +839,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
             decoration: BoxDecoration(
-              color: context.isDarkMode ? AppColors.navy900 : AppColors.surface,
+              color: context.isDarkMode ? AppColors.primary900 : AppColors.surface,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.navy950.withOpacity(0.05),
@@ -857,7 +857,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       decoration: InputDecoration(
                         hintText: l10n.messagesTypeMessage,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
@@ -870,7 +870,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   const SizedBox(width: 8),
                   Container(
                     decoration: BoxDecoration(
-                      color: _isSending ? AppColors.zinc400 : AppColors.wave500,
+                      color: _isSending ? AppColors.zinc400 : AppColors.accent500,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
@@ -998,8 +998,8 @@ class _MessageBubble extends ConsumerWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: isListingOwner
-                      ? [AppColors.wave400, AppColors.wave600]
-                      : [AppColors.navy400, AppColors.navy600],
+                      ? [AppColors.accent400, AppColors.accent600]
+                      : [AppColors.primary400, AppColors.primary600],
                 ),
                 shape: BoxShape.circle,
               ),
@@ -1010,7 +1010,7 @@ class _MessageBubble extends ConsumerWidget {
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: context.isDarkMode
-                        ? AppColors.navy900
+                        ? AppColors.primary900
                         : AppColors.surface,
                   ),
                 ),
@@ -1031,7 +1031,7 @@ class _MessageBubble extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.wave500,
+                        color: AppColors.accent500,
                       ),
                     ),
                   ),
@@ -1041,8 +1041,8 @@ class _MessageBubble extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: isOwn
                         ? (context.isDarkMode
-                            ? AppColors.wave600
-                            : AppColors.navy600)
+                            ? AppColors.accent600
+                            : AppColors.primary600)
                         : context.cardBg,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(16),
@@ -1086,7 +1086,7 @@ class _MessageBubble extends ConsumerWidget {
                               isSeen ? Icons.done_all : Icons.done,
                               size: 14,
                               color: isSeen
-                                  ? AppColors.wave300
+                                  ? AppColors.accent300
                                   : AppColors.surface.withOpacity(0.5),
                             ),
                           ],
@@ -1106,7 +1106,7 @@ class _MessageBubble extends ConsumerWidget {
               height: 32,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.wave400, AppColors.wave600],
+                  colors: [AppColors.accent400, AppColors.accent600],
                 ),
                 shape: BoxShape.circle,
               ),
@@ -1117,7 +1117,7 @@ class _MessageBubble extends ConsumerWidget {
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: context.isDarkMode
-                        ? AppColors.navy900
+                        ? AppColors.primary900
                         : AppColors.surface,
                   ),
                 ),
