@@ -25,14 +25,14 @@ class WaveAuthBackground extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: isDark
               ? [
-                  const Color(0xFF0A355C),
-                  const Color(0xFF102A43),
-                  const Color(0xFF0A4D2E),
+                  AppColors.primary900,
+                  AppColors.primary800,
+                  AppColors.accent950,
                 ]
               : [
-                  const Color(0xFF0A416B),
-                  const Color(0xFF0A355C),
-                  const Color(0xFF18996C),
+                  AppColors.primary900,
+                  AppColors.primary800,
+                  AppColors.accent900,
                 ],
           stops: const [0.0, 0.6, 1.0],
         ),
