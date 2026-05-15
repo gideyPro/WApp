@@ -36,7 +36,7 @@ class AppTheme {
       // AppBar Theme - Luxury Minimalist (Navy Authority)
       appBarTheme: AppBarTheme(
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Colors.transparent,
         foregroundColor: AppColors.stone900,
         surfaceTintColor: Colors.transparent,
@@ -93,6 +93,10 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.accent500, width: 1.5),
         ),
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone500),
+        labelStyle: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.stone800,
+          fontWeight: FontWeight.w600,
+        ),
       ),
 
       // Navigation Bar Theme (Material 3)
@@ -156,7 +160,7 @@ class AppTheme {
       // AppBar Theme - Dark Transparent
       appBarTheme: AppBarTheme(
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
@@ -231,6 +235,10 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.accent400, width: 1.5),
         ),
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary400),
+        labelStyle: AppTextStyles.bodyMedium.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ),
       ),
 
       // Navigation Bar - Dark Premium

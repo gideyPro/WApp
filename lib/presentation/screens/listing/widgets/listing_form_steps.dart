@@ -516,8 +516,8 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
 
   Widget _compactSectionLabel(String title) {
     return Text(title, style: AppTextStyles.labelMedium.copyWith(
-      fontWeight: FontWeight.w600,
-      color: context.textSecondary,
+      fontWeight: FontWeight.w700,
+      color: context.isDarkMode ? AppColors.primary200 : AppColors.primary800,
       letterSpacing: 0.3,
     ));
   }
@@ -542,7 +542,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           .map((e) => DropdownMenuItem(
                 value: e.key,
                 child: Text(e.value,
-                    style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14)),
+                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
               ))
           .toList(),
       onChanged: onChanged,
@@ -908,7 +908,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       dropdownColor: context.sheetBg,
       items: items.isEmpty
           ? [DropdownMenuItem(value: null, child: Text(l10n.listingNoOptions, style: const TextStyle(color: Colors.grey)))]
-          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14)))).toList(),
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
     );
@@ -1159,8 +1159,8 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
 
   Widget _compactSectionLabel(String title) {
     return Text(title, style: AppTextStyles.labelMedium.copyWith(
-      fontWeight: FontWeight.w600,
-      color: context.textSecondary,
+      fontWeight: FontWeight.w700,
+      color: context.isDarkMode ? AppColors.primary200 : AppColors.primary800,
       letterSpacing: 0.3,
     ));
   }
@@ -1210,7 +1210,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       ),
       dropdownColor: context.sheetBg,
       items: items.entries
-          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14))))
+          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14))))
           .toList(),
       onChanged: onChanged,
       isExpanded: true,
@@ -1349,10 +1349,10 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                   Icon(Icons.add_photo_alternate,
-                      size: 32, color: AppColors.primary400),
+                      size: 32, color: context.isDarkMode ? AppColors.primary300 : AppColors.primary500),
                   const SizedBox(height: 8),
                   Text(l10n.listingTapToAdd,
-                      style: const TextStyle(color: AppColors.primary400)),
+                      style: TextStyle(color: context.isDarkMode ? AppColors.primary300 : AppColors.primary500)),
                 ])),
           ),
         ),
@@ -1384,7 +1384,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
           ),
           const SizedBox(height: 4),
           Text(l10n.listingImagesSelected(existingImages.length - widget.formData.removedImageIds.length + newImages.length),
-              style: AppTextStyles.caption.copyWith(color: AppColors.zinc500)),
+              style: AppTextStyles.caption.copyWith(color: context.isDarkMode ? AppColors.zinc400 : AppColors.zinc600)),
         ],
       ],
     );
@@ -1565,13 +1565,13 @@ class ListingStep4Review extends StatelessWidget {
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
             children: [
-              _summaryCard(l10n.listingSummaryProperty,
+              _summaryCard(context, l10n.listingSummaryProperty,
                   '${formData.type == 'house' ? '🏠 ${l10n.listingHouse}' : '🌄 ${l10n.listingLand}'}\n${_getLocalizedHouseType(formData.houseType, l10n)}'),
-              _summaryCard(l10n.listingLocation,
+              _summaryCard(context, l10n.listingLocation,
                   '${formData.addressRegion ?? ''}\n${formData.addressZone ?? ''}'),
-              _summaryCard(l10n.listingFinancial,
+              _summaryCard(context, l10n.listingFinancial,
                   '${formData.priceFixed != null ? "${_formatPrice(formData.priceFixed!)} ETB" : l10n.listingPriceOnRequest}\n${_getLocalizedHoldingType(formData.holdingType, l10n)}'),
-              _summaryCard(l10n.listingStepMedia,
+              _summaryCard(context, l10n.listingStepMedia,
                   '${formData.images.length + formData.existingImages.length - formData.removedImageIds.length} ${l10n.listingImagesSelected(formData.images.length + formData.existingImages.length - formData.removedImageIds.length)}\n${(formData.sitePlan != null || (formData.existingSitePlanUrl != null && !formData.removeExistingSitePlan)) ? "1" : "0"} ${l10n.listingSitePlans}'),
             ],
           ),
@@ -1606,7 +1606,7 @@ class ListingStep4Review extends StatelessWidget {
             .copyWith(fontWeight: FontWeight.w700, fontSize: 16));
   }
 
-  Widget _summaryCard(String title, String content) {
+  Widget _summaryCard(BuildContext context, String title, String content) {
     return WaveCard(
       isGlass: true,
       padding: const EdgeInsets.all(12),
@@ -1615,7 +1615,7 @@ class ListingStep4Review extends StatelessWidget {
         children: [
           Text(title,
               style:
-                  AppTextStyles.labelSmall.copyWith(color: AppColors.primary500)),
+                  AppTextStyles.labelSmall.copyWith(color: Theme.of(context).brightness == Brightness.dark ? AppColors.primary300 : AppColors.primary700)),
           const SizedBox(height: 4),
           Expanded(
               child: Text(content,
