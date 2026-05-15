@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../providers/app_providers.dart';
 import '../../../data/services/order_service.dart';
 
 class EditOrderScreen extends ConsumerStatefulWidget {
@@ -142,7 +141,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                 style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w800)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _holdingType,
+              initialValue: _holdingType,
               decoration: _inputDecoration(),
               items: [
                 DropdownMenuItem(value: null, child: Text(l10n.ordersSelect)),
@@ -157,7 +156,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                 style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w800)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _facingDirection,
+              initialValue: _facingDirection,
               decoration: _inputDecoration(),
               items: [
                 DropdownMenuItem(value: null, child: Text(l10n.ordersSelect)),

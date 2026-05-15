@@ -131,9 +131,9 @@ class OrderService {
                 .map((j) => Order.fromJson(j as Map<String, dynamic>))
                 .toList();
           }
-          currentPage = _safeInt(data['current_page']) ?? page;
-          totalPages = _safeInt(data['last_page']) ?? 1;
-          total = _safeInt(data['total']) ?? 0;
+          currentPage = _safeInt(data['current_page']);
+          totalPages = _safeInt(data['last_page']);
+          total = _safeInt(data['total']);
         } else if (data is List) {
           orders = data
               .map((j) => Order.fromJson(j as Map<String, dynamic>))
