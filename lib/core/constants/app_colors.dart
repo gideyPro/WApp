@@ -16,6 +16,7 @@ class AppColors {
   static const Color primary700 = Color(0xFF1E293B);
   static const Color primary800 = Color(0xFF0F172A);
   static const Color primary900 = Color(0xFF0A416B); // Core Logo Navy
+  static const Color primary950 = Color(0xFF073254);
 
   // Deprecated aliases for compatibility
   static const Color navy50 = primary50;
@@ -28,7 +29,7 @@ class AppColors {
   static const Color navy700 = primary700;
   static const Color navy800 = primary800;
   static const Color navy900 = primary900;
-  static const Color navy950 = Color(0xFF073254);
+  static const Color navy950 = primary950;
 
   // Accent - Logo Emerald
   static const Color accent50 = Color(0xFFECFDF5);
