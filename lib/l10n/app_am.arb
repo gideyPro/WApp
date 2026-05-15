@@ -33,6 +33,7 @@
   "navListings": "ንብረቶች",
   "navSearch": "ፍለጋ",
   "navFavorites": "ተወዳጆች",
+  "navOrders": "ትዕዛዞች",
   "navProfile": "መገለጫ",
   "navMessages": "መልእክቶች",
   "navSettings": "ቅንብሮች",
@@ -358,6 +359,7 @@
   "listingsNo": "የለም",
 
   "favoritesTitle": "ተወዳጆች",
+  "ordersTitle": "ትዕዛዞች",
   "favoritesEmpty": "ምንም ተወዳጅ የለም",
   "favoritesEmptySubtitle": "የመረጧቸውን ንብረቶች እዚህ ያገኟቸዋል",
   "favoritesRemove": "ከተወዳጆች አጥፋ",

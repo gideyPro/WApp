@@ -5,7 +5,7 @@ import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../home/home_screen.dart';
-import '../favorites/favorites_screen.dart';
+import '../orders/orders_screen.dart';
 import '../messages/messages_screen.dart';
 import '../settings/settings_screen.dart';
 import '../listing/create_listing_screen.dart';
@@ -166,7 +166,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     final selectedIndex = ref.watch(selectedTabProvider);
     final screens = [
       const HomeScreen(),
-      const FavoritesScreen(),
+      const OrdersScreen(),
       const Center(child: Text('')), // Placeholder for FAB
       const MessagesScreen(),
       const SettingsScreen(),
@@ -206,8 +206,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             children: [
               _buildNavItem(
                   Icons.home_rounded, AppLocalizations.of(context).navHome, 0),
-              _buildNavItem(Icons.favorite_rounded,
-                  AppLocalizations.of(context).navFavorites, 1),
+              _buildNavItem(
+                  Icons.receipt_long_outlined, 'Orders', 1),
               const SizedBox(width: 48), // Space for FAB notch
               _buildMessagesNavItem(unreadMsgCount),
               _buildSettingsNavItem(context),

@@ -33,6 +33,7 @@
   "navListings": "ንብረታት",
   "navSearch": "ደለይ",
   "navFavorites": "ዝተመርፁ",
+  "navOrders": "ትእዛዛት",
   "navProfile": "መገለጺ",
   "navMessages": "መልእኽታት",
   "navSettings": "ቅጥዒታት",
@@ -358,6 +359,7 @@
   "listingsNo": "የለን",
 
   "favoritesTitle": "ዝተመርፁ",
+  "ordersTitle": "ትእዛዛት",
   "favoritesEmpty": "ዝተመርጸ ንብረት የለን",
   "favoritesEmptySubtitle": "ዝመረጽኩምዎም ንብረታት ኣብዚ ክትረኽብዎም ኢኹም",
   "favoritesRemove": "ካብ ዝተመርፁ ኣውጽእ",

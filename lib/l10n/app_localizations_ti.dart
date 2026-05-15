@@ -87,6 +87,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get navFavorites => 'ዝተመርፁ';
 
   @override
+  String get navOrders => 'ትእዛዛት';
+
+  @override
   String get navProfile => 'መገለጺ';
 
   @override
@@ -1102,6 +1105,9 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get favoritesTitle => 'ዝተመርፁ';
+
+  @override
+  String get ordersTitle => 'ትእዛዛት';
 
   @override
   String get favoritesEmpty => 'ዝተመርጸ ንብረት የለን';

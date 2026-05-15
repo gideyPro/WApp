@@ -87,6 +87,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get navFavorites => 'ተወዳጆች';
 
   @override
+  String get navOrders => 'ትዕዛዞች';
+
+  @override
   String get navProfile => 'መገለጫ';
 
   @override
@@ -1102,6 +1105,9 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get favoritesTitle => 'ተወዳጆች';
+
+  @override
+  String get ordersTitle => 'ትዕዛዞች';
 
   @override
   String get favoritesEmpty => 'ምንም ተወዳጅ የለም';

@@ -256,6 +256,12 @@ abstract class AppLocalizations {
   /// **'Favorites'**
   String get navFavorites;
 
+  /// No description provided for @navOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get navOrders;
+
   /// No description provided for @navProfile.
   ///
   /// In en, this message translates to:
@@ -2169,6 +2175,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Favorites'**
   String get favoritesTitle;
+
+  /// No description provided for @ordersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get ordersTitle;
 
   /// No description provided for @favoritesEmpty.
   ///

@@ -28,6 +28,7 @@
   "navListings": "Listings",
   "navSearch": "Search",
   "navFavorites": "Favorites",
+  "navOrders": "Orders",
   "navProfile": "Profile",
   "navMessages": "Messages",
   "navSettings": "Settings",
@@ -353,6 +354,7 @@
   "listingsNo": "No",
 
   "favoritesTitle": "Favorites",
+  "ordersTitle": "Orders",
   "favoritesEmpty": "No favorites yet",
   "favoritesEmptySubtitle": "Start adding properties to your favorites",
   "favoritesRemove": "Remove from favorites",

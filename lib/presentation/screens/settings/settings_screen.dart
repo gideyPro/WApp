@@ -12,6 +12,7 @@ import '../../providers/theme_provider.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../listing/my_listings_screen.dart';
+import '../favorites/favorites_screen.dart';
 import '../payments/payment_history_screen.dart';
 import '../help/help_center_screen.dart';
 import '../auth/otp_login_screen.dart';
@@ -72,6 +73,14 @@ final settingsAsync = ref.watch(appSettingsProvider);
         subtitle: l10n.settingsMyListingsSubtitle,
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const MyListingsScreen()),
+        ),
+      ),
+      _MenuItemData(
+        icon: Icons.favorite_outline_rounded,
+        title: 'My Favorites',
+        subtitle: 'View your saved listings',
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const FavoritesScreen()),
         ),
       ),
     ];

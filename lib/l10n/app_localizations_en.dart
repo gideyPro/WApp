@@ -87,6 +87,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navFavorites => 'Favorites';
 
   @override
+  String get navOrders => 'Orders';
+
+  @override
   String get navProfile => 'Profile';
 
   @override
@@ -1112,6 +1115,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get favoritesTitle => 'Favorites';
+
+  @override
+  String get ordersTitle => 'Orders';
 
   @override
   String get favoritesEmpty => 'No favorites yet';
