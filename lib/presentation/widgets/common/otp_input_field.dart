@@ -49,7 +49,6 @@ class OtpInputFieldState extends State<OtpInputField> {
   void _onValueChanged() {
     final text = _controller.text;
     widget.onChanged?.call(text);
-
     if (text.length == widget.length) {
       widget.onCompleted?.call(text);
     }
@@ -57,148 +56,65 @@ class OtpInputFieldState extends State<OtpInputField> {
 
   @override
   Widget build(BuildContext context) {
-    final isSmall = MediaQuery.of(context).size.width < 360;
-    final boxSize = isSmall ? 40.0 : 46.0;
-    const gap = 8.0;
-    final totalWidth = widget.length * boxSize + (widget.length - 1) * gap;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return GestureDetector(
-      onTap: () => _focusNode.requestFocus(),
-      child: SizedBox(
-        width: totalWidth,
-        height: boxSize,
-        child: Stack(
-          children: [
-            _buildBoxes(boxSize),
-            Positioned.fill(
-              child: TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(widget.length),
-                ],
-                enabled: widget.enabled,
-                autofocus: widget.autofocus,
-                enableSuggestions: false,
-                textAlign: TextAlign.center,
-                cursorColor: AppColors.accent500,
-                cursorWidth: 2,
-                style: const TextStyle(
-                  color: Colors.transparent,
-                  height: 1,
-                ),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  isDense: true,
-                  counterText: '',
-                ),
-              ),
-            ),
-          ],
-        ),
+    return TextField(
+      controller: _controller,
+      focusNode: _focusNode,
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(widget.length),
+      ],
+      enabled: widget.enabled,
+      autofocus: widget.autofocus,
+      enableSuggestions: false,
+      textAlign: TextAlign.center,
+      cursorColor: AppColors.accent500,
+      cursorWidth: 2,
+      style: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        color: isDark ? Colors.white : AppColors.primary900,
+        letterSpacing: 16,
       ),
-    );
-  }
-
-  Widget _buildBoxes(double boxSize) {
-    final text = _controller.text;
-    final cursorPos = _controller.selection.baseOffset;
-    final isFocused = _focusNode.hasFocus;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(widget.length, (index) {
-        final hasDigit = index < text.length;
-        final isCursor = isFocused && cursorPos == index;
-
-        Color bgColor;
-        Color borderColor;
-        double borderWidth;
-
-        if (widget.hasError) {
-          bgColor = AppColors.error.withValues(alpha: 0.06);
-          borderColor = AppColors.error.withValues(alpha: 0.3);
-          borderWidth = 1;
-        } else if (isCursor) {
-          bgColor = Colors.white;
-          borderColor = AppColors.accent500;
-          borderWidth = 2;
-        } else if (hasDigit) {
-          bgColor = Colors.white;
-          borderColor = AppColors.primary200;
-          borderWidth = 1;
-        } else {
-          bgColor = Colors.white.withValues(alpha: 0.5);
-          borderColor = AppColors.primary200;
-          borderWidth = 1;
-        }
-
-        return Padding(
-          padding: EdgeInsets.only(right: index < widget.length - 1 ? 8.0 : 0),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: boxSize,
-            height: boxSize,
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: borderColor, width: borderWidth),
-            ),
-            alignment: Alignment.center,
-            child: hasDigit
-                ? Text(
-                    text[index],
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary900,
-                    ),
-                  )
-                : isCursor
-                    ? _BlinkingCursor()
-                    : null,
+      decoration: InputDecoration(
+        hintText: '0' * widget.length,
+        hintStyle: TextStyle(
+          color: isDark ? AppColors.primary600 : AppColors.primary200,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 16,
+        ),
+        filled: true,
+        fillColor: isDark
+            ? AppColors.primary800.withValues(alpha: 0.5)
+            : AppColors.primary50.withValues(alpha: 0.5),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: BorderSide(
+            color: widget.hasError
+                ? AppColors.error.withValues(alpha: 0.4)
+                : isDark
+                    ? AppColors.primary700
+                    : AppColors.primary200,
           ),
-        );
-      }),
-    );
-  }
-}
-
-class _BlinkingCursor extends StatefulWidget {
-  @override
-  State<_BlinkingCursor> createState() => _BlinkingCursorState();
-}
-
-class _BlinkingCursorState extends State<_BlinkingCursor>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _controller,
-      child: Container(
-        width: 2,
-        height: 24,
-        color: AppColors.accent500,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.primary700 : AppColors.primary200,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: BorderSide(
+            color: widget.hasError
+                ? AppColors.error
+                : AppColors.accent500,
+            width: 2,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16),
       ),
     );
   }
