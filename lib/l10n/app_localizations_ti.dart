@@ -66,6 +66,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonNo => 'ኣይ';
 
   @override
+  String get commonYes => 'Yes';
+
+  @override
   String get commonNoData => 'ዝተረኽበ መረዳእታ የለን';
 
   @override
@@ -1108,6 +1111,87 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get ordersTitle => 'ትእዛዛት';
+
+  @override
+  String get ordersEmpty => 'ገና ምንም ትእዛዛት የለን';
+
+  @override
+  String get ordersEmptySubtitle => 'ንብረት መስፈርታትካ ኣቕርብ ንኽትጅምር';
+
+  @override
+  String get ordersCreate => 'ትእዛዝ ፍጠር';
+
+  @override
+  String get ordersStatusActive => 'ንቡር';
+
+  @override
+  String get ordersStatusFulfilled => 'ተፈጺሙ';
+
+  @override
+  String get ordersStatusCancelled => 'ተሰሪዙ';
+
+  @override
+  String get ordersTypeHouse => 'ገዛ';
+
+  @override
+  String get ordersTypeLand => 'ምድሪ';
+
+  @override
+  String get ordersTypeLabel => 'ዓይነት ንብረት';
+
+  @override
+  String get ordersListingType => 'ደሊየ';
+
+  @override
+  String get ordersBuy => 'ምግዛእ';
+
+  @override
+  String get ordersRent => 'ክራይ';
+
+  @override
+  String get ordersHoldingType => 'ዓይነት ምትእስሳር';
+
+  @override
+  String get ordersSelect => 'ምረጽ';
+
+  @override
+  String get ordersFacing => 'መምርሒ ኣንፈት';
+
+  @override
+  String get ordersBudget => 'በጀት (ETB)';
+
+  @override
+  String get ordersMin => 'ዝተንእሰለ';
+
+  @override
+  String get ordersMax => 'ዝዓበየ';
+
+  @override
+  String get ordersArea => 'ስፍሓት (m²)';
+
+  @override
+  String get ordersDescription => 'መግለጺ';
+
+  @override
+  String get ordersDescriptionHint => 'መጠን፣ ባህርያት፣ መስፈርታት...';
+
+  @override
+  String get ordersSubmit => 'ትእዛዝ ኣቕርብ';
+
+  @override
+  String get ordersCancel => 'ትእዛዝ ሰርዝ';
+
+  @override
+  String get ordersCancelConfirm => 'ርግጸኛ ዲኻ ነዚ ትእዛዝ ክትስርዞ ትደሊ?';
+
+  @override
+  String get ordersCancelled => 'ትእዛዝ ተሰሪዙ';
+
+  @override
+  String get ordersCreated => 'ትእዛዝ ብትኽክል ተፈጢሩ';
+
+  @override
+  String get ordersLocation => 'ከባቢ';
 
   @override
   String get favoritesEmpty => 'ዝተመርጸ ንብረት የለን';

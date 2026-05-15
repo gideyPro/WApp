@@ -207,7 +207,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               _buildNavItem(
                   Icons.home_rounded, AppLocalizations.of(context).navHome, 0),
               _buildNavItem(
-                  Icons.receipt_long_outlined, 'Orders', 1),
+                  Icons.receipt_long_outlined, AppLocalizations.of(context).navOrders, 1),
               const SizedBox(width: 48), // Space for FAB notch
               _buildMessagesNavItem(unreadMsgCount),
               _buildSettingsNavItem(context),

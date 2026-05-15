@@ -214,6 +214,12 @@ abstract class AppLocalizations {
   /// **'No'**
   String get commonNo;
 
+  /// No description provided for @commonYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get commonYes;
+
   /// No description provided for @commonNoData.
   ///
   /// In en, this message translates to:
@@ -2181,6 +2187,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Orders'**
   String get ordersTitle;
+
+  /// No description provided for @ordersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders yet'**
+  String get ordersEmpty;
+
+  /// No description provided for @ordersEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit your property requirements to get started'**
+  String get ordersEmptySubtitle;
+
+  /// No description provided for @ordersCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Order'**
+  String get ordersCreate;
+
+  /// No description provided for @ordersStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get ordersStatusActive;
+
+  /// No description provided for @ordersStatusFulfilled.
+  ///
+  /// In en, this message translates to:
+  /// **'Fulfilled'**
+  String get ordersStatusFulfilled;
+
+  /// No description provided for @ordersStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get ordersStatusCancelled;
+
+  /// No description provided for @ordersTypeHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'House'**
+  String get ordersTypeHouse;
+
+  /// No description provided for @ordersTypeLand.
+  ///
+  /// In en, this message translates to:
+  /// **'Land'**
+  String get ordersTypeLand;
+
+  /// No description provided for @ordersTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Type'**
+  String get ordersTypeLabel;
+
+  /// No description provided for @ordersListingType.
+  ///
+  /// In en, this message translates to:
+  /// **'I want to'**
+  String get ordersListingType;
+
+  /// No description provided for @ordersBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get ordersBuy;
+
+  /// No description provided for @ordersRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get ordersRent;
+
+  /// No description provided for @ordersHoldingType.
+  ///
+  /// In en, this message translates to:
+  /// **'Holding Type'**
+  String get ordersHoldingType;
+
+  /// No description provided for @ordersSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get ordersSelect;
+
+  /// No description provided for @ordersFacing.
+  ///
+  /// In en, this message translates to:
+  /// **'Facing Direction'**
+  String get ordersFacing;
+
+  /// No description provided for @ordersBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget (ETB)'**
+  String get ordersBudget;
+
+  /// No description provided for @ordersMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get ordersMin;
+
+  /// No description provided for @ordersMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get ordersMax;
+
+  /// No description provided for @ordersArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Area (m²)'**
+  String get ordersArea;
+
+  /// No description provided for @ordersDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get ordersDescription;
+
+  /// No description provided for @ordersDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Size, features, requirements...'**
+  String get ordersDescriptionHint;
+
+  /// No description provided for @ordersSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Order'**
+  String get ordersSubmit;
+
+  /// No description provided for @ordersCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Order'**
+  String get ordersCancel;
+
+  /// No description provided for @ordersCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel this order?'**
+  String get ordersCancelConfirm;
+
+  /// No description provided for @ordersCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Order cancelled'**
+  String get ordersCancelled;
+
+  /// No description provided for @ordersCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Order created successfully'**
+  String get ordersCreated;
+
+  /// No description provided for @ordersLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get ordersLocation;
 
   /// No description provided for @favoritesEmpty.
   ///

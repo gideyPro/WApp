@@ -66,6 +66,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonNo => 'No';
 
   @override
+  String get commonYes => 'Yes';
+
+  @override
   String get commonNoData => 'No data available';
 
   @override
@@ -1118,6 +1121,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ordersTitle => 'Orders';
+
+  @override
+  String get ordersEmpty => 'No orders yet';
+
+  @override
+  String get ordersEmptySubtitle =>
+      'Submit your property requirements to get started';
+
+  @override
+  String get ordersCreate => 'Create Order';
+
+  @override
+  String get ordersStatusActive => 'Active';
+
+  @override
+  String get ordersStatusFulfilled => 'Fulfilled';
+
+  @override
+  String get ordersStatusCancelled => 'Cancelled';
+
+  @override
+  String get ordersTypeHouse => 'House';
+
+  @override
+  String get ordersTypeLand => 'Land';
+
+  @override
+  String get ordersTypeLabel => 'Property Type';
+
+  @override
+  String get ordersListingType => 'I want to';
+
+  @override
+  String get ordersBuy => 'Buy';
+
+  @override
+  String get ordersRent => 'Rent';
+
+  @override
+  String get ordersHoldingType => 'Holding Type';
+
+  @override
+  String get ordersSelect => 'Select';
+
+  @override
+  String get ordersFacing => 'Facing Direction';
+
+  @override
+  String get ordersBudget => 'Budget (ETB)';
+
+  @override
+  String get ordersMin => 'Min';
+
+  @override
+  String get ordersMax => 'Max';
+
+  @override
+  String get ordersArea => 'Area (m²)';
+
+  @override
+  String get ordersDescription => 'Description';
+
+  @override
+  String get ordersDescriptionHint => 'Size, features, requirements...';
+
+  @override
+  String get ordersSubmit => 'Submit Order';
+
+  @override
+  String get ordersCancel => 'Cancel Order';
+
+  @override
+  String get ordersCancelConfirm =>
+      'Are you sure you want to cancel this order?';
+
+  @override
+  String get ordersCancelled => 'Order cancelled';
+
+  @override
+  String get ordersCreated => 'Order created successfully';
+
+  @override
+  String get ordersLocation => 'Location';
 
   @override
   String get favoritesEmpty => 'No favorites yet';

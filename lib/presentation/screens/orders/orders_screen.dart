@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
+import 'create_order_screen.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
@@ -27,11 +28,11 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   String _statusLabel(String status, AppLocalizations l10n) {
     switch (status) {
       case 'active':
-        return 'Active';
+        return l10n.ordersStatusActive;
       case 'fulfilled':
-        return 'Fulfilled';
+        return l10n.ordersStatusFulfilled;
       case 'cancelled':
-        return 'Cancelled';
+        return l10n.ordersStatusCancelled;
       default:
         return status;
     }
@@ -50,8 +51,8 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     }
   }
 
-  String _typeLabel(String type) {
-    return type == 'house' ? 'House' : 'Land';
+  String _typeLabel(String type, AppLocalizations l10n) {
+    return type == 'house' ? l10n.ordersTypeHouse : l10n.ordersTypeLand;
   }
 
   Color _typeColor(String type) {
@@ -70,7 +71,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         backgroundColor: context.cardBg,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text('My Orders'),
+        title: Text(l10n.ordersTitle),
         actions: [
           if (state.orders.isNotEmpty)
             Padding(
@@ -84,6 +85,18 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
+          );
+          if (mounted) {
+            ref.read(ordersProvider.notifier).loadOrders();
+          }
+        },
+        backgroundColor: AppColors.accent500,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       body: _buildBody(state, l10n),
     );
   }
@@ -95,7 +108,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
 
     if (state.errorMessage != null) {
       return WaveMessageScreen.error(
-        title: 'Error Loading Orders',
+        title: l10n.commonError,
         subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(ordersProvider.notifier).loadOrders();
@@ -107,11 +120,16 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     if (state.orders.isEmpty) {
       return WaveEmptyState(
         icon: Icons.receipt_long_outlined,
-        title: 'No Orders Yet',
-        subtitle: 'You haven\'t placed any property requirements yet.',
-        actionLabel: 'Browse Properties',
-        onAction: () {
-          ref.read(selectedTabProvider.notifier).state = 0;
+        title: l10n.ordersEmpty,
+        subtitle: l10n.ordersEmptySubtitle,
+        actionLabel: l10n.ordersCreate,
+        onAction: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
+          );
+          if (mounted) {
+            ref.read(ordersProvider.notifier).loadOrders();
+          }
         },
       );
     }
@@ -137,7 +155,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                       Row(
                         children: [
                           _buildBadge(
-                            _typeLabel(order.type),
+                            _typeLabel(order.type, l10n),
                             _typeColor(order.type),
                             Colors.white,
                           ),
@@ -285,7 +303,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 Row(
                   children: [
                     _buildBadge(
-                      _typeLabel(order.type),
+                      _typeLabel(order.type, l10n),
                       _typeColor(order.type),
                       Colors.white,
                     ),
@@ -306,39 +324,38 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 ),
                 const SizedBox(height: 24),
                 if (order.minBudget != null || order.maxBudget != null) ...[
-                  _detailRow('Budget',
+                  _detailRow(l10n.ordersBudget,
                       '${_formatPrice(order.minBudget)} - ${_formatPrice(order.maxBudget)} ETB'),
                   const Divider(height: 16),
                 ],
                 if (order.minArea != null || order.maxArea != null) ...[
-                  _detailRow('Area',
+                  _detailRow(l10n.ordersArea,
                       '${_formatPrice(order.minArea)} - ${_formatPrice(order.maxArea)} m²'),
                   const Divider(height: 16),
                 ],
                 if (order.facingDirection != null) ...[
-                  _detailRow('Facing',
+                  _detailRow(l10n.ordersFacing,
                       order.facingDirection!.replaceAll('_', ' ')),
                   const Divider(height: 16),
                 ],
                 if (order.locationDisplay.isNotEmpty) ...[
-                  _detailRow('Location', order.locationDisplay),
+                  _detailRow(l10n.ordersLocation, order.locationDisplay),
                   const Divider(height: 16),
                 ],
-                _detailRow('Description', order.description, isDescription: true),
+                _detailRow(l10n.ordersDescription, order.description, isDescription: true),
                 const SizedBox(height: 16),
-                // Actions
                 if (order.isActive)
                   Row(
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () => _confirmCancel(order.id),
+                          onPressed: () => _confirmCancel(order.id, l10n),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 13),
                             side: BorderSide(color: AppColors.error.withValues(alpha: 0.5)),
                             foregroundColor: AppColors.error,
                           ),
-                          child: const Text('Cancel Order'),
+                          child: Text(l10n.ordersCancel),
                         ),
                       ),
                     ],
@@ -377,21 +394,21 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     );
   }
 
-  Future<void> _confirmCancel(int orderId) async {
+  Future<void> _confirmCancel(int orderId, AppLocalizations l10n) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Order'),
-        content: const Text('Are you sure you want to cancel this order?'),
+        title: Text(l10n.ordersCancel),
+        content: Text(l10n.ordersCancelConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('No'),
+            child: Text(l10n.commonNo),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Yes, Cancel'),
+            child: Text(l10n.listingsYes),
           ),
         ],
       ),
@@ -402,7 +419,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(success ? 'Order cancelled' : 'Failed to cancel order'),
+            content: Text(success ? l10n.ordersCancelled : l10n.commonError),
             backgroundColor: success ? AppColors.accent500 : AppColors.error,
           ),
         );

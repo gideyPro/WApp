@@ -66,6 +66,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonNo => 'አይ';
 
   @override
+  String get commonYes => 'Yes';
+
+  @override
   String get commonNoData => 'ምንም መረጃ የለም';
 
   @override
@@ -1108,6 +1111,87 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get ordersTitle => 'ትዕዛዞች';
+
+  @override
+  String get ordersEmpty => 'እስካሁን ምንም ትዕዛዝ የለም';
+
+  @override
+  String get ordersEmptySubtitle => 'የንብረት ፍላጎቶችዎን ያስገቡ ለመጀመር';
+
+  @override
+  String get ordersCreate => 'ትዕዛዝ ፍጠር';
+
+  @override
+  String get ordersStatusActive => 'ንቁ';
+
+  @override
+  String get ordersStatusFulfilled => 'ተፈጽሟል';
+
+  @override
+  String get ordersStatusCancelled => 'ተሰርዟል';
+
+  @override
+  String get ordersTypeHouse => 'ቤት';
+
+  @override
+  String get ordersTypeLand => 'መሬት';
+
+  @override
+  String get ordersTypeLabel => 'የንብረት አይነት';
+
+  @override
+  String get ordersListingType => 'እፈልጋለሁ';
+
+  @override
+  String get ordersBuy => 'መግዛት';
+
+  @override
+  String get ordersRent => 'ማከራየት';
+
+  @override
+  String get ordersHoldingType => 'የይዞታ አይነት';
+
+  @override
+  String get ordersSelect => 'ምረጥ';
+
+  @override
+  String get ordersFacing => 'አቅጣጫ';
+
+  @override
+  String get ordersBudget => 'በጀት (ETB)';
+
+  @override
+  String get ordersMin => 'ዝቅተኛ';
+
+  @override
+  String get ordersMax => 'ከፍተኛ';
+
+  @override
+  String get ordersArea => 'ስፋት (m²)';
+
+  @override
+  String get ordersDescription => 'መግለጫ';
+
+  @override
+  String get ordersDescriptionHint => 'መጠን፣ ባህሪያት፣ መስፈርቶች...';
+
+  @override
+  String get ordersSubmit => 'ትዕዛዝ አስገባ';
+
+  @override
+  String get ordersCancel => 'ትዕዛዝ ሰርዝ';
+
+  @override
+  String get ordersCancelConfirm => 'እርግጠኛ ነዎት ትዕዛዙን መሰረዝ ይፈልጋሉ?';
+
+  @override
+  String get ordersCancelled => 'ትዕዛዝ ተሰርዟል';
+
+  @override
+  String get ordersCreated => 'ትዕዛዝ በተሳካ ሁኔታ ተፈጥሯል';
+
+  @override
+  String get ordersLocation => 'አካባቢ';
 
   @override
   String get favoritesEmpty => 'ምንም ተወዳጅ የለም';
