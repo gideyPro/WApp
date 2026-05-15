@@ -62,7 +62,7 @@ class WaveChip extends StatelessWidget {
     Widget chip = Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: selected ? bgColor.withOpacity(0.2) : bgColor,
+        color: selected ? bgColor.withValues(alpha: 0.2) : bgColor,
         borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
         border: Border.all(
           color: selected ? textColor : borderColor,

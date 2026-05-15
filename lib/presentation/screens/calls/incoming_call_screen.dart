@@ -235,7 +235,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
         color: AppColors.accent600,
         boxShadow: [
           BoxShadow(
-            color: AppColors.accent600.withOpacity(0.4),
+            color: AppColors.accent600.withValues(alpha: 0.4),
             blurRadius: 40,
             spreadRadius: 10,
           ),

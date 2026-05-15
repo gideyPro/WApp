@@ -24,7 +24,7 @@ class WaveBottomNav extends StatelessWidget {
         color: context.theme.bottomNav,
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary700.withOpacity(0.1),
+            color: AppColors.primary700.withValues(alpha: 0.1),
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -91,7 +91,7 @@ class WaveBottomNav extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.accent50.withOpacity(0.5)
+                  ? AppColors.accent50.withValues(alpha: 0.5)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
             ),
@@ -364,12 +364,12 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
             child: Container(
               constraints: const BoxConstraints(maxWidth: 400),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: Colors.white.withOpacity(0.8)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.8)),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary700.withOpacity(0.16),
+                    color: AppColors.primary700.withValues(alpha: 0.16),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -972,7 +972,7 @@ class WaveSectionHeader extends StatelessWidget {
                       subtitle!,
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.primary400,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),

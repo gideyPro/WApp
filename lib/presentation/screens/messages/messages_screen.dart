@@ -306,7 +306,7 @@ class _ConversationTile extends ConsumerWidget {
       title: Text(
         displayName,
         style: TextStyle(
-          fontWeight: hasUnread ? FontWeight.w600 : FontWeight.w500,
+          fontWeight: hasUnread ? FontWeight.w800 : FontWeight.w600,
           fontSize: 15,
         ),
         maxLines: 1,
@@ -334,7 +334,7 @@ class _ConversationTile extends ConsumerWidget {
             child: Text(
               previewText,
               style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: hasUnread ? FontWeight.w500 : FontWeight.normal,
+                fontWeight: hasUnread ? FontWeight.w700 : FontWeight.normal,
                 color: hasUnread ? AppColors.primary800 : AppColors.zinc500,
               ),
               maxLines: 1,
@@ -353,7 +353,7 @@ class _ConversationTile extends ConsumerWidget {
               style: TextStyle(
                 fontSize: 11,
                 color: hasUnread ? AppColors.accent600 : AppColors.zinc400,
-                fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                fontWeight: hasUnread ? FontWeight.w700 : FontWeight.normal,
               ),
             ),
         ],
@@ -484,12 +484,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           borderRadius: BorderRadius.circular(4),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
           ],
-          border: Border.all(color: context.divider.withOpacity(0.5)),
+          border: Border.all(color: context.divider.withValues(alpha: 0.5)),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(4),
@@ -601,8 +601,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     conv.contextDisplayTitle,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                       color: isDark ? AppColors.zinc100 : AppColors.zinc900,
                     ),
                     maxLines: 1,
@@ -747,7 +746,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         title,
                         style: const TextStyle(
                           fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w800,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -842,7 +841,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               color: context.isDarkMode ? AppColors.primary900 : AppColors.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.navy950.withOpacity(0.05),
+                  color: AppColors.navy950.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, -2),
                 ),
@@ -1053,7 +1052,7 @@ class _MessageBubble extends ConsumerWidget {
                     boxShadow: context.isDarkMode ? null : AppColors.shadowSm,
                     border: isOwn
                         ? null
-                        : Border.all(color: context.divider.withOpacity(0.5)),
+                        : Border.all(color: context.divider.withValues(alpha: 0.5)),
                   ),
                   child: Column(
                     crossAxisAlignment: isOwn
@@ -1075,7 +1074,7 @@ class _MessageBubble extends ConsumerWidget {
                             _formatMessageTime(message.createdAt, l10n),
                             style: TextStyle(
                               color: isOwn
-                                  ? AppColors.surface.withOpacity(0.7)
+                                  ? AppColors.surface.withValues(alpha: 0.7)
                                   : AppColors.zinc400,
                               fontSize: 10,
                             ),
@@ -1087,7 +1086,7 @@ class _MessageBubble extends ConsumerWidget {
                               size: 14,
                               color: isSeen
                                   ? AppColors.accent300
-                                  : AppColors.surface.withOpacity(0.5),
+                                  : AppColors.surface.withValues(alpha: 0.5),
                             ),
                           ],
                         ],

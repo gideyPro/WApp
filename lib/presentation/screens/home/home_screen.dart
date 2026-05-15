@@ -253,7 +253,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 20,
               ),
             ],
@@ -290,7 +290,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.accent500.withOpacity(0.3),
+                                color: AppColors.accent500.withValues(alpha: 0.3),
                                 blurRadius: 12,
                                 spreadRadius: 1,
                               ),
@@ -588,7 +588,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.accent500.withOpacity(0.1),
+                  color: AppColors.accent500.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.workspace_premium_outlined,
@@ -779,11 +779,11 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
 
     return WaveGlass(
       blur: 20,
-      color: context.scaffoldBg.withOpacity(isScrolled ? 0.95 : 0.8),
+      color: context.scaffoldBg.withValues(alpha: isScrolled ? 0.95 : 0.8),
       border: Border(
         bottom: BorderSide(
           color: isScrolled 
-            ? context.divider.withOpacity(0.5) 
+            ? context.divider.withValues(alpha: 0.5) 
             : Colors.transparent
         ),
       ),
@@ -816,16 +816,12 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                                 ),
                                 Text(
                                   l10n.homeDiscover,
-                                  style: TextStyle(
-                                    fontSize: 12,
+                                  style: AppTextStyles.caption.copyWith(
                                     color: context.theme.textSecondary,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.3,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                                ),                              ],
                             ),
                           ),
                         ],
@@ -866,12 +862,12 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.accent500.withOpacity(0.35),
+            color: AppColors.accent500.withValues(alpha: 0.35),
             blurRadius: 16,
             spreadRadius: 2,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -881,7 +877,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             width: 1.5,
           ),
         ),
@@ -913,10 +909,10 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: Colors.white.withOpacity(0.15),
+          color: Colors.white.withValues(alpha: 0.15),
           width: 1,
         ),
       ),
@@ -958,14 +954,14 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.accent500.withOpacity(0.9),
+              AppColors.accent500.withValues(alpha: 0.9),
               AppColors.accent600,
             ],
           ),
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: AppColors.accent500.withOpacity(0.3),
+              color: AppColors.accent500.withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),

@@ -338,7 +338,7 @@ class ProfileScreen extends ConsumerWidget {
           title: Text(
             item.title,
             style: AppTextStyles.bodyMedium.copyWith(
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
           subtitle: item.subtitle != null

@@ -92,19 +92,19 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.accent500, width: 1.5),
         ),
-        hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone400),
+        hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone500),
       ),
 
       // Navigation Bar Theme (Material 3)
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: Colors.white.withOpacity(0.7),
+        backgroundColor: Colors.white.withValues(alpha: 0.7),
         elevation: 0,
         indicatorColor: AppColors.accent50,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppTextStyles.navActive;
+            return AppTextStyles.navActive.copyWith(fontWeight: FontWeight.w900);
           }
-          return AppTextStyles.navInactive;
+          return AppTextStyles.navInactive.copyWith(fontWeight: FontWeight.w700);
         }),
       ),
 
@@ -220,11 +220,11 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
@@ -237,12 +237,18 @@ class AppTheme {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.primary900,
         elevation: 0,
-        indicatorColor: AppColors.accent800.withOpacity(0.5),
+        indicatorColor: AppColors.accent800.withValues(alpha: 0.5),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppTextStyles.navActive.copyWith(color: AppColors.accent400);
+            return AppTextStyles.navActive.copyWith(
+              color: AppColors.accent400,
+              fontWeight: FontWeight.w900,
+            );
           }
-          return AppTextStyles.navInactive.copyWith(color: AppColors.primary400);
+          return AppTextStyles.navInactive.copyWith(
+            color: AppColors.primary300,
+            fontWeight: FontWeight.w700,
+          );
         }),
       ),
 

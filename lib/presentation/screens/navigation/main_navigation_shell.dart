@@ -104,7 +104,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.12),
+                  color: iconColor.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, size: 32, color: iconColor),
@@ -237,8 +237,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             Text(
               label,
               style: AppTextStyles.labelSmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.primary800 : AppColors.primary500,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? AppColors.primary900 : AppColors.primary600,
               ),
             ),
           ],
@@ -287,8 +287,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             Text(
               AppLocalizations.of(context).navMessages,
               style: AppTextStyles.labelSmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.primary800 : AppColors.primary500,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? AppColors.primary900 : AppColors.primary600,
               ),
             ),
           ],
@@ -316,8 +316,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             Text(
               AppLocalizations.of(context).navSettings,
               style: AppTextStyles.labelSmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.primary800 : AppColors.primary500,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? AppColors.primary900 : AppColors.primary600,
               ),
             ),
           ],

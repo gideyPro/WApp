@@ -188,7 +188,7 @@ class _MinimalVideoControlsState extends State<MinimalVideoControls> {
       style: const TextStyle(
         fontSize: 13,
         color: Colors.white,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
       ),
     );
   }

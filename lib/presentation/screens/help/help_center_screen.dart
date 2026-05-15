@@ -192,7 +192,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                     title: Text(
                       article.title,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     trailing: const Icon(

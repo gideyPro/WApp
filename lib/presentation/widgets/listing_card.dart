@@ -264,7 +264,7 @@ class PropertyListingCard extends ConsumerWidget {
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Colors.black.withOpacity(0.6),
+                              Colors.black.withValues(alpha: 0.6),
                             ],
                           ),
                         ),
@@ -536,7 +536,7 @@ class PropertyListingCard extends ConsumerWidget {
         Text(
           label,
           style: AppTextStyles.bodySmall.copyWith(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
@@ -763,7 +763,7 @@ class FeaturedListingCard extends ConsumerWidget {
           AppLocalizations.of(context).listingPriceOnRequest,
       style: AppTextStyles.priceMedium.copyWith(
         fontSize: 17,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w800,
       ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -850,7 +850,7 @@ class FeaturedListingCard extends ConsumerWidget {
           label,
           style: AppTextStyles.caption.copyWith(
             fontSize: 10,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],

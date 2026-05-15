@@ -107,7 +107,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                     l10n.authWelcomeSubtitle,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -117,17 +117,17 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: context.isDarkMode ? Colors.white.withOpacity(0.08) : Colors.white,
+                      color: context.isDarkMode ? Colors.white.withValues(alpha: 0.08) : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 24,
                           offset: const Offset(0, 12),
                         ),
                       ],
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
                       ),
                     ),
                     child: Column(
@@ -309,10 +309,10 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.08),
+        color: AppColors.error.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color: AppColors.error.withOpacity(0.2),
+          color: AppColors.error.withValues(alpha: 0.2),
         ),
       ),
       child: Row(

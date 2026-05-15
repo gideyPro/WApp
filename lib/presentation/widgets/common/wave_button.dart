@@ -272,7 +272,7 @@ class _WaveButtonState extends State<WaveButton> {
           color: (widget.variant == ButtonVariant.primary
                   ? AppColors.accent600
                   : AppColors.emerald600)
-              .withOpacity(0.35),
+              .withValues(alpha: 0.35),
           blurRadius: 20,
           offset: const Offset(0, 10),
         ),
@@ -284,16 +284,16 @@ class _WaveButtonState extends State<WaveButton> {
   Color _getSplashColor() {
     switch (widget.variant) {
       case ButtonVariant.primary:
-        return AppColors.accent500.withOpacity(0.3);
+        return AppColors.accent500.withValues(alpha: 0.3);
       case ButtonVariant.success:
-        return AppColors.emerald500.withOpacity(0.3);
+        return AppColors.emerald500.withValues(alpha: 0.3);
       default:
-        return AppColors.primary500.withOpacity(0.1);
+        return AppColors.primary500.withValues(alpha: 0.1);
     }
   }
 
   Color _getHighlightColor() {
-    return AppColors.primary500.withOpacity(0.05);
+    return AppColors.primary500.withValues(alpha: 0.05);
   }
 }
 
@@ -391,7 +391,7 @@ class WaveTextField extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: enabled
-                ? AppColors.primary50.withOpacity(0.5)
+                ? AppColors.primary50.withValues(alpha: 0.5)
                 : AppColors.primary100,
             borderRadius: BorderRadius.circular(isCompact ? 4 : AppSpacing.borderRadiusSm),
             border: Border.all(
@@ -431,7 +431,7 @@ class WaveTextField extends StatelessWidget {
                         prefixIcon,
                         size: iconSize,
                         color: enabled
-                            ? context.theme.textMuted.withOpacity(0.5)
+                            ? context.theme.textMuted.withValues(alpha: 0.5)
                             : AppColors.primary300,
                       ),
                     )

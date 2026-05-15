@@ -191,7 +191,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.accent500.withOpacity(0.3),
+                  color: AppColors.accent500.withValues(alpha: 0.3),
                   blurRadius: 16,
                   spreadRadius: 2,
                 ),

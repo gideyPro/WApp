@@ -242,7 +242,7 @@ const SizedBox(height: 24),
               }
             },
             child:
-                Text(l10n.settingsLogout, style: const TextStyle(color: AppColors.error)),
+                Text(l10n.settingsLogout, style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -277,7 +277,7 @@ const SizedBox(height: 24),
             title,
             style: AppTextStyles.labelMedium.copyWith(
               color: context.theme.textSecondary,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w800,
               letterSpacing: 1.2,
             ),
           ),
@@ -318,7 +318,7 @@ const SizedBox(height: 24),
           title: Text(
             item.title,
             style: AppTextStyles.bodyMedium.copyWith(
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
               color: item.textColor,
             ),
           ),
@@ -335,7 +335,7 @@ const SizedBox(height: 24),
                   decoration: BoxDecoration(
                     color: context.theme.isDark ? AppColors.accent950 : AppColors.accent100,
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: AppColors.accent500.withOpacity(0.3)),
+                    border: Border.all(color: AppColors.accent500.withValues(alpha: 0.3)),
                   ),
                   child: Text(
                     item.badge!,
@@ -442,7 +442,7 @@ Widget _buildLanguageOption(
     leading: isSelected
         ? const Icon(Icons.check_circle, color: AppColors.accent500)
         : const Icon(Icons.radio_button_unchecked),
-    title: Text(languageName),
+    title: Text(languageName, style: TextStyle(fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
   );
 }
 

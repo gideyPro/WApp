@@ -81,7 +81,7 @@ class ListingStepIndicator extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight:
-                              isCurrent ? FontWeight.w700 : FontWeight.w500,
+                              isCurrent ? FontWeight.w700 : FontWeight.w600,
                           color: isCurrent 
                               ? (context.isDarkMode ? AppColors.accent400 : AppColors.navy950) 
                               : context.textMuted,

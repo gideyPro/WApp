@@ -181,7 +181,7 @@ class _PaymentTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: _statusColor(payment).withOpacity(0.1),
+              color: _statusColor(payment).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(

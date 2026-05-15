@@ -233,7 +233,7 @@ class _SubscriptionPlansScreenState
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -247,7 +247,7 @@ class _SubscriptionPlansScreenState
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 11,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -365,7 +365,7 @@ class _SubscriptionPlansScreenState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
@@ -592,7 +592,7 @@ class _SubscriptionPlansScreenState
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   )
@@ -820,7 +820,7 @@ class _PlanCard extends StatelessWidget {
           label,
           style: AppTextStyles.bodyMedium.copyWith(
             color: included ? AppColors.primary700 : AppColors.zinc500,
-            fontWeight: included ? FontWeight.w500 : FontWeight.normal,
+            fontWeight: included ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
       ],

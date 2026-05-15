@@ -202,7 +202,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         color: isDark ? AppColors.primary900 : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -605,7 +605,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.accent500.withOpacity(0.1),
+                  color: AppColors.accent500.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.workspace_premium_outlined,
@@ -731,7 +731,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               if (state.isLoading && state.listings.isNotEmpty)
                 Positioned.fill(
                   child: Container(
-                    color: AppColors.zinc50.withOpacity(0.7),
+                    color: AppColors.zinc50.withValues(alpha: 0.7),
                     child: const Center(child: CircularProgressIndicator()),
                   ),
                 ),

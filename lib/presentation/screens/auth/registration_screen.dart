@@ -103,7 +103,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
@@ -133,7 +133,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     AppLocalizations.of(context).authJoinMarketplace,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -143,17 +143,17 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: context.isDarkMode ? Colors.white.withOpacity(0.08) : Colors.white,
+                      color: context.isDarkMode ? Colors.white.withValues(alpha: 0.08) : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 24,
                           offset: const Offset(0, 12),
                         ),
                       ],
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
                       ),
                     ),
                     child: Column(
@@ -240,7 +240,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           content: Text(
             l10n.authCancelRegistration,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           actions: [
             TextButton(
@@ -415,7 +415,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               gender,
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected ? AppColors.accent700 : AppColors.primary600,
               ),
             ),
@@ -492,10 +492,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.08),
+        color: AppColors.error.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color: AppColors.error.withOpacity(0.2),
+          color: AppColors.error.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
