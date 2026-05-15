@@ -15,12 +15,12 @@ class ThemeColors {
 
   // Text colors
   Color get textPrimary => isDark ? Colors.white : AppColors.stone900;
-  Color get textSecondary => isDark ? AppColors.primary200 : AppColors.stone600;
-  Color get textTertiary => isDark ? AppColors.primary300 : AppColors.stone500;
-  Color get textMuted => isDark ? AppColors.primary400 : AppColors.stone400;
+  Color get textSecondary => isDark ? AppColors.primary300 : AppColors.stone600;
+  Color get textTertiary => isDark ? AppColors.primary400 : AppColors.stone500;
+  Color get textMuted => isDark ? AppColors.primary500 : AppColors.stone400;
 
   // Icon colors
-  Color get icon => isDark ? Colors.white : AppColors.primary700;
+  Color get icon => isDark ? Colors.white : AppColors.primary900;
   Color get iconSecondary => isDark ? AppColors.primary300 : AppColors.stone500;
 
   // Border colors
@@ -32,11 +32,11 @@ class ThemeColors {
   Color get inputBorder => isDark ? AppColors.primary700 : AppColors.stone300;
 
   // Button colors
-  Color get primary => isDark ? AppColors.accent500 : AppColors.primary800;
+  Color get primary => isDark ? AppColors.accent500 : AppColors.primary900;
   Color get primaryText => isDark ? Colors.black : Colors.white;
 
   // Icon button backgrounds
-  Color get iconBg => isDark ? AppColors.primary800 : AppColors.primary100;
+  Color get iconBg => isDark ? AppColors.primary800 : AppColors.primary50;
 
   // Shimmer colors
   Color get shimmerBase => isDark ? AppColors.primary900 : Colors.grey[300]!;

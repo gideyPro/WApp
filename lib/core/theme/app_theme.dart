@@ -13,15 +13,15 @@ class AppTheme {
       brightness: Brightness.light,
       fontFamily: 'Montserrat',
 
-      // Color Scheme - Midnight Teal & Aged Gold
+      // Color Scheme - Logo Navy & Emerald
       colorScheme: const ColorScheme.light(
-        primary: AppColors.primary800,
+        primary: AppColors.primary900,
         onPrimary: Colors.white,
         primaryContainer: AppColors.primary100,
         onPrimaryContainer: AppColors.primary900,
-        secondary: AppColors.accent600,
+        secondary: AppColors.accent500,
         onSecondary: Colors.white,
-        secondaryContainer: AppColors.accent100,
+        secondaryContainer: AppColors.accent50,
         onSecondaryContainer: AppColors.accent900,
         tertiary: AppColors.cta700,
         onTertiary: Colors.white,
@@ -33,7 +33,7 @@ class AppTheme {
         outline: AppColors.stone200,
       ),
 
-      // AppBar Theme - Luxury Minimalist
+      // AppBar Theme - Luxury Minimalist (Navy Authority)
       appBarTheme: AppBarTheme(
         elevation: 0,
         centerTitle: true,
@@ -46,7 +46,7 @@ class AppTheme {
         ),
       ),
 
-      // Card Theme - Quiet Luxury (Subtle Borders, No Heavy Shadows)
+      // Card Theme - Quiet Luxury
       cardTheme: CardThemeData(
         elevation: 0,
         color: Colors.white,
@@ -58,7 +58,7 @@ class AppTheme {
         margin: EdgeInsets.zero,
       ),
 
-      // Elevated Button Theme - Sophisticated Gold
+      // Elevated Button Theme - Authoritative Navy
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
@@ -75,7 +75,7 @@ class AppTheme {
         ),
       ),
 
-      // Input Decoration Theme - Elegant & Clean
+      // Input Decoration Theme - Clean Slate
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.stone50,
@@ -90,7 +90,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.primary500, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.accent500, width: 1.5),
         ),
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone400),
       ),
@@ -130,7 +130,7 @@ class AppTheme {
       brightness: Brightness.dark,
       fontFamily: 'Montserrat',
 
-      // Color Scheme - Deep Night Midnight Teal
+      // Color Scheme - Deep Night Logo Navy
       colorScheme: const ColorScheme.dark(
         primary: AppColors.accent400,
         onPrimary: Colors.black,
@@ -150,7 +150,7 @@ class AppTheme {
         outline: AppColors.primary700,
       ),
 
-      // Scaffold - Deep Midnight
+      // Scaffold - Deep Midnight Authority
       scaffoldBackgroundColor: const Color(0xFF0B0F10),
 
       // AppBar Theme - Dark Transparent
@@ -177,7 +177,7 @@ class AppTheme {
         ),
       ),
 
-      // Elevated Button Theme - Dark Gold
+      // Elevated Button Theme - Dark Emerald
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.accent500,

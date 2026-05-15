@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 /// WaveMart Brand Colors
-/// Refined for a "Modern Elegant" aesthetic: Midnight Teal & Aged Gold
+/// Logo-Matched Palette: Navy (#0A416B) & Emerald (#16B364)
 class AppColors {
   AppColors._();
 
-  // Primary Brand - Midnight Teal (Refined for depth)
-  static const Color primary50 = Color(0xFFF0F5F5);
-  static const Color primary100 = Color(0xFFD1DFDF);
-  static const Color primary200 = Color(0xFFA3BFBF);
-  static const Color primary300 = Color(0xFF759F9F);
-  static const Color primary400 = Color(0xFF477F7F);
-  static const Color primary500 = Color(0xFF0F766E); // Brand Core
-  static const Color primary600 = Color(0xFF0D665F);
-  static const Color primary700 = Color(0xFF0A514B);
-  static const Color primary800 = Color(0xFF073C38);
-  static const Color primary900 = Color(0xFF042F2E);
+  // Primary Brand - Logo Navy
+  static const Color primary50 = Color(0xFFF1F5F9);
+  static const Color primary100 = Color(0xFFE2E8F0);
+  static const Color primary200 = Color(0xFFCBD5E1);
+  static const Color primary300 = Color(0xFF94A3B8);
+  static const Color primary400 = Color(0xFF64748B);
+  static const Color primary500 = Color(0xFF475569);
+  static const Color primary600 = Color(0xFF334155);
+  static const Color primary700 = Color(0xFF1E293B);
+  static const Color primary800 = Color(0xFF0F172A);
+  static const Color primary900 = Color(0xFF0A416B); // Core Logo Navy
 
   // Deprecated aliases for compatibility
   static const Color navy50 = primary50;
@@ -28,20 +28,20 @@ class AppColors {
   static const Color navy700 = primary700;
   static const Color navy800 = primary800;
   static const Color navy900 = primary900;
-  static const Color navy950 = primary900;
+  static const Color navy950 = Color(0xFF073254);
 
-  // Accent - Aged Gold (Premium luxury feel)
-  static const Color accent50 = Color(0xFFFCF9F1);
-  static const Color accent100 = Color(0xFFF7F0DC);
-  static const Color accent200 = Color(0xFFEFE1B9);
-  static const Color accent300 = Color(0xFFE7D296);
-  static const Color accent400 = Color(0xFFDFC373);
-  static const Color accent500 = Color(0xFFD7B450);
-  static const Color accent600 = Color(0xFFB8860B); // Premium Gold
-  static const Color accent700 = Color(0xFF916A09);
-  static const Color accent800 = Color(0xFF6B4E07);
-  static const Color accent900 = Color(0xFF453205);
-  static const Color accent950 = Color(0xFF2D2103);
+  // Accent - Logo Emerald
+  static const Color accent50 = Color(0xFFECFDF5);
+  static const Color accent100 = Color(0xFFD1FAE5);
+  static const Color accent200 = Color(0xFFA7F3D0);
+  static const Color accent300 = Color(0xFF6EE7B7);
+  static const Color accent400 = Color(0xFF34D399);
+  static const Color accent500 = Color(0xFF16B364); // Core Logo Emerald
+  static const Color accent600 = Color(0xFF10B981);
+  static const Color accent700 = Color(0xFF059669);
+  static const Color accent800 = Color(0xFF047857);
+  static const Color accent900 = Color(0xFF064E3B);
+  static const Color accent950 = Color(0xFF052B19);
 
   // Deprecated aliases for compatibility
   static const Color wave50 = accent50;
@@ -56,9 +56,9 @@ class AppColors {
   static const Color wave900 = accent900;
   static const Color wave950 = accent950;
 
-  // CTA Blue (Professional Trust)
-  static const Color cta50 = Color(0xFFF8FAFC);
-  static const Color cta100 = Color(0xFFF1F5F9);
+  // CTA Blue
+  static const Color cta50 = Color(0xFFF0F9FF);
+  static const Color cta100 = Color(0xFFE0F2FE);
   static const Color cta200 = Color(0xFFBAE6FD);
   static const Color cta300 = Color(0xFF7DD3FC);
   static const Color cta400 = Color(0xFF38BDF8);
@@ -69,29 +69,29 @@ class AppColors {
   static const Color cta900 = Color(0xFF0C4A6E);
   static const Color cta950 = Color(0xFF082f49);
 
-  // Success - Deep Emerald
-  static const Color emerald50 = Color(0xFFECFDF5);
-  static const Color emerald100 = Color(0xFFD1FAE5);
-  static const Color emerald200 = Color(0xFFA7F3D0);
-  static const Color emerald300 = Color(0xFF6EE7B7);
-  static const Color emerald400 = Color(0xFF34D399);
-  static const Color emerald500 = Color(0xFF10B981);
-  static const Color emerald600 = Color(0xFF059669);
-  static const Color emerald700 = Color(0xFF047857);
-  static const Color emerald800 = Color(0xFF065F46);
-  static const Color emerald900 = Color(0xFF064E3B);
+  // Success (Mapped to Logo Emerald)
+  static const Color emerald50 = accent50;
+  static const Color emerald100 = accent100;
+  static const Color emerald200 = accent200;
+  static const Color emerald300 = accent300;
+  static const Color emerald400 = accent400;
+  static const Color emerald500 = accent500;
+  static const Color emerald600 = accent600;
+  static const Color emerald700 = accent700;
+  static const Color emerald800 = accent800;
+  static const Color emerald900 = accent900;
 
-  // Neutrals - Stone (Warmer, more premium than Zinc)
-  static const Color stone50 = Color(0xFFFAFAF9);
-  static const Color stone100 = Color(0xFFF5F5F4);
-  static const Color stone200 = Color(0xFFE7E5E4);
-  static const Color stone300 = Color(0xFFD6D3D1);
-  static const Color stone400 = Color(0xFFA8A29E);
-  static const Color stone500 = Color(0xFF78716C);
-  static const Color stone600 = Color(0xFF57534E);
-  static const Color stone700 = Color(0xFF44403C);
-  static const Color stone800 = Color(0xFF292524);
-  static const Color stone900 = Color(0xFF1C1917);
+  // Neutrals - Stone/Slate for better contrast with Navy
+  static const Color stone50 = Color(0xFFF8FAFC);
+  static const Color stone100 = Color(0xFFF1F5F9);
+  static const Color stone200 = Color(0xFFE2E8F0);
+  static const Color stone300 = Color(0xFFCBD5E1);
+  static const Color stone400 = Color(0xFF94A3B8);
+  static const Color stone500 = Color(0xFF64748B);
+  static const Color stone600 = Color(0xFF475569);
+  static const Color stone700 = Color(0xFF334155);
+  static const Color stone800 = Color(0xFF1E293B);
+  static const Color stone900 = Color(0xFF0F172A);
 
   // Backward compatibility for Zinc (Aliases)
   static const Color zinc50 = stone50;
@@ -115,14 +115,14 @@ class AppColors {
   static const Color info = Color(0xFF1E3A8A);
   static const Color infoLight = Color(0xFFDBEAFE);
 
-  // Background Colors - Warm Alabaster foundation
-  static const Color background = Color(0xFFF9F9F7);
+  // Background Colors - Cool Slate White
+  static const Color background = Color(0xFFF8FAFC);
   static const Color surface = Colors.white;
-  static const Color surfaceVariant = Color(0xFFF3F4F1);
+  static const Color surfaceVariant = Color(0xFFF1F5F9);
 
   // Gradient Definitions
   static const LinearGradient gradientPrimary = LinearGradient(
-    colors: [primary700, primary900],
+    colors: [primary900, Color(0xFF1E293B)],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
@@ -146,7 +146,7 @@ class AppColors {
   );
 
   static const LinearGradient gradientHero = LinearGradient(
-    colors: [primary900, primary800],
+    colors: [primary900, Color(0xFF0F172A)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -178,7 +178,7 @@ class AppColors {
   // Shadow Definitions - "Quiet Luxury" Ambient Shadows
   static List<BoxShadow> get shadowSm => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.02),
+          color: primary900.withValues(alpha: 0.02),
           blurRadius: 4,
           offset: const Offset(0, 2),
         ),
@@ -186,7 +186,7 @@ class AppColors {
 
   static List<BoxShadow> get shadowMd => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
+          color: primary900.withValues(alpha: 0.05),
           blurRadius: 12,
           offset: const Offset(0, 4),
         ),
@@ -194,7 +194,7 @@ class AppColors {
 
   static List<BoxShadow> get shadowLg => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
+          color: primary900.withValues(alpha: 0.08),
           blurRadius: 24,
           offset: const Offset(0, 8),
         ),
@@ -202,7 +202,7 @@ class AppColors {
 
   static List<BoxShadow> get shadowPremium => [
         BoxShadow(
-          color: primary900.withValues(alpha: 0.05),
+          color: primary900.withValues(alpha: 0.06),
           blurRadius: 40,
           offset: const Offset(0, 20),
         ),
@@ -227,16 +227,16 @@ class AppColors {
 extension AppColorsExtension on BuildContext {
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 
-  Color get scaffoldBg => isDarkMode ? AppColors.primary900 : AppColors.background;
+  Color get scaffoldBg => isDarkMode ? const Color(0xFF0B0F10) : AppColors.background;
   Color get cardBg => isDarkMode ? AppColors.primary800 : Colors.white;
-  Color get cardBgElevated => isDarkMode ? AppColors.primary900 : Colors.white;
+  Color get cardBgElevated => isDarkMode ? const Color(0xFF1E293B) : Colors.white;
   Color get textPrimary => isDarkMode ? Colors.white : AppColors.stone900;
-  Color get textSecondary => isDarkMode ? AppColors.primary200 : AppColors.stone600;
-  Color get textMuted => isDarkMode ? AppColors.primary400 : AppColors.stone400;
-  Color get iconPrimary => isDarkMode ? Colors.white : AppColors.primary700;
+  Color get textSecondary => isDarkMode ? AppColors.primary300 : AppColors.stone600;
+  Color get textMuted => isDarkMode ? AppColors.primary500 : AppColors.stone400;
+  Color get iconPrimary => isDarkMode ? Colors.white : AppColors.primary900;
   Color get divider => isDarkMode ? AppColors.primary700 : AppColors.stone200;
   Color get inputBg => isDarkMode ? AppColors.primary800 : AppColors.stone50;
-  Color get sheetBg => isDarkMode ? AppColors.primary800 : Colors.white;
+  Color get sheetBg => isDarkMode ? AppColors.primary900 : Colors.white;
   Color get shimmerBase => isDarkMode ? AppColors.primary900 : Colors.grey[300]!;
   Color get shimmerHighlight => isDarkMode ? AppColors.primary700 : Colors.grey[100]!;
 

@@ -69,7 +69,7 @@ class AppTextStyles {
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 4.0, // High spacing for luxury feel
-        color: AppColors.primary700,
+        color: AppColors.primary900,
       );
 
   static TextStyle get subtitle => const TextStyle(
@@ -207,7 +207,7 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w700,
-        color: AppColors.accent600,
+        color: AppColors.accent500,
       );
 
   static TextStyle get navInactive => const TextStyle(
