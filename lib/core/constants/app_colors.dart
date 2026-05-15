@@ -232,8 +232,8 @@ extension AppColorsExtension on BuildContext {
   Color get cardBg => isDarkMode ? AppColors.primary800 : Colors.white;
   Color get cardBgElevated => isDarkMode ? const Color(0xFF1E293B) : Colors.white;
   Color get textPrimary => isDarkMode ? Colors.white : AppColors.stone900;
-  Color get textSecondary => isDarkMode ? AppColors.primary300 : AppColors.stone600;
-  Color get textMuted => isDarkMode ? AppColors.primary500 : AppColors.stone400;
+  Color get textSecondary => isDarkMode ? AppColors.primary200 : AppColors.stone600;
+  Color get textMuted => isDarkMode ? AppColors.primary400 : AppColors.stone400;
   Color get iconPrimary => isDarkMode ? Colors.white : AppColors.primary900;
   Color get divider => isDarkMode ? AppColors.primary700 : AppColors.stone200;
   Color get inputBg => isDarkMode ? AppColors.primary800 : AppColors.stone50;

@@ -15,9 +15,9 @@ class ThemeColors {
 
   // Text colors
   Color get textPrimary => isDark ? Colors.white : AppColors.stone900;
-  Color get textSecondary => isDark ? AppColors.primary300 : AppColors.stone600;
-  Color get textTertiary => isDark ? AppColors.primary400 : AppColors.stone500;
-  Color get textMuted => isDark ? AppColors.primary500 : AppColors.stone400;
+  Color get textSecondary => isDark ? AppColors.primary200 : AppColors.stone600;
+  Color get textTertiary => isDark ? AppColors.primary300 : AppColors.stone500;
+  Color get textMuted => isDark ? AppColors.primary400 : AppColors.stone400;
 
   // Icon colors
   Color get icon => isDark ? Colors.white : AppColors.primary900;
