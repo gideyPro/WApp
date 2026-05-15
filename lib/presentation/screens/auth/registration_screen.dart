@@ -13,7 +13,6 @@ import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
 import 'otp_login_screen.dart';
 
-/// Modern Registration Screen with consistent design
 class RegistrationScreen extends ConsumerStatefulWidget {
   const RegistrationScreen({super.key});
 
@@ -89,133 +88,87 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       child: Scaffold(
         body: WaveAuthBackground(
           child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const SizedBox(height: 24),
-
-                  // Back button + Logo row
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: _showCancelDialog,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Logo with glassmorphism
-                  const GlassLogoContainer(size: 72, logoSize: 52),
-                  const SizedBox(height: 24),
-
-                  // Title
-                  Text(
-                    AppLocalizations.of(context).authCreateAccount,
-                    style: AppTextStyles.headline3.copyWith(
-                      color: Colors.white,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight -
+                          MediaQuery.of(context).padding.top -
+                          MediaQuery.of(context).padding.bottom,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppLocalizations.of(context).authJoinMarketplace,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-
-                  // White card container
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: context.isDarkMode ? Colors.white.withValues(alpha: 0.08) : Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 24,
-                          offset: const Offset(0, 12),
-                        ),
-                      ],
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.15),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        // Step 1: Registration Form
-                        if (!_isOtpSent) ...[
-                          _buildSectionTitle(l10n.authPersonalInfo),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: [
                           const SizedBox(height: 20),
-                          _buildNameInputs(),
-                          const SizedBox(height: 16),
-                          _buildPhoneInput(),
-                          const SizedBox(height: 16),
-                          _buildGenderSelection(),
-                          const SizedBox(height: 24),
-                          WaveButton(
-                            text: l10n.listingContinue,
-                            icon: Icons.arrow_forward_rounded,
-                            isLoading: _isLoading,
-                            isFullWidth: true,
-                            onPressed: _isLoading ? null : _sendRegistrationOtp,
-                          ),
-                        ],
 
-                        // Step 2: OTP Verification
-                        if (_isOtpSent) ...[
-                          _buildSectionTitle(l10n.authVerifyPhone),
-                          const SizedBox(height: 8),
+                          // Back button
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: _showCancelDialog,
+                                behavior: HitTestBehavior.opaque,
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: 0.2),
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.arrow_back_ios_rounded,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Logo
+                          const GlassLogoContainer(size: 64, logoSize: 46),
+                          const SizedBox(height: 20),
+
+                          // Title
                           Text(
-                            l10n.authOtpSentMessage(_phoneController.text),
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.zinc500,
+                            AppLocalizations.of(context).authCreateAccount,
+                            style: AppTextStyles.headline3.copyWith(
+                              color: Colors.white,
+                              fontSize: 28,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 24),
-                          _buildOtpInput(),
-                          const SizedBox(height: 24),
-                          WaveButton(
-                            text: l10n.authVerifyAndCreate,
-                            icon: Icons.check_circle_rounded,
-                            isLoading: _isLoading,
-                            isFullWidth: true,
-                            onPressed: _isLoading ? null : _verifyAndRegister,
+                          const SizedBox(height: 6),
+                          Text(
+                            AppLocalizations.of(context).authJoinMarketplace,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withValues(alpha: 0.65),
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 16),
-                          _buildResendOtp(),
-                        ],
+                          const SizedBox(height: 28),
 
-                        // Error Message
-                        if (authState.errorMessage != null) ...[
-                          const SizedBox(height: 16),
-                          _buildInlineError(authState.errorMessage!),
-                        ],
+                          // Step indicator
+                          if (!_isOtpSent) _buildStepIndicator(1, 2, 'Personal Info')
+                          else _buildStepIndicator(2, 2, 'Verification'),
+                          const SizedBox(height: 20),
 
-                        // Login Link INSIDE card (only show before OTP is sent)
-                        if (!_isOtpSent) _buildLoginLink(),
-                      ],
+                          // Main card
+                          _buildAuthCard(authState),
+
+                          const SizedBox(height: 24),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 24),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ),
@@ -223,21 +176,167 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     );
   }
 
+  Widget _buildStepIndicator(int currentStep, int totalSteps, String label) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (int i = 1; i <= totalSteps; i) ...[
+          Container(
+            width: i <= currentStep ? 32 : 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: i <= currentStep
+                  ? AppColors.accent500
+                  : Colors.white.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          if (i < totalSteps) const SizedBox(width: 8),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildAuthCard(dynamic authState) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: context.isDarkMode
+            ? Colors.white.withValues(alpha: 0.06)
+            : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 32,
+            offset: const Offset(0, 16),
+            spreadRadius: -4,
+          ),
+        ],
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          // Step 1: Registration Form
+          if (!_isOtpSent) ...[
+            _buildSectionHeader(
+              icon: Icons.person_add_rounded,
+              title: l10n.authPersonalInfo,
+              subtitle: 'Fill in your details to get started',
+            ),
+            const SizedBox(height: 20),
+            _buildNameInputs(),
+            const SizedBox(height: 14),
+            _buildPhoneInput(),
+            const SizedBox(height: 14),
+            _buildGenderSelection(),
+            const SizedBox(height: 24),
+            WaveButton(
+              text: l10n.listingContinue,
+              icon: Icons.arrow_forward_rounded,
+              isLoading: _isLoading,
+              isFullWidth: true,
+              onPressed: _isLoading ? null : _sendRegistrationOtp,
+            ),
+          ],
+
+          // Step 2: OTP Verification
+          if (_isOtpSent) ...[
+            _buildSectionHeader(
+              icon: Icons.shield_rounded,
+              title: l10n.authVerifyPhone,
+              subtitle: l10n.authOtpSentMessage(_phoneController.text),
+            ),
+            const SizedBox(height: 24),
+            _buildOtpInput(),
+            const SizedBox(height: 24),
+            WaveButton(
+              text: l10n.authVerifyAndCreate,
+              icon: Icons.check_circle_rounded,
+              isLoading: _isLoading,
+              isFullWidth: true,
+              onPressed: _isLoading ? null : _verifyAndRegister,
+            ),
+            const SizedBox(height: 20),
+            _buildResendOtp(),
+          ],
+
+          // Error Message
+          if (authState.errorMessage != null) ...[
+            const SizedBox(height: 16),
+            _buildInlineError(authState.errorMessage!),
+          ],
+
+          // Login Link (only show before OTP is sent)
+          if (!_isOtpSent) ...[
+            const SizedBox(height: 20),
+            _buildLoginLink(),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: AppColors.accent50,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            icon,
+            color: AppColors.accent600,
+            size: 22,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          title,
+          style: AppTextStyles.titleSmall.copyWith(
+            fontWeight: FontWeight.w800,
+            color: AppColors.primary900,
+            fontSize: 17,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          subtitle,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: AppColors.zinc500,
+            fontWeight: FontWeight.w500,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
   void _showCancelDialog() {
-    // If no data entered, just go back without asking
     if (!_hasUserData && !_isOtpSent) {
       Navigator.pop(context);
       return;
     }
 
-    // Show compact confirmation dialog
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (context) {
         return AlertDialog(
-          contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+          contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
           actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           content: Text(
             l10n.authCancelRegistration,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
@@ -263,16 +362,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.titleSmall.copyWith(
-        fontWeight: FontWeight.w800,
-        color: AppColors.primary900,
-      ),
-    );
-  }
-
   Widget _buildNameInputs() {
     return Row(
       children: [
@@ -280,7 +369,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           child: _buildInputField(
             controller: _firstNameController,
             hint: AppLocalizations.of(context).profileFirstName,
-            icon: Icons.person_outline,
+            icon: Icons.person_outline_rounded,
           ),
         ),
         const SizedBox(width: 12),
@@ -288,7 +377,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           child: _buildInputField(
             controller: _lastNameController,
             hint: AppLocalizations.of(context).profileLastName,
-            icon: Icons.person_outline,
+            icon: Icons.person_outline_rounded,
           ),
         ),
       ],
@@ -299,9 +388,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: isDark ? AppColors.primary700 : AppColors.primary200),
+        color: isDark
+            ? AppColors.primary800.withValues(alpha: 0.5)
+            : AppColors.primary50.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? AppColors.primary700 : AppColors.primary200,
+          width: 1.5,
+        ),
       ),
       child: Row(
         children: [
@@ -311,17 +405,25 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               setState(() => _selectedCountry = country);
             },
           ),
+          const SizedBox(width: 8),
           Expanded(
             child: TextField(
               controller: _phoneController,
               decoration: InputDecoration(
                 hintText: _selectedCountry.example,
+                hintStyle: TextStyle(
+                  color: AppColors.primary400,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
               ),
               keyboardType: TextInputType.phone,
               style: TextStyle(
                 fontSize: 15,
+                fontWeight: FontWeight.w600,
                 color: isDark ? Colors.white : AppColors.primary900,
               ),
             ),
@@ -337,24 +439,38 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     required IconData icon,
     TextInputType? keyboardType,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.primary50.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.primary200),
+        color: isDark
+            ? AppColors.primary800.withValues(alpha: 0.5)
+            : AppColors.primary50.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? AppColors.primary700 : AppColors.primary200,
+          width: 1.5,
+        ),
       ),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(color: AppColors.primary500, fontSize: 14),
-          prefixIcon: Icon(icon, color: AppColors.primary600, size: 20),
+          hintStyle: TextStyle(
+            color: AppColors.primary400,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          prefixIcon: Icon(icon, color: AppColors.primary500, size: 20),
           border: InputBorder.none,
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         ),
         keyboardType: keyboardType,
-        style: const TextStyle(fontSize: 15),
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: isDark ? Colors.white : AppColors.primary900,
+        ),
       ),
     );
   }
@@ -367,20 +483,21 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Text(
           l10n.profileGender,
           style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary800,
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: AppColors.zinc600,
+            letterSpacing: 0.3,
           ),
         ),
         const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
-              child: _buildGenderOption(l10n.profileMale, Icons.male),
+              child: _buildGenderOption(l10n.profileMale, Icons.male_rounded),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildGenderOption(l10n.profileFemale, Icons.female),
+              child: _buildGenderOption(l10n.profileFemale, Icons.female_rounded),
             ),
           ],
         ),
@@ -392,14 +509,16 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final isSelected = _selectedGender == gender;
     return GestureDetector(
       onTap: () => setState(() => _selectedGender = gender),
-      child: Container(
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.accent50 : AppColors.primary50.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(4),
+          color: isSelected ? AppColors.accent50 : AppColors.primary50.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.accent500 : AppColors.primary200,
-            width: isSelected ? 2 : 1,
+            width: isSelected ? 2 : 1.5,
           ),
         ),
         child: Row(
@@ -408,15 +527,15 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             Icon(
               icon,
               size: 18,
-              color: isSelected ? AppColors.accent600 : AppColors.primary500,
+              color: isSelected ? AppColors.accent600 : AppColors.primary400,
             ),
             const SizedBox(width: 8),
             Text(
               gender,
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.accent700 : AppColors.primary600,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                color: isSelected ? AppColors.accent700 : AppColors.primary500,
               ),
             ),
           ],
@@ -434,22 +553,37 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildResendOtp() {
     if (_resendCountdown > 0) {
-      return Text(
-        'Resend code in ${_resendCountdown}s',
-        style: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.primary500,
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.primary50,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          'Resend code in ${_resendCountdown}s',
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.primary500,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       );
     }
 
     return TextButton(
       onPressed: _sendRegistrationOtp,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        backgroundColor: AppColors.accent50,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
       child: const Text(
         'Resend Code',
         style: TextStyle(
           color: AppColors.accent600,
-          fontWeight: FontWeight.w600,
-          fontSize: 15,
+          fontWeight: FontWeight.w700,
+          fontSize: 14,
         ),
       ),
     );
@@ -464,9 +598,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Text(
           l10n.authAlreadyHaveAccount,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: isDark ? AppColors.zinc400 : AppColors.zinc600,
+            color: isDark ? AppColors.zinc400 : AppColors.zinc500,
+            fontWeight: FontWeight.w500,
           ),
         ),
+        const SizedBox(width: 4),
         GestureDetector(
           onTap: () {
             Navigator.of(context).push(
@@ -475,12 +611,15 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               ),
             );
           },
-          child: Text(
-            l10n.authLogin,
-            style: const TextStyle(
-              color: AppColors.accent600,
-              fontWeight: FontWeight.w600,
-              fontSize: 15,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Text(
+              l10n.authLogin,
+              style: const TextStyle(
+                color: AppColors.accent600,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
             ),
           ),
         ),
@@ -490,20 +629,28 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildInlineError(String message) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(4),
+        color: AppColors.error.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: AppColors.error.withValues(alpha: 0.2),
+          color: AppColors.error.withValues(alpha: 0.15),
+          width: 1,
         ),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.error_outline,
-            size: 20,
-            color: AppColors.error,
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: AppColors.error.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Icon(
+              Icons.error_outline_rounded,
+              size: 18,
+              color: AppColors.error,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -511,6 +658,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               message,
               style: const TextStyle(
                 fontSize: 13,
+                fontWeight: FontWeight.w600,
                 color: AppColors.error,
               ),
             ),
@@ -519,10 +667,13 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             onTap: () {
               ref.read(authStateProvider.notifier).clearError();
             },
-            child: const Icon(
-              Icons.close,
-              size: 18,
-              color: AppColors.error,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              child: const Icon(
+                Icons.close_rounded,
+                size: 18,
+                color: AppColors.error,
+              ),
             ),
           ),
         ],
@@ -536,7 +687,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Prepend country code
       final fullPhone = '${_selectedCountry.code}${_phoneController.text.trim()}';
       final response = await ref.read(authStateProvider.notifier).register(
             firstName: _firstNameController.text.trim(),
@@ -588,8 +738,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       }
     } catch (e) {
       setState(() => _isLoading = false);
-      final l10n = AppLocalizations.of(context);
-      _showErrorSnackBar(l10n.authNetworkError);
+      if (mounted) {
+        final l10n = AppLocalizations.of(context);
+        _showErrorSnackBar(l10n.authNetworkError);
+      }
     }
   }
 
@@ -629,7 +781,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
