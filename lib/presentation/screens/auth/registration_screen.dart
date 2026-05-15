@@ -113,7 +113,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(4),
                                     border: Border.all(
                                       color: Colors.white.withValues(alpha: 0.2),
                                     ),
@@ -180,7 +180,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        for (int i = 1; i <= totalSteps; i) ...[
+        for (int i = 1; i <= totalSteps; i++) ...[
           Container(
             width: i <= currentStep ? 32 : 8,
             height: 8,
@@ -204,7 +204,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         color: context.isDarkMode
             ? Colors.white.withValues(alpha: 0.06)
             : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.12),
@@ -291,7 +291,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: AppColors.accent50,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Icon(
             icon,
@@ -335,7 +335,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
           actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(4),
           ),
           content: Text(
             l10n.authCancelRegistration,

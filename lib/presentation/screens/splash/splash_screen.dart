@@ -171,7 +171,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             ),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(4),
                               border: Border.all(
                                 color: Colors.white.withValues(alpha: 0.15),
                               ),

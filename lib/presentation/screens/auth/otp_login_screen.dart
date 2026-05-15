@@ -147,7 +147,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         color: context.isDarkMode
             ? Colors.white.withValues(alpha: 0.06)
             : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.12),
@@ -226,7 +226,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: AppColors.accent50,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Icon(
             icon,
@@ -263,7 +263,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         color: isDark
             ? AppColors.primary800.withValues(alpha: 0.5)
             : AppColors.primary50.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(
           color: isDark ? AppColors.primary700 : AppColors.primary200,
           width: 1.5,
@@ -394,7 +394,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.error.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(
           color: AppColors.error.withValues(alpha: 0.15),
           width: 1,
@@ -406,7 +406,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: AppColors.error.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: const Icon(
               Icons.error_outline_rounded,
