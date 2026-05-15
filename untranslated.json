@@ -1,0 +1,47 @@
+{
+  "am": [
+    "commonYes",
+    "subscriptionsExpiresOn",
+    "subscriptionsCancelledOn",
+    "subscriptionsExpiredOn",
+    "subscriptionsFeatures",
+    "messageRetry",
+    "messageGoBack",
+    "messageDismiss",
+    "messageNetworkTitle",
+    "messageNetworkSubtitle",
+    "messageEmptyTitle",
+    "messageEmptySubtitle",
+    "messageErrorTitle",
+    "messageErrorSubtitle",
+    "messageSuccessTitle",
+    "messageSuccessSubtitle",
+    "messageInfoTitle",
+    "messageInfoSubtitle",
+    "messageWarningTitle",
+    "messageWarningSubtitle"
+  ],
+
+  "ti": [
+    "commonYes",
+    "subscriptionsExpiresOn",
+    "subscriptionsCancelledOn",
+    "subscriptionsExpiredOn",
+    "subscriptionsFeatures",
+    "messageRetry",
+    "messageGoBack",
+    "messageDismiss",
+    "messageNetworkTitle",
+    "messageNetworkSubtitle",
+    "messageEmptyTitle",
+    "messageEmptySubtitle",
+    "messageErrorTitle",
+    "messageErrorSubtitle",
+    "messageSuccessTitle",
+    "messageSuccessSubtitle",
+    "messageInfoTitle",
+    "messageInfoSubtitle",
+    "messageWarningTitle",
+    "messageWarningSubtitle"
+  ]
+}

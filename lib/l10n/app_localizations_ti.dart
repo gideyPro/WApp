@@ -66,7 +66,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonNo => 'ኣይ';
 
   @override
-  String get commonYes => 'Yes';
+  String get commonYes => 'እወ';
 
   @override
   String get commonNoData => 'ዝተረኽበ መረዳእታ የለን';
@@ -1519,21 +1519,21 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String subscriptionsExpiresOn(Object date) {
-    return 'Expires on $date';
+    return 'ብ$date ይዛዝም';
   }
 
   @override
   String subscriptionsCancelledOn(Object date) {
-    return 'Cancelled on $date';
+    return 'ብ$date ተሰሪዙ';
   }
 
   @override
   String subscriptionsExpiredOn(Object date) {
-    return 'Expired on $date';
+    return 'ብ$date ሓሊፉ';
   }
 
   @override
-  String get subscriptionsFeatures => 'Features';
+  String get subscriptionsFeatures => 'ባህርያት';
 
   @override
   String get subscriptionsNoPlansAvailable =>
@@ -1597,48 +1597,47 @@ class AppLocalizationsTi extends AppLocalizations {
   String get paymentsGeneral => 'ክፍሊት';
 
   @override
-  String get messageRetry => 'Try Again';
+  String get messageRetry => 'ደጊምካ ፈትን';
 
   @override
-  String get messageGoBack => 'Go Back';
+  String get messageGoBack => 'ተመለስ';
 
   @override
-  String get messageDismiss => 'Dismiss';
+  String get messageDismiss => 'ዕጸው';
 
   @override
-  String get messageNetworkTitle => 'No Internet Connection';
+  String get messageNetworkTitle => 'ናይ ኢንተርኔት ርክብ የለን';
 
   @override
-  String get messageNetworkSubtitle => 'Check your connection and try again.';
+  String get messageNetworkSubtitle => 'ርክብካ ፈትሽ እንደገና ፈትን።';
 
   @override
-  String get messageEmptyTitle => 'Nothing Here';
+  String get messageEmptyTitle => 'ነገር የለን';
 
   @override
-  String get messageEmptySubtitle => 'There\'s nothing to show right now.';
+  String get messageEmptySubtitle => 'ሕጂ ክርአ ዝከኣል ነገር የለን።';
 
   @override
-  String get messageErrorTitle => 'Something Went Wrong';
+  String get messageErrorTitle => 'ገለ ጸገም ኣጋጢሙ';
 
   @override
-  String get messageErrorSubtitle => 'We couldn\'t complete your request.';
+  String get messageErrorSubtitle => 'ንጥለትካ ክንውስኽ ኣይተኻእለናን።';
 
   @override
-  String get messageSuccessTitle => 'Success!';
+  String get messageSuccessTitle => 'ተሳኪሙ!';
 
   @override
-  String get messageSuccessSubtitle =>
-      'Your action was completed successfully.';
+  String get messageSuccessSubtitle => 'ክዋኔካ ብትኽክል ተፈጺሙ።';
 
   @override
-  String get messageInfoTitle => 'Info';
+  String get messageInfoTitle => 'ሓበሬታ';
 
   @override
-  String get messageInfoSubtitle => 'Here is some important information.';
+  String get messageInfoSubtitle => 'እዚ ገለ ኣገዳሲ ሓበሬታ እዩ።';
 
   @override
-  String get messageWarningTitle => 'Warning';
+  String get messageWarningTitle => 'መጠንቀቕታ';
 
   @override
-  String get messageWarningSubtitle => 'Please review this important message.';
+  String get messageWarningSubtitle => 'እዚ ኣገዳሲ መልእኽቲ ክትምርምሮ ትግደስ።';
 }
