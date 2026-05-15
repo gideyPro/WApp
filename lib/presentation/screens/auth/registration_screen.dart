@@ -24,6 +24,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final GlobalKey<OtpInputFieldState> _otpKey = GlobalKey();
   String _otpCode = '';
 
   String? _selectedGender = 'Male';
@@ -424,8 +425,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildOtpInput() {
     return OtpInputField(
+      key: _otpKey,
       onChanged: (value) => _otpCode = value,
       hasError: ref.watch(authStateProvider).errorMessage != null,
+      autofocus: true,
     );
   }
 
@@ -528,6 +531,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Future<void> _sendRegistrationOtp() async {
+    if (_isOtpSent) {
+      _otpKey.currentState?.clear();
+      _otpCode = '';
+    }
+
     if (!_validateForm()) return;
 
     setState(() => _isLoading = true);

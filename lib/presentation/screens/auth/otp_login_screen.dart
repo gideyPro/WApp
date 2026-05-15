@@ -23,6 +23,7 @@ class OtpLoginScreen extends ConsumerStatefulWidget {
 
 class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
+  final GlobalKey<OtpInputFieldState> _otpKey = GlobalKey();
   String _otpCode = '';
 
   int _resendCountdown = 0;
@@ -240,8 +241,10 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   Widget _buildOtpInput() {
     final hasError = ref.watch(authStateProvider).errorMessage != null;
     return OtpInputField(
+      key: _otpKey,
       onChanged: (value) => _otpCode = value,
       hasError: hasError,
+      autofocus: true,
     );
   }
 
@@ -386,6 +389,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Future<void> _resendOtp() async {
+    _otpKey.currentState?.clear();
+    _otpCode = '';
+
     final response = await ref.read(authStateProvider.notifier).resendOtp();
     if (mounted) {
       if (response.success) {
