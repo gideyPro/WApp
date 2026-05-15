@@ -1182,6 +1182,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersCancel => 'ትእዛዝ ሰርዝ';
 
   @override
+  String get ordersEdit => 'ኣርም';
+
+  @override
+  String get ordersSave => 'ለውጢ ዓቅብ';
+
+  @override
   String get ordersCancelConfirm => 'ርግጸኛ ዲኻ ነዚ ትእዛዝ ክትስርዞ ትደሊ?';
 
   @override
@@ -1189,6 +1195,9 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get ordersCreated => 'ትእዛዝ ብትኽክል ተፈጢሩ';
+
+  @override
+  String get ordersUpdated => 'ትእዛዝ ብትኽክል ተለዊጡ';
 
   @override
   String get ordersLocation => 'ከባቢ';

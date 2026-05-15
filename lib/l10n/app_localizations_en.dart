@@ -1193,6 +1193,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersCancel => 'Cancel Order';
 
   @override
+  String get ordersEdit => 'Edit';
+
+  @override
+  String get ordersSave => 'Save Changes';
+
+  @override
   String get ordersCancelConfirm =>
       'Are you sure you want to cancel this order?';
 
@@ -1201,6 +1207,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ordersCreated => 'Order created successfully';
+
+  @override
+  String get ordersUpdated => 'Order updated successfully';
 
   @override
   String get ordersLocation => 'Location';

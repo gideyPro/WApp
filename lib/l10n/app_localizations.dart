@@ -2326,6 +2326,18 @@ abstract class AppLocalizations {
   /// **'Cancel Order'**
   String get ordersCancel;
 
+  /// No description provided for @ordersEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get ordersEdit;
+
+  /// No description provided for @ordersSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get ordersSave;
+
   /// No description provided for @ordersCancelConfirm.
   ///
   /// In en, this message translates to:
@@ -2343,6 +2355,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order created successfully'**
   String get ordersCreated;
+
+  /// No description provided for @ordersUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Order updated successfully'**
+  String get ordersUpdated;
 
   /// No description provided for @ordersLocation.
   ///

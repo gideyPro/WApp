@@ -8,6 +8,7 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import 'create_order_screen.dart';
+import 'edit_order_screen.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
@@ -347,6 +348,28 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 if (order.isActive)
                   Row(
                     children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => EditOrderScreen(order: order),
+                              ),
+                            );
+                            if (mounted) {
+                              ref.read(ordersProvider.notifier).loadOrders();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 13),
+                            backgroundColor: AppColors.accent500,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: Text(l10n.ordersEdit),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => _confirmCancel(order.id, l10n),

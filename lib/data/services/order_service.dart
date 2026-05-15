@@ -232,6 +232,28 @@ class OrderService {
     }
   }
 
+  Future<OrderResponse> updateOrder(int id, Map<String, dynamic> data) async {
+    try {
+      final response = await _apiClient.dio.put('$_basePath/$id', data: data);
+      if (response.statusCode == 200) {
+        return OrderResponse(
+          success: true,
+          message: response.data['message'] ?? 'Order updated',
+        );
+      }
+      return OrderResponse(
+        success: false,
+        message: response.data?['message'] ?? 'Failed to update order',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return OrderResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
   // Allow passing a custom Dio instance or base URL override for tests
   factory OrderService.withClient(ApiClient client) => OrderService(apiClient: client);
 }
