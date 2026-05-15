@@ -97,8 +97,9 @@ class _OtpInputFieldState extends State<OtpInputField> {
       width: totalWidth,
       height: fieldHeight,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          Center(child: _buildBoxes(fieldWidth, fieldHeight, gap, borderRadius, fontSize)),
+          _buildBoxes(fieldWidth, fieldHeight, gap, borderRadius, fontSize),
           Positioned.fill(
             child: GestureDetector(
               onTapUp: _handleTapUp,
