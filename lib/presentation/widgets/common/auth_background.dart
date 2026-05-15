@@ -2,8 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 
-/// Premium consistent background for Auth screens (Splash, Login, Register)
-class WaveAuthBackground extends StatelessWidget {
+class WaveAuthBackground extends StatefulWidget {
   final Widget? child;
   final bool showWaves;
 
@@ -12,6 +11,29 @@ class WaveAuthBackground extends StatelessWidget {
     this.child,
     this.showWaves = true,
   });
+
+  @override
+  State<WaveAuthBackground> createState() => _WaveAuthBackgroundState();
+}
+
+class _WaveAuthBackgroundState extends State<WaveAuthBackground>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,65 +61,53 @@ class WaveAuthBackground extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          if (showWaves)
+          if (widget.showWaves)
             Positioned.fill(
-              child: CustomPaint(
-                painter: _WavePainter(),
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, _) => _AuroraOverlay(value: _controller.value),
               ),
             ),
-          if (child != null) child!,
+          if (widget.child != null) widget.child!,
         ],
       ),
     );
   }
 }
 
-class _WavePainter extends CustomPainter {
+class _AuroraOverlay extends StatelessWidget {
+  final double value;
+
+  const _AuroraOverlay({required this.value});
+
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
-      ..style = PaintingStyle.fill;
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final t = value;
+    final centerX = sin(t * 2 * pi) * 0.4;
+    final centerY = cos(t * 2 * pi) * 0.25 - 0.15;
 
-    final path = Path();
-    path.moveTo(0, size.height * 0.7);
-    
-    // Create smooth wave curves
-    for (double i = 0; i <= size.width; i++) {
-      final y = size.height * 0.7 +
-          sin(i * 0.02) * 20 +
-          sin(i * 0.01) * 10;
-      path.lineTo(i, y);
-    }
-    
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.close();
-    
-    canvas.drawPath(path, paint);
-    
-    // Second wave
-    final paint2 = Paint()
-      ..color = Colors.white.withOpacity(0.03)
-      ..style = PaintingStyle.fill;
-
-    final path2 = Path();
-    path2.moveTo(0, size.height * 0.8);
-    
-    for (double i = 0; i <= size.width; i++) {
-      final y = size.height * 0.8 +
-          sin(i * 0.015 + 1) * 15 +
-          sin(i * 0.008) * 8;
-      path2.lineTo(i, y);
-    }
-    
-    path2.lineTo(size.width, size.height);
-    path2.lineTo(0, size.height);
-    path2.close();
-    
-    canvas.drawPath(path2, paint2);
+    return Container(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment(centerX, centerY),
+          radius: 0.7 + t * 0.3,
+          colors: isDark
+              ? [
+                  AppColors.accent500.withValues(alpha: 0.0),
+                  AppColors.accent500.withValues(alpha: 0.06),
+                  AppColors.cta500.withValues(alpha: 0.04),
+                  Colors.transparent,
+                ]
+              : [
+                  AppColors.accent500.withValues(alpha: 0.0),
+                  AppColors.accent500.withValues(alpha: 0.09),
+                  AppColors.cta500.withValues(alpha: 0.06),
+                  Colors.transparent,
+                ],
+          stops: const [0.0, 0.25, 0.55, 1.0],
+        ),
+      ),
+    );
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

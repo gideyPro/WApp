@@ -62,7 +62,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
     final double rawIndex = details.localPosition.dx / (fieldWidth + gap);
     final int index = rawIndex.floor().clamp(0, widget.length);
     _controller.selection = TextSelection.collapsed(offset: index);
-    _focusNode.requestFocus();
+    FocusScope.of(context).requestFocus(_focusNode);
   }
 
   void _onValueChanged() {
