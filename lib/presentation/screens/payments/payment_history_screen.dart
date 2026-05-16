@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -60,7 +62,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
   Widget _buildBody(PaymentHistoryState state) {
     final l10n = AppLocalizations.of(context);
     if (state.isLoading && state.payments.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return _buildSkeletonList();
     }
 
     if (state.errorMessage != null && state.payments.isEmpty) {
@@ -101,6 +103,57 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
 
           final payment = state.payments[index];
           return _PaymentTile(payment: payment);
+        },
+      ),
+    );
+  }
+
+  Widget _buildSkeletonList() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48, height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(height: 14, width: 140, color: Colors.grey[300]),
+                      const SizedBox(height: 8),
+                      Container(height: 12, width: 200, color: Colors.grey[300]),
+                      const SizedBox(height: 4),
+                      Container(height: 12, width: 100, color: Colors.grey[300]),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(height: 16, width: 80, color: Colors.grey[300]),
+                    const SizedBox(height: 6),
+                    Container(height: 18, width: 60, decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(8),
+                    )),
+                  ],
+                ),
+              ],
+            ),
+          );
         },
       ),
     );

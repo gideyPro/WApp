@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import '../../data/services/listing_service.dart';
 import '../../data/models/listing.dart';
 
@@ -61,12 +63,56 @@ class ListingsNotifier extends StateNotifier<ListingsState> {
         total: response.total ?? 0,
         hasMore: (response.currentPage ?? page) < (response.totalPages ?? 1),
       );
+
+      // Cache page 1 results for offline fallback
+      if (page == 1 && newListings.isNotEmpty) {
+        _cacheListings(newListings, response.total ?? 0);
+      }
     } else {
-      state = state.copyWith(
-        isLoading: false,
-        isLoadingMore: false,
-        errorMessage: response.message,
-      );
+      // Try loading from cache on error
+      if (page == 1 && state.listings.isEmpty) {
+        final cached = await _loadCachedListings();
+        if (cached != null) {
+          state = ListingsState.loaded(
+            listings: cached,
+            total: cached.length,
+          );
+        } else {
+          state = state.copyWith(
+            isLoading: false,
+            isLoadingMore: false,
+            errorMessage: response.message,
+          );
+        }
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+          isLoadingMore: false,
+          errorMessage: response.message,
+        );
+      }
+    }
+  }
+
+  Future<void> _cacheListings(List<Listing> listings, int total) async {
+    try {
+      final box = await Hive.openBox('listings_cache');
+      await box.put('all_listings', jsonEncode(listings.map((l) => l.toJson()).toList()));
+      await box.put('all_listings_total', total);
+    } catch (_) {}
+  }
+
+  Future<List<Listing>?> _loadCachedListings() async {
+    try {
+      final box = await Hive.openBox('listings_cache');
+      final raw = box.get('all_listings');
+      if (raw == null) return null;
+      final List<dynamic> decoded = jsonDecode(raw as String);
+      return decoded
+          .map((e) => Listing.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return null;
     }
   }
 }

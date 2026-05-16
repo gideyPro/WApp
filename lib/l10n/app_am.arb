@@ -194,6 +194,8 @@
   "listingPropertyType": "የንብረት አይነት",
   "listingTitle": "ርእስ",
   "listingArea": "ቦታ",
+  "listingVideoMaxSize": "ከፍተኛ 100ሜባ",
+  "listingExistingFile": "አሁን ያለ: {name}",
   "listingListingType": "የማስፈርድ አይነት",
   "listingHoldingType": "የባለቤትነት ሁኔታ",
   "listingTaxPaid": "ግብር የተከፈለበት",

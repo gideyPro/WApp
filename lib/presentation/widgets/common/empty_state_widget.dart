@@ -11,6 +11,7 @@ enum EmptyStateType {
   general,
 }
 
+@Deprecated('Use WaveEmptyState instead')
 class EmptyStateWidget extends StatelessWidget {
   final EmptyStateType type;
   final String? title;
@@ -101,7 +102,7 @@ class EmptyStateWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
         ),
       ),
-      child: Text(actionText!.toUpperCase()),
+      child: Text(actionText!),
     );
   }
 

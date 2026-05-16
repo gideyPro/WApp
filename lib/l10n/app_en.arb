@@ -189,6 +189,8 @@
   "listingPropertyType": "Property Type",
   "listingTitle": "Title",
   "listingArea": "Area",
+  "listingVideoMaxSize": "Max 100MB",
+  "listingExistingFile": "Current: {name}",
   "listingListingType": "Listing Type",
   "listingHoldingType": "Holding Type",
   "listingTaxPaid": "Tax Paid Until",

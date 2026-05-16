@@ -1071,6 +1071,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsVideoTour => 'የቪዲዮ ጉብኝት';
 
   @override
+  String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
+
+  @override
+  String listingExistingFile(Object name) => 'አሁን ያለ: $name';
+
+  @override
   String get listingsNoDescription => 'ምንም መግለጫ አልተሰጠም';
 
   @override

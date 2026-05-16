@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../listing/listing_detail_screen.dart';
+import '../subscriptions/subscription_plans_screen.dart';
+import '../settings/settings_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Favorites Screen - Wired to favoritesProvider
@@ -46,6 +49,91 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   }
 
   bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
+
+  void _handleListingTap(dynamic listing) {
+    final subState = ref.read(subscriptionProvider);
+    final settingsAsync = ref.read(appSettingsProvider);
+    final user = ref.read(profileProvider).user;
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => true,
+    );
+
+    final isOwner = user != null && listing.userId == user.id;
+    if (!isOwner && subscriptionEnabled && !subState.canCreateListing) {
+      _showSubscriptionRequiredDialog();
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ListingDetailScreen(listingId: listing.id),
+      ),
+    );
+  }
+
+  Future<void> _showSubscriptionRequiredDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64, height: 64,
+                decoration: BoxDecoration(
+                  color: AppColors.accent500.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.workspace_premium_outlined, size: 32, color: AppColors.accent600),
+              ),
+              const SizedBox(height: 16),
+              const Text('Subscription Required', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800), textAlign: TextAlign.center),
+              const SizedBox(height: 10),
+              const Text('You need an active subscription to view property details and contact owners.', style: TextStyle(color: AppColors.primary600), textAlign: TextAlign.center),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        side: BorderSide(color: AppColors.primary200),
+                        foregroundColor: AppColors.primary600,
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        backgroundColor: AppColors.accent600,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('View Plans'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (result == true && mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,21 +184,33 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
 
     // Empty state
     if (state.favorites.isEmpty) {
-      return WaveEmptyState(
-        icon: Icons.favorite_border,
-        title: AppLocalizations.of(context).favoritesEmpty,
-        subtitle: AppLocalizations.of(context).favoritesEmptySubtitle,
-        actionLabel: 'Browse Properties',
-        onAction: () {
-          ref.read(selectedTabProvider.notifier).state = 0;
-        },
+      return RefreshIndicator(
+        onRefresh: () => ref.read(favoritesProvider.notifier).loadFavorites(),
+        child: ListView(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: WaveEmptyState(
+                icon: Icons.favorite_border,
+                title: AppLocalizations.of(context).favoritesEmpty,
+                subtitle: AppLocalizations.of(context).favoritesEmptySubtitle,
+                actionLabel: 'Browse Properties',
+                onAction: () {
+                  ref.read(selectedTabProvider.notifier).state = 0;
+                },
+              ),
+            ),
+          ],
+        ),
       );
     }
 
     // Favorites list
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: state.favorites.length,
+    return RefreshIndicator(
+      onRefresh: () => ref.read(favoritesProvider.notifier).loadFavorites(),
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: state.favorites.length,
       itemBuilder: (context, index) {
         final listing = state.favorites[index];
         return Padding(
@@ -120,14 +220,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
               PropertyListingCard(
                 listing: listing,
                 hideFavoriteButton: true,
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          ListingDetailScreen(listingId: listing.id),
-                    ),
-                  );
-                },
+                onTap: () => _handleListingTap(listing),
               ),
               // X remove button on top-right of card
               Positioned(
@@ -162,6 +255,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           ),
         );
       },
+    ),
     );
   }
 

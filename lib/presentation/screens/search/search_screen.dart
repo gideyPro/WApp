@@ -35,6 +35,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final Set<int> _togglingFavorites = {};
 
   String? _selectedType; // 'house', 'land', or null for all
   String? _selectedListingType; // 'sale', 'rental', or null for all
@@ -1021,9 +1022,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return favState.favorites.any((f) => f.id == listingId);
   }
 
-  bool _isToggling(int listingId) => false;
+  bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
 
   Future<void> _toggleFavorite(int listingId) async {
+    setState(() => _togglingFavorites.add(listingId));
     await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
+    if (mounted) setState(() => _togglingFavorites.remove(listingId));
   }
 }

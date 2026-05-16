@@ -178,16 +178,46 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
                   ListingStep1Basics(
                       formData: _formData,
                       onUpdate: _updateFormData,
-                      addressService: _addressService),
-                  ListingStep2Details(formData: _formData, onUpdate: _updateFormData),
-                  ListingStep3Media(formData: _formData, onUpdate: _updateFormData),
-                  ListingStep4Review(formData: _formData, onUpdate: _updateFormData),
+                      addressService: _addressService,
+                      stepErrors: _stepErrors[_currentStep] ?? []),
+                  ListingStep2Details(formData: _formData, onUpdate: _updateFormData,
+                      stepErrors: _stepErrors[_currentStep] ?? []),
+                  ListingStep3Media(formData: _formData, onUpdate: _updateFormData,
+                      stepErrors: _stepErrors[_currentStep] ?? []),
+                  ListingStep4Review(formData: _formData, onUpdate: _updateFormData,
+                      stepErrors: _stepErrors[_currentStep] ?? []),
                 ],
               ),
             ),
+            if (_stepErrors[_currentStep] != null && _stepErrors[_currentStep]!.isNotEmpty)
+              _buildErrorBanner(_stepErrors[_currentStep]!),
             if (!_isSubmitting) _buildBottomBar(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildErrorBanner(List<String> errors) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      color: AppColors.errorLight,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: errors.map((e) => Padding(
+          padding: const EdgeInsets.only(bottom: 2),
+          child: Row(
+            children: [
+              Icon(Icons.error_outline, size: 14, color: AppColors.error),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(e, style: TextStyle(fontSize: 12, color: AppColors.error)),
+              ),
+            ],
+          ),
+        )).toList(),
       ),
     );
   }

@@ -34,6 +34,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  DateTime? _lastLoadTime;
 
   @override
   void initState() {
@@ -58,6 +59,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ref.read(featuredListingsProvider.notifier).loadFeaturedListings();
       ref.read(listingsProvider.notifier).loadListings();
       ref.read(authStateProvider.notifier).loadUser();
+      _lastLoadTime = DateTime.now();
       _headerAnimationController.forward();
     });
     _scrollController.addListener(_onScroll);
@@ -75,9 +77,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void didPopNext() {
     if (mounted) {
-      // Reload listings to ensure we show the latest, unfiltered data
-      // when returning from search or detail screens.
-      ref.read(listingsProvider.notifier).loadListings();
+      final now = DateTime.now();
+      final shouldReload = _lastLoadTime == null ||
+          now.difference(_lastLoadTime!).inSeconds > 30;
+      if (shouldReload) {
+        _lastLoadTime = now;
+        ref.read(listingsProvider.notifier).loadListings();
+      }
     }
   }
 

@@ -194,6 +194,8 @@
   "listingPropertyType": "ዓይነት ንብረት",
   "listingTitle": "ርእስ",
   "listingArea": "ቦታ",
+  "listingVideoMaxSize": "ከፍተኛ 100ሜባ",
+  "listingExistingFile": "ሕጂ ዘሎ: {name}",
   "listingListingType": "ዓይነት ማስፈርድ",
   "listingHoldingType": "ዓይነት ዋናነት",
   "listingTaxPaid": "ታክስ ዝተኸፈለሉ",

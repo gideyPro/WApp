@@ -2116,6 +2116,18 @@ abstract class AppLocalizations {
   /// **'Video Tour'**
   String get listingsVideoTour;
 
+  /// No description provided for @listingVideoMaxSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Max 100MB'**
+  String get listingVideoMaxSize;
+
+  /// No description provided for @listingExistingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Current: {name}'**
+  String listingExistingFile(Object name);
+
   /// No description provided for @listingsNoDescription.
   ///
   /// In en, this message translates to:

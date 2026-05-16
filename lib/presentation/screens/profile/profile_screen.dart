@@ -11,17 +11,27 @@ import '../kyc/kyc_verification_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Profile Screen - Only profile-related content (personal info, KYC, stats)
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  bool _profileLoaded = false;
+
+  @override
+  Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
     final l10n = AppLocalizations.of(context);
     ref.watch(authStateProvider);
 
-    if (profileState.isLoading && profileState.user == null) {
-      ref.read(profileProvider.notifier).loadProfile();
+    if (!_profileLoaded && profileState.isLoading && profileState.user == null) {
+      _profileLoaded = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(profileProvider.notifier).loadProfile();
+      });
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;

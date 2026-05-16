@@ -451,7 +451,14 @@ class _SubscriptionPlansScreenState
       if (!mounted) return;
 
       if (!paymentResponse.success) {
-        WaveToast.showError(context, paymentResponse.message);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(paymentResponse.message),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
         return;
       }
 
@@ -547,14 +554,32 @@ class _SubscriptionPlansScreenState
       if (!mounted) return;
 
       if (!isActive && paymentStatus != 'pending') {
-        WaveToast.showError(context, 'Your payment could not be verified.');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Your payment could not be verified.'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
       } else {
-        // Payment successful
-        WaveToast.showSuccess(context, 'Payment successful!');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Payment successful!'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
-        WaveToast.showError(context, 'An unexpected error occurred: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An unexpected error occurred: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
       }
     } finally {
       if (mounted) {

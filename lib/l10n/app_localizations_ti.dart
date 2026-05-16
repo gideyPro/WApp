@@ -1071,6 +1071,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsVideoTour => 'ናይ ቪዲዮ ዑደት';
 
   @override
+  String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
+
+  @override
+  String listingExistingFile(Object name) => 'ሕጂ ዘሎ: $name';
+
+  @override
   String get listingsNoDescription => 'መግለጺ ኣይተዋህበን';
 
   @override

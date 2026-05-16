@@ -9,7 +9,6 @@ import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/models/image.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../widgets/common/wave_common_widgets.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../providers/app_providers.dart';
 
@@ -107,12 +106,14 @@ class ListingStep1Basics extends ConsumerStatefulWidget {
   final Function(ListingFormData) onUpdate;
   final AddressService addressService;
   final bool isEditMode;
+  final List<String> stepErrors;
   const ListingStep1Basics(
       {super.key,
       required this.formData,
       required this.onUpdate,
       required this.addressService,
-      this.isEditMode = false});
+      this.isEditMode = false,
+      this.stepErrors = const []});
   @override
   ConsumerState<ListingStep1Basics> createState() => _ListingStep1BasicsState();
 }
@@ -433,7 +434,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                 'year': 'Year',
               },
               label: l10n.listingRentalPeriod,
-              hintText: 'Select rental period',
+              hintText: l10n.listingSelect,
               onChanged: (v) => widget.onUpdate(
                   widget.formData.copyWith(rentalPeriodUnit: v)),
             ),
@@ -448,18 +449,26 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               'Cooperative': l10n.listingCooperative,
             },
             label: l10n.listingHoldingType,
-            hintText: 'Select holding type',
+            hintText: l10n.listingSelectHolding,
             onChanged: (v) => widget.onUpdate(widget.formData
                 .copyWith(holdingType: v ?? 'Free Hold')),
           ),
           const SizedBox(height: 16),
 
-          if (widget.formData.holdingType == 'Free Hold')
-            _buildFreeHoldFields(),
-          if (widget.formData.holdingType == 'Lease Hold')
-            _buildLeaseHoldFields(),
-          if (widget.formData.holdingType == 'Cooperative')
-            _buildCooperativeFields(),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: Column(
+              children: [
+                if (widget.formData.holdingType == 'Free Hold')
+                  _buildFreeHoldFields(),
+                if (widget.formData.holdingType == 'Lease Hold')
+                  _buildLeaseHoldFields(),
+                if (widget.formData.holdingType == 'Cooperative')
+                  _buildCooperativeFields(),
+              ],
+            ),
+          ),
 
           const SizedBox(height: 16),
           _compactDropdown(
@@ -471,7 +480,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               'Investment': l10n.listingInvestment,
             },
             label: l10n.listingUseType,
-            hintText: 'Select use type',
+            hintText: l10n.listingSelectUse,
             onChanged: (v) => widget.onUpdate(widget.formData
                 .copyWith(useType: v ?? 'Residential')),
           ),
@@ -534,8 +543,6 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
       dropdownColor: context.sheetBg,
       items: items.entries
@@ -557,30 +564,21 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     bool readOnly = false,
     required void Function(String) onSubmitted,
   }) {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        if (!hasFocus) {
-          onSubmitted(controller.text);
-        }
-      },
-      child: TextFormField(
-        controller: controller,
-        readOnly: readOnly,
-        decoration: InputDecoration(
-          labelText: label,
-          filled: readOnly,
-          fillColor: readOnly ? AppColors.zinc100 : null,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        ),
-        keyboardType: keyboardType,
-        textInputAction: TextInputAction.done,
-        onFieldSubmitted: onSubmitted,
+    return TextFormField(
+      controller: controller,
+      readOnly: readOnly,
+      decoration: InputDecoration(
+        labelText: label,
+        filled: readOnly,
+        fillColor: readOnly ? AppColors.zinc100 : null,
       ),
+      keyboardType: keyboardType,
+      onChanged: (v) => onSubmitted(v),
     );
   }
 
   Widget _buildCompactPriceField() {
+    final l10n = AppLocalizations.of(context);
     final price = widget.formData.priceFixed;
     Color borderColor = AppColors.zinc300;
     if (price != null) {
@@ -592,45 +590,27 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         borderColor = AppColors.emerald500;
       }
     }
-    return Focus(
-      onFocusChange: (hasFocus) {
-        if (!hasFocus) {
-          final cleaned = _priceController.text.replaceAll(',', '');
-          final parsed = double.tryParse(cleaned);
-          if (parsed != null && parsed > 0) {
-            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
-          }
+    return TextFormField(
+      controller: _priceController,
+      decoration: InputDecoration(
+        labelText: l10n.listingPriceEtb,
+        prefixIcon: const Icon(Icons.attach_money, size: 20),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: borderColor)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: borderColor, width: 2)),
+      ),
+      keyboardType: TextInputType.number,
+      textInputAction: TextInputAction.done,
+      onChanged: (v) {
+        final cleaned = v.replaceAll(',', '');
+        final parsed = double.tryParse(cleaned);
+        if (parsed != null && parsed > 0) {
+          widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
         }
       },
-      child: TextFormField(
-        controller: _priceController,
-        decoration: InputDecoration(
-          labelText: 'Price (ETB)',
-          prefixIcon: const Icon(Icons.attach_money, size: 20),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: borderColor)),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: borderColor, width: 2)),
-        ),
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
-        onChanged: (v) {
-          final cleaned = v.replaceAll(',', '');
-          final parsed = double.tryParse(cleaned);
-          if (parsed != null && parsed > 0) {
-            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
-          }
-        },
-        onFieldSubmitted: (v) {
-          final cleaned = v.replaceAll(',', '');
-          final parsed = double.tryParse(cleaned);
-          if (parsed != null && parsed > 0) {
-            widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
-          }
-        },
-      ),
     );
   }
 
@@ -648,9 +628,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         : context.cardBg;
 
     return Expanded(
-      child: GestureDetector(
+      child: InkWell(
         onTap: isEnabled ? () => onChanged(value) : null,
-        child: Container(
+        borderRadius: BorderRadius.circular(4),
+        child: Ink(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           decoration: BoxDecoration(
             color: bgColor.withValues(alpha: isEnabled ? 1.0 : 0.6),
@@ -719,7 +700,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                     'Other': l10n.listingOther,
                   },
                   label: l10n.listingAcquisition,
-                  hintText: 'Select',
+                  hintText: l10n.listingSelect,
                   onChanged: (v) => widget.onUpdate(
                       widget.formData.copyWith(acquisitionClarification: v)),
                 ),
@@ -849,7 +830,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               'Unfinished': l10n.listingUnfinished,
             },
             label: l10n.listingBuildingStatus,
-            hintText: 'Select status',
+            hintText: l10n.listingSelect,
             onChanged: (v) =>
                 widget.onUpdate(widget.formData.copyWith(buildingStatus: v)),
           ),
@@ -899,11 +880,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       value: items.contains(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         suffixIcon: isLoading
             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
             : null,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
@@ -920,7 +899,8 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
 class ListingStep2Details extends StatefulWidget {
   final ListingFormData formData;
   final Function(ListingFormData) onUpdate;
-  const ListingStep2Details({super.key, required this.formData, required this.onUpdate});
+  final List<String> stepErrors;
+  const ListingStep2Details({super.key, required this.formData, required this.onUpdate, this.stepErrors = const []});
 
   @override
   State<ListingStep2Details> createState() => _ListingStep2DetailsState();
@@ -1067,7 +1047,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
               value: widget.formData.houseType,
               items: houseTypeItems,
               label: l10n.listingHouseType,
-              hintText: 'Select house type',
+              hintText: l10n.listingSelectHouseType,
               onChanged: _onHouseTypeChanged,
             ),
             const SizedBox(height: 16),
@@ -1129,27 +1109,20 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
               'south_west': l10n.listingSouthWest,
             },
             label: l10n.listingFacingDirection,
-            hintText: 'Select direction',
+            hintText: l10n.listingSelectDirection,
             onChanged: (v) => widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
           ),
           const SizedBox(height: 16),
           _compactSectionLabel(l10n.listingDescriptionLabel),
           const SizedBox(height: 10),
-          Focus(
-            onFocusChange: (hasFocus) {
-              if (!hasFocus) widget.onUpdate(widget.formData.copyWith(description: widget.formData.description));
-            },
-            child: TextFormField(
-              initialValue: widget.formData.description,
-              maxLines: 4,
-              decoration: InputDecoration(
-                labelText: l10n.listingDescriptionLabel,
-                hintText: 'Describe your property...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              ),
-              onChanged: (v) => widget.onUpdate(widget.formData.copyWith(description: v)),
+          TextFormField(
+            initialValue: widget.formData.description,
+            maxLines: 4,
+            decoration: InputDecoration(
+              labelText: l10n.listingDescriptionLabel,
+              hintText: l10n.listingDescribeProperty,
             ),
+            onChanged: (v) => widget.onUpdate(widget.formData.copyWith(description: v)),
           ),
           const SizedBox(height: 24),
         ],
@@ -1183,8 +1156,6 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
           labelText: label,
           filled: readOnly,
           fillColor: readOnly ? AppColors.zinc100 : null,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         ),
         keyboardType: keyboardType,
         textInputAction: TextInputAction.done,
@@ -1233,7 +1204,8 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
 class ListingStep3Media extends StatefulWidget {
   final ListingFormData formData;
   final Function(ListingFormData) onUpdate;
-  const ListingStep3Media({super.key, required this.formData, required this.onUpdate});
+  final List<String> stepErrors;
+  const ListingStep3Media({super.key, required this.formData, required this.onUpdate, this.stepErrors = const []});
 
   @override
   State<ListingStep3Media> createState() => _ListingStep3MediaState();
@@ -1315,7 +1287,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             _buildLeaseContractView(),
             const SizedBox(height: 16),
           ],
-          _sectionTitle('Video Tour'),
+          _sectionTitle(l10n.listingsVideoTour),
           const SizedBox(height: 8),
           _buildVideoTourView(),
           const SizedBox(height: 32),
@@ -1391,7 +1363,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   }
 
   Widget _buildSitePlanView() {
-    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1431,13 +1402,14 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   }
 
   Widget _buildOwnershipProofView() {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
          if (widget.formData.existingOwnershipProofUrl != null && widget.formData.ownershipProof == null)
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text("Current proof: ${widget.formData.existingOwnershipProofUrl!.split('/').last}", style: AppTextStyles.caption),
+            child: Text(l10n.listingExistingFile(widget.formData.existingOwnershipProofUrl!.split('/').last), style: AppTextStyles.caption),
           ),
         _buildSingleFilePicker('ownership', widget.formData.ownershipProof),
       ],
@@ -1445,13 +1417,14 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   }
 
   Widget _buildLeaseContractView() {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
          if (widget.formData.existingLeaseContractUrl != null && widget.formData.leaseContract == null)
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text("Current contract: ${widget.formData.existingLeaseContractUrl!.split('/').last}", style: AppTextStyles.caption),
+            child: Text(l10n.listingExistingFile(widget.formData.existingLeaseContractUrl!.split('/').last), style: AppTextStyles.caption),
           ),
         _buildSingleFilePicker('lease', widget.formData.leaseContract),
       ],
@@ -1459,6 +1432,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   }
 
   Widget _buildVideoTourView() {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1473,7 +1447,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                 const SizedBox(width: 8),
                 Expanded(
                     child: Text(
-                        "Current video: ${widget.formData.existingVideoUrl!.split('/').last}",
+                        l10n.listingExistingFile(widget.formData.existingVideoUrl!.split('/').last),
                         style: AppTextStyles.caption)),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red, size: 20),
@@ -1483,7 +1457,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
               ],
             ),
           ),
-        Text("Max 100MB", style: AppTextStyles.caption),
+        Text(l10n.listingVideoMaxSize, style: AppTextStyles.caption),
         const SizedBox(height: 4),
         _buildSingleFilePicker('video', widget.formData.videoFile),
       ],
@@ -1510,31 +1484,68 @@ class _ImageThumb extends StatelessWidget {
 
   const _ImageThumb({this.url, this.file, required this.onRemove});
 
+  void _showPreview(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(12),
+        child: Stack(
+          children: [
+            InteractiveViewer(
+              child: url != null
+                  ? Image.network(url!, fit: BoxFit.contain)
+                  : Image.file(file!, fit: BoxFit.contain),
+            ),
+            Positioned(
+              top: 8,
+              right: 8,
+              child: GestureDetector(
+                onTap: () => Navigator.of(ctx).pop(),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: Colors.black54,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.close, size: 20, color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: url != null 
-                ? Image.network(url!, width: 80, height: 80, fit: BoxFit.cover)
-                : Image.file(file!, width: 80, height: 80, fit: BoxFit.cover),
-          ),
-          Positioned(
-              top: 2,
-              right: 2,
-              child: GestureDetector(
-                onTap: onRemove,
-                child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                        color: Colors.red, shape: BoxShape.circle),
-                    child: const Icon(Icons.close,
-                        size: 12, color: Colors.white)),
-              )),
-        ],
+      child: GestureDetector(
+        onTap: () => _showPreview(context),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: url != null 
+                  ? Image.network(url!, width: 80, height: 80, fit: BoxFit.cover)
+                  : Image.file(file!, width: 80, height: 80, fit: BoxFit.cover),
+            ),
+            Positioned(
+                top: 2,
+                right: 2,
+                child: GestureDetector(
+                  onTap: onRemove,
+                  child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
+                          color: Colors.red, shape: BoxShape.circle),
+                      child: const Icon(Icons.close,
+                          size: 12, color: Colors.white)),
+                )),
+          ],
+        ),
       ),
     );
   }
@@ -1545,7 +1556,8 @@ class _ImageThumb extends StatelessWidget {
 class ListingStep4Review extends StatelessWidget {
   final ListingFormData formData;
   final Function(ListingFormData) onUpdate;
-  const ListingStep4Review({super.key, required this.formData, required this.onUpdate});
+  final List<String> stepErrors;
+  const ListingStep4Review({super.key, required this.formData, required this.onUpdate, this.stepErrors = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -1557,22 +1569,31 @@ class ListingStep4Review extends StatelessWidget {
         children: [
           _sectionTitle(l10n.listingSummary),
           const SizedBox(height: 8),
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            childAspectRatio: 1.5,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
+          Column(
             children: [
-              _summaryCard(context, l10n.listingSummaryProperty,
-                  '${formData.type == 'house' ? '🏠 ${l10n.listingHouse}' : '🌄 ${l10n.listingLand}'}\n${_getLocalizedHouseType(formData.houseType, l10n)}'),
-              _summaryCard(context, l10n.listingLocation,
-                  '${formData.addressRegion ?? ''}\n${formData.addressZone ?? ''}'),
-              _summaryCard(context, l10n.listingFinancial,
-                  '${formData.priceFixed != null ? "${_formatPrice(formData.priceFixed!)} ETB" : l10n.listingPriceOnRequest}\n${_getLocalizedHoldingType(formData.holdingType, l10n)}'),
-              _summaryCard(context, l10n.listingStepMedia,
-                  '${formData.images.length + formData.existingImages.length - formData.removedImageIds.length} ${l10n.listingImagesSelected(formData.images.length + formData.existingImages.length - formData.removedImageIds.length)}\n${(formData.sitePlan != null || (formData.existingSitePlanUrl != null && !formData.removeExistingSitePlan)) ? "1" : "0"} ${l10n.listingSitePlans}'),
+              Row(
+                children: [
+                  Expanded(child: _summaryCard(context, l10n.listingSummaryProperty,
+                      '${formData.type == 'house' ? l10n.listingHouse : l10n.listingLand}\n${_getLocalizedHouseType(formData.houseType, l10n)}',
+                      icon: formData.type == 'house' ? Icons.home_rounded : Icons.landscape_rounded)),
+                  const SizedBox(width: 8),
+                  Expanded(child: _summaryCard(context, l10n.listingLocation,
+                      '${formData.addressRegion ?? ''}\n${formData.addressZone ?? ''}',
+                      icon: Icons.location_on_rounded)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(child: _summaryCard(context, l10n.listingFinancial,
+                      '${formData.priceFixed != null ? "${_formatPrice(formData.priceFixed!)} ETB" : l10n.listingPriceOnRequest}\n${_getLocalizedHoldingType(formData.holdingType, l10n)}',
+                      icon: Icons.account_balance_wallet_rounded)),
+                  const SizedBox(width: 8),
+                  Expanded(child: _summaryCard(context, l10n.listingStepMedia,
+                      '${formData.images.length + formData.existingImages.length - formData.removedImageIds.length} ${l10n.listingImagesSelected(formData.images.length + formData.existingImages.length - formData.removedImageIds.length)}\n${(formData.sitePlan != null || (formData.existingSitePlanUrl != null && !formData.removeExistingSitePlan)) ? "1" : "0"} ${l10n.listingSitePlans}',
+                      icon: Icons.photo_library_rounded)),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -1606,16 +1627,23 @@ class ListingStep4Review extends StatelessWidget {
             .copyWith(fontWeight: FontWeight.w700, fontSize: 16));
   }
 
-  Widget _summaryCard(BuildContext context, String title, String content) {
+  Widget _summaryCard(BuildContext context, String title, String content, {IconData? icon}) {
     return WaveCard(
       isGlass: true,
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style:
-                  AppTextStyles.labelSmall.copyWith(color: Theme.of(context).brightness == Brightness.dark ? AppColors.primary300 : AppColors.primary700)),
+          Row(
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 16, color: Theme.of(context).brightness == Brightness.dark ? AppColors.primary300 : AppColors.primary700),
+                const SizedBox(width: 6),
+              ],
+              Text(title,
+                  style: AppTextStyles.labelSmall.copyWith(color: Theme.of(context).brightness == Brightness.dark ? AppColors.primary300 : AppColors.primary700)),
+            ],
+          ),
           const SizedBox(height: 4),
           Expanded(
               child: Text(content,

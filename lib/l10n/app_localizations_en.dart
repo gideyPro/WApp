@@ -1081,6 +1081,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsVideoTour => 'Video Tour';
 
   @override
+  String get listingVideoMaxSize => 'Max 100MB';
+
+  @override
+  String listingExistingFile(Object name) => 'Current: $name';
+
+  @override
   String get listingsNoDescription => 'No description provided.';
 
   @override

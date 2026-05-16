@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -10,6 +11,8 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_card.dart';
 import '../listing/listing_detail_screen.dart';
 import '../messages/messages_screen.dart';
+import '../subscriptions/subscription_plans_screen.dart';
+import '../settings/settings_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Notifications Screen - Wired to notificationsProvider
@@ -86,7 +89,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   Widget _buildBody(NotificationState state, int unreadCount) {
     // Loading state (initial load)
     if (state.isLoading && state.notifications.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return _buildSkeletonList();
     }
 
     // Error state
@@ -150,40 +153,146 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       case app.NotificationType.listingApproved:
       case app.NotificationType.listingRejected:
       case app.NotificationType.featuredListingExpired:
-        // Navigate to listing detail
+      case app.NotificationType.newInterest:
         if (notification.relatedId != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) =>
-                  ListingDetailScreen(listingId: notification.relatedId!),
-            ),
-          );
+          _navigateToListingDetail(notification.relatedId!);
         }
         break;
       case app.NotificationType.newMessage:
-        // Navigate to messages
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const MessagesScreen()),
         );
         break;
-      case app.NotificationType.newInterest:
-        if (notification.relatedId != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) =>
-                  ListingDetailScreen(listingId: notification.relatedId!),
-            ),
-          );
-        }
-        break;
       case app.NotificationType.paymentSuccess:
       case app.NotificationType.subscriptionActivated:
-        // Could navigate to payment history or subscriptions
-        break;
       case app.NotificationType.systemAnnouncement:
-        // Just show the notification content
         break;
     }
+  }
+
+  void _navigateToListingDetail(int listingId) {
+    final subState = ref.read(subscriptionProvider);
+    final settingsAsync = ref.read(appSettingsProvider);
+    final user = ref.read(profileProvider).user;
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => true,
+    );
+
+    if (subscriptionEnabled && !subState.canCreateListing) {
+      _showSubscriptionRequiredDialog();
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ListingDetailScreen(listingId: listingId),
+      ),
+    );
+  }
+
+  Future<void> _showSubscriptionRequiredDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64, height: 64,
+                decoration: BoxDecoration(
+                  color: AppColors.accent500.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.workspace_premium_outlined, size: 32, color: AppColors.accent600),
+              ),
+              const SizedBox(height: 16),
+              const Text('Subscription Required', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800), textAlign: TextAlign.center),
+              const SizedBox(height: 10),
+              const Text('You need an active subscription to view property details and contact owners.', style: TextStyle(color: AppColors.primary600), textAlign: TextAlign.center),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        side: BorderSide(color: AppColors.primary200),
+                        foregroundColor: AppColors.primary600,
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        backgroundColor: AppColors.accent600,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('View Plans'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (result == true && mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+      );
+    }
+  }
+
+  Widget _buildSkeletonList() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: 6,
+        separatorBuilder: (_, __) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 48, height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(height: 14, width: 160, color: Colors.grey[300]),
+                      const SizedBox(height: 8),
+                      Container(height: 12, width: double.infinity, color: Colors.grey[300]),
+                      const SizedBox(height: 4),
+                      Container(height: 12, width: 80, color: Colors.grey[300]),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Future<void> _deleteNotification(int id) async {
@@ -216,7 +325,7 @@ class _NotificationTile extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-          color: Colors.grey[300],
+          color: AppColors.error.withValues(alpha: 0.8),
         ),
         child: const Icon(Icons.delete_outline, color: Colors.white),
       ),
