@@ -5,6 +5,7 @@ import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../data/services/order_service.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
   const CreateOrderScreen({super.key});
@@ -62,17 +63,10 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     if (mounted) {
       setState(() => _submitting = false);
       if (response.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).ordersCreated)),
-        );
+        WaveToast.showSuccess(context, AppLocalizations.of(context).ordersCreated);
         Navigator.of(context).pop();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, response.message);
       }
     }
   }

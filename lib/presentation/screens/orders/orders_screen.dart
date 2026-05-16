@@ -73,31 +73,31 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         backgroundColor: context.cardBg,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text(l10n.ordersTitle),
-        actions: [
-          if (state.orders.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                '${state.total}',
-                style: AppTextStyles.labelMedium.copyWith(
-                  color: AppColors.accent600,
-                ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.ordersTitle),
+            if (state.total > 0)
+              Text(
+                '${state.total} ${l10n.ordersTitle.toLowerCase()}',
+                style: AppTextStyles.caption.copyWith(color: AppColors.primary400),
               ),
-            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_rounded),
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
+              );
+              if (mounted) {
+                ref.read(ordersProvider.notifier).loadOrders();
+              }
+            },
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
-          );
-          if (mounted) {
-            ref.read(ordersProvider.notifier).loadOrders();
-          }
-        },
-        backgroundColor: AppColors.accent500,
-        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: _buildBody(state, l10n),
     );
@@ -191,7 +191,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           if (order.minBudget != null || order.maxBudget != null)
                             _infoChip(
                               Icons.monetization_on_outlined,
-                              '${_formatPrice(order.minBudget)} - ${_formatPrice(order.maxBudget)} ETB',
+                              _formatRange(order.minBudget, order.maxBudget, 'ETB'),
                             ),
                           if ((order.minBudget != null || order.maxBudget != null) &&
                               (order.minArea != null || order.maxArea != null))
@@ -199,7 +199,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           if (order.minArea != null || order.maxArea != null)
                             _infoChip(
                               Icons.square_foot,
-                              '${_formatPrice(order.minArea)} - ${_formatPrice(order.maxArea)} m²',
+                              _formatRange(order.minArea, order.maxArea, 'm²'),
                             ),
                         ],
                       ),
@@ -271,6 +271,15 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     return formatter.format(value);
   }
 
+  String _formatRange(double? min, double? max, String unit) {
+    if (min != null && max != null) {
+      return '${_formatPrice(min)} - ${_formatPrice(max)} $unit';
+    }
+    if (min != null) return '${_formatPrice(min)}+ $unit';
+    if (max != null) return 'Up to ${_formatPrice(max)} $unit';
+    return '';
+  }
+
   void _showOrderDetail(BuildContext context, dynamic order, AppLocalizations l10n) {
     showModalBottomSheet(
       context: context,
@@ -287,7 +296,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         builder: (context, scrollController) {
           return SingleChildScrollView(
             controller: scrollController,
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(AppSpacing.xl),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -327,12 +336,12 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 const SizedBox(height: 24),
                 if (order.minBudget != null || order.maxBudget != null) ...[
                   _detailRow(l10n.ordersBudget,
-                      '${_formatPrice(order.minBudget)} - ${_formatPrice(order.maxBudget)} ETB'),
+                      _formatRange(order.minBudget, order.maxBudget, 'ETB')),
                   const Divider(height: 16),
                 ],
                 if (order.minArea != null || order.maxArea != null) ...[
                   _detailRow(l10n.ordersArea,
-                      '${_formatPrice(order.minArea)} - ${_formatPrice(order.maxArea)} m²'),
+                      _formatRange(order.minArea, order.maxArea, 'm²')),
                   const Divider(height: 16),
                 ],
                 if (order.facingDirection != null) ...[
@@ -363,7 +372,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 13),
+                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                             backgroundColor: AppColors.accent500,
                             foregroundColor: Colors.white,
                           ),
@@ -375,7 +384,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                         child: OutlinedButton(
                           onPressed: () => _confirmCancel(order.id, l10n),
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 13),
+                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                             side: BorderSide(color: AppColors.error.withValues(alpha: 0.5)),
                             foregroundColor: AppColors.error,
                           ),
@@ -401,7 +410,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           style: AppTextStyles.labelSmall.copyWith(
             color: AppColors.primary400,
             fontWeight: FontWeight.w800,
-            letterSpacing: 1,
+            letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 4),
@@ -441,12 +450,11 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     if (confirmed == true && mounted) {
       final success = await ref.read(ordersProvider.notifier).cancelOrder(orderId);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(success ? l10n.ordersCancelled : l10n.commonError),
-            backgroundColor: success ? AppColors.accent500 : AppColors.error,
-          ),
-        );
+        if (success) {
+          WaveToast.showSuccess(context, l10n.ordersCancelled);
+        } else {
+          WaveToast.showError(context, l10n.commonError);
+        }
       }
     }
   }
@@ -500,7 +508,7 @@ class _SkeletonBox extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.zinc200,
+        color: context.isDarkMode ? AppColors.primary800 : AppColors.zinc200,
         borderRadius: BorderRadius.circular(3),
       ),
     );
