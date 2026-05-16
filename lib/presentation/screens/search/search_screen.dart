@@ -198,17 +198,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildSearchHeader() {
     final l10n = AppLocalizations.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.primary900 : Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: context.sheetBg,
+        boxShadow: AppColors.shadowSm,
       ),
       child: SafeArea(
         child: Padding(
@@ -218,7 +211,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               // Back button
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back_ios, size: 16),
+                icon: Icon(Icons.arrow_back_ios, size: 16,
+                    color: context.iconPrimary),
                 padding: const EdgeInsets.all(4),
                 constraints: const BoxConstraints(),
               ),
@@ -227,9 +221,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 child: Container(
                   height: 42,
                   decoration: BoxDecoration(
-                    color: AppColors.primary50.withValues(alpha: 0.5),
+                    color: context.inputBg,
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: AppColors.primary200),
+                    border: Border.all(color: context.divider),
                   ),
                   child: Row(
                     children: [
@@ -237,25 +231,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       Expanded(
                         child: Row(
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 12),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
                               child: Icon(Icons.search,
-                                  size: 18, color: AppColors.primary500),
+                                  size: 18, color: context.textMuted),
                             ),
                             Expanded(
                               child: TextField(
                                 controller: _searchController,
                                 decoration: InputDecoration(
                                   hintText: l10n.searchPlaceholder,
-                                  hintStyle: const TextStyle(
-                                      fontSize: 14, color: AppColors.primary500),
                                   border: InputBorder.none,
                                   filled: false,
                                   contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 0),
                                   isDense: true,
                                 ),
-                                style: const TextStyle(fontSize: 14),
+                                style: TextStyle(fontSize: 14,
+                                    color: context.textPrimary),
                                 textInputAction: TextInputAction.search,
                                 onSubmitted: (_) => _performSearch(),
                               ),
@@ -264,48 +257,54 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ),
                       ),
                       // Vertical divider
-                      Container(width: 1, height: 24, color: AppColors.primary200),
+                      Container(width: 1, height: 24, color: context.divider),
                       // Filter button
-                      GestureDetector(
-                        onTap: () => _showFilterModal(),
-                        child: Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: _hasActiveFilters
-                                ? AppColors.accent50
-                                : Colors.transparent,
-                            borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(4),
-                              bottomRight: Radius.circular(4),
+                      SizedBox(
+                        width: 42,
+                        height: 42,
+                        child: InkWell(
+                          onTap: _showFilterModal,
+                          borderRadius: BorderRadius.circular(4),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: _hasActiveFilters
+                                  ? AppColors.accent50
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(4),
                             ),
-                          ),
-                          child: Icon(
-                            Icons.tune,
-                            size: 20,
-                            color: _hasActiveFilters
-                                ? AppColors.accent600
-                                : AppColors.primary500,
+                            child: Icon(
+                              Icons.tune,
+                              size: 20,
+                              color: _hasActiveFilters
+                                  ? AppColors.accent600
+                                  : context.textMuted,
+                            ),
                           ),
                         ),
                       ),
                       // Vertical divider
-                      Container(width: 1, height: 24, color: AppColors.primary200),
+                      Container(width: 1, height: 24, color: context.divider),
                       // Search button
-                      GestureDetector(
-                        onTap: _performSearch,
-                        child: Container(
-                          width: 42,
-                          height: 42,
-                          decoration: const BoxDecoration(
-                            color: AppColors.accent500,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(12),
-                              bottomRight: Radius.circular(12),
-                            ),
+                      SizedBox(
+                        width: 42,
+                        height: 42,
+                        child: InkWell(
+                          onTap: _performSearch,
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(4),
+                            bottomRight: Radius.circular(4),
                           ),
-                          child: const Icon(Icons.search,
-                              size: 20, color: Colors.white),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: AppColors.accent500,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(4),
+                                bottomRight: Radius.circular(4),
+                              ),
+                            ),
+                            child: const Icon(Icons.search,
+                                size: 20, color: Colors.white),
+                          ),
                         ),
                       ),
                     ],
