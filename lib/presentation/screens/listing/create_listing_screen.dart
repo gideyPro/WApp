@@ -8,8 +8,6 @@ import '../../../../data/services/address_service.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'widgets/listing_form_steps.dart';
-import '../../../core/constants/app_spacing.dart';
-
 /// Create Listing Screen - 4-step wizard matching web version
 class CreateListingScreen extends ConsumerStatefulWidget {
   const CreateListingScreen({super.key});
@@ -152,6 +150,12 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: _currentStep > 0
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded),
+                  onPressed: _prevStep,
+                )
+              : null,
           title: Text(l10n.listingsCreate),
           actions: [
             TextButton(
@@ -192,7 +196,6 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
             ),
             if (_stepErrors[_currentStep] != null && _stepErrors[_currentStep]!.isNotEmpty)
               _buildErrorBanner(_stepErrors[_currentStep]!),
-            if (!_isSubmitting) _buildBottomBar(),
           ],
         ),
       ),
@@ -219,57 +222,6 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
             ],
           ),
         )).toList(),
-      ),
-    );
-  }
-
-  Widget _buildBottomBar() {
-    final l10n = AppLocalizations.of(context);
-    return Container(
-      padding: AppSpacing.paddingLg,
-      decoration: BoxDecoration(
-        color: context.sheetBg, 
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, -4)
-          ),
-        ],
-        border: Border(top: BorderSide(color: context.divider.withValues(alpha: 0.5))),
-      ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            if (_currentStep > 0)
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _prevStep,
-                  child: Text(l10n.listingBack),
-                ),
-              ),
-            if (_currentStep > 0) const SizedBox(width: 12),
-            Expanded(
-              flex: _currentStep == 0 ? 1 : 2,
-              child: ElevatedButton(
-                onPressed: _isSubmitting ? null : _nextStep,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent500,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: _isSubmitting
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
-                    : Text(_currentStep == 3
-                        ? l10n.listingSubmitListing
-                        : l10n.listingContinue),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

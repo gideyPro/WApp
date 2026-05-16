@@ -22,6 +22,8 @@ class MainNavigationShell extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
+  bool _isCreatingListing = false;
+
   void _onItemTapped(int index) {
     if (index == 2) return; // FAB button
     ref.read(selectedTabProvider.notifier).state = index;
@@ -29,56 +31,62 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
 
   /// Pre-flight check before opening Create Listing — KYC then Subscription
   Future<void> _onCreateListingTap() async {
-    await ref.read(kycStatusProvider.notifier).loadKycStatus();
-    final kycState = ref.read(kycStatusProvider);
-    final subState = ref.read(subscriptionProvider);
-    final settingsAsync = ref.read(appSettingsProvider);
-    final subscriptionEnabled = settingsAsync.maybeWhen(
-      data: (data) => data['subscription_enabled'] == true,
-      orElse: () => false,
-    );
-
-    // 1 — Check KYC first
-    if (!kycState.isVerified && !kycState.isApproved) {
-      final goKyc = await _showAccessDialog(
-        icon: Icons.verified_user_outlined,
-        iconColor: AppColors.warning,
-        title: 'KYC Verification Required',
-        message: kycState.isPending
-            ? 'Your KYC verification is still pending review. You can post a listing once it\'s approved.'
-            : 'You need to complete identity verification (KYC) before you can post a listing.',
-        actionLabel: kycState.isPending ? null : 'Verify Now',
+    setState(() => _isCreatingListing = true);
+    try {
+      await ref.read(kycStatusProvider.notifier).loadKycStatus();
+      if (!mounted) return;
+      final kycState = ref.read(kycStatusProvider);
+      final subState = ref.read(subscriptionProvider);
+      final settingsAsync = ref.read(appSettingsProvider);
+      final subscriptionEnabled = settingsAsync.maybeWhen(
+        data: (data) => data['subscription_enabled'] == true,
+        orElse: () => false,
       );
-      if (goKyc == true && mounted) {
+
+      // 1 — Check KYC first
+      if (!kycState.isVerified && !kycState.isApproved) {
+        final goKyc = await _showAccessDialog(
+          icon: Icons.verified_user_outlined,
+          iconColor: AppColors.warning,
+          title: 'KYC Verification Required',
+          message: kycState.isPending
+              ? 'Your KYC verification is still pending review. You can post a listing once it\'s approved.'
+              : 'You need to complete identity verification (KYC) before you can post a listing.',
+          actionLabel: kycState.isPending ? null : 'Verify Now',
+        );
+        if (goKyc == true && mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const KycVerificationScreen()),
+          );
+        }
+        return;
+      }
+
+      // 2 — Check subscription (only if enabled globally)
+      if (subscriptionEnabled && !subState.canCreateListing) {
+        final goSub = await _showAccessDialog(
+          icon: Icons.workspace_premium_outlined,
+          iconColor: AppColors.accent500,
+          title: 'Subscription Required',
+          message: 'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
+          actionLabel: 'View Plans',
+        );
+        if (goSub == true && mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+          );
+        }
+        return;
+      }
+
+      // All good — open the create screen
+      if (mounted) {
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const KycVerificationScreen()),
+          MaterialPageRoute(builder: (_) => const CreateListingScreen()),
         );
       }
-      return;
-    }
-
-    // 2 — Check subscription (only if enabled globally)
-    if (subscriptionEnabled && !subState.canCreateListing) {
-      final goSub = await _showAccessDialog(
-        icon: Icons.workspace_premium_outlined,
-        iconColor: AppColors.accent500,
-        title: 'Subscription Required',
-        message: 'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
-        actionLabel: 'View Plans',
-      );
-      if (goSub == true && mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-        );
-      }
-      return;
-    }
-
-    // All good — open the create screen
-    if (mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const CreateListingScreen()),
-      );
+    } finally {
+      if (mounted) setState(() => _isCreatingListing = false);
     }
   }
 
@@ -189,7 +197,13 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
         backgroundColor: context.cardBg,
         elevation: 12,
         shape: const CircleBorder(),
-        child: Icon(Icons.add, color: context.iconPrimary, size: 30),
+        child: _isCreatingListing
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2.5),
+              )
+            : Icon(Icons.add, color: context.iconPrimary, size: 30),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(

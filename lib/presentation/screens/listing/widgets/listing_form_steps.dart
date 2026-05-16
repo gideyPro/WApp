@@ -28,7 +28,8 @@ class ListingStepIndicator extends StatelessWidget {
       l10n.listingStepMedia,
       l10n.listingStepReview
     ];
-    return Padding(
+    return Container(
+      color: context.scaffoldBg,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
         children: [

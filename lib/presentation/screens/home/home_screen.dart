@@ -35,6 +35,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   DateTime? _lastLoadTime;
+  bool _isLoadingProfile = false;
 
   @override
   void initState() {
@@ -192,8 +193,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ),
                 ),
                 onProfileTap: () async {
+                  setState(() => _isLoadingProfile = true);
                   await ref.read(profileProvider.notifier).loadProfile();
-                  if (mounted) _showProfileModal(context, ref, authState);
+                  if (mounted) {
+                    setState(() => _isLoadingProfile = false);
+                    _showProfileModal(context, ref, authState);
+                  }
                 },
                 onNotificationsTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
@@ -856,48 +861,75 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget _buildAvatar(String initials) {
-    return Container(
+    return SizedBox(
       width: 48,
       height: 48,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.accent500, AppColors.accent600],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.accent500.withValues(alpha: 0.35),
-            blurRadius: 16,
-            spreadRadius: 2,
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.3),
-            width: 1.5,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            initials,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              letterSpacing: 0.5,
+      child: Stack(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [AppColors.accent500, AppColors.accent600],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.accent500.withValues(alpha: 0.35),
+                  blurRadius: 16,
+                  spreadRadius: 2,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  width: 1.5,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  initials,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          if (_isLoadingProfile)
+            Container(
+              width: 48,
+              height: 48,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black26,
+              ),
+              child: const Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
