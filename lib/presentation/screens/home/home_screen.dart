@@ -186,6 +186,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               delegate: _HeaderDelegate(
                 authState: authState,
                 unreadCount: unreadCountAsync,
+                isLoadingProfile: _isLoadingProfile,
                 onSearchTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const SearchScreen(),
@@ -253,7 +254,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      barrierDismissible: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => DraggableScrollableSheet(
         expand: false,
@@ -790,6 +790,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   final AuthState authState;
   final int unreadCount;
+  final bool isLoadingProfile;
   final VoidCallback onSearchTap;
   final VoidCallback onProfileTap;
   final VoidCallback onNotificationsTap;
@@ -797,6 +798,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   _HeaderDelegate({
     required this.authState,
     required this.unreadCount,
+    required this.isLoadingProfile,
     required this.onSearchTap,
     required this.onProfileTap,
     required this.onNotificationsTap,
@@ -936,7 +938,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
-          if (_isLoadingProfile)
+          if (isLoadingProfile)
             Container(
               width: 48,
               height: 48,
