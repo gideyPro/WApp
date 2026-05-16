@@ -253,8 +253,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      barrierDismissible: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => DraggableScrollableSheet(
+        expand: false,
         initialChildSize: 0.45,
         minChildSize: 0.35,
         maxChildSize: 0.55,
@@ -271,16 +273,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
           child: Column(
             children: [
-              // Drag handle
-              Container(
-                margin: const EdgeInsets.only(top: 12),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.zinc300,
-                  borderRadius: BorderRadius.circular(2),
+              // Drag handle + close button
+              Padding(
+                padding: const EdgeInsets.only(top: 12, right: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppColors.zinc300,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(ctx).pop(),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.zinc200,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          size: 16,
+                          color: AppColors.zinc500,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              const SizedBox(height: 4),
               Expanded(
                 child: ListView(
                   controller: controller,

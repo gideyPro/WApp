@@ -11,7 +11,6 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      fontFamily: 'Montserrat',
 
       // Color Scheme - Logo Navy & Emerald
       colorScheme: const ColorScheme.light(
@@ -132,7 +131,6 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      fontFamily: 'Montserrat',
 
       // Color Scheme - Deep Night Logo Navy
       colorScheme: const ColorScheme.dark(
