@@ -197,18 +197,16 @@ class _SubscriptionPlansScreenState
                   children: [
                     Text(
                       '${l10n.subscriptionsCurrentPlan}: ${localPlan?.name ?? l10n.commonUnknown}',
-                      style: const TextStyle(
+                      style: AppTextStyles.bodyLargePlus.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
                       ),
                     ),
                     if (sub.endsAt != null)
                       Text(
                         l10n.subscriptionsExpiresOn(_formatDate(sub.endsAt!)),
-                        style: const TextStyle(
+                        style: AppTextStyles.bodySmall.copyWith(
                           color: Colors.white70,
-                          fontSize: 12,
                         ),
                       ),
                   ],
@@ -244,9 +242,8 @@ class _SubscriptionPlansScreenState
                                 const SizedBox(width: 4),
                                 Text(
                                   feature,
-                                  style: const TextStyle(
+                                  style: AppTextStyles.caption.copyWith(
                                     color: Colors.white,
-                                    fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                   ),
                                   maxLines: 1,
@@ -381,9 +378,8 @@ class _SubscriptionPlansScreenState
           const SizedBox(width: 4),
           Text(
             label,
-            style: const TextStyle(
+            style: AppTextStyles.caption.copyWith(
               color: Colors.white,
-              fontSize: 11,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -626,10 +622,10 @@ class _SubscriptionPlansScreenState
         ),
         child: Text(
           currency,
-          style: TextStyle(
-            color: isSelected ? AppColors.accent600 : AppColors.zinc600,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          style: AppTextStyles.bodySmall.copyWith(
             fontSize: 13,
+            color: isSelected ? AppColors.accent600 : AppColors.zinc600,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
           ),
         ),
       ),
@@ -845,7 +841,7 @@ class _PlanCard extends StatelessWidget {
           label,
           style: AppTextStyles.bodyMedium.copyWith(
             color: included ? AppColors.primary700 : AppColors.zinc500,
-            fontWeight: included ? FontWeight.w600 : FontWeight.normal,
+            fontWeight: included ? FontWeight.w600 : FontWeight.w500,
           ),
         ),
       ],

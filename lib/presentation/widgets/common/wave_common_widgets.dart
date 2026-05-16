@@ -997,10 +997,9 @@ class WaveSectionHeader extends StatelessWidget {
                 ),
                 child: Text(
                   actionLabel!,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.primary700,
+                  style: AppTextStyles.bodySmall.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: AppColors.primary700,
                   ),
                 ),
               ),

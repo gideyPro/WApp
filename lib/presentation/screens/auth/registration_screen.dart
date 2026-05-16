@@ -128,7 +128,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                       children: [
                         TextSpan(
                           text: 'Mart',
-                          style: TextStyle(color: AppColors.accent400),
+                          style: AppTextStyles.headline2.copyWith(color: AppColors.accent400),
                         ),
                       ],
                     ),
@@ -145,8 +145,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   const SizedBox(height: 8),
                   Text(
                     AppLocalizations.of(context).authJoinMarketplace,
-                    style: TextStyle(
-                      fontSize: 14,
+                    style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white.withValues(alpha: 0.7),
                     ),
                     textAlign: TextAlign.center,
@@ -258,7 +257,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           content: Text(
             l10n.authCancelRegistration,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            style: AppTextStyles.bodyLargePlus.copyWith(fontWeight: FontWeight.w600),
           ),
           actions: [
             TextButton(
@@ -384,8 +383,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       children: [
         Text(
           l10n.profileGender,
-          style: const TextStyle(
-            fontSize: 14,
+          style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: AppColors.primary800,
           ),
@@ -431,8 +429,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             const SizedBox(width: 6),
             Text(
               gender,
-              style: TextStyle(
-                fontSize: 12,
+              style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected ? AppColors.accent700 : AppColors.primary600,
               ),
@@ -464,12 +461,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
     return TextButton(
       onPressed: _sendRegistrationOtp,
-      child: const Text(
+      child: Text(
         'Resend Code',
-        style: TextStyle(
+        style: AppTextStyles.bodyLarge.copyWith(
           color: AppColors.accent600,
           fontWeight: FontWeight.w600,
-          fontSize: 15,
         ),
       ),
     );
@@ -497,10 +493,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           },
           child: Text(
             l10n.authLogin,
-            style: const TextStyle(
+            style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.accent600,
               fontWeight: FontWeight.w600,
-              fontSize: 15,
             ),
           ),
         ),
@@ -529,7 +524,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
+              style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 13,
                 color: AppColors.error,
               ),

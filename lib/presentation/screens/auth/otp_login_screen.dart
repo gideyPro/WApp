@@ -101,7 +101,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                       children: [
                         TextSpan(
                           text: 'Mart',
-                          style: TextStyle(color: AppColors.accent400),
+                          style: AppTextStyles.headline2.copyWith(color: AppColors.accent400),
                         ),
                       ],
                     ),
@@ -118,8 +118,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   const SizedBox(height: 8),
                   Text(
                     l10n.authWelcomeSubtitle,
-                    style: TextStyle(
-                      fontSize: 14,
+                    style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white.withValues(alpha: 0.7),
                     ),
                     textAlign: TextAlign.center,
@@ -283,10 +282,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       onPressed: _resendOtp,
       child: Text(
         AppLocalizations.of(context).authResendOtp,
-        style: TextStyle(
+        style: AppTextStyles.bodyLarge.copyWith(
           color: AppColors.accent600,
           fontWeight: FontWeight.w600,
-          fontSize: 15,
         ),
       ),
     );
@@ -313,10 +311,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
           },
           child: Text(
             l10n.authRegister,
-            style: TextStyle(
+            style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.accent600,
               fontWeight: FontWeight.w600,
-              fontSize: 15,
             ),
           ),
         ),
@@ -345,7 +342,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
+              style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 13,
                 color: AppColors.error,
               ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
@@ -219,7 +220,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
               Icon(Icons.error_outline, size: 14, color: AppColors.error),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(e, style: TextStyle(fontSize: 12, color: AppColors.error)),
+                child: Text(e, style: AppTextStyles.bodySmall.copyWith(color: AppColors.error)),
               ),
             ],
           ),

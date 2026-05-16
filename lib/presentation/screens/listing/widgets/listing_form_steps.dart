@@ -79,14 +79,7 @@ class ListingStepIndicator extends StatelessWidget {
                     Flexible(
                       child: Text(
                         steps[i],
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight:
-                              isCurrent ? FontWeight.w700 : FontWeight.w600,
-                          color: isCurrent 
-                              ? (context.isDarkMode ? AppColors.accent400 : AppColors.navy950) 
-                              : context.textMuted,
-                        ),
+                        style: AppTextStyles.labelSmall.copyWith(fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w600, color: isCurrent ? (context.isDarkMode ? AppColors.accent400 : AppColors.navy950) : context.textMuted),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -546,14 +539,14 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         labelText: label,
         hintText: hintText,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        labelStyle: const TextStyle(fontSize: 12),
+        labelStyle: AppTextStyles.bodySmall,
       ),
       dropdownColor: context.sheetBg,
       items: items.entries
           .map((e) => DropdownMenuItem(
                 value: e.key,
                 child: Text(e.value,
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                    style: AppTextStyles.bodySmall),
               ))
           .toList(),
       onChanged: onChanged,
@@ -571,10 +564,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     return TextFormField(
       controller: controller,
       readOnly: readOnly,
-      style: const TextStyle(fontSize: 12),
+      style: AppTextStyles.bodySmall,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: 12),
+        labelStyle: AppTextStyles.bodySmall,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         filled: readOnly,
         fillColor: readOnly ? AppColors.zinc100 : null,
@@ -599,10 +592,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     }
     return TextFormField(
       controller: _priceController,
-      style: const TextStyle(fontSize: 12),
+      style: AppTextStyles.bodySmall,
       decoration: InputDecoration(
         labelText: l10n.listingPriceEtb,
-        labelStyle: const TextStyle(fontSize: 12),
+        labelStyle: AppTextStyles.bodySmall,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         prefixIcon: const Icon(Icons.attach_money, size: 18),
         border: OutlineInputBorder(
@@ -660,10 +653,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                   size: 18),
               const SizedBox(width: 4),
               Text(label,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : AppColors.primary800)),
+                  style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600, color: isSelected ? Colors.white : AppColors.primary800)),
             ],
           ),
         ),
@@ -890,7 +880,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       value: items.contains(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: 12),
+        labelStyle: AppTextStyles.bodySmall,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         suffixIcon: isLoading
             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
@@ -898,8 +888,8 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [DropdownMenuItem(value: null, child: Text(l10n.listingNoOptions, style: const TextStyle(color: Colors.grey, fontSize: 12)))]
-          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)))).toList(),
+          ? [DropdownMenuItem(value: null, child: Text(l10n.listingNoOptions, style: AppTextStyles.bodySmall.copyWith(color: Colors.grey)))]
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
     );
@@ -1130,10 +1120,10 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
           TextFormField(
             initialValue: widget.formData.description,
             maxLines: 3,
-            style: const TextStyle(fontSize: 12),
+            style: AppTextStyles.bodySmall,
             decoration: InputDecoration(
               labelText: l10n.listingDescriptionLabel,
-              labelStyle: const TextStyle(fontSize: 12),
+              labelStyle: AppTextStyles.bodySmall,
               hintText: l10n.listingDescribeProperty,
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             ),
@@ -1167,10 +1157,10 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       child: TextFormField(
         controller: controller,
         readOnly: readOnly,
-        style: const TextStyle(fontSize: 12),
+        style: AppTextStyles.bodySmall,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(fontSize: 12),
+          labelStyle: AppTextStyles.bodySmall,
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           filled: readOnly,
           fillColor: readOnly ? AppColors.zinc100 : null,
@@ -1194,12 +1184,12 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
-        labelStyle: const TextStyle(fontSize: 12),
+        labelStyle: AppTextStyles.bodySmall,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
       dropdownColor: context.sheetBg,
       items: items.entries
-          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12))))
+          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, style: AppTextStyles.bodySmall)))
           .toList(),
       onChanged: onChanged,
       isExpanded: true,
@@ -1342,7 +1332,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                       size: 32, color: context.isDarkMode ? AppColors.primary300 : AppColors.primary500),
                   const SizedBox(height: 8),
                   Text(l10n.listingTapToAdd,
-                      style: TextStyle(color: context.isDarkMode ? AppColors.primary300 : AppColors.primary500)),
+                      style: AppTextStyles.bodySmall.copyWith(color: context.isDarkMode ? AppColors.primary300 : AppColors.primary500)),
                 ])),
           ),
         ),

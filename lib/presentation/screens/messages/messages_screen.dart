@@ -264,7 +264,7 @@ class _ConversationTile extends ConsumerWidget {
             child: Center(
               child: Text(
                 initials,
-                style: TextStyle(
+                style: AppTextStyles.titleSmall.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: context.isDarkMode
@@ -291,12 +291,12 @@ class _ConversationTile extends ConsumerWidget {
                     conversation.unreadCount! > 99
                         ? '99+'
                         : '${conversation.unreadCount}',
-                    style: TextStyle(
+                    style: AppTextStyles.caption.copyWith(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
                       color: context.isDarkMode
                           ? AppColors.primary900
                           : AppColors.surface,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -306,9 +306,8 @@ class _ConversationTile extends ConsumerWidget {
       ),
       title: Text(
         displayName,
-        style: TextStyle(
+        style: AppTextStyles.bodyLarge.copyWith(
           fontWeight: hasUnread ? FontWeight.w800 : FontWeight.w600,
-          fontSize: 15,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -328,14 +327,14 @@ class _ConversationTile extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 4),
-            const Text('·', style: TextStyle(color: AppColors.zinc400)),
+            Text('·', style: AppTextStyles.bodySmall.copyWith(color: AppColors.zinc400)),
             const SizedBox(width: 4),
           ],
           Expanded(
             child: Text(
               previewText,
               style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: hasUnread ? FontWeight.w700 : FontWeight.normal,
+                fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
                 color: hasUnread ? AppColors.primary800 : AppColors.zinc500,
               ),
               maxLines: 1,
@@ -351,10 +350,10 @@ class _ConversationTile extends ConsumerWidget {
           if (conversation.lastMessageAt != null)
             Text(
               _formatTime(conversation.lastMessageAt, l10n),
-              style: TextStyle(
+              style: AppTextStyles.caption.copyWith(
                 fontSize: 11,
                 color: hasUnread ? AppColors.accent600 : AppColors.zinc400,
-                fontWeight: hasUnread ? FontWeight.w700 : FontWeight.normal,
+                fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
               ),
             ),
         ],
@@ -507,7 +506,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     context.isDarkMode ? AppColors.primary900 : AppColors.zinc400,
                 child: Text(
                   l10n.messagesSwitchContext,
-                  style: const TextStyle(
+                  style: AppTextStyles.caption.copyWith(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -600,7 +599,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 children: [
                   Text(
                     conv.contextDisplayTitle,
-                    style: TextStyle(
+                    style: AppTextStyles.bodySmall.copyWith(
                       fontSize: 13,
                       fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                       color: isDark ? AppColors.zinc100 : AppColors.zinc900,
@@ -614,7 +613,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       if (conv.unreadCount != null && conv.unreadCount! > 0)
                         Text(
                           '${conv.unreadCount} ${l10n.messagesUnread}',
-                          style: const TextStyle(
+                          style: AppTextStyles.caption.copyWith(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                             color: AppColors.error,
@@ -623,7 +622,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       else if (conv.lastMessageAt != null)
                         Text(
                           _formatRelativeTime(conv.lastMessageAt!),
-                          style: TextStyle(
+                          style: AppTextStyles.caption.copyWith(
                             fontSize: 10,
                             color: AppColors.zinc400,
                           ),
@@ -693,8 +692,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
                 child: Text(
                   l10n.messagesEmpty,
-                  style: TextStyle(
-                    fontSize: 11,
+                  style: AppTextStyles.caption.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.accent500,
                   ),
@@ -745,8 +743,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
-                          fontSize: 15,
+                        style: AppTextStyles.titleSmall.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                         maxLines: 1,
@@ -766,10 +763,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                   Text(
                     'with $otherUserName',
-                    style: TextStyle(
+                    style: AppTextStyles.caption.copyWith(
                       fontSize: 11,
                       color: isDark ? AppColors.zinc400 : AppColors.zinc500,
-                      fontWeight: FontWeight.normal,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -1006,7 +1003,7 @@ class _MessageBubble extends ConsumerWidget {
               child: Center(
                 child: Text(
                   initials,
-                  style: TextStyle(
+                  style: AppTextStyles.caption.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: context.isDarkMode
@@ -1028,7 +1025,7 @@ class _MessageBubble extends ConsumerWidget {
                     padding: const EdgeInsets.only(left: 4, bottom: 2),
                     child: Text(
                       '(Owner)',
-                      style: TextStyle(
+                      style: AppTextStyles.caption.copyWith(
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
                         color: AppColors.accent500,
@@ -1062,9 +1059,8 @@ class _MessageBubble extends ConsumerWidget {
                     children: [
                       Text(
                         message.body,
-                        style: TextStyle(
+                        style: AppTextStyles.bodyMedium.copyWith(
                           color: isOwn ? Colors.white : context.textPrimary,
-                          fontSize: 14,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -1073,11 +1069,11 @@ class _MessageBubble extends ConsumerWidget {
                         children: [
                           Text(
                             _formatMessageTime(message.createdAt, l10n),
-                            style: TextStyle(
+                            style: AppTextStyles.caption.copyWith(
+                              fontSize: 10,
                               color: isOwn
                                   ? AppColors.surface.withValues(alpha: 0.7)
                                   : AppColors.zinc400,
-                              fontSize: 10,
                             ),
                           ),
                           if (isOwn) ...[
@@ -1113,7 +1109,7 @@ class _MessageBubble extends ConsumerWidget {
               child: Center(
                 child: Text(
                   initials,
-                  style: TextStyle(
+                  style: AppTextStyles.caption.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: context.isDarkMode

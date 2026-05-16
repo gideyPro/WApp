@@ -92,9 +92,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                 child: const Icon(Icons.workspace_premium_outlined, size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              const Text('Subscription Required', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800), textAlign: TextAlign.center),
+              Text('Subscription Required', style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800), textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              const Text('You need an active subscription to view property details and contact owners.', style: TextStyle(color: AppColors.primary600), textAlign: TextAlign.center),
+              Text('You need an active subscription to view property details and contact owners.', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary600), textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Row(
                 children: [

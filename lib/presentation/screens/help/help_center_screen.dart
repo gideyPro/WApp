@@ -276,10 +276,9 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               const SizedBox(width: 12),
               Text(
                 l10n.helpStillNeedHelp,
-                style: const TextStyle(
+                style: AppTextStyles.bodyLargePlus.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
                 ),
               ),
             ],
@@ -287,7 +286,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           const SizedBox(height: 12),
           Text(
             l10n.helpSupportTeam,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 16),
           Row(

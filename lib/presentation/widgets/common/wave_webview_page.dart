@@ -74,9 +74,9 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop('done'),
-            child: const Text(
+            child: Text(
               'Done',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: AppTextStyles.bodyMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
         ],

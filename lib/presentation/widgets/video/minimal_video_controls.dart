@@ -4,6 +4,8 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../core/theme/text_styles.dart';
+
 class MinimalVideoControls extends StatefulWidget {
   const MinimalVideoControls({super.key});
 
@@ -185,7 +187,7 @@ class _MinimalVideoControlsState extends State<MinimalVideoControls> {
   Widget _buildPosition() {
     return Text(
       '${_formatDuration(_latestValue.position)} / ${_formatDuration(_latestValue.duration)}',
-      style: const TextStyle(
+      style: AppTextStyles.bodySmall.copyWith(
         fontSize: 13,
         color: Colors.white,
         fontWeight: FontWeight.w600,

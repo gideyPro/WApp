@@ -74,9 +74,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               },
               child: Text(
                 l10n.notificationsMarkAllRead,
-                style: TextStyle(
+                style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.accent600,
-                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -211,9 +210,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 child: const Icon(Icons.workspace_premium_outlined, size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              const Text('Subscription Required', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800), textAlign: TextAlign.center),
+              Text('Subscription Required', style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800), textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              const Text('You need an active subscription to view property details and contact owners.', style: TextStyle(color: AppColors.primary600), textAlign: TextAlign.center),
+              Text('You need an active subscription to view property details and contact owners.', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary600), textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -371,10 +370,9 @@ class _NotificationTile extends StatelessWidget {
           ),
           title: Text(
             notification.title,
-            style: TextStyle(
+            style: AppTextStyles.bodyMedium.copyWith(
               fontWeight:
-                  notification.isRead ? FontWeight.normal : FontWeight.w600,
-              fontSize: 14,
+                  notification.isRead ? FontWeight.w500 : FontWeight.w600,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

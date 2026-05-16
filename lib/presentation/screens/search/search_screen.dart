@@ -247,7 +247,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                       horizontal: 8, vertical: 0),
                                   isDense: true,
                                 ),
-                                style: TextStyle(fontSize: 14,
+                                style: AppTextStyles.bodyMedium.copyWith(
                                     color: context.textPrimary),
                                 textInputAction: TextInputAction.search,
                                 onSubmitted: (_) => _performSearch(),
@@ -379,8 +379,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     const SizedBox(width: 4),
                     Text(
                       l10n.searchClearAll,
-                      style: const TextStyle(
-                          fontSize: 12,
+                      style: AppTextStyles.bodySmall.copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppColors.primary600),
                     ),
@@ -421,8 +420,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           children: [
             Text(
               label,
-              style: const TextStyle(
-                  fontSize: 12,
+              style: AppTextStyles.bodySmall.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.accent700),
             ),
@@ -466,9 +464,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           // Popular Searches
           Text(
             l10n.searchPopular,
-            style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            style: AppTextStyles.headline5.copyWith(
                 color: AppColors.primary800),
           ),
           const SizedBox(height: 16),
@@ -557,7 +553,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ),
         child: Text(
           label,
-          style: const TextStyle(
+          style: AppTextStyles.bodySmall.copyWith(
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: AppColors.primary700),
@@ -613,15 +609,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Subscription Required',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'You need an active subscription to view property details and contact owners.',
-                style: TextStyle(color: AppColors.primary500),
+                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -823,7 +819,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(l10n.searchFilters,
-                            style: const TextStyle(
+                            style: AppTextStyles.title.copyWith(
                                 fontSize: 20, fontWeight: FontWeight.bold)),
                         TextButton(
                           onPressed: () {
@@ -837,7 +833,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             });
                           },
                           child: Text(l10n.searchReset,
-                               style: const TextStyle(color: AppColors.primary500)),
+                               style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500)),
                         ),
                       ],
                     ),
@@ -845,8 +841,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                     // Property Type
                     Text(l10n.searchPropertyType,
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w600)),
+                        style: AppTextStyles.bodyLarge.copyWith(
+                            fontWeight: FontWeight.w600)),
                     const SizedBox(height: 10),
                     _modalChipRow([
                       (l10n.searchFilterAll, null, _selectedType == null),
@@ -861,8 +857,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     // Listing Status (only if rental enabled)
                     if (_rentalEnabled) ...[
                       Text(l10n.searchListingStatus,
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w600)),
+                          style: AppTextStyles.bodyLarge.copyWith(
+                              fontWeight: FontWeight.w600)),
                       const SizedBox(height: 10),
                       _modalChipRow([
                         (l10n.searchFilterAll, null, _selectedListingType == null),
@@ -880,8 +876,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                     // Price Range
                     Text(l10n.searchPriceRange,
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w600)),
+                        style: AppTextStyles.bodyLarge.copyWith(
+                            fontWeight: FontWeight.w600)),
                     const SizedBox(height: 10),
                     _modalChipRow([
                       (l10n.searchFilterAny, null, _selectedPriceLabel == null),
@@ -910,8 +906,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                     // Sort By (last)
                     Text(l10n.searchSortBy,
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w600)),
+                        style: AppTextStyles.bodyLarge.copyWith(
+                            fontWeight: FontWeight.w600)),
                     const SizedBox(height: 10),
                     _modalChipRow([
                       (l10n.searchSortNewest, 'newest', _selectedSort == 'newest'),
@@ -944,8 +940,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ),
                         child: Text(
                             l10n.searchApplyFilters,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600)),
+                            style: AppTextStyles.bodyLargePlus.copyWith(
+                                fontWeight: FontWeight.w600)),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -1005,7 +1001,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
             child: Text(
               label,
-              style: TextStyle(
+              style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: isSelected ? Colors.white : AppColors.primary700,

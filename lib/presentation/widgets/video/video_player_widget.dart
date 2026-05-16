@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/text_styles.dart';
 import 'minimal_video_controls.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
@@ -177,11 +178,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               color: AppColors.error,
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Failed to load video',
-              style: TextStyle(
+              style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primary600,
-                fontSize: 14,
               ),
             ),
             const SizedBox(height: 12),

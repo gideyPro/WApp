@@ -330,8 +330,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           const SizedBox(height: 4),
                           Text(
                             phone,
-                            style: TextStyle(
-                              fontSize: 14,
+                            style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.primary400,
                             ),
                             maxLines: 1,
@@ -479,8 +478,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             const SizedBox(width: 12),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 15,
+              style: AppTextStyles.bodyLarge.copyWith(
                 fontWeight: FontWeight.w600,
                 color: textColor ?? AppColors.navy950,
               ),
@@ -541,10 +539,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
               child: Text(
                 l10n.homeViewAll,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.primary700,
+                style: AppTextStyles.bodySmall.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: AppColors.primary700,
                 ),
               ),
             ),
@@ -601,15 +598,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Subscription Required',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'You need an active subscription to view property details and contact owners.',
-                style: TextStyle(color: AppColors.primary600),
+                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary600),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -897,9 +894,8 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               child: Center(
                 child: Text(
                   initials,
-                  style: const TextStyle(
+                  style: AppTextStyles.titleSmall.copyWith(
                     fontSize: 18,
-                    fontWeight: FontWeight.w700,
                     color: Colors.white,
                     letterSpacing: 0.5,
                   ),

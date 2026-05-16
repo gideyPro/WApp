@@ -201,7 +201,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             child: Center(
               child: Text(
                 initials,
-                style: const TextStyle(
+                style: AppTextStyles.headline1.copyWith(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,

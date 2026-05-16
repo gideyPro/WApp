@@ -252,7 +252,7 @@ const SizedBox(height: 24),
               }
             },
             child:
-                Text(l10n.settingsLogout, style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.w700)),
+                Text(l10n.settingsLogout, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -452,7 +452,7 @@ Widget _buildLanguageOption(
     leading: isSelected
         ? const Icon(Icons.check_circle, color: AppColors.accent500)
         : const Icon(Icons.radio_button_unchecked),
-    title: Text(languageName, style: TextStyle(fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
+    title: Text(languageName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
   );
 }
 

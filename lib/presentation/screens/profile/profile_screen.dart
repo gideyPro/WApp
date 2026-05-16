@@ -412,7 +412,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               }
             },
             child:
-                Text(l10n.authLogout, style: const TextStyle(color: AppColors.error)),
+                Text(l10n.authLogout, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error)),
           ),
         ],
       ),

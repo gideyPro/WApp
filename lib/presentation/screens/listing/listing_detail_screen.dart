@@ -1106,7 +1106,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                         const SizedBox(width: 8),
                         Text(
                           _getInterestStatusText(listing.userInterestStatus, l10n),
-                          style: TextStyle(
+                          style: AppTextStyles.bodyMedium.copyWith(
                             color: _getInterestStatusColor(listing.userInterestStatus),
                             fontWeight: FontWeight.w600,
                           ),

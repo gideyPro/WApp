@@ -611,7 +611,7 @@ class _DocumentTypeChip extends StatelessWidget {
               label,
               style: AppTextStyles.labelMedium.copyWith(
                 color: isSelected ? AppColors.accent700 : AppColors.primary600,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                fontWeight:           isSelected ? FontWeight.w600 : FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),

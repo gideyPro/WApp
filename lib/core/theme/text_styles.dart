@@ -78,7 +78,7 @@ class AppTextStyles {
   static TextStyle get bodyLargePlus => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 16,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.4,
       );
 
@@ -86,7 +86,7 @@ class AppTextStyles {
   static TextStyle get bodyLarge => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 15,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.5,
         letterSpacing: 0.1,
       );
@@ -94,14 +94,14 @@ class AppTextStyles {
   static TextStyle get bodyMedium => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 14,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.5,
       );
 
   static TextStyle get bodySmall => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 12,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.4,
       );
 
@@ -159,7 +159,7 @@ class AppTextStyles {
   static TextStyle get caption => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 11,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         color: AppColors.stone700,
         height: 1.3,
       );
@@ -209,7 +209,7 @@ class AppTextStyles {
   static TextStyle get navInactive => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 12,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         color: AppColors.primary600,
       );
 
