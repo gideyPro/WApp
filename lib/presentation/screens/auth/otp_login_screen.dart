@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,7 +92,20 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   const SizedBox(height: 24),
 
                   // Logo with glassmorphism
-                  const GlassLogoContainer(size: 90, logoSize: 65),
+                  const GlassLogoContainer(size: 72, logoSize: 52),
+                  const SizedBox(height: 12),
+                  Text.rich(
+                    TextSpan(
+                      text: 'Wave',
+                      style: AppTextStyles.headline2.copyWith(color: Colors.white),
+                      children: [
+                        TextSpan(
+                          text: 'Mart',
+                          style: TextStyle(color: AppColors.accent400),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 24),
 
                   // Title
@@ -112,21 +126,25 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // Card container
-                  Container(
+                  // Card container — glass-luxury matching web
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                      child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: context.isDarkMode ? Colors.white.withValues(alpha: 0.08) : Colors.white,
+                      color: Colors.white.withValues(alpha: 0.7),
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
+                          color: Colors.black.withValues(alpha: 0.15),
                           blurRadius: 24,
                           offset: const Offset(0, 12),
                         ),
                       ],
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.15),
+                        color: AppColors.primary200.withValues(alpha: 0.6),
                       ),
                     ),
                     child: Column(
@@ -181,6 +199,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                         ],
                       ],
                     ),
+                  ),
+                  ),
                   ),
                   const SizedBox(height: 24),
                 ],
