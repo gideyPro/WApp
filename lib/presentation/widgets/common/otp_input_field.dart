@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_spacing.dart';
+import '../../../core/theme/text_styles.dart';
 
 class OtpInputField extends StatefulWidget {
   final int length;
@@ -72,18 +74,20 @@ class OtpInputFieldState extends State<OtpInputField> {
       textAlign: TextAlign.center,
       cursorColor: AppColors.accent500,
       cursorWidth: 2,
-      style: TextStyle(
-        fontSize: 28,
+      style: AppTextStyles.bodyLarge.copyWith(
+        fontSize: 20,
         fontWeight: FontWeight.w700,
         color: isDark ? Colors.white : AppColors.primary900,
-        letterSpacing: 16,
+        letterSpacing: 8,
+        height: 1.2,
       ),
       decoration: InputDecoration(
         hintText: '0' * widget.length,
-        hintStyle: TextStyle(
+        hintStyle: AppTextStyles.bodyLarge.copyWith(
           color: isDark ? AppColors.primary600 : AppColors.primary200,
           fontWeight: FontWeight.w700,
-          letterSpacing: 16,
+          letterSpacing: 8,
+          height: 1.2,
         ),
         filled: true,
         fillColor: isDark
@@ -114,7 +118,7 @@ class OtpInputFieldState extends State<OtpInputField> {
             width: 2,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
       ),
     );
   }

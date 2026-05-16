@@ -408,6 +408,7 @@
   "settingsMyListingsSubtitle": "Manage your properties",
   "settingsSubscriptionsSubtitle": "View your plans",
   "settingsPaymentsSubtitle": "Transaction history",
+  "settingsFavoritesSubtitle": "View your saved listings",
   "settingsKycVerified": "Verified",
   "settingsKycPending": "Pending",
   "settingsKycRequired": "Required",

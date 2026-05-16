@@ -582,6 +582,14 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingArea => 'ቦታ';
 
   @override
+  String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
+
+  @override
+  String listingExistingFile(Object name) {
+    return 'አሁን ያለ: $name';
+  }
+
+  @override
   String get listingListingType => 'የማስፈርድ አይነት';
 
   @override
@@ -1071,12 +1079,6 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsVideoTour => 'የቪዲዮ ጉብኝት';
 
   @override
-  String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
-
-  @override
-  String listingExistingFile(Object name) => 'አሁን ያለ: $name';
-
-  @override
   String get listingsNoDescription => 'ምንም መግለጫ አልተሰጠም';
 
   @override
@@ -1261,6 +1263,9 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get settingsPaymentsSubtitle => 'የክፍያ ታሪክ';
+
+  @override
+  String get settingsFavoritesSubtitle => 'የተቀመጡ ንብረቶችዎን ይመልከቱ';
 
   @override
   String get settingsKycVerified => 'ተረጋግጧል';

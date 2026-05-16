@@ -1192,6 +1192,18 @@ abstract class AppLocalizations {
   /// **'Area'**
   String get listingArea;
 
+  /// No description provided for @listingVideoMaxSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Max 100MB'**
+  String get listingVideoMaxSize;
+
+  /// No description provided for @listingExistingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Current: {name}'**
+  String listingExistingFile(Object name);
+
   /// No description provided for @listingListingType.
   ///
   /// In en, this message translates to:
@@ -2116,18 +2128,6 @@ abstract class AppLocalizations {
   /// **'Video Tour'**
   String get listingsVideoTour;
 
-  /// No description provided for @listingVideoMaxSize.
-  ///
-  /// In en, this message translates to:
-  /// **'Max 100MB'**
-  String get listingVideoMaxSize;
-
-  /// No description provided for @listingExistingFile.
-  ///
-  /// In en, this message translates to:
-  /// **'Current: {name}'**
-  String listingExistingFile(Object name);
-
   /// No description provided for @listingsNoDescription.
   ///
   /// In en, this message translates to:
@@ -2487,6 +2487,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Transaction history'**
   String get settingsPaymentsSubtitle;
+
+  /// No description provided for @settingsFavoritesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View your saved listings'**
+  String get settingsFavoritesSubtitle;
 
   /// No description provided for @settingsKycVerified.
   ///

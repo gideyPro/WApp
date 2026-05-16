@@ -150,6 +150,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: context.cardBg,
+          surfaceTintColor: Colors.transparent,
           leading: _currentStep > 0
               ? IconButton(
                   icon: const Icon(Icons.arrow_back_rounded),

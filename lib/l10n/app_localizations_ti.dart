@@ -582,6 +582,14 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingArea => 'ቦታ';
 
   @override
+  String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
+
+  @override
+  String listingExistingFile(Object name) {
+    return 'ሕጂ ዘሎ: $name';
+  }
+
+  @override
   String get listingListingType => 'ዓይነት ማስፈርድ';
 
   @override
@@ -1071,12 +1079,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsVideoTour => 'ናይ ቪዲዮ ዑደት';
 
   @override
-  String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
-
-  @override
-  String listingExistingFile(Object name) => 'ሕጂ ዘሎ: $name';
-
-  @override
   String get listingsNoDescription => 'መግለጺ ኣይተዋህበን';
 
   @override
@@ -1261,6 +1263,9 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get settingsPaymentsSubtitle => 'ታሪኽ ክፍሊት';
+
+  @override
+  String get settingsFavoritesSubtitle => 'ዝተዓቀብኩምዎ ንብረታት ርኣዩ';
 
   @override
   String get settingsKycVerified => 'ተረጋጊጹ';

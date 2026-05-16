@@ -588,6 +588,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingArea => 'Area';
 
   @override
+  String get listingVideoMaxSize => 'Max 100MB';
+
+  @override
+  String listingExistingFile(Object name) {
+    return 'Current: $name';
+  }
+
+  @override
   String get listingListingType => 'Listing Type';
 
   @override
@@ -1081,12 +1089,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsVideoTour => 'Video Tour';
 
   @override
-  String get listingVideoMaxSize => 'Max 100MB';
-
-  @override
-  String listingExistingFile(Object name) => 'Current: $name';
-
-  @override
   String get listingsNoDescription => 'No description provided.';
 
   @override
@@ -1274,6 +1276,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsPaymentsSubtitle => 'Transaction history';
+
+  @override
+  String get settingsFavoritesSubtitle => 'View your saved listings';
 
   @override
   String get settingsKycVerified => 'Verified';

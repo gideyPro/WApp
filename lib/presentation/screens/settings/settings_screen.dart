@@ -78,8 +78,8 @@ final settingsAsync = ref.watch(appSettingsProvider);
       ),
       _MenuItemData(
         icon: Icons.favorite_outline_rounded,
-        title: 'My Favorites',
-        subtitle: 'View your saved listings',
+        title: l10n.profileFavorites,
+        subtitle: l10n.settingsFavoritesSubtitle,
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const FavoritesScreen()),
         ),
