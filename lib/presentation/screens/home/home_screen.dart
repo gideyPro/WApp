@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
@@ -35,7 +36,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   DateTime? _lastLoadTime;
-  bool _isLoadingProfile = false;
 
   @override
   void initState() {
@@ -186,20 +186,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               delegate: _HeaderDelegate(
                 authState: authState,
                 unreadCount: unreadCountAsync,
-                isLoadingProfile: _isLoadingProfile,
                 onSearchTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const SearchScreen(),
                     settings: const RouteSettings(name: '/search'),
                   ),
                 ),
-                onProfileTap: () async {
-                  setState(() => _isLoadingProfile = true);
-                  await ref.read(profileProvider.notifier).loadProfile();
-                  if (mounted) {
-                    setState(() => _isLoadingProfile = false);
-                    _showProfileModal(context, ref, authState);
-                  }
+                onProfileTap: () {
+                  ref.read(profileProvider.notifier).loadProfile();
+                  _showProfileModal(context, ref, authState);
                 },
                 onNotificationsTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
@@ -232,24 +227,84 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
+  Widget _buildProfileSkeleton(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: context.shimmerBase,
+      highlightColor: context.shimmerHighlight,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Avatar + name/phone
+            Row(
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 18,
+                        width: 180,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        height: 14,
+                        width: 140,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            // Stats row
+            Row(
+              children: [
+                for (int i = 0; i < 3; i++) ...[
+                  if (i > 0) const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 28),
+            // Divider skeleton
+            Container(height: 1, color: Colors.white),
+            const SizedBox(height: 20),
+            // Action skeleton
+            Container(
+              height: 20,
+              width: 100,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showProfileModal(
       BuildContext context, WidgetRef ref, AuthState authState) {
-    final user = authState.user;
-    final profileState = ref.read(profileProvider);
-    final stats = profileState.stats;
     final l10n = AppLocalizations.of(context);
-    String initialsTemp = l10n.commonAppInitials;
-    if (user?.initials.isNotEmpty == true) {
-      initialsTemp = user!.initials;
-    } else if (user != null && user.firstName.isNotEmpty) {
-      initialsTemp = user.firstName.substring(0, 1).toUpperCase();
-    }
-    final initials = initialsTemp;
-    final fullName =
-        (user?.fullName.isNotEmpty ?? false) ? user!.fullName : l10n.commonUser;
-    final phone = (user?.phoneNumber.isNotEmpty ?? false)
-        ? user!.phoneNumber
-        : (user?.email ?? l10n.commonNA);
 
     showModalBottomSheet(
       context: context,
@@ -258,147 +313,181 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
       ),
       isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.55,
-        minChildSize: 0.4,
-        maxChildSize: 0.7,
-        builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Drag handle
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.zinc300,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
+      builder: (ctx) => Consumer(
+        builder: (context, ref, child) {
+          final profileState = ref.watch(profileProvider);
+          final user = profileState.user ?? authState.user;
+          final stats = profileState.stats;
+          final isLoading = profileState.isLoading;
 
-                // Avatar and name
-                Row(
+          String initialsTemp = l10n.commonAppInitials;
+          if (user?.initials.isNotEmpty == true) {
+            initialsTemp = user!.initials;
+          } else if (user != null && user.firstName.isNotEmpty) {
+            initialsTemp = user.firstName.substring(0, 1).toUpperCase();
+          }
+          final initials = initialsTemp;
+          final fullName = (user?.fullName.isNotEmpty ?? false)
+              ? user!.fullName
+              : l10n.commonUser;
+          final phone = (user?.phoneNumber.isNotEmpty ?? false)
+              ? user!.phoneNumber
+              : (user?.email ?? l10n.commonNA);
+
+          return DraggableScrollableSheet(
+            expand: false,
+            initialChildSize: 0.55,
+            minChildSize: 0.4,
+            maxChildSize: 0.7,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [AppColors.accent500, AppColors.accent600],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.accent500.withValues(alpha: 0.3),
-                            blurRadius: 12,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          initials,
-                          style: AppTextStyles.headline4.copyWith(
-                            color: Colors.white,
-                          ),
+                    // Drag handle
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppColors.zinc300,
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(height: 20),
+
+                    if (isLoading)
+                      _buildProfileSkeleton(context)
+                    else ...[
+                      // Avatar and name
+                      Row(
                         children: [
-                          Text(
-                            fullName,
-                            style: AppTextStyles.title.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: context.textPrimary,
+                          Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  AppColors.accent500,
+                                  AppColors.accent600,
+                                ],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.accent500
+                                      .withValues(alpha: 0.3),
+                                  blurRadius: 12,
+                                  spreadRadius: 1,
+                                ),
+                              ],
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            child: Center(
+                              child: Text(
+                                initials,
+                                style: AppTextStyles.headline4.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            phone,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.primary400,
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fullName,
+                                  style: AppTextStyles.title.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    color: context.textPrimary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  phone,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: AppColors.primary400,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 24),
+
+                      // Stats row
+                      Row(
+                        children: [
+                          _buildModalStatItem(
+                            value: stats?.totalListings.toString() ?? '0',
+                            label: l10n.profileStatsListings,
+                            onTap: () {
+                              Navigator.pop(ctx);
+                              _navigateToMyListings();
+                            },
+                          ),
+                          const SizedBox(width: 12),
+                          _buildModalStatItem(
+                            value: stats?.totalFavorites.toString() ?? '0',
+                            label: l10n.profileStatsFavorites,
+                            onTap: () {
+                              Navigator.pop(ctx);
+                              _navigateToFavorites();
+                            },
+                          ),
+                          const SizedBox(width: 12),
+                          _buildModalStatItem(
+                            value: profileState.user?.isKycVerified == true
+                                ? l10n.profileKycStatusVerified
+                                : l10n.profileKycStatusPending,
+                            label: l10n.profileVerificationKyc,
+                            valueColor:
+                                profileState.user?.isKycVerified == true
+                                    ? AppColors.emerald600
+                                    : AppColors.warning,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      const Divider(height: 1),
+                      const SizedBox(height: 8),
+
+                      // Action buttons
+                      _buildModalAction(
+                        icon: Icons.logout,
+                        title: l10n.authLogout,
+                        textColor: AppColors.error,
+                        iconColor: AppColors.error,
+                        onTap: () async {
+                          Navigator.pop(ctx);
+                          await ref
+                              .read(authStateProvider.notifier)
+                              .logout();
+                          if (mounted) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (_) => const OtpLoginScreen()),
+                              (route) => false,
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ],
                 ),
-                const SizedBox(height: 24),
-
-                // Stats row
-                Row(
-                  children: [
-                    _buildModalStatItem(
-                      value: stats?.totalListings.toString() ?? '0',
-                      label: l10n.profileStatsListings,
-                      onTap: () {
-                        Navigator.pop(ctx);
-                        _navigateToMyListings();
-                      },
-                    ),
-                    const SizedBox(width: 12),
-                    _buildModalStatItem(
-                      value: stats?.totalFavorites.toString() ?? '0',
-                      label: l10n.profileStatsFavorites,
-                      onTap: () {
-                        Navigator.pop(ctx);
-                        _navigateToFavorites();
-                      },
-                    ),
-                    const SizedBox(width: 12),
-                    _buildModalStatItem(
-                      value: user?.isKycVerified == true
-                          ? l10n.profileKycStatusVerified
-                          : l10n.profileKycStatusPending,
-                      label: l10n.profileVerificationKyc,
-                      valueColor: user?.isKycVerified == true
-                          ? AppColors.emerald600
-                          : AppColors.warning,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Divider(height: 1),
-                const SizedBox(height: 8),
-
-                // Action buttons
-                _buildModalAction(
-                  icon: Icons.logout,
-                  title: l10n.authLogout,
-                  textColor: AppColors.error,
-                  iconColor: AppColors.error,
-                  onTap: () async {
-                    Navigator.pop(ctx);
-                    await ref.read(authStateProvider.notifier).logout();
-                    if (mounted) {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (_) => const OtpLoginScreen()),
-                        (route) => false,
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
+              );
+            },
           );
         },
       ),
@@ -756,7 +845,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   final AuthState authState;
   final int unreadCount;
-  final bool isLoadingProfile;
   final VoidCallback onSearchTap;
   final VoidCallback onProfileTap;
   final VoidCallback onNotificationsTap;
@@ -764,7 +852,6 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   _HeaderDelegate({
     required this.authState,
     required this.unreadCount,
-    required this.isLoadingProfile,
     required this.onSearchTap,
     required this.onProfileTap,
     required this.onNotificationsTap,
@@ -782,16 +869,25 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         ? l10n.homeGreeting(user!.firstName)
         : 'Welcome';
 
-    return WaveGlass(
-      blur: 20,
-      color: context.scaffoldBg.withValues(alpha: isScrolled ? 0.95 : 0.8),
-      border: Border(
-        bottom: BorderSide(
-          color: isScrolled 
-            ? context.divider.withValues(alpha: 0.5) 
-            : Colors.transparent
-        ),
-      ),
+    final targetAlpha = isScrolled ? 0.95 : 0.8;
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(end: targetAlpha),
+      duration: const Duration(milliseconds: 200),
+      builder: (context, alpha, child) {
+        return WaveGlass(
+          blur: 20,
+          color: context.scaffoldBg.withValues(alpha: alpha),
+          border: Border(
+            bottom: BorderSide(
+              color: isScrolled 
+                ? context.divider.withValues(alpha: 0.5) 
+                : Colors.transparent
+            ),
+          ),
+          child: child!,
+        );
+      },
       child: SafeArea(
             bottom: false,
             child: Padding(
@@ -799,25 +895,31 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               child: Row(
                 children: [
                   Expanded(
-                    child: GestureDetector(
-                      onTap: onProfileTap,
-                      behavior: HitTestBehavior.opaque,
-                      child: Row(
-                        children: [
-                          _buildAvatar(userInitials),
-                          const SizedBox(width: 12),
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  greetingText,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        onTap: onProfileTap,
+                        borderRadius: BorderRadius.circular(4),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              _buildAvatar(userInitials),
+                              const SizedBox(width: 12),
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      greetingText,
                                   style: AppTextStyles.title.copyWith(
                                     fontWeight: FontWeight.w800,
                                     color: context.theme.textPrimary,
                                     height: 1.2,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
                                   l10n.homeDiscover,
@@ -833,6 +935,8 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                       ),
                     ),
                   ),
+                ),
+              ),
                   const SizedBox(width: 8),
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -903,25 +1007,6 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
-          if (isLoadingProfile)
-            Container(
-              width: 48,
-              height: 48,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black26,
-              ),
-              child: const Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
         ],
       ),
     );
@@ -936,72 +1021,76 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     final badgeValue = badgeProvider();
     final displayCount = badgeValue > 99 ? '99+' : '$badgeValue';
 
-    final container = Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.15),
-          width: 1,
+    final button = Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(4),
+        child: Ink(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: context.theme.iconBg,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: context.divider.withValues(alpha: 0.5),
+              width: 1,
+            ),
+          ),
+          child: Icon(icon, color: context.iconPrimary, size: 22),
         ),
-      ),
-      child: Icon(
-        icon,
-        color: context.iconPrimary,
-        size: 22,
       ),
     );
 
-    return GestureDetector(
-      onTap: onTap,
-      child: (badgeValue > 0)
-          ? Badge(
-              label: Text(
-                displayCount,
-                style: AppTextStyles.labelSmall.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: badgeValue > 99 ? 8 : 10,
-                ),
+    return badgeValue > 0
+        ? Badge(
+            label: Text(
+              displayCount,
+              style: AppTextStyles.labelSmall.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: badgeValue > 99 ? 8 : 10,
               ),
-              backgroundColor: AppColors.accent500,
-              textColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: container,
-            )
-          : container,
-    );
+            ),
+            backgroundColor: AppColors.accent500,
+            textColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: button,
+          )
+        : button;
   }
 
   Widget _buildSearchButton() {
-    return GestureDetector(
-      onTap: onSearchTap,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.accent500.withValues(alpha: 0.9),
-              AppColors.accent600,
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: onSearchTap,
+        borderRadius: BorderRadius.circular(4),
+        child: Ink(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.accent500.withValues(alpha: 0.9),
+                AppColors.accent600,
+              ],
+            ),
+            borderRadius: BorderRadius.circular(4),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.accent500.withValues(alpha: 0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
             ],
           ),
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.accent500.withValues(alpha: 0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Icon(
-          Icons.search_rounded,
-          color: Colors.white,
-          size: 22,
+          child: Icon(
+            Icons.search_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
         ),
       ),
     );
