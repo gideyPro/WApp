@@ -4,6 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Help Center Screen - Browse FAQs and guides
 class HelpCenterScreen extends StatefulWidget {
@@ -70,7 +71,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         children: [
           // Search bar
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: AppSpacing.paddingLg,
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -261,7 +262,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   Widget _buildContactSupport() {
     final l10n = AppLocalizations.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         gradient: AppColors.gradientAccent,
         borderRadius: BorderRadius.circular(4),

@@ -14,6 +14,7 @@ import '../messages/messages_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../settings/settings_screen.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Notifications Screen - Wired to notificationsProvider
 class NotificationsScreen extends ConsumerStatefulWidget {
@@ -126,7 +127,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         itemBuilder: (context, index) {
           if (index >= state.notifications.length) {
             return const Padding(
-              padding: EdgeInsets.all(16),
+              padding: AppSpacing.paddingLg,
               child: Center(child: CircularProgressIndicator()),
             );
           }

@@ -5,6 +5,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Edit Profile Screen
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -104,7 +105,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           : Form(
               key: _formKey,
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: AppSpacing.paddingLg,
                 children: [
                   // Avatar section
                   _buildAvatarSection(user),

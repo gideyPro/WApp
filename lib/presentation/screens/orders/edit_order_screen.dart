@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../data/services/order_service.dart';
+import '../../../core/constants/app_spacing.dart';
 
 class EditOrderScreen extends ConsumerStatefulWidget {
   final Order order;
@@ -111,7 +112,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLg,
           children: [
             Text(l10n.ordersTypeLabel,
                 style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w800)),

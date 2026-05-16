@@ -118,7 +118,7 @@ class PropertyListingCard extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -589,7 +589,7 @@ class FeaturedListingCard extends ConsumerWidget {
           Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -887,7 +887,7 @@ class FeaturedListingCard extends ConsumerWidget {
             Expanded(
               flex: 3,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppSpacing.paddingLg,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

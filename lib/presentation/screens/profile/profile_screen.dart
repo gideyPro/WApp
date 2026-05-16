@@ -9,6 +9,7 @@ import '../../widgets/common/wave_card.dart';
 import '../auth/otp_login_screen.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Profile Screen - Only profile-related content (personal info, KYC, stats)
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -47,7 +48,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           await ref.read(profileProvider.notifier).loadProfile();
         },
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLg,
           children: [
             // Profile Header
             _buildProfileHeader(context, ref, profileState, isDark),
@@ -93,7 +94,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.error,
                   side: const BorderSide(color: AppColors.error),
-                  padding: const EdgeInsets.all(16),
+                  padding: AppSpacing.paddingLg,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -273,7 +274,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Expanded(
       child: WaveCard(
         isGlass: true,
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         child: Column(
           children: [
             Text(

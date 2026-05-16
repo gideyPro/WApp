@@ -7,6 +7,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../data/models/message.dart' as msg;
 import '../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Format a DateTime into a human-readable time string
 String _formatTime(DateTime? dt, AppLocalizations l10n) {
@@ -145,7 +146,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
         itemBuilder: (context, index) {
           if (index >= conversations.length) {
             return const Padding(
-              padding: EdgeInsets.all(16),
+              padding: AppSpacing.paddingLg,
               child: Center(child: CircularProgressIndicator()),
             );
           }

@@ -8,6 +8,7 @@ import '../../../../data/services/address_service.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'widgets/listing_form_steps.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Create Listing Screen - 4-step wizard matching web version
 class CreateListingScreen extends ConsumerStatefulWidget {
@@ -225,7 +226,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   Widget _buildBottomBar() {
     final l10n = AppLocalizations.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         color: context.sheetBg, 
         boxShadow: [

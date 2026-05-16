@@ -101,7 +101,7 @@ class _SubscriptionPlansScreenState
     final isActiveSub = subscription != null && subscription.isActive;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -179,7 +179,7 @@ class _SubscriptionPlansScreenState
     final localPlan = sub.plan;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         gradient: AppColors.gradientAccent,
         borderRadius: BorderRadius.circular(4),
@@ -295,7 +295,7 @@ class _SubscriptionPlansScreenState
     final localPlan = sub.plan;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         color: AppColors.zinc100,
         borderRadius: BorderRadius.circular(4),
@@ -747,7 +747,7 @@ class _PlanCard extends StatelessWidget {
 
           // Features
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: AppSpacing.paddingLg,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

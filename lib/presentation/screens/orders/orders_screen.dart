@@ -9,6 +9,7 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import 'create_order_screen.dart';
 import 'edit_order_screen.dart';
+import '../../../core/constants/app_spacing.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
@@ -138,7 +139,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     return RefreshIndicator(
       onRefresh: () => ref.read(ordersProvider.notifier).loadOrders(),
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         itemCount: state.orders.length,
         itemBuilder: (context, index) {
           final order = state.orders[index];
@@ -149,7 +150,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 onTap: () => _showOrderDetail(context, order, l10n),
                 borderRadius: BorderRadius.circular(4),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppSpacing.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -452,14 +453,14 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
 
   Widget _buildSkeletonList(int count) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       itemCount: count,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: WaveGlass(
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLg,
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

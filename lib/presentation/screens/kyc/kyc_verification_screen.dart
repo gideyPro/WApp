@@ -10,6 +10,7 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// KYC Verification Screen
 class KycVerificationScreen extends ConsumerStatefulWidget {
@@ -342,7 +343,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             const SizedBox(height: 12),
             if (state.rejectionReason != null) ...[
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: AppSpacing.paddingLg,
                 decoration: BoxDecoration(
                   color: Colors.red[50],
                   borderRadius: BorderRadius.circular(4),
@@ -386,13 +387,13 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
   Widget _buildKycForm(KycStatusState state, AppLocalizations l10n) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Info banner
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: AppSpacing.paddingLg,
             decoration: BoxDecoration(
               color: AppColors.primary50,
               borderRadius: BorderRadius.circular(4),
@@ -509,7 +510,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         decoration: BoxDecoration(
           color: context.cardBg,
           borderRadius: BorderRadius.circular(4),

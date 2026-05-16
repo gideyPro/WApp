@@ -7,6 +7,7 @@ import '../../widgets/listing_card.dart';
 import '../listing/listing_detail_screen.dart';
 import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// My Listings Screen - Shows user's own listings
 class MyListingsScreen extends ConsumerStatefulWidget {
@@ -108,7 +109,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
   Widget _buildBody() {
     if (_isLoading && _myListings.isEmpty) {
       return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         itemCount: 5,
         itemBuilder: (_, __) => const PropertyListingCard(isLoading: true),
       );
@@ -142,7 +143,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
       onRefresh: () => _loadMyListings(),
       child: ListView.builder(
         controller: _scrollController,
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         itemCount: _myListings.length + (_isLoadingMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= _myListings.length) {

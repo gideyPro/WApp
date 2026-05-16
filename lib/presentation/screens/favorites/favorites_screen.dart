@@ -10,6 +10,7 @@ import '../listing/listing_detail_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../settings/settings_screen.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Favorites Screen - Wired to favoritesProvider
 class FavoritesScreen extends ConsumerStatefulWidget {
@@ -209,7 +210,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     return RefreshIndicator(
       onRefresh: () => ref.read(favoritesProvider.notifier).loadFavorites(),
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         itemCount: state.favorites.length,
       itemBuilder: (context, index) {
         final listing = state.favorites[index];
@@ -261,7 +262,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
 
   Widget _buildSkeletonList(int count) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       itemCount: count,
       itemBuilder: (context, index) {
         return const Padding(

@@ -11,6 +11,7 @@ import '../../../../data/services/address_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../providers/app_providers.dart';
+import '../../../../core/constants/app_spacing.dart';
 
 // ===================== STEP INDICATOR =====================
 
@@ -366,7 +367,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -999,7 +1000,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
         widget.formData.houseType != 'market_place';
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1263,7 +1264,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1563,7 +1564,7 @@ class ListingStep4Review extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

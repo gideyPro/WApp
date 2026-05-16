@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../data/services/order_service.dart';
+import '../../../core/constants/app_spacing.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
   const CreateOrderScreen({super.key});
@@ -97,7 +98,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLg,
           children: [
             // Property Type
             Text(l10n.ordersTypeLabel,

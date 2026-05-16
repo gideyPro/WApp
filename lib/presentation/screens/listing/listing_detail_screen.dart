@@ -17,6 +17,7 @@ import '../../widgets/video/video_player_widget.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import 'edit_listing_screen.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Listing Detail Screen with skeleton loaders
 class ListingDetailScreen extends ConsumerStatefulWidget {
@@ -390,7 +391,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           // Content
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -874,7 +875,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppSpacing.paddingLg,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -1037,7 +1038,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       margin: const EdgeInsets.symmetric(horizontal: 16),
       isGlass: !isDark,
       color: isDark ? AppColors.primary800 : null,
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       child: Column(
         children: [
           // Owner action buttons

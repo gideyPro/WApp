@@ -8,6 +8,7 @@ import '../../../../data/services/address_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import 'widgets/listing_form_steps.dart';
+import '../../../core/constants/app_spacing.dart';
 
 class EditListingScreen extends ConsumerStatefulWidget {
   final Listing listing;
@@ -230,7 +231,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   Widget _buildBottomBar() {
     final l10n = AppLocalizations.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         color: context.sheetBg, 
         boxShadow: [

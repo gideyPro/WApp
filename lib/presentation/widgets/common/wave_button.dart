@@ -28,7 +28,7 @@ class WaveButton extends StatefulWidget {
     this.isFullWidth = false,
     this.variant = ButtonVariant.primary,
     this.width,
-    this.height = 48,
+    this.height = 40,
     this.inputFormatters,
     this.size = ButtonSize.medium,
   });

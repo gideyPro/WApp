@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_card.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Payment History Screen
 class PaymentHistoryScreen extends ConsumerStatefulWidget {
@@ -90,7 +91,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
       },
       child: ListView.separated(
         controller: _scrollController,
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         itemCount: state.payments.length + (state.isLoading ? 1 : 0),
         separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
@@ -113,7 +114,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         itemCount: 5,
         itemBuilder: (context, index) {
           return Padding(

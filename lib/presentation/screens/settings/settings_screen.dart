@@ -18,6 +18,7 @@ import '../help/help_center_screen.dart';
 import '../auth/otp_login_screen.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_constants.dart';
+import '../../../core/constants/app_spacing.dart';
 
 final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
   try {
@@ -140,7 +141,7 @@ final settingsAsync = ref.watch(appSettingsProvider);
           ref.invalidate(appSettingsProvider);
         },
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLg,
           children: [
             _buildMenuSection(
               title: l10n.settingsSectionAccount,

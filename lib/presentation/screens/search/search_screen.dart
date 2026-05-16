@@ -14,6 +14,7 @@ import '../subscriptions/subscription_plans_screen.dart';
 import '../settings/settings_screen.dart';
 import '../../../data/models/listing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_spacing.dart';
 
 /// Modern Search & Filter Screen
 class SearchScreen extends ConsumerStatefulWidget {
@@ -768,7 +769,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppSpacing.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
