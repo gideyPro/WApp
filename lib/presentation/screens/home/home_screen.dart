@@ -253,186 +253,155 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     showModalBottomSheet(
       context: context,
+      backgroundColor: context.sheetBg,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+      ),
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
       builder: (ctx) => DraggableScrollableSheet(
         expand: false,
-        initialChildSize: 0.45,
-        minChildSize: 0.35,
-        maxChildSize: 0.55,
-        builder: (_, controller) => Container(
-          decoration: BoxDecoration(
-            color: context.sheetBg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 20,
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              // Drag handle + close button
-              Padding(
-                padding: const EdgeInsets.only(top: 12, right: 8),
-                child: Row(
+        initialChildSize: 0.55,
+        minChildSize: 0.4,
+        maxChildSize: 0.7,
+        builder: (context, scrollController) {
+          return SingleChildScrollView(
+            controller: scrollController,
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.zinc300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Avatar and name
+                Row(
                   children: [
-                    Expanded(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: AppColors.zinc300,
-                          borderRadius: BorderRadius.circular(2),
+                    Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [AppColors.accent500, AppColors.accent600],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.accent500.withValues(alpha: 0.3),
+                            blurRadius: 12,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          initials,
+                          style: AppTextStyles.headline4.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () => Navigator.of(ctx).pop(),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: AppColors.zinc200,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(
-                          Icons.close,
-                          size: 16,
-                          color: AppColors.zinc500,
-                        ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            fullName,
+                            style: AppTextStyles.title.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: context.textPrimary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            phone,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.primary400,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 4),
-              Expanded(
-                child: ListView(
-                  controller: controller,
-                  padding: const EdgeInsets.all(20),
+                const SizedBox(height: 24),
+
+                // Stats row
+                Row(
                   children: [
-                    // Avatar and name
-                    Row(
-                      children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [AppColors.accent500, AppColors.accent600],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.accent500.withValues(alpha: 0.3),
-                                blurRadius: 12,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              initials,
-                              style: AppTextStyles.headline4.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                fullName,
-                                style: AppTextStyles.title.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  color: context.textPrimary,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                phone,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: AppColors.primary400,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Stats row
-                    Row(
-                      children: [
-                        _buildModalStatItem(
-                          value: stats?.totalListings.toString() ?? '0',
-                          label: l10n.profileStatsListings,
-                          onTap: () {
-                            Navigator.pop(ctx);
-                            _navigateToMyListings();
-                          },
-                        ),
-                        const SizedBox(width: 12),
-                        _buildModalStatItem(
-                          value: stats?.totalFavorites.toString() ?? '0',
-                          label: l10n.profileStatsFavorites,
-                          onTap: () {
-                            Navigator.pop(ctx);
-                            _navigateToFavorites();
-                          },
-                        ),
-                        const SizedBox(width: 12),
-                        _buildModalStatItem(
-                          value: user?.isKycVerified == true
-                              ? l10n.profileKycStatusVerified
-                              : l10n.profileKycStatusPending,
-                          label: l10n.profileVerificationKyc,
-                          valueColor: user?.isKycVerified == true
-                              ? AppColors.emerald600
-                              : AppColors.warning,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Divider(height: 1),
-                    const SizedBox(height: 8),
-
-                    // Action buttons
-                    _buildModalAction(
-                      icon: Icons.logout,
-                      title: l10n.authLogout,
-                      textColor: AppColors.error,
-                      iconColor: AppColors.error,
-                      onTap: () async {
+                    _buildModalStatItem(
+                      value: stats?.totalListings.toString() ?? '0',
+                      label: l10n.profileStatsListings,
+                      onTap: () {
                         Navigator.pop(ctx);
-                        await ref.read(authStateProvider.notifier).logout();
-                        if (mounted) {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (_) => const OtpLoginScreen()),
-                            (route) => false,
-                          );
-                        }
+                        _navigateToMyListings();
                       },
                     ),
+                    const SizedBox(width: 12),
+                    _buildModalStatItem(
+                      value: stats?.totalFavorites.toString() ?? '0',
+                      label: l10n.profileStatsFavorites,
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        _navigateToFavorites();
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    _buildModalStatItem(
+                      value: user?.isKycVerified == true
+                          ? l10n.profileKycStatusVerified
+                          : l10n.profileKycStatusPending,
+                      label: l10n.profileVerificationKyc,
+                      valueColor: user?.isKycVerified == true
+                          ? AppColors.emerald600
+                          : AppColors.warning,
+                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        ),
+                const SizedBox(height: 20),
+                const Divider(height: 1),
+                const SizedBox(height: 8),
+
+                // Action buttons
+                _buildModalAction(
+                  icon: Icons.logout,
+                  title: l10n.authLogout,
+                  textColor: AppColors.error,
+                  iconColor: AppColors.error,
+                  onTap: () async {
+                    Navigator.pop(ctx);
+                    await ref.read(authStateProvider.notifier).logout();
+                    if (mounted) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (_) => const OtpLoginScreen()),
+                        (route) => false,
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
-/// WaveMart Text Styles — Montserrat for headings, system font for body.
+/// WaveMart Text Styles — Cinzel for headings, Montserrat for body (min w500).
 class AppTextStyles {
   AppTextStyles._();
 
-  static const String _headingFont = 'Montserrat';
-
-  // Headings-only use Montserrat; body text uses system font
+  static const String _headingFont = 'Cinzel';
+  static const String _bodyFont = 'Montserrat';
   static TextStyle get headline1 => const TextStyle(
         fontFamily: _headingFont,
         fontSize: 30,
@@ -62,6 +61,7 @@ class AppTextStyles {
 
   // Eyebrow label
   static TextStyle get eyebrow => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 2.0,
@@ -69,19 +69,22 @@ class AppTextStyles {
       );
 
   static TextStyle get subtitle => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.3,
       );
 
   static TextStyle get bodyLargePlus => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 16,
         fontWeight: FontWeight.w500,
         height: 1.4,
       );
 
-  // Body Text - Montserrat for clean legibility, Medium weight for compactness
+  // Body Text
   static TextStyle get bodyLarge => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 15,
         fontWeight: FontWeight.w500,
         height: 1.5,
@@ -89,12 +92,14 @@ class AppTextStyles {
       );
 
   static TextStyle get bodyMedium => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 14,
         fontWeight: FontWeight.w500,
         height: 1.5,
       );
 
   static TextStyle get bodySmall => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w500,
         height: 1.4,
@@ -102,6 +107,7 @@ class AppTextStyles {
 
   // Button Styles
   static TextStyle get buttonLarge => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 15,
         fontWeight: FontWeight.w700,
         color: Colors.white,
@@ -109,6 +115,7 @@ class AppTextStyles {
       );
 
   static TextStyle get buttonMedium => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 14,
         fontWeight: FontWeight.w700,
         color: Colors.white,
@@ -116,6 +123,7 @@ class AppTextStyles {
       );
 
   static TextStyle get buttonSmall => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w700,
         color: Colors.white,
@@ -124,6 +132,7 @@ class AppTextStyles {
 
   // Label Styles
   static TextStyle get labelLarge => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         color: AppColors.primary800,
@@ -131,6 +140,7 @@ class AppTextStyles {
       );
 
   static TextStyle get labelMedium => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w600,
         color: AppColors.primary800,
@@ -138,6 +148,7 @@ class AppTextStyles {
       );
 
   static TextStyle get labelSmall => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w600,
         color: AppColors.primary700,
@@ -146,6 +157,7 @@ class AppTextStyles {
 
   // Caption/Helper Text
   static TextStyle get caption => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 11,
         fontWeight: FontWeight.w500,
         color: AppColors.stone700,
@@ -153,6 +165,7 @@ class AppTextStyles {
       );
 
   static TextStyle get overline => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w700,
         color: AppColors.primary700,
@@ -161,6 +174,7 @@ class AppTextStyles {
 
   // Price Display
   static TextStyle get priceLarge => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 22,
         fontWeight: FontWeight.w800,
         color: AppColors.primary900,
@@ -169,6 +183,7 @@ class AppTextStyles {
       );
 
   static TextStyle get priceMedium => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 16,
         fontWeight: FontWeight.w700,
         color: AppColors.primary800,
@@ -185,12 +200,14 @@ class AppTextStyles {
 
   // Navigation
   static TextStyle get navActive => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w700,
         color: AppColors.accent500,
       );
 
   static TextStyle get navInactive => const TextStyle(
+        fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w500,
         color: AppColors.primary600,
