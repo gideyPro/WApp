@@ -452,6 +452,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       if (mounted) {
         if (success) {
           WaveToast.showSuccess(context, l10n.ordersCancelled);
+          Navigator.pop(context);
         } else {
           WaveToast.showError(context, l10n.commonError);
         }
