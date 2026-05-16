@@ -132,30 +132,31 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
 
-      // Color Scheme - Deep Night Logo Navy
+      // Color Scheme - Dark Navy + Emerald Accent
       colorScheme: const ColorScheme.dark(
         primary: AppColors.accent400,
         onPrimary: Colors.black,
-        primaryContainer: AppColors.primary800,
-        onPrimaryContainer: AppColors.primary100,
+        primaryContainer: AppColors.accent900,
+        onPrimaryContainer: AppColors.accent200,
         secondary: AppColors.primary300,
         onSecondary: Colors.black,
-        secondaryContainer: AppColors.primary900,
+        secondaryContainer: AppColors.primary800,
         onSecondaryContainer: AppColors.primary200,
         tertiary: AppColors.cta400,
         onTertiary: Colors.black,
         error: AppColors.error,
         onError: Colors.white,
-        surface: AppColors.primary900,
+        surface: AppColors.primary800,
         onSurface: Colors.white,
-        onSurfaceVariant: AppColors.primary200,
-        outline: AppColors.primary700,
+        onSurfaceVariant: AppColors.primary300,
+        outline: AppColors.primary600,
       ),
 
-      // Scaffold - Deep Midnight Authority
-      scaffoldBackgroundColor: const Color(0xFF0B0F10),
+      // Scaffold
+      scaffoldBackgroundColor: const Color(0xFF080C14),
+      canvasColor: AppColors.primary800,
 
-      // AppBar Theme - Dark Transparent
+      // AppBar Theme
       appBarTheme: AppBarTheme(
         elevation: 0,
         centerTitle: false,
@@ -168,15 +169,16 @@ class AppTheme {
         ),
       ),
 
-      // Card Theme - Dark Quiet Luxury
+      // Card Theme - Dark Elevated Surface
       cardTheme: CardThemeData(
         elevation: 0,
-        color: AppColors.primary900,
+        color: AppColors.primary800,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
         ),
+        margin: EdgeInsets.zero,
       ),
 
       // Elevated Button Theme - Dark Emerald
@@ -195,7 +197,7 @@ class AppTheme {
         ),
       ),
 
-      // Filled Button Theme - M3
+      // Filled Button Theme
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.accent500,
@@ -215,18 +217,18 @@ class AppTheme {
         ),
       ),
 
-      // Input Decoration Theme - Dark Floating
+      // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.primary800,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
@@ -239,9 +241,9 @@ class AppTheme {
         ),
       ),
 
-      // Navigation Bar - Dark Premium
+      // Navigation Bar
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: AppColors.primary900,
+        backgroundColor: AppColors.primary800,
         elevation: 0,
         indicatorColor: AppColors.accent800.withValues(alpha: 0.5),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
@@ -258,12 +260,27 @@ class AppTheme {
         }),
       ),
 
-      // Bottom Sheet Theme - Dark
+      // Divider Theme
+      dividerTheme: DividerThemeData(
+        color: Colors.white.withValues(alpha: 0.08),
+        thickness: 1,
+      ),
+
+      // Bottom Sheet Theme
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.primary800,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+        ),
+      ),
+
+      // Dialog Theme
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.primary800,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
         ),
       ),
     );
