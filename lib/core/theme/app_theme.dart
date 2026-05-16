@@ -65,11 +65,24 @@ class AppTheme {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
           ),
           textStyle: AppTextStyles.buttonMedium.copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
+          ),
+        ),
+      ),
+
+      // Outlined Button Theme
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          textStyle: AppTextStyles.buttonMedium.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -188,11 +201,24 @@ class AppTheme {
           foregroundColor: Colors.black,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
           ),
           textStyle: AppTextStyles.buttonMedium.copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
+          ),
+        ),
+      ),
+
+      // Outlined Button Theme - Dark
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          textStyle: AppTextStyles.buttonMedium.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

@@ -545,13 +545,15 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        labelStyle: const TextStyle(fontSize: 12),
       ),
       dropdownColor: context.sheetBg,
       items: items.entries
           .map((e) => DropdownMenuItem(
                 value: e.key,
                 child: Text(e.value,
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
               ))
           .toList(),
       onChanged: onChanged,
@@ -569,8 +571,11 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     return TextFormField(
       controller: controller,
       readOnly: readOnly,
+      style: const TextStyle(fontSize: 12),
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: const TextStyle(fontSize: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         filled: readOnly,
         fillColor: readOnly ? AppColors.zinc100 : null,
       ),
@@ -594,14 +599,17 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     }
     return TextFormField(
       controller: _priceController,
+      style: const TextStyle(fontSize: 12),
       decoration: InputDecoration(
         labelText: l10n.listingPriceEtb,
-        prefixIcon: const Icon(Icons.attach_money, size: 20),
+        labelStyle: const TextStyle(fontSize: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        prefixIcon: const Icon(Icons.attach_money, size: 18),
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide(color: borderColor)),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide(color: borderColor, width: 2)),
       ),
       keyboardType: TextInputType.number,
@@ -634,7 +642,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         onTap: isEnabled ? () => onChanged(value) : null,
         borderRadius: BorderRadius.circular(4),
         child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           decoration: BoxDecoration(
             color: bgColor.withValues(alpha: isEnabled ? 1.0 : 0.6),
             borderRadius: BorderRadius.circular(4),
@@ -649,11 +657,11 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             children: [
               Icon(icon,
                   color: isSelected ? Colors.white : AppColors.primary600,
-                  size: 20),
-              const SizedBox(width: 6),
+                  size: 18),
+              const SizedBox(width: 4),
               Text(label,
                   style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: isSelected ? Colors.white : AppColors.primary800)),
             ],
@@ -882,14 +890,16 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       value: items.contains(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: const TextStyle(fontSize: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         suffixIcon: isLoading
             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
             : null,
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [DropdownMenuItem(value: null, child: Text(l10n.listingNoOptions, style: const TextStyle(color: Colors.grey)))]
-          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)))).toList(),
+          ? [DropdownMenuItem(value: null, child: Text(l10n.listingNoOptions, style: const TextStyle(color: Colors.grey, fontSize: 12)))]
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
     );
@@ -1119,10 +1129,13 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
           const SizedBox(height: 10),
           TextFormField(
             initialValue: widget.formData.description,
-            maxLines: 4,
+            maxLines: 3,
+            style: const TextStyle(fontSize: 12),
             decoration: InputDecoration(
               labelText: l10n.listingDescriptionLabel,
+              labelStyle: const TextStyle(fontSize: 12),
               hintText: l10n.listingDescribeProperty,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             ),
             onChanged: (v) => widget.onUpdate(widget.formData.copyWith(description: v)),
           ),
@@ -1154,8 +1167,11 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       child: TextFormField(
         controller: controller,
         readOnly: readOnly,
+        style: const TextStyle(fontSize: 12),
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(fontSize: 12),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           filled: readOnly,
           fillColor: readOnly ? AppColors.zinc100 : null,
         ),
@@ -1178,12 +1194,12 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        labelStyle: const TextStyle(fontSize: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
       dropdownColor: context.sheetBg,
       items: items.entries
-          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14))))
+          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12))))
           .toList(),
       onChanged: onChanged,
       isExpanded: true,

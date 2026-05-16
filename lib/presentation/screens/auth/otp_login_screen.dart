@@ -223,12 +223,12 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               controller: _phoneController,
               decoration: InputDecoration(
                 hintText: _selectedCountry.example,
+                hintStyle: AppTextStyles.bodySmall,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               ),
               keyboardType: TextInputType.phone,
-              style: TextStyle(
-                fontSize: 15,
+              style: AppTextStyles.bodySmall.copyWith(
                 color: isDark ? Colors.white : AppColors.primary900,
               ),
             ),

@@ -314,12 +314,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               controller: _phoneController,
               decoration: InputDecoration(
                 hintText: _selectedCountry.example,
+                hintStyle: AppTextStyles.bodySmall,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               ),
               keyboardType: TextInputType.phone,
-              style: TextStyle(
-                fontSize: 15,
+              style: AppTextStyles.bodySmall.copyWith(
                 color: isDark ? Colors.white : AppColors.primary900,
               ),
             ),
@@ -345,14 +345,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         controller: controller,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(color: AppColors.primary500, fontSize: 14),
-          prefixIcon: Icon(icon, color: AppColors.primary600, size: 20),
+          hintStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.primary500),
+          prefixIcon: Icon(icon, color: AppColors.primary600, size: 18),
           border: InputBorder.none,
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         ),
         keyboardType: keyboardType,
-        style: const TextStyle(fontSize: 15),
+        style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary900),
       ),
     );
   }
@@ -391,7 +391,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     return GestureDetector(
       onTap: () => setState(() => _selectedGender = gender),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.accent50 : AppColors.primary50.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(4),
@@ -405,14 +405,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           children: [
             Icon(
               icon,
-              size: 18,
+              size: 16,
               color: isSelected ? AppColors.accent600 : AppColors.primary500,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             Text(
               gender,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected ? AppColors.accent700 : AppColors.primary600,
               ),

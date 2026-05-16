@@ -171,7 +171,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                           height: 16,
                           decoration: BoxDecoration(
                             color: context.shimmerHighlight,
-                            borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -296,9 +296,6 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                     backgroundColor: AppColors.accent500,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
                   ),
                 )
               else
@@ -315,9 +312,6 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                     foregroundColor: Colors.white,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
                   ),
                 ),
             ],
