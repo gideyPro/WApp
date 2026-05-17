@@ -456,9 +456,10 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
 
   void _showSuggestionDetail(BuildContext context, Lead suggestion, AppLocalizations l10n, dynamic order) {
     final listing = suggestion.listing;
-    final images = (listing?['images'] as List?)?.map((e) => ImageModel.fromJson(e as Map<String, dynamic>)).toList() ?? <ImageModel>[];
-    final videoUrl = listing?['video_link'] as String?;
     final property = listing?['property'] as Map<String, dynamic>?;
+    final rawImages = (listing?['images'] as List?) ?? (property?['images'] as List?);
+    final images = rawImages?.map((e) => ImageModel.fromJson(e as Map<String, dynamic>)).toList() ?? <ImageModel>[];
+    final videoUrl = listing?['video_link'] as String?;
     final isHouse = listing?['property_type']?.toString().contains('House') ?? false;
     final address = listing?['address'] as Map<String, dynamic>?;
 
@@ -986,10 +987,19 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           ),
           const SizedBox(width: 8),
           if (suggestion.isSuggestionPending)
-            _suggestionActionChip(
-              l10n.ordersSuggestionsViewDetails,
-              AppColors.primary600,
-              () => _showSuggestionDetail(context, suggestion, l10n, order),
+            SizedBox(
+              height: 28,
+              child: ElevatedButton(
+                onPressed: () => _showSuggestionDetail(context, suggestion, l10n, order),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  backgroundColor: AppColors.primary600,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                  textStyle: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.w700, fontSize: 11),
+                ),
+                child: Text(l10n.ordersSuggestionsViewDetails),
+              ),
             )
           else
             Container(
@@ -1010,28 +1020,6 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
               ),
             ),
         ],
-      ),
-    );
-  }
-
-  Widget _suggestionActionChip(String label, Color color, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(3),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
-        ),
-        child: Text(
-          label,
-          style: AppTextStyles.labelSmall.copyWith(
-            color: color,
-            fontWeight: FontWeight.w700,
-            fontSize: 11,
-          ),
-        ),
       ),
     );
   }
