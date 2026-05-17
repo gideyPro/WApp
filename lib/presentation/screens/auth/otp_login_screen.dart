@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,6 +63,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (authState.isAuthenticated) {
       return const Scaffold(
@@ -125,25 +125,25 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // Card container — glass-luxury matching web
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                      child: Container(
+                  // Card container
+                  Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.7),
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.7)
+                          : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.15),
+                          color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.08),
                           blurRadius: 24,
                           offset: const Offset(0, 12),
                         ),
                       ],
                       border: Border.all(
-                        color: AppColors.primary200.withValues(alpha: 0.6),
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.2)
+                            : AppColors.stone200,
                       ),
                     ),
                     child: Column(
@@ -198,8 +198,6 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                         ],
                       ],
                     ),
-                  ),
-                  ),
                   ),
                   const SizedBox(height: 24),
                 ],

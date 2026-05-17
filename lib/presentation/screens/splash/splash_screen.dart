@@ -192,7 +192,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               right: 0,
               child: Center(
                 child: Text(
-                  'v1.0.0',
+                  'v${AppColors.appVersion}',
                   style: AppTextStyles.caption.copyWith(
                     color: Colors.white.withValues(alpha: 0.4),
                   ),

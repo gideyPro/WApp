@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../data/services/order_service.dart';
+import '../../../data/services/lead_service.dart';
 import '../../../data/models/image.dart';
 import '../../widgets/video/video_player_widget.dart';
 import '../../providers/app_providers.dart';
@@ -285,9 +285,9 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   }
 
   void _showOrderDetail(BuildContext context, dynamic order, AppLocalizations l10n) {
-    final orderService = OrderService();
-    late Future<OrderSuggestionResponse> suggestionsFuture;
-    suggestionsFuture = orderService.getSuggestions(order.id);
+    final leadService = LeadService();
+    late Future<LeadResponse> suggestionsFuture;
+    suggestionsFuture = leadService.getSuggestions(order.id);
 
     showModalBottomSheet(
       context: context,
@@ -402,7 +402,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                     ],
                   ),
                 const SizedBox(height: 24),
-                FutureBuilder<OrderSuggestionResponse>(
+                FutureBuilder<LeadResponse>(
                   future: suggestionsFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -411,10 +411,10 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                         child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
                       );
                     }
-                    if (!snapshot.hasData || !snapshot.data!.success || snapshot.data!.suggestions.isEmpty) {
+                    if (!snapshot.hasData || !snapshot.data!.success || snapshot.data!.leads.isEmpty) {
                       return const SizedBox.shrink();
                     }
-                    final suggestions = snapshot.data!.suggestions;
+                    final suggestions = snapshot.data!.leads;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -434,7 +434,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           style: AppTextStyles.caption.copyWith(color: AppColors.primary500),
                         ),
                         const SizedBox(height: 12),
-                        ...suggestions.map((s) => _buildSuggestionTile(context, s, orderService, l10n, order)),
+                        ...suggestions.map((s) => _buildSuggestionTile(context, s, l10n, order)),
                       ],
                     );
                   },
@@ -447,7 +447,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     );
   }
 
-  void _showSuggestionDetail(BuildContext context, OrderSuggestion suggestion, OrderService orderService, AppLocalizations l10n, dynamic order) {
+  void _showSuggestionDetail(BuildContext context, Lead suggestion, AppLocalizations l10n, dynamic order) {
     final listing = suggestion.listing;
     final images = (listing?['images'] as List?)?.map((e) => ImageModel.fromJson(e as Map<String, dynamic>)).toList() ?? <ImageModel>[];
     final videoUrl = listing?['video_link'] as String?;
@@ -654,13 +654,13 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           ],
 
                           // Accept/Decline
-                          if (suggestion.isPending)
+                          if (suggestion.isSuggestionPending)
                             Row(
                               children: [
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      final response = await orderService.acceptSuggestion(suggestion.id);
+                                      final response = await LeadService().acceptSuggestion(suggestion.id);
                                       if (context.mounted) {
                                         Navigator.pop(context);
                                         if (response.success) {
@@ -683,7 +683,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                                 Expanded(
                                   child: OutlinedButton(
                                     onPressed: () async {
-                                      final response = await orderService.declineSuggestion(suggestion.id);
+                                      final response = await LeadService().declineSuggestion(suggestion.id);
                                       if (context.mounted) {
                                         Navigator.pop(context);
                                         if (response.success) {
@@ -709,15 +709,15 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: suggestion.isAccepted
+                                  color: suggestion.isSuggestionAccepted
                                       ? AppColors.success.withValues(alpha: 0.15)
                                       : AppColors.error.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(3),
                                 ),
                                 child: Text(
-                                  suggestion.isAccepted ? l10n.ordersSuggestionsAccepted : l10n.ordersSuggestionsDeclined,
+                                  suggestion.isSuggestionAccepted ? l10n.ordersSuggestionsAccepted : l10n.ordersSuggestionsDeclined,
                                   style: AppTextStyles.bodyMedium.copyWith(
-                                    color: suggestion.isAccepted ? AppColors.success : AppColors.error,
+                                    color: suggestion.isSuggestionAccepted ? AppColors.success : AppColors.error,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -941,7 +941,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     return parts.where((p) => p.isNotEmpty).join(' > ');
   }
 
-  Widget _buildSuggestionTile(BuildContext context, OrderSuggestion suggestion, OrderService orderService, AppLocalizations l10n, dynamic order) {
+  Widget _buildSuggestionTile(BuildContext context, Lead suggestion, AppLocalizations l10n, dynamic order) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
@@ -978,25 +978,25 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             ),
           ),
           const SizedBox(width: 8),
-          if (suggestion.isPending)
+          if (suggestion.isSuggestionPending)
             _suggestionActionChip(
               l10n.ordersSuggestionsViewDetails,
               AppColors.primary600,
-              () => _showSuggestionDetail(context, suggestion, orderService, l10n, order),
+              () => _showSuggestionDetail(context, suggestion, l10n, order),
             )
           else
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: suggestion.isAccepted
+                color: suggestion.isSuggestionAccepted
                     ? AppColors.success.withValues(alpha: 0.15)
                     : AppColors.error.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Text(
-                suggestion.isAccepted ? l10n.ordersSuggestionsAccepted : l10n.ordersSuggestionsDeclined,
+                suggestion.isSuggestionAccepted ? l10n.ordersSuggestionsAccepted : l10n.ordersSuggestionsDeclined,
                 style: AppTextStyles.labelSmall.copyWith(
-                  color: suggestion.isAccepted ? AppColors.success : AppColors.error,
+                  color: suggestion.isSuggestionAccepted ? AppColors.success : AppColors.error,
                   fontWeight: FontWeight.w700,
                   fontSize: 11,
                 ),

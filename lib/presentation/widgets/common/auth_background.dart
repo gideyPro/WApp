@@ -35,43 +35,44 @@ class _WaveAuthBackgroundState extends State<WaveAuthBackground> {
                   AppColors.primary950,
                 ]
               : [
-                  AppColors.primary800,
-                  AppColors.primary900,
-                  AppColors.primary950,
+                  AppColors.primary50,
+                  AppColors.primary100,
+                  AppColors.primary200,
                 ],
         ),
       ),
       child: Stack(
         children: [
-          // Pattern overlay (matching web pattern.svg at ~5% opacity)
+          // Pattern overlay
           Positioned.fill(
             child: CustomPaint(
               painter: _PatternPainter(
-                opacity: isDark ? 0.03 : 0.05,
+                opacity: isDark ? 0.06 : 0.08,
+                color: isDark ? Colors.white : AppColors.primary400,
               ),
             ),
           ),
 
-          // Top-right orb (matching web: primary-500/15, blur-3xl)
+          // Top-right orb
           Positioned(
             top: -orbSize * 0.05,
             right: -orbSize * 0.05,
             child: _DecorativeOrb(
               size: orbSize,
-              color: AppColors.primary500,
-              opacity: isDark ? 0.1 : 0.15,
+              color: isDark ? AppColors.primary500 : AppColors.primary300,
+              opacity: isDark ? 0.12 : 0.15,
               blur: 60,
             ),
           ),
 
-          // Bottom-left orb (matching web: primary-700/10, blur-3xl)
+          // Bottom-left orb — emerald glow for brand accent
           Positioned(
             bottom: -orbSize * 0.05,
             left: -orbSize * 0.05,
             child: _DecorativeOrb(
               size: orbSize,
-              color: AppColors.primary700,
-              opacity: isDark ? 0.06 : 0.1,
+              color: isDark ? AppColors.accent500 : AppColors.accent200,
+              opacity: isDark ? 0.06 : 0.12,
               blur: 60,
             ),
           ),
@@ -85,13 +86,14 @@ class _WaveAuthBackgroundState extends State<WaveAuthBackground> {
 
 class _PatternPainter extends CustomPainter {
   final double opacity;
+  final Color color;
 
-  _PatternPainter({required this.opacity});
+  _PatternPainter({required this.opacity, required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withValues(alpha: opacity)
+      ..color = color.withValues(alpha: opacity)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
 
@@ -112,7 +114,7 @@ class _PatternPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _PatternPainter oldDelegate) =>
-      oldDelegate.opacity != opacity;
+      oldDelegate.opacity != opacity || oldDelegate.color != color;
 }
 
 class _DecorativeOrb extends StatelessWidget {

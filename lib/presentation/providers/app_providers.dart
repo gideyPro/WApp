@@ -11,7 +11,7 @@ import '../../data/services/payment_service.dart';
 import '../../data/services/subscription_service.dart';
 import '../../data/services/kyc_service.dart';
 import '../../data/services/conference_service.dart';
-import '../../data/services/interest_service.dart';
+import '../../data/services/lead_service.dart';
 import '../../data/services/address_service.dart';
 import '../../data/models/subscription.dart';
 import '../../core/network/connectivity_service.dart';
@@ -1075,32 +1075,32 @@ class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
   }
 }
 
-/// Interest Provider
-final interestServiceProvider =
-    Provider<InterestService>((ref) => InterestService());
+/// Lead (Interest) Provider
+final leadServiceProvider =
+    Provider<LeadService>((ref) => LeadService());
 final myInterestsProvider =
     StateNotifierProvider<MyInterestsNotifier, MyInterestsState>((ref) {
-  return MyInterestsNotifier(ref.watch(interestServiceProvider));
+  return MyInterestsNotifier(ref.watch(leadServiceProvider));
 });
 
 class MyInterestsNotifier extends StateNotifier<MyInterestsState> {
-  final InterestService _interestService;
-  MyInterestsNotifier(this._interestService)
+  final LeadService _leadService;
+  MyInterestsNotifier(this._leadService)
       : super(const MyInterestsState.initial());
 
   Future<void> loadInterests({int page = 1}) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _interestService.getMyInterests(page: page);
+    final response = await _leadService.getMyInterests(page: page);
     if (response.success) {
       state = MyInterestsState.loaded(
-          interests: response.interests, total: response.total ?? 0);
+          interests: response.leads, total: response.leads.length);
     } else {
       state = state.copyWith(isLoading: false, errorMessage: response.message);
     }
   }
 
   Future<bool> expressInterest(int listingId, {String? message}) async {
-    final response = await _interestService.expressInterest(
+    final response = await _leadService.expressInterest(
         listingId: listingId, message: message);
     if (response.success) await loadInterests();
     return response.success;

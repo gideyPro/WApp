@@ -222,6 +222,9 @@ class AppColors {
           spreadRadius: -5,
         ),
       ];
+
+  /// App version from pubspec
+  static const String appVersion = '1.0.0';
 }
 
 /// Theme-aware extension for easy dark mode support

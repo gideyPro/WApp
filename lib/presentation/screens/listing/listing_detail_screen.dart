@@ -7,7 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
 import '../../widgets/common/wave_card.dart';
-import '../../../../data/services/interest_service.dart';
+import '../../../../data/services/lead_service.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
@@ -1025,8 +1025,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
     final interestStatus = listing.userInterestStatus;
     final hasInterest = interestStatus != null;
-    final isPending = interestStatus == 'pending';
-    final isAccepted = interestStatus == 'accepted';
+
 
     return WaveCard(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -1135,7 +1134,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     final l10n = AppLocalizations.of(context);
 
     try {
-      final service = InterestService();
+      final service = LeadService();
       final response = await service.expressInterest(
         listingId: listingId,
         message: message?.isNotEmpty == true ? message : l10n.listingsDefaultInterestMessage,
@@ -1179,7 +1178,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     final l10n = AppLocalizations.of(context);
 
     try {
-      final service = InterestService();
+      final service = LeadService();
       final response = await service.cancelInterest(interestId);
 
       if (response.success) {
@@ -1215,20 +1214,29 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   }
 
   Color _getInterestStatusColor(String? status) {
-    if (status == 'accepted') return AppColors.emerald600;
-    if (status == 'pending') return Colors.amber;
-    return AppColors.error;
+    switch (status) {
+      case 'new': return Colors.amber;
+      case 'won': return AppColors.emerald600;
+      case 'lost': return AppColors.error;
+      default: return AppColors.primary400;
+    }
   }
 
   IconData _getInterestStatusIcon(String? status) {
-    if (status == 'accepted') return Icons.check_circle;
-    if (status == 'pending') return Icons.hourglass_empty;
-    return Icons.cancel;
+    switch (status) {
+      case 'new': return Icons.hourglass_empty;
+      case 'won': return Icons.check_circle;
+      case 'lost': return Icons.cancel;
+      default: return Icons.trending_up;
+    }
   }
 
   String _getInterestStatusText(String? status, AppLocalizations l10n) {
-    if (status == 'accepted') return l10n.listingsInterestAccepted;
-    if (status == 'pending') return l10n.listingsInterestPending;
-    return l10n.listingsInterestRejected;
+    switch (status) {
+      case 'new': return l10n.listingsInterestPending;
+      case 'won': return l10n.listingsInterestAccepted;
+      case 'lost': return l10n.listingsInterestRejected;
+      default: return status ?? '';
+    }
   }
 }
