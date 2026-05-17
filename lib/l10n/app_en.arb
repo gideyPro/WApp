@@ -388,6 +388,7 @@
   "ordersCreated": "Order created successfully",
   "ordersUpdated": "Order updated successfully",
   "ordersLocation": "Location",
+  "ordersSuggestionsEmpty": "No suggestions yet. An admin will suggest matching properties here.",
   "ordersSuggestions": "Suggested Properties",
   "ordersSuggestionsViewDetails": "View Details",
   "ordersSuggestionsSubtitle": "An admin has suggested these properties for you.",

@@ -393,6 +393,7 @@
   "ordersCreated": "ትዕዛዝ በተሳካ ሁኔታ ተፈጥሯል",
   "ordersUpdated": "ትዕዛዝ በተሳካ ሁኔታ ተሻሽሏል",
   "ordersLocation": "አካባቢ",
+  "ordersSuggestionsEmpty": "እስካሁን ምንም አስተያየት የለም። አስተዳዳሪ የሚስማሙ ንብረቶችን እዚህ ይጠቁማል።",
   "ordersSuggestions": "የተጠቆሙ ንብረቶች",
   "ordersSuggestionsViewDetails": "ዝርዝሮቹን ይመልከቱ",
   "ordersSuggestionsSubtitle": "አስተዳዳሪ እነዚህን ንብረቶች ለእርስዎ ጠቁመዋል።",

@@ -267,8 +267,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         ),
       ),
       items: [
-        DropdownMenuItem(value: 'male', child: Text(l10n.profileMale)),
-        DropdownMenuItem(value: 'female', child: Text(l10n.profileFemale)),
+        DropdownMenuItem(value: 'male', child: Text(l10n.profileMale, style: AppTextStyles.bodySmall)),
+        DropdownMenuItem(value: 'female', child: Text(l10n.profileFemale, style: AppTextStyles.bodySmall)),
       ],
       onChanged: (value) {
         setState(() => _selectedGender = value);

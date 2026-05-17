@@ -1211,6 +1211,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersLocation => 'አካባቢ';
 
   @override
+  String get ordersSuggestionsEmpty => 'እስካሁን ምንም አስተያየት የለም። አስተዳዳሪ የሚስማሙ ንብረቶችን እዚህ ይጠቁማል።';
+
+  @override
   String get ordersSuggestions => 'የተጠቆሙ ንብረቶች';
 
   @override

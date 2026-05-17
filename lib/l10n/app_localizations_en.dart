@@ -1223,6 +1223,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersLocation => 'Location';
 
   @override
+  String get ordersSuggestionsEmpty => 'No suggestions yet. An admin will suggest matching properties here.';
+
+  @override
   String get ordersSuggestions => 'Suggested Properties';
 
   @override

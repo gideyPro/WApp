@@ -2380,6 +2380,12 @@ abstract class AppLocalizations {
   /// **'Location'**
   String get ordersLocation;
 
+  /// No description provided for @ordersSuggestionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No suggestions yet. An admin will suggest matching properties here.'**
+  String get ordersSuggestionsEmpty;
+
   /// No description provided for @ordersSuggestions.
   ///
   /// In en, this message translates to:

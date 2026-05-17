@@ -405,16 +405,10 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 FutureBuilder<LeadResponse>(
                   future: suggestionsFuture,
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                      );
-                    }
-                    if (!snapshot.hasData || !snapshot.data!.success || snapshot.data!.leads.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
-                    final suggestions = snapshot.data!.leads;
+                    final isLoading = snapshot.connectionState == ConnectionState.waiting;
+                    final hasError = snapshot.hasError || (snapshot.hasData && !snapshot.data!.success);
+                    final suggestions = snapshot.data?.leads ?? [];
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -434,7 +428,20 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           style: AppTextStyles.caption.copyWith(color: AppColors.primary500),
                         ),
                         const SizedBox(height: 12),
-                        ...suggestions.map((s) => _buildSuggestionTile(context, s, l10n, order)),
+                        if (isLoading)
+                          const Center(child: CircularProgressIndicator(strokeWidth: 2))
+                        else if (hasError || suggestions.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Center(
+                              child: Text(
+                                l10n.ordersSuggestionsEmpty,
+                                style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary400),
+                              ),
+                            ),
+                          )
+                        else
+                          ...suggestions.map((s) => _buildSuggestionTile(context, s, l10n, order)),
                       ],
                     );
                   },

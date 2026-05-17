@@ -32,6 +32,25 @@ class AppTheme {
         outline: AppColors.stone200,
       ),
 
+      // Text Theme - Use AppTextStyles as the default for all text
+      textTheme: TextTheme(
+        displayLarge: AppTextStyles.headline1,
+        displayMedium: AppTextStyles.headline2,
+        displaySmall: AppTextStyles.headline3,
+        headlineLarge: AppTextStyles.headline4,
+        headlineMedium: AppTextStyles.headline5,
+        headlineSmall: AppTextStyles.title,
+        titleLarge: AppTextStyles.title,
+        titleMedium: AppTextStyles.titleSmall,
+        titleSmall: AppTextStyles.eyebrow,
+        bodyLarge: AppTextStyles.bodyLarge,
+        bodyMedium: AppTextStyles.bodyMedium,
+        bodySmall: AppTextStyles.bodySmall,
+        labelLarge: AppTextStyles.buttonLarge,
+        labelMedium: AppTextStyles.buttonMedium,
+        labelSmall: AppTextStyles.labelSmall,
+      ),
+
       // AppBar Theme - Luxury Minimalist (Navy Authority)
       appBarTheme: AppBarTheme(
         elevation: 0,
@@ -137,6 +156,38 @@ class AppTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
         ),
       ),
+
+      // SnackBar Theme
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(
+          color: Colors.white,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ),
+
+      // Dialog Theme
+      dialogTheme: DialogThemeData(
+        titleTextStyle: AppTextStyles.title.copyWith(
+          color: AppColors.stone900,
+        ),
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.stone600,
+        ),
+      ),
+
+      // Chip Theme
+      chipTheme: ChipThemeData(
+        labelStyle: AppTextStyles.bodySmall,
+      ),
+
+      // ListTile Theme
+      listTileTheme: ListTileThemeData(
+        titleTextStyle: AppTextStyles.bodyLarge,
+        subtitleTextStyle: AppTextStyles.bodySmall,
+      ),
     );
   }
 
@@ -163,6 +214,25 @@ class AppTheme {
         onSurface: Colors.white,
         onSurfaceVariant: AppColors.primary300,
         outline: AppColors.primary600,
+      ),
+
+      // Text Theme - Use AppTextStyles as the default for all text
+      textTheme: TextTheme(
+        displayLarge: AppTextStyles.headline1,
+        displayMedium: AppTextStyles.headline2,
+        displaySmall: AppTextStyles.headline3,
+        headlineLarge: AppTextStyles.headline4,
+        headlineMedium: AppTextStyles.headline5,
+        headlineSmall: AppTextStyles.title,
+        titleLarge: AppTextStyles.title,
+        titleMedium: AppTextStyles.titleSmall,
+        titleSmall: AppTextStyles.eyebrow,
+        bodyLarge: AppTextStyles.bodyLarge,
+        bodyMedium: AppTextStyles.bodyMedium,
+        bodySmall: AppTextStyles.bodySmall,
+        labelLarge: AppTextStyles.buttonLarge,
+        labelMedium: AppTextStyles.buttonMedium,
+        labelSmall: AppTextStyles.labelSmall,
       ),
 
       // Scaffold
@@ -301,13 +371,43 @@ class AppTheme {
         ),
       ),
 
+      // SnackBar Theme
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(
+          color: Colors.white,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ),
+
       // Dialog Theme
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.primary800,
         surfaceTintColor: Colors.transparent,
+        titleTextStyle: AppTextStyles.title.copyWith(
+          color: Colors.white,
+        ),
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.primary200,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
+      ),
+
+      // Chip Theme
+      chipTheme: ChipThemeData(
+        labelStyle: AppTextStyles.bodySmall.copyWith(
+          color: Colors.white,
+        ),
+      ),
+
+      // ListTile Theme
+      listTileTheme: ListTileThemeData(
+        titleTextStyle: AppTextStyles.bodyLarge,
+        subtitleTextStyle: AppTextStyles.bodySmall,
       ),
     );
   }

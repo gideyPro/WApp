@@ -1211,6 +1211,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersLocation => 'ከባቢ';
 
   @override
+  String get ordersSuggestionsEmpty => 'ክሳብ ሕጂ ሓሳባት የለን። ሓላፊ ዝሰማማዕ ንብረታት ኣብዚ ክሓስብ እዩ።';
+
+  @override
   String get ordersSuggestions => 'ዝተጠቓሙ ንብረታት';
 
   @override
