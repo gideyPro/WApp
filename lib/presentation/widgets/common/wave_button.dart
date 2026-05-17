@@ -445,7 +445,7 @@ class WaveTextField extends StatelessWidget {
                 bottom: verticalPadding,
               ),
               errorText: null,
-              errorStyle: const TextStyle(height: 0),
+              errorStyle: AppTextStyles.caption.copyWith(height: 0),
             ),
           ),
         ),

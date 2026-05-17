@@ -312,13 +312,12 @@ class CountrySelectorDropdown extends StatelessWidget {
           children: [
             Text(
               selectedCountry.flag,
-              style: const TextStyle(fontSize: 18),
+              style: AppTextStyles.bodyLarge.copyWith(fontSize: 18),
             ),
             const SizedBox(width: 4),
             Text(
               selectedCountry.code,
-              style: TextStyle(
-                fontSize: 14,
+              style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: isDark ? Colors.white : AppColors.navy900,
               ),
@@ -431,7 +430,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                   onChanged: _filter,
                   decoration: InputDecoration(
                     hintText: 'Search country...',
-                    hintStyle: TextStyle(
+                    hintStyle: AppTextStyles.bodyMedium.copyWith(
                       color: isDark ? AppColors.primary500 : AppColors.primary500,
                     ),
                     icon: Icon(
@@ -440,7 +439,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                       ),
                       border: InputBorder.none,
                     ),
-                    style: TextStyle(
+                    style: AppTextStyles.bodyMedium.copyWith(
                       color: isDark ? Colors.white : AppColors.primary900,
                     ),
                   ),
@@ -459,27 +458,26 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                   onTap: () => widget.onCountrySelected(country),
                   leading: Text(
                     country.flag,
-                    style: const TextStyle(fontSize: 24),
+                    style: AppTextStyles.headline4.copyWith(fontSize: 24),
                   ),
                   title: Text(
                     country.name,
-                    style: TextStyle(
+                    style: AppTextStyles.bodyLarge.copyWith(
                       color: isDark ? Colors.white : AppColors.primary900,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                     ),
                   ),
                   subtitle: Text(
                     country.example,
-                    style: TextStyle(
+                    style: AppTextStyles.bodySmall.copyWith(
                       color: isDark ? AppColors.primary500 : AppColors.primary600,
-                      fontSize: 12,
                     ),
                   ),
                   trailing: isSelected
                       ? const Icon(Icons.check, color: AppColors.accent500)
                       : Text(
                           country.code,
-                          style: TextStyle(
+                          style: AppTextStyles.bodyMedium.copyWith(
                             color: isDark ? AppColors.primary500 : AppColors.primary600,
                           ),
                         ),

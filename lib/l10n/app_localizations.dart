@@ -2380,6 +2380,72 @@ abstract class AppLocalizations {
   /// **'Location'**
   String get ordersLocation;
 
+  /// No description provided for @ordersSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested Properties'**
+  String get ordersSuggestions;
+
+  /// No description provided for @ordersSuggestionsViewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get ordersSuggestionsViewDetails;
+
+  /// No description provided for @ordersSuggestionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An admin has suggested these properties for you.'**
+  String get ordersSuggestionsSubtitle;
+
+  /// No description provided for @ordersSuggestionsAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get ordersSuggestionsAccept;
+
+  /// No description provided for @ordersSuggestionsDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get ordersSuggestionsDecline;
+
+  /// No description provided for @ordersSuggestionsAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get ordersSuggestionsAccepted;
+
+  /// No description provided for @ordersSuggestionsDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get ordersSuggestionsDeclined;
+
+  /// No description provided for @ordersSuggestionsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get ordersSuggestionsPending;
+
+  /// No description provided for @ordersSuggestionsAcceptedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion accepted. An admin will follow up with you.'**
+  String get ordersSuggestionsAcceptedMessage;
+
+  /// No description provided for @ordersSuggestionsDeclinedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion declined.'**
+  String get ordersSuggestionsDeclinedMessage;
+
+  /// No description provided for @ordersSuggestionsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to process suggestion.'**
+  String get ordersSuggestionsError;
+
   /// No description provided for @favoritesEmpty.
   ///
   /// In en, this message translates to:

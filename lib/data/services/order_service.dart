@@ -32,7 +32,7 @@ class Order {
   final String status;
   final String createdAt;
   final String? updatedAt;
-  final Map<String, dynamic>? kebele;
+  final Map<String, dynamic>? address;
 
   Order({
     required this.id,
@@ -48,14 +48,14 @@ class Order {
     required this.status,
     required this.createdAt,
     this.updatedAt,
-    this.kebele,
+    this.address,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'] ?? 0,
       type: json['type'] ?? 'house',
-      listingType: json['listing_type'] ?? 'buy',
+      listingType: json['listing_type'] ?? 'sale',
       holdingType: json['holding_type'],
       facingDirection: json['facing_direction'],
       minBudget: _parseDouble(json['min_budget']),
@@ -66,17 +66,17 @@ class Order {
       status: json['status'] ?? 'active',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'],
-      kebele: json['kebele'],
+      address: json['address'] ?? json['kebele'],
     );
   }
 
   String get locationDisplay {
-    if (kebele == null) return '';
+    if (address == null) return '';
     final parts = <String>[
-      kebele!['region'] ?? '',
-      kebele!['zone'] ?? '',
-      kebele!['woreda'] ?? '',
-      kebele!['kebele'] ?? '',
+      address!['region'] ?? '',
+      address!['zone'] ?? '',
+      address!['woreda'] ?? '',
+      address!['kebele'] ?? '',
     ];
     return parts.where((p) => p.isNotEmpty).join(' > ');
   }
@@ -254,6 +254,144 @@ class OrderService {
     }
   }
 
+  Future<OrderSuggestionResponse> getSuggestions(int orderId) async {
+    try {
+      final response = await _apiClient.dio.get('$_basePath/$orderId/suggestions');
+      if (response.statusCode == 200) {
+        final data = response.data['data'] ?? [];
+        return OrderSuggestionResponse(
+          success: true,
+          suggestions: (data as List)
+              .map((j) => OrderSuggestion.fromJson(j as Map<String, dynamic>))
+              .toList(),
+        );
+      }
+      return OrderSuggestionResponse(
+        success: false,
+        message: response.data?['message'] ?? 'Failed to fetch suggestions',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return OrderSuggestionResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  Future<OrderSuggestionResponse> acceptSuggestion(int suggestionId) async {
+    try {
+      final response = await _apiClient.dio.patch(
+        '${ApiConstants.apiBase}/orders/suggestions/$suggestionId/accept',
+      );
+      if (response.statusCode == 200) {
+        return OrderSuggestionResponse(
+          success: true,
+          message: response.data['message'] ?? 'Suggestion accepted',
+        );
+      }
+      return OrderSuggestionResponse(
+        success: false,
+        message: response.data?['message'] ?? 'Failed to accept suggestion',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return OrderSuggestionResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  Future<OrderSuggestionResponse> declineSuggestion(int suggestionId) async {
+    try {
+      final response = await _apiClient.dio.patch(
+        '${ApiConstants.apiBase}/orders/suggestions/$suggestionId/decline',
+      );
+      if (response.statusCode == 200) {
+        return OrderSuggestionResponse(
+          success: true,
+          message: response.data['message'] ?? 'Suggestion declined',
+        );
+      }
+      return OrderSuggestionResponse(
+        success: false,
+        message: response.data?['message'] ?? 'Failed to decline suggestion',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return OrderSuggestionResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
   // Allow passing a custom Dio instance or base URL override for tests
   factory OrderService.withClient(ApiClient client) => OrderService(apiClient: client);
+}
+
+class OrderSuggestion {
+  final int id;
+  final int orderId;
+  final int listingId;
+  final String? adminNotes;
+  final String status;
+  final String? readAt;
+  final String createdAt;
+  final Map<String, dynamic>? listing;
+
+  OrderSuggestion({
+    required this.id,
+    required this.orderId,
+    required this.listingId,
+    this.adminNotes,
+    required this.status,
+    this.readAt,
+    required this.createdAt,
+    this.listing,
+  });
+
+  factory OrderSuggestion.fromJson(Map<String, dynamic> json) {
+    return OrderSuggestion(
+      id: json['id'] ?? 0,
+      orderId: json['order_id'] ?? 0,
+      listingId: json['listing_id'] ?? 0,
+      adminNotes: json['admin_notes'],
+      status: json['status'] ?? 'pending',
+      readAt: json['read_at'],
+      createdAt: json['created_at'] ?? '',
+      listing: json['listing'],
+    );
+  }
+
+  bool get isPending => status == 'pending';
+  bool get isAccepted => status == 'accepted';
+  bool get isDeclined => status == 'declined';
+
+  String? get listingTitle {
+    if (listing == null) return null;
+    return listing!['title'] ?? listing!['description'] ?? 'Listing #$listingId';
+  }
+
+  double? get listingPrice {
+    if (listing == null) return null;
+    final price = listing!['price_fixed'];
+    if (price == null) return null;
+    if (price is double) return price;
+    if (price is int) return price.toDouble();
+    return null;
+  }
+}
+
+class OrderSuggestionResponse {
+  final bool success;
+  final String message;
+  final List<OrderSuggestion> suggestions;
+
+  const OrderSuggestionResponse({
+    required this.success,
+    this.message = '',
+    this.suggestions = const [],
+  });
 }

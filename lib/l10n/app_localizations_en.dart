@@ -1223,6 +1223,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersLocation => 'Location';
 
   @override
+  String get ordersSuggestions => 'Suggested Properties';
+
+  @override
+  String get ordersSuggestionsViewDetails => 'View Details';
+
+  @override
+  String get ordersSuggestionsSubtitle =>
+      'An admin has suggested these properties for you.';
+
+  @override
+  String get ordersSuggestionsAccept => 'Accept';
+
+  @override
+  String get ordersSuggestionsDecline => 'Decline';
+
+  @override
+  String get ordersSuggestionsAccepted => 'Accepted';
+
+  @override
+  String get ordersSuggestionsDeclined => 'Declined';
+
+  @override
+  String get ordersSuggestionsPending => 'Pending';
+
+  @override
+  String get ordersSuggestionsAcceptedMessage =>
+      'Suggestion accepted. An admin will follow up with you.';
+
+  @override
+  String get ordersSuggestionsDeclinedMessage => 'Suggestion declined.';
+
+  @override
+  String get ordersSuggestionsError => 'Failed to process suggestion.';
+
+  @override
   String get favoritesEmpty => 'No favorites yet';
 
   @override

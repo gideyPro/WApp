@@ -1211,6 +1211,40 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersLocation => 'አካባቢ';
 
   @override
+  String get ordersSuggestions => 'የተጠቆሙ ንብረቶች';
+
+  @override
+  String get ordersSuggestionsViewDetails => 'ዝርዝሮቹን ይመልከቱ';
+
+  @override
+  String get ordersSuggestionsSubtitle => 'አስተዳዳሪ እነዚህን ንብረቶች ለእርስዎ ጠቁመዋል።';
+
+  @override
+  String get ordersSuggestionsAccept => 'ተቀበል';
+
+  @override
+  String get ordersSuggestionsDecline => 'ውድቅ';
+
+  @override
+  String get ordersSuggestionsAccepted => 'ተቀባይነት አግኝቷል';
+
+  @override
+  String get ordersSuggestionsDeclined => 'ውድቅ ተደርጓል';
+
+  @override
+  String get ordersSuggestionsPending => 'በመጠባበቅ ላይ';
+
+  @override
+  String get ordersSuggestionsAcceptedMessage =>
+      'አስተያየት ተቀባይነት አግኝቷል። አስተዳዳሪ ይከታተልዎታል።';
+
+  @override
+  String get ordersSuggestionsDeclinedMessage => 'አስተያየት ውድቅ ተደርጓል።';
+
+  @override
+  String get ordersSuggestionsError => 'አስተያየትን ማስኬድ አልተሳካም።';
+
+  @override
   String get favoritesEmpty => 'ምንም ተወዳጅ የለም';
 
   @override

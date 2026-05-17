@@ -1211,6 +1211,39 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersLocation => 'ከባቢ';
 
   @override
+  String get ordersSuggestions => 'ዝተጠቓሙ ንብረታት';
+
+  @override
+  String get ordersSuggestionsViewDetails => 'ዝርዝራት ርአ';
+
+  @override
+  String get ordersSuggestionsSubtitle => 'ኣስተዳደሪ እዞም ንብረታት ንኣኻ ሓሲቡልካ።';
+
+  @override
+  String get ordersSuggestionsAccept => 'ተቐበል';
+
+  @override
+  String get ordersSuggestionsDecline => 'ኣይተቐበልኩን';
+
+  @override
+  String get ordersSuggestionsAccepted => 'ተቐባሊኡ';
+
+  @override
+  String get ordersSuggestionsDeclined => 'ተነጺጉ';
+
+  @override
+  String get ordersSuggestionsPending => 'ኣብ ምጽባይ';
+
+  @override
+  String get ordersSuggestionsAcceptedMessage => 'ሓሳብ ተቐባሊኡ። ሓላፊ ክከታተለካ እዩ።';
+
+  @override
+  String get ordersSuggestionsDeclinedMessage => 'ሓሳብ ተነጺጉ።';
+
+  @override
+  String get ordersSuggestionsError => 'ሓሳብ ክሳለል ኣይከኣለን።';
+
+  @override
   String get favoritesEmpty => 'ዝተመርጸ ንብረት የለን';
 
   @override

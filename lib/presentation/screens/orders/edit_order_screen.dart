@@ -89,7 +89,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
   }
 
   Future<void> _loadAddressHierarchy() async {
-    final kebele = widget.order.kebele;
+    final kebele = widget.order.address;
     if (kebele == null) return;
     final region = kebele['region'] as String?;
     final zone = kebele['zone'] as String?;
@@ -221,7 +221,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
     };
     if (_holdingType != null) data['holding_type'] = _holdingType;
     if (_facingDirection != null) data['facing_direction'] = _facingDirection;
-    if (_kebeleId != null) data['kebele_id'] = _kebeleId;
+    if (_kebeleId != null) data['address_id'] = _kebeleId;
     if (_minBudgetCtrl.text.isNotEmpty) data['min_budget'] = _minBudgetCtrl.text.replaceAll(',', '');
     if (_maxBudgetCtrl.text.isNotEmpty) data['max_budget'] = _maxBudgetCtrl.text.replaceAll(',', '');
     if (_minAreaCtrl.text.isNotEmpty) data['min_area'] = _minAreaCtrl.text.replaceAll(',', '');
@@ -285,7 +285,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                 children: [
                   Row(
                     children: [
-                      _listingTypeChip('buy', l10n.ordersBuy),
+                      _listingTypeChip('sale', l10n.ordersBuy),
                       const SizedBox(width: 12),
                       _listingTypeChip('rental', l10n.ordersRent),
                     ],
@@ -299,7 +299,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _minBudgetCtrl,
-                          style: const TextStyle(fontSize: 12),
+                          style: AppTextStyles.bodySmall,
                           decoration: _inputDecoration(label: l10n.ordersMin),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_minBudgetCtrl, v),
@@ -309,7 +309,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _maxBudgetCtrl,
-                          style: const TextStyle(fontSize: 12),
+                          style: AppTextStyles.bodySmall,
                           decoration: _inputDecoration(label: l10n.ordersMax),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_maxBudgetCtrl, v),
@@ -326,7 +326,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _minAreaCtrl,
-                          style: const TextStyle(fontSize: 12),
+                          style: AppTextStyles.bodySmall,
                           decoration: _inputDecoration(label: l10n.ordersMin),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_minAreaCtrl, v),
@@ -336,7 +336,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _maxAreaCtrl,
-                          style: const TextStyle(fontSize: 12),
+                          style: AppTextStyles.bodySmall,
                           decoration: _inputDecoration(label: l10n.ordersMax),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_maxAreaCtrl, v),
@@ -358,9 +358,9 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                     initialValue: _holdingType,
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     items: [
-                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: const TextStyle(fontSize: 12))),
+                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall)),
                       ...['Free Hold', 'Lease Hold', 'Cooperative'].map((v) =>
-                          DropdownMenuItem(value: v, child: Text(v, style: const TextStyle(fontSize: 12)))),
+                          DropdownMenuItem(value: v, child: Text(v, style: AppTextStyles.bodySmall))),
                     ],
                     onChanged: (v) => setState(() => _holdingType = v),
                   ),
@@ -372,9 +372,9 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
                     initialValue: _facingDirection,
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     items: [
-                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: const TextStyle(fontSize: 12))),
+                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall)),
                       ...['north', 'south', 'east', 'west', 'north_east', 'north_west', 'south_east', 'south_west', 'facing_3_directions', 'Facing All Directions'].map((v) =>
-                          DropdownMenuItem(value: v, child: Text(v.replaceAll('_', ' '), style: const TextStyle(fontSize: 12)))),
+                          DropdownMenuItem(value: v, child: Text(v.replaceAll('_', ' '), style: AppTextStyles.bodySmall))),
                     ],
                     onChanged: (v) => setState(() => _facingDirection = v),
                   ),
@@ -444,7 +444,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
               subtitle: 'Describe the property you need in detail',
               child: TextFormField(
                 controller: _descriptionCtrl,
-                style: const TextStyle(fontSize: 12),
+                style: AppTextStyles.bodySmall,
                 decoration: _inputDecoration(hint: l10n.ordersDescriptionHint),
                 maxLines: 4,
                 validator: _requiredValidator,
@@ -546,18 +546,18 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
     final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
       initialValue: items.contains(value) ? value : null,
-      style: const TextStyle(fontSize: 12),
+      style: AppTextStyles.bodySmall,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: 12),
+        labelStyle: AppTextStyles.bodySmall,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         suffixIcon: isLoading
             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
             : null,
       ),
       items: items.isEmpty
-          ? [DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: const TextStyle(fontSize: 12)))]
-          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontSize: 12)))).toList(),
+          ? [DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall))]
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
     );
@@ -566,7 +566,7 @@ class _EditOrderScreenState extends ConsumerState<EditOrderScreen> {
   InputDecoration _inputDecoration({String? label, String? hint}) {
     return InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(fontSize: 12),
+      labelStyle: AppTextStyles.bodySmall,
       hintText: hint,
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     );
