@@ -22,7 +22,8 @@ import '../../../core/constants/app_spacing.dart';
 
 final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
   try {
-    final response = await ApiClient().dio.get(ApiConstants.apiBase + '/settings');
+    final response =
+        await ApiClient().dio.get(ApiConstants.apiBase + '/settings');
     if (response.statusCode == 200 && response.data is Map) {
       return response.data['data'] ?? {};
     }
@@ -39,13 +40,12 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
     final kycState = ref.watch(kycStatusProvider);
     final localeCode = ref.watch(localeProvider).locale?.languageCode;
-final settingsAsync = ref.watch(appSettingsProvider);
+    final settingsAsync = ref.watch(appSettingsProvider);
     final subscriptionEnabled = settingsAsync.maybeWhen(
       data: (data) => data['subscription_enabled'] == true,
       orElse: () => false,
@@ -58,7 +58,9 @@ final settingsAsync = ref.watch(appSettingsProvider);
     String kycSubtitle = l10n.settingsKycRequired;
     String? kycBadge = l10n.settingsKycRequired;
 
-    if (profileState.user?.isKycVerified == true || kycState.isVerified || kycState.isApproved) {
+    if (profileState.user?.isKycVerified == true ||
+        kycState.isVerified ||
+        kycState.isApproved) {
       kycSubtitle = l10n.settingsKycVerified;
       kycBadge = null;
     } else if (kycState.isPending) {
@@ -95,7 +97,8 @@ final settingsAsync = ref.watch(appSettingsProvider);
           subtitle: l10n.settingsSubscriptionsSubtitle,
           onTap: () async {
             await Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+              MaterialPageRoute(
+                  builder: (_) => const SubscriptionPlansScreen()),
             );
             // Refresh subscription when returning
             if (mounted) {
@@ -197,30 +200,32 @@ final settingsAsync = ref.watch(appSettingsProvider);
                   icon: Icons.privacy_tip_outlined,
                   title: l10n.settingsPrivacyPolicy,
                   onTap: () => _openWebPage(
-                      context, 'https://wavemart.et/privacy', l10n.settingsPrivacyPolicy),
+                      context,
+                      'https://wavemart.et/privacy',
+                      l10n.settingsPrivacyPolicy),
                 ),
                 _MenuItemData(
                   icon: Icons.description_outlined,
                   title: l10n.settingsTermsOfService,
-                  onTap: () => _openWebPage(
-                      context, 'https://wavemart.et/terms', l10n.settingsTermsOfService),
+                  onTap: () => _openWebPage(context,
+                      'https://wavemart.et/terms', l10n.settingsTermsOfService),
                 ),
               ],
             ),
-const SizedBox(height: 24),
-              _buildMenuSection(
-                title: l10n.settingsSectionAuth,
-                items: [
-                  _MenuItemData(
-                    icon: Icons.logout,
-                    title: l10n.settingsLogout,
-                    subtitle: l10n.settingsLogoutSubtitle,
-                    textColor: AppColors.error,
-                    onTap: () => _showLogoutConfirmation(context, ref),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 100),
+            const SizedBox(height: 24),
+            _buildMenuSection(
+              title: l10n.settingsSectionAuth,
+              items: [
+                _MenuItemData(
+                  icon: Icons.logout,
+                  title: l10n.settingsLogout,
+                  subtitle: l10n.settingsLogoutSubtitle,
+                  textColor: AppColors.error,
+                  onTap: () => _showLogoutConfirmation(context, ref),
+                ),
+              ],
+            ),
+            const SizedBox(height: 100),
           ],
         ),
       ),
@@ -251,8 +256,9 @@ const SizedBox(height: 24),
                 );
               }
             },
-            child:
-                Text(l10n.settingsLogout, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error, fontWeight: FontWeight.w700)),
+            child: Text(l10n.settingsLogout,
+                style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.error, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -316,24 +322,28 @@ const SizedBox(height: 24),
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: context.theme.isDark ? AppColors.primary800 : AppColors.primary50,
+              color: context.theme.isDark
+                  ? AppColors.primary800
+                  : AppColors.primary50,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Icon(
               item.icon,
               size: 20,
-              color: item.textColor ?? AppColors.primary600,
+              color: item.textColor ?? context.theme.icon,
             ),
           ),
           title: Text(
             item.title,
             style: AppTextStyles.bodyMedium.copyWith(
               fontWeight: FontWeight.w700,
-              color: item.textColor,
+              color: item.textColor ?? context.theme.textPrimary,
             ),
           ),
           subtitle: item.subtitle != null
-              ? Text(item.subtitle!, style: AppTextStyles.caption)
+              ? Text(item.subtitle!,
+                  style: AppTextStyles.caption
+                      .copyWith(color: context.theme.textSecondary))
               : null,
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -343,9 +353,12 @@ const SizedBox(height: 24),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: context.theme.isDark ? AppColors.accent950 : AppColors.accent100,
+                    color: context.theme.isDark
+                        ? AppColors.accent950
+                        : AppColors.accent100,
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: AppColors.accent500.withValues(alpha: 0.3)),
+                    border: Border.all(
+                        color: AppColors.accent500.withValues(alpha: 0.3)),
                   ),
                   child: Text(
                     item.badge!,
@@ -356,9 +369,9 @@ const SizedBox(height: 24),
                 ),
                 const SizedBox(width: 8),
               ],
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                color: AppColors.zinc400,
+                color: context.theme.iconSecondary,
               ),
             ],
           ),
@@ -452,7 +465,9 @@ Widget _buildLanguageOption(
     leading: isSelected
         ? const Icon(Icons.check_circle, color: AppColors.accent500)
         : const Icon(Icons.radio_button_unchecked),
-    title: Text(languageName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
+    title: Text(languageName,
+        style: AppTextStyles.bodyMedium.copyWith(
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
   );
 }
 
@@ -461,8 +476,6 @@ String _getDarkModeSubtitle(BuildContext context, WidgetRef ref) {
   final l10n = AppLocalizations.of(context);
   return themeMode == ThemeMode.dark ? l10n.commonOn : l10n.commonOff;
 }
-
-
 
 class _MenuItemData {
   final IconData icon;

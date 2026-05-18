@@ -63,7 +63,7 @@ class PropertyListingCard extends ConsumerWidget {
                 _buildPrice(context),
                 const SizedBox(height: 10),
 
-                _buildDescription(),
+                _buildDescription(context),
                 const SizedBox(height: AppSpacing.md),
 
                 Row(
@@ -419,14 +419,15 @@ class PropertyListingCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildDescription() {
+  Widget _buildDescription(BuildContext context) {
     final description = listing?.description;
     if (description == null || description.isEmpty) {
       return const SizedBox.shrink();
     }
     return Text(
       description,
-      style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary600),
+      style:
+          AppTextStyles.bodySmall.copyWith(color: context.theme.textSecondary),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );
@@ -440,10 +441,10 @@ class PropertyListingCard extends ConsumerWidget {
         l10n.listingUnknownLocation;
     return Row(
       children: [
-        const Icon(
+        Icon(
           Icons.location_on_outlined,
           size: 14,
-          color: AppColors.primary500,
+          color: context.theme.iconSecondary,
         ),
         const SizedBox(width: 4),
         Expanded(
@@ -603,7 +604,7 @@ class FeaturedListingCard extends ConsumerWidget {
                   const SizedBox(height: 6),
 
                   // Description
-                  _buildDescription(),
+                  _buildDescription(context),
                   const SizedBox(height: 10),
 
                   // Location
@@ -771,7 +772,7 @@ class FeaturedListingCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildDescription() {
+  Widget _buildDescription(BuildContext context) {
     final description = listing?.description;
     if (description == null || description.isEmpty) {
       return const SizedBox.shrink();
@@ -780,7 +781,7 @@ class FeaturedListingCard extends ConsumerWidget {
       description,
       style: AppTextStyles.bodySmall.copyWith(
         fontSize: 11,
-        color: AppColors.primary600,
+        color: context.theme.textSecondary,
       ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
