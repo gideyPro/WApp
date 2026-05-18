@@ -146,8 +146,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   Future<void> _handleNotificationTap(app.Notification notification) async {
     // Mark as read
     if (!notification.isRead) {
-      ref.read(notificationsProvider.notifier).markAsRead(notification.id);
+      try {
+        await ref
+            .read(notificationsProvider.notifier)
+            .markAsRead(notification.id);
+      } catch (_) {}
     }
+
+    if (!mounted) return;
 
     // Navigate based on notification type
     switch (notification.type) {
@@ -160,13 +166,22 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         }
         break;
       case app.NotificationType.suggestion:
-        if (notification.relatedId != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => OrderDetailsScreen.fromNotification(
-                  orderId: notification.relatedId!),
-            ),
-          );
+        final orderId = notification.relatedId ??
+            (notification.data?['order_id'] as int?) ??
+            (notification.data?['order_id'] is num
+                ? (notification.data!['order_id'] as num).toInt()
+                : null);
+        if (orderId != null) {
+          try {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) =>
+                    OrderDetailsScreen.fromNotification(orderId: orderId),
+              ),
+            );
+          } catch (e) {
+            WaveToast.showError(context, 'Failed to open order: $e');
+          }
         }
         break;
       case app.NotificationType.newMessage:

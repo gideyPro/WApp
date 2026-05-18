@@ -23,6 +23,7 @@ class Notification {
   final String? actionUrl;
   final int? relatedId;
   final String? relatedType;
+  final Map<String, dynamic>? data;
   final bool isRead;
   final DateTime? readAt;
   final DateTime createdAt;
@@ -36,6 +37,7 @@ class Notification {
     this.actionUrl,
     this.relatedId,
     this.relatedType,
+    this.data,
     this.isRead = false,
     this.readAt,
     required this.createdAt,
@@ -50,6 +52,7 @@ class Notification {
     String? actionUrl,
     int? relatedId,
     String? relatedType,
+    Map<String, dynamic>? data,
     bool? isRead,
     DateTime? readAt,
     DateTime? createdAt,
@@ -63,6 +66,7 @@ class Notification {
       actionUrl: actionUrl ?? this.actionUrl,
       relatedId: relatedId ?? this.relatedId,
       relatedType: relatedType ?? this.relatedType,
+      data: data ?? this.data,
       isRead: isRead ?? this.isRead,
       readAt: readAt ?? this.readAt,
       createdAt: createdAt ?? this.createdAt,
@@ -84,6 +88,9 @@ class Notification {
       actionUrl: json['action_url'],
       relatedId: json['related_id'],
       relatedType: json['related_type'],
+      data: json['data'] is Map
+          ? Map<String, dynamic>.from(json['data'] as Map)
+          : null,
       isRead: json['read_at'] != null,
       readAt: json['read_at'] != null ? DateTime.parse(json['read_at']) : null,
       createdAt: json['created_at'] != null
