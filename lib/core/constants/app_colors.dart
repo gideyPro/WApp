@@ -227,24 +227,4 @@ class AppColors {
   static const String appVersion = '1.0.0';
 }
 
-/// Theme-aware extension for easy dark mode support
-extension AppColorsExtension on BuildContext {
-  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
-
-  Color get scaffoldBg => isDarkMode ? const Color(0xFF080C14) : AppColors.background;
-  Color get cardBg => isDarkMode ? AppColors.primary800 : Colors.white;
-  Color get cardBgElevated => isDarkMode ? const Color(0xFF1E293B) : Colors.white;
-  Color get textPrimary => isDarkMode ? Colors.white : AppColors.stone900;
-  Color get textSecondary => isDarkMode ? AppColors.primary200 : AppColors.stone600;
-  Color get textMuted => isDarkMode ? AppColors.primary400 : AppColors.stone400;
-  Color get iconPrimary => isDarkMode ? Colors.white : AppColors.primary900;
-  Color get divider => isDarkMode ? Colors.white.withValues(alpha: 0.08) : AppColors.stone200;
-  Color get inputBg => isDarkMode ? AppColors.primary800 : AppColors.stone50;
-  Color get sheetBg => isDarkMode ? AppColors.primary800 : Colors.white;
-  Color get shimmerBase => isDarkMode ? AppColors.primary700 : Colors.grey[300]!;
-  Color get shimmerHighlight => isDarkMode ? AppColors.primary800 : Colors.grey[100]!;
-
-  // Glassmorphism helpers
-  Color get glassBg => isDarkMode ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.7);
-  Color get glassBorder => isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.8);
 }

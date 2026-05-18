@@ -12,6 +12,7 @@ class ThemeColors {
   Color get surface => isDark ? AppColors.primary800 : Colors.white;
   Color get card => isDark ? AppColors.primary800 : Colors.white;
   Color get cardBg => isDark ? AppColors.primary800 : Colors.white;
+  Color get cardBgElevated => isDark ? const Color(0xFF1E293B) : Colors.white;
 
   // Text colors
   Color get textPrimary => isDark ? Colors.white : AppColors.stone900;
@@ -51,4 +52,22 @@ class ThemeColors {
 extension ThemeColorsExtension on BuildContext {
   ThemeColors get theme => ThemeColors(this);
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
+
+  // Legacy compatibility getters (mapped to ThemeColors)
+  Color get scaffoldBg => theme.scaffold;
+  Color get cardBg => theme.card;
+  Color get cardBgElevated => theme.cardBgElevated;
+  Color get textPrimary => theme.textPrimary;
+  Color get textSecondary => theme.textSecondary;
+  Color get textMuted => theme.textMuted;
+  Color get iconPrimary => theme.icon;
+  Color get divider => theme.divider;
+  Color get inputBg => theme.inputBg;
+  Color get sheetBg => theme.bottomSheet;
+  Color get shimmerBase => theme.shimmerBase;
+  Color get shimmerHighlight => theme.shimmerHighlight;
+
+  // Glassmorphism helpers
+  Color get glassBg => isDarkMode ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.7);
+  Color get glassBorder => isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.8);
 }
