@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
@@ -82,13 +83,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     if (confirmed != true || !mounted) return;
 
     setState(() => _isCancelling = true);
+
     final success =
         await ref.read(ordersProvider.notifier).cancelOrder(orderId);
     if (mounted) {
       setState(() => _isCancelling = false);
       if (success) {
         WaveToast.showSuccess(context, l10n.ordersCancelled);
-        Navigator.of(context).pop();
+        if (mounted) Navigator.of(context).pop();
       } else {
         WaveToast.showError(context, l10n.commonError);
       }
@@ -106,14 +108,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         backgroundColor: context.cardBg,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text(l10n.ordersTitle),
+        title: Text(l10n.ordersDetailTitle),
       ),
       body: _buildBody(l10n),
     );
   }
 
   Widget _buildBody(AppLocalizations l10n) {
-    if (_isLoadingOrder) {
+    if (_isLoadingOrder && _order == null) {
       return Center(
         child: WaveGlass(
           child: Padding(
@@ -123,7 +125,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               children: [
                 const CircularProgressIndicator(strokeWidth: 2),
                 const SizedBox(height: AppSpacing.md),
-                Text('Loading order...',
+                Text(l10n.commonLoading,
                     style: AppTextStyles.bodySmall
                         .copyWith(color: AppColors.primary500)),
               ],
@@ -133,7 +135,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       );
     }
 
-    if (_orderError != null) {
+    if (_orderError != null && _order == null) {
       return WaveMessageScreen.error(
         title: l10n.commonError,
         subtitle: _orderError!,
@@ -142,21 +144,79 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () {
+      onRefresh: () async {
         setState(() {
           _isLoadingOrder = true;
           _orderError = null;
+          _order = null;
         });
-        _loadOrder();
-        return Future.value();
+        await _loadOrder();
       },
       child: ListView(
         padding: AppSpacing.paddingLg,
         children: [
-          _buildOrderInfoSection(l10n),
+          if (_order == null)
+            Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: _buildOrderInfoSkeleton(),
+            )
+          else
+            _buildOrderInfoSection(l10n),
           const SizedBox(height: 16),
           _buildSuggestedPropertiesSection(l10n),
         ],
+      ),
+    );
+  }
+
+  Widget _buildOrderInfoSkeleton() {
+    return WaveGlass(
+      child: Padding(
+        padding: AppSpacing.paddingLg,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Badge row skeleton
+            Row(
+              children: [
+                _buildSkeletonBox(width: 60, height: 18),
+                const SizedBox(width: 6),
+                _buildSkeletonBox(width: 80, height: 18),
+                const Spacer(),
+                _buildSkeletonBox(width: 60, height: 18),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Budget skeleton
+            _buildSkeletonLine(isFull: true),
+            const SizedBox(height: 8),
+            _buildSkeletonLine(width: 0.6),
+            const Divider(height: 16),
+
+            // Area skeleton
+            _buildSkeletonLine(isFull: true),
+            const SizedBox(height: 8),
+            _buildSkeletonLine(width: 0.6),
+            const Divider(height: 16),
+
+            // Facing / Location skeleton
+            _buildSkeletonLine(isFull: true),
+            const SizedBox(height: 8),
+            _buildSkeletonLine(width: 0.5),
+            const Divider(height: 16),
+
+            // Description skeleton
+            _buildSkeletonLine(isFull: true),
+            const SizedBox(height: 6),
+            _buildSkeletonLine(isFull: true),
+            const SizedBox(height: 6),
+            _buildSkeletonLine(width: 0.7),
+            const SizedBox(height: 24),
+            _buildSkeletonLine(isFull: true),
+          ],
+        ),
       ),
     );
   }
@@ -479,7 +539,31 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     }
   }
 
-  // --- Helpers (mirrored from OrdersScreen for standalone use) ---
+  // --- Helpers ---
+
+  /// Skeleton box for shimmer loading placeholders
+  Widget _buildSkeletonBox({required double width, required double height}) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(3),
+      ),
+    );
+  }
+
+  /// Skeleton line for shimmer loading placeholder (full or partial width)
+  Widget _buildSkeletonLine({bool isFull = false, double width = 1.0}) {
+    return Container(
+      width: isFull ? double.infinity : double.infinity * width,
+      height: 12,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(3),
+      ),
+    );
+  }
 
   Widget _buildBadge(String text, Color bg, Color fg) {
     return Container(

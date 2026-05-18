@@ -358,6 +358,7 @@
 
   "favoritesTitle": "Favorites",
   "ordersTitle": "Orders",
+  "ordersDetailTitle": "Order Details",
   "ordersEmpty": "No orders yet",
   "ordersEmptySubtitle": "Submit your property requirements to get started",
   "ordersCreate": "Create Order",

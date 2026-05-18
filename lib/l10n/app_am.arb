@@ -363,6 +363,7 @@
 
   "favoritesTitle": "ተወዳጆች",
   "ordersTitle": "ትዕዛዞች",
+  "ordersDetailTitle": "የትዕዛዝ ዝርዝር",
   "ordersEmpty": "እስካሁን ምንም ትዕዛዝ የለም",
   "ordersEmptySubtitle": "የንብረት ፍላጎቶችዎን ያስገቡ ለመጀመር",
   "ordersCreate": "ትዕዛዝ ፍጠር",

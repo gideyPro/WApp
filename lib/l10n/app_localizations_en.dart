@@ -1131,6 +1131,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersTitle => 'Orders';
 
   @override
+  String get ordersDetailTitle => 'Order Details';
+
+  @override
   String get ordersEmpty => 'No orders yet';
 
   @override
@@ -1223,7 +1226,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersLocation => 'Location';
 
   @override
-  String get ordersSuggestionsEmpty => 'No suggestions yet. An admin will suggest matching properties here.';
+  String get ordersSuggestionsEmpty =>
+      'No suggestions yet. An admin will suggest matching properties here.';
 
   @override
   String get ordersSuggestions => 'Suggested Properties';

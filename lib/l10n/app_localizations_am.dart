@@ -1121,6 +1121,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersTitle => 'ትዕዛዞች';
 
   @override
+  String get ordersDetailTitle => 'የትዕዛዝ ዝርዝር';
+
+  @override
   String get ordersEmpty => 'እስካሁን ምንም ትዕዛዝ የለም';
 
   @override
@@ -1211,7 +1214,8 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersLocation => 'አካባቢ';
 
   @override
-  String get ordersSuggestionsEmpty => 'እስካሁን ምንም አስተያየት የለም። አስተዳዳሪ የሚስማሙ ንብረቶችን እዚህ ይጠቁማል።';
+  String get ordersSuggestionsEmpty =>
+      'እስካሁን ምንም አስተያየት የለም። አስተዳዳሪ የሚስማሙ ንብረቶችን እዚህ ይጠቁማል።';
 
   @override
   String get ordersSuggestions => 'የተጠቆሙ ንብረቶች';

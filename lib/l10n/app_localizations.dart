@@ -2200,6 +2200,12 @@ abstract class AppLocalizations {
   /// **'Orders'**
   String get ordersTitle;
 
+  /// No description provided for @ordersDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Details'**
+  String get ordersDetailTitle;
+
   /// No description provided for @ordersEmpty.
   ///
   /// In en, this message translates to:
