@@ -10,6 +10,7 @@ enum NotificationType {
   subscriptionActivated,
   systemAnnouncement,
   featuredListingExpired,
+  suggestion,
 }
 
 /// Notification Model
@@ -75,7 +76,9 @@ class Notification {
       title: json['title'] ?? '',
       body: json['message'] ?? json['body'] ?? '',
       type: NotificationType.values.firstWhere(
-        (e) => e.toString().split('.').last == (json['type'] ?? 'systemAnnouncement'),
+        (e) =>
+            e.toString().split('.').last ==
+            (json['type'] ?? 'systemAnnouncement'),
         orElse: () => NotificationType.systemAnnouncement,
       ),
       actionUrl: json['action_url'],
@@ -119,6 +122,8 @@ class Notification {
         return Icons.campaign_outlined;
       case NotificationType.featuredListingExpired:
         return Icons.timer_outlined;
+      case NotificationType.suggestion:
+        return Icons.auto_awesome;
     }
   }
 }

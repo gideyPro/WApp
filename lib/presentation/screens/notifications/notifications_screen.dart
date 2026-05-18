@@ -11,6 +11,7 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_card.dart';
 import '../listing/listing_detail_screen.dart';
 import '../messages/messages_screen.dart';
+import '../orders/order_details_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../settings/settings_screen.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -158,6 +159,16 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           _navigateToListingDetail(notification.relatedId!);
         }
         break;
+      case app.NotificationType.suggestion:
+        if (notification.relatedId != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => OrderDetailsScreen.fromNotification(
+                  orderId: notification.relatedId!),
+            ),
+          );
+        }
+        break;
       case app.NotificationType.newMessage:
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const MessagesScreen()),
@@ -173,7 +184,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   void _navigateToListingDetail(int listingId) {
     final subState = ref.read(subscriptionProvider);
     final settingsAsync = ref.read(appSettingsProvider);
-    final user = ref.read(profileProvider).user;
     final subscriptionEnabled = settingsAsync.maybeWhen(
       data: (data) => data['subscription_enabled'] == true,
       orElse: () => true,
@@ -202,17 +212,26 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 64, height: 64,
+                width: 64,
+                height: 64,
                 decoration: BoxDecoration(
                   color: AppColors.accent500.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.workspace_premium_outlined, size: 32, color: AppColors.accent600),
+                child: const Icon(Icons.workspace_premium_outlined,
+                    size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              Text('Subscription Required', style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800), textAlign: TextAlign.center),
+              Text('Subscription Required',
+                  style:
+                      AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                  textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              Text('You need an active subscription to view property details and contact owners.', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary600), textAlign: TextAlign.center),
+              Text(
+                  'You need an active subscription to view property details and contact owners.',
+                  style: AppTextStyles.bodyMedium
+                      .copyWith(color: AppColors.primary600),
+                  textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -268,7 +287,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             child: Row(
               children: [
                 Container(
-                  width: 48, height: 48,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(4),
@@ -279,9 +299,13 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(height: 14, width: 160, color: Colors.grey[300]),
+                      Container(
+                          height: 14, width: 160, color: Colors.grey[300]),
                       const SizedBox(height: 8),
-                      Container(height: 12, width: double.infinity, color: Colors.grey[300]),
+                      Container(
+                          height: 12,
+                          width: double.infinity,
+                          color: Colors.grey[300]),
                       const SizedBox(height: 4),
                       Container(height: 12, width: 80, color: Colors.grey[300]),
                     ],
@@ -358,14 +382,21 @@ class _NotificationTile extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: notification.isRead ? (context.theme.isDark ? AppColors.primary800 : AppColors.primary50) : (context.theme.isDark ? AppColors.accent900 : AppColors.accent100),
+              color: notification.isRead
+                  ? (context.theme.isDark
+                      ? AppColors.primary800
+                      : AppColors.primary50)
+                  : (context.theme.isDark
+                      ? AppColors.accent900
+                      : AppColors.accent100),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Icon(
               notification.icon,
               size: 24,
-                color:
-                  notification.isRead ? context.theme.textSecondary : AppColors.accent600,
+              color: notification.isRead
+                  ? context.theme.textSecondary
+                  : AppColors.accent600,
             ),
           ),
           title: Text(
