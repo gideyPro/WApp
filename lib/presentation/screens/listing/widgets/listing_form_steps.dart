@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/models/image.dart';
 import '../../../../data/services/address_service.dart';
@@ -1585,7 +1586,7 @@ class ListingStep4Review extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(l10n.listingSummary),
+          _sectionTitle(context, l10n.listingSummary),
           const SizedBox(height: 8),
           Column(
             children: [
@@ -1616,7 +1617,7 @@ class ListingStep4Review extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           if (formData.description != null) ...[
-            _sectionTitle(l10n.listingDescriptionLabel),
+            _sectionTitle(context, l10n.listingDescriptionLabel),
             const SizedBox(height: 4),
             Text(formData.description!,
                 style: AppTextStyles.bodyMedium,
@@ -1641,7 +1642,8 @@ class ListingStep4Review extends StatelessWidget {
 
   // FIX: was titleSmall which uses the Cinzel heading font. Section titles
   // in a review card should use the body font (Montserrat) for readability.
-  Widget _sectionTitle(String title) {
+  // FIX: StatelessWidget has no implicit `context`; accept it as parameter.
+  Widget _sectionTitle(BuildContext context, String title) {
     return Text(title,
         style: AppTextStyles.labelMedium.copyWith(
           fontWeight: FontWeight.w700,
