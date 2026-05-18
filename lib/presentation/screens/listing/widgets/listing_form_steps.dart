@@ -57,7 +57,7 @@ class ListingStepIndicator extends StatelessWidget {
                       height: 28,
                       decoration: BoxDecoration(
                         color: isCompleted || isCurrent
-                            ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                            ? Theme.of(context).colorScheme.primary
                             : context.divider,
                         shape: BoxShape.circle,
                       ),
@@ -70,7 +70,7 @@ class ListingStepIndicator extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   color: isCurrent
                                       ? Colors.white
-                                      : AppColors.zinc500,
+                                      : context.theme.textMuted,
                                 ),
                               ),
                             ),
@@ -79,7 +79,12 @@ class ListingStepIndicator extends StatelessWidget {
                     Flexible(
                       child: Text(
                         steps[i],
-                        style: AppTextStyles.labelSmall.copyWith(fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w600, color: isCurrent ? (context.isDarkMode ? AppColors.accent400 : AppColors.navy950) : context.textMuted),
+                        style: AppTextStyles.labelSmall.copyWith(
+                          fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w600,
+                          color: isCurrent
+                              ? Theme.of(context).colorScheme.primary
+                              : context.theme.textMuted,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -521,7 +526,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget _compactSectionLabel(String title) {
     return Text(title, style: AppTextStyles.labelMedium.copyWith(
       fontWeight: FontWeight.w700,
-      color: context.isDarkMode ? AppColors.primary200 : AppColors.primary800,
+      color: context.theme.textSecondary,
       letterSpacing: 0.3,
     ));
   }
@@ -561,16 +566,20 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     bool readOnly = false,
     required void Function(String) onSubmitted,
   }) {
+    // FIX: read-only fill must be visible in both themes.
+    // Light: stone100 (#F1F5F9) on white bg — clearly different.
+    // Dark:  primary700 (#1E293B) on primary800 (#0F172A) bg — clearly different.
+    final readOnlyFill = context.isDarkMode ? AppColors.primary700 : AppColors.stone100;
     return TextFormField(
       controller: controller,
       readOnly: readOnly,
-      style: AppTextStyles.bodySmall,
+      style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: AppTextStyles.bodySmall,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         filled: readOnly,
-        fillColor: readOnly ? AppColors.zinc100 : null,
+        fillColor: readOnly ? readOnlyFill : null,
       ),
       keyboardType: keyboardType,
       onChanged: (v) => onSubmitted(v),
@@ -1138,7 +1147,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
   Widget _compactSectionLabel(String title) {
     return Text(title, style: AppTextStyles.labelMedium.copyWith(
       fontWeight: FontWeight.w700,
-      color: context.isDarkMode ? AppColors.primary200 : AppColors.primary800,
+      color: context.theme.textSecondary,
       letterSpacing: 0.3,
     ));
   }
@@ -1150,6 +1159,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     bool readOnly = false,
     required void Function(String) onSubmitted,
   }) {
+    final readOnlyFill = context.isDarkMode ? AppColors.primary700 : AppColors.stone100;
     return Focus(
       onFocusChange: (hasFocus) {
         if (!hasFocus) onSubmitted(controller.text);
@@ -1157,13 +1167,13 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       child: TextFormField(
         controller: controller,
         readOnly: readOnly,
-        style: AppTextStyles.bodySmall,
+        style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: AppTextStyles.bodySmall,
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           filled: readOnly,
-          fillColor: readOnly ? AppColors.zinc100 : null,
+          fillColor: readOnly ? readOnlyFill : null,
         ),
         keyboardType: keyboardType,
         textInputAction: TextInputAction.done,
@@ -1629,10 +1639,15 @@ class ListingStep4Review extends StatelessWidget {
     );
   }
 
+  // FIX: was titleSmall which uses the Cinzel heading font. Section titles
+  // in a review card should use the body font (Montserrat) for readability.
   Widget _sectionTitle(String title) {
     return Text(title,
-        style: AppTextStyles.titleSmall
-            .copyWith(fontWeight: FontWeight.w700, fontSize: 16));
+        style: AppTextStyles.labelMedium.copyWith(
+          fontWeight: FontWeight.w700,
+          fontSize: 14,
+          color: Theme.of(context).colorScheme.onSurface,
+        ));
   }
 
   Widget _summaryCard(BuildContext context, String title, String content, {IconData? icon}) {
@@ -1645,18 +1660,22 @@ class ListingStep4Review extends StatelessWidget {
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 16, color: Theme.of(context).brightness == Brightness.dark ? AppColors.primary300 : AppColors.primary700),
+                Icon(icon, size: 16, color: context.theme.textSecondary),
                 const SizedBox(width: 6),
               ],
               Text(title,
-                  style: AppTextStyles.labelSmall.copyWith(color: Theme.of(context).brightness == Brightness.dark ? AppColors.primary300 : AppColors.primary700)),
+                  style: AppTextStyles.labelSmall.copyWith(
+                    color: context.theme.textSecondary,
+                  )),
             ],
           ),
           const SizedBox(height: 4),
           Expanded(
               child: Text(content,
-                  style: AppTextStyles.bodyMedium
-                      .copyWith(fontWeight: FontWeight.w600),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.theme.textPrimary,
+                  ),
                   overflow: TextOverflow.ellipsis)),
         ],
       ),

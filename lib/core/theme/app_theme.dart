@@ -32,7 +32,10 @@ class AppTheme {
         outline: AppColors.stone200,
       ),
 
-      // Text Theme - Use AppTextStyles as the default for all text
+      // Text Theme
+      // NOTE: titleMedium MUST be a body font style — Flutter's DropdownButton
+      // uses titleMedium for the selected-item label. Using Cinzel here was
+      // causing all dropdowns to render in the decorative heading font.
       textTheme: TextTheme(
         displayLarge: AppTextStyles.headline1,
         displayMedium: AppTextStyles.headline2,
@@ -41,7 +44,7 @@ class AppTheme {
         headlineMedium: AppTextStyles.headline5,
         headlineSmall: AppTextStyles.title,
         titleLarge: AppTextStyles.title,
-        titleMedium: AppTextStyles.titleSmall,
+        titleMedium: AppTextStyles.bodyMedium, // FIX: was titleSmall (Cinzel)
         titleSmall: AppTextStyles.eyebrow,
         bodyLarge: AppTextStyles.bodyLarge,
         bodyMedium: AppTextStyles.bodyMedium,
@@ -96,12 +99,15 @@ class AppTheme {
       // Outlined Button Theme
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primary900,
+          side: const BorderSide(color: AppColors.primary900),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
           ),
           textStyle: AppTextStyles.buttonMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: AppColors.primary900,
           ),
         ),
       ),
@@ -123,9 +129,13 @@ class AppTheme {
           borderRadius: BorderRadius.circular(4),
           borderSide: const BorderSide(color: AppColors.accent500, width: 1.5),
         ),
-        hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone500),
+        hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone400),
         labelStyle: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.stone800,
+          color: AppColors.stone700,
+          fontWeight: FontWeight.w500,
+        ),
+        floatingLabelStyle: AppTextStyles.bodySmall.copyWith(
+          color: AppColors.primary900,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -217,6 +227,7 @@ class AppTheme {
       ),
 
       // Text Theme - Use AppTextStyles as the default for all text
+      // NOTE: titleMedium stays as body font — same fix as light theme.
       textTheme: TextTheme(
         displayLarge: AppTextStyles.headline1,
         displayMedium: AppTextStyles.headline2,
@@ -225,7 +236,7 @@ class AppTheme {
         headlineMedium: AppTextStyles.headline5,
         headlineSmall: AppTextStyles.title,
         titleLarge: AppTextStyles.title,
-        titleMedium: AppTextStyles.titleSmall,
+        titleMedium: AppTextStyles.bodyMedium, // FIX: was titleSmall (Cinzel)
         titleSmall: AppTextStyles.eyebrow,
         bodyLarge: AppTextStyles.bodyLarge,
         bodyMedium: AppTextStyles.bodyMedium,
@@ -283,12 +294,15 @@ class AppTheme {
       // Outlined Button Theme - Dark
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.accent400,
+          side: const BorderSide(color: AppColors.accent400),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
           ),
           textStyle: AppTextStyles.buttonMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: AppColors.accent400,
           ),
         ),
       ),
@@ -313,7 +327,7 @@ class AppTheme {
         ),
       ),
 
-      // Input Decoration Theme
+      // Input Decoration Theme - Dark Mode
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.primary800,
@@ -330,9 +344,18 @@ class AppTheme {
           borderRadius: BorderRadius.circular(4),
           borderSide: const BorderSide(color: AppColors.accent400, width: 1.5),
         ),
-        hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary400),
+        // FIX: hint must be visibly muted, not the same weight as body text
+        hintStyle: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.primary400,
+          fontWeight: FontWeight.w400,
+        ),
+        // FIX: label must be white (not default dark onSurface) in dark mode
         labelStyle: AppTextStyles.bodyMedium.copyWith(
-          color: Colors.white,
+          color: AppColors.primary300,
+          fontWeight: FontWeight.w500,
+        ),
+        floatingLabelStyle: AppTextStyles.bodySmall.copyWith(
+          color: AppColors.accent400,
           fontWeight: FontWeight.w600,
         ),
       ),

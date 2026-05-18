@@ -59,19 +59,18 @@ class AppTextStyles {
         height: 1.3,
       );
 
-  // Eyebrow label
+  // Eyebrow label — no hardcoded color; inherits from theme
   static TextStyle get eyebrow => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 2.0,
-        color: AppColors.primary900,
       );
 
   static TextStyle get subtitle => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 14,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         height: 1.3,
       );
 
@@ -130,12 +129,11 @@ class AppTextStyles {
         letterSpacing: 0.2,
       );
 
-  // Label Styles
+  // Label Styles — no hardcoded color; inherits from theme's onSurface
   static TextStyle get labelLarge => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: AppColors.primary800,
         letterSpacing: 0.1,
       );
 
@@ -143,7 +141,6 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        color: AppColors.primary800,
         letterSpacing: 0.1,
       );
 
@@ -151,16 +148,14 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w600,
-        color: AppColors.primary700,
         letterSpacing: 0.3,
       );
 
-  // Caption/Helper Text
+  // Caption/Helper Text — no hardcoded color; inherits from theme's onSurface
   static TextStyle get caption => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 11,
-        fontWeight: FontWeight.w600,
-        color: AppColors.stone700,
+        fontWeight: FontWeight.w500,
         height: 1.3,
       );
 
@@ -168,7 +163,6 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w700,
-        color: AppColors.primary700,
         letterSpacing: 2.0,
       );
 
