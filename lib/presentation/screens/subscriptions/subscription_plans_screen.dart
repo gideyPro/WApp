@@ -688,7 +688,7 @@ class _PlanCard extends StatelessWidget {
                             style: AppTextStyles.title.copyWith(
                               color: isCurrentPlan
                                   ? AppColors.accent700
-                                  : AppColors.primary900,
+                                  : context.theme.textPrimary,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                             ),
@@ -711,7 +711,7 @@ class _PlanCard extends StatelessWidget {
                       Text(
                         plan.description ?? '',
                         style: AppTextStyles.caption.copyWith(
-                          color: AppColors.primary600,
+                          color: context.theme.textSecondary,
                         ),
                       ),
                     ],
@@ -724,13 +724,13 @@ class _PlanCard extends StatelessWidget {
                     Text(
                       plan.getDisplayPrice(selectedCurrency),
                       style: AppTextStyles.headline3.copyWith(
-                        color: isCurrentPlan ? AppColors.accent600 : AppColors.primary900,
+                        color: isCurrentPlan ? AppColors.accent600 : context.theme.textPrimary,
                       ),
                     ),
                     Text(
                       plan.durationLabel,
                       style: AppTextStyles.caption.copyWith(
-                        color: AppColors.primary500,
+                        color: context.theme.textMuted,
                       ),
                     ),
                   ],
@@ -768,7 +768,7 @@ class _PlanCard extends StatelessWidget {
                   Text(
                     l10n.subscriptionsFeatures,
                     style: AppTextStyles.titleSmall.copyWith(
-                      color: AppColors.primary800,
+                      color: context.theme.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -785,7 +785,7 @@ class _PlanCard extends StatelessWidget {
                               child: Text(
                                 feature,
                                 style: AppTextStyles.bodySmall.copyWith(
-                                  color: AppColors.primary700,
+                                  color: context.theme.textSecondary,
                                 ),
                               ),
                             ),
@@ -840,7 +840,7 @@ class _PlanCard extends StatelessWidget {
         Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: included ? AppColors.primary700 : AppColors.stone500,
+            color: included ? context.theme.textPrimary : context.theme.textMuted,
             fontWeight: included ? FontWeight.w600 : FontWeight.w500,
           ),
         ),

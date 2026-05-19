@@ -185,6 +185,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       article.title,
                       style: AppTextStyles.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: context.theme.textPrimary,
                       ),
                     ),
                     trailing: Icon(
@@ -237,11 +238,14 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             article.title,
             style: AppTextStyles.bodyMedium.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.theme.textPrimary,
             ),
           ),
           subtitle: Text(
             article.category,
-            style: AppTextStyles.caption,
+            style: AppTextStyles.caption.copyWith(
+              color: context.theme.textSecondary,
+            ),
           ),
           trailing: const Icon(Icons.chevron_right, color: AppColors.stone400),
           onTap: () => _showArticleDetail(article),

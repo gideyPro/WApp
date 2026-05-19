@@ -1,4 +1,3 @@
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -312,6 +311,7 @@ class _ConversationTile extends ConsumerWidget {
         displayName,
         style: AppTextStyles.bodyLarge.copyWith(
           fontWeight: hasUnread ? FontWeight.w800 : FontWeight.w600,
+          color: context.theme.textPrimary,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,

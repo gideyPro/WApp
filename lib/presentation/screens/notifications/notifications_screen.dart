@@ -419,6 +419,7 @@ class _NotificationTile extends StatelessWidget {
             style: AppTextStyles.bodyMedium.copyWith(
               fontWeight:
                   notification.isRead ? FontWeight.w500 : FontWeight.w600,
+              color: context.theme.textPrimary,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -429,7 +430,9 @@ class _NotificationTile extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 notification.body,
-                style: AppTextStyles.bodySmall,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: context.theme.textSecondary,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),

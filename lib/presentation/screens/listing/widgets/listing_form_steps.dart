@@ -496,7 +496,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           const SizedBox(height: 16),
 
           CheckboxListTile(
-            title: Text(l10n.listingHasDebt),
+            title: Text(l10n.listingHasDebt, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
             value: widget.formData.hasDebtOrEncumbrance,
             onChanged: (v) => widget.onUpdate(
                 widget.formData.copyWith(
