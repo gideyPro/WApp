@@ -496,19 +496,19 @@ class AppLocalizationsTi extends AppLocalizations {
   String get searchPopular => 'ተፈተውቲ ዳህሳሳት';
 
   @override
-  String get searchUnder5M => '💰 ትሕቲ 5 ሚልዮን';
+  String get searchUnder5M => 'ትሕቲ 5 ሚልዮን';
 
   @override
-  String get search5M10M => '💎 5-10 ሚልዮን';
+  String get search5M10M => '5-10 ሚልዮን';
 
   @override
-  String get search10M50M => '🏆 10-50 ሚልዮን';
+  String get search10M50M => '10-50 ሚልዮን';
 
   @override
-  String get search50M100M => '👑 50-100 ሚልዮን';
+  String get search50M100M => '50-100 ሚልዮን';
 
   @override
-  String get search100MPlus => '✨ ልዕሊ 100 ሚልዮን';
+  String get search100MPlus => 'ልዕሊ 100 ሚልዮን';
 
   @override
   String get searchNoResultsTitle => 'ዝተረኽበ ንብረት የለን';
@@ -522,16 +522,16 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get searchSortNewest => '🆕 ሓድሽ';
+  String get searchSortNewest => 'ሓድሽ';
 
   @override
-  String get searchSortOldest => '📅 ዝጸንሐ';
+  String get searchSortOldest => 'ዝጸንሐ';
 
   @override
-  String get searchSortPriceLow => '💰 ትሑት ዋጋ';
+  String get searchSortPriceLow => 'ትሑት ዋጋ';
 
   @override
-  String get searchSortPriceHigh => '💎 ልዑል ዋጋ';
+  String get searchSortPriceHigh => 'ልዑል ዋጋ';
 
   @override
   String get searchFilterAll => 'ኹሉ';
@@ -910,10 +910,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingLand => 'መሬት';
 
   @override
-  String get listingHouses => '🏠 ገዛውቲ';
+  String get listingHouses => 'ገዛውቲ';
 
   @override
-  String get listingLands => '🌄 መሬታት';
+  String get listingLands => 'መሬታት';
 
   @override
   String get listingPriceOnRequest => 'ዋጋ ብሕቶ';
@@ -943,16 +943,16 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get listingSale => '💰 መሸጣ';
+  String get listingSale => 'መሸጣ';
 
   @override
-  String get listingRent => '🔑 ክራይ';
+  String get listingRent => 'ክራይ';
 
   @override
-  String get listingForSale => '💰 ንመሸጣ';
+  String get listingForSale => 'ንመሸጣ';
 
   @override
-  String get listingForRent => '🔑 ንክራይ';
+  String get listingForRent => 'ንክራይ';
 
   @override
   String listingUnitM2(Object count) {

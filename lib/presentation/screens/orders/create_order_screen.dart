@@ -12,6 +12,8 @@ import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/network/api_constants.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
   const CreateOrderScreen({super.key});
@@ -44,11 +46,13 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   bool _loadingZones = false, _loadingWoredas = false, _loadingKebeles = false;
 
   bool _formatting = false;
+  bool _rentalEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _loadRegions();
+    _loadSettings();
   }
 
   @override
@@ -89,6 +93,20 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
         _regions = response.regions.map((a) => a.region ?? '').where((n) => n.isNotEmpty).toList();
       });
     }
+  }
+
+  Future<void> _loadSettings() async {
+    try {
+      final response = await ApiClient().dio.get(ApiConstants.apiBase + '/settings');
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data['data'];
+        if (data is Map && mounted) {
+          setState(() {
+            _rentalEnabled = data['rental_enabled'] == true;
+          });
+        }
+      }
+    } catch (_) {}
   }
 
   Future<void> _onRegionSelected(String? region) async {
@@ -241,14 +259,16 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      _listingTypeChip('sale', l10n.ordersBuy),
-                      const SizedBox(width: 12),
-                      _listingTypeChip('rental', l10n.ordersRent),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
+                  if (_rentalEnabled) ...[
+                    Row(
+                      children: [
+                        _listingTypeChip('sale', l10n.ordersBuy),
+                        const SizedBox(width: 12),
+                        _listingTypeChip('rental', l10n.ordersRent),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   Text(l10n.ordersBudget,
                       style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
@@ -257,7 +277,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _minBudgetCtrl,
-                          style: AppTextStyles.bodySmall,
+                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                           decoration: _inputDecoration(label: l10n.ordersMin),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_minBudgetCtrl, v),
@@ -267,7 +287,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _maxBudgetCtrl,
-                          style: AppTextStyles.bodySmall,
+                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                           decoration: _inputDecoration(label: l10n.ordersMax),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_maxBudgetCtrl, v),
@@ -284,7 +304,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _minAreaCtrl,
-                          style: AppTextStyles.bodySmall,
+                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                           decoration: _inputDecoration(label: l10n.ordersMin),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_minAreaCtrl, v),
@@ -294,7 +314,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _maxAreaCtrl,
-                          style: AppTextStyles.bodySmall,
+                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                           decoration: _inputDecoration(label: l10n.ordersMax),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_maxAreaCtrl, v),
@@ -314,12 +334,13 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 children: [
                   DropdownButtonFormField<String>(
                     initialValue: _holdingType,
+                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     dropdownColor: context.sheetBg,
                     items: [
-                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall)),
+                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted))),
                       ...['Free Hold', 'Lease Hold', 'Cooperative'].map((v) =>
-                          DropdownMenuItem(value: v, child: Text(v, style: AppTextStyles.bodySmall))),
+                          DropdownMenuItem(value: v, child: Text(v, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))),
                     ],
                     onChanged: (v) => setState(() => _holdingType = v),
                   ),
@@ -329,12 +350,13 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     initialValue: _facingDirection,
+                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     dropdownColor: context.sheetBg,
                     items: [
-                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall)),
+                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted))),
                       ...['north', 'south', 'east', 'west', 'north_east', 'north_west', 'south_east', 'south_west', 'facing_3_directions', 'Facing All Directions'].map((v) =>
-                          DropdownMenuItem(value: v, child: Text(v.replaceAll('_', ' '), style: AppTextStyles.bodySmall))),
+                          DropdownMenuItem(value: v, child: Text(v.replaceAll('_', ' '), style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))),
                     ],
                     onChanged: (v) => setState(() => _facingDirection = v),
                   ),
@@ -404,7 +426,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
               subtitle: 'Describe the property you need in detail',
               child: TextFormField(
                 controller: _descriptionCtrl,
-                style: AppTextStyles.bodySmall,
+                style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                 decoration: _inputDecoration(hint: l10n.ordersDescriptionHint),
                 maxLines: 4,
                 validator: _requiredValidator,
@@ -428,35 +450,35 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   Widget _typeChip(String value, String label, IconData icon) {
     final selected = _type == value;
-    final isDark = context.isDarkMode;
     return Expanded(
       child: InkWell(
         onTap: () => setState(() => _type = value),
         borderRadius: BorderRadius.circular(4),
         child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           decoration: BoxDecoration(
             color: selected
-                ? (isDark ? AppColors.primary800 : AppColors.navy950)
-                : Colors.transparent,
+                ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                : context.cardBg,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: selected
-                  ? (isDark ? AppColors.accent500 : AppColors.navy950)
-                  : context.theme.divider,
-              width: selected ? 2 : 1,
+                  ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                  : context.divider,
+              width: 1.5,
             ),
           ),
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon,
-                  color: selected ? Colors.white : context.theme.iconSecondary,
-                  size: 28),
-              const SizedBox(height: 6),
+                  color: selected ? Colors.white : context.theme.textSecondary,
+                  size: 18),
+              const SizedBox(width: 4),
               Text(label,
-                  style: AppTextStyles.labelMedium.copyWith(
-                    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                    color: selected ? Colors.white : context.theme.textSecondary,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: selected ? Colors.white : AppColors.primary800,
                   )),
             ],
           ),
@@ -467,32 +489,39 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   Widget _listingTypeChip(String value, String label) {
     final selected = _listingType == value;
-    final isDark = context.isDarkMode;
     return Expanded(
       child: InkWell(
         onTap: () => setState(() => _listingType = value),
         borderRadius: BorderRadius.circular(4),
         child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           decoration: BoxDecoration(
             color: selected
-                ? (isDark ? AppColors.primary800 : AppColors.navy950)
-                : Colors.transparent,
+                ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                : context.cardBg,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: selected
-                  ? (isDark ? AppColors.accent500 : AppColors.navy950)
-                  : context.theme.divider,
-              width: selected ? 2 : 1,
+                  ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                  : context.divider,
+              width: 1.5,
             ),
           ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.labelMedium.copyWith(
-              fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-              color: selected ? Colors.white : context.theme.textSecondary,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                value == 'sale' ? Icons.sell_rounded : Icons.key_rounded,
+                color: selected ? Colors.white : context.theme.textSecondary,
+                size: 18,
+              ),
+              const SizedBox(width: 4),
+              Text(label,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: selected ? Colors.white : AppColors.primary800,
+                  )),
+            ],
           ),
         ),
       ),
@@ -509,10 +538,10 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
       initialValue: items.contains(value) ? value : null,
-      style: AppTextStyles.bodySmall,
+      style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: AppTextStyles.bodySmall,
+        labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         suffixIcon: isLoading
             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
@@ -521,7 +550,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       dropdownColor: context.sheetBg,
       items: items.isEmpty
           ? [DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)))]
-          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
     );
@@ -530,8 +559,9 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   InputDecoration _inputDecoration({String? label, String? hint}) {
     return InputDecoration(
       labelText: label,
-      labelStyle: AppTextStyles.bodySmall,
+      labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
       hintText: hint,
+      hintStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     );
   }

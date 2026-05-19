@@ -487,7 +487,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return GestureDetector(
       onTap: _closeContextDropdown,
       child: Container(
-        margin: const EdgeInsets.only(top: 48),
         constraints: const BoxConstraints(maxHeight: 320),
         decoration: BoxDecoration(
           color: context.cardBgElevated,
@@ -744,7 +743,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         title: GestureDetector(
           onTap:
               relatedConversations.isNotEmpty ? _toggleContextDropdown : null,
-          child: Stack(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -783,18 +783,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                 ],
               ),
-              // Dropdown overlay
-              if (_contextDropdownOpen)
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: _buildContextDropdown(
-                        context, l10n, isDark, relatedConversations),
-                  ),
-                ),
             ],
           ),
         ),
@@ -807,102 +795,122 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          // Messages list
-          Expanded(
-            child: chatState.isLoading && chatState.messages.isEmpty
-                ? _buildMessagesSkeleton()
-                : chatState.errorMessage != null && chatState.messages.isEmpty
-                    ? WaveMessageScreen.error(
-                        isEmbedded: true,
-                        title: 'Error Loading Messages',
-                        subtitle: chatState.errorMessage!,
-                        onRetry: () {
-                          ref
-                              .read(chatMessagesProvider(widget.conversationId)
-                                  .notifier)
-                              .loadMessages();
-                        },
-                      )
-                    : chatState.messages.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.chat_bubble_outline,
-                                    size: 64,
-                                    color: context.theme.iconSecondary),
-                                const SizedBox(height: 16),
-                                Text(l10n.messagesEmpty,
-                                    style: AppTextStyles.bodyLarge.copyWith(
-                                        color: context.theme.iconSecondary)),
-                              ],
-                            ),
+          Column(
+            children: [
+              // Messages list
+              Expanded(
+                child: chatState.isLoading && chatState.messages.isEmpty
+                    ? _buildMessagesSkeleton()
+                    : chatState.errorMessage != null && chatState.messages.isEmpty
+                        ? WaveMessageScreen.error(
+                            isEmbedded: true,
+                            title: 'Error Loading Messages',
+                            subtitle: chatState.errorMessage!,
+                            onRetry: () {
+                              ref
+                                  .read(chatMessagesProvider(widget.conversationId)
+                                      .notifier)
+                                  .loadMessages();
+                            },
                           )
-                        : _buildMessagesList(chatState.messages, currentUserId,
-                            l10n, widget.conversation.listingOwnerId),
-          ),
+                        : chatState.messages.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.chat_bubble_outline,
+                                        size: 64,
+                                        color: context.theme.iconSecondary),
+                                    const SizedBox(height: 16),
+                                    Text(l10n.messagesEmpty,
+                                        style: AppTextStyles.bodyLarge.copyWith(
+                                            color: context.theme.iconSecondary)),
+                                  ],
+                                ),
+                              )
+                            : _buildMessagesList(chatState.messages, currentUserId,
+                                l10n, widget.conversation.listingOwnerId),
+              ),
 
-          // Message input
-          Container(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-            decoration: BoxDecoration(
-              color:
-                  context.isDarkMode ? AppColors.primary900 : AppColors.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.navy950.withValues(alpha: 0.05),
-                  blurRadius: 4,
-                  offset: const Offset(0, -2),
+              // Message input
+              Container(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                decoration: BoxDecoration(
+                  color: context.isDarkMode ? AppColors.primary900 : AppColors.surface,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.navy950.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: SafeArea(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      decoration: InputDecoration(
-                        hintText: l10n.messagesTypeMessage,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(4),
+                child: SafeArea(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _messageController,
+                          decoration: InputDecoration(
+                            hintText: l10n.messagesTypeMessage,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                          ),
+                          maxLines: null,
+                          textCapitalization: TextCapitalization.sentences,
+                          onSubmitted: (_) => _sendMessage(),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
                       ),
-                      maxLines: null,
-                      textCapitalization: TextCapitalization.sentences,
-                      onSubmitted: (_) => _sendMessage(),
-                    ),
+                      const SizedBox(width: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: _isSending
+                              ? context.theme.textMuted
+                              : AppColors.accent500,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: _isSending
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          AppColors.surface)),
+                                )
+                              : const Icon(Icons.send, color: AppColors.surface),
+                          onPressed: _isSending ? null : _sendMessage,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: _isSending
-                          ? context.theme.textMuted
-                          : AppColors.accent500,
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: _isSending
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      AppColors.surface)),
-                            )
-                          : const Icon(Icons.send, color: AppColors.surface),
-                      onPressed: _isSending ? null : _sendMessage,
-                    ),
-                  ),
-                ],
+                ),
+              ),
+            ],
+          ),
+          // Context dropdown overlay
+          if (_contextDropdownOpen) ...[
+            GestureDetector(
+              onTap: _closeContextDropdown,
+              child: Container(color: Colors.transparent),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Material(
+                color: Colors.transparent,
+                child: _buildContextDropdown(
+                    context, l10n, isDark, relatedConversations),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

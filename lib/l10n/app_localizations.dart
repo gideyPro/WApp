@@ -1027,31 +1027,31 @@ abstract class AppLocalizations {
   /// No description provided for @searchUnder5M.
   ///
   /// In en, this message translates to:
-  /// **'💰 Under 5M'**
+  /// **'Under 5M'**
   String get searchUnder5M;
 
   /// No description provided for @search5M10M.
   ///
   /// In en, this message translates to:
-  /// **'💎 5M - 10M'**
+  /// **'5M - 10M'**
   String get search5M10M;
 
   /// No description provided for @search10M50M.
   ///
   /// In en, this message translates to:
-  /// **'🏆 10M - 50M'**
+  /// **'10M - 50M'**
   String get search10M50M;
 
   /// No description provided for @search50M100M.
   ///
   /// In en, this message translates to:
-  /// **'👑 50M - 100M'**
+  /// **'50M - 100M'**
   String get search50M100M;
 
   /// No description provided for @search100MPlus.
   ///
   /// In en, this message translates to:
-  /// **'✨ 100M+'**
+  /// **'100M+'**
   String get search100MPlus;
 
   /// No description provided for @searchNoResultsTitle.
@@ -1075,25 +1075,25 @@ abstract class AppLocalizations {
   /// No description provided for @searchSortNewest.
   ///
   /// In en, this message translates to:
-  /// **'🆕 Newest'**
+  /// **'Newest'**
   String get searchSortNewest;
 
   /// No description provided for @searchSortOldest.
   ///
   /// In en, this message translates to:
-  /// **'📅 Oldest'**
+  /// **'Oldest'**
   String get searchSortOldest;
 
   /// No description provided for @searchSortPriceLow.
   ///
   /// In en, this message translates to:
-  /// **'💰 Price ↑'**
+  /// **'Price ↑'**
   String get searchSortPriceLow;
 
   /// No description provided for @searchSortPriceHigh.
   ///
   /// In en, this message translates to:
-  /// **'💎 Price ↓'**
+  /// **'Price ↓'**
   String get searchSortPriceHigh;
 
   /// No description provided for @searchFilterAll.
@@ -1825,13 +1825,13 @@ abstract class AppLocalizations {
   /// No description provided for @listingHouses.
   ///
   /// In en, this message translates to:
-  /// **'🏠 Houses'**
+  /// **'Houses'**
   String get listingHouses;
 
   /// No description provided for @listingLands.
   ///
   /// In en, this message translates to:
-  /// **'🌄 Lands'**
+  /// **'Lands'**
   String get listingLands;
 
   /// No description provided for @listingPriceOnRequest.
@@ -1879,25 +1879,25 @@ abstract class AppLocalizations {
   /// No description provided for @listingSale.
   ///
   /// In en, this message translates to:
-  /// **'💰 Sale'**
+  /// **'Sale'**
   String get listingSale;
 
   /// No description provided for @listingRent.
   ///
   /// In en, this message translates to:
-  /// **'🔑 Rent'**
+  /// **'Rent'**
   String get listingRent;
 
   /// No description provided for @listingForSale.
   ///
   /// In en, this message translates to:
-  /// **'💰 For Sale'**
+  /// **'For Sale'**
   String get listingForSale;
 
   /// No description provided for @listingForRent.
   ///
   /// In en, this message translates to:
-  /// **'🔑 For Rent'**
+  /// **'For Rent'**
   String get listingForRent;
 
   /// No description provided for @listingUnitM2.

@@ -371,165 +371,200 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _compactSectionLabel(l10n.listingPropertyType),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              _radioCard(
-                label: l10n.listingHouse,
-                icon: Icons.home_rounded,
-                value: 'house',
-                groupValue: widget.formData.type,
-                onChanged: widget.isEditMode
-                    ? null
-                    : (v) => widget.onUpdate(widget.formData.copyWith(type: v)),
-              ),
-              const SizedBox(width: 12),
-              _radioCard(
-                label: l10n.listingLand,
-                icon: Icons.landscape_rounded,
-                value: 'land',
-                groupValue: widget.formData.type,
-                onChanged: widget.isEditMode
-                    ? null
-                    : (v) => widget.onUpdate(widget.formData.copyWith(type: v)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          _compactSectionLabel(l10n.listingListingType),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              _radioCard(
-                label: l10n.listingForSale,
-                icon: Icons.sell_rounded,
-                value: 'sale',
-                groupValue: widget.formData.listingType,
-                onChanged: widget.isEditMode
-                    ? null
-                    : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
-              ),
-              const SizedBox(width: 12),
-              _radioCard(
-                label: l10n.listingForRent,
-                icon: Icons.key_rounded,
-                value: 'rental',
-                groupValue: widget.formData.listingType,
-                onChanged: widget.isEditMode
-                    ? null
-                    : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          if (widget.formData.listingType == 'rental') ...[
-            _compactDropdown(
-              value: widget.formData.rentalPeriodUnit,
-              items: {
-                'day': 'Day',
-                'week': 'Week',
-                'month': 'Month',
-                'year': 'Year',
-              },
-              label: l10n.listingRentalPeriod,
-              hintText: l10n.listingSelect,
-              onChanged: (v) => widget.onUpdate(
-                  widget.formData.copyWith(rentalPeriodUnit: v)),
-            ),
-            const SizedBox(height: 16),
-          ],
-
-          _compactDropdown(
-            value: widget.formData.holdingType,
-            items: {
-              'Free Hold': l10n.listingFreeHold,
-              'Lease Hold': l10n.listingLeaseHold,
-              'Cooperative': l10n.listingCooperative,
-            },
-            label: l10n.listingHoldingType,
-            hintText: l10n.listingSelectHolding,
-            onChanged: (v) => widget.onUpdate(widget.formData
-                .copyWith(holdingType: v ?? 'Free Hold')),
-          ),
-          const SizedBox(height: 16),
-
-          AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: Column(
+          _sectionCard(
+            title: l10n.listingPropertyType,
+            child: Row(
               children: [
-                if (widget.formData.holdingType == 'Free Hold')
-                  _buildFreeHoldFields(),
-                if (widget.formData.holdingType == 'Lease Hold')
-                  _buildLeaseHoldFields(),
-                if (widget.formData.holdingType == 'Cooperative')
-                  _buildCooperativeFields(),
+                _radioCard(
+                  label: l10n.listingHouse,
+                  icon: Icons.home_rounded,
+                  value: 'house',
+                  groupValue: widget.formData.type,
+                  onChanged: widget.isEditMode
+                      ? null
+                      : (v) => widget.onUpdate(widget.formData.copyWith(type: v)),
+                ),
+                const SizedBox(width: 12),
+                _radioCard(
+                  label: l10n.listingLand,
+                  icon: Icons.landscape_rounded,
+                  value: 'land',
+                  groupValue: widget.formData.type,
+                  onChanged: widget.isEditMode
+                      ? null
+                      : (v) => widget.onUpdate(widget.formData.copyWith(type: v)),
+                ),
               ],
             ),
           ),
 
-          const SizedBox(height: 16),
-          _compactDropdown(
-            value: widget.formData.useType,
-            items: {
-              'Residential': l10n.listingResidential,
-              'Commercial': l10n.listingCommercial,
-              'Mixed': l10n.listingMixed,
-              'Investment': l10n.listingInvestment,
-            },
-            label: l10n.listingUseType,
-            hintText: l10n.listingSelectUse,
-            onChanged: (v) => widget.onUpdate(widget.formData
-                .copyWith(useType: v ?? 'Residential')),
-          ),
-          const SizedBox(height: 16),
-
-          _compactSectionLabel(l10n.listingLocation),
-          const SizedBox(height: 8),
-          _buildAddressDropdowns(),
-          const SizedBox(height: 16),
-
-          _buildCompactPriceField(),
-          const SizedBox(height: 16),
-
-          CheckboxListTile(
-            title: Text(l10n.listingHasDebt, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
-            value: widget.formData.hasDebtOrEncumbrance,
-            onChanged: (v) => widget.onUpdate(
-                widget.formData.copyWith(
-                  hasDebtOrEncumbrance: v ?? false,
-                  debtAmount: (v ?? false) ? widget.formData.debtAmount : null,
-                )),
-            controlAffinity: ListTileControlAffinity.leading,
-            contentPadding: EdgeInsets.zero,
-          ),
-          if (widget.formData.hasDebtOrEncumbrance) ...[
-            const SizedBox(height: 8),
-            _compactTextField(
-              label: l10n.listingDebtAmount,
-              controller: _debtAmountController,
-              onSubmitted: (v) {
-                final cleaned = v.replaceAll(',', '');
-                widget.onUpdate(widget.formData
-                    .copyWith(debtAmount: double.tryParse(cleaned)));
-              },
+          _sectionCard(
+            title: l10n.listingListingType,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    _radioCard(
+                      label: l10n.listingForSale,
+                      icon: Icons.sell_rounded,
+                      value: 'sale',
+                      groupValue: widget.formData.listingType,
+                      onChanged: widget.isEditMode
+                          ? null
+                          : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
+                    ),
+                    const SizedBox(width: 12),
+                    _radioCard(
+                      label: l10n.listingForRent,
+                      icon: Icons.key_rounded,
+                      value: 'rental',
+                      groupValue: widget.formData.listingType,
+                      onChanged: widget.isEditMode
+                          ? null
+                          : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
+                    ),
+                  ],
+                ),
+                if (widget.formData.listingType == 'rental') ...[
+                  const SizedBox(height: 12),
+                  _compactDropdown(
+                    value: widget.formData.rentalPeriodUnit,
+                    items: {
+                      'day': 'Day',
+                      'week': 'Week',
+                      'month': 'Month',
+                      'year': 'Year',
+                    },
+                    label: l10n.listingRentalPeriod,
+                    hintText: l10n.listingSelect,
+                    onChanged: (v) => widget.onUpdate(
+                        widget.formData.copyWith(rentalPeriodUnit: v)),
+                  ),
+                ],
+              ],
             ),
-          ],
-          const SizedBox(height: 24),
+          ),
+
+          _sectionCard(
+            title: l10n.listingHoldingType,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _compactDropdown(
+                  value: widget.formData.holdingType,
+                  items: {
+                    'Free Hold': l10n.listingFreeHold,
+                    'Lease Hold': l10n.listingLeaseHold,
+                    'Cooperative': l10n.listingCooperative,
+                  },
+                  label: l10n.listingHoldingType,
+                  hintText: l10n.listingSelectHolding,
+                  onChanged: (v) => widget.onUpdate(widget.formData
+                      .copyWith(holdingType: v ?? 'Free Hold')),
+                ),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: Column(
+                    children: [
+                      if (widget.formData.holdingType == 'Free Hold')
+                        _buildFreeHoldFields(),
+                      if (widget.formData.holdingType == 'Lease Hold')
+                        _buildLeaseHoldFields(),
+                      if (widget.formData.holdingType == 'Cooperative')
+                        _buildCooperativeFields(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          _sectionCard(
+            title: l10n.listingUseType,
+            child: _compactDropdown(
+              value: widget.formData.useType,
+              items: {
+                'Residential': l10n.listingResidential,
+                'Commercial': l10n.listingCommercial,
+                'Mixed': l10n.listingMixed,
+                'Investment': l10n.listingInvestment,
+              },
+              label: l10n.listingUseType,
+              hintText: l10n.listingSelectUse,
+              onChanged: (v) => widget.onUpdate(widget.formData
+                  .copyWith(useType: v ?? 'Residential')),
+            ),
+          ),
+
+          _sectionCard(
+            title: l10n.listingLocation,
+            child: _buildAddressDropdowns(),
+          ),
+
+          _sectionCard(
+            title: l10n.listingPriceEtb,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildCompactPriceField(),
+                const SizedBox(height: 8),
+                CheckboxListTile(
+                  title: Text(l10n.listingHasDebt, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                  value: widget.formData.hasDebtOrEncumbrance,
+                  onChanged: (v) => widget.onUpdate(
+                      widget.formData.copyWith(
+                        hasDebtOrEncumbrance: v ?? false,
+                        debtAmount: (v ?? false) ? widget.formData.debtAmount : null,
+                      )),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                if (widget.formData.hasDebtOrEncumbrance) ...[
+                  const SizedBox(height: 8),
+                  _compactTextField(
+                    label: l10n.listingDebtAmount,
+                    controller: _debtAmountController,
+                    onSubmitted: (v) {
+                      final cleaned = v.replaceAll(',', '');
+                      widget.onUpdate(widget.formData
+                          .copyWith(debtAmount: double.tryParse(cleaned)));
+                    },
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 8),
         ],
       ),
     );
   }
 
-  Widget _compactSectionLabel(String title) {
-    return Text(title, style: AppTextStyles.labelMedium.copyWith(
-      fontWeight: FontWeight.w700,
-      color: context.theme.textSecondary,
-      letterSpacing: 0.3,
-    ));
+  Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
+    return WaveCard(
+      isGlass: true,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: AppTextStyles.labelMedium.copyWith(
+            fontWeight: FontWeight.w700,
+            color: context.theme.textSecondary,
+            letterSpacing: 0.3,
+          )),
+          if (subtitle != null) ...[
+            const SizedBox(height: 4),
+            Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+          ],
+          const SizedBox(height: 10),
+          child,
+        ],
+      ),
+    );
   }
 
   Widget _compactDropdown({
@@ -1015,142 +1050,172 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.formData.type == 'house') ...[
-            _compactSectionLabel(l10n.listingRoomConfig),
-            const SizedBox(height: 10),
-            Row(
+          if (widget.formData.type == 'house')
+            _sectionCard(
+              title: l10n.listingRoomConfig,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: _compactTextField(label: l10n.listingTotalRooms, controller: _totalRoomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) widget.onUpdate(widget.formData.copyWith(totalRooms: n));
+                      })),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(child: _compactTextField(label: l10n.listingBedrooms, controller: _bedroomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) widget.onUpdate(widget.formData.copyWith(bedrooms: n));
+                      })),
+                      const SizedBox(width: 8),
+                      Expanded(child: _compactTextField(label: l10n.listingBathrooms, controller: _bathroomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) widget.onUpdate(widget.formData.copyWith(bathrooms: n));
+                      })),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(child: _compactTextField(label: l10n.listingKitchens, controller: _kitchensController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) widget.onUpdate(widget.formData.copyWith(kitchens: n));
+                      })),
+                      const SizedBox(width: 8),
+                      Expanded(child: _compactTextField(label: l10n.listingSalons, controller: _salonsController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) widget.onUpdate(widget.formData.copyWith(salons: n));
+                      })),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _compactDropdown(
+                    value: widget.formData.houseType,
+                    items: houseTypeItems,
+                    label: l10n.listingHouseType,
+                    hintText: l10n.listingSelectHouseType,
+                    onChanged: _onHouseTypeChanged,
+                  ),
+                  const SizedBox(height: 12),
+                  _compactTextField(label: l10n.listingYearBuilt, controller: _yearBuiltController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                    final n = int.tryParse(v);
+                    if (n != null) widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
+                  }),
+                  const SizedBox(height: 12),
+                  Text(l10n.listingAmenities,
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _amenityChip(l10n.listingElectricity, widget.formData.electricity, (v) => widget.onUpdate(widget.formData.copyWith(electricity: v))),
+                      _amenityChip(l10n.listingWater, widget.formData.water, (v) => widget.onUpdate(widget.formData.copyWith(water: v))),
+                      _amenityChip(l10n.listingParking, widget.formData.parkingAvailable, (v) => widget.onUpdate(widget.formData.copyWith(parkingAvailable: v))),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+          _sectionCard(
+            title: l10n.listingAreaDimensions,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: _compactTextField(label: l10n.listingTotalRooms, controller: _totalRoomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                  final n = int.tryParse(v);
-                  if (n != null) widget.onUpdate(widget.formData.copyWith(totalRooms: n));
-                })),
+                _compactTextField(
+                  label: l10n.listingTotalArea,
+                  controller: _totalAreaController,
+                  keyboardType: TextInputType.number,
+                  readOnly: isAreaReadOnly,
+                  onSubmitted: (v) {
+                    final n = int.tryParse(v);
+                    if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n.toDouble()));
+                  },
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(child: _compactTextField(label: l10n.listingFrontArea, controller: _frontAreaController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                      final n = int.tryParse(v);
+                      if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n.toDouble()));
+                    })),
+                    const SizedBox(width: 8),
+                    Expanded(child: _compactTextField(label: l10n.listingSideArea, controller: _sideAreaController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                      final n = int.tryParse(v);
+                      if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n.toDouble()));
+                    })),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _compactDropdown(
+                  value: widget.formData.facingDirection,
+                  items: {
+                    'north': l10n.listingNorth,
+                    'south': l10n.listingSouth,
+                    'east': l10n.listingEast,
+                    'west': l10n.listingWest,
+                    'north_east': l10n.listingNorthEast,
+                    'north_west': l10n.listingNorthWest,
+                    'south_east': l10n.listingSouthEast,
+                    'south_west': l10n.listingSouthWest,
+                  },
+                  label: l10n.listingFacingDirection,
+                  hintText: l10n.listingSelectDirection,
+                  onChanged: (v) => widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
+                ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(child: _compactTextField(label: l10n.listingBedrooms, controller: _bedroomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                  final n = int.tryParse(v);
-                  if (n != null) widget.onUpdate(widget.formData.copyWith(bedrooms: n));
-                })),
-                const SizedBox(width: 8),
-                Expanded(child: _compactTextField(label: l10n.listingBathrooms, controller: _bathroomsController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                  final n = int.tryParse(v);
-                  if (n != null) widget.onUpdate(widget.formData.copyWith(bathrooms: n));
-                })),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(child: _compactTextField(label: l10n.listingKitchens, controller: _kitchensController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                  final n = int.tryParse(v);
-                  if (n != null) widget.onUpdate(widget.formData.copyWith(kitchens: n));
-                })),
-                const SizedBox(width: 8),
-                Expanded(child: _compactTextField(label: l10n.listingSalons, controller: _salonsController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                  final n = int.tryParse(v);
-                  if (n != null) widget.onUpdate(widget.formData.copyWith(salons: n));
-                })),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _compactDropdown(
-              value: widget.formData.houseType,
-              items: houseTypeItems,
-              label: l10n.listingHouseType,
-              hintText: l10n.listingSelectHouseType,
-              onChanged: _onHouseTypeChanged,
-            ),
-            const SizedBox(height: 16),
-            _compactTextField(label: l10n.listingYearBuilt, controller: _yearBuiltController, keyboardType: TextInputType.number, onSubmitted: (v) {
-              final n = int.tryParse(v);
-              if (n != null) widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
-            }),
-            const SizedBox(height: 16),
-            _compactSectionLabel(l10n.listingAmenities),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _amenityChip(l10n.listingElectricity, widget.formData.electricity, (v) => widget.onUpdate(widget.formData.copyWith(electricity: v))),
-                _amenityChip(l10n.listingWater, widget.formData.water, (v) => widget.onUpdate(widget.formData.copyWith(water: v))),
-                _amenityChip(l10n.listingParking, widget.formData.parkingAvailable, (v) => widget.onUpdate(widget.formData.copyWith(parkingAvailable: v))),
-              ],
-            ),
-            const SizedBox(height: 16),
-          ],
-          _compactSectionLabel(l10n.listingAreaDimensions),
-          const SizedBox(height: 10),
-          _compactTextField(
-            label: l10n.listingTotalArea,
-            controller: _totalAreaController,
-            keyboardType: TextInputType.number,
-            readOnly: isAreaReadOnly,
-            onSubmitted: (v) {
-              final n = int.tryParse(v);
-              if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n.toDouble()));
-            },
           ),
+
+          _sectionCard(
+            title: l10n.listingDescriptionLabel,
+            child: TextFormField(
+              initialValue: widget.formData.description,
+              maxLines: 3,
+              style: AppTextStyles.bodySmall,
+              decoration: InputDecoration(
+                labelText: l10n.listingDescriptionLabel,
+                labelStyle: AppTextStyles.bodySmall,
+                hintText: l10n.listingDescribeProperty,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              ),
+              onChanged: (v) => widget.onUpdate(widget.formData.copyWith(description: v)),
+            ),
+          ),
+
           const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(child: _compactTextField(label: l10n.listingFrontArea, controller: _frontAreaController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                final n = int.tryParse(v);
-                if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n.toDouble()));
-              })),
-              const SizedBox(width: 8),
-              Expanded(child: _compactTextField(label: l10n.listingSideArea, controller: _sideAreaController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                final n = int.tryParse(v);
-                if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n.toDouble()));
-              })),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _compactDropdown(
-            value: widget.formData.facingDirection,
-            items: {
-              'north': l10n.listingNorth,
-              'south': l10n.listingSouth,
-              'east': l10n.listingEast,
-              'west': l10n.listingWest,
-              'north_east': l10n.listingNorthEast,
-              'north_west': l10n.listingNorthWest,
-              'south_east': l10n.listingSouthEast,
-              'south_west': l10n.listingSouthWest,
-            },
-            label: l10n.listingFacingDirection,
-            hintText: l10n.listingSelectDirection,
-            onChanged: (v) => widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
-          ),
-          const SizedBox(height: 16),
-          _compactSectionLabel(l10n.listingDescriptionLabel),
-          const SizedBox(height: 10),
-          TextFormField(
-            initialValue: widget.formData.description,
-            maxLines: 3,
-            style: AppTextStyles.bodySmall,
-            decoration: InputDecoration(
-              labelText: l10n.listingDescriptionLabel,
-              labelStyle: AppTextStyles.bodySmall,
-              hintText: l10n.listingDescribeProperty,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            ),
-            onChanged: (v) => widget.onUpdate(widget.formData.copyWith(description: v)),
-          ),
-          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  Widget _compactSectionLabel(String title) {
-    return Text(title, style: AppTextStyles.labelMedium.copyWith(
-      fontWeight: FontWeight.w700,
-      color: context.theme.textSecondary,
-      letterSpacing: 0.3,
-    ));
+  Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
+    return WaveCard(
+      isGlass: true,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: AppTextStyles.labelMedium.copyWith(
+            fontWeight: FontWeight.w700,
+            color: context.theme.textSecondary,
+            letterSpacing: 0.3,
+          )),
+          if (subtitle != null) ...[
+            const SizedBox(height: 4),
+            Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+          ],
+          const SizedBox(height: 10),
+          child,
+        ],
+      ),
+    );
   }
 
   Widget _compactTextField({

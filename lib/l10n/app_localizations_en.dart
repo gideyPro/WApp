@@ -501,19 +501,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchPopular => 'Popular Searches';
 
   @override
-  String get searchUnder5M => '💰 Under 5M';
+  String get searchUnder5M => 'Under 5M';
 
   @override
-  String get search5M10M => '💎 5M - 10M';
+  String get search5M10M => '5M - 10M';
 
   @override
-  String get search10M50M => '🏆 10M - 50M';
+  String get search10M50M => '10M - 50M';
 
   @override
-  String get search50M100M => '👑 50M - 100M';
+  String get search50M100M => '50M - 100M';
 
   @override
-  String get search100MPlus => '✨ 100M+';
+  String get search100MPlus => '100M+';
 
   @override
   String get searchNoResultsTitle => 'No Properties Found';
@@ -528,16 +528,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get searchSortNewest => '🆕 Newest';
+  String get searchSortNewest => 'Newest';
 
   @override
-  String get searchSortOldest => '📅 Oldest';
+  String get searchSortOldest => 'Oldest';
 
   @override
-  String get searchSortPriceLow => '💰 Price ↑';
+  String get searchSortPriceLow => 'Price ↑';
 
   @override
-  String get searchSortPriceHigh => '💎 Price ↓';
+  String get searchSortPriceHigh => 'Price ↓';
 
   @override
   String get searchFilterAll => 'All';
@@ -917,10 +917,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingLand => 'Land';
 
   @override
-  String get listingHouses => '🏠 Houses';
+  String get listingHouses => 'Houses';
 
   @override
-  String get listingLands => '🌄 Lands';
+  String get listingLands => 'Lands';
 
   @override
   String get listingPriceOnRequest => 'Price on Request';
@@ -950,16 +950,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get listingSale => '💰 Sale';
+  String get listingSale => 'Sale';
 
   @override
-  String get listingRent => '🔑 Rent';
+  String get listingRent => 'Rent';
 
   @override
-  String get listingForSale => '💰 For Sale';
+  String get listingForSale => 'For Sale';
 
   @override
-  String get listingForRent => '🔑 For Rent';
+  String get listingForRent => 'For Rent';
 
   @override
   String listingUnitM2(Object count) {
