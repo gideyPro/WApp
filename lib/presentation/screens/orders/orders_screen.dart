@@ -49,9 +49,9 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       case 'fulfilled':
         return AppColors.success;
       case 'cancelled':
-        return AppColors.zinc400;
+        return const Color(0xFF94A3B8);
       default:
-        return AppColors.primary400;
+        return const Color(0xFF64748B);
     }
   }
 
@@ -60,7 +60,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   }
 
   Color _typeColor(String type) {
-    return type == 'house' ? AppColors.primary600 : AppColors.emerald500;
+    return type == 'house' ? AppColors.primary800 : AppColors.emerald500;
   }
 
   @override
@@ -83,8 +83,8 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             if (state.total > 0)
               Text(
                 '${state.total} ${l10n.ordersTitle.toLowerCase()}',
-                style:
-                    AppTextStyles.caption.copyWith(color: AppColors.primary400),
+                style: AppTextStyles.caption
+                    .copyWith(color: context.theme.textMuted),
               ),
           ],
         ),
@@ -220,13 +220,13 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                         Row(
                           children: [
                             Icon(Icons.location_on_outlined,
-                                size: 14, color: AppColors.primary400),
+                                size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
                                 order.locationDisplay,
                                 style: AppTextStyles.caption
-                                    .copyWith(color: AppColors.primary500),
+                                    .copyWith(color: ThemeColors(context).textMuted),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -327,7 +327,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         const SizedBox(width: 3),
         Text(
           text,
-          style: AppTextStyles.caption.copyWith(color: AppColors.primary600),
+          style: AppTextStyles.caption.copyWith(color: ThemeColors(context).textSecondary),
         ),
       ],
     );

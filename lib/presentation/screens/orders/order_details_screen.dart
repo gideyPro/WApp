@@ -129,7 +129,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 const SizedBox(height: AppSpacing.md),
                 Text(l10n.commonLoading,
                     style: AppTextStyles.bodySmall
-                        .copyWith(color: AppColors.primary500)),
+                        .copyWith(color: ThemeColors(context).textSecondary)),
               ],
             ),
           ),
@@ -339,7 +339,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 Text(
                   l10n.ordersSuggestions,
                   style: AppTextStyles.labelSmall.copyWith(
-                    color: AppColors.primary400,
+                    color: context.theme.iconSecondary,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.5,
                   ),
@@ -348,7 +348,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 Text(
                   l10n.ordersSuggestionsSubtitle,
                   style: AppTextStyles.caption
-                      .copyWith(color: AppColors.primary500),
+                      .copyWith(color: ThemeColors(context).textSecondary),
                 ),
                 const SizedBox(height: 16),
                 if (isLoading)
@@ -362,7 +362,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       child: Text(
                         l10n.ordersSuggestionsEmpty,
                         style: AppTextStyles.bodySmall
-                            .copyWith(color: AppColors.primary400),
+                            .copyWith(color: ThemeColors(context).textMuted),
                       ),
                     ),
                   )
@@ -411,14 +411,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       Text(
                         '${_formatPrice(suggestion.listingPrice)} ETB',
                         style: AppTextStyles.caption
-                            .copyWith(color: AppColors.primary600),
+                            .copyWith(color: ThemeColors(context).textSecondary),
                       ),
                     if (suggestion.adminNotes != null &&
                         suggestion.adminNotes!.isNotEmpty)
                       Text(
                         suggestion.adminNotes!,
                         style: AppTextStyles.caption
-                            .copyWith(color: AppColors.primary500),
+                            .copyWith(color: ThemeColors(context).textTertiary),
                       ),
                   ],
                 ),
@@ -437,8 +437,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   style: OutlinedButton.styleFrom(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    side: const BorderSide(color: AppColors.primary600),
-                    foregroundColor: AppColors.primary600,
+                    side: BorderSide(color: context.theme.divider),
+                    foregroundColor: ThemeColors(context).textPrimary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(3)),
                   ),

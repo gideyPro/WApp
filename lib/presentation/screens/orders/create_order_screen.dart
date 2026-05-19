@@ -445,18 +445,18 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             color: selected ? AppColors.accent50 : AppColors.zinc100,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-              color: selected ? AppColors.accent500 : AppColors.zinc300,
+              color: selected ? AppColors.accent500 : context.theme.divider,
               width: selected ? 2 : 1,
             ),
           ),
           child: Column(
             children: [
-              Icon(icon, color: selected ? AppColors.accent500 : AppColors.primary400, size: 28),
+              Icon(icon, color: selected ? AppColors.accent500 : context.theme.iconSecondary, size: 28),
               const SizedBox(height: 6),
               Text(label,
                   style: AppTextStyles.labelMedium.copyWith(
                     fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                    color: selected ? AppColors.accent500 : AppColors.primary600,
+                    color: selected ? AppColors.accent500 : context.theme.textSecondary,
                   )),
             ],
           ),
@@ -476,7 +476,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             color: selected ? AppColors.accent50 : AppColors.zinc100,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-              color: selected ? AppColors.accent500 : AppColors.zinc300,
+              color: selected ? AppColors.accent500 : context.theme.divider,
               width: selected ? 2 : 1,
             ),
           ),
@@ -485,7 +485,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             textAlign: TextAlign.center,
             style: AppTextStyles.labelMedium.copyWith(
               fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-              color: selected ? AppColors.accent500 : AppColors.primary600,
+                    color: selected ? AppColors.accent500 : context.theme.textSecondary,
             ),
           ),
         ),

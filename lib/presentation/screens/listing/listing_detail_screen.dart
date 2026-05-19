@@ -173,7 +173,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                           height: 16,
                           decoration: BoxDecoration(
                             color: context.shimmerHighlight,
-                      borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -258,7 +258,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   Widget _buildErrorView(String message) {
     final l10n = AppLocalizations.of(context);
     final isSubscriptionError = message.toLowerCase().contains('subscription');
-    
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.listingsTitle)),
       body: Center(
@@ -268,20 +268,26 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                isSubscriptionError ? Icons.workspace_premium_rounded : Icons.signal_wifi_off_rounded,
+                isSubscriptionError
+                    ? Icons.workspace_premium_rounded
+                    : Icons.signal_wifi_off_rounded,
                 size: 64,
-                color: isSubscriptionError ? AppColors.accent500 : AppColors.primary300,
+                color: isSubscriptionError
+                    ? AppColors.accent500
+                    : ThemeColors(context).textMuted,
               ),
               const SizedBox(height: 16),
               Text(
-                isSubscriptionError ? 'Subscription Required' : l10n.listingsLoadError,
+                isSubscriptionError
+                    ? 'Subscription Required'
+                    : l10n.listingsLoadError,
                 style: AppTextStyles.title,
               ),
               const SizedBox(height: 8),
               Text(
                 message,
-                style:
-                    AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500),
+                style: AppTextStyles.bodyMedium
+                    .copyWith(color: context.theme.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -289,7 +295,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+                      MaterialPageRoute(
+                          builder: (_) => const SubscriptionPlansScreen()),
                     );
                   },
                   icon: const Icon(Icons.star, size: 18),
@@ -297,7 +304,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.accent500,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 28, vertical: 14),
                   ),
                 )
               else
@@ -312,8 +320,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.navy950,
                     foregroundColor: Colors.white,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 28, vertical: 14),
                   ),
                 ),
             ],
@@ -333,14 +341,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.home_outlined, size: 64, color: AppColors.primary300),
+              Icon(Icons.home_outlined, size: 64, color: ThemeColors(context).iconSecondary),
               const SizedBox(height: 16),
               Text(l10n.listingsNotFound, style: AppTextStyles.title),
               const SizedBox(height: 8),
               Text(
                 l10n.listingsNotFoundSubtitle,
-                style:
-                    AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500),
+                style: AppTextStyles.bodyMedium
+                    .copyWith(color: context.theme.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -439,43 +447,43 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
             },
             itemBuilder: (context, index) {
               return CachedNetworkImage(
-              imageUrl: images[index].imageUrl,
-              fit: BoxFit.cover,
-              placeholder: (_, __) => Container(
-                color: AppColors.primary100,
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                imageUrl: images[index].imageUrl,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => Container(
+                  color: AppColors.primary100,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
                   ),
                 ),
+                errorWidget: (_, __, ___) => Container(
+                  color: AppColors.primary100,
+                  child: const Icon(Icons.broken_image, size: 64),
+                ),
+              );
+            },
+          ),
+          // Image counter
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(4),
               ),
-              errorWidget: (_, __, ___) => Container(
-                color: AppColors.primary100,
-                child: const Icon(Icons.broken_image, size: 64),
-              ),
-            );
-          },
-        ),
-        // Image counter
-        Positioned(
-          bottom: 16,
-          right: 16,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.black54,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              '${_currentImageIndex + 1}/${images.length}',
-              style: AppTextStyles.labelSmall.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+              child: Text(
+                '${_currentImageIndex + 1}/${images.length}',
+                style: AppTextStyles.labelSmall.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
       ),
     );
   }
@@ -709,7 +717,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               ? listing.description!
               : l10n.listingsNoDescription,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.primary700,
+            color: context.theme.textTertiary,
             height: 1.6,
           ),
         ),
@@ -786,10 +794,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           });
         }
         if (listing.buildType != null) {
-          details.add({
-            'label': l10n.listingBuildType,
-            'value': listing.buildType!
-          });
+          details.add(
+              {'label': l10n.listingBuildType, 'value': listing.buildType!});
         }
         if (listing.leaseHolderName != null) {
           details.add({
@@ -828,7 +834,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         if (listing.buildingStatus != null) {
           details.add({
             'label': l10n.listingBuildingStatus,
-            'value': listing.buildingStatus == 'Finished' ? l10n.listingFinished : l10n.listingUnfinished
+            'value': listing.buildingStatus == 'Finished'
+                ? l10n.listingFinished
+                : l10n.listingUnfinished
           });
         }
       }
@@ -993,7 +1001,9 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
         title: Text(l10n.listingDeleteConfirmTitle),
         content: Text(l10n.listingDeleteConfirmMessage),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l10n.commonCancel)),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
@@ -1010,7 +1020,9 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(AppLocalizations.of(context).commonError),
+              backgroundColor: AppColors.error),
         );
       }
     }
@@ -1027,7 +1039,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
     final interestStatus = listing.userInterestStatus;
     final hasInterest = interestStatus != null;
-
 
     return WaveCard(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -1047,8 +1058,9 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                     label: Text(l10n.commonEdit),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: BorderSide(color: AppColors.primary600),
-                      foregroundColor: isDark ? AppColors.primary300 : AppColors.primary600,
+                      side: BorderSide(color: context.theme.divider),
+                      foregroundColor:
+                          isDark ? AppColors.primary300 : AppColors.primary600,
                     ),
                   ),
                 ),
@@ -1088,12 +1100,15 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
               if (!isOwner && hasInterest)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 16),
                     decoration: BoxDecoration(
-                      color: _getInterestStatusColor(listing.userInterestStatus).withValues(alpha: 0.1),
+                      color: _getInterestStatusColor(listing.userInterestStatus)
+                          .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: _getInterestStatusColor(listing.userInterestStatus),
+                        color:
+                            _getInterestStatusColor(listing.userInterestStatus),
                       ),
                     ),
                     child: Row(
@@ -1102,13 +1117,16 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                         Icon(
                           _getInterestStatusIcon(listing.userInterestStatus),
                           size: 20,
-                          color: _getInterestStatusColor(listing.userInterestStatus),
+                          color: _getInterestStatusColor(
+                              listing.userInterestStatus),
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          _getInterestStatusText(listing.userInterestStatus, l10n),
+                          _getInterestStatusText(
+                              listing.userInterestStatus, l10n),
                           style: AppTextStyles.bodyMedium.copyWith(
-                            color: _getInterestStatusColor(listing.userInterestStatus),
+                            color: _getInterestStatusColor(
+                                listing.userInterestStatus),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -1139,7 +1157,9 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       final service = LeadService();
       final response = await service.expressInterest(
         listingId: listingId,
-        message: message?.isNotEmpty == true ? message : l10n.listingsDefaultInterestMessage,
+        message: message?.isNotEmpty == true
+            ? message
+            : l10n.listingsDefaultInterestMessage,
       );
 
       if (response.success) {
@@ -1217,28 +1237,40 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
   Color _getInterestStatusColor(String? status) {
     switch (status) {
-      case 'new': return Colors.amber;
-      case 'won': return AppColors.emerald600;
-      case 'lost': return AppColors.error;
-      default: return AppColors.primary400;
+      case 'new':
+        return Colors.amber;
+      case 'won':
+        return AppColors.emerald600;
+      case 'lost':
+        return AppColors.error;
+      default:
+        return const Color(0xFF64748B);
     }
   }
 
   IconData _getInterestStatusIcon(String? status) {
     switch (status) {
-      case 'new': return Icons.hourglass_empty;
-      case 'won': return Icons.check_circle;
-      case 'lost': return Icons.cancel;
-      default: return Icons.trending_up;
+      case 'new':
+        return Icons.hourglass_empty;
+      case 'won':
+        return Icons.check_circle;
+      case 'lost':
+        return Icons.cancel;
+      default:
+        return Icons.trending_up;
     }
   }
 
   String _getInterestStatusText(String? status, AppLocalizations l10n) {
     switch (status) {
-      case 'new': return l10n.listingsInterestPending;
-      case 'won': return l10n.listingsInterestAccepted;
-      case 'lost': return l10n.listingsInterestRejected;
-      default: return status ?? '';
+      case 'new':
+        return l10n.listingsInterestPending;
+      case 'won':
+        return l10n.listingsInterestAccepted;
+      case 'lost':
+        return l10n.listingsInterestRejected;
+      default:
+        return status ?? '';
     }
   }
 }

@@ -178,7 +178,6 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     );
   }
 
-
   Widget _buildConversationsSkeleton() {
     return ListView.builder(
       itemCount: 6,
@@ -259,7 +258,10 @@ class _ConversationTile extends ConsumerWidget {
               gradient: LinearGradient(
                 colors: hasUnread
                     ? [AppColors.accent500, AppColors.accent600]
-                    : [AppColors.primary400, AppColors.primary600],
+                    : [
+                        Theme.of(context).colorScheme.secondaryContainer,
+                        Theme.of(context).colorScheme.secondaryContainer
+                      ],
               ),
               borderRadius: BorderRadius.circular(25),
             ),
@@ -317,19 +319,22 @@ class _ConversationTile extends ConsumerWidget {
       subtitle: Row(
         children: [
           if (isAssetChat) ...[
-            const Icon(Icons.home_outlined, size: 12, color: AppColors.zinc400),
+            Icon(Icons.home_outlined,
+                size: 12, color: context.theme.iconSecondary),
             const SizedBox(width: 4),
             Expanded(
               child: Text(
                 listingTitle ?? l10n.listingsTitle,
-                style:
-                    AppTextStyles.bodySmall.copyWith(color: AppColors.zinc500),
+                style: AppTextStyles.bodySmall
+                    .copyWith(color: context.theme.textSecondary),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             const SizedBox(width: 4),
-            Text('·', style: AppTextStyles.bodySmall.copyWith(color: AppColors.zinc400)),
+            Text('·',
+                style: AppTextStyles.bodySmall
+                    .copyWith(color: context.theme.textMuted)),
             const SizedBox(width: 4),
           ],
           Expanded(
@@ -337,7 +342,9 @@ class _ConversationTile extends ConsumerWidget {
               previewText,
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
-                color: hasUnread ? AppColors.primary800 : AppColors.zinc500,
+                color: hasUnread
+                    ? (context.isDarkMode ? Colors.white : AppColors.primary800)
+                    : context.theme.textSecondary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -354,7 +361,8 @@ class _ConversationTile extends ConsumerWidget {
               _formatTime(conversation.lastMessageAt, l10n),
               style: AppTextStyles.caption.copyWith(
                 fontSize: 11,
-                color: hasUnread ? AppColors.accent600 : AppColors.zinc400,
+                color:
+                    hasUnread ? AppColors.accent600 : context.theme.textMuted,
                 fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
               ),
             ),
@@ -504,8 +512,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 width: double.infinity,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color:
-                    context.isDarkMode ? AppColors.primary900 : AppColors.zinc400,
+                color: context.isDarkMode
+                    ? AppColors.primary900
+                    : context.theme.textMuted,
                 child: Text(
                   l10n.messagesSwitchContext,
                   style: AppTextStyles.caption.copyWith(
@@ -536,7 +545,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-
   Widget _buildContextItem(msg.Conversation conv, bool isSelected,
       AppLocalizations l10n, bool isDark) {
     return InkWell(
@@ -556,8 +564,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        color:
-            isSelected ? (isDark ? AppColors.primary700 : AppColors.primary50) : null,
+        color: isSelected
+            ? (isDark ? AppColors.primary700 : AppColors.primary50)
+            : null,
         child: Row(
           children: [
             // Icon/Image
@@ -580,8 +589,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           conv.isAssetChat ? Icons.home : Icons.chat,
                           size: 18,
                           color: conv.isAssetChat
-                              ? AppColors.primary600
-                              : AppColors.zinc500,
+                              ? context.theme.textPrimary
+                              : context.theme.textSecondary,
                         ),
                       ),
                     )
@@ -589,7 +598,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       conv.isAssetChat ? Icons.home : Icons.chat,
                       size: 18,
                       color: conv.isAssetChat
-                          ? AppColors.primary600
+                          ? ThemeColors(context).textPrimary
                           : AppColors.zinc500,
                     ),
             ),
@@ -603,7 +612,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     conv.contextDisplayTitle,
                     style: AppTextStyles.bodySmall.copyWith(
                       fontSize: 13,
-                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      fontWeight:
+                          isSelected ? FontWeight.w800 : FontWeight.w600,
                       color: isDark ? AppColors.zinc100 : AppColors.zinc900,
                     ),
                     maxLines: 1,
@@ -626,7 +636,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           _formatRelativeTime(conv.lastMessageAt!),
                           style: AppTextStyles.caption.copyWith(
                             fontSize: 10,
-                            color: AppColors.zinc400,
+                            color: context.theme.textMuted,
                           ),
                         ),
                     ],
@@ -636,10 +646,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
             // Checkmark for selected
             if (isSelected)
-              const Icon(
+              Icon(
                 Icons.check,
                 size: 18,
-                color: AppColors.primary600,
+                color: context.theme.textPrimary,
               ),
           ],
         ),
@@ -655,8 +665,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return '${dateTime.day}/${dateTime.month}';
   }
 
-  Widget _buildMessagesList(List<msg.Message> messages,
-      int currentUserId, AppLocalizations l10n, int? listingOwnerId) {
+  Widget _buildMessagesList(List<msg.Message> messages, int currentUserId,
+      AppLocalizations l10n, int? listingOwnerId) {
     // Trigger scroll to first unread on first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToFirstUnread(messages, currentUserId);
@@ -758,7 +768,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               ? Icons.keyboard_arrow_up
                               : Icons.keyboard_arrow_down,
                           size: 20,
-                          color: AppColors.primary400,
+                          color: context.theme.iconSecondary,
                         ),
                       ],
                     ],
@@ -767,7 +777,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     'with $otherUserName',
                     style: AppTextStyles.caption.copyWith(
                       fontSize: 11,
-                      color: isDark ? AppColors.zinc400 : AppColors.zinc500,
+                      color: context.theme.textMuted,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -788,7 +798,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ],
           ),
         ),
-
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert),
@@ -822,11 +831,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.chat_bubble_outline,
-                                    size: 64, color: AppColors.primary300),
+                                    size: 64,
+                                    color: context.theme.iconSecondary),
                                 const SizedBox(height: 16),
                                 Text(l10n.messagesEmpty,
-                                    style: AppTextStyles.bodyLarge
-                                        .copyWith(color: AppColors.primary500)),
+                                    style: AppTextStyles.bodyLarge.copyWith(
+                                        color: context.theme.iconSecondary)),
                               ],
                             ),
                           )
@@ -838,7 +848,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
             decoration: BoxDecoration(
-              color: context.isDarkMode ? AppColors.primary900 : AppColors.surface,
+              color:
+                  context.isDarkMode ? AppColors.primary900 : AppColors.surface,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.navy950.withValues(alpha: 0.05),
@@ -869,7 +880,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   const SizedBox(width: 8),
                   Container(
                     decoration: BoxDecoration(
-                      color: _isSending ? AppColors.zinc400 : AppColors.accent500,
+                      color: _isSending
+                          ? context.theme.textMuted
+                          : AppColors.accent500,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
@@ -998,7 +1011,10 @@ class _MessageBubble extends ConsumerWidget {
                 gradient: LinearGradient(
                   colors: isListingOwner
                       ? [AppColors.accent400, AppColors.accent600]
-                      : [AppColors.primary400, AppColors.primary600],
+                      : [
+                          Theme.of(context).colorScheme.secondaryContainer,
+                          Theme.of(context).colorScheme.secondaryContainer
+                        ],
                 ),
                 shape: BoxShape.circle,
               ),
@@ -1052,7 +1068,8 @@ class _MessageBubble extends ConsumerWidget {
                     boxShadow: context.isDarkMode ? null : AppColors.shadowSm,
                     border: isOwn
                         ? null
-                        : Border.all(color: context.divider.withValues(alpha: 0.5)),
+                        : Border.all(
+                            color: context.divider.withValues(alpha: 0.5)),
                   ),
                   child: Column(
                     crossAxisAlignment: isOwn
@@ -1075,7 +1092,7 @@ class _MessageBubble extends ConsumerWidget {
                               fontSize: 10,
                               color: isOwn
                                   ? AppColors.surface.withValues(alpha: 0.7)
-                                  : AppColors.zinc400,
+                                  : context.theme.textMuted,
                             ),
                           ),
                           if (isOwn) ...[
@@ -1127,4 +1144,3 @@ class _MessageBubble extends ConsumerWidget {
     );
   }
 }
-

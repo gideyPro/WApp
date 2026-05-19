@@ -76,7 +76,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               child: Text(
                 l10n.notificationsMarkAllRead,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.accent600,
+                  color: AppColors.accent500,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -245,7 +245,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               Text(
                   'You need an active subscription to view property details and contact owners.',
                   style: AppTextStyles.bodyMedium
-                      .copyWith(color: AppColors.primary600),
+                      .copyWith(color: context.theme.textSecondary),
                   textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Row(
@@ -255,8 +255,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                       onPressed: () => Navigator.pop(ctx, false),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: AppColors.primary200),
-                        foregroundColor: AppColors.primary600,
+                        side: BorderSide(color: context.theme.divider),
+                        foregroundColor: context.theme.textPrimary,
                       ),
                       child: const Text('Cancel'),
                     ),
@@ -437,7 +437,7 @@ class _NotificationTile extends StatelessWidget {
               Text(
                 notification.displayTime,
                 style: AppTextStyles.caption.copyWith(
-                  color: AppColors.zinc400,
+                  color: context.theme.textMuted,
                 ),
               ),
             ],

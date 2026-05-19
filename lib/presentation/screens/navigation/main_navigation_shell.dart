@@ -70,7 +70,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           icon: Icons.workspace_premium_outlined,
           iconColor: AppColors.accent500,
           title: 'Subscription Required',
-          message: 'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
+          message:
+              'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
           actionLabel: 'View Plans',
         );
         if (goSub == true && mounted) {
@@ -122,13 +123,15 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               const SizedBox(height: 16),
               Text(
                 title,
-                style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                style:
+                    AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 message,
-                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500),
+                style: AppTextStyles.bodyMedium
+                    .copyWith(color: context.theme.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -139,8 +142,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                       onPressed: () => Navigator.pop(ctx, false),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: AppColors.primary200),
-                        foregroundColor: AppColors.primary600,
+                        side: BorderSide(color: context.theme.divider),
+                        foregroundColor: context.theme.textPrimary,
                       ),
                       child: const Text('Cancel'),
                     ),
@@ -222,8 +225,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             children: [
               _buildNavItem(
                   Icons.home_rounded, AppLocalizations.of(context).navHome, 0),
-              _buildNavItem(
-                  Icons.receipt_long_outlined, AppLocalizations.of(context).navOrders, 1),
+              _buildNavItem(Icons.receipt_long_outlined,
+                  AppLocalizations.of(context).navOrders, 1),
               const SizedBox(width: 48), // Space for FAB notch
               _buildMessagesNavItem(unreadMsgCount),
               _buildSettingsNavItem(context),
@@ -246,7 +249,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.accent600 : AppColors.primary400,
+              color: isSelected ? AppColors.accent600 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
               size: 26,
             ),
             const SizedBox(height: 4),
@@ -254,7 +257,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               label,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : AppColors.primary600,
+                color: isSelected ? AppColors.primary900 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
               ),
             ),
           ],
@@ -267,7 +270,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     final selectedIndex = ref.watch(selectedTabProvider);
     final isSelected = selectedIndex == 3;
     final displayCount = unreadCount > 99 ? '99+' : '$unreadCount';
-    
+
     return Expanded(
       child: InkWell(
         onTap: () => _onItemTapped(3),
@@ -289,14 +292,15 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Icon(
                   Icons.chat_bubble_outline_rounded,
-                  color: isSelected ? AppColors.accent600 : AppColors.primary400,
+                  color:
+                      isSelected ? AppColors.accent600 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
                   size: 26,
                 ),
               )
             else
               Icon(
                 Icons.chat_bubble_outline_rounded,
-                color: isSelected ? AppColors.accent600 : AppColors.primary400,
+                color: isSelected ? AppColors.accent600 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
                 size: 26,
               ),
             const SizedBox(height: 4),
@@ -304,7 +308,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               AppLocalizations.of(context).navMessages,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : AppColors.primary600,
+                color: isSelected ? AppColors.primary900 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
               ),
             ),
           ],
@@ -325,7 +329,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           children: [
             Icon(
               Icons.settings_outlined,
-              color: isSelected ? AppColors.accent600 : AppColors.primary400,
+              color: isSelected ? AppColors.accent600 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
               size: 26,
             ),
             const SizedBox(height: 4),
@@ -333,7 +337,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               AppLocalizations.of(context).navSettings,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : AppColors.primary600,
+                color: isSelected ? AppColors.primary900 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
               ),
             ),
           ],

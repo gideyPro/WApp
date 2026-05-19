@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -201,7 +202,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           Text(
                             l10n.authOtpSentMessage(_phoneController.text),
                             style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.zinc500,
+                              color: ThemeColors(context).textMuted,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -362,8 +363,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         controller: controller,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.primary500),
-          prefixIcon: Icon(icon, color: AppColors.primary600, size: 18),
+          hintStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+          prefixIcon: Icon(icon, color: context.theme.iconSecondary, size: 18),
           border: InputBorder.none,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -422,14 +423,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             Icon(
               icon,
               size: 16,
-              color: isSelected ? AppColors.accent600 : AppColors.primary500,
+              color: isSelected ? AppColors.accent600 : ThemeColors(context).inputBg,
             ),
             const SizedBox(width: 6),
             Text(
               gender,
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.accent700 : AppColors.primary600,
+                color: isSelected ? AppColors.accent700 : ThemeColors(context).textSecondary,
               ),
             ),
           ],
@@ -452,7 +453,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       return Text(
         'Resend code in ${_resendCountdown}s',
         style: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.primary500,
+          color: ThemeColors(context).textSecondary,
         ),
       );
     }
@@ -478,7 +479,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Text(
           l10n.authAlreadyHaveAccount,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: isDark ? AppColors.zinc400 : AppColors.zinc600,
+            color: isDark ? ThemeColors(context).textSecondary : ThemeColors(context).textSecondary,
           ),
         ),
         GestureDetector(

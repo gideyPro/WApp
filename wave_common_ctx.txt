@@ -1,0 +1,59 @@
+=== POS 16209 (AppColors.primary500) ===
+eStyle(
+            icon: customIcon ?? Icons.help_outline,
+            iconBg: (customIconColor ?? AppColors.primary500).withValues(alpha: 0.12),
+            iconColor: customIconColor ?? AppColors.primary500,
+         
+
+=== POS 16298 (AppColors.primary500) ===
+onColor ?? AppColors.primary500).withValues(alpha: 0.12),
+            iconColor: customIconColor ?? AppColors.primary500,
+          )
+        : _typeStyles[type]!;
+
+    final effectiveTitle = title ?? style.defaultTitle 
+
+=== POS 22667 (AppColors.primary500) ===
+RadialGradient(
+                  colors: [
+                    (isFeatured ? AppColors.accent500 : AppColors.primary500)
+                        .withValues(alpha: 0.12),
+                    (isFeatured ? AppColors.acce
+
+=== POS 22795 (AppColors.primary500) ===
+                  .withValues(alpha: 0.12),
+                    (isFeatured ? AppColors.accent500 : AppColors.primary500)
+                        .withValues(alpha: 0.0),
+                  ],
+                ),
+         
+
+=== POS 23319 (AppColors.primary400) ===
+            gradient: RadialGradient(
+                  colors: [
+                    (isFeatured ? AppColors.primary400 : AppColors.accent400)
+                        .withValues(alpha: 0.08),
+                    (isFea
+
+=== POS 23447 (AppColors.primary400) ===
+lors.accent400)
+                        .withValues(alpha: 0.08),
+                    (isFeatured ? AppColors.primary400 : AppColors.accent400)
+                        .withValues(alpha: 0.0),
+                  ],
+      
+
+=== POS 25840 (AppColors.primary500) ===
+opCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [AppColors.primary500, AppColors.primary600],
+                        ),
+                        borderRadius: BorderRadi
+
+=== POS 25862 (AppColors.primary600) ===
+              end: Alignment.bottomCenter,
+                          colors: [AppColors.primary500, AppColors.primary600],
+                        ),
+                        borderRadius: BorderRadius.circular(2),
+      
+

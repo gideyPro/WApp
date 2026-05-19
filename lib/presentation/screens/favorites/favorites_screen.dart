@@ -94,7 +94,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
               const SizedBox(height: 16),
               Text('Subscription Required', style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800), textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              Text('You need an active subscription to view property details and contact owners.', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary600), textAlign: TextAlign.center),
+              Text('You need an active subscription to view property details and contact owners.', style: AppTextStyles.bodyMedium.copyWith(color: ThemeColors(ctx).textSecondary), textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -104,7 +104,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
                         side: BorderSide(color: AppColors.primary200),
-                        foregroundColor: AppColors.primary600,
+                        foregroundColor: ThemeColors(ctx).textPrimary,
                       ),
                       child: const Text('Cancel'),
                     ),

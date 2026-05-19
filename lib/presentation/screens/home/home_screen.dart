@@ -150,8 +150,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.primary500.withValues(alpha: 0.1),
-                      AppColors.primary500.withValues(alpha: 0.0),
+                      AppColors.accent500.withValues(alpha: 0.15),
+                      AppColors.accent500.withValues(alpha: 0.0),
                     ],
                   ),
                 ),
@@ -352,7 +352,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: AppColors.zinc300,
+                          color: context.theme.divider,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -414,7 +414,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 Text(
                                   phone,
                                   style: AppTextStyles.bodyMedium.copyWith(
-                                    color: AppColors.primary400,
+                                    color: context.theme.textSecondary,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -562,7 +562,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             Icon(
               icon,
               size: 20,
-              color: iconColor ?? AppColors.primary600,
+              color: iconColor ?? ThemeColors(context).icon,
             ),
             const SizedBox(width: 12),
             Text(
@@ -695,7 +695,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               const SizedBox(height: 10),
               Text(
                 'You need an active subscription to view property details and contact owners.',
-                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary600),
+                style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -707,7 +707,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
                         side: BorderSide(color: AppColors.primary200),
-                        foregroundColor: AppColors.primary600,
+                        foregroundColor: context.theme.textPrimary,
                       ),
                       child: const Text('Cancel'),
                     ),

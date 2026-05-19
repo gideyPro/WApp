@@ -236,7 +236,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             Text(
               l10n.kycVerifiedSubtitle,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.primary600,
+                color: context.theme.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -538,7 +538,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                   color: AppColors.zinc100,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(icon, size: 28, color: AppColors.zinc400),
+                child: Icon(icon, size: 28, color: ThemeColors(context).textMuted),
               ),
             const SizedBox(width: 16),
             Expanded(
@@ -604,7 +604,7 @@ class _DocumentTypeChip extends StatelessWidget {
             Icon(
               icon,
               size: 28,
-              color: isSelected ? AppColors.accent600 : AppColors.zinc500,
+              color: isSelected ? AppColors.accent600 : ThemeColors(context).textMuted,
             ),
             const SizedBox(height: 8),
             Text(

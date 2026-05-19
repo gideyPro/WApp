@@ -590,7 +590,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget _buildCompactPriceField() {
     final l10n = AppLocalizations.of(context);
     final price = widget.formData.priceFixed;
-    Color borderColor = AppColors.zinc300;
+    Color borderColor = context.theme.divider;
     if (price != null) {
       if (price < 10000) {
         borderColor = Colors.red;
@@ -659,7 +659,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon,
-                  color: isSelected ? Colors.white : AppColors.primary600,
+                  color: isSelected ? Colors.white : context.theme.textSecondary,
                   size: 18),
               const SizedBox(width: 4),
               Text(label,
@@ -1332,7 +1332,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             height: 120,
             decoration: BoxDecoration(
               border: Border.all(
-                  color: AppColors.zinc300, width: 2, style: BorderStyle.solid),
+                  color: context.theme.divider, width: 2, style: BorderStyle.solid),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Center(
@@ -1340,10 +1340,10 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                   Icon(Icons.add_photo_alternate,
-                      size: 32, color: context.isDarkMode ? AppColors.primary300 : AppColors.primary500),
+                      size: 32, color: context.theme.iconSecondary),
                   const SizedBox(height: 8),
                   Text(l10n.listingTapToAdd,
-                      style: AppTextStyles.bodySmall.copyWith(color: context.isDarkMode ? AppColors.primary300 : AppColors.primary500)),
+                      style: AppTextStyles.bodySmall.copyWith(color: context.theme.textSecondary)),
                 ])),
           ),
         ),
@@ -1375,7 +1375,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
           ),
           const SizedBox(height: 4),
           Text(l10n.listingImagesSelected(existingImages.length - widget.formData.removedImageIds.length + newImages.length),
-              style: AppTextStyles.caption.copyWith(color: context.isDarkMode ? AppColors.zinc400 : AppColors.zinc600)),
+              style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
         ],
       ],
     );
@@ -1462,7 +1462,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Row(
               children: [
-                const Icon(Icons.video_collection, color: AppColors.primary400),
+                Icon(Icons.video_collection, color: context.theme.iconSecondary),
                 const SizedBox(width: 8),
                 Expanded(
                     child: Text(

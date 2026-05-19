@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../providers/auth_provider.dart';
@@ -179,7 +180,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                           Text(
                             l10n.authOtpSentMessage(authState.phoneNumber ?? ''),
                             style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.zinc500,
+                              color: ThemeColors(context).textMuted,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -271,7 +272,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       return Text(
         l10n.authResendCountdown(_resendCountdown),
         style: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.primary500,
+          color: ThemeColors(context).divider,
         ),
       );
     }
@@ -296,7 +297,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         Text(
           l10n.authNoAccount,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.primary600,
+            color: AppColors.accent500,
           ),
         ),
         GestureDetector(

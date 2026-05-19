@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -94,9 +95,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
 
           // Content
           Expanded(
-            child: _isSearching
-                ? _buildSearchResults()
-                : _buildCategories(),
+            child: _isSearching ? _buildSearchResults() : _buildCategories(),
           ),
         ],
       ),
@@ -111,41 +110,33 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         _buildCategorySection(
           icon: Icons.account_circle_outlined,
           title: l10n.helpCategoryAccount,
-          articles: _allArticles
-              .where((a) => a.category == 'Account')
-              .toList(),
+          articles: _allArticles.where((a) => a.category == 'Account').toList(),
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
           icon: Icons.home_outlined,
           title: l10n.helpCategoryListings,
-          articles: _allArticles
-              .where((a) => a.category == 'Listings')
-              .toList(),
+          articles:
+              _allArticles.where((a) => a.category == 'Listings').toList(),
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
           icon: Icons.payment_outlined,
           title: l10n.helpCategoryPayments,
-          articles: _allArticles
-              .where((a) => a.category == 'Payments')
-              .toList(),
+          articles:
+              _allArticles.where((a) => a.category == 'Payments').toList(),
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
           icon: Icons.verified_user_outlined,
           title: l10n.helpCategoryKyc,
-          articles: _allArticles
-              .where((a) => a.category == 'KYC')
-              .toList(),
+          articles: _allArticles.where((a) => a.category == 'KYC').toList(),
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
           icon: Icons.security_outlined,
           title: l10n.helpCategorySafety,
-          articles: _allArticles
-              .where((a) => a.category == 'Safety')
-              .toList(),
+          articles: _allArticles.where((a) => a.category == 'Safety').toList(),
         ),
         const SizedBox(height: 32),
 
@@ -185,10 +176,10 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               return Column(
                 children: [
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.article_outlined,
                       size: 20,
-                      color: AppColors.primary500,
+                      color: ThemeColors(context).iconSecondary,
                     ),
                     title: Text(
                       article.title,
@@ -196,9 +187,9 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    trailing: const Icon(
+                    trailing: Icon(
                       Icons.chevron_right,
-                      color: AppColors.zinc400,
+                      color: ThemeColors(context).textSecondary,
                     ),
                     onTap: () => _showArticleDetail(article),
                   ),
@@ -350,7 +341,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.zinc300,
+                  color: context.theme.divider,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -383,7 +374,9 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       article.content,
                       style: AppTextStyles.bodyMedium.copyWith(
                         height: 1.8,
-                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : AppColors.primary700,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white70
+                            : AppColors.primary700,
                       ),
                     ),
                   ],
@@ -428,92 +421,93 @@ class _HelpArticle {
   final String content;
   final String category;
 
-  _HelpArticle({required this.title, required this.content, required this.category});
+  _HelpArticle(
+      {required this.title, required this.content, required this.category});
 }
 
 List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
-  // Account
-  _HelpArticle(
-    title: l10n.helpAccCreateTitle,
-    content: l10n.helpAccCreateContent,
-    category: 'Account',
-  ),
-  _HelpArticle(
-    title: l10n.helpAccEditTitle,
-    content: l10n.helpAccEditContent,
-    category: 'Account',
-  ),
-  _HelpArticle(
-    title: l10n.helpAccResetTitle,
-    content: l10n.helpAccResetContent,
-    category: 'Account',
-  ),
+      // Account
+      _HelpArticle(
+        title: l10n.helpAccCreateTitle,
+        content: l10n.helpAccCreateContent,
+        category: 'Account',
+      ),
+      _HelpArticle(
+        title: l10n.helpAccEditTitle,
+        content: l10n.helpAccEditContent,
+        category: 'Account',
+      ),
+      _HelpArticle(
+        title: l10n.helpAccResetTitle,
+        content: l10n.helpAccResetContent,
+        category: 'Account',
+      ),
 
-  // Listings
-  _HelpArticle(
-    title: l10n.helpListCreateTitle,
-    content: l10n.helpListCreateContent,
-    category: 'Listings',
-  ),
-  _HelpArticle(
-    title: l10n.helpListManageTitle,
-    content: l10n.helpListManageContent,
-    category: 'Listings',
-  ),
-  _HelpArticle(
-    title: l10n.helpListTipsTitle,
-    content: l10n.helpListTipsContent,
-    category: 'Listings',
-  ),
+      // Listings
+      _HelpArticle(
+        title: l10n.helpListCreateTitle,
+        content: l10n.helpListCreateContent,
+        category: 'Listings',
+      ),
+      _HelpArticle(
+        title: l10n.helpListManageTitle,
+        content: l10n.helpListManageContent,
+        category: 'Listings',
+      ),
+      _HelpArticle(
+        title: l10n.helpListTipsTitle,
+        content: l10n.helpListTipsContent,
+        category: 'Listings',
+      ),
 
-  // Payments
-  _HelpArticle(
-    title: l10n.helpPayPlansTitle,
-    content: l10n.helpPayPlansContent,
-    category: 'Payments',
-  ),
-  _HelpArticle(
-    title: l10n.helpPayMakeTitle,
-    content: l10n.helpPayMakeContent,
-    category: 'Payments',
-  ),
-  _HelpArticle(
-    title: l10n.helpPaySecurityTitle,
-    content: l10n.helpPaySecurityContent,
-    category: 'Payments',
-  ),
+      // Payments
+      _HelpArticle(
+        title: l10n.helpPayPlansTitle,
+        content: l10n.helpPayPlansContent,
+        category: 'Payments',
+      ),
+      _HelpArticle(
+        title: l10n.helpPayMakeTitle,
+        content: l10n.helpPayMakeContent,
+        category: 'Payments',
+      ),
+      _HelpArticle(
+        title: l10n.helpPaySecurityTitle,
+        content: l10n.helpPaySecurityContent,
+        category: 'Payments',
+      ),
 
-  // KYC
-  _HelpArticle(
-    title: l10n.helpKycWhyTitle,
-    content: l10n.helpKycWhyContent,
-    category: 'KYC',
-  ),
-  _HelpArticle(
-    title: l10n.helpKycHowTitle,
-    content: l10n.helpKycHowContent,
-    category: 'KYC',
-  ),
-  _HelpArticle(
-    title: l10n.helpKycRejectTitle,
-    content: l10n.helpKycRejectContent,
-    category: 'KYC',
-  ),
+      // KYC
+      _HelpArticle(
+        title: l10n.helpKycWhyTitle,
+        content: l10n.helpKycWhyContent,
+        category: 'KYC',
+      ),
+      _HelpArticle(
+        title: l10n.helpKycHowTitle,
+        content: l10n.helpKycHowContent,
+        category: 'KYC',
+      ),
+      _HelpArticle(
+        title: l10n.helpKycRejectTitle,
+        content: l10n.helpKycRejectContent,
+        category: 'KYC',
+      ),
 
-  // Safety
-  _HelpArticle(
-    title: l10n.helpSafeStayTitle,
-    content: l10n.helpSafeStayContent,
-    category: 'Safety',
-  ),
-  _HelpArticle(
-    title: l10n.helpSafePrivacyTitle,
-    content: l10n.helpSafePrivacyContent,
-    category: 'Safety',
-  ),
-  _HelpArticle(
-    title: l10n.helpSafeReportTitle,
-    content: l10n.helpSafeReportContent,
-    category: 'Safety',
-  ),
-];
+      // Safety
+      _HelpArticle(
+        title: l10n.helpSafeStayTitle,
+        content: l10n.helpSafeStayContent,
+        category: 'Safety',
+      ),
+      _HelpArticle(
+        title: l10n.helpSafePrivacyTitle,
+        content: l10n.helpSafePrivacyContent,
+        category: 'Safety',
+      ),
+      _HelpArticle(
+        title: l10n.helpSafeReportTitle,
+        content: l10n.helpSafeReportContent,
+        category: 'Safety',
+      ),
+    ];
