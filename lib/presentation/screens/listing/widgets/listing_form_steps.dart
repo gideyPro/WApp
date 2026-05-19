@@ -510,16 +510,31 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               children: [
                 _buildCompactPriceField(),
                 const SizedBox(height: 8),
-                CheckboxListTile(
-                  title: Text(l10n.listingHasDebt, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
-                  value: widget.formData.hasDebtOrEncumbrance,
-                  onChanged: (v) => widget.onUpdate(
-                      widget.formData.copyWith(
-                        hasDebtOrEncumbrance: v ?? false,
-                        debtAmount: (v ?? false) ? widget.formData.debtAmount : null,
-                      )),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Checkbox(
+                        value: widget.formData.hasDebtOrEncumbrance,
+                        onChanged: (v) => widget.onUpdate(
+                            widget.formData.copyWith(
+                              hasDebtOrEncumbrance: v ?? false,
+                              debtAmount: (v ?? false) ? widget.formData.debtAmount : null,
+                            )),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () => widget.onUpdate(
+                          widget.formData.copyWith(
+                            hasDebtOrEncumbrance: !widget.formData.hasDebtOrEncumbrance,
+                            debtAmount: !widget.formData.hasDebtOrEncumbrance ? widget.formData.debtAmount : null,
+                          )),
+                      child: Text(l10n.listingHasDebt, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                    ),
+                  ],
                 ),
                 if (widget.formData.hasDebtOrEncumbrance) ...[
                   const SizedBox(height: 8),
@@ -1701,14 +1716,32 @@ class ListingStep4Review extends StatelessWidget {
                 overflow: TextOverflow.ellipsis),
             const SizedBox(height: 16),
           ],
-          CheckboxListTile(
-            title: Text(l10n.listingAcceptTerms, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
-            subtitle: Text(l10n.listingTermsSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
-            value: formData.termsAccepted,
-            onChanged: (v) =>
-                onUpdate(formData.copyWith(termsAccepted: v ?? false)),
-            controlAffinity: ListTileControlAffinity.leading,
-            contentPadding: EdgeInsets.zero,
+          Row(
+            children: [
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: Checkbox(
+                  value: formData.termsAccepted,
+                  onChanged: (v) => onUpdate(formData.copyWith(termsAccepted: v ?? false)),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => onUpdate(formData.copyWith(termsAccepted: !formData.termsAccepted)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.listingAcceptTerms, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                      const SizedBox(height: 2),
+                      Text(l10n.listingTermsSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 32),
         ],

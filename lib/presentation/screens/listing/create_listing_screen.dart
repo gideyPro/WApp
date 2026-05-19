@@ -1,7 +1,6 @@
-import '../../../core/theme/theme_colors.dart';
 import 'dart:async';
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
+import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -80,9 +79,6 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     final errors = _validateCurrentStep();
     if (errors.isNotEmpty) {
       setState(() => _stepErrors[_currentStep] = errors);
-      if (mounted) {
-        WaveToast.showError(context, errors.first);
-      }
       return;
     }
     setState(() => _stepErrors.remove(_currentStep));
@@ -155,10 +151,13 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         appBar: AppBar(
           backgroundColor: context.cardBg,
           surfaceTintColor: Colors.transparent,
+          leadingWidth: 32,
           leading: _currentStep > 0
               ? IconButton(
                   icon: const Icon(Icons.arrow_back_rounded),
                   onPressed: _prevStep,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
                 )
               : null,
           title: Text(l10n.listingsCreate),

@@ -100,9 +100,6 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     final errors = _validateCurrentStep();
     if (errors.isNotEmpty) {
       setState(() => _stepErrors[_currentStep] = errors);
-      if (mounted) {
-        WaveToast.showError(context, errors.first);
-      }
       return;
     }
     setState(() => _stepErrors.remove(_currentStep));
@@ -192,10 +189,13 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         appBar: AppBar(
           backgroundColor: context.cardBg,
           surfaceTintColor: Colors.transparent,
+          leadingWidth: 32,
           leading: _currentStep > 0
               ? IconButton(
                   icon: const Icon(Icons.arrow_back_rounded),
                   onPressed: _prevStep,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
                 )
               : null,
           title: Text(l10n.listingEditTitle),
