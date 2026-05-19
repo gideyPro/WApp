@@ -109,13 +109,16 @@ class Address {
       return cache?[original] ?? original;
     }
 
-    // Use localized values if available from the API response object itself
-    // otherwise check our global cache fetched from cascading dropdown endpoints
-    String? r = regionLocalized ?? translate(region);
-    String? z = zoneLocalized ?? translate(zone);
-    String? w = woredaLocalized ?? translate(woreda);
-    String? k = kebeleLocalized ?? translate(kebele);
-    String? s = specificLocationLocalized ?? translate(specificLocation);
+    // Use localized values only when not in English locale.
+    // The API always sets *_localized from addresses_et (Amharic/Tigrinya).
+    // For English users the primary field values are already correct.
+    String? localizedOr(String? field, String? localized) =>
+        (locale != 'en' && localized != null) ? localized : translate(field);
+    String? r = localizedOr(region, regionLocalized);
+    String? z = localizedOr(zone, zoneLocalized);
+    String? w = localizedOr(woreda, woredaLocalized);
+    String? k = localizedOr(kebele, kebeleLocalized);
+    String? s = localizedOr(specificLocation, specificLocationLocalized);
 
     final parts = [z, w, k, s]
         .where((e) => e != null && e.isNotEmpty)
