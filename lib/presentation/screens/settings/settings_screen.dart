@@ -414,7 +414,7 @@ void _showLanguageSelectionDialog(BuildContext context, WidgetRef ref) {
         children: [
           Text(
             AppLocalizations.of(context).languageTitle,
-            style: AppTextStyles.title,
+            style: AppTextStyles.title.copyWith(color: context.theme.textPrimary),
           ),
           const SizedBox(height: 24),
           _buildLanguageOption(
@@ -467,6 +467,7 @@ Widget _buildLanguageOption(
         : const Icon(Icons.radio_button_unchecked),
     title: Text(languageName,
         style: AppTextStyles.bodyMedium.copyWith(
+            color: context.theme.textPrimary,
             fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
   );
 }
