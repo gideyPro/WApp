@@ -186,10 +186,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: context.cardBg,
-          surfaceTintColor: Colors.transparent,
-          leadingWidth: 32,
+        appBar: WaveAppBar(
           leading: _currentStep > 0
               ? IconButton(
                   icon: const Icon(Icons.arrow_back_rounded),

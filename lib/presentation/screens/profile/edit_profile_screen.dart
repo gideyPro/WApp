@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 /// Edit Profile Screen
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -96,8 +97,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
-      appBar: AppBar(
-        backgroundColor: isDark ? AppColors.primary900 : Colors.white,
+      appBar: WaveAppBar(
         title: Text(l10n.profileEdit),
       ),
       body: user == null

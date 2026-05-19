@@ -64,7 +64,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(l10n.settingsNotifications),
         actions: [
           // Mark all as read

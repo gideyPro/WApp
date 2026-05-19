@@ -19,6 +19,7 @@ import '../auth/otp_login_screen.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_constants.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
   try {
@@ -131,11 +132,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         centerTitle: false,
-        backgroundColor: context.cardBg,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
         title: Text(l10n.settingsTitle),
       ),
       body: RefreshIndicator(

@@ -70,11 +70,8 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         centerTitle: false,
-        backgroundColor: context.cardBg,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

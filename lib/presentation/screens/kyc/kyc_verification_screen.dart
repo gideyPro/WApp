@@ -11,6 +11,7 @@ import '../../widgets/common/wave_button.dart';
 import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 /// KYC Verification Screen
 class KycVerificationScreen extends ConsumerStatefulWidget {
@@ -173,7 +174,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(l10n.kycTitle),
       ),
       body: kycState.isLoading && kycState.status == 'none'

@@ -190,6 +190,13 @@ class AppTheme {
         ),
       ),
 
+      // Checkbox Theme - compact spacing for custom font metrics
+      checkboxTheme: CheckboxThemeData(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      ),
+
       // Chip Theme
       chipTheme: ChipThemeData(
         labelStyle: AppTextStyles.bodySmall,
@@ -420,6 +427,13 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
+      ),
+
+      // Checkbox Theme
+      checkboxTheme: CheckboxThemeData(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
       ),
 
       // Chip Theme

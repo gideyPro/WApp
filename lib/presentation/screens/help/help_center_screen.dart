@@ -65,7 +65,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(AppLocalizations.of(context).profileHelp),
       ),
       body: Column(

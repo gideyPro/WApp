@@ -94,8 +94,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: context.cardBg,
+      appBar: WaveAppBar(
         title: Text(l10n.messagesTitle),
       ),
       body: _buildBody(state, l10n),
@@ -734,12 +733,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final relatedConversations = chatState.relatedConversations;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: WaveAppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
         ),
-        titleSpacing: 0,
         title: GestureDetector(
           onTap:
               relatedConversations.isNotEmpty ? _toggleContextDropdown : null,

@@ -19,6 +19,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import 'edit_listing_screen.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 /// Listing Detail Screen with skeleton loaders
 class ListingDetailScreen extends ConsumerStatefulWidget {
@@ -259,7 +260,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     final isSubscriptionError = message.toLowerCase().contains('subscription');
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.listingsTitle)),
+      appBar: WaveAppBar(title: Text(l10n.listingsTitle)),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -333,7 +334,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   Widget _buildNotFound() {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.listingsTitle)),
+      appBar: WaveAppBar(title: Text(l10n.listingsTitle)),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),

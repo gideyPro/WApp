@@ -69,7 +69,7 @@ class _SubscriptionPlansScreenState
     final subState = ref.watch(subscriptionProvider);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(AppLocalizations.of(context).subscriptionsTitle),
       ),
       body: _buildContent(subState),

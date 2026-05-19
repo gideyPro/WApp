@@ -463,62 +463,8 @@ class WaveTextField extends StatelessWidget {
   }
 }
 
-/// WaveMart App Bar
-class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final bool showBackButton;
-  final List<Widget>? actions;
-  final Widget? leading;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
-  final bool isScrolled;
-  final double elevation;
 
-  const WaveAppBar({
-    super.key,
-    required this.title,
-    this.showBackButton = true,
-    this.actions,
-    this.leading,
-    this.backgroundColor,
-    this.foregroundColor,
-    this.isScrolled = false,
-    this.elevation = 0,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    final isLight = backgroundColor == Colors.white ||
-        backgroundColor == AppColors.primary50;
-
-    return AppBar(
-      elevation: elevation,
-      scrolledUnderElevation: isScrolled ? 4 : 0,
-      backgroundColor: backgroundColor ?? context.scaffoldBg,
-      foregroundColor: foregroundColor ??
-          (isLight ? context.theme.textPrimary : Colors.white),
-      centerTitle: false,
-      leading: leading ??
-          (showBackButton
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              : null),
-      title: Text(
-        title,
-        style: AppTextStyles.title.copyWith(
-          color: foregroundColor ??
-              (isLight ? context.theme.textPrimary : Colors.white),
-        ),
-      ),
-      actions: actions,
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(56);
-}
 
 
 

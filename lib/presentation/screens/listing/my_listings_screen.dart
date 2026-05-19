@@ -85,7 +85,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(AppLocalizations.of(context).profileMyListings),
         actions: [
           IconButton(

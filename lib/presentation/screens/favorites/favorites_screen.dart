@@ -142,11 +142,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         centerTitle: false,
-        backgroundColor: context.cardBg,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
         title: Text(AppLocalizations.of(context).favoritesTitle),
         actions: [
           if (state.favorites.isNotEmpty)

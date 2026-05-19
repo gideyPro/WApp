@@ -53,7 +53,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(l10n.profilePayments),
       ),
       body: _buildBody(state),

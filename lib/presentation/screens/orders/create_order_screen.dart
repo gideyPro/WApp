@@ -9,7 +9,7 @@ import '../../../data/services/order_service.dart';
 import '../../../data/services/address_service.dart';
 import '../../../data/models/address.dart';
 import '../../../core/constants/app_spacing.dart';
-import '../../widgets/common/wave_button.dart';
+import '../../widgets/common/wave_button.dart' hide WaveAppBar;
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../core/network/api_client.dart';
@@ -228,11 +228,8 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         centerTitle: false,
-        backgroundColor: context.cardBg,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
         title: Text(l10n.ordersCreate),
       ),
       body: Form(

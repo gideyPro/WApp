@@ -39,8 +39,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
-      appBar: AppBar(
-        backgroundColor: isDark ? AppColors.primary900 : Colors.white,
+      appBar: WaveAppBar(
         title: Text(l10n.profileTitle),
       ),
       body: RefreshIndicator(

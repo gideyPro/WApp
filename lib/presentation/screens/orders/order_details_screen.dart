@@ -104,11 +104,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         centerTitle: false,
-        backgroundColor: context.cardBg,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
         title: Text(l10n.ordersDetailTitle),
       ),
       body: _buildBody(l10n),

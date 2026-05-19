@@ -148,10 +148,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         if (!didPop) _saveDraft();
       },
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: context.cardBg,
-          surfaceTintColor: Colors.transparent,
-          leadingWidth: 32,
+        appBar: WaveAppBar(
           leading: _currentStep > 0
               ? IconButton(
                   icon: const Icon(Icons.arrow_back_rounded),

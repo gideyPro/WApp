@@ -6,6 +6,60 @@ import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'wave_button.dart';
 
+/// WaveMart AppBar — tight leading defaults to fix font-metric spacing with Cinzel
+class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final Widget? title;
+  final List<Widget>? actions;
+  final Widget? leading;
+  final double? leadingWidth;
+  final bool automaticallyImplyLeading;
+  final Color? backgroundColor;
+  final double elevation;
+  final bool centerTitle;
+  final PreferredSizeWidget? bottom;
+
+  const WaveAppBar({
+    super.key,
+    this.title,
+    this.actions,
+    this.leading,
+    this.leadingWidth = 32,
+    this.automaticallyImplyLeading = true,
+    this.backgroundColor,
+    this.elevation = 0,
+    this.centerTitle = false,
+    this.bottom,
+  });
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveLeading = leading ??
+        (automaticallyImplyLeading && Navigator.of(context).canPop()
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_rounded),
+                onPressed: () => Navigator.of(context).pop(),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
+              )
+            : null);
+
+    return AppBar(
+      backgroundColor: backgroundColor ?? context.cardBg,
+      surfaceTintColor: Colors.transparent,
+      elevation: elevation,
+      centerTitle: centerTitle,
+      leadingWidth: effectiveLeading != null ? (leadingWidth ?? 32) : null,
+      leading: effectiveLeading,
+      title: title,
+      actions: actions,
+      bottom: bottom,
+    );
+  }
+}
+
 /// WaveMart Bottom Navigation Bar
 class WaveBottomNav extends StatelessWidget {
   final int currentIndex;
