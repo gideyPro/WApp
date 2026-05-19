@@ -16,17 +16,11 @@ class WaveAuthBackground extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isDark
-              ? [
-                  AppColors.primary800,
-                  AppColors.primary900,
-                  AppColors.primary950,
-                ]
-              : [
-                  AppColors.primary50,
-                  AppColors.primary100,
-                  AppColors.primary200,
-                ],
+          colors: [
+            AppColors.primary800,
+            AppColors.primary900,
+            AppColors.primary950,
+          ],
         ),
       ),
       child: child,

@@ -66,10 +66,10 @@ class WaveCard extends StatelessWidget {
                 color: isGlass
                     ? (isDark
                         ? Colors.white.withValues(alpha: 0.15)
-                        : AppColors.primary100.withValues(alpha: 0.8))
+                        : AppColors.primary200.withValues(alpha: 0.8))
                     : (isDark
                         ? Colors.white.withValues(alpha: 0.05)
-                        : AppColors.primary200),
+                        : AppColors.primary300),
               )
             : null,
         boxShadow: shadows,

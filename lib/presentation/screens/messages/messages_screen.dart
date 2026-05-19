@@ -259,8 +259,8 @@ class _ConversationTile extends ConsumerWidget {
                 colors: hasUnread
                     ? [AppColors.accent500, AppColors.accent600]
                     : [
-                        Theme.of(context).colorScheme.secondaryContainer,
-                        Theme.of(context).colorScheme.secondaryContainer
+                        isDark ? AppColors.primary700 : AppColors.primary400,
+                        isDark ? AppColors.primary800 : AppColors.primary600,
                       ],
               ),
               borderRadius: BorderRadius.circular(25),

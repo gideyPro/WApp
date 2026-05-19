@@ -65,12 +65,13 @@ class AppTextStyles {
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 2.0,
+        color: AppColors.primary900,
       );
 
   static TextStyle get subtitle => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 14,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         height: 1.3,
       );
 
@@ -134,6 +135,7 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 14,
         fontWeight: FontWeight.w600,
+        color: AppColors.primary800,
         letterSpacing: 0.1,
       );
 
@@ -141,6 +143,7 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 12,
         fontWeight: FontWeight.w600,
+        color: AppColors.primary800,
         letterSpacing: 0.1,
       );
 
@@ -148,6 +151,7 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w600,
+        color: AppColors.primary700,
         letterSpacing: 0.3,
       );
 
@@ -155,7 +159,8 @@ class AppTextStyles {
   static TextStyle get caption => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 11,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
+        color: AppColors.stone700,
         height: 1.3,
       );
 
@@ -163,6 +168,7 @@ class AppTextStyles {
         fontFamily: _bodyFont,
         fontSize: 10,
         fontWeight: FontWeight.w700,
+        color: AppColors.primary700,
         letterSpacing: 2.0,
       );
 

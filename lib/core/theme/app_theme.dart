@@ -26,11 +26,13 @@ class AppTheme {
         onTertiary: Colors.white,
         error: AppColors.error,
         onError: Colors.white,
-        surface: AppColors.background,
+        surface: Colors.white,
         onSurface: AppColors.stone900,
         onSurfaceVariant: AppColors.stone600,
         outline: AppColors.stone200,
       ),
+
+      scaffoldBackgroundColor: AppColors.stone50,
 
       // Text Theme
       // NOTE: titleMedium MUST be a body font style — Flutter's DropdownButton
@@ -74,7 +76,7 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: AppColors.stone100, width: 1.0),
+          side: BorderSide(color: AppColors.stone200, width: 1.0),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -115,15 +117,15 @@ class AppTheme {
       // Input Decoration Theme - Clean Slate
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.stone50,
+        fillColor: AppColors.stone100,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: AppColors.stone200),
+          borderSide: BorderSide(color: AppColors.stone300),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: AppColors.stone200),
+          borderSide: BorderSide(color: AppColors.stone300),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),

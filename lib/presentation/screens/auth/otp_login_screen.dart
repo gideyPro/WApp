@@ -272,7 +272,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       return Text(
         l10n.authResendCountdown(_resendCountdown),
         style: AppTextStyles.bodyMedium.copyWith(
-          color: ThemeColors(context).divider,
+          color: ThemeColors(context).textSecondary,
         ),
       );
     }

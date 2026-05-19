@@ -8,7 +8,7 @@ class ThemeColors {
   bool get isDark => Theme.of(context).brightness == Brightness.dark;
 
   // Background colors
-  Color get scaffold => isDark ? const Color(0xFF080C14) : AppColors.background;
+  Color get scaffold => isDark ? const Color(0xFF080C14) : AppColors.stone100;
   Color get surface => isDark ? AppColors.primary800 : Colors.white;
   Color get card => isDark ? AppColors.primary800 : Colors.white;
   Color get cardBg => isDark ? AppColors.primary800 : Colors.white;
@@ -16,20 +16,20 @@ class ThemeColors {
 
   // Text colors
   Color get textPrimary => isDark ? Colors.white : AppColors.stone900;
-  Color get textSecondary => isDark ? AppColors.primary200 : AppColors.stone600;
-  Color get textTertiary => isDark ? AppColors.primary300 : AppColors.stone500;
-  Color get textMuted => isDark ? AppColors.primary400 : AppColors.stone400;
+  Color get textSecondary => isDark ? AppColors.primary200 : AppColors.stone800;
+  Color get textTertiary => isDark ? AppColors.primary300 : AppColors.stone700;
+  Color get textMuted => isDark ? AppColors.primary400 : AppColors.stone600;
 
   // Icon colors
   Color get icon => isDark ? Colors.white : AppColors.primary900;
-  Color get iconSecondary => isDark ? AppColors.primary300 : AppColors.stone500;
+  Color get iconSecondary => isDark ? AppColors.primary300 : AppColors.stone600;
 
   // Border colors
-  Color get border => isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.stone200;
+  Color get border => isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.stone300;
   Color get divider => isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.stone200;
 
   // Input colors
-  Color get inputBg => isDark ? AppColors.primary800 : AppColors.stone50;
+  Color get inputBg => isDark ? AppColors.primary800 : Colors.white;
   Color get inputBorder => isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.stone300;
 
   // Button colors
@@ -37,7 +37,7 @@ class ThemeColors {
   Color get primaryText => isDark ? Colors.black : Colors.white;
 
   // Icon button backgrounds
-  Color get iconBg => isDark ? AppColors.primary700 : AppColors.primary50;
+  Color get iconBg => isDark ? AppColors.primary700 : AppColors.stone200;
 
   // Shimmer colors
   Color get shimmerBase => isDark ? AppColors.primary700 : Colors.grey[300]!;
