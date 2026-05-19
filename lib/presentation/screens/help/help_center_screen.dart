@@ -357,7 +357,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                     Expanded(
                       child: Text(
                         article.title,
-                        style: AppTextStyles.title,
+                        style: AppTextStyles.title.copyWith(color: context.theme.textPrimary),
                       ),
                     ),
                     IconButton(
