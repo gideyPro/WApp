@@ -18,6 +18,7 @@ class Conversation {
   final String? otherParticipantLastName;
   final String? listingTitle;
   final String? listingImageUrl;
+  final String? listingDescription;
   final int? listingOwnerId;
   final bool isAssetChat;
 
@@ -43,6 +44,7 @@ class Conversation {
     this.otherParticipantLastName,
     this.listingTitle,
     this.listingImageUrl,
+    this.listingDescription,
     this.listingOwnerId,
     this.isAssetChat = false,
     Map<String, dynamic>? senderData,
@@ -67,11 +69,13 @@ class Conversation {
     // Get listing info
     String? listingTitle;
     String? listingImageUrl;
+    String? listingDescription;
     int? listingOwnerId;
     bool isAssetChat = false;
     if (json['listing'] is Map) {
       final listing = json['listing'] as Map<String, dynamic>;
       listingTitle = listing['title'];
+      listingDescription = listing['description'];
       isAssetChat = json['listing_id'] != null;
       // Extract first image if available
       if (listing['property'] is Map) {
@@ -138,6 +142,7 @@ class Conversation {
       otherParticipantLastName: otherLastName,
       listingTitle: listingTitle,
       listingImageUrl: listingImageUrl,
+      listingDescription: listingDescription,
       listingOwnerId: listingOwnerId,
       isAssetChat: isAssetChat,
       senderData: senderData,
@@ -264,6 +269,9 @@ class Conversation {
   }
 
   String get contextDisplayTitle {
+    if (listingDescription != null && listingDescription!.isNotEmpty) {
+      return listingDescription!;
+    }
     if (listingTitle != null && listingTitle!.isNotEmpty) {
       return listingTitle!;
     }

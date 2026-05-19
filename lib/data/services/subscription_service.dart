@@ -63,21 +63,21 @@ class SubscriptionServiceApi {
         return CurrentSubscriptionResponse(
           success: true,
           subscription: subscription,
-          canCreateListing: data['can_create_listing'] ?? true,
-          canFeatureListing: data['can_feature_listing'] ?? true,
+          canCreateListing: data['can_create_listing'] ?? false,
+          canFeatureListing: data['can_feature_listing'] ?? false,
         );
       }
 
       return const CurrentSubscriptionResponse(
         success: false,
-        canCreateListing: true,
-        canFeatureListing: true,
+        canCreateListing: false,
+        canFeatureListing: false,
       );
     } catch (e) {
       return const CurrentSubscriptionResponse(
         success: false,
-        canCreateListing: true,
-        canFeatureListing: true,
+        canCreateListing: false,
+        canFeatureListing: false,
       );
     }
   }

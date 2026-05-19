@@ -8,6 +8,11 @@ import '../listing/listing_detail_screen.dart';
 import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../providers/app_providers.dart';
+import '../settings/settings_screen.dart';
+import '../subscriptions/subscription_plans_screen.dart';
+import 'edit_listing_screen.dart';
 
 /// My Listings Screen - Shows user's own listings
 class MyListingsScreen extends ConsumerStatefulWidget {
@@ -82,8 +87,114 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
     }
   }
 
+  Future<void> _editListing(Listing listing) async {
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => EditListingScreen(listing: listing),
+      ),
+    );
+    if (result == true && mounted) _loadMyListings();
+  }
+
+  Future<void> _deleteListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.listingDeleteConfirmTitle),
+        content: Text(l10n.listingDeleteConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: Text(l10n.commonDelete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      final service = ListingService();
+      final result = await service.deleteListing(listing.id);
+      if (result.success && mounted) _loadMyListings();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).commonError),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _featureListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Feature this Listing?'),
+        content: const Text(
+          'Your listing will be featured on the home page and search results for 30 days.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent500,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Feature Now'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      final service = ListingService();
+      final result = await service.featureListing(listing.id);
+      if (result.success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: AppColors.emerald600,
+          ),
+        );
+        _loadMyListings();
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.commonError),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final subState = ref.watch(subscriptionProvider);
+    final canFeature = subState.canFeatureListing;
+
     return Scaffold(
       appBar: WaveAppBar(
         title: Text(AppLocalizations.of(context).profileMyListings),
@@ -91,6 +202,44 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
           IconButton(
             icon: const Icon(Icons.add_circle_outline),
             onPressed: () async {
+              // Check subscription limit before navigating
+              final subState = ref.read(subscriptionProvider);
+              final settingsAsync = ref.read(appSettingsProvider);
+              final subscriptionEnabled = settingsAsync.maybeWhen(
+                data: (data) => data['subscription_enabled'] == true,
+                orElse: () => false,
+              );
+              if (subscriptionEnabled && !subState.canCreateListing) {
+                final goSub = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    icon: const Icon(Icons.workspace_premium_outlined,
+                        color: AppColors.accent500, size: 40),
+                    title: const Text('Subscription Required'),
+                    content: const Text(
+                      'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        child: Text(AppLocalizations.of(ctx).commonCancel),
+                      ),
+                      FilledButton(
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                        child: const Text('View Plans'),
+                      ),
+                    ],
+                  ),
+                );
+                if (goSub == true && mounted) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const SubscriptionPlansScreen(),
+                    ),
+                  );
+                }
+                return;
+              }
               final result = await Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CreateListingScreen()),
               );
@@ -102,11 +251,11 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
           ),
         ],
       ),
-      body: _buildBody(),
+      body: _buildBody(canFeature),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(bool canFeature) {
     if (_isLoading && _myListings.isEmpty) {
       return ListView.builder(
         padding: AppSpacing.paddingLg,
@@ -156,19 +305,82 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
           final listing = _myListings[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: PropertyListingCard(
-              listing: listing,
-              isFavorite: false,
-              isTogglingFavorite: false,
-              onFavorite: () {},
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => ListingDetailScreen(listingId: listing.id),
+            child: Column(
+              children: [
+                PropertyListingCard(
+                  listing: listing,
+                  hideFavoriteButton: true,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ListingDetailScreen(listingId: listing.id),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _ActionIcon(
+                      icon: Icons.edit_outlined,
+                      tooltip: AppLocalizations.of(context).commonEdit,
+                      onTap: () => _editListing(listing),
+                    ),
+                    const SizedBox(width: 4),
+                    _ActionIcon(
+                      icon: Icons.delete_outline,
+                      tooltip: AppLocalizations.of(context).commonDelete,
+                      color: AppColors.error,
+                      onTap: () => _deleteListing(listing),
+                    ),
+                    if (canFeature && !listing.isFeaturedActive)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: _ActionIcon(
+                          icon: Icons.workspace_premium_outlined,
+                          tooltip: 'Feature',
+                          color: AppColors.accent500,
+                          onTap: () => _featureListing(listing),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _ActionIcon extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onTap;
+  final Color? color;
+
+  const _ActionIcon({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: IconButton(
+        icon: Icon(icon, size: 20),
+        tooltip: tooltip,
+        onPressed: onTap,
+        color: color ?? (isDark ? AppColors.primary300 : AppColors.primary600),
+        padding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        splashRadius: 18,
       ),
     );
   }

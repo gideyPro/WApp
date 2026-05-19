@@ -114,22 +114,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
   Widget _buildBody(AppLocalizations l10n) {
     if (_isLoadingOrder && _order == null) {
-      return Center(
-        child: WaveGlass(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl * 2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircularProgressIndicator(strokeWidth: 2),
-                const SizedBox(height: AppSpacing.md),
-                Text(l10n.commonLoading,
-                    style: AppTextStyles.bodySmall
-                        .copyWith(color: ThemeColors(context).textSecondary)),
-              ],
-            ),
+      return ListView(
+        padding: AppSpacing.paddingLg,
+        children: [
+          Shimmer.fromColors(
+            baseColor: context.shimmerBase,
+            highlightColor: context.shimmerHighlight,
+            child: _buildOrderInfoSkeleton(),
           ),
-        ),
+        ],
       );
     }
 

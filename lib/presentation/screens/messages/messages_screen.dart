@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -551,11 +552,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         if (conv.id != widget.conversationId) {
           // Navigate to the selected conversation
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => ChatScreen(
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => ChatScreen(
                 conversationId: conv.id,
                 conversation: conv,
               ),
+              transitionsBuilder: (_, __, ___, child) => child,
+              transitionDuration: Duration.zero,
             ),
           );
         }
@@ -926,46 +929,50 @@ Widget _buildMessagesSkeleton() {
       final isLeft = index % 2 == 0;
       return Padding(
         padding: const EdgeInsets.only(bottom: 8),
-        child: Row(
-          mainAxisAlignment:
-              isLeft ? MainAxisAlignment.start : MainAxisAlignment.end,
-          children: [
-            if (isLeft) ...[
+        child: Shimmer.fromColors(
+          baseColor: context.shimmerBase,
+          highlightColor: context.shimmerHighlight,
+          child: Row(
+            mainAxisAlignment:
+                isLeft ? MainAxisAlignment.start : MainAxisAlignment.end,
+            children: [
+              if (isLeft) ...[
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    color: AppColors.stone200,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
               Container(
-                width: 32,
-                height: 32,
-                decoration: const BoxDecoration(
+                height: 40,
+                width: 120 + (index * 20),
+                decoration: BoxDecoration(
                   color: AppColors.stone200,
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(4),
+                    topRight: const Radius.circular(4),
+                    bottomLeft: Radius.circular(isLeft ? 16 : 4),
+                    bottomRight: Radius.circular(isLeft ? 4 : 16),
+                  ),
                 ),
               ),
-              const SizedBox(width: 8),
+              if (!isLeft) ...[
+                const SizedBox(width: 8),
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    color: AppColors.stone200,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ],
             ],
-            Container(
-              height: 40,
-              width: 120 + (index * 20),
-              decoration: BoxDecoration(
-                color: AppColors.stone200,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(4),
-                  topRight: const Radius.circular(4),
-                  bottomLeft: Radius.circular(isLeft ? 16 : 4),
-                  bottomRight: Radius.circular(isLeft ? 4 : 16),
-                ),
-              ),
-            ),
-            if (!isLeft) ...[
-              const SizedBox(width: 8),
-              Container(
-                width: 32,
-                height: 32,
-                decoration: const BoxDecoration(
-                  color: AppColors.stone200,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ],
-          ],
+          ),
         ),
       );
     },

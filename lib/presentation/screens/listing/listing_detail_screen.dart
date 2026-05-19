@@ -504,6 +504,25 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           listing.getLocalizedTitle(context, cache),
           style: AppTextStyles.headline4,
         ),
+        if (listing.viewCount > 0) ...[
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Icon(
+                Icons.visibility_outlined,
+                size: 14,
+                color: context.textSecondary,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${listing.viewCount} ${listing.viewCount == 1 ? "view" : "views"}',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: context.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }
@@ -1028,6 +1047,99 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     }
   }
 
+  Future<void> _featureListing(Listing listing) async {
+    final subState = ref.read(subscriptionProvider);
+    if (!subState.canFeatureListing) {
+      final goSub = await _showFeatureUpgradeDialog();
+      if (goSub == true && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+        );
+      }
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Feature this Listing?'),
+        content: const Text(
+          'Your listing will be featured on the home page and search results for 30 days.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent500,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Feature Now'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      final service = ListingService();
+      final result = await service.featureListing(listing.id);
+      if (result.success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: AppColors.emerald600,
+          ),
+        );
+        ref.read(listingDetailProvider.notifier).loadListing(listing.id);
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).commonError),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<bool?> _showFeatureUpgradeDialog() {
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.workspace_premium_outlined,
+            color: AppColors.accent500, size: 40),
+        title: const Text('Upgrade to Feature'),
+        content: const Text(
+          'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(AppLocalizations.of(context).commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('View Plans'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildActionButtons(Listing listing) {
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1080,6 +1192,20 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
               ],
             ),
             const SizedBox(height: 12),
+            if (!listing.isFeaturedActive)
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => _featureListing(listing),
+                  icon: const Icon(Icons.workspace_premium_outlined, size: 20),
+                  label: const Text('Feature this Listing'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: const BorderSide(color: AppColors.accent500),
+                    foregroundColor: AppColors.accent500,
+                  ),
+                ),
+              ),
           ],
           // Interest button - show status for all users
           Row(

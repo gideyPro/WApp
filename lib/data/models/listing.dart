@@ -159,6 +159,7 @@ class Listing extends ChangeNotifier {
 
   final String? userInterestStatus;
   final int? userInterestId;
+  final int viewCount;
 
   /// Calculate total rooms
   int get totalRooms =>
@@ -222,6 +223,7 @@ class Listing extends ChangeNotifier {
     this.updatedAt,
     this.userInterestStatus,
     this.userInterestId,
+    this.viewCount = 0,
   });
 
   factory Listing.fromJson(Map<String, dynamic> json) {
@@ -378,6 +380,7 @@ class Listing extends ChangeNotifier {
           : null,
       userInterestStatus: json['user_interest_status'],
       userInterestId: _safeInt(json['user_interest_id']),
+      viewCount: _safeInt(json['view_count'], defaultValue: 0) ?? 0,
     );
   }
 
@@ -420,6 +423,7 @@ class Listing extends ChangeNotifier {
       'address': address?.toJson(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
+      'view_count': viewCount,
     };
   }
 

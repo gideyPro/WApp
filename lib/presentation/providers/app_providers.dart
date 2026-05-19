@@ -860,8 +860,8 @@ class SubscriptionState {
     required this.isLoading,
     this.plans = const [],
     this.subscription,
-    this.canCreateListing = true,
-    this.canFeatureListing = true,
+    this.canCreateListing = false,
+    this.canFeatureListing = false,
     this.errorMessage,
   });
 
@@ -869,15 +869,15 @@ class SubscriptionState {
       : isLoading = true,
         plans = const [],
         subscription = null,
-        canCreateListing = true,
-        canFeatureListing = true,
+        canCreateListing = false,
+        canFeatureListing = false,
         errorMessage = null;
 
   const SubscriptionState.loaded({
     required this.plans,
     this.subscription,
-    this.canCreateListing = true,
-    this.canFeatureListing = true,
+    this.canCreateListing = false,
+    this.canFeatureListing = false,
   })  : isLoading = false,
         errorMessage = null;
 
