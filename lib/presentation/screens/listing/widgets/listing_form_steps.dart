@@ -1620,7 +1620,7 @@ class ListingStep4Review extends StatelessWidget {
                       icon: Icons.account_balance_wallet_rounded)),
                   const SizedBox(width: 8),
                   Expanded(child: _summaryCard(context, l10n.listingStepMedia,
-                      '${formData.images.length + formData.existingImages.length - formData.removedImageIds.length} ${l10n.listingImagesSelected(formData.images.length + formData.existingImages.length - formData.removedImageIds.length)}\n${(formData.sitePlan != null || (formData.existingSitePlanUrl != null && !formData.removeExistingSitePlan)) ? "1" : "0"} ${l10n.listingSitePlans}',
+                      _buildMediaSummary(formData),
                       icon: Icons.photo_library_rounded)),
                 ],
               ),
@@ -1693,6 +1693,22 @@ class ListingStep4Review extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _buildMediaSummary(ListingFormData data) {
+    final imageCount = data.images.length + data.existingImages.length - data.removedImageIds.length;
+    final hasSitePlan = data.sitePlan != null || (data.existingSitePlanUrl != null && !data.removeExistingSitePlan);
+    final hasOwnership = data.ownershipProof != null || data.existingOwnershipProofUrl != null;
+    final hasLease = data.leaseContract != null || data.existingLeaseContractUrl != null;
+    final hasVideo = data.videoFile != null || (data.existingVideoUrl != null && !data.deleteVideo);
+    final lines = <String>[
+      '$imageCount ${imageCount == 1 ? 'Picture' : 'Pictures'}',
+      if (hasSitePlan) '1 Site Plan',
+      if (hasOwnership) '1 Ownership Proof',
+      if (hasLease) '1 Lease Contract',
+      if (hasVideo) '1 Video',
+    ];
+    return lines.join('\n');
   }
 
   String _formatPrice(double price) {
