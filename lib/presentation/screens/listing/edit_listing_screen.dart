@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../core/theme/text_styles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../data/models/listing.dart';
@@ -9,8 +10,8 @@ import '../../../../data/services/address_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import 'widgets/listing_form_steps.dart';
-import '../../../core/constants/app_spacing.dart';
 
+ 
 class EditListingScreen extends ConsumerStatefulWidget {
   final Listing listing;
 
@@ -189,6 +190,14 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: context.cardBg,
+          surfaceTintColor: Colors.transparent,
+          leading: _currentStep > 0
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded),
+                  onPressed: _prevStep,
+                )
+              : null,
           title: Text(l10n.listingEditTitle),
           actions: [
             TextButton(
@@ -217,65 +226,40 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
                       formData: _formData,
                       onUpdate: _updateFormData,
                       addressService: _addressService,
-                      isEditMode: true),                  ListingStep2Details(formData: _formData, onUpdate: _updateFormData),
+                      isEditMode: true),
+                  ListingStep2Details(formData: _formData, onUpdate: _updateFormData),
                   ListingStep3Media(formData: _formData, onUpdate: _updateFormData),
                   ListingStep4Review(formData: _formData, onUpdate: _updateFormData),
                 ],
               ),
             ),
-            if (!_isSubmitting) _buildBottomBar(),
+            if (_stepErrors[_currentStep] != null && _stepErrors[_currentStep]!.isNotEmpty)
+              _buildErrorBanner(_stepErrors[_currentStep]!),
           ],
         ),
       );
   }
 
-  Widget _buildBottomBar() {
-    final l10n = AppLocalizations.of(context);
+  Widget _buildErrorBanner(List<String> errors) {
     return Container(
-      padding: AppSpacing.paddingLg,
-      decoration: BoxDecoration(
-        color: context.sheetBg, 
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, -4)
-          ),
-        ],
-        border: Border(top: BorderSide(color: context.divider.withValues(alpha: 0.5))),
-      ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            if (_currentStep > 0)
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      color: AppColors.errorLight,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: errors.map((e) => Padding(
+          padding: const EdgeInsets.only(bottom: 2),
+          child: Row(
+            children: [
+              Icon(Icons.error_outline, size: 14, color: AppColors.error),
+              const SizedBox(width: 6),
               Expanded(
-                child: OutlinedButton(
-                  onPressed: _prevStep,
-                  child: Text(l10n.listingBack),
-                ),
+                child: Text(e, style: AppTextStyles.bodySmall.copyWith(color: AppColors.error)),
               ),
-            if (_currentStep > 0) const SizedBox(width: 12),
-            Expanded(
-              flex: _currentStep == 0 ? 1 : 2,
-              child: ElevatedButton(
-                onPressed: _isSubmitting ? null : _nextStep,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent500,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: _isSubmitting
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
-                    : Text(_currentStep == 3
-                        ? l10n.listingSubmitListing
-                        : l10n.listingContinue),
-              ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        )).toList(),
       ),
     );
   }
