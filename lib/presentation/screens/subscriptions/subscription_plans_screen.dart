@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/services/subscription_service.dart';
 import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
@@ -747,12 +748,12 @@ class _PlanCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildFeatureRow(
+                _buildFeatureRow(context,
                   icon: Icons.home_outlined,
                   label: '${plan.maxListings} ${l10n.subscriptionsListings}',
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                _buildFeatureRow(
+                _buildFeatureRow(context,
                   icon: Icons.star_border,
                   label: plan.maxFeaturedListings != null
                       ? '${plan.maxFeaturedListings} ${l10n.subscriptionsFeaturedListings}'
@@ -824,7 +825,7 @@ class _PlanCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureRow({
+  Widget _buildFeatureRow(BuildContext context, {
     required IconData icon,
     required String label,
     bool included = true,
