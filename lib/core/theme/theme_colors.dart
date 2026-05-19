@@ -40,8 +40,8 @@ class ThemeColors {
   Color get iconBg => isDark ? AppColors.primary700 : AppColors.stone200;
 
   // Shimmer colors
-  Color get shimmerBase => isDark ? AppColors.primary700 : Colors.grey[300]!;
-  Color get shimmerHighlight => isDark ? AppColors.primary800 : Colors.grey[100]!;
+  Color get shimmerBase => isDark ? AppColors.primary700 : AppColors.stone200;
+  Color get shimmerHighlight => isDark ? AppColors.primary800 : AppColors.stone100;
 
   // Sheet/Bottom nav
   Color get bottomSheet => isDark ? AppColors.primary800 : Colors.white;

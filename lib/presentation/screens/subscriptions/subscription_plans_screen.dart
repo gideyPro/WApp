@@ -165,7 +165,7 @@ class _SubscriptionPlansScreenState
               child: Text(
                 l10n.subscriptionsNoPlansAvailable,
                 style:
-                    AppTextStyles.bodyMedium.copyWith(color: AppColors.zinc500),
+                    AppTextStyles.bodyMedium.copyWith(color: AppColors.stone500),
               ),
             ),
           ],
@@ -294,9 +294,9 @@ class _SubscriptionPlansScreenState
     return Container(
       padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
-        color: AppColors.zinc100,
+        color: AppColors.stone100,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.zinc300),
+        border: Border.all(color: AppColors.stone300),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,7 +305,7 @@ class _SubscriptionPlansScreenState
             children: [
               Icon(
                 sub.isCancelled ? Icons.cancel : Icons.info_outline,
-                color: AppColors.zinc600,
+                color: AppColors.stone600,
                 size: 24,
               ),
               const SizedBox(width: 8),
@@ -326,7 +326,7 @@ class _SubscriptionPlansScreenState
                       _formatDate(sub.cancelledAt ?? sub.endsAt!))
                   : l10n.subscriptionsExpiredOn(_formatDate(sub.endsAt!)),
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.zinc600,
+                color: AppColors.stone600,
               ),
             ),
           ],
@@ -587,7 +587,7 @@ class _SubscriptionPlansScreenState
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.zinc100,
+        color: AppColors.stone100,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
@@ -624,7 +624,7 @@ class _SubscriptionPlansScreenState
           currency,
           style: AppTextStyles.bodySmall.copyWith(
             fontSize: 13,
-            color: isSelected ? AppColors.accent600 : AppColors.zinc600,
+            color: isSelected ? AppColors.accent600 : AppColors.stone600,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
           ),
         ),
@@ -834,13 +834,13 @@ class _PlanCard extends StatelessWidget {
         Icon(
           icon,
           size: 18,
-          color: included ? AppColors.accent600 : AppColors.zinc400,
+          color: included ? AppColors.accent600 : AppColors.stone400,
         ),
         const SizedBox(width: 8),
         Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: included ? AppColors.primary700 : AppColors.zinc500,
+            color: included ? AppColors.primary700 : AppColors.stone500,
             fontWeight: included ? FontWeight.w600 : FontWeight.w500,
           ),
         ),

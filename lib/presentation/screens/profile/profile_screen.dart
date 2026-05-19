@@ -214,10 +214,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: isVerified ? AppColors.emerald50 : AppColors.zinc100,
+        color: isVerified ? AppColors.emerald50 : AppColors.stone100,
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: isVerified ? AppColors.emerald200 : AppColors.zinc200,
+          color: isVerified ? AppColors.emerald200 : AppColors.stone200,
         ),
       ),
       child: Row(
@@ -226,7 +226,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           Icon(
             isVerified ? Icons.check_circle : Icons.pending,
             size: 11,
-            color: isVerified ? AppColors.emerald600 : AppColors.zinc400,
+            color: isVerified ? AppColors.emerald600 : AppColors.stone400,
           ),
           const SizedBox(width: 3),
           Text(
@@ -234,7 +234,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             style: AppTextStyles.labelSmall.copyWith(
               fontSize: 9,
               fontWeight: FontWeight.w800,
-              color: isVerified ? AppColors.emerald700 : AppColors.zinc500,
+              color: isVerified ? AppColors.emerald700 : AppColors.stone500,
               letterSpacing: 0.3,
             ),
           ),
@@ -287,7 +287,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             Text(
               label,
               style: AppTextStyles.caption.copyWith(
-                color: isDark ? AppColors.zinc400 : null,
+                color: isDark ? AppColors.stone400 : null,
               ),
               textAlign: TextAlign.center,
             ),
@@ -310,7 +310,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Text(
             title,
             style: AppTextStyles.labelMedium.copyWith(
-              color: AppColors.zinc500,
+              color: AppColors.stone500,
             ),
           ),
         ),
@@ -377,7 +377,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ],
               const Icon(
                 Icons.chevron_right,
-                color: AppColors.zinc400,
+                color: AppColors.stone400,
               ),
             ],
           ),

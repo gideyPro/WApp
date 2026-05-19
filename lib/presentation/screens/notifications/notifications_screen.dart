@@ -290,8 +290,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
   Widget _buildSkeletonList() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: context.shimmerBase,
+      highlightColor: context.shimmerHighlight,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: 6,
@@ -305,7 +305,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: context.shimmerBase,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -315,14 +315,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                          height: 14, width: 160, color: Colors.grey[300]),
+                          height: 14, width: 160, color: context.shimmerBase),
                       const SizedBox(height: 8),
                       Container(
                           height: 12,
                           width: double.infinity,
-                          color: Colors.grey[300]),
+                          color: context.shimmerBase),
                       const SizedBox(height: 4),
-                      Container(height: 12, width: 80, color: Colors.grey[300]),
+                      Container(height: 12, width: 80, color: context.shimmerBase),
                     ],
                   ),
                 ),

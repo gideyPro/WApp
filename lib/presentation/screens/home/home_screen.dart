@@ -243,7 +243,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.shimmerBase,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -255,13 +255,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       Container(
                         height: 18,
                         width: 180,
-                        color: Colors.white,
+                        color: context.shimmerBase,
                       ),
                       const SizedBox(height: 10),
                       Container(
                         height: 14,
                         width: 140,
-                        color: Colors.white,
+                        color: context.shimmerBase,
                       ),
                     ],
                   ),
@@ -278,7 +278,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     child: Container(
                       height: 56,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.shimmerBase,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -288,13 +288,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
             const SizedBox(height: 28),
             // Divider skeleton
-            Container(height: 1, color: Colors.white),
+            Container(height: 1, color: context.shimmerBase),
             const SizedBox(height: 20),
             // Action skeleton
             Container(
               height: 20,
               width: 100,
-              color: Colors.white,
+              color: context.shimmerBase,
             ),
           ],
         ),
@@ -518,9 +518,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: onTap != null ? AppColors.accent50 : AppColors.zinc50,
+            color: onTap != null ? AppColors.accent50 : AppColors.stone50,
             borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: AppColors.zinc200),
+            border: Border.all(color: AppColors.stone200),
           ),
           child: Column(
             children: [

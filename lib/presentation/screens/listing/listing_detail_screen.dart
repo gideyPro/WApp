@@ -1,4 +1,3 @@
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -381,7 +380,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               IconButton(
                 icon: Icon(
                   isFavorited ? Icons.favorite : Icons.favorite_border,
-                  color: isFavorited ? Colors.red : Colors.white,
+                  color: isFavorited ? AppColors.error : Colors.white,
                 ),
                 onPressed: () => _toggleFavorite(listing.id, isFavorited),
               ),
@@ -531,7 +530,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         if (listing.isFeatured)
           _buildBadge(l10n.listingFeatured.toUpperCase(), AppColors.accent500),
         if (listing.isNew)
-          _buildBadge(l10n.listingNew.toUpperCase(), Colors.amber[700]!),
+          _buildBadge(l10n.listingNew.toUpperCase(), AppColors.warning),
         // Photo count badge
         if (listing.imageCount != null && listing.imageCount! > 0)
           _buildBadge(
@@ -1238,7 +1237,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   Color _getInterestStatusColor(String? status) {
     switch (status) {
       case 'new':
-        return Colors.amber;
+        return AppColors.warning;
       case 'won':
         return AppColors.emerald600;
       case 'lost':

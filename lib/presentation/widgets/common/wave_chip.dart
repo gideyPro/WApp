@@ -56,7 +56,7 @@ class WaveChip extends StatelessWidget {
     final bgColor = _getBackgroundColor(isDark);
     final textColor = _getTextColor(isDark);
     final borderColor = variant == ChipVariant.outlined
-        ? (isDark ? AppColors.zinc600 : AppColors.zinc300)
+        ? (isDark ? AppColors.stone600 : AppColors.stone300)
         : Colors.transparent;
 
     Widget chip = Container(
@@ -158,7 +158,7 @@ class WaveChip extends StatelessWidget {
         return AppColors.error;
       case ChipVariant.outlined:
       case ChipVariant.defaultChip:
-        return isDark ? AppColors.zinc800 : AppColors.zinc100;
+        return isDark ? AppColors.stone800 : AppColors.stone100;
     }
   }
 
@@ -176,9 +176,9 @@ class WaveChip extends StatelessWidget {
       case ChipVariant.rent:
         return isDark ? AppColors.accent300 : AppColors.accent700;
       case ChipVariant.outlined:
-        return isDark ? AppColors.zinc300 : AppColors.zinc700;
+        return isDark ? AppColors.stone300 : AppColors.stone700;
       case ChipVariant.defaultChip:
-        return isDark ? AppColors.zinc300 : AppColors.zinc700;
+        return isDark ? AppColors.stone300 : AppColors.stone700;
     }
   }
 }

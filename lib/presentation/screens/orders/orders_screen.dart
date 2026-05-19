@@ -174,7 +174,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                             const SizedBox(width: 6),
                             _buildBadge(
                               order.holdingType!,
-                              AppColors.zinc100,
+                              AppColors.stone100,
                               AppColors.primary800,
                             ),
                           ],

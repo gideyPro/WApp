@@ -1,11 +1,9 @@
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
-import '../../providers/auth_provider.dart';
 import '../home/home_screen.dart';
 import '../orders/orders_screen.dart';
 import '../messages/messages_screen.dart';
@@ -188,10 +186,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     // Watch unread messages count
     final unreadMsgCount = ref.watch(unreadMessagesCountProvider);
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
+      backgroundColor: context.isDarkMode ? AppColors.primary900 : AppColors.primary50,
       extendBody: true,
       body: IndexedStack(
         index: selectedIndex,
@@ -257,7 +253,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               label,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
+                color: isSelected ? AppColors.primary900 : (context.isDarkMode ? AppColors.primary600 : AppColors.primary300),
               ),
             ),
           ],
@@ -300,7 +296,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             else
               Icon(
                 Icons.chat_bubble_outline_rounded,
-                color: isSelected ? AppColors.accent600 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
+              color: isSelected ? AppColors.accent600 : (context.isDarkMode ? AppColors.primary600 : AppColors.primary300),
                 size: 26,
               ),
             const SizedBox(height: 4),
@@ -308,7 +304,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               AppLocalizations.of(context).navMessages,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
+                color: isSelected ? AppColors.primary900 : (context.isDarkMode ? AppColors.primary600 : AppColors.primary300),
               ),
             ),
           ],
@@ -337,7 +333,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               AppLocalizations.of(context).navSettings,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
+                color: isSelected ? AppColors.primary900 : (context.isDarkMode ? AppColors.primary600 : AppColors.primary300),
               ),
             ),
           ],

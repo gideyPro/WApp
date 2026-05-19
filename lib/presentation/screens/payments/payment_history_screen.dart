@@ -111,8 +111,8 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
 
   Widget _buildSkeletonList() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: context.shimmerBase,
+      highlightColor: context.shimmerHighlight,
       child: ListView.builder(
         padding: AppSpacing.paddingLg,
         itemCount: 5,
@@ -124,7 +124,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                 Container(
                   width: 48, height: 48,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: context.shimmerBase,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -133,21 +133,21 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(height: 14, width: 140, color: Colors.grey[300]),
+                      Container(height: 14, width: 140, color: context.shimmerBase),
                       const SizedBox(height: 8),
-                      Container(height: 12, width: 200, color: Colors.grey[300]),
+                      Container(height: 12, width: 200, color: context.shimmerBase),
                       const SizedBox(height: 4),
-                      Container(height: 12, width: 100, color: Colors.grey[300]),
+                      Container(height: 12, width: 100, color: context.shimmerBase),
                     ],
                   ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Container(height: 16, width: 80, color: Colors.grey[300]),
+                    Container(height: 16, width: 80, color: context.shimmerBase),
                     const SizedBox(height: 6),
                     Container(height: 18, width: 60, decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: context.shimmerBase,
                       borderRadius: BorderRadius.circular(8),
                     )),
                   ],
@@ -179,7 +179,7 @@ class _PaymentTile extends StatelessWidget {
           color: payment.isSuccess
               ? AppColors.emerald50
               : payment.isFailed
-                  ? Colors.red[50]!
+                  ? AppColors.errorLight
                   : AppColors.accent50,
           borderRadius: BorderRadius.circular(4),
         ),
@@ -193,7 +193,7 @@ class _PaymentTile extends StatelessWidget {
           color: payment.isSuccess
               ? AppColors.emerald600
               : payment.isFailed
-                  ? Colors.red[600]
+                  ? AppColors.error
                   : AppColors.accent600,
         ),
       ),
@@ -215,7 +215,7 @@ class _PaymentTile extends StatelessWidget {
           Text(
             _formatDate(payment.createdAt, context),
             style: AppTextStyles.caption.copyWith(
-              color: AppColors.zinc400,
+              color: AppColors.stone400,
             ),
           ),
         ],
@@ -278,8 +278,8 @@ class _PaymentTile extends StatelessWidget {
 
   Color _statusColor(dynamic payment) {
     if (payment.isSuccess) return AppColors.emerald600;
-    if (payment.isFailed) return Colors.red[600]!;
-    if (payment.isCancelled) return AppColors.zinc500;
+    if (payment.isFailed) return AppColors.error!;
+    if (payment.isCancelled) return AppColors.stone500;
     return AppColors.accent600;
   }
 }

@@ -326,13 +326,13 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.red[50],
+                color: AppColors.errorLight,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.cancel_outlined,
                 size: 60,
-                color: Colors.red[600],
+                color: AppColors.error,
               ),
             ),
             const SizedBox(height: 24),
@@ -345,14 +345,14 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               Container(
                 padding: AppSpacing.paddingLg,
                 decoration: BoxDecoration(
-                  color: Colors.red[50],
+                  color: AppColors.errorLight,
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: Colors.red[200]!),
+                  border: Border.all(color: AppColors.errorLight),
                 ),
                 child: Text(
                   l10n.kycRejectedReason(state.rejectionReason!),
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: Colors.red[700],
+                    color: AppColors.error,
                     fontWeight: FontWeight.w800,
                   ),
                   textAlign: TextAlign.center,
@@ -515,7 +515,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           color: context.cardBg,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(
-            color: image != null ? AppColors.accent300 : AppColors.zinc200,
+            color: image != null ? AppColors.accent300 : AppColors.stone200,
           ),
         ),
         child: Row(
@@ -535,7 +535,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: AppColors.zinc100,
+                  color: AppColors.stone100,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icon, size: 28, color: ThemeColors(context).textMuted),
@@ -561,7 +561,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             Icon(
               image != null ? Icons.check_circle : Icons.add_circle_outline,
-              color: image != null ? AppColors.accent600 : AppColors.zinc400,
+              color: image != null ? AppColors.accent600 : AppColors.stone400,
               size: 24,
             ),
           ],
@@ -595,7 +595,7 @@ class _DocumentTypeChip extends StatelessWidget {
           color: isSelected ? AppColors.accent50 : context.cardBg,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(
-            color: isSelected ? AppColors.accent400 : AppColors.zinc200,
+            color: isSelected ? AppColors.accent400 : AppColors.stone200,
             width: 2,
           ),
         ),

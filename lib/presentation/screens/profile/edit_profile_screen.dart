@@ -250,7 +250,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           borderRadius: BorderRadius.circular(4),
         ),
         filled: true,
-        fillColor: AppColors.zinc50,
+        fillColor: AppColors.stone50,
       ),
     );
   }

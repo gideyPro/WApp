@@ -124,7 +124,7 @@ class _WaveConnectivityBannerState extends ConsumerState<WaveConnectivityBanner>
   Color _getBackgroundColor(ConnectivityStatus status) {
     switch (status) {
       case ConnectivityStatus.offline:
-        return AppColors.zinc800;
+        return AppColors.stone800;
       case ConnectivityStatus.connecting:
         return AppColors.warning;
       case ConnectivityStatus.online:

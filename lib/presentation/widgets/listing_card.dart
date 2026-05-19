@@ -43,7 +43,7 @@ class PropertyListingCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (isLoading) return _buildSkeleton();
+    if (isLoading) return _buildSkeleton(context);
 
     return WaveCard(
       onTap: _handleTap,
@@ -88,32 +88,31 @@ class PropertyListingCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildSkeleton() {
+  Widget _buildSkeleton(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.primary200),
+        border: Border.all(color: context.theme.border),
         boxShadow: AppColors.shadowMd,
       ),
       child: Shimmer.fromColors(
-        baseColor: Colors.grey[200]!,
-        highlightColor: Colors.grey[100]!,
+        baseColor: context.shimmerBase,
+        highlightColor: context.shimmerHighlight,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image skeleton
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(4)),
               child: AspectRatio(
                 aspectRatio: 4 / 3,
                 child: Container(
-                  color: Colors.grey[300],
+                  color: context.shimmerBase,
                   child: Center(
                     child: Icon(Icons.home_rounded,
-                        size: 40, color: Colors.grey[400]),
+                        size: 40, color: context.theme.textMuted),
                   ),
                 ),
               ),
@@ -123,67 +122,25 @@ class PropertyListingCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: 22,
-                    width: 130,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
+                  _skeletonBlock(context, 22, 130),
                   const SizedBox(height: 8),
-                  Container(
-                    height: 16,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
+                  _skeletonBlock(context, 16, double.infinity),
                   const SizedBox(height: 6),
-                  Container(
-                    height: 14,
-                    width: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
+                  _skeletonBlock(context, 14, 200),
                   const SizedBox(height: 4),
-                  Container(
-                    height: 14,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
+                  _skeletonBlock(context, 14, 150),
                   const SizedBox(height: 8),
-                  Container(
-                    height: 14,
-                    width: 180,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
+                  _skeletonBlock(context, 14, 180),
                   const SizedBox(height: 6),
-                  Container(
-                    height: 12,
-                    width: 70,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
+                  _skeletonBlock(context, 12, 70),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      _skeletonChip(55),
+                      _skeletonChip(context, 55),
                       const SizedBox(width: 8),
-                      _skeletonChip(55),
+                      _skeletonChip(context, 55),
                       const SizedBox(width: 8),
-                      _skeletonChip(45),
+                      _skeletonChip(context, 45),
                     ],
                   ),
                 ],
@@ -195,12 +152,23 @@ class PropertyListingCard extends ConsumerWidget {
     );
   }
 
-  Widget _skeletonChip(double width) {
+  Widget _skeletonBlock(BuildContext context, double height, double width) {
+    return Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: context.shimmerBase,
+        borderRadius: BorderRadius.circular(4),
+      ),
+    );
+  }
+
+  Widget _skeletonChip(BuildContext context, double width) {
     return Container(
       height: 22,
       width: width,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: context.shimmerBase,
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -221,15 +189,15 @@ class PropertyListingCard extends ConsumerWidget {
                 imageUrl: listing?.mainThumbnailUrl ?? '',
                 fit: BoxFit.cover,
                 placeholder: (_, __) => Shimmer.fromColors(
-                  baseColor: Colors.grey[200]!,
-                  highlightColor: Colors.grey[100]!,
+                  baseColor: context.shimmerBase,
+                  highlightColor: context.shimmerHighlight,
                   child: Container(
-                    color: Colors.grey[300],
+                    color: context.shimmerBase,
                     child: Center(
                       child: Icon(
                         Icons.home_rounded,
                         size: 40,
-                        color: Colors.grey[400],
+                        color: context.theme.textMuted,
                       ),
                     ),
                   ),
@@ -574,7 +542,7 @@ class FeaturedListingCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (isLoading || listing == null) return _buildSkeleton();
+    if (isLoading || listing == null) return _buildSkeleton(context);
 
     return WaveCard(
       onTap: _handleTap,
@@ -584,8 +552,7 @@ class FeaturedListingCard extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image Section (Left)
-          Expanded(flex: 2, child: _buildImageSection()),
+          Expanded(flex: 2, child: _buildImageSection(context)),
 
           // Content Section (Right)
           Expanded(
@@ -622,7 +589,7 @@ class FeaturedListingCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildImageSection() {
+  Widget _buildImageSection(BuildContext context) {
     return ClipRRect(
       borderRadius: const BorderRadius.horizontal(left: Radius.circular(4)),
       child: SizedBox(
@@ -630,20 +597,19 @@ class FeaturedListingCard extends ConsumerWidget {
         height: double.infinity,
         child: Stack(
           children: [
-            // Main Image (Using Thumbnail)
             Positioned.fill(
               child: CachedNetworkImage(
                 imageUrl: listing?.mainThumbnailUrl ?? '',
                 fit: BoxFit.cover,
                 placeholder: (_, __) => Shimmer.fromColors(
-                  baseColor: Colors.grey[200]!,
-                  highlightColor: Colors.grey[100]!,
+                  baseColor: context.shimmerBase,
+                  highlightColor: context.shimmerHighlight,
                   child: Container(
-                    color: Colors.grey[300],
-                    child: const Icon(
+                    color: context.shimmerBase,
+                    child: Icon(
                       Icons.home_rounded,
                       size: 32,
-                      color: AppColors.primary300,
+                      color: context.theme.textMuted,
                     ),
                   ),
                 ),
@@ -859,18 +825,17 @@ class FeaturedListingCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildSkeleton() {
+  Widget _buildSkeleton(BuildContext context) {
     return WaveCard(
       margin: const EdgeInsets.only(bottom: 20),
       borderRadius: 4,
       padding: EdgeInsets.zero,
       child: Shimmer.fromColors(
-        baseColor: Colors.grey[200]!,
-        highlightColor: Colors.grey[100]!,
+        baseColor: context.shimmerBase,
+        highlightColor: context.shimmerHighlight,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image skeleton (left)
             Expanded(
               flex: 2,
               child: ClipRRect(
@@ -880,12 +845,11 @@ class FeaturedListingCard extends ConsumerWidget {
                   width: 130,
                   height: double.infinity,
                   child: Container(
-                    color: Colors.grey[300],
+                    color: context.shimmerBase,
                   ),
                 ),
               ),
             ),
-            // Content skeleton (right)
             Expanded(
               flex: 3,
               child: Padding(
@@ -895,72 +859,23 @@ class FeaturedListingCard extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Container(
-                          width: 50,
-                          height: 18,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
+                        _featuredSkeletonBlock(context, 50, 18),
                         const SizedBox(width: 6),
-                        Container(
-                          width: 60,
-                          height: 18,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
+                        _featuredSkeletonBlock(context, 60, 18),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Container(
-                      height: 18,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
+                    _featuredSkeletonBlock(context, 100, 18),
                     const SizedBox(height: 6),
-                    Container(
-                      height: 12,
-                      width: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
+                    _featuredSkeletonBlock(context, 120, 12),
                     const SizedBox(height: 10),
-                    Container(
-                      height: 12,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
+                    _featuredSkeletonBlock(context, 100, 12),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Container(
-                          width: 45,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
+                        _featuredSkeletonBlock(context, 45, 16),
                         const SizedBox(width: 6),
-                        Container(
-                          width: 40,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
+                        _featuredSkeletonBlock(context, 40, 16),
                       ],
                     ),
                   ],
@@ -969,6 +884,17 @@ class FeaturedListingCard extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _featuredSkeletonBlock(BuildContext context, double width, double height) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: context.shimmerBase,
+        borderRadius: BorderRadius.circular(4),
       ),
     );
   }

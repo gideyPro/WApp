@@ -442,7 +442,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: selected ? AppColors.accent50 : AppColors.zinc100,
+            color: selected ? AppColors.accent50 : AppColors.stone100,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: selected ? AppColors.accent500 : context.theme.divider,
@@ -473,7 +473,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: selected ? AppColors.accent50 : AppColors.zinc100,
+            color: selected ? AppColors.accent50 : AppColors.stone100,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: selected ? AppColors.accent500 : context.theme.divider,

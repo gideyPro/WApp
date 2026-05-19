@@ -582,7 +582,7 @@ class WaveBadge extends StatelessWidget {
       case BadgeVariant.error:
         return AppColors.error;
       default:
-        return AppColors.zinc200;
+        return AppColors.stone200;
     }
   }
 
@@ -598,7 +598,7 @@ class WaveBadge extends StatelessWidget {
       case BadgeVariant.rent:
         return AppColors.primary700;
       default:
-        return AppColors.zinc700;
+        return AppColors.stone700;
     }
   }
 }

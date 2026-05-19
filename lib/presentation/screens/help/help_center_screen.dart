@@ -88,7 +88,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 filled: true,
-                fillColor: AppColors.zinc50,
+                fillColor: AppColors.stone50,
               ),
             ),
           ),
@@ -167,7 +167,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: AppColors.zinc200),
+            border: Border.all(color: AppColors.stone200),
           ),
           child: Column(
             children: articles.asMap().entries.map((entry) {
@@ -243,7 +243,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             article.category,
             style: AppTextStyles.caption,
           ),
-          trailing: const Icon(Icons.chevron_right, color: AppColors.zinc400),
+          trailing: const Icon(Icons.chevron_right, color: AppColors.stone400),
           onTap: () => _showArticleDetail(article),
         );
       },

@@ -576,7 +576,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               decoration: BoxDecoration(
                 color: conv.isAssetChat
                     ? (isDark ? AppColors.primary700 : AppColors.primary100)
-                    : (isDark ? AppColors.zinc700 : AppColors.zinc100),
+                    : (isDark ? AppColors.stone700 : AppColors.stone100),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: conv.listingImageUrl != null
@@ -599,7 +599,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       size: 18,
                       color: conv.isAssetChat
                           ? ThemeColors(context).textPrimary
-                          : AppColors.zinc500,
+                          : AppColors.stone500,
                     ),
             ),
             const SizedBox(width: 12),
@@ -614,7 +614,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       fontSize: 13,
                       fontWeight:
                           isSelected ? FontWeight.w800 : FontWeight.w600,
-                      color: isDark ? AppColors.zinc100 : AppColors.zinc900,
+                      color: isDark ? AppColors.stone100 : AppColors.stone900,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -927,7 +927,7 @@ Widget _buildMessagesSkeleton() {
                 width: 32,
                 height: 32,
                 decoration: const BoxDecoration(
-                  color: AppColors.zinc200,
+                  color: AppColors.stone200,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -937,7 +937,7 @@ Widget _buildMessagesSkeleton() {
               height: 40,
               width: 120 + (index * 20),
               decoration: BoxDecoration(
-                color: AppColors.zinc200,
+                color: AppColors.stone200,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(4),
                   topRight: const Radius.circular(4),
@@ -952,7 +952,7 @@ Widget _buildMessagesSkeleton() {
                 width: 32,
                 height: 32,
                 decoration: const BoxDecoration(
-                  color: AppColors.zinc200,
+                  color: AppColors.stone200,
                   shape: BoxShape.circle,
                 ),
               ),

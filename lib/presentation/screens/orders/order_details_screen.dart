@@ -1,4 +1,3 @@
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -159,8 +158,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         children: [
           if (_order == null)
             Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
+              baseColor: context.shimmerBase,
+              highlightColor: context.shimmerHighlight,
               child: _buildOrderInfoSkeleton(),
             )
           else
@@ -244,7 +243,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 if (_order.holdingType != null)
                   _buildBadge(
                     _order.holdingType!,
-                    AppColors.zinc100,
+                    AppColors.stone100,
                     AppColors.primary800,
                   ),
                 const Spacer(),
@@ -605,7 +604,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       case 'fulfilled':
         return AppColors.success;
       case 'cancelled':
-        return AppColors.zinc400;
+        return AppColors.stone400;
       default:
         return AppColors.primary400;
     }

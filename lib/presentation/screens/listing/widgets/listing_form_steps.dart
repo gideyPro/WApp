@@ -593,9 +593,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     Color borderColor = context.theme.divider;
     if (price != null) {
       if (price < 10000) {
-        borderColor = Colors.red;
+        borderColor = AppColors.error;
       } else if (price < 100000) {
-        borderColor = Colors.amber;
+        borderColor = AppColors.warning;
       } else {
         borderColor = AppColors.emerald500;
       }
@@ -732,7 +732,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         children: [
           Text(l10n.listingLeaseHoldDetails,
               style: AppTextStyles.labelMedium.copyWith(
-                  color: Colors.purple.shade700, fontWeight: FontWeight.w600)),
+                  color: AppColors.accent700, fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -898,7 +898,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [DropdownMenuItem(value: null, child: Text(l10n.listingNoOptions, style: AppTextStyles.bodySmall.copyWith(color: Colors.grey)))]
+          ? [DropdownMenuItem(value: null, child: Text(l10n.listingNoOptions, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)))]
           : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
@@ -1406,7 +1406,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                     child: Container(
                       padding: const EdgeInsets.all(2),
                       decoration: const BoxDecoration(
-                          color: Colors.red, shape: BoxShape.circle),
+                          color: AppColors.error, shape: BoxShape.circle),
                       child:
                           const Icon(Icons.close, size: 14, color: Colors.white),
                     ),
@@ -1469,7 +1469,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                         l10n.listingExistingFile(widget.formData.existingVideoUrl!.split('/').last),
                         style: AppTextStyles.caption)),
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                  icon: const Icon(Icons.delete, color: AppColors.error, size: 20),
                   onPressed: () => widget.onUpdate(
                       widget.formData.copyWith(deleteVideo: true)),
                 ),
@@ -1559,7 +1559,7 @@ class _ImageThumb extends StatelessWidget {
                   child: Container(
                       padding: const EdgeInsets.all(2),
                       decoration: const BoxDecoration(
-                          color: Colors.red, shape: BoxShape.circle),
+                          color: AppColors.error, shape: BoxShape.circle),
                       child: const Icon(Icons.close,
                           size: 12, color: Colors.white)),
                 )),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/network/api_client.dart';
@@ -322,7 +323,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: Colors.white,
+      color: context.cardBg,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -547,7 +548,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.cardBg,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(color: AppColors.primary200),
         ),
@@ -728,7 +729,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               if (state.isLoading && state.listings.isNotEmpty)
                 Positioned.fill(
                   child: Container(
-                    color: AppColors.zinc50.withValues(alpha: 0.7),
+                    color: context.scaffoldBg.withValues(alpha: 0.7),
                     child: const Center(child: CircularProgressIndicator()),
                   ),
                 ),
@@ -740,7 +741,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildSkeletonList(int count) {
-    return ListView.builder(
+    return Shimmer.fromColors(
+      baseColor: context.shimmerBase,
+      highlightColor: context.shimmerHighlight,
+      child:
+      ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
       itemCount: count,
       itemBuilder: (context, index) {
@@ -748,9 +753,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           padding: const EdgeInsets.only(bottom: 16),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.cardBg,
               borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: AppColors.zinc200),
+              border: Border.all(color: context.shimmerBase),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -760,7 +765,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       const BorderRadius.vertical(top: Radius.circular(4)),
                   child: AspectRatio(
                     aspectRatio: 4 / 3,
-                    child: Container(color: AppColors.zinc200),
+                    child: Container(color: context.shimmerBase),
                   ),
                 ),
                 Padding(
@@ -769,22 +774,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                          height: 20, width: 120, color: AppColors.zinc200),
+                          height: 20, width: 120, color: context.shimmerBase),
                       const SizedBox(height: 10),
                       Container(
                           height: 16,
                           width: double.infinity,
-                          color: AppColors.zinc200),
+                          color: context.shimmerBase),
                       const SizedBox(height: 8),
                       Container(
-                          height: 14, width: 180, color: AppColors.zinc200),
+                          height: 14, width: 180, color: context.shimmerBase),
                       const SizedBox(height: 14),
                       Row(children: [
                         Container(
-                            height: 20, width: 60, color: AppColors.zinc200),
+                            height: 20, width: 60, color: context.shimmerBase),
                         const SizedBox(width: 8),
                         Container(
-                            height: 20, width: 45, color: AppColors.zinc200),
+                            height: 20, width: 45, color: context.shimmerBase),
                       ]),
                     ],
                   ),
@@ -794,6 +799,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
         );
       },
+    ),
     );
   }
 
