@@ -1637,8 +1637,8 @@ class ListingStep4Review extends StatelessWidget {
             const SizedBox(height: 16),
           ],
           CheckboxListTile(
-            title: Text(l10n.listingAcceptTerms),
-            subtitle: Text(l10n.listingTermsSubtitle),
+            title: Text(l10n.listingAcceptTerms, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+            subtitle: Text(l10n.listingTermsSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
             value: formData.termsAccepted,
             onChanged: (v) =>
                 onUpdate(formData.copyWith(termsAccepted: v ?? false)),
