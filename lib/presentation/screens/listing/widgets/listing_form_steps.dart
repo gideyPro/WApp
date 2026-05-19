@@ -496,7 +496,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           const SizedBox(height: 16),
 
           CheckboxListTile(
-            title: Text(l10n.listingHasDebt, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
+            title: Text(l10n.listingHasDebt, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
             value: widget.formData.hasDebtOrEncumbrance,
             onChanged: (v) => widget.onUpdate(
                 widget.formData.copyWith(
@@ -1208,12 +1208,23 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
   }
 
   Widget _amenityChip(String label, bool isSelected, Function(bool) onChanged) {
+    final isDark = context.isDarkMode;
     return FilterChip(
-      label: Text(label),
+      label: Text(label, style: AppTextStyles.labelMedium.copyWith(
+        color: isSelected
+            ? AppColors.accent700
+            : context.theme.textPrimary,
+      )),
       selected: isSelected,
       onSelected: onChanged,
-      selectedColor: AppColors.accent100,
+      backgroundColor: isDark ? AppColors.primary700 : AppColors.stone100,
+      selectedColor: isDark ? AppColors.accent900 : AppColors.accent100,
       checkmarkColor: AppColors.accent600,
+      side: BorderSide(
+        color: isSelected
+            ? AppColors.accent400
+            : (isDark ? AppColors.primary600 : AppColors.stone200),
+      ),
     );
   }
 }
