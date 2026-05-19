@@ -1,15 +1,16 @@
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../data/services/order_service.dart';
 import '../../../data/services/address_service.dart';
 import '../../../data/models/address.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../widgets/common/wave_button.dart';
+import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
@@ -249,7 +250,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(l10n.ordersBudget,
-                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700)),
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -276,7 +277,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(l10n.ordersArea,
-                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700)),
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -314,6 +315,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                   DropdownButtonFormField<String>(
                     initialValue: _holdingType,
                     decoration: _inputDecoration(label: l10n.ordersSelect),
+                    dropdownColor: context.sheetBg,
                     items: [
                       DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall)),
                       ...['Free Hold', 'Lease Hold', 'Cooperative'].map((v) =>
@@ -323,11 +325,12 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(l10n.ordersFacing,
-                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700)),
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     initialValue: _facingDirection,
                     decoration: _inputDecoration(label: l10n.ordersSelect),
+                    dropdownColor: context.sheetBg,
                     items: [
                       DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall)),
                       ...['north', 'south', 'east', 'west', 'north_east', 'north_west', 'south_east', 'south_west', 'facing_3_directions', 'Facing All Directions'].map((v) =>
@@ -340,8 +343,8 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             ),
 
             _sectionCard(
-              title: 'Location',
-              subtitle: 'Region, Zone, Woreda, and Kebele',
+              title: l10n.listingLocation,
+              subtitle: '${l10n.listingRegion}, ${l10n.listingZone}, ${l10n.listingWoreda}, ${l10n.listingKebele}',
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -351,7 +354,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                         child: _compactDropdownField(
                           value: _selectedRegion,
                           items: _regions,
-                          label: 'Region',
+                          label: l10n.listingRegion,
                           onChanged: _onRegionSelected,
                           isLoading: false,
                         ),
@@ -361,7 +364,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                         child: _compactDropdownField(
                           value: _selectedZone,
                           items: _zones,
-                          label: 'Zone',
+                          label: l10n.listingZone,
                           onChanged: _onZoneSelected,
                           isLoading: _loadingZones,
                         ),
@@ -375,7 +378,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                         child: _compactDropdownField(
                           value: _selectedWoreda,
                           items: _woredas,
-                          label: 'Woreda',
+                          label: l10n.listingWoreda,
                           onChanged: _onWoredaSelected,
                           isLoading: _loadingWoredas,
                         ),
@@ -385,7 +388,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                         child: _compactDropdownField(
                           value: _selectedKebele,
                           items: _kebeles.map((a) => a.kebele ?? '').where((n) => n.isNotEmpty).toList(),
-                          label: 'Kebele',
+                          label: l10n.listingKebele,
                           onChanged: _onKebeleSelected,
                           isLoading: _loadingKebeles,
                         ),
@@ -410,22 +413,11 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
             const SizedBox(height: 8),
 
-            SizedBox(
-              height: 40,
-              child: ElevatedButton(
-                onPressed: _submitting ? null : _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent500,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                ),
-                child: _submitting
-                    ? const SizedBox(
-                        width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : Text(l10n.ordersSubmit),
-              ),
+            WaveButton(
+              text: l10n.ordersSubmit,
+              onPressed: _submitting ? null : _submit,
+              isLoading: _submitting,
+              isFullWidth: true,
             ),
             const SizedBox(height: 40),
           ],
@@ -436,27 +428,35 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   Widget _typeChip(String value, String label, IconData icon) {
     final selected = _type == value;
+    final isDark = context.isDarkMode;
     return Expanded(
-      child: GestureDetector(
+      child: InkWell(
         onTap: () => setState(() => _type = value),
-        child: Container(
+        borderRadius: BorderRadius.circular(4),
+        child: Ink(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: selected ? AppColors.accent50 : AppColors.stone100,
+            color: selected
+                ? (isDark ? AppColors.primary800 : AppColors.navy950)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-              color: selected ? AppColors.accent500 : context.theme.divider,
+              color: selected
+                  ? (isDark ? AppColors.accent500 : AppColors.navy950)
+                  : context.theme.divider,
               width: selected ? 2 : 1,
             ),
           ),
           child: Column(
             children: [
-              Icon(icon, color: selected ? AppColors.accent500 : context.theme.iconSecondary, size: 28),
+              Icon(icon,
+                  color: selected ? Colors.white : context.theme.iconSecondary,
+                  size: 28),
               const SizedBox(height: 6),
               Text(label,
                   style: AppTextStyles.labelMedium.copyWith(
                     fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                    color: selected ? AppColors.accent500 : context.theme.textSecondary,
+                    color: selected ? Colors.white : context.theme.textSecondary,
                   )),
             ],
           ),
@@ -467,16 +467,22 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   Widget _listingTypeChip(String value, String label) {
     final selected = _listingType == value;
+    final isDark = context.isDarkMode;
     return Expanded(
-      child: GestureDetector(
+      child: InkWell(
         onTap: () => setState(() => _listingType = value),
-        child: Container(
+        borderRadius: BorderRadius.circular(4),
+        child: Ink(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: selected ? AppColors.accent50 : AppColors.stone100,
+            color: selected
+                ? (isDark ? AppColors.primary800 : AppColors.navy950)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-              color: selected ? AppColors.accent500 : context.theme.divider,
+              color: selected
+                  ? (isDark ? AppColors.accent500 : AppColors.navy950)
+                  : context.theme.divider,
               width: selected ? 2 : 1,
             ),
           ),
@@ -485,7 +491,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             textAlign: TextAlign.center,
             style: AppTextStyles.labelMedium.copyWith(
               fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                    color: selected ? AppColors.accent500 : context.theme.textSecondary,
+              color: selected ? Colors.white : context.theme.textSecondary,
             ),
           ),
         ),
@@ -512,8 +518,9 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
             : null,
       ),
+      dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall))]
+          ? [DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)))]
           : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
@@ -530,37 +537,23 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   }
 
   Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
-    return Container(
+    return WaveCard(
+      isGlass: true,
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary50.withValues(alpha: 0.5),
-            Colors.white,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.primary100.withValues(alpha: 0.8)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.w700)),
+          Text(title, style: AppTextStyles.labelMedium.copyWith(
+            fontWeight: FontWeight.w700,
+            color: context.theme.textSecondary,
+            letterSpacing: 0.3,
+          )),
           if (subtitle != null) ...[
-            const SizedBox(height: 2),
-            Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary500)),
+            const SizedBox(height: 4),
+            Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
           ],
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           child,
         ],
       ),
