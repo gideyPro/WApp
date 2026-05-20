@@ -87,10 +87,48 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
     }
   }
 
+  Widget _buildOwnerActionIcon({
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.65),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(icon, size: 16, color: color ?? Colors.white),
+      ),
+    );
+  }
+
   Future<void> _editListing(Listing listing) async {
+    final service = ListingService();
+    final detail = await service.getListingDetail(listing.id);
+    if (!mounted) return;
+    if (!detail.success || detail.listing == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context).commonError),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => EditListingScreen(listing: listing),
+        builder: (_) => EditListingScreen(listing: detail.listing!),
       ),
     );
     if (result == true && mounted) _loadMyListings();
@@ -305,82 +343,42 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
           final listing = _myListings[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: Column(
-              children: [
-                PropertyListingCard(
-                  listing: listing,
-                  hideFavoriteButton: true,
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          ListingDetailScreen(listingId: listing.id),
+            child: PropertyListingCard(
+              listing: listing,
+              hideFavoriteButton: true,
+              imageOverlayActions: [
+                _buildOwnerActionIcon(
+                  icon: Icons.edit_outlined,
+                  tooltip: AppLocalizations.of(context).commonEdit,
+                  onTap: () => _editListing(listing),
+                ),
+                const SizedBox(width: 4),
+                _buildOwnerActionIcon(
+                  icon: Icons.delete_outline,
+                  tooltip: AppLocalizations.of(context).commonDelete,
+                  color: AppColors.error,
+                  onTap: () => _deleteListing(listing),
+                ),
+                if (canFeature && !listing.isFeaturedActive)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: _buildOwnerActionIcon(
+                      icon: Icons.workspace_premium_outlined,
+                      tooltip: 'Feature',
+                      color: AppColors.accent500,
+                      onTap: () => _featureListing(listing),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    _ActionIcon(
-                      icon: Icons.edit_outlined,
-                      tooltip: AppLocalizations.of(context).commonEdit,
-                      onTap: () => _editListing(listing),
-                    ),
-                    const SizedBox(width: 4),
-                    _ActionIcon(
-                      icon: Icons.delete_outline,
-                      tooltip: AppLocalizations.of(context).commonDelete,
-                      color: AppColors.error,
-                      onTap: () => _deleteListing(listing),
-                    ),
-                    if (canFeature && !listing.isFeaturedActive)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: _ActionIcon(
-                          icon: Icons.workspace_premium_outlined,
-                          tooltip: 'Feature',
-                          color: AppColors.accent500,
-                          onTap: () => _featureListing(listing),
-                        ),
-                      ),
-                  ],
-                ),
               ],
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) =>
+                      ListingDetailScreen(listingId: listing.id),
+                ),
+              ),
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _ActionIcon extends StatelessWidget {
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-  final Color? color;
-
-  const _ActionIcon({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-    this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return SizedBox(
-      width: 36,
-      height: 36,
-      child: IconButton(
-        icon: Icon(icon, size: 20),
-        tooltip: tooltip,
-        onPressed: onTap,
-        color: color ?? (isDark ? AppColors.primary300 : AppColors.primary600),
-        padding: EdgeInsets.zero,
-        visualDensity: VisualDensity.compact,
-        splashRadius: 18,
       ),
     );
   }
