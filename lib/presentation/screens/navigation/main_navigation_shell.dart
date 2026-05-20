@@ -6,9 +6,10 @@ import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../home/home_screen.dart';
 import '../orders/orders_screen.dart';
-import '../messages/messages_screen.dart';
-import '../settings/settings_screen.dart';
+import '../notifications/notifications_screen.dart';
+import '../account/account_screen.dart';
 import '../listing/create_listing_screen.dart';
+import '../settings/settings_screen.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../../../l10n/app_localizations.dart';
@@ -92,7 +93,6 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   }
 
   /// Shows a styled access-gate dialog.
-  /// Returns true if the user tapped the action button, false/null otherwise.
   Future<bool?> _showAccessDialog({
     required IconData icon,
     required Color iconColor,
@@ -179,12 +179,12 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       const HomeScreen(),
       const OrdersScreen(),
       const Center(child: Text('')), // Placeholder for FAB
-      const MessagesScreen(),
-      const SettingsScreen(),
+      const NotificationsScreen(),
+      const AccountScreen(),
     ];
 
-    // Watch unread messages count
-    final unreadMsgCount = ref.watch(unreadMessagesCountProvider);
+    // Watch unread notifications count
+    final unreadNotifCount = ref.watch(unreadCountProvider);
 
     return Scaffold(
       backgroundColor: context.isDarkMode ? AppColors.primary900 : AppColors.primary50,
@@ -195,16 +195,16 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onCreateListingTap,
-        backgroundColor: context.cardBg,
+        backgroundColor: AppColors.emerald600,
         elevation: 12,
         shape: const CircleBorder(),
         child: _isCreatingListing
             ? const SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2.5),
+                child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
               )
-            : Icon(Icons.add, color: context.iconPrimary, size: 30),
+            : const Icon(Icons.add, color: Colors.white, size: 30),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -224,8 +224,9 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               _buildNavItem(Icons.receipt_long_outlined,
                   AppLocalizations.of(context).navOrders, 1),
               const SizedBox(width: 48), // Space for FAB notch
-              _buildMessagesNavItem(unreadMsgCount),
-              _buildSettingsNavItem(context),
+              _buildNotificationsNavItem(unreadNotifCount),
+              _buildNavItem(Icons.person_outline,
+                  AppLocalizations.of(context).navSettings, 4),
             ],
           ),
         ),
@@ -236,6 +237,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   Widget _buildNavItem(IconData icon, String label, int index) {
     final selectedIndex = ref.watch(selectedTabProvider);
     final isSelected = selectedIndex == index;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: InkWell(
         onTap: () => _onItemTapped(index),
@@ -245,7 +247,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.accent600 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
+              color: isSelected ? AppColors.accent600 : (isDark ? AppColors.primary600 : AppColors.primary300),
               size: 26,
             ),
             const SizedBox(height: 4),
@@ -253,7 +255,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               label,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : (context.isDarkMode ? AppColors.primary600 : AppColors.primary300),
+                color: isSelected ? AppColors.primary900 : (isDark ? AppColors.primary600 : AppColors.primary300),
               ),
             ),
           ],
@@ -262,10 +264,11 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     );
   }
 
-  Widget _buildMessagesNavItem(int unreadCount) {
+  Widget _buildNotificationsNavItem(int unreadCount) {
     final selectedIndex = ref.watch(selectedTabProvider);
     final isSelected = selectedIndex == 3;
     final displayCount = unreadCount > 99 ? '99+' : '$unreadCount';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Expanded(
       child: InkWell(
@@ -287,53 +290,23 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                 textColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Icon(
-                  Icons.chat_bubble_outline_rounded,
-                  color:
-                      isSelected ? AppColors.accent600 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
+                  Icons.notifications_outlined,
+                  color: isSelected ? AppColors.accent600 : (isDark ? AppColors.primary600 : AppColors.primary300),
                   size: 26,
                 ),
               )
             else
               Icon(
-                Icons.chat_bubble_outline_rounded,
-              color: isSelected ? AppColors.accent600 : (context.isDarkMode ? AppColors.primary600 : AppColors.primary300),
+                Icons.notifications_outlined,
+                color: isSelected ? AppColors.accent600 : (isDark ? AppColors.primary600 : AppColors.primary300),
                 size: 26,
               ),
             const SizedBox(height: 4),
             Text(
-              AppLocalizations.of(context).navMessages,
+              'Notifications',
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : (context.isDarkMode ? AppColors.primary600 : AppColors.primary300),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSettingsNavItem(BuildContext context) {
-    final selectedIndex = ref.watch(selectedTabProvider);
-    final isSelected = selectedIndex == 4;
-    return Expanded(
-      child: InkWell(
-        onTap: () => _onItemTapped(4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.settings_outlined,
-              color: isSelected ? AppColors.accent600 : (Theme.of(context).brightness == Brightness.dark ? AppColors.primary600 : AppColors.primary300),
-              size: 26,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              AppLocalizations.of(context).navSettings,
-              style: AppTextStyles.labelSmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : (context.isDarkMode ? AppColors.primary600 : AppColors.primary300),
+                color: isSelected ? AppColors.primary900 : (isDark ? AppColors.primary600 : AppColors.primary300),
               ),
             ),
           ],
