@@ -1,6 +1,5 @@
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';

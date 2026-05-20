@@ -5,10 +5,9 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/notification.dart' as app;
-import '../../../../data/services/notification_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_card.dart';
+import '../../widgets/common/wave_glass.dart';
 import '../listing/listing_detail_screen.dart';
 import '../messages/messages_screen.dart';
 import '../orders/order_details_screen.dart';
@@ -28,7 +27,6 @@ class NotificationsScreen extends ConsumerStatefulWidget {
 
 class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   final ScrollController _scrollController = ScrollController();
-  final NotificationService _notificationService = NotificationService();
 
   @override
   void initState() {
@@ -120,23 +118,28 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       onRefresh: () async {
         await ref.read(notificationsProvider.notifier).loadNotifications();
       },
-      child: ListView.separated(
+      child: ListView.builder(
         controller: _scrollController,
+        padding: AppSpacing.paddingLg,
         itemCount: state.notifications.length + (state.isLoading ? 1 : 0),
-        separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
           if (index >= state.notifications.length) {
             return const Padding(
-              padding: AppSpacing.paddingLg,
+              padding: EdgeInsets.symmetric(vertical: 16),
               child: Center(child: CircularProgressIndicator()),
             );
           }
 
           final notification = state.notifications[index];
-          return _NotificationTile(
-            notification: notification,
-            onTap: () => _handleNotificationTap(notification),
-            onDismissed: () => _deleteNotification(notification.id),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: WaveGlass(
+              child: InkWell(
+                onTap: () => _handleNotificationTap(notification),
+                borderRadius: BorderRadius.circular(4),
+                child: _NotificationTile(notification: notification),
+              ),
+            ),
           );
         },
       ),
@@ -336,67 +339,24 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       ),
     );
   }
-
-  Future<void> _deleteNotification(int id) async {
-    final response = await _notificationService.deleteNotification(id);
-    if (response.success) {
-      // Reload notifications to reflect deletion
-      ref.read(notificationsProvider.notifier).loadNotifications();
-    }
-  }
 }
 
 /// Notification Tile Widget
 class _NotificationTile extends StatelessWidget {
   final app.Notification notification;
-  final VoidCallback onTap;
-  final VoidCallback onDismissed;
 
   const _NotificationTile({
     required this.notification,
-    required this.onTap,
-    required this.onDismissed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key('notification_${notification.id}'),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        decoration: BoxDecoration(
-          color: AppColors.error.withValues(alpha: 0.8),
-        ),
-        child: const Icon(Icons.delete_outline, color: Colors.white),
-      ),
-      confirmDismiss: (direction) async {
-        final l10n = AppLocalizations.of(context);
-        return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(l10n.notificationsDeleteTitle),
-            content: Text(l10n.notificationsDeleteConfirm),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(l10n.commonCancel),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(l10n.notificationsDelete),
-              ),
-            ],
-          ),
-        );
-      },
-      onDismissed: (direction) => onDismissed(),
-      child: WaveCard(
-        isGlass: true,
-        showBorder: false,
-        child: ListTile(
-          leading: Container(
+    return Padding(
+      padding: AppSpacing.paddingLg,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
             width: 48,
             height: 48,
             decoration: BoxDecoration(
@@ -417,49 +377,50 @@ class _NotificationTile extends StatelessWidget {
                   : AppColors.accent600,
             ),
           ),
-          title: Text(
-            notification.title,
-            style: AppTextStyles.bodyMedium.copyWith(
-              fontWeight:
-                  notification.isRead ? FontWeight.w500 : FontWeight.w600,
-              color: context.theme.textPrimary,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 4),
-              Text(
-                notification.body,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: context.theme.textSecondary,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  notification.title,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight:
+                        notification.isRead ? FontWeight.w500 : FontWeight.w600,
+                    color: context.theme.textPrimary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                notification.displayTime,
-                style: AppTextStyles.caption.copyWith(
-                  color: context.theme.textMuted,
+                const SizedBox(height: 4),
+                Text(
+                  notification.body,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: context.theme.textSecondary,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
-          ),
-          trailing: notification.isRead
-              ? null
-              : Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.accent500,
-                    shape: BoxShape.circle,
+                const SizedBox(height: 4),
+                Text(
+                  notification.displayTime,
+                  style: AppTextStyles.caption.copyWith(
+                    color: context.theme.textMuted,
                   ),
                 ),
-          onTap: onTap,
-        ),
+              ],
+            ),
+          ),
+          if (!notification.isRead)
+            Container(
+              width: 8,
+              height: 8,
+              decoration: const BoxDecoration(
+                color: AppColors.accent500,
+                shape: BoxShape.circle,
+              ),
+            ),
+        ],
       ),
     );
   }

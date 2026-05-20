@@ -7,6 +7,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_glass.dart';
 import '../../../data/models/message.dart' as msg;
 import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -140,37 +141,44 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
               currentUserId: authState.user?.id,
             );
       },
-      child: ListView.separated(
+      child: ListView.builder(
         controller: _scrollController,
+        padding: AppSpacing.paddingLg,
         itemCount: conversations.length + (state.isLoading ? 1 : 0),
-        separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
           if (index >= conversations.length) {
             return const Padding(
-              padding: AppSpacing.paddingLg,
+              padding: EdgeInsets.symmetric(vertical: 16),
               child: Center(child: CircularProgressIndicator()),
             );
           }
 
           final conversation = conversations[index];
-          return _ConversationTile(
-            conversation: conversation,
-            onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => ChatScreen(
-                      conversationId: conversation.id,
-                      conversation: conversation),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: WaveGlass(
+              child: InkWell(
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ChatScreen(
+                          conversationId: conversation.id,
+                          conversation: conversation),
+                    ),
+                  );
+                  if (mounted) {
+                    final authState = ref.read(authStateProvider);
+                    ref.read(conversationsProvider.notifier).refreshConversations(
+                          currentUserId: authState.user?.id,
+                        );
+                  }
+                },
+                borderRadius: BorderRadius.circular(4),
+                child: _ConversationTile(
+                  conversation: conversation,
                 ),
-              );
-              // Refresh conversations after returning to update unread badges
-              if (mounted) {
-                final authState = ref.read(authStateProvider);
-                ref.read(conversationsProvider.notifier).refreshConversations(
-                      currentUserId: authState.user?.id,
-                    );
-              }
-            },
+              ),
+            ),
           );
         },
       ),
@@ -207,11 +215,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
 /// Conversation Tile Widget - WhatsApp-like with actual user initials
 class _ConversationTile extends ConsumerWidget {
   final msg.Conversation conversation;
-  final VoidCallback onTap;
 
   const _ConversationTile({
     required this.conversation,
-    required this.onTap,
   });
 
   @override
@@ -220,11 +226,9 @@ class _ConversationTile extends ConsumerWidget {
     final currentUserId = authState.user?.id ?? 0;
     final l10n = AppLocalizations.of(context);
 
-    // Compute initials and name dynamically with currentUserId
     final initials = conversation.getInitials(currentUserId);
     final displayName = conversation.getDisplayTitle(currentUserId);
 
-    // Check if this is a property-related conversation
     final isAssetChat =
         conversation.isAssetChat || conversation.listingId != null;
     final listingTitle = conversation.listingTitle;
@@ -232,7 +236,6 @@ class _ConversationTile extends ConsumerWidget {
     final hasUnread =
         conversation.unreadCount != null && conversation.unreadCount! > 0;
 
-    // Format "You: " prefix for own messages - use lastMessageSenderId for accuracy
     String previewText =
         conversation.lastMessage != null && conversation.lastMessage!.isNotEmpty
             ? conversation.lastMessage!
@@ -246,56 +249,31 @@ class _ConversationTile extends ConsumerWidget {
       }
     }
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: Stack(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Row(
         children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: hasUnread
-                    ? [AppColors.accent500, AppColors.accent600]
-                    : [
-                        context.isDarkMode ? AppColors.primary700 : AppColors.primary400,
-                        context.isDarkMode ? AppColors.primary800 : AppColors.primary600,
-                      ],
-              ),
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Center(
-              child: Text(
-                initials,
-                style: AppTextStyles.titleSmall.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: context.isDarkMode
-                      ? AppColors.primary900
-                      : AppColors.surface,
+          Stack(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: hasUnread
+                        ? [AppColors.accent500, AppColors.accent600]
+                        : [
+                            context.isDarkMode ? AppColors.primary700 : AppColors.primary400,
+                            context.isDarkMode ? AppColors.primary800 : AppColors.primary600,
+                          ],
+                  ),
+                  borderRadius: BorderRadius.circular(25),
                 ),
-              ),
-            ),
-          ),
-          // Unread badge
-          if (hasUnread)
-            Positioned(
-              right: -2,
-              top: -2,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: AppColors.error,
-                  shape: BoxShape.circle,
-                ),
-                constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                 child: Center(
                   child: Text(
-                    conversation.unreadCount! > 99
-                        ? '99+'
-                        : '${conversation.unreadCount}',
-                    style: AppTextStyles.caption.copyWith(
-                      fontSize: 9,
+                    initials,
+                    style: AppTextStyles.titleSmall.copyWith(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: context.isDarkMode
                           ? AppColors.primary900
@@ -304,71 +282,104 @@ class _ConversationTile extends ConsumerWidget {
                   ),
                 ),
               ),
-            ),
-        ],
-      ),
-      title: Text(
-        displayName,
-        style: AppTextStyles.bodyLarge.copyWith(
-          fontWeight: hasUnread ? FontWeight.w800 : FontWeight.w600,
-          color: context.theme.textPrimary,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Row(
-        children: [
-          if (isAssetChat) ...[
-            Icon(Icons.home_outlined,
-                size: 12, color: context.theme.iconSecondary),
-            const SizedBox(width: 4),
-            Expanded(
-              child: Text(
-                listingTitle ?? l10n.listingsTitle,
-                style: AppTextStyles.bodySmall
-                    .copyWith(color: context.theme.textSecondary),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Text('·',
-                style: AppTextStyles.bodySmall
-                    .copyWith(color: context.theme.textMuted)),
-            const SizedBox(width: 4),
-          ],
+              if (hasUnread)
+                Positioned(
+                  right: -2,
+                  top: -2,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: AppColors.error,
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                    child: Center(
+                      child: Text(
+                        conversation.unreadCount! > 99
+                            ? '99+'
+                            : '${conversation.unreadCount}',
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          color: context.isDarkMode
+                              ? AppColors.primary900
+                              : AppColors.surface,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              previewText,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
-                color: hasUnread
-                    ? (context.isDarkMode ? Colors.white : AppColors.primary800)
-                    : context.theme.textSecondary,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  displayName,
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: hasUnread ? FontWeight.w800 : FontWeight.w600,
+                    color: context.theme.textPrimary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    if (isAssetChat) ...[
+                      Icon(Icons.home_outlined,
+                          size: 12, color: context.theme.iconSecondary),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          listingTitle ?? l10n.listingsTitle,
+                          style: AppTextStyles.bodySmall
+                              .copyWith(color: context.theme.textSecondary),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text('·',
+                          style: AppTextStyles.bodySmall
+                              .copyWith(color: context.theme.textMuted)),
+                      const SizedBox(width: 4),
+                    ],
+                    Expanded(
+                      child: Text(
+                        previewText,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
+                          color: hasUnread
+                              ? (context.isDarkMode ? Colors.white : AppColors.primary800)
+                              : context.theme.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
           if (conversation.lastMessageAt != null)
-            Text(
-              _formatTime(conversation.lastMessageAt, l10n),
-              style: AppTextStyles.caption.copyWith(
-                fontSize: 11,
-                color:
-                    hasUnread ? AppColors.accent600 : context.theme.textMuted,
-                fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                _formatTime(conversation.lastMessageAt, l10n),
+                style: AppTextStyles.caption.copyWith(
+                  fontSize: 11,
+                  color:
+                      hasUnread ? AppColors.accent600 : context.theme.textMuted,
+                  fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
+                ),
               ),
             ),
         ],
       ),
-      onTap: onTap,
     );
   }
 }
