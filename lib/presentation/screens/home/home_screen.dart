@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
@@ -13,12 +13,12 @@ import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/listing_card.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 import '../search/search_screen.dart';
 import '../listing/listing_detail_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../settings/settings_screen.dart';
 
-/// Home Screen - Search bar + featured/latest listings
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -35,18 +35,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Timer? _debounceTimer;
   DateTime? _lastLoadTime;
 
-  // Search state
-  bool _isSearching = false;
-  String _searchQuery = '';
-  List<Listing> _searchResults = [];
-  bool _isLoadingSearch = false;
-
-  // Filter state
   String? _selectedType;
   String? _selectedListingType;
   String _selectedSort = 'newest';
   int? _selectedPriceMin;
   int? _selectedPriceMax;
+  String? _selectedPriceLabel;
+  bool _isFeaturedFilter = false;
+  Map<String, dynamic> _activeFilters = {};
+  bool _hasSearched = false;
+  bool _rentalEnabled = false;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
@@ -69,8 +67,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ref.read(authStateProvider.notifier).loadUser();
       _lastLoadTime = DateTime.now();
       _headerAnimationController.forward();
+      _loadSettings();
     });
     _scrollController.addListener(_onScroll);
+  }
+
+  Future<void> _loadSettings() async {
+    try {
+      final response =
+          await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data['data'];
+        if (data is Map && mounted) {
+          setState(() {
+            _rentalEnabled = data['rental_enabled'] == true;
+          });
+        }
+      }
+    } catch (_) {}
   }
 
   @override
@@ -96,7 +110,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _onScroll() {
-    if (!_isSearching) {
+    if (_hasSearched) {
+      final state = ref.read(searchResultsProvider);
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 200 &&
+          !state.isLoadingMore &&
+          state.hasMore) {
+        ref.read(searchResultsProvider.notifier).loadListings(
+              page: state.currentPage + 1,
+              filters: _activeFilters,
+            );
+      }
+    } else {
       final state = ref.read(listingsProvider);
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 200 &&
@@ -126,66 +151,81 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _onSearchChanged(String query) {
     _debounceTimer?.cancel();
-    if (query.trim().isEmpty) {
+    if (query.trim().isEmpty && !_hasSearched) {
       setState(() {
-        _isSearching = false;
-        _searchQuery = '';
-        _searchResults = [];
+        _hasSearched = false;
       });
       return;
     }
     _debounceTimer = Timer(const Duration(milliseconds: 400), () {
-      _performSearch(query.trim());
+      _performSearch();
     });
   }
 
-  Future<void> _performSearch(String query) async {
-    setState(() {
-      _isLoadingSearch = true;
-      _searchQuery = query;
-      _isSearching = true;
-    });
-
-    try {
-      final filters = <String, dynamic>{
-        'location': query,
-        'sort': _selectedSort,
-      };
-      if (_selectedType != null) filters['type'] = _selectedType;
-      if (_selectedListingType != null) filters['listing_type'] = _selectedListingType;
-      if (_selectedPriceMin != null) filters['price_min'] = _selectedPriceMin;
-      if (_selectedPriceMax != null) filters['price_max'] = _selectedPriceMax;
-
-      final response = await ApiClient().dio.get(
-        ApiConstants.listings,
-        queryParameters: filters,
-      );
-
-      if (response.statusCode == 200 && mounted) {
-        final data = response.data;
-        final listingsData = data is Map && data['data'] is List
-            ? data['data'] as List
-            : data is List ? data : [];
-        setState(() {
-          _searchResults = listingsData
-              .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-              .toList();
-          _isLoadingSearch = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) setState(() => _isLoadingSearch = false);
+  void _performSearch() {
+    final query = _searchController.text.trim();
+    _activeFilters = {};
+    if (_isFeaturedFilter) {
+      _activeFilters['is_featured'] = true;
     }
+    if (query.isNotEmpty) _activeFilters['location'] = query;
+    if (_selectedType != null) _activeFilters['type'] = _selectedType;
+    if (_selectedListingType != null) {
+      _activeFilters['listing_type'] = _selectedListingType;
+    }
+    _activeFilters['sort'] = _selectedSort;
+    if (_selectedPriceMin != null) {
+      _activeFilters['price_min'] = _selectedPriceMin;
+    }
+    if (_selectedPriceMax != null) {
+      _activeFilters['price_max'] = _selectedPriceMax;
+    }
+
+    setState(() => _hasSearched = true);
+    ref.read(searchResultsProvider.notifier).loadListings(filters: _activeFilters);
   }
 
   void _clearSearch() {
     _searchController.clear();
     setState(() {
-      _isSearching = false;
-      _searchQuery = '';
-      _searchResults = [];
+      _hasSearched = false;
     });
+    ref.invalidate(searchResultsProvider);
   }
+
+  void _clearAllFilters() {
+    setState(() {
+      _selectedType = null;
+      _selectedListingType = null;
+      _selectedSort = 'newest';
+      _selectedPriceMin = null;
+      _selectedPriceMax = null;
+      _selectedPriceLabel = null;
+      _isFeaturedFilter = false;
+      _activeFilters = {};
+      _hasSearched = false;
+      _searchController.clear();
+    });
+    ref.invalidate(searchResultsProvider);
+  }
+
+  void _removeFilterAndCheck(VoidCallback onRemove) {
+    onRemove();
+    if (_hasActiveFilters) {
+      _performSearch();
+    } else if (_hasSearched) {
+      setState(() => _hasSearched = false);
+      ref.invalidate(searchResultsProvider);
+    }
+  }
+
+  bool get _hasActiveFilters =>
+      _selectedType != null ||
+      _selectedListingType != null ||
+      _selectedSort != 'newest' ||
+      _selectedPriceLabel != null ||
+      _isFeaturedFilter ||
+      _searchController.text.isNotEmpty;
 
   // --- Filter Sheet ---
 
@@ -199,12 +239,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ),
       isScrollControlled: true,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setSheetState) {
+        builder: (ctx, setModalState) {
           return DraggableScrollableSheet(
             expand: false,
-            initialChildSize: 0.6,
-            minChildSize: 0.4,
-            maxChildSize: 0.85,
+            initialChildSize: 0.7,
+            minChildSize: 0.5,
+            maxChildSize: 0.9,
             builder: (context, scrollController) {
               return SingleChildScrollView(
                 controller: scrollController,
@@ -223,74 +263,204 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text(
-                      l10n.searchFilters,
-                      style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          l10n.searchFilters,
+                          style: AppTextStyles.title.copyWith(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setModalState(() {
+                              _selectedType = null;
+                              _selectedListingType = null;
+                              _selectedSort = 'newest';
+                              _selectedPriceLabel = null;
+                              _selectedPriceMin = null;
+                              _selectedPriceMax = null;
+                              _isFeaturedFilter = false;
+                            });
+                          },
+                          child: Text(
+                            l10n.searchReset,
+                            style: AppTextStyles.bodyMedium
+                                .copyWith(color: AppColors.primary500),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
 
                     // Property Type
-                    Text(l10n.searchPropertyType, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 8),
-                    _buildFilterChips(
+                    Text(
+                      l10n.searchPropertyType,
+                      style: AppTextStyles.bodyLarge
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 10),
+                    _modalChipRow(
                       options: [
-                        (null, l10n.searchFilterAll),
-                        ('house', l10n.listingHouse),
-                        ('land', l10n.listingLand),
+                        (l10n.searchFilterAll, null, _selectedType == null),
+                        (l10n.listingHouse, 'house', _selectedType == 'house'),
+                        (l10n.listingLand, 'land', _selectedType == 'land'),
                       ],
-                      selected: _selectedType,
-                      onSelect: (val) => setSheetState(() => _selectedType = val),
+                      onSelected: (v) =>
+                          setModalState(() => _selectedType = v as String?),
                     ),
                     const SizedBox(height: 16),
 
-                    // Listing Type
-                    Text(l10n.searchListingStatus, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 8),
-                    _buildFilterChips(
+                    // Listing Status
+                    if (_rentalEnabled) ...[
+                      Text(
+                        l10n.searchListingStatus,
+                        style: AppTextStyles.bodyLarge
+                            .copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 10),
+                      _modalChipRow(
+                        options: [
+                          (
+                            l10n.searchFilterAll,
+                            null,
+                            _selectedListingType == null
+                          ),
+                          (
+                            l10n.listingForSale,
+                            'sale',
+                            _selectedListingType == 'sale'
+                          ),
+                          (
+                            l10n.listingForRent,
+                            'rental',
+                            _selectedListingType == 'rental'
+                          ),
+                        ],
+                        onSelected: (v) => setModalState(
+                            () => _selectedListingType = v as String?),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
+                    // Featured filter
+                    Text(
+                      l10n.listingsFeatured,
+                      style: AppTextStyles.bodyLarge
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 10),
+                    _modalChipRow(
                       options: [
-                        (null, l10n.searchFilterAll),
-                        ('sale', l10n.listingSale),
-                        ('rental', l10n.listingRent),
+                        (l10n.searchFilterAll, null, !_isFeaturedFilter),
+                        (l10n.listingsFeatured, true, _isFeaturedFilter),
                       ],
-                      selected: _selectedListingType,
-                      onSelect: (val) => setSheetState(() => _selectedListingType = val),
+                      onSelected: (v) =>
+                          setModalState(() => _isFeaturedFilter = v == true),
                     ),
                     const SizedBox(height: 16),
 
-                    // Sort
-                    Text(l10n.searchSortBy, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 8),
-                    _buildFilterChips(
+                    // Price Range
+                    Text(
+                      l10n.searchPriceRange,
+                      style: AppTextStyles.bodyLarge
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 10),
+                    _modalChipRow(
                       options: [
-                        ('newest', l10n.searchSortNewest),
-                        ('oldest', l10n.searchSortOldest),
-                        ('price_low', l10n.searchSortPriceLow),
-                        ('price_high', l10n.searchSortPriceHigh),
+                        (
+                          l10n.searchFilterAny,
+                          null,
+                          _selectedPriceLabel == null
+                        ),
+                        (
+                          l10n.searchUnder5M,
+                          'Under 5M',
+                          _selectedPriceLabel == 'Under 5M'
+                        ),
+                        (
+                          l10n.search5M10M,
+                          '5M-10M',
+                          _selectedPriceLabel == '5M-10M'
+                        ),
+                        (
+                          l10n.search10M50M,
+                          '10M-50M',
+                          _selectedPriceLabel == '10M-50M'
+                        ),
+                        (
+                          l10n.search50M100M,
+                          '50M-100M',
+                          _selectedPriceLabel == '50M-100M'
+                        ),
+                        (
+                          l10n.search100MPlus,
+                          '100M+',
+                          _selectedPriceLabel == '100M+'
+                        ),
                       ],
-                      selected: _selectedSort,
-                      onSelect: (val) => setSheetState(() => _selectedSort = val!),
+                      onSelected: (v) =>
+                          setModalState(() => _setPriceFilter(v as String?)),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Sort By
+                    Text(
+                      l10n.searchSortBy,
+                      style: AppTextStyles.bodyLarge
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 10),
+                    _modalChipRow(
+                      options: [
+                        (
+                          l10n.searchSortNewest,
+                          'newest',
+                          _selectedSort == 'newest'
+                        ),
+                        (
+                          l10n.searchSortOldest,
+                          'oldest',
+                          _selectedSort == 'oldest'
+                        ),
+                        (
+                          l10n.searchSortPriceLow,
+                          'price_low',
+                          _selectedSort == 'price_low'
+                        ),
+                        (
+                          l10n.searchSortPriceHigh,
+                          'price_high',
+                          _selectedSort == 'price_high'
+                        ),
+                      ],
+                      onSelected: (v) =>
+                          setModalState(() => _selectedSort = v as String),
                     ),
                     const SizedBox(height: 24),
 
-                    // Apply button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pop(ctx);
-                          if (_isSearching) {
-                            _performSearch(_searchQuery);
-                          }
+                          _performSearch();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent600,
-                          foregroundColor: Colors.white,
+                          backgroundColor: AppColors.accent500,
                           padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4)),
                         ),
-                        child: Text(l10n.searchApplyFilters),
+                        child: Text(
+                          l10n.searchApplyFilters,
+                          style: AppTextStyles.bodyLargePlus
+                              .copyWith(fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
+                    const SizedBox(height: 8),
                   ],
                 ),
               );
@@ -301,40 +471,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildFilterChips({
-    required List<(String?, String)> options,
-    required String? selected,
-    required ValueChanged<String?> onSelect,
+  Widget _modalChipRow({
+    required List<(String, dynamic, bool)> options,
+    required void Function(dynamic) onSelected,
   }) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: options.map((opt) {
-        final value = opt.$1;
-        final label = opt.$2;
-        final isSelected = selected == value;
+      children: options.map((chip) {
+        final (label, value, isSelected) = chip;
         return GestureDetector(
-          onTap: () => onSelect(value),
+          onTap: () => onSelected(value),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.accent500 : context.cardBg,
+              color:
+                  isSelected ? AppColors.accent500 : AppColors.primary50,
               borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: isSelected ? AppColors.accent500 : context.divider,
-              ),
             ),
             child: Text(
               label,
               style: AppTextStyles.bodySmall.copyWith(
-                color: isSelected ? Colors.white : context.textPrimary,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
+                color:
+                    isSelected ? Colors.white : AppColors.primary700,
               ),
             ),
           ),
         );
       }).toList(),
     );
+  }
+
+  void _setPriceFilter(String? label) {
+    _selectedPriceLabel = label;
+    switch (label) {
+      case 'Under 5M':
+        _selectedPriceMin = 0;
+        _selectedPriceMax = 5000000;
+        break;
+      case '5M-10M':
+        _selectedPriceMin = 5000000;
+        _selectedPriceMax = 10000000;
+        break;
+      case '10M-50M':
+        _selectedPriceMin = 10000000;
+        _selectedPriceMax = 50000000;
+        break;
+      case '50M-100M':
+        _selectedPriceMin = 50000000;
+        _selectedPriceMax = 100000000;
+        break;
+      case '100M+':
+        _selectedPriceMin = 100000000;
+        _selectedPriceMax = null;
+        break;
+      default:
+        _selectedPriceMin = null;
+        _selectedPriceMax = null;
+    }
   }
 
   // --- Favorite ---
@@ -391,18 +587,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   color: AppColors.accent500.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.workspace_premium_outlined, size: 32, color: AppColors.accent600),
+                child: const Icon(Icons.workspace_premium_outlined,
+                    size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              Text('Subscription Required', style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800), textAlign: TextAlign.center),
+              Text('Subscription Required',
+                  style: AppTextStyles.title.copyWith(
+                      fontWeight: FontWeight.w800),
+                  textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              Text('You need an active subscription to view property details and contact owners.', style: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary), textAlign: TextAlign.center),
+              Text(
+                'You need an active subscription to view property details and contact owners.',
+                style: AppTextStyles.bodyMedium
+                    .copyWith(color: context.textSecondary),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 24),
               Row(
                 children: [
-                  Expanded(child: OutlinedButton(onPressed: () => Navigator.pop(ctx, false), style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 13), side: BorderSide(color: AppColors.primary200), foregroundColor: context.textPrimary), child: const Text('Cancel'))),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        side: const BorderSide(color: AppColors.primary200),
+                        foregroundColor: context.textPrimary,
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
                   const SizedBox(width: 12),
-                  Expanded(child: ElevatedButton(onPressed: () => Navigator.pop(ctx, true), style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 13), backgroundColor: AppColors.accent600, foregroundColor: Colors.white), child: const Text('View Plans'))),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        backgroundColor: AppColors.accent600,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('View Plans'),
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -412,7 +637,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
 
     if (result == true && mounted) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (_) => const SubscriptionPlansScreen()),
+      );
     }
   }
 
@@ -422,6 +650,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget build(BuildContext context) {
     final featuredState = ref.watch(featuredListingsProvider);
     final listingsState = ref.watch(listingsProvider);
+    final searchState = ref.watch(searchResultsProvider);
     final l10n = AppLocalizations.of(context);
     ref.watch(favoritesProvider);
 
@@ -431,7 +660,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
       body: Stack(
         children: [
-          // Decorative background
           Positioned(
             top: -100,
             left: -60,
@@ -451,81 +679,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             ),
           ),
-          // Main content
           CustomScrollView(
             controller: _scrollController,
             slivers: [
-              // Search bar header
               SliverPersistentHeader(
                 pinned: true,
                 delegate: _SearchBarDelegate(
                   searchController: _searchController,
                   focusNode: _searchFocusNode,
-                  isSearching: _isSearching,
-                  searchQuery: _searchQuery,
+                  hasActiveFilters: _hasActiveFilters,
+                  searchQuery: _searchController.text,
                   onSearchChanged: _onSearchChanged,
+                  onSubmitted: (_) => _performSearch(),
                   onClear: _clearSearch,
                   onFilterTap: _showFilterSheet,
                 ),
               ),
 
-              // Search results or normal content
-              if (_isSearching) ...[
-                if (_isLoadingSearch)
-                  const SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                else if (_searchResults.isEmpty)
-                  SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.search_off_rounded, size: 48, color: AppColors.primary300),
-                          const SizedBox(height: 12),
-                          Text(l10n.listingsNoResults, style: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary)),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final listing = _searchResults[index];
-                          final fav = _isFavorite(listing.id);
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: PropertyListingCard(
-                              listing: listing,
-                              isFavorite: fav,
-                              isTogglingFavorite: _isToggling(listing.id),
-                              onFavorite: () => _toggleFavorite(listing.id),
-                              onTap: () => _handleListingTap(listing),
-                            ),
-                          );
-                        },
-                        childCount: _searchResults.length,
-                      ),
-                    ),
-                  ),
-              ] else ...[
-                // Featured listings
+              if (_hasActiveFilters)
+                SliverToBoxAdapter(
+                  child: _buildActiveFilterChips(l10n),
+                ),
+
+              if (_hasSearched)
+                _buildSearchResults(searchState, l10n)
+              else ...[
                 SliverToBoxAdapter(
                   child: FadeTransition(
                     opacity: _fadeAnimation,
                     child: Column(
                       children: [
-                        _buildSectionHeader(context, l10n.listingsFeatured, isFeatured: true),
+                        _buildSectionHeader(
+                            l10n.listingsFeatured, isFeatured: true),
                         _buildFeaturedListings(featuredState),
-                        _buildSectionHeader(context, l10n.listingsTitle, isFeatured: false),
+                        _buildSectionHeader(l10n.listingsTitle),
                       ],
                     ),
                   ),
                 ),
-                // Latest listings
                 _buildLatestListings(listingsState),
               ],
             ],
@@ -535,7 +726,209 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title, {bool isFeatured = false}) {
+  Widget _buildActiveFilterChips(AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: context.cardBg,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            if (_selectedType != null)
+              _filterChip(
+                _selectedType == 'house'
+                    ? l10n.listingHouse
+                    : l10n.listingLand,
+                () => _removeFilterAndCheck(
+                    () => setState(() => _selectedType = null)),
+              ),
+            if (_selectedListingType != null)
+              _filterChip(
+                _selectedListingType == 'sale'
+                    ? l10n.listingForSale
+                    : l10n.listingForRent,
+                () => _removeFilterAndCheck(
+                    () => setState(() => _selectedListingType = null)),
+              ),
+            if (_selectedPriceLabel != null)
+              _filterChip(
+                _getLocalizedPriceLabel(_selectedPriceLabel!, l10n),
+                () => _removeFilterAndCheck(() => setState(() {
+                      _selectedPriceLabel = null;
+                      _selectedPriceMin = null;
+                      _selectedPriceMax = null;
+                    })),
+              ),
+            if (_searchController.text.isNotEmpty)
+              _filterChip(
+                '${l10n.searchPlaceholder.split('...').first}: ${_searchController.text}',
+                () {
+                  _searchController.clear();
+                  _removeFilterAndCheck(() {});
+                },
+              ),
+            if (_isFeaturedFilter)
+              _filterChip(
+                l10n.listingsFeatured,
+                () => _removeFilterAndCheck(
+                    () => setState(() => _isFeaturedFilter = false)),
+              ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _clearAllFilters,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.primary50,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: AppColors.primary200),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.close,
+                        size: 14, color: AppColors.primary600),
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.searchClearAll,
+                      style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary600),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getLocalizedPriceLabel(String label, AppLocalizations l10n) {
+    switch (label) {
+      case 'Under 5M':
+        return l10n.searchUnder5M;
+      case '5M-10M':
+        return l10n.search5M10M;
+      case '10M-50M':
+        return l10n.search10M50M;
+      case '50M-100M':
+        return l10n.search50M100M;
+      case '100M+':
+        return l10n.search100MPlus;
+      default:
+        return label;
+    }
+  }
+
+  Widget _filterChip(String label, VoidCallback onRemove) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: AppColors.accent50,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: AppColors.accent200),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: FontWeight.w600, color: AppColors.accent700),
+            ),
+            const SizedBox(width: 6),
+            GestureDetector(
+              onTap: onRemove,
+              child: const Icon(Icons.close,
+                  size: 14, color: AppColors.accent600),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchResults(ListingsState state, AppLocalizations l10n) {
+    if (state.isLoading && state.listings.isEmpty) {
+      return _buildSkeletonResults(5);
+    }
+
+    if (state.errorMessage != null && state.listings.isEmpty) {
+      return SliverFillRemaining(
+        child: WaveMessageScreen.error(
+          title: 'Search Error',
+          subtitle: state.errorMessage!,
+          onRetry: _performSearch,
+          isEmbedded: true,
+        ),
+      );
+    }
+
+    if (state.listings.isEmpty) {
+      return SliverFillRemaining(
+        child: WaveEmptyState(
+          icon: Icons.search_off_rounded,
+          title: l10n.searchNoResultsTitle,
+          subtitle: l10n.searchNoResultsSubtitle,
+          actionLabel: l10n.searchClearAll,
+          onAction: _clearAllFilters,
+        ),
+      );
+    }
+
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            if (index >= state.listings.length) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            final listing = state.listings[index];
+            final fav = _isFavorite(listing.id);
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: PropertyListingCard(
+                listing: listing,
+                isFavorite: fav,
+                isTogglingFavorite: _isToggling(listing.id),
+                onFavorite: () => _toggleFavorite(listing.id),
+                onTap: () => _handleListingTap(listing),
+              ),
+            );
+          },
+          childCount:
+              state.listings.length + (state.isLoadingMore ? 1 : 0),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSkeletonResults(int count) {
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return const Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: PropertyListingCard(isLoading: true),
+            );
+          },
+          childCount: count,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, {bool isFeatured = false}) {
     final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
@@ -547,26 +940,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isFeatured ? l10n.homeFeaturedPremium.toUpperCase() : l10n.homeLatestRecently.toUpperCase(),
+                isFeatured
+                    ? l10n.homeFeaturedPremium.toUpperCase()
+                    : l10n.homeLatestRecently.toUpperCase(),
                 style: AppTextStyles.eyebrow,
               ),
               const SizedBox(height: 4),
               Text(
                 title,
-                style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.5, color: context.textPrimary),
+                style: AppTextStyles.title.copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.5,
+                  color: context.textPrimary,
+                ),
               ),
             ],
           ),
           GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen(isFeatured: isFeatured), settings: const RouteSettings(name: '/search'))),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    SearchScreen(isFeatured: isFeatured),
+                settings: const RouteSettings(name: '/search'),
+              ),
+            ),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.primary50,
                 borderRadius: BorderRadius.circular(4),
                 border: Border.all(color: AppColors.primary200),
               ),
-              child: Text(l10n.homeViewAll, style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary700)),
+              child: Text(
+                l10n.homeViewAll,
+                style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary700),
+              ),
             ),
           ),
         ],
@@ -584,13 +996,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           itemCount: 3,
           itemBuilder: (context, index) => const Padding(
             padding: EdgeInsets.only(right: 16),
-            child: SizedBox(width: 280, child: FeaturedListingCard(listing: null, isLoading: true)),
+            child: SizedBox(
+              width: 280,
+              child:
+                  FeaturedListingCard(listing: null, isLoading: true),
+            ),
           ),
         ),
       );
     }
     if (state.listings.isEmpty) {
-      return SizedBox(height: 80, child: Center(child: Text(AppLocalizations.of(context).listingsNoResults)));
+      return SizedBox(
+        height: 80,
+        child: Center(
+          child:
+              Text(AppLocalizations.of(context).listingsNoResults),
+        ),
+      );
     }
     return SizedBox(
       height: 180,
@@ -625,13 +1047,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
         sliver: SliverList(
           delegate: SliverChildListDelegate([
-            for (int i = 0; i < 3; i++) const PropertyListingCard(isLoading: true),
+            for (int i = 0; i < 3; i++)
+              const PropertyListingCard(isLoading: true),
           ]),
         ),
       );
     }
     if (state.listings.isEmpty) {
-      return SliverFillRemaining(child: Center(child: Text(AppLocalizations.of(context).listingsNoResults)));
+      return SliverFillRemaining(
+        child: Center(
+          child:
+              Text(AppLocalizations.of(context).listingsNoResults),
+        ),
+      );
     }
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
@@ -639,7 +1067,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         delegate: SliverChildBuilderDelegate(
           (context, index) {
             if (index == state.listings.length) {
-              return const Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Center(child: CircularProgressIndicator()));
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Center(child: CircularProgressIndicator()),
+              );
             }
             final listing = state.listings[index];
             final fav = _isFavorite(listing.id);
@@ -654,29 +1085,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             );
           },
-          childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
+          childCount:
+              state.listings.length + (state.isLoadingMore ? 1 : 0),
         ),
       ),
     );
   }
 }
 
-/// Search Bar Header Delegate
 class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   final TextEditingController searchController;
   final FocusNode focusNode;
-  final bool isSearching;
+  final bool hasActiveFilters;
   final String searchQuery;
   final ValueChanged<String> onSearchChanged;
+  final ValueChanged<String> onSubmitted;
   final VoidCallback onClear;
   final VoidCallback onFilterTap;
 
   _SearchBarDelegate({
     required this.searchController,
     required this.focusNode,
-    required this.isSearching,
+    required this.hasActiveFilters,
     required this.searchQuery,
     required this.onSearchChanged,
+    required this.onSubmitted,
     required this.onClear,
     required this.onFilterTap,
   });
@@ -684,53 +1117,118 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Container(
-      color: isDark ? AppColors.primary900 : AppColors.primary50,
-      padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 8, 16, 12),
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: context.cardBg,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: context.divider),
-        ),
-        child: Row(
-          children: [
-            const SizedBox(width: 12),
-            Icon(Icons.search_rounded, color: ThemeColors(context).iconSecondary, size: 22),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextField(
-                controller: searchController,
-                focusNode: focusNode,
-                onChanged: onSearchChanged,
-                style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary),
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context).searchPlaceholder,
-                  hintStyle: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.primary900 : AppColors.primary50,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: shrinkOffset > 20 ? 0.04 : 0),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            16,
+            MediaQuery.of(context).padding.top + 8,
+            16,
+            12,
+          ),
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: context.cardBg,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: hasActiveFilters
+                    ? AppColors.accent200
+                    : context.divider,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.accent500.withValues(alpha: 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-              ),
+              ],
             ),
-            if (searchQuery.isNotEmpty)
-              GestureDetector(
-                onTap: onClear,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Icon(Icons.close_rounded, color: ThemeColors(context).iconSecondary, size: 20),
+            child: Row(
+              children: [
+                const SizedBox(width: 14),
+                Icon(
+                  Icons.search_rounded,
+                  color: context.theme.iconSecondary,
+                  size: 22,
                 ),
-              ),
-            GestureDetector(
-              onTap: onFilterTap,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Icon(Icons.tune_rounded, color: AppColors.accent600, size: 22),
-              ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: TextField(
+                    controller: searchController,
+                    focusNode: focusNode,
+                    onChanged: onSearchChanged,
+                    onSubmitted: onSubmitted,
+                    style: AppTextStyles.bodyMedium
+                        .copyWith(color: context.textPrimary),
+                    decoration: InputDecoration(
+                      hintText: l10n.searchPlaceholder,
+                      hintStyle: AppTextStyles.bodyMedium
+                          .copyWith(color: context.textSecondary),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                    ),
+                    textInputAction: TextInputAction.search,
+                  ),
+                ),
+                if (searchQuery.isNotEmpty)
+                  GestureDetector(
+                    onTap: onClear,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: context.theme.iconSecondary,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                Container(
+                  width: 1,
+                  height: 24,
+                  color: context.divider,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                ),
+                GestureDetector(
+                  onTap: onFilterTap,
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: hasActiveFilters
+                          ? AppColors.accent500
+                          : Colors.transparent,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.tune_rounded,
+                      size: 22,
+                      color: hasActiveFilters
+                          ? Colors.white
+                          : AppColors.accent500,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 4),
-          ],
+          ),
         ),
       ),
     );
@@ -738,12 +1236,13 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   double get maxExtent => 100;
+
   @override
   double get minExtent => 100;
 
   @override
   bool shouldRebuild(_SearchBarDelegate oldDelegate) {
-    return oldDelegate.isSearching != isSearching ||
+    return oldDelegate.hasActiveFilters != hasActiveFilters ||
         oldDelegate.searchQuery != searchQuery;
   }
 }

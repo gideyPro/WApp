@@ -1,67 +1,62 @@
 # AGENTS.md
 
+## Repository layout
+- Root: Flutter mobile app
+- `WaveMart/`: Laravel 12 backend
+- `design-system/`: UI design system (standalone)
+
 ## Prerequisites
 - Flutter 3.38.0 stable (pinned in CI), SDK >=3.0.0 <4.0.0
-- Java 17 required for Android builds
-- PHP 8.2+ for backend (Laravel 12)
+- Java 17 for Android builds
+- PHP 8.2+, MySQL for backend
 
-## Localization
-- Generated files in `lib/l10n/` are committed; run `flutter gen-l10n` only when editing ARB files
+## Flutter app
+- State: Riverpod | Navigation: go_router | Local: Hive (`listing_drafts`, `app_preferences`) + `flutter_secure_storage` (auth tokens)
+- Firebase: `firebase_options.dart` committed; run `flutterfire configure` to regenerate
+- Google Fonts bundled locally; runtime fetching disabled (`GoogleFonts.config.allowRuntimeFetching = false`)
+- Orientations locked to portrait
 
-## Configuration
-- Default API URL: `https://wavemart.et/api`, override with `--dart-define=API_BASE_URL=<url>`
-- Google Fonts bundled locally; runtime fetching disabled
+### Commands
+| Command | Purpose |
+|---------|---------|
+| `flutter pub get` | Install deps |
+| `flutter analyze` | Lint (uses flutter_lints) |
+| `flutter run --dart-define=API_BASE_URL=<url>` | Dev with custom API URL |
+| `flutter build apk --debug` | Debug APK |
+| `flutter build apk --release` | Release APK |
+| `dart run build_runner build --delete-conflicting-outputs` | Codegen (Hive adapters) |
 
-## Architecture
+### Localization
+- `pubspec.yaml` has `generate: true` → `flutter gen-l10n` runs automatically on build/run
+- Source ARBs: `lib/l10n/app_{en,am,ti}.arb`; generated Dart files are committed
+- Tigrinya falls back to Amharic Material/Widgets/Cupertino localizations (see `main.dart`)
 
-### Mobile App (Flutter)
-- State: Riverpod | Navigation: go_router | Local storage: Hive (boxes: `listing_drafts`, `app_preferences`)
-- `lib/core/`: Network, theme | `lib/data/`: Models, services | `lib/presentation/`: Providers, screens | `lib/l10n/`: en/am/ti localization
+### No test suite
+- No Flutter tests exist; verify changes manually
 
-### Backend API (Laravel)
-- Framework: Laravel 12.0 | Auth: Sanctum + OTP | Database: MySQL
-- Location: `/opt/lampp/htdocs/WaveMart/`
-- API Base: `/api` routes (see `routes/api.php`)
+## Backend (Laravel 12)
+- Auth: Sanctum + OTP (passwordless) | DB: MySQL
+- `WaveMart/.env` required (DB, Chapa, Pusher, Firebase)
+- All API routes in `routes/api.php` (prefix `/api`)
+- API endpoint reference in `lib/core/network/api_constants.dart`
 
-## Commands
-
-### Mobile App
-- `flutter pub get` - Install dependencies
-- `flutter analyze` - Lint (uses flutter_lints)
-- `flutter build apk --debug` - Debug APK
-- `flutter build apk --release` - Release APK
-
-### Backend API
-- `composer install` - Install PHP deps
-- `php artisan migrate` - Run migrations
-- `php artisan serve` - Start dev server
-
-## API Endpoints (Mobile -> Backend)
-
-### Auth (OTP-based, no password)
-- `POST /api/auth/send-otp` - Request OTP
-- `POST /api/auth/login` - Login with OTP
-- `POST /api/auth/register` - Register
-
-### Public
-- `GET /api/listings` - Browse listings
-- `GET /api/listings/featured` - Featured
-- `GET /api/addresses/regions` - Regions (cascading dropdowns)
-
-### Authenticated (Sanctum token required)
-- `GET /api/user` - Current user
-- `POST /api/listings` - Create listing
-- `GET|POST /api/favorites` - Favorites
-- `GET|POST /api/messages` - Messaging
-- `POST /api/subscriptions/*` - Subscriptions
-- `POST /api/payments/*` - Payments via Chapa
+### Commands
+| Command | Purpose |
+|---------|---------|
+| `composer install` | Install PHP deps |
+| `composer run setup` | Full setup: install, `.env` copy, key:generate, migrate, npm build |
+| `composer run dev` | Dev server + queue + logs + Vite concurrently |
+| `composer run test` | Config clear + phpunit (uses SQLite `:memory:`) |
+| `vendor/bin/phpunit` | Or directly (same as `composer run test`) |
+| `./vendor/bin/pint` | Laravel Pint (PSR-12 style fixer) |
 
 ## CI
-- Manual trigger only (GitHub Actions workflow_dispatch)
-- Builds/upload APKs
+- Manual trigger only (GitHub Actions `workflow_dispatch`)
+- Builds debug/release APKs; uploads as artifacts
+
+## API call reference
+See `API_CALL.md` for cURL examples with test tokens, conference flow, etc.
 
 ## Notes
-- `.kilo/` is Kilo internal; do not modify
-- No test suite exists in Flutter app; verify manually
-- Backend requires `.env` configuration (DB, Chapa, Pusher keys)
-- Full API cURL examples: see `API_CALL.md` (contains test tokens, conference flow)
+- `.kilo/`, `.gemini/`, `.qwen/` are internal agent dirs; do not modify
+- `.opencode/skills/` contains OpenCode skills; do not modify
