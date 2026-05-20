@@ -270,8 +270,17 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                         onPressed: () => Navigator.of(ctx).pop(false),
                         child: Text(AppLocalizations.of(ctx).commonCancel),
                       ),
-                      FilledButton(
+                      ElevatedButton(
                         onPressed: () => Navigator.of(ctx).pop(true),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                          backgroundColor: AppColors.accent500,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
                         child: const Text('View Plans'),
                       ),
                     ],

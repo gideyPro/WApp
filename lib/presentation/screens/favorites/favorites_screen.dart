@@ -114,9 +114,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(ctx, true),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 13),
-                        backgroundColor: AppColors.accent600,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        backgroundColor: AppColors.accent500,
                         foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                       child: const Text('View Plans'),
                     ),

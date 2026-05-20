@@ -1142,8 +1142,16 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
             onPressed: () => Navigator.of(ctx).pop(false),
             child: Text(AppLocalizations.of(context).commonCancel),
           ),
-          FilledButton(
+          ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              backgroundColor: AppColors.accent500,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
             child: const Text('View Plans'),
           ),
         ],
