@@ -90,15 +90,18 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
   Widget _buildOwnerActionIcon({
     required IconData icon,
     required String tooltip,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
     Color? color,
   }) {
+    final isDisabled = onTap == null;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.65),
+          color: isDisabled
+              ? Colors.black.withValues(alpha: 0.3)
+              : Colors.black.withValues(alpha: 0.65),
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
@@ -108,15 +111,20 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
             ),
           ],
         ),
-        child: Icon(icon, size: 16, color: color ?? Colors.white),
+        child: Icon(icon, size: 16, color: isDisabled ? Colors.white.withValues(alpha: 0.4) : (color ?? Colors.white)),
       ),
     );
   }
 
+  int? _editingListingId;
+  bool _isEditing(int listingId) => _editingListingId == listingId;
+
   Future<void> _editListing(Listing listing) async {
+    setState(() => _editingListingId = listing.id);
     final service = ListingService();
     final detail = await service.getListingDetail(listing.id);
     if (!mounted) return;
+    setState(() => _editingListingId = null);
     if (!detail.success || detail.listing == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -341,23 +349,39 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
           }
 
           final listing = _myListings[index];
+          final isEditing = _isEditing(listing.id);
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: PropertyListingCard(
               listing: listing,
               hideFavoriteButton: true,
               imageOverlayActions: [
-                _buildOwnerActionIcon(
-                  icon: Icons.edit_outlined,
-                  tooltip: AppLocalizations.of(context).commonEdit,
-                  onTap: () => _editListing(listing),
-                ),
+                if (isEditing)
+                  Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.white,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  _buildOwnerActionIcon(
+                    icon: Icons.edit_outlined,
+                    tooltip: AppLocalizations.of(context).commonEdit,
+                    onTap: () => _editListing(listing),
+                  ),
                 const SizedBox(width: 4),
                 _buildOwnerActionIcon(
                   icon: Icons.delete_outline,
                   tooltip: AppLocalizations.of(context).commonDelete,
                   color: AppColors.error,
-                  onTap: () => _deleteListing(listing),
+                  onTap: isEditing ? null : () => _deleteListing(listing),
                 ),
                 if (canFeature && !listing.isFeaturedActive)
                   Padding(
@@ -366,7 +390,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                       icon: Icons.workspace_premium_outlined,
                       tooltip: 'Feature',
                       color: AppColors.accent500,
-                      onTap: () => _featureListing(listing),
+                      onTap: isEditing ? null : () => _featureListing(listing),
                     ),
                   ),
               ],

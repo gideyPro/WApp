@@ -268,7 +268,7 @@ class PropertyListingCard extends ConsumerWidget {
         // Favorite Button / Owner Actions
         if (imageOverlayActions != null)
           Positioned(
-            top: AppSpacing.sm,
+            bottom: AppSpacing.sm,
             right: AppSpacing.sm,
             child: Row(
               mainAxisSize: MainAxisSize.min,
