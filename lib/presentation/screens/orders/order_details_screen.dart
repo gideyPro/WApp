@@ -31,7 +31,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   bool _isCancelling = false;
   String? _orderError;
 
-  late dynamic _order;
+  dynamic _order;
   late Future<LeadResponse> _suggestionsFuture;
 
   @override
