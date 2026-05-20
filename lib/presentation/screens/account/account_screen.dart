@@ -15,12 +15,10 @@ import '../favorites/favorites_screen.dart';
 import '../payments/payment_history_screen.dart';
 import '../help/help_center_screen.dart';
 import '../messages/messages_screen.dart';
-import '../notifications/notifications_screen.dart';
 import '../auth/otp_login_screen.dart';
-import '../../widgets/common/wave_card.dart';
+import '../../widgets/common/wave_glass.dart';
 import '../settings/settings_screen.dart';
 
-/// My Account Screen - Profile, stats, and settings
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
 
@@ -52,7 +50,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final l10n = AppLocalizations.of(context);
     final user = profileState.user ?? authState.user;
 
-    // User info
     final initials = user?.initials.isNotEmpty == true
         ? user!.initials
         : l10n.commonAppInitials;
@@ -63,7 +60,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         ? user!.phoneNumber
         : (user?.email ?? l10n.commonNA);
 
-    // KYC status
     String kycLabel = l10n.settingsKycRequired;
     Color kycColor = AppColors.warning;
     if (user?.isKycVerified == true || kycState.isVerified || kycState.isApproved) {
@@ -74,6 +70,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       kycColor = AppColors.warning;
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       body: RefreshIndicator(
@@ -83,97 +81,193 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         },
         child: CustomScrollView(
           slivers: [
-            // Profile header
+            // Gradient hero banner
             SliverToBoxAdapter(
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-                child: Column(
-                  children: [
-                    // Avatar
-                    Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [AppColors.accent500, AppColors.accent600],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.accent500.withValues(alpha: 0.35),
-                            blurRadius: 16,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          initials,
-                          style: AppTextStyles.headline4.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Gradient background
+                  Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: isDark
+                            ? [AppColors.primary950, AppColors.primary900]
+                            : [AppColors.primary900, AppColors.primary700],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      fullName,
-                      style: AppTextStyles.title.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: context.textPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      phone,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: context.textSecondary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Stats row
-                    Row(
+                    child: Stack(
                       children: [
-                        _buildStatItem(
-                          context,
-                          value: profileState.stats?.totalListings.toString() ?? '0',
-                          label: l10n.profileStatsListings,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const MyListingsScreen()),
+                        Positioned(
+                          top: -40,
+                          right: -30,
+                          child: Container(
+                            width: 160,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: RadialGradient(
+                                colors: [
+                                  AppColors.accent500.withValues(alpha: 0.15),
+                                  AppColors.accent500.withValues(alpha: 0.0),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        _buildStatItem(
-                          context,
-                          value: profileState.stats?.totalFavorites.toString() ?? '0',
-                          label: l10n.profileStatsFavorites,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const FavoritesScreen()),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        _buildStatItem(
-                          context,
-                          value: kycLabel,
-                          label: l10n.profileVerificationKyc,
-                          valueColor: kycColor,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const KycVerificationScreen()),
+                        Positioned(
+                          bottom: -20,
+                          left: -20,
+                          child: Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: RadialGradient(
+                                colors: [
+                                  Colors.white.withValues(alpha: 0.06),
+                                  Colors.white.withValues(alpha: 0.0),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
+                  ),
+
+                  // Floating profile card
+                  Positioned(
+                    left: 16,
+                    right: 16,
+                    bottom: -40,
+                    child: WaveGlass(
+                      borderRadius: 12,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                        child: Row(
+                          children: [
+                            // Avatar
+                            Container(
+                              width: 64,
+                              height: 64,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [AppColors.accent500, AppColors.accent600],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.accent500.withValues(alpha: 0.25),
+                                    blurRadius: 12,
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  initials,
+                                  style: AppTextStyles.headline4.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    fullName,
+                                    style: AppTextStyles.title.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: context.textPrimary,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    phone,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      color: context.textSecondary,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Spacer for the floating card overlap
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 56),
+            ),
+
+            // Stats row
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _buildStatItem(
+                      context,
+                      value: profileState.stats?.totalListings.toString() ?? '0',
+                      label: l10n.profileStatsListings,
+                      gradientColors: isDark
+                          ? [AppColors.accent900, AppColors.accent950]
+                          : [AppColors.accent50, AppColors.surface],
+                      valueColor: AppColors.accent600,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const MyListingsScreen()),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    _buildStatItem(
+                      context,
+                      value: profileState.stats?.totalFavorites.toString() ?? '0',
+                      label: l10n.profileStatsFavorites,
+                      gradientColors: isDark
+                          ? [AppColors.primary800, AppColors.primary900]
+                          : [AppColors.primary50, AppColors.surface],
+                      valueColor: AppColors.primary600,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    _buildStatItem(
+                      context,
+                      value: kycLabel,
+                      label: l10n.profileVerificationKyc,
+                      valueColor: kycColor,
+                      gradientColors: isDark
+                          ? [AppColors.emerald800, AppColors.emerald900]
+                          : [AppColors.emerald50, AppColors.surface],
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const KycVerificationScreen()),
+                      ),
+                    ),
                   ],
                 ),
               ),
+            ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
             ),
 
             // Menu sections
@@ -192,13 +286,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           title: l10n.navMessages,
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(builder: (_) => const MessagesScreen()),
-                          ),
-                        ),
-                        _MenuItemData(
-                          icon: Icons.notifications_outlined,
-                          title: 'Notifications',
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const NotificationsScreen()),
                           ),
                         ),
                         if (subscriptionEnabled) ...[
@@ -287,7 +374,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 100),
+                    SizedBox(height: MediaQuery.of(context).padding.bottom + 80),
                   ],
                 ),
               ),
@@ -302,6 +389,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     BuildContext context, {
     required String value,
     required String label,
+    required List<Color> gradientColors,
     Color? valueColor,
     VoidCallback? onTap,
   }) {
@@ -309,11 +397,17 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: context.cardBg,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: context.divider),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: gradientColors,
+            ),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: context.divider.withValues(alpha: 0.5),
+            ),
           ),
           child: Column(
             children: [
@@ -321,6 +415,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 value,
                 style: AppTextStyles.titleSmall.copyWith(
                   color: valueColor ?? AppColors.accent600,
+                  fontWeight: FontWeight.w800,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -360,9 +455,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               ),
             ),
           ),
-        WaveCard(
-          isGlass: true,
-          showBorder: false,
+        WaveGlass(
+          borderRadius: 8,
           child: Column(
             children: items.asMap().entries.map((entry) {
               final index = entry.key;
@@ -379,12 +473,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     return Column(
       children: [
         ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           leading: Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
               color: context.theme.isDark ? AppColors.primary800 : AppColors.primary50,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               item.icon,
@@ -414,25 +509,77 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.authLogout),
-        content: Text(l10n.authLogoutConfirm),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext), child: Text(l10n.commonCancel)),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              await ref.read(authStateProvider.notifier).logout();
-              if (context.mounted) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
-                  (route) => false,
-                );
-              }
-            },
-            child: Text(l10n.authLogout, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error, fontWeight: FontWeight.w700)),
+      builder: (dialogContext) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.logout, size: 32, color: AppColors.error),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.authLogout,
+                style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                l10n.authLogoutConfirm,
+                style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        side: BorderSide(color: context.theme.divider),
+                        foregroundColor: context.theme.textPrimary,
+                      ),
+                      child: Text(l10n.commonCancel),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.pop(dialogContext);
+                        await ref.read(authStateProvider.notifier).logout();
+                        if (context.mounted) {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
+                            (route) => false,
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        backgroundColor: AppColors.error,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: Text(l10n.authLogout),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
