@@ -156,7 +156,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                           backgroundColor: iconColor,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                         child: Text(actionLabel),

@@ -610,8 +610,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       onPressed: () => Navigator.pop(ctx, false),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: const BorderSide(color: AppColors.primary200),
-                        foregroundColor: context.textPrimary,
+                        side: BorderSide(color: context.theme.divider),
+                        foregroundColor: context.theme.textPrimary,
                       ),
                       child: const Text('Cancel'),
                     ),
@@ -621,7 +621,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(ctx, true),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(vertical: 13),
                         backgroundColor: AppColors.accent500,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
@@ -1127,8 +1127,8 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
         color: isDark ? AppColors.primary900 : AppColors.primary50,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: shrinkOffset > 20 ? 0.04 : 0),
-            blurRadius: 12,
+            color: Colors.black.withValues(alpha: shrinkOffset > 20 ? 0.06 : 0),
+            blurRadius: 16,
             offset: const Offset(0, 4),
           ),
         ],
@@ -1138,44 +1138,45 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
         child: Padding(
           padding: EdgeInsets.fromLTRB(
             16,
-            MediaQuery.of(context).padding.top + 8,
+            MediaQuery.of(context).padding.top + 12,
             16,
             12,
           ),
           child: Container(
-            height: 48,
+            height: 56,
             decoration: BoxDecoration(
               color: context.cardBg,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: hasActiveFilters
                     ? AppColors.accent200
                     : context.divider,
+                width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.accent500.withValues(alpha: 0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  color: AppColors.accent500.withValues(alpha: 0.08),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: Row(
               children: [
-                const SizedBox(width: 14),
+                const SizedBox(width: 16),
                 Icon(
                   Icons.search_rounded,
                   color: context.theme.iconSecondary,
-                  size: 22,
+                  size: 24,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
                     controller: searchController,
                     focusNode: focusNode,
                     onChanged: onSearchChanged,
                     onSubmitted: onSubmitted,
-                    style: AppTextStyles.bodyMedium
+                    style: AppTextStyles.bodyLarge
                         .copyWith(color: context.textPrimary),
                     decoration: InputDecoration(
                       hintText: l10n.searchPlaceholder,
@@ -1183,7 +1184,6 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                           .copyWith(color: context.textSecondary),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
-                      isDense: true,
                     ),
                     textInputAction: TextInputAction.search,
                   ),
@@ -1192,37 +1192,37 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                   GestureDetector(
                     onTap: onClear,
                     child: Padding(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(12),
                       child: Icon(
                         Icons.close_rounded,
                         color: context.theme.iconSecondary,
-                        size: 20,
+                        size: 22,
                       ),
                     ),
                   ),
                 Container(
                   width: 1,
-                  height: 24,
+                  height: 28,
                   color: context.divider,
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                 ),
                 GestureDetector(
                   onTap: onFilterTap,
                   child: Container(
-                    width: 48,
-                    height: 48,
+                    width: 56,
+                    height: 56,
                     decoration: BoxDecoration(
                       color: hasActiveFilters
                           ? AppColors.accent500
                           : Colors.transparent,
                       borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
+                        topRight: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
                       ),
                     ),
                     child: Icon(
                       Icons.tune_rounded,
-                      size: 22,
+                      size: 24,
                       color: hasActiveFilters
                           ? Colors.white
                           : AppColors.accent500,
@@ -1238,10 +1238,10 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 100;
+  double get maxExtent => 110;
 
   @override
-  double get minExtent => 100;
+  double get minExtent => 110;
 
   @override
   bool shouldRebuild(_SearchBarDelegate oldDelegate) {

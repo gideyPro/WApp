@@ -9,6 +9,8 @@ import '../../../../data/services/kyc_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../listing/create_listing_screen.dart';
+import '../subscriptions/subscription_plans_screen.dart';
+import '../settings/settings_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -245,13 +247,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             WaveButton(
               text: l10n.kycCreateListing,
               icon: Icons.add,
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (_) => const CreateListingScreen()),
-                );
-              },
+              onPressed: _onCreateListingFromKyc,
               variant: ButtonVariant.success,
               isFullWidth: true,
             ),
@@ -259,6 +255,100 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _onCreateListingFromKyc() async {
+    final subState = ref.read(subscriptionProvider);
+    final settingsAsync = ref.read(appSettingsProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
+
+    if (subscriptionEnabled && !subState.canCreateListing) {
+      final goSub = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: AppColors.accent500.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.workspace_premium_outlined,
+                      size: 32, color: AppColors.accent500),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Subscription Required',
+                  style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'You need an active subscription to post a listing.',
+                  style: AppTextStyles.bodyMedium
+                      .copyWith(color: context.theme.textSecondary),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 13),
+                          side: BorderSide(color: context.theme.divider),
+                          foregroundColor: context.theme.textPrimary,
+                        ),
+                        child: const Text('Cancel'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 13),
+                          backgroundColor: AppColors.accent500,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        child: const Text('View Plans'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      if (goSub == true && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+        );
+      }
+      return;
+    }
+
+    if (mounted) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const CreateListingScreen()),
+      );
+    }
   }
 
   Widget _buildPendingState(KycStatusState state, AppLocalizations l10n) {
