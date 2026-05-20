@@ -22,6 +22,7 @@ class PropertyListingCard extends ConsumerWidget {
   final bool isTogglingFavorite;
   final bool isLoading;
   final bool hideFavoriteButton;
+  final List<Widget>? imageOverlayActions;
 
   const PropertyListingCard({
     super.key,
@@ -32,6 +33,7 @@ class PropertyListingCard extends ConsumerWidget {
     this.isTogglingFavorite = false,
     this.isLoading = false,
     this.hideFavoriteButton = false,
+    this.imageOverlayActions,
   });
 
   void _handleTap() {
@@ -263,8 +265,17 @@ class PropertyListingCard extends ConsumerWidget {
           ),
         ),
 
-        // Favorite Button
-        if (!hideFavoriteButton)
+        // Favorite Button / Owner Actions
+        if (imageOverlayActions != null)
+          Positioned(
+            top: AppSpacing.sm,
+            right: AppSpacing.sm,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: imageOverlayActions!,
+            ),
+          )
+        else if (!hideFavoriteButton)
           Positioned(
             top: AppSpacing.sm,
             right: AppSpacing.sm,
@@ -490,7 +501,7 @@ class PropertyListingCard extends ConsumerWidget {
         ),
         const SizedBox(width: 4),
         Text(
-          '${(DateTime.now().millisecondsSinceEpoch % 100).toInt() + 20}',
+          '${listing?.viewCount ?? 0}',
           style: AppTextStyles.caption,
         ),
       ],

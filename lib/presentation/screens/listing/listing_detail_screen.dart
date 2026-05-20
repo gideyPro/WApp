@@ -464,23 +464,53 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               );
             },
           ),
-          // Image counter
+          // Image counter + View count
           Positioned(
             bottom: 16,
             right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                '${_currentImageIndex + 1}/${images.length}',
-                style: AppTextStyles.labelSmall.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (listing.viewCount > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.visibility_outlined, size: 12, color: Colors.white),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${listing.viewCount}',
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (listing.viewCount > 0 && images.length > 1)
+                  const SizedBox(width: 6),
+                if (images.length > 1)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      '${_currentImageIndex + 1}/${images.length}',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ],
@@ -504,25 +534,6 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           listing.getLocalizedTitle(context, cache),
           style: AppTextStyles.headline4,
         ),
-        if (listing.viewCount > 0) ...[
-          const SizedBox(height: 6),
-          Row(
-            children: [
-              Icon(
-                Icons.visibility_outlined,
-                size: 14,
-                color: context.textSecondary,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                '${listing.viewCount} ${listing.viewCount == 1 ? "view" : "views"}',
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: context.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ],
       ],
     );
   }
