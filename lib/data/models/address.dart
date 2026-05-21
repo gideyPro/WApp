@@ -99,7 +99,7 @@ class Address {
 
   /// Get address string localized for the current app locale
   /// [cache] - Optional map of English names to localized names fetched from API
-  String getLocalizedAddress(BuildContext context, [Map<String, String>? cache]) {
+  String getLocalizedAddress(BuildContext context, [Map<String, String>? cache, bool isRestricted = false]) {
     final locale = Localizations.localeOf(context).languageCode;
 
     // Helper to get name from cache or fallback to original
@@ -120,7 +120,10 @@ class Address {
     String? k = localizedOr(kebele, kebeleLocalized);
     String? s = localizedOr(specificLocation, specificLocationLocalized);
 
-    final parts = [z, w, k, s]
+    // If restricted, we only show up to Woreda (Zone, Woreda)
+    final components = isRestricted ? [z, w] : [z, w, k, s];
+    
+    final parts = components
         .where((e) => e != null && e.isNotEmpty)
         .toList();
     

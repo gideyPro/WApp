@@ -415,7 +415,12 @@ class PropertyListingCard extends ConsumerWidget {
   Widget _buildLocation(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cache = ref.watch(addressCacheProvider);
-    final location = listing?.address?.getLocalizedAddress(context, cache) ??
+    
+    // Check if user has active subscription (canCreateListing is used as a proxy for access)
+    final subState = ref.watch(subscriptionProvider);
+    final isRestricted = !subState.canCreateListing;
+
+    final location = listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
         listing?.address?.region ??
         l10n.listingUnknownLocation;
     return Row(
@@ -768,6 +773,11 @@ class FeaturedListingCard extends ConsumerWidget {
   Widget _buildLocation(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cache = ref.watch(addressCacheProvider);
+    
+    // Check if user has active subscription
+    final subState = ref.watch(subscriptionProvider);
+    final isRestricted = !subState.canCreateListing;
+
     return Row(
       children: [
         const Icon(
@@ -778,7 +788,7 @@ class FeaturedListingCard extends ConsumerWidget {
         const SizedBox(width: 3),
         Expanded(
           child: Text(
-            listing?.address?.getLocalizedAddress(context, cache) ??
+            listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
                 listing?.address?.region ??
                 l10n.listingUnknownLocation,
             style: AppTextStyles.bodySmall.copyWith(
