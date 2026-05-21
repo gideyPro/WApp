@@ -245,9 +245,13 @@ class LeadService {
         '${ApiConstants.apiBase}/orders/suggestions/$suggestionId/accept',
       );
       if (response.statusCode == 200) {
+        final lead = response.data['data'] != null
+            ? Lead.fromJson(response.data['data'] as Map<String, dynamic>)
+            : null;
         return LeadResponse(
           success: true,
           message: response.data['message'] ?? 'Suggestion accepted',
+          lead: lead,
         );
       }
       return LeadResponse(
