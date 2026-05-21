@@ -712,6 +712,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   child: FadeTransition(
                     opacity: _fadeAnimation,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildSectionHeader(
                             l10n.listingsFeatured, isFeatured: true),
