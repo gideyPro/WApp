@@ -91,6 +91,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     // For document images, show picker options
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+      ),
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -309,7 +312,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                           side: BorderSide(color: context.theme.divider),
                           foregroundColor: context.theme.textPrimary,
                         ),
-                        child: const Text('Cancel'),
+                        child: Text(AppLocalizations.of(ctx).commonCancel),
                       ),
                     ),
                     const SizedBox(width: 12),

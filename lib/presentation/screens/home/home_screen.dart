@@ -613,7 +613,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         side: BorderSide(color: context.theme.divider),
                         foregroundColor: context.theme.textPrimary,
                       ),
-                      child: const Text('Cancel'),
+                      child: Text(AppLocalizations.of(ctx).commonCancel),
                     ),
                   ),
                   const SizedBox(width: 12),

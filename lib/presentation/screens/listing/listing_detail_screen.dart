@@ -1028,15 +1028,25 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.listingDeleteConfirmTitle),
-        content: Text(l10n.listingDeleteConfirmMessage),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text(l10n.listingDeleteConfirmTitle,
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(l10n.listingDeleteConfirmMessage,
+            style: AppTextStyles.bodyMedium
+                .copyWith(color: context.theme.textSecondary)),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
               child: Text(l10n.commonCancel)),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
             child: Text(l10n.commonDelete),
           ),
         ],
@@ -1074,9 +1084,13 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Feature this Listing?'),
-        content: const Text(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text('Feature this Listing?',
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(
           'Your listing will be featured on the home page and search results for 30 days.',
+          style: AppTextStyles.bodyMedium
+              .copyWith(color: context.theme.textSecondary),
         ),
         actions: [
           TextButton(
@@ -1088,6 +1102,9 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.accent500,
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
             child: const Text('Feature Now'),
           ),
@@ -1131,11 +1148,15 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         icon: const Icon(Icons.workspace_premium_outlined,
             color: AppColors.accent500, size: 40),
-        title: const Text('Upgrade to Feature'),
-        content: const Text(
+        title: Text('Upgrade to Feature',
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(
           'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.',
+          style: AppTextStyles.bodyMedium
+              .copyWith(color: context.theme.textSecondary),
         ),
         actions: [
           TextButton(

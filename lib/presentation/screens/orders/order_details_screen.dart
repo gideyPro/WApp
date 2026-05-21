@@ -65,8 +65,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.ordersCancel),
-        content: Text(l10n.ordersCancelConfirm),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text(l10n.ordersCancel,
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(l10n.ordersCancelConfirm,
+            style: AppTextStyles.bodyMedium
+                .copyWith(color: context.theme.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -74,7 +78,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            style: TextButton.styleFrom(foregroundColor: context.theme.textSecondary),
             child: Text(l10n.listingsYes),
           ),
         ],

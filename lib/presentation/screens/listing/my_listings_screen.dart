@@ -9,6 +9,8 @@ import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../providers/app_providers.dart';
 import '../settings/settings_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
@@ -147,8 +149,12 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.listingDeleteConfirmTitle),
-        content: Text(l10n.listingDeleteConfirmMessage),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text(l10n.listingDeleteConfirmTitle,
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(l10n.listingDeleteConfirmMessage,
+            style: AppTextStyles.bodyMedium
+                .copyWith(color: context.theme.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -156,7 +162,13 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
             child: Text(l10n.commonDelete),
           ),
         ],
@@ -184,9 +196,13 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Feature this Listing?'),
-        content: const Text(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text('Feature this Listing?',
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(
           'Your listing will be featured on the home page and search results for 30 days.',
+          style: AppTextStyles.bodyMedium
+              .copyWith(color: context.theme.textSecondary),
         ),
         actions: [
           TextButton(
@@ -198,6 +214,9 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.accent500,
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
             child: const Text('Feature Now'),
           ),
@@ -259,11 +278,15 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                 final goSub = await showDialog<bool>(
                   context: context,
                   builder: (ctx) => AlertDialog(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
                     icon: const Icon(Icons.workspace_premium_outlined,
                         color: AppColors.accent500, size: 40),
-                    title: const Text('Subscription Required'),
-                    content: const Text(
+                    title: Text('Subscription Required',
+                        style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+                    content: Text(
                       'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(color: context.theme.textSecondary),
                     ),
                     actions: [
                       TextButton(

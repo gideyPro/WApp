@@ -261,7 +261,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         side: BorderSide(color: context.theme.divider),
                         foregroundColor: context.theme.textPrimary,
                       ),
-                      child: const Text('Cancel'),
+                      child: Text(AppLocalizations.of(ctx).commonCancel),
                     ),
                   ),
                   const SizedBox(width: 12),

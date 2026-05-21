@@ -103,10 +103,10 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                       onPressed: () => Navigator.pop(ctx, false),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: AppColors.primary200),
-                        foregroundColor: ThemeColors(ctx).textPrimary,
+                        side: BorderSide(color: ctx.theme.divider),
+                        foregroundColor: ctx.theme.textPrimary,
                       ),
-                      child: const Text('Cancel'),
+                      child: Text(AppLocalizations.of(ctx).commonCancel),
                     ),
                   ),
                   const SizedBox(width: 12),

@@ -143,7 +143,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                         side: BorderSide(color: context.theme.divider),
                         foregroundColor: context.theme.textPrimary,
                       ),
-                      child: const Text('Cancel'),
+                      child: Text(AppLocalizations.of(ctx).commonCancel),
                     ),
                   ),
                   if (actionLabel != null) ...[

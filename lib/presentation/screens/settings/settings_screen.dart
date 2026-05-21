@@ -236,8 +236,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.settingsLogout),
-        content: Text(l10n.authLogoutConfirm),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text(l10n.settingsLogout,
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(l10n.authLogoutConfirm,
+            style: AppTextStyles.bodyMedium
+                .copyWith(color: context.theme.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -392,8 +393,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.authLogout),
-        content: Text(l10n.authLogoutConfirm),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text(l10n.authLogout,
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(l10n.authLogoutConfirm,
+            style: AppTextStyles.bodyMedium
+                .copyWith(color: context.theme.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

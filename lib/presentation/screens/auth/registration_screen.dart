@@ -252,6 +252,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       barrierDismissible: true,
       builder: (context) {
         return AlertDialog(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
           contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
           actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           content: Text(
