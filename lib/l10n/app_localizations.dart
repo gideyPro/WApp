@@ -2926,6 +2926,12 @@ abstract class AppLocalizations {
   /// **'Verify & Create Account'**
   String get authVerifyAndCreate;
 
+  /// No description provided for @authWelcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get authWelcomeBack;
+
   /// No description provided for @authAlreadyHaveAccount.
   ///
   /// In en, this message translates to:

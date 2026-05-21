@@ -484,6 +484,7 @@
   "authPersonalInfo": "Personal Information",
   "authVerifyPhone": "Verify Your Phone",
   "authVerifyAndCreate": "Verify & Create Account",
+  "authWelcomeBack": "Welcome Back",
   "authAlreadyHaveAccount": "Already have an account? ",
   "authCancelRegistration": "Cancel registration?",
   "authFirstNameRequired": "Please enter your first name",

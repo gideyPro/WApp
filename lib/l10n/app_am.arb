@@ -495,6 +495,7 @@
   "authPersonalInfo": "የግል መረጃ",
   "authVerifyPhone": "ስልክዎን ያረጋግጡ",
   "authVerifyAndCreate": "አረጋግጥ እና መለያ ፍጠር",
+  "authWelcomeBack": "እንኳን ደህና መጡ",
   "authAlreadyHaveAccount": "ቀድሞውኑ መለያ አለዎት? ",
   "authCancelRegistration": "ምዝገባውን መሰረዝ ይፈልጋሉ?",
   "authFirstNameRequired": "እባክዎ የመጀመሪያ ስምዎን ያስገቡ",

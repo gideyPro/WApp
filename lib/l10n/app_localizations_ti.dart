@@ -1491,6 +1491,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get authVerifyAndCreate => 'ኣረጋግጽን መለያ ፍጠርን';
 
   @override
+  String get authWelcomeBack => 'እንኳዕ ብደሓን መጻእኩም';
+
+  @override
   String get authAlreadyHaveAccount => 'ቀዲምኩም መለያ ኣለኩም? ';
 
   @override

@@ -1510,6 +1510,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authVerifyAndCreate => 'Verify & Create Account';
 
   @override
+  String get authWelcomeBack => 'Welcome Back';
+
+  @override
   String get authAlreadyHaveAccount => 'Already have an account? ';
 
   @override

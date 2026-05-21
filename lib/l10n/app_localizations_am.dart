@@ -1492,6 +1492,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get authVerifyAndCreate => 'አረጋግጥ እና መለያ ፍጠር';
 
   @override
+  String get authWelcomeBack => 'እንኳን ደህና መጡ';
+
+  @override
   String get authAlreadyHaveAccount => 'ቀድሞውኑ መለያ አለዎት? ';
 
   @override
