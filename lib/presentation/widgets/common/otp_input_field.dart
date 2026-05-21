@@ -71,6 +71,7 @@ class OtpInputFieldState extends State<OtpInputField> {
       enabled: widget.enabled,
       autofocus: widget.autofocus,
       enableSuggestions: false,
+      autofillHints: const [AutofillHints.oneTimeCode],
       textAlign: TextAlign.center,
       cursorColor: AppColors.accent500,
       cursorWidth: 2,

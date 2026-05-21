@@ -7,6 +7,7 @@ import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/otp_input_field.dart';
@@ -176,6 +177,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     ),
                     child: Column(
                       children: [
+                        // Language switcher
+                        _buildLanguageSwitcher(),
                         // Step 1: Registration Form
                         if (!_isOtpSent) ...[
                           _buildSectionTitle(l10n.authPersonalInfo),
@@ -500,6 +503,46 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildLanguageSwitcher() {
+    final currentLocale = ref.watch(localeProvider).locale?.languageCode ?? 'en';
+    const supportedLocales = [
+      {'code': 'en', 'label': 'EN'},
+      {'code': 'am', 'label': 'AM'},
+      {'code': 'ti', 'label': 'TI'},
+    ];
+
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: supportedLocales.map((lang) {
+            final isActive = currentLocale == lang['code'];
+            return GestureDetector(
+              onTap: () => ref.read(localeProvider.notifier).setLocale(Locale(lang['code']!)),
+              child: Container(
+                margin: const EdgeInsets.only(left: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isActive ? AppColors.primary600 : Colors.transparent,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Text(
+                  lang['label']!,
+                  style: AppTextStyles.caption.copyWith(
+                    color: isActive ? Colors.white : AppColors.primary400,
+                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 

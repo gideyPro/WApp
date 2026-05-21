@@ -1477,6 +1477,9 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
+  String get authChangeNumber => 'ቁጥር ይቀይሩ';
+
+  @override
   String get authNoAccount => 'መለያ የለዎትም? ';
 
   @override

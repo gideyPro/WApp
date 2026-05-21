@@ -1476,6 +1476,9 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
+  String get authChangeNumber => 'ቁጽሪ ቀይር';
+
+  @override
   String get authNoAccount => 'መለያ የብልኩምን? ';
 
   @override

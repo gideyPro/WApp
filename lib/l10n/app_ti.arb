@@ -489,6 +489,7 @@
   "authWelcomeSubtitle": "ናይ ኢትዮጵያ ቀዳማይ ናይ ሪል ስቴት ዕዳጋ",
   "authOtpSentMessage": "ናይ 6 ኣሃዝ ኮድ ናብ {phone} ሰዲድና ኣለና",
   "authResendCountdown": "ኮድ ድሕሪ {seconds} ሰከንድ ደጊምካ ስደድ",
+  "authChangeNumber": "ቁጽሪ ቀይር",
   "authNoAccount": "መለያ የብልኩምን? ",
   "authRegister": "ተመዝገብ",
   "authCreateAccount": "መለያኹም ፍጠሩ",

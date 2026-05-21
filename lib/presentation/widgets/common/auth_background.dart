@@ -8,11 +8,9 @@ class WaveAuthBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       constraints: const BoxConstraints.expand(),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -23,7 +21,37 @@ class WaveAuthBackground extends StatelessWidget {
           ],
         ),
       ),
-      child: child,
+      child: Stack(
+        children: [
+          // Top-right decorative orb
+          Positioned(
+            top: -80,
+            right: -80,
+            child: Container(
+              width: 384,
+              height: 384,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primary500.withValues(alpha: 0.15),
+              ),
+            ),
+          ),
+          // Bottom-left decorative orb
+          Positioned(
+            bottom: -80,
+            left: -80,
+            child: Container(
+              width: 384,
+              height: 384,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primary700.withValues(alpha: 0.10),
+              ),
+            ),
+          ),
+          if (child != null) child!,
+        ],
+      ),
     );
   }
 }

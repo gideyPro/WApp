@@ -7,6 +7,7 @@ import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
@@ -128,7 +129,6 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
                   // Card container
                   Container(
-                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: isDark
                           ? Colors.white.withValues(alpha: 0.7)
@@ -147,57 +147,58 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                             : AppColors.stone200,
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        // Inline Error Message
-                        if (authState.errorMessage != null)
-                          _buildInlineError(authState.errorMessage!),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        children: [
+                          // Language switcher
+                          _buildLanguageSwitcher(),
+                          // Inline Error Message
+                          if (authState.errorMessage != null)
+                            _buildInlineError(authState.errorMessage!),
 
-                        if (authState.errorMessage != null)
-                          const SizedBox(height: 16),
+                          if (authState.errorMessage != null)
+                            const SizedBox(height: 16),
 
-                        // Step 1: Phone Input
-                        if (!authState.otpSent) ...[
-                          _buildSectionTitle(AppLocalizations.of(context).authEnterPhone),
-                          const SizedBox(height: 16),
-                          _buildPhoneInput(),
-                          const SizedBox(height: 20),
-                          WaveButton(
-                            text: AppLocalizations.of(context).authSendOtp,
-                            icon: Icons.arrow_forward_rounded,
-                            isLoading: authState.isLoading,
-                            isFullWidth: true,
-                            onPressed: authState.isLoading ? null : _sendOtp,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildRegisterLink(),
-                        ],
-
-                        // Step 2: OTP Input
-                        if (authState.otpSent) ...[
-                          _buildSectionTitle(l10n.authEnterOtp),
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n.authOtpSentMessage(authState.phoneNumber ?? ''),
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: ThemeColors(context).textMuted,
+                          // Step 1: Phone Input
+                          if (!authState.otpSent) ...[
+                            _buildSectionTitle(AppLocalizations.of(context).authEnterPhone),
+                            const SizedBox(height: 16),
+                            _buildPhoneInput(),
+                            const SizedBox(height: 20),
+                            WaveButton(
+                              text: AppLocalizations.of(context).authSendOtp,
+                              icon: Icons.arrow_forward_rounded,
+                              isLoading: authState.isLoading,
+                              isFullWidth: true,
+                              onPressed: authState.isLoading ? null : _sendOtp,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 24),
-                          _buildOtpInput(),
-                          const SizedBox(height: 20),
-                          WaveButton(
-                            text: AppLocalizations.of(context).authVerifyOtp,
-                            icon: Icons.check_circle_rounded,
-                            isLoading: authState.isLoading,
-                            isFullWidth: true,
-                            onPressed: authState.isLoading ? null : _verifyOtp,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildResendOtp(),
+                            const SizedBox(height: 16),
+                            _buildRegisterLink(),
+                          ],
+
+                          // Step 2: OTP Input
+                          if (authState.otpSent) ...[
+                            _buildOtpInfoBanner(authState.phoneNumber ?? ''),
+                            const SizedBox(height: 16),
+                            _buildSectionTitle(l10n.authEnterOtp),
+                            const SizedBox(height: 16),
+                            _buildOtpInput(),
+                            const SizedBox(height: 20),
+                            WaveButton(
+                              text: AppLocalizations.of(context).authVerifyOtp,
+                              icon: Icons.check_circle_rounded,
+                              isLoading: authState.isLoading,
+                              isFullWidth: true,
+                              onPressed: authState.isLoading ? null : _verifyOtp,
+                            ),
+                            const SizedBox(height: 12),
+                            _buildChangeNumberButton(),
+                            const SizedBox(height: 8),
+                            _buildResendOtp(),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -317,6 +318,89 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildLanguageSwitcher() {
+    final currentLocale = ref.watch(localeProvider).locale?.languageCode ?? 'en';
+    const supportedLocales = [
+      {'code': 'en', 'label': 'EN'},
+      {'code': 'am', 'label': 'AM'},
+      {'code': 'ti', 'label': 'TI'},
+    ];
+
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: supportedLocales.map((lang) {
+            final isActive = currentLocale == lang['code'];
+            return GestureDetector(
+              onTap: () => ref.read(localeProvider.notifier).setLocale(Locale(lang['code']!)),
+              child: Container(
+                margin: const EdgeInsets.only(left: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isActive ? AppColors.primary600 : Colors.transparent,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Text(
+                  lang['label']!,
+                  style: AppTextStyles.caption.copyWith(
+                    color: isActive ? Colors.white : AppColors.primary400,
+                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOtpInfoBanner(String phone) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.primary50,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: AppColors.primary200),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.info_outline, size: 20, color: AppColors.primary600),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              l10n.authOtpSentMessage(phone),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.primary800,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChangeNumberButton() {
+    return TextButton.icon(
+      onPressed: () {
+        ref.read(authStateProvider.notifier).clearOtpSent();
+        _countdownTimer?.cancel();
+        setState(() => _resendCountdown = 0);
+      },
+      icon: const Icon(Icons.arrow_back_rounded, size: 16, color: AppColors.primary600),
+      label: Text(
+        l10n.authChangeNumber,
+        style: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.primary600,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 

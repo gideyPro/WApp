@@ -1494,6 +1494,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get authChangeNumber => 'Change Number';
+
+  @override
   String get authNoAccount => 'Don\'t have an account? ';
 
   @override

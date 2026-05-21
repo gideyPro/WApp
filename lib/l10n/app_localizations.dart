@@ -2896,6 +2896,12 @@ abstract class AppLocalizations {
   /// **'Resend code in {seconds}s'**
   String authResendCountdown(Object seconds);
 
+  /// No description provided for @authChangeNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Number'**
+  String get authChangeNumber;
+
   /// No description provided for @authNoAccount.
   ///
   /// In en, this message translates to:

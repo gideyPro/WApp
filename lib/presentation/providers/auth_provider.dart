@@ -122,6 +122,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(errorMessage: null);
   }
 
+  /// Go back to phone input step
+  void clearOtpSent() {
+    state = state.copyWith(otpSent: false, errorMessage: null);
+  }
+
   /// Reset auth state to initial (used when canceling registration)
   void resetState() {
     state = AuthState.initial();

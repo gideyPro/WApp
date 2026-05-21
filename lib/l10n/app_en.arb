@@ -478,6 +478,7 @@
   "authWelcomeSubtitle": "Ethiopia's Premier Real Estate Marketplace",
   "authOtpSentMessage": "We sent a 6-digit code to {phone}",
   "authResendCountdown": "Resend code in {seconds}s",
+  "authChangeNumber": "Change Number",
   "authNoAccount": "Don't have an account? ",
   "authRegister": "Register",
   "authCreateAccount": "Create Your Account",
