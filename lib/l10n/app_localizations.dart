@@ -688,6 +688,12 @@ abstract class AppLocalizations {
   /// **'Favorites'**
   String get profileStatsFavorites;
 
+  /// No description provided for @profileMyInterests.
+  ///
+  /// In en, this message translates to:
+  /// **'My Interests'**
+  String get profileMyInterests;
+
   /// No description provided for @profileUpdated.
   ///
   /// In en, this message translates to:

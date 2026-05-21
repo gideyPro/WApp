@@ -320,6 +320,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get profileStatsFavorites => 'ዝተፈትው';
 
   @override
+  String get profileMyInterests => 'ድሌታተይ';
+
+  @override
   String get profileUpdated => 'መገለጺ ብትኽክል ተስተካኺሉ';
 
   @override

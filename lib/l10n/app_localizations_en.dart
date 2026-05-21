@@ -322,6 +322,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileStatsFavorites => 'Favorites';
 
   @override
+  String get profileMyInterests => 'My Interests';
+
+  @override
   String get profileUpdated => 'Profile updated successfully';
 
   @override

@@ -320,6 +320,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get profileStatsFavorites => 'ተወዳጆች';
 
   @override
+  String get profileMyInterests => 'የእኔ ፍላጎቶች';
+
+  @override
   String get profileUpdated => 'መገለጫ በትክክል ተስተካክሏል';
 
   @override

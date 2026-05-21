@@ -18,6 +18,7 @@ import '../messages/messages_screen.dart';
 import '../auth/otp_login_screen.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../settings/settings_screen.dart';
+import '../interests/my_interests_screen.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
@@ -365,6 +366,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             ),
                           ),
                         ],
+                        _MenuItemData(
+                          icon: Icons.interests_outlined,
+                          title: l10n.profileMyInterests,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const MyInterestsScreen()),
+                          ),
+                        ),
                         _MenuItemData(
                           icon: Icons.verified_user_outlined,
                           title: l10n.profileKyc,
