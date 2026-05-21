@@ -304,7 +304,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               ),
             const SizedBox(height: 4),
             Text(
-              'Notifications',
+              AppLocalizations.of(context).settingsNotifications,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected ? AppColors.primary900 : (isDark ? AppColors.primary600 : AppColors.primary300),
