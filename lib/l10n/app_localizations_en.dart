@@ -99,7 +99,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navMessages => 'Messages';
 
   @override
-  String get navSettings => 'Settings';
+  String get navSettings => 'My Account';
 
   @override
   String homeGreeting(Object name) {

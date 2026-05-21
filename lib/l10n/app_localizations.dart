@@ -283,7 +283,7 @@ abstract class AppLocalizations {
   /// No description provided for @navSettings.
   ///
   /// In en, this message translates to:
-  /// **'Settings'**
+  /// **'My Account'**
   String get navSettings;
 
   /// No description provided for @homeGreeting.

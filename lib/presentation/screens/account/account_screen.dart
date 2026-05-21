@@ -143,67 +143,108 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     left: 16,
                     right: 16,
                     bottom: -40,
-                    child: WaveGlass(
-                      borderRadius: 12,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-                        child: Row(
-                          children: [
-                            // Avatar
-                            Container(
-                              width: 64,
-                              height: 64,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [AppColors.accent500, AppColors.accent600],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.accent500.withValues(alpha: 0.25),
-                                    blurRadius: 12,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  initials,
-                                  style: AppTextStyles.headline4.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: AppColors.shadowPremium,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: WaveGlass(
+                        borderRadius: 16,
+                        blur: 15,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 24),
+                          child: Row(
+                            children: [
+                              // Avatar with Gradient Ring
+                              Stack(
+                                alignment: Alignment.bottomRight,
                                 children: [
-                                  Text(
-                                    fullName,
-                                    style: AppTextStyles.title.copyWith(
-                                      fontWeight: FontWeight.w800,
-                                      color: context.textPrimary,
+                                  Container(
+                                    width: 72,
+                                    height: 72,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: AppColors.gradientHero,
+                                      border: Border.all(
+                                        color: Colors.white.withValues(alpha: 0.2),
+                                        width: 2,
+                                      ),
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    phone,
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                      color: context.textSecondary,
+                                    child: Center(
+                                      child: Text(
+                                        initials,
+                                        style: AppTextStyles.headline3.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
+                                  if (user?.isKycVerified == true ||
+                                      kycState.isVerified ||
+                                      kycState.isApproved)
+                                    Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.accent500,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.check,
+                                        size: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                 ],
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 20),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            fullName,
+                                            style: AppTextStyles.title.copyWith(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w800,
+                                              color: context.textPrimary,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        if (user?.isKycVerified == true ||
+                                            kycState.isVerified ||
+                                            kycState.isApproved) ...[
+                                          const SizedBox(width: 6),
+                                          const Icon(
+                                            Icons.verified_rounded,
+                                            color: AppColors.accent500,
+                                            size: 18,
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      phone,
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        color: context.textSecondary,
+                                        letterSpacing: 0.2,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -221,47 +262,62 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    _buildStatItem(
-                      context,
-                      value: profileState.stats?.totalListings.toString() ?? '0',
-                      label: l10n.profileStatsListings,
-                      gradientColors: isDark
-                          ? [AppColors.accent900, AppColors.accent950]
-                          : [AppColors.accent50, AppColors.surface],
-                      valueColor: AppColors.accent600,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const MyListingsScreen()),
-                      ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: context.cardBg,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: context.divider,
+                      width: 1,
                     ),
-                    const SizedBox(width: 12),
-                    _buildStatItem(
-                      context,
-                      value: profileState.stats?.totalFavorites.toString() ?? '0',
-                      label: l10n.profileStatsFavorites,
-                      gradientColors: isDark
-                          ? [AppColors.primary800, AppColors.primary900]
-                          : [AppColors.primary50, AppColors.surface],
-                      valueColor: AppColors.primary600,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+                  ),
+                  child: Row(
+                    children: [
+                      _buildStatItem(
+                        context,
+                        icon: Icons.home_work_outlined,
+                        value: profileState.stats?.totalListings.toString() ?? '0',
+                        label: l10n.profileStatsListings,
+                        valueColor: context.textPrimary,
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const MyListingsScreen()),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    _buildStatItem(
-                      context,
-                      value: kycLabel,
-                      label: l10n.profileVerificationKyc,
-                      valueColor: kycColor,
-                      gradientColors: isDark
-                          ? [AppColors.emerald800, AppColors.emerald900]
-                          : [AppColors.emerald50, AppColors.surface],
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const KycVerificationScreen()),
+                      Container(
+                        width: 1,
+                        height: 40,
+                        color: context.divider,
                       ),
-                    ),
-                  ],
+                      _buildStatItem(
+                        context,
+                        icon: Icons.favorite_border_rounded,
+                        value: profileState.stats?.totalFavorites.toString() ?? '0',
+                        label: l10n.profileStatsFavorites,
+                        valueColor: context.textPrimary,
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const FavoritesScreen()),
+                        ),
+                      ),
+                      Container(
+                        width: 1,
+                        height: 40,
+                        color: context.divider,
+                      ),
+                      _buildStatItem(
+                        context,
+                        icon: Icons.verified_user_outlined,
+                        value: kycLabel,
+                        label: l10n.profileVerificationKyc,
+                        valueColor: kycColor,
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const KycVerificationScreen()),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -387,33 +443,25 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
   Widget _buildStatItem(
     BuildContext context, {
+    required IconData icon,
     required String value,
     required String label,
-    required List<Color> gradientColors,
     Color? valueColor,
     VoidCallback? onTap,
   }) {
     return Expanded(
-      child: GestureDetector(
+      child: InkWell(
         onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: gradientColors,
-            ),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: context.divider.withValues(alpha: 0.5),
-            ),
-          ),
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
             children: [
+              Icon(icon, size: 20, color: context.textSecondary),
+              const SizedBox(height: 8),
               Text(
                 value,
-                style: AppTextStyles.titleSmall.copyWith(
+                style: AppTextStyles.bodyLarge.copyWith(
                   color: valueColor ?? AppColors.accent600,
                   fontWeight: FontWeight.w800,
                 ),
@@ -422,10 +470,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               ),
               const SizedBox(height: 2),
               Text(
-                label,
+                label.toUpperCase(),
                 style: AppTextStyles.caption.copyWith(
                   color: context.textSecondary,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 9,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
@@ -445,13 +495,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       children: [
         if (title.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
             child: Text(
-              title,
-              style: AppTextStyles.labelMedium.copyWith(
+              title.toUpperCase(),
+              style: AppTextStyles.eyebrow.copyWith(
                 color: context.textSecondary,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.2,
+                fontSize: 11,
               ),
             ),
           ),

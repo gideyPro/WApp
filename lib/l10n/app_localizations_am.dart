@@ -99,7 +99,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get navMessages => 'መልእክቶች';
 
   @override
-  String get navSettings => 'ቅንብሮች';
+  String get navSettings => 'የእኔ መለያ';
 
   @override
   String homeGreeting(Object name) {

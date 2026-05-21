@@ -118,7 +118,7 @@ class WaveBottomNav extends StatelessWidget {
                 index: 4,
                 icon: Icons.person_outline,
                 activeIcon: Icons.person,
-                label: 'Profile',
+                label: 'My Account',
               ),
             ],
           ),

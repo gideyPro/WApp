@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -688,6 +688,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               SliverPersistentHeader(
                 pinned: true,
                 delegate: _SearchBarDelegate(
+                  user: ref.watch(profileProvider).user,
                   searchController: _searchController,
                   focusNode: _searchFocusNode,
                   hasActiveFilters: _hasActiveFilters,
@@ -1097,6 +1098,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 }
 
 class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  final dynamic user;
   final TextEditingController searchController;
   final FocusNode focusNode;
   final bool hasActiveFilters;
@@ -1107,6 +1109,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   final VoidCallback onFilterTap;
 
   _SearchBarDelegate({
+    this.user,
     required this.searchController,
     required this.focusNode,
     required this.hasActiveFilters,
@@ -1117,135 +1120,249 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     required this.onFilterTap,
   });
 
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
+
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
 
+    // Calculate dynamic values based on scroll
+    // 0.0 at max extent, 1.0 at min extent
+    final progress = shrinkOffset / (maxExtent - minExtent);
+    final clampedProgress = progress.clamp(0.0, 1.0);
+
+    // Greeting row opacity: fades out early
+    final greetingOpacity = (1.0 - clampedProgress * 2).clamp(0.0, 1.0);
+
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.primary900 : AppColors.primary50,
+        color: (isDark ? AppColors.primary900 : AppColors.primary50)
+            .withValues(alpha: clampedProgress),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: shrinkOffset > 20 ? 0.06 : 0),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
+          if (clampedProgress > 0.5)
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
         ],
       ),
       child: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            MediaQuery.of(context).padding.top + 12,
-            16,
-            12,
-          ),
-          child: Container(
-            height: 56,
-            decoration: BoxDecoration(
-              color: context.cardBg,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: hasActiveFilters
-                    ? AppColors.accent200
-                    : context.divider,
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.accent500.withValues(alpha: 0.08),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 16),
-                Icon(
-                  Icons.search_rounded,
-                  color: context.theme.iconSecondary,
-                  size: 24,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: searchController,
-                    focusNode: focusNode,
-                    onChanged: onSearchChanged,
-                    onSubmitted: onSubmitted,
-                    style: AppTextStyles.bodyLarge
-                        .copyWith(color: context.textPrimary),
-                    decoration: InputDecoration(
-                      hintText: l10n.searchPlaceholder,
-                      hintStyle: AppTextStyles.bodyMedium
-                          .copyWith(color: context.textSecondary),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    textInputAction: TextInputAction.search,
-                  ),
-                ),
-                if (searchQuery.isNotEmpty)
-                  GestureDetector(
-                    onTap: onClear,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Icon(
-                        Icons.close_rounded,
-                        color: context.theme.iconSecondary,
-                        size: 22,
+        child: Column(
+          children: [
+            // Personalized Greeting Row (Fades out on scroll)
+            if (greetingOpacity > 0)
+              Opacity(
+                opacity: greetingOpacity,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _getGreeting(),
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: context.textSecondary,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          Text(
+                            user != null
+                                ? user.firstName
+                                : l10n.authWelcomeBack,
+                            style: AppTextStyles.title.copyWith(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: context.textPrimary,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                      _buildProfileAvatar(context),
+                    ],
                   ),
-                Container(
-                  width: 1,
-                  height: 28,
-                  color: context.divider,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
                 ),
-                GestureDetector(
-                  onTap: onFilterTap,
+              ),
+
+            // Modern Glass Search Bar
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                8 + (4 * (1.0 - clampedProgress)),
+                16,
+                12,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
-                    width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: hasActiveFilters
-                          ? AppColors.accent500
-                          : Colors.transparent,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(16),
-                        bottomRight: Radius.circular(16),
+                      color: context.cardBg.withValues(alpha: isDark ? 0.8 : 0.9),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: hasActiveFilters
+                            ? AppColors.accent500.withValues(alpha: 0.5)
+                            : (isDark
+                                ? Colors.white.withValues(alpha: 0.1)
+                                : Colors.black.withValues(alpha: 0.05)),
+                        width: 1.5,
                       ),
+                      boxShadow: AppColors.shadowPremium,
                     ),
-                    child: Icon(
-                      Icons.tune_rounded,
-                      size: 24,
-                      color: hasActiveFilters
-                          ? Colors.white
-                          : AppColors.accent500,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 16),
+                        Icon(
+                          Icons.search_rounded,
+                          color: hasActiveFilters
+                              ? AppColors.accent500
+                              : context.theme.iconSecondary,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextField(
+                            controller: searchController,
+                            focusNode: focusNode,
+                            onChanged: onSearchChanged,
+                            onSubmitted: onSubmitted,
+                            style: AppTextStyles.bodyLarge
+                                .copyWith(color: context.textPrimary),
+                            decoration: InputDecoration(
+                              hintText: l10n.searchPlaceholder,
+                              hintStyle: AppTextStyles.bodyMedium
+                                  .copyWith(color: context.textSecondary),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            textInputAction: TextInputAction.search,
+                          ),
+                        ),
+                        if (searchQuery.isNotEmpty)
+                          GestureDetector(
+                            onTap: onClear,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Icon(
+                                Icons.close_rounded,
+                                color: context.theme.iconSecondary,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        VerticalDivider(
+                          color: context.divider,
+                          indent: 16,
+                          endIndent: 16,
+                          width: 1,
+                        ),
+                        _buildFilterButton(),
+                      ],
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileAvatar(BuildContext context) {
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: AppColors.gradientHero,
+        boxShadow: AppColors.shadowMd,
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 2,
+        ),
+      ),
+      child: Center(
+        child: user != null
+            ? Text(
+                user.initials,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            : const Icon(Icons.person_rounded, color: Colors.white, size: 24),
+      ),
+    );
+  }
+
+  Widget _buildFilterButton() {
+    return GestureDetector(
+      onTap: onFilterTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        height: double.infinity,
+        decoration: BoxDecoration(
+          color: hasActiveFilters
+              ? AppColors.accent500.withValues(alpha: 0.1)
+              : Colors.transparent,
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(16),
+            bottomRight: Radius.circular(16),
           ),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Icon(
+              Icons.tune_rounded,
+              size: 24,
+              color: hasActiveFilters
+                  ? AppColors.accent500
+                  : AppColors.primary400,
+            ),
+            if (hasActiveFilters)
+              Positioned(
+                top: 14,
+                right: 0,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: AppColors.accent500,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 
   @override
-  double get maxExtent => 110;
+  double get maxExtent => 170;
 
   @override
-  double get minExtent => 110;
+  double get minExtent => 90;
 
   @override
   bool shouldRebuild(_SearchBarDelegate oldDelegate) {
     return oldDelegate.hasActiveFilters != hasActiveFilters ||
-        oldDelegate.searchQuery != searchQuery;
+        oldDelegate.searchQuery != searchQuery ||
+        oldDelegate.user != user;
   }
 }

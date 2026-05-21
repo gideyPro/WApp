@@ -99,7 +99,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get navMessages => 'መልእኽታት';
 
   @override
-  String get navSettings => 'ቅጥዒታት';
+  String get navSettings => 'ናተይ ሕሳብ';
 
   @override
   String homeGreeting(Object name) {
