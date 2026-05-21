@@ -189,6 +189,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     return Scaffold(
       backgroundColor: context.isDarkMode ? AppColors.primary900 : AppColors.primary50,
       extendBody: true,
+      resizeToAvoidBottomInset: false,
       body: IndexedStack(
         index: selectedIndex,
         children: screens,

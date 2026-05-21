@@ -15,7 +15,6 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../search/search_screen.dart';
 import '../listing/listing_detail_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../settings/settings_screen.dart';
@@ -937,53 +936,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                isFeatured
-                    ? l10n.homeFeaturedPremium.toUpperCase()
-                    : l10n.homeLatestRecently.toUpperCase(),
-                style: AppTextStyles.eyebrow,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: AppTextStyles.title.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.5,
-                  color: context.textPrimary,
-                ),
-              ),
-            ],
+          Text(
+            isFeatured
+                ? l10n.homeFeaturedPremium.toUpperCase()
+                : l10n.homeLatestRecently.toUpperCase(),
+            style: AppTextStyles.eyebrow,
           ),
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) =>
-                    SearchScreen(isFeatured: isFeatured),
-                settings: const RouteSettings(name: '/search'),
-              ),
-            ),
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.primary50,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: AppColors.primary200),
-              ),
-              child: Text(
-                l10n.homeViewAll,
-                style: AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary700),
-              ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: AppTextStyles.title.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
+              color: context.textPrimary,
             ),
           ),
         ],
@@ -1205,14 +1173,14 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                 12,
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(4),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
                     height: 56,
                     decoration: BoxDecoration(
                       color: context.cardBg.withValues(alpha: isDark ? 0.8 : 0.9),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(4),
                       border: Border.all(
                         color: hasActiveFilters
                             ? AppColors.accent500.withValues(alpha: 0.5)
@@ -1321,8 +1289,8 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
               ? AppColors.accent500.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(16),
-            bottomRight: Radius.circular(16),
+            topRight: Radius.circular(4),
+            bottomRight: Radius.circular(4),
           ),
         ),
         child: Stack(
