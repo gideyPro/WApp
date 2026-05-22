@@ -813,7 +813,9 @@ final subscriptionProvider =
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   final SubscriptionServiceApi _subscriptionService;
   SubscriptionNotifier(this._subscriptionService)
-      : super(const SubscriptionState.initial());
+      : super(const SubscriptionState.initial()) {
+    refresh();
+  }
 
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true, errorMessage: null);

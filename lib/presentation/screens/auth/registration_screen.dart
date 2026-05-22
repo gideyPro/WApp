@@ -194,6 +194,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                             isFullWidth: true,
                             onPressed: _isLoading ? null : _sendRegistrationOtp,
                           ),
+                          const SizedBox(height: 16),
+                          _buildLoginLink(),
                         ],
 
                         // Step 2: OTP Verification
@@ -226,9 +228,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           const SizedBox(height: 16),
                           _buildInlineError(authState.errorMessage!),
                         ],
-
-                        // Login Link (only show before OTP is sent)
-                        if (!_isOtpSent) _buildLoginLink(),
 
                         // Language switcher at bottom
                         Container(
@@ -495,7 +494,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Text(
           l10n.authAlreadyHaveAccount,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: isDark ? ThemeColors(context).textSecondary : ThemeColors(context).textSecondary,
+            color: ThemeColors(context).textSecondary,
           ),
         ),
         GestureDetector(

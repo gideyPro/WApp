@@ -562,6 +562,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           _buildBadge(l10n.listingFeatured.toUpperCase(), AppColors.accent500),
         if (listing.isNew)
           _buildBadge(l10n.listingNew.toUpperCase(), AppColors.warning),
+        if (listing.status == ListingStatus.frozen)
+          _buildBadge('FROZEN', AppColors.error),
         // Photo count badge
         if (listing.imageCount != null && listing.imageCount! > 0)
           _buildBadge(

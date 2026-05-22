@@ -61,7 +61,7 @@ enum PropertyType { house, land }
 enum ListingType { sale, rental }
 
 /// Listing status
-enum ListingStatus { pending, active, rejected, sold, rented }
+enum ListingStatus { pending, active, rejected, sold, rented, frozen }
 
 /// Rental period units
 enum RentalPeriod { day, month, year }

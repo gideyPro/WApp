@@ -148,7 +148,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      padding: const EdgeInsets.all(24),
                       child: Column(
                         children: [
                           // Inline Error Message
@@ -310,7 +310,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         Text(
           l10n.authNoAccount,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.accent500,
+            color: ThemeColors(context).textSecondary,
           ),
         ),
         GestureDetector(

@@ -254,6 +254,8 @@ class PropertyListingCard extends ConsumerWidget {
           left: AppSpacing.sm,
           child: Row(
             children: [
+              if (listing?.status == ListingStatus.frozen)
+                _buildBadge('Frozen', AppColors.error),
               if (listing?.isNew ?? false)
                 _buildBadge(l10n.listingNew, AppColors.primary600),
               if (listing?.isFeatured ?? false)

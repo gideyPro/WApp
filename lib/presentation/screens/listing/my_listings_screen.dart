@@ -274,49 +274,93 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                 data: (data) => data['subscription_enabled'] == true,
                 orElse: () => false,
               );
+
               if (subscriptionEnabled && !subState.canCreateListing) {
-                final goSub = await showDialog<bool>(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-                    icon: const Icon(Icons.workspace_premium_outlined,
-                        color: AppColors.accent500, size: 40),
-                    title: Text('Subscription Required',
-                        style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-                    content: Text(
-                      'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
-                      style: AppTextStyles.bodyMedium
-                          .copyWith(color: context.theme.textSecondary),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(ctx).pop(false),
-                        child: Text(AppLocalizations.of(ctx).commonCancel),
+                // If still loading, skip front-end gate — backend validates anyway
+                if (subState.isLoading) {
+                  // proceed to create screen
+                } else if (subState.errorMessage != null) {
+                  // Network error — offer retry
+                  final retry = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                      icon: const Icon(Icons.wifi_off, color: AppColors.error, size: 40),
+                      title: Text('Connection Error',
+                          style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+                      content: Text(
+                        'Could not check your subscription status. Please try again.',
+                        style: AppTextStyles.bodyMedium
+                            .copyWith(color: context.theme.textSecondary),
                       ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(ctx).pop(true),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 12),
-                          backgroundColor: AppColors.accent500,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                          child: Text(AppLocalizations.of(ctx).commonCancel),
                         ),
-                        child: const Text('View Plans'),
-                      ),
-                    ],
-                  ),
-                );
-                if (goSub == true && mounted) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const SubscriptionPlansScreen(),
+                        ElevatedButton(
+                          onPressed: () {
+                            ref.read(subscriptionProvider.notifier).refresh();
+                            Navigator.of(ctx).pop(false);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            backgroundColor: AppColors.accent500,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          child: const Text('Retry'),
+                        ),
+                      ],
                     ),
                   );
+                  return;
+                } else {
+                  // Genuine limit reached
+                  final goSub = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                      icon: const Icon(Icons.workspace_premium_outlined,
+                          color: AppColors.accent500, size: 40),
+                      title: Text('Subscription Required',
+                          style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+                      content: Text(
+                        'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
+                        style: AppTextStyles.bodyMedium
+                            .copyWith(color: context.theme.textSecondary),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                          child: Text(AppLocalizations.of(ctx).commonCancel),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(ctx).pop(true),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            backgroundColor: AppColors.accent500,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          child: const Text('View Plans'),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (goSub == true && mounted) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SubscriptionPlansScreen(),
+                      ),
+                    );
+                  }
                 }
-                return;
+                if (!subState.isLoading && subState.errorMessage == null) return;
               }
               final result = await Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CreateListingScreen()),
