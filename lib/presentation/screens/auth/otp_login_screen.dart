@@ -27,6 +27,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final GlobalKey<OtpInputFieldState> _otpKey = GlobalKey();
   String _otpCode = '';
+  bool _hasUserData = false;
 
   int _resendCountdown = 0;
   Timer? _countdownTimer;
@@ -80,9 +81,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) {
-          SystemNavigator.pop();
-        }
+        if (didPop) return;
+        _showExitDialog();
       },
       child: Scaffold(
         body: WaveAuthBackground(
@@ -473,6 +473,43 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     });
   }
 
+  void _showExitDialog() {
+    final authState = ref.read(authStateProvider);
+    if (!_hasUserData && !authState.otpSent) {
+      SystemNavigator.pop();
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        title: Text(l10n.authExitLogin),
+        content: Text(l10n.authExitLoginConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.commonNo),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              l10n.commonYes,
+              style: const TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    ).then((confirmed) {
+      if (confirmed == true && mounted) {
+        _countdownTimer?.cancel();
+        ref.read(authStateProvider.notifier).clearOtpSent();
+        SystemNavigator.pop();
+      }
+    });
+  }
+
   Future<void> _sendOtp() async {
     final phone = _phoneController.text.trim();
     final l10n = AppLocalizations.of(context);
@@ -486,6 +523,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       return;
     }
 
+    setState(() => _hasUserData = true);
     final fullPhone = '${_selectedCountry.code}$phone';
     await ref.read(authStateProvider.notifier).sendOtp(fullPhone);
     if (mounted) {

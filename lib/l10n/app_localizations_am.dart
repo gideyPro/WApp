@@ -1486,6 +1486,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get authChangeNumberConfirm => 'የስልክ ቁጥርዎን መቀየር ይፈልጋሉ?';
 
   @override
+  String get authExitLogin => 'መግቢያ ይሁኑ';
+
+  @override
+  String get authExitLoginConfirm => 'የመግቢያ ሂደቱን ማቋረጥ ይፈልጋሉ?';
+
+  @override
   String get authNoAccount => 'መለያ የለዎትም? ';
 
   @override

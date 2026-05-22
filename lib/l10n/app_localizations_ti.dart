@@ -1485,6 +1485,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get authChangeNumberConfirm => 'ናይ ስልክ ቁጽሪኹም ክትቅይሩ ዶ ትደልዩ?';
 
   @override
+  String get authExitLogin => 'መእተዊ ግባ';
+
+  @override
+  String get authExitLoginConfirm => 'ናይ ምእታው መስርሕ ክትቋጽል ዶ ትደልዩ?';
+
+  @override
   String get authNoAccount => 'መለያ የብልኩምን? ';
 
   @override

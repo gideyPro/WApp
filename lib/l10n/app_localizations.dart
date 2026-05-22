@@ -2914,6 +2914,18 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to change your phone number?'**
   String get authChangeNumberConfirm;
 
+  /// No description provided for @authExitLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Login'**
+  String get authExitLogin;
+
+  /// No description provided for @authExitLoginConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to exit the login process?'**
+  String get authExitLoginConfirm;
+
   /// No description provided for @authNoAccount.
   ///
   /// In en, this message translates to:

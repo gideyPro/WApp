@@ -481,6 +481,8 @@
   "authResendCountdown": "Resend code in {seconds}s",
   "authChangeNumber": "Change Number",
   "authChangeNumberConfirm": "Are you sure you want to change your phone number?",
+  "authExitLogin": "Exit Login",
+  "authExitLoginConfirm": "Are you sure you want to exit the login process?",
   "authNoAccount": "Don't have an account? ",
   "authRegister": "Register",
   "authCreateAccount": "Create Your Account",

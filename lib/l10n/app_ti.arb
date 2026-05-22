@@ -491,6 +491,8 @@
   "authResendCountdown": "ኮድ ድሕሪ {seconds} ሰከንድ ደጊምካ ስደድ",
   "authChangeNumber": "ቁጽሪ ቀይር",
   "authChangeNumberConfirm": "ናይ ስልክ ቁጽሪኹም ክትቅይሩ ዶ ትደልዩ?",
+  "authExitLogin": "መእተዊ ግባ",
+  "authExitLoginConfirm": "ናይ ምእታው መስርሕ ክትቋጽል ዶ ትደልዩ?",
   "authNoAccount": "መለያ የብልኩምን? ",
   "authRegister": "ተመዝገብ",
   "authCreateAccount": "መለያኹም ፍጠሩ",

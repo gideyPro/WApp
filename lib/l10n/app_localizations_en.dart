@@ -1504,6 +1504,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to change your phone number?';
 
   @override
+  String get authExitLogin => 'Exit Login';
+
+  @override
+  String get authExitLoginConfirm =>
+      'Are you sure you want to exit the login process?';
+
+  @override
   String get authNoAccount => 'Don\'t have an account? ';
 
   @override

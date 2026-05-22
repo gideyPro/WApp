@@ -491,6 +491,8 @@
   "authResendCountdown": "ኮዱን በ {seconds} ሰከንድ ውስጥ ድጋሚ ይላኩ",
   "authChangeNumber": "ቁጥር ይቀይሩ",
   "authChangeNumberConfirm": "የስልክ ቁጥርዎን መቀየር ይፈልጋሉ?",
+  "authExitLogin": "መግቢያ ይሁኑ",
+  "authExitLoginConfirm": "የመግቢያ ሂደቱን ማቋረጥ ይፈልጋሉ?",
   "authNoAccount": "መለያ የለዎትም? ",
   "authRegister": "ይመዝገቡ",
   "authCreateAccount": "መለያዎን ይፍጠሩ",
