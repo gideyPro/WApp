@@ -207,7 +207,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       orElse: () => true,
     );
 
-    if (subscriptionEnabled && !subState.canCreateListing) {
+    if (subscriptionEnabled && !subState.hasPaidSubscription) {
       _showSubscriptionRequiredDialog();
       return;
     }

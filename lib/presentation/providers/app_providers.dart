@@ -835,6 +835,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           subscription: currentSubResponse.subscription,
           canCreateListing: currentSubResponse.canCreateListing,
           canFeatureListing: currentSubResponse.canFeatureListing,
+          hasPaidSubscription: currentSubResponse.hasPaidSubscription,
         );
       } else {
         state = state.copyWith(
@@ -854,6 +855,7 @@ class SubscriptionState {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canFeatureListing;
+  final bool hasPaidSubscription;
   final String? errorMessage;
 
   const SubscriptionState({
@@ -862,6 +864,7 @@ class SubscriptionState {
     this.subscription,
     this.canCreateListing = false,
     this.canFeatureListing = false,
+    this.hasPaidSubscription = false,
     this.errorMessage,
   });
 
@@ -871,6 +874,7 @@ class SubscriptionState {
         subscription = null,
         canCreateListing = false,
         canFeatureListing = false,
+        hasPaidSubscription = false,
         errorMessage = null;
 
   const SubscriptionState.loaded({
@@ -878,6 +882,7 @@ class SubscriptionState {
     this.subscription,
     this.canCreateListing = false,
     this.canFeatureListing = false,
+    this.hasPaidSubscription = false,
   })  : isLoading = false,
         errorMessage = null;
 
@@ -887,6 +892,7 @@ class SubscriptionState {
     Subscription? subscription,
     bool? canCreateListing,
     bool? canFeatureListing,
+    bool? hasPaidSubscription,
     String? errorMessage,
   }) {
     return SubscriptionState(
@@ -895,6 +901,7 @@ class SubscriptionState {
       subscription: subscription ?? this.subscription,
       canCreateListing: canCreateListing ?? this.canCreateListing,
       canFeatureListing: canFeatureListing ?? this.canFeatureListing,
+      hasPaidSubscription: hasPaidSubscription ?? this.hasPaidSubscription,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

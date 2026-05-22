@@ -103,6 +103,7 @@ class SubscriptionServiceApi {
           subscription: subscription,
           canCreateListing: data?['can_create_listing'] ?? false,
           canFeatureListing: data?['can_feature_listing'] ?? false,
+          hasPaidSubscription: data?['has_paid_subscription'] ?? false,
         );
       }
 
@@ -349,6 +350,7 @@ class CurrentSubscriptionResponse {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canFeatureListing;
+  final bool hasPaidSubscription;
 
   const CurrentSubscriptionResponse({
     required this.success,
@@ -356,6 +358,7 @@ class CurrentSubscriptionResponse {
     this.subscription,
     this.canCreateListing = true,
     this.canFeatureListing = true,
+    this.hasPaidSubscription = false,
   });
 }
 

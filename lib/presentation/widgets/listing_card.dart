@@ -416,9 +416,8 @@ class PropertyListingCard extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final cache = ref.watch(addressCacheProvider);
     
-    // Check if user has active subscription (canCreateListing is used as a proxy for access)
     final subState = ref.watch(subscriptionProvider);
-    final isRestricted = !subState.canCreateListing;
+    final isRestricted = !subState.hasPaidSubscription;
 
     final location = listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
         listing?.address?.region ??
@@ -774,9 +773,8 @@ class FeaturedListingCard extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final cache = ref.watch(addressCacheProvider);
     
-    // Check if user has active subscription
     final subState = ref.watch(subscriptionProvider);
-    final isRestricted = !subState.canCreateListing;
+    final isRestricted = !subState.hasPaidSubscription;
 
     return Row(
       children: [
