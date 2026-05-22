@@ -10,9 +10,6 @@ class AuthService {
   AuthService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Check if response data is a valid JSON map (not HTML/error page)
-  bool _isJsonResponse(dynamic data) => data is Map;
-
   /// Send OTP to phone number for registration/login
   ///
   /// Returns success message if OTP sent successfully
@@ -23,19 +20,16 @@ class AuthService {
         data: {'phone_number': phoneNumber},
       );
 
-      if ((response.statusCode == 200 || response.statusCode == 201) &&
-          _isJsonResponse(response.data)) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return AuthResponse(
           success: true,
-          message: response.data['message'] ?? 'OTP sent successfully',
+          message: _extractMessage(response.data, 'OTP sent successfully'),
         );
       }
 
       return AuthResponse(
         success: false,
-        message: _isJsonResponse(response.data)
-            ? (response.data['message'] ?? 'Failed to send OTP')
-            : 'Server returned an unexpected response',
+        message: _extractMessage(response.data, 'Failed to send OTP'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -64,45 +58,44 @@ class AuthService {
 
       // Server returns 200 for both success AND error (e.g. "Invalid or expired OTP")
       // So we check if actual token/user data exists
-      if (response.statusCode == 200 && _isJsonResponse(response.data)) {
-        final token = response.data['token'] ?? response.data['access_token'];
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data as Map;
+        final token = data['token'] ?? data['access_token'];
 
         // If server returned an error message (no token, no user), treat as failure
         if (token == null &&
-            response.data['user'] == null &&
-            response.data['data'] == null) {
+            data['user'] == null &&
+            data['data'] == null) {
           return AuthResponse(
             success: false,
-            message: response.data['message'] ?? 'Login failed',
+            message: _extractMessage(data, 'Login failed'),
           );
         }
 
         // Store token if available
         if (token != null) {
-          await _apiClient.setAuthToken(token);
+          await _apiClient.setAuthToken(token.toString());
         }
 
         // Parse user data
         User? user;
-        if (response.data['user'] != null) {
-          user = User.fromJson(response.data['user']);
-        } else if (response.data['data'] != null) {
-          user = User.fromJson(response.data['data']);
+        if (data['user'] != null) {
+          user = User.fromJson(data['user']);
+        } else if (data['data'] != null) {
+          user = User.fromJson(data['data']);
         }
 
         return AuthResponse(
           success: true,
           message: 'Login successful',
           user: user,
-          token: token,
+          token: token?.toString(),
         );
       }
 
       return AuthResponse(
         success: false,
-        message: _isJsonResponse(response.data)
-            ? (response.data['message'] ?? 'Login failed')
-            : 'Server returned an unexpected response',
+        message: _extractMessage(response.data, 'Login failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -127,18 +120,16 @@ class AuthService {
         },
       );
 
-      if (response.statusCode == 200 && _isJsonResponse(response.data)) {
+      if (response.statusCode == 200) {
         return AuthResponse(
           success: true,
-          message: response.data['message'] ?? 'OTP verified successfully',
+          message: _extractMessage(response.data, 'OTP verified successfully'),
         );
       }
 
       return AuthResponse(
         success: false,
-        message: _isJsonResponse(response.data)
-            ? (response.data['message'] ?? 'OTP verification failed')
-            : 'This feature is not available yet',
+        message: _extractMessage(response.data, 'OTP verification failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -157,18 +148,16 @@ class AuthService {
         data: {'phone_number': phoneNumber},
       );
 
-      if (response.statusCode == 200 && _isJsonResponse(response.data)) {
+      if (response.statusCode == 200) {
         return AuthResponse(
           success: true,
-          message: response.data['message'] ?? 'OTP resent successfully',
+          message: _extractMessage(response.data, 'OTP resent successfully'),
         );
       }
 
       return AuthResponse(
         success: false,
-        message: _isJsonResponse(response.data)
-            ? (response.data['message'] ?? 'Failed to resend OTP')
-            : 'This feature is not available yet',
+        message: _extractMessage(response.data, 'Failed to resend OTP'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -214,19 +203,16 @@ class AuthService {
           },
         );
 
-        if ((response.statusCode == 200 || response.statusCode == 201) &&
-            _isJsonResponse(response.data)) {
+        if (response.statusCode == 200 || response.statusCode == 201) {
           return AuthResponse(
             success: true,
-            message: response.data['message'] ?? 'OTP sent successfully',
+            message: _extractMessage(response.data, 'OTP sent successfully'),
           );
         }
 
         return AuthResponse(
           success: false,
-          message: _isJsonResponse(response.data)
-              ? (response.data['message'] ?? 'Failed to send OTP')
-              : 'Registration endpoint is not available on the server yet',
+          message: _extractMessage(response.data, 'Failed to send OTP'),
         );
       } else {
         // Step 2: Verify OTP and create account
@@ -241,37 +227,36 @@ class AuthService {
           },
         );
 
-final statusCode = response.statusCode;
-        if ((statusCode == 200 || statusCode == 201) && _isJsonResponse(response.data)) {
+        final statusCode = response.statusCode;
+        if ((statusCode == 200 || statusCode == 201) && response.data is Map) {
+          final data = response.data as Map;
           // Extract token from response
-          final token = response.data['token'] ?? response.data['access_token'];
+          final token = data['token'] ?? data['access_token'];
 
           // Store token if available
           if (token != null) {
-            await _apiClient.setAuthToken(token);
+            await _apiClient.setAuthToken(token.toString());
           }
 
           // Parse user data
           User? user;
-          if (response.data['user'] != null) {
-            user = User.fromJson(response.data['user']);
-          } else if (response.data['data'] != null) {
-            user = User.fromJson(response.data['data']);
+          if (data['user'] != null) {
+            user = User.fromJson(data['user']);
+          } else if (data['data'] != null) {
+            user = User.fromJson(data['data']);
           }
 
           return AuthResponse(
             success: true,
             message: 'Registration successful',
             user: user,
-            token: token,
+            token: token?.toString(),
           );
         }
 
         return AuthResponse(
           success: false,
-          message: _isJsonResponse(response.data)
-              ? (response.data['message'] ?? 'Registration failed')
-              : 'Registration endpoint is not available on the server yet',
+          message: _extractMessage(response.data, 'Registration failed'),
         );
       }
     } catch (e) {
@@ -288,9 +273,7 @@ final statusCode = response.statusCode;
     try {
       final response = await _apiClient.dio.get(ApiConstants.currentUser);
 
-      if (response.statusCode == 200 &&
-          response.data != null &&
-          _isJsonResponse(response.data)) {
+      if (response.statusCode == 200 && response.data is Map) {
         return User.fromJson(response.data);
       }
 
@@ -303,6 +286,21 @@ final statusCode = response.statusCode;
   /// Check if user is authenticated
   Future<bool> isAuthenticated() async {
     return await _apiClient.isAuthenticated();
+  }
+
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map && raw['data'] is List) return raw['data'] as List;
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
   }
 }
 

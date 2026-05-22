@@ -27,26 +27,22 @@ class NotificationService {
       if (response.statusCode == 200) {
         final responseData = response.data;
         
-        // API returns: { success: true, data: { notifications: { paginator }, unread_count, filter } }
-        List<dynamic> notifList = [];
+        List<dynamic> notifList = _extractList(responseData);
         int currentPage = page;
         int totalPages = 1;
         int total = 0;
+        int unreadCount = 0;
 
-        if (responseData is Map && responseData['success'] == true) {
+        if (responseData is Map) {
           final dataField = responseData['data'];
           if (dataField is Map) {
             final notificationsRaw = dataField['notifications'];
             if (notificationsRaw is Map) {
-              // Laravel paginator
-              final listRaw = notificationsRaw['data'];
-              if (listRaw is List) notifList = listRaw;
               currentPage = (notificationsRaw['current_page'] ?? page).toInt();
               totalPages = (notificationsRaw['last_page'] ?? 1).toInt();
               total = (notificationsRaw['total'] ?? 0).toInt();
-            } else if (notificationsRaw is List) {
-              notifList = notificationsRaw;
             }
+            unreadCount = (dataField['unread_count'] ?? 0).toInt();
           }
         }
 
@@ -61,13 +57,13 @@ class NotificationService {
           currentPage: currentPage,
           totalPages: totalPages,
           total: total,
-          unreadCount: responseData['data']?['unread_count'] ?? 0,
+          unreadCount: unreadCount,
         );
       }
 
       return NotificationResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch notifications',
+        message: _extractMessage(response.data, 'Failed to fetch notifications'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -127,13 +123,13 @@ class NotificationService {
       if (response.statusCode == 200) {
         return NotificationResponse(
           success: true,
-          message: response.data['message'] ?? 'Marked as read',
+          message: _extractMessage(response.data, 'Marked as read'),
         );
       }
 
       return NotificationResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to mark as read',
+        message: _extractMessage(response.data, 'Failed to mark as read'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -152,13 +148,13 @@ class NotificationService {
       if (response.statusCode == 200) {
         return NotificationResponse(
           success: true,
-          message: response.data['message'] ?? 'All marked as read',
+          message: _extractMessage(response.data, 'All marked as read'),
         );
       }
 
       return NotificationResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to mark all as read',
+        message: _extractMessage(response.data, 'Failed to mark all as read'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -179,13 +175,13 @@ class NotificationService {
       if (response.statusCode == 200) {
         return NotificationResponse(
           success: true,
-          message: response.data['message'] ?? 'Notification deleted',
+          message: _extractMessage(response.data, 'Notification deleted'),
         );
       }
 
       return NotificationResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to delete notification',
+        message: _extractMessage(response.data, 'Failed to delete notification'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -194,6 +190,32 @@ class NotificationService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map) {
+      final dataField = raw['data'];
+      if (dataField is Map) {
+        final notificationsRaw = dataField['notifications'];
+        if (notificationsRaw is Map && notificationsRaw['data'] is List) {
+          return notificationsRaw['data'];
+        }
+        if (notificationsRaw is List) return notificationsRaw;
+      }
+      if (raw['notifications'] is List) return raw['notifications'];
+      if (raw['data'] is List) return raw['data'];
+    }
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
   }
 }
 

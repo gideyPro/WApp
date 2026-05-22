@@ -33,39 +33,18 @@ class ListingService {
 
       if (response.statusCode == 200) {
         final raw = response.data;
-        List<dynamic> dataList = [];
-        Map<String, dynamic> meta = {};
-
-        if (raw is Map) {
-          final dataField = raw['data'];
-          if (dataField is Map && raw['success'] != null) {
-            meta = Map<String, dynamic>.from(dataField);
-            final listRaw = dataField['data'] ?? dataField['listings'] ?? dataField['items'];
-            if (listRaw is List) dataList = listRaw;
-          } else if (dataField is List) {
-            dataList = dataField;
-            meta = Map<String, dynamic>.from(raw);
-          } else if (dataField is Map) {
-            meta = Map<String, dynamic>.from(dataField);
-            final listRaw = dataField['data'] ?? dataField['listings'] ?? dataField['items'];
-            if (listRaw is List) dataList = listRaw;
-          } else if (raw['current_page'] != null) {
-            meta = Map<String, dynamic>.from(raw);
-            final listRaw = raw['data'] ?? raw['listings'] ?? raw['items'];
-            if (listRaw is List) dataList = listRaw;
-          }
-        } else if (raw is List) {
-          dataList = raw;
-        }
+        final dataList = _extractList(raw);
 
         final listings = dataList
             .whereType<Map>()
             .map((json) => Listing.fromJson(json as Map<String, dynamic>))
             .toList();
 
-        int currentPage = _safeInt(meta['current_page']) ?? page;
-        int totalPages = _safeInt(meta['last_page']) ?? 1;
-        int total = _safeInt(meta['total']) ?? 0;
+        // Pagination metadata can be at root or under 'data'
+        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
+        int currentPage = _safeInt(paginationSource['current_page']) ?? page;
+        int totalPages = _safeInt(paginationSource['last_page']) ?? 1;
+        int total = _safeInt(paginationSource['total']) ?? 0;
 
         return ListingResponse(
           success: true,
@@ -78,7 +57,7 @@ class ListingService {
 
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch listings',
+        message: _extractMessage(response.data, 'Failed to fetch listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -87,6 +66,35 @@ class ListingService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Robustly extract a list from various API response structures
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw == null) return [];
+    if (raw is List) return raw;
+    if (raw is Map) {
+      final data = raw['data'];
+      if (data is List) return data;
+      if (data is Map) {
+        final nestedData = data['data'] ?? data['listings'] ?? data['items'];
+        if (nestedData is List) return nestedData;
+      }
+      final directList = raw['listings'] ?? raw['items'];
+      if (directList is List) return directList;
+    }
+    return [];
+  }
+
+  /// Robustly extract a message from various API response structures
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map) {
+      return raw['message']?.toString() ?? 
+             raw['error']?.toString() ?? 
+             raw['errors']?.toString() ?? 
+             defaultMessage;
+    }
+    if (raw is String) return raw;
+    return defaultMessage;
   }
 
   int? _safeInt(dynamic value) {
@@ -113,23 +121,12 @@ class ListingService {
 
       if (response.statusCode == 200) {
         final raw = response.data;
-        List<dynamic> dataList = [];
-        int currentPage = page;
-        int totalPages = 1;
-        int total = 0;
-
-        if (raw is Map && raw['success'] == true) {
-          final dataField = raw['data'];
-          if (dataField is Map) {
-            final listRaw = dataField['data'];
-            if (listRaw is List) dataList = listRaw;
-            currentPage = _safeInt(dataField['current_page']) ?? page;
-            totalPages = _safeInt(dataField['last_page']) ?? 1;
-            total = _safeInt(dataField['total']) ?? 0;
-          } else if (dataField is List) {
-            dataList = dataField;
-          }
-        }
+        final dataList = _extractList(raw);
+        
+        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
+        int currentPage = _safeInt(paginationSource['current_page']) ?? page;
+        int totalPages = _safeInt(paginationSource['last_page']) ?? 1;
+        int total = _safeInt(paginationSource['total']) ?? 0;
 
         final listings = dataList
             .whereType<Map>()
@@ -147,7 +144,7 @@ class ListingService {
 
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch your listings',
+        message: _extractMessage(response.data, 'Failed to fetch your listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -173,23 +170,27 @@ class ListingService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-        final listings = (data['data'] as List)
-            .map((json) => Listing.fromJson(json))
+        final raw = response.data;
+        final dataList = _extractList(raw);
+        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
+
+        final listings = dataList
+            .whereType<Map>()
+            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
             .toList();
 
         return ListingResponse(
           success: true,
           listings: listings,
-          currentPage: data['current_page'] ?? page,
-          totalPages: data['last_page'] ?? 1,
-          total: data['total'] ?? 0,
+          currentPage: _safeInt(paginationSource['current_page']) ?? page,
+          totalPages: _safeInt(paginationSource['last_page']) ?? 1,
+          total: _safeInt(paginationSource['total']) ?? 0,
         );
       }
 
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch featured listings',
+        message: _extractMessage(response.data, 'Failed to fetch featured listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -207,10 +208,23 @@ class ListingService {
         '${ApiConstants.listingDetail}/$listingId',
       );
 
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data['data'] ?? response.data;
-        final listing = Listing.fromJson(data);
-        return ListingDetailResponse(success: true, listing: listing);
+      if (response.statusCode == 200) {
+        final raw = response.data;
+        Map<String, dynamic>? listingJson;
+        
+        if (raw is Map) {
+          final data = raw['data'];
+          if (data is Map) {
+            listingJson = Map<String, dynamic>.from(data);
+          } else {
+            listingJson = Map<String, dynamic>.from(raw);
+          }
+        }
+
+        if (listingJson != null) {
+          final listing = Listing.fromJson(listingJson);
+          return ListingDetailResponse(success: true, listing: listing);
+        }
       }
 
       if (response.statusCode == 401) {
@@ -220,12 +234,9 @@ class ListingService {
         );
       }
 
-      final message = response.data is Map
-          ? (response.data['message'] ?? 'Listing not found')
-          : 'Server returned an unexpected response.';
       return ListingDetailResponse(
         success: false,
-        message: message,
+        message: _extractMessage(response.data, 'Listing not found'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -244,8 +255,10 @@ class ListingService {
       );
 
       if (response.statusCode == 200) {
-        final listings = (response.data['data'] as List)
-            .map((json) => Listing.fromJson(json))
+        final dataList = _extractList(response.data);
+        final listings = dataList
+            .whereType<Map>()
+            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
             .toList();
 
         return ListingResponse(success: true, listings: listings);
@@ -253,7 +266,7 @@ class ListingService {
 
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch similar listings',
+        message: _extractMessage(response.data, 'Failed to fetch similar listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -263,6 +276,7 @@ class ListingService {
       );
     }
   }
+
 
   /// Build FormData from ListingFormData
   Future<FormData> _buildFormData(ListingFormData formData, {bool isUpdate = false}) async {
@@ -332,7 +346,7 @@ class ListingService {
       final file = formData.images[i];
       dioFormData.files.add(MapEntry(
         'images[]',
-        await MultipartFile.fromFile(file.path, filename: 'image_${i}.jpg'),
+        await MultipartFile.fromFile(file.path, filename: 'image_$i.jpg'),
       ));
     }
 

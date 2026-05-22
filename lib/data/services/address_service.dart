@@ -22,9 +22,7 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
-        final regionNames =
-            (data is List) ? data.whereType<String>().toList() : <String>[];
+        final regionNames = _extractList(response.data).whereType<String>().toList();
 
         final regions =
             regionNames.map((name) => Address(region: name)).toList();
@@ -33,7 +31,7 @@ class AddressService {
 
       return AddressResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch regions',
+        message: _extractMessage(response.data, 'Failed to fetch regions'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -57,9 +55,7 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
-        final zoneNames =
-            (data is List) ? data.whereType<String>().toList() : <String>[];
+        final zoneNames = _extractList(response.data).whereType<String>().toList();
 
         final zones = zoneNames.map((name) => Address(zone: name)).toList();
         return AddressResponse(success: true, zones: zones);
@@ -67,7 +63,7 @@ class AddressService {
 
       return AddressResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch zones',
+        message: _extractMessage(response.data, 'Failed to fetch zones'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -96,9 +92,7 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
-        final woredaNames =
-            (data is List) ? data.whereType<String>().toList() : <String>[];
+        final woredaNames = _extractList(response.data).whereType<String>().toList();
 
         final woredas =
             woredaNames.map((name) => Address(woreda: name)).toList();
@@ -107,7 +101,7 @@ class AddressService {
 
       return AddressResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch woredas',
+        message: _extractMessage(response.data, 'Failed to fetch woredas'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -138,24 +132,21 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
-        final kebeles = (data is List)
-            ? data
+        final kebeles = _extractList(response.data)
                 .whereType<Map>()
                 .map((m) => Address(
                       id: m['id'] as int?,
                       kebele: m['kebele'] as String?,
                     ))
                 .where((a) => a.kebele != null && a.kebele!.isNotEmpty)
-                .toList()
-            : <Address>[];
+                .toList();
 
         return AddressResponse(success: true, kebeles: kebeles);
       }
 
       return AddressResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch kebeles',
+        message: _extractMessage(response.data, 'Failed to fetch kebeles'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -166,12 +157,24 @@ class AddressService {
     }
   }
 
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map && raw['data'] is List) return raw['data'] as List;
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
+  }
+
   /// Parse address list from response
   List<Address> _parseList(dynamic data) {
-    if (data is List) {
-      return data.map((json) => Address.fromJson(json)).toList();
-    }
-    return [];
+    return _extractList(data).map((json) => Address.fromJson(json)).toList();
   }
 }
 

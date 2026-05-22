@@ -15,21 +15,22 @@ class ProfileService {
     try {
       final response = await _apiClient.dio.get(ApiConstants.profile);
 
-      if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-        final user = User.fromJson(data);
-        final stats = response.data['stats'];
+      if (response.statusCode == 200 && response.data is Map) {
+        final responseData = response.data as Map;
+        final data = responseData['data'] is Map ? responseData['data'] : responseData;
+        final user = User.fromJson(data is Map ? data as Map<String, dynamic> : {});
+        final stats = responseData['stats'];
 
         return ProfileResponse(
           success: true,
           user: user,
-          stats: stats != null ? ProfileStats.fromJson(stats) : null,
+          stats: stats is Map ? ProfileStats.fromJson(stats as Map<String, dynamic>) : null,
         );
       }
 
       return ProfileResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch profile',
+        message: _extractMessage(response.data, 'Failed to fetch profile'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -49,20 +50,21 @@ class ProfileService {
       );
 
       if (response.statusCode == 200) {
-        final user = response.data['data'] != null
-            ? User.fromJson(response.data['data'])
+        final responseData = response.data;
+        final user = (responseData is Map && responseData['data'] is Map)
+            ? User.fromJson(responseData['data'] as Map<String, dynamic>)
             : null;
 
         return ProfileResponse(
           success: true,
-          message: response.data['message'] ?? 'Profile updated successfully',
+          message: _extractMessage(responseData, 'Profile updated successfully'),
           user: user,
         );
       }
 
       return ProfileResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to update profile',
+        message: _extractMessage(response.data, 'Failed to update profile'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -81,13 +83,13 @@ class ProfileService {
       if (response.statusCode == 200) {
         return ProfileResponse(
           success: true,
-          message: response.data['message'] ?? 'Account deleted successfully',
+          message: _extractMessage(response.data, 'Account deleted successfully'),
         );
       }
 
       return ProfileResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to delete account',
+        message: _extractMessage(response.data, 'Failed to delete account'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -105,15 +107,19 @@ class ProfileService {
         '${ApiConstants.publicProfile}/$userId',
       );
 
-      if (response.statusCode == 200) {
-        final userData = response.data['data']?['user'] ?? response.data['data'] ?? response.data;
-        final user = User.fromJson(userData);
+      if (response.statusCode == 200 && response.data is Map) {
+        final responseData = response.data as Map;
+        final userData = responseData['data'] is Map 
+            ? (responseData['data']?['user'] ?? responseData['data'])
+            : responseData;
+            
+        final user = User.fromJson(userData is Map ? userData as Map<String, dynamic> : {});
         return ProfileResponse(success: true, user: user);
       }
 
       return ProfileResponse(
         success: false,
-        message: response.data['message'] ?? 'User not found',
+        message: _extractMessage(response.data, 'User not found'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -122,6 +128,21 @@ class ProfileService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map && raw['data'] is List) return raw['data'] as List;
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
   }
 }
 

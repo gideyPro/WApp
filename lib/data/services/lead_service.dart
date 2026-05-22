@@ -132,16 +132,16 @@ class LeadService {
         queryParameters: {'page': page, 'per_page': perPage},
       );
       if (response.statusCode == 200) {
-        final outerData = response.data['data'] ?? response.data;
-        final innerData = outerData['data'] ?? outerData;
-        final leads = (innerData['data'] as List)
-            .map((json) => Lead.fromJson(json))
+        final dataList = _extractList(response.data);
+        final leads = dataList
+            .whereType<Map>()
+            .map((json) => Lead.fromJson(json as Map<String, dynamic>))
             .toList();
         return LeadResponse(success: true, leads: leads);
       }
       return LeadResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch interests',
+        message: _extractMessage(response.data, 'Failed to fetch interests'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -163,18 +163,21 @@ class LeadService {
         data: {if (message != null && message.isNotEmpty) 'message': message},
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final lead = response.data['data'] != null
-            ? Lead.fromJson(response.data['data'])
+        final data = response.data;
+        final leadData = (data is Map) ? (data['data'] ?? data['lead']) : null;
+        final lead = (leadData is Map)
+            ? Lead.fromJson(leadData as Map<String, dynamic>)
             : null;
+            
         return LeadResponse(
           success: true,
-          message: response.data['message'] ?? 'Interest expressed',
+          message: _extractMessage(data, 'Interest expressed'),
           lead: lead,
         );
       }
       return LeadResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to express interest',
+        message: _extractMessage(response.data, 'Failed to express interest'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -194,12 +197,12 @@ class LeadService {
       if (response.statusCode == 200) {
         return LeadResponse(
           success: true,
-          message: response.data['message'] ?? 'Interest cancelled',
+          message: _extractMessage(response.data, 'Interest cancelled'),
         );
       }
       return LeadResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to cancel interest',
+        message: _extractMessage(response.data, 'Failed to cancel interest'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -217,17 +220,18 @@ class LeadService {
         '${ApiConstants.apiBase}/orders/$orderId/suggestions',
       );
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? [];
+        final dataList = _extractList(response.data);
         return LeadResponse(
           success: true,
-          leads: (data as List)
+          leads: dataList
+              .whereType<Map>()
               .map((j) => Lead.fromJson(j as Map<String, dynamic>))
               .toList(),
         );
       }
       return LeadResponse(
         success: false,
-        message: response.data?['message'] ?? 'Failed to fetch suggestions',
+        message: _extractMessage(response.data, 'Failed to fetch suggestions'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -245,18 +249,21 @@ class LeadService {
         '${ApiConstants.apiBase}/orders/suggestions/$suggestionId/accept',
       );
       if (response.statusCode == 200) {
-        final lead = response.data['data'] != null
-            ? Lead.fromJson(response.data['data'] as Map<String, dynamic>)
+        final data = response.data;
+        final leadData = (data is Map) ? (data['data'] ?? data['lead']) : null;
+        final lead = (leadData is Map)
+            ? Lead.fromJson(leadData as Map<String, dynamic>)
             : null;
+
         return LeadResponse(
           success: true,
-          message: response.data['message'] ?? 'Suggestion accepted',
+          message: _extractMessage(data, 'Suggestion accepted'),
           lead: lead,
         );
       }
       return LeadResponse(
         success: false,
-        message: response.data?['message'] ?? 'Failed to accept suggestion',
+        message: _extractMessage(response.data, 'Failed to accept suggestion'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -276,12 +283,12 @@ class LeadService {
       if (response.statusCode == 200) {
         return LeadResponse(
           success: true,
-          message: response.data['message'] ?? 'Suggestion declined',
+          message: _extractMessage(response.data, 'Suggestion declined'),
         );
       }
       return LeadResponse(
         success: false,
-        message: response.data?['message'] ?? 'Failed to decline suggestion',
+        message: _extractMessage(response.data, 'Failed to decline suggestion'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -290,6 +297,33 @@ class LeadService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map) {
+      // Try nested data patterns
+      var data = raw['data'];
+      if (data is List) return data;
+      if (data is Map) {
+        var innerData = data['data'];
+        if (innerData is List) return innerData;
+        return data.values.toList();
+      }
+      // Try other common keys
+      data = raw['leads'] ?? raw['interests'] ?? raw['suggestions'];
+      if (data is List) return data;
+    }
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
   }
 
   factory LeadService.withClient(ApiClient client) => LeadService(apiClient: client);

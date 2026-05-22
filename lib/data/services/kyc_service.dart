@@ -15,21 +15,25 @@ class KycService {
     try {
       final response = await _apiClient.dio.get(ApiConstants.kycStatus);
 
-      if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-        final verification = data['verification'] ?? {};
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data['data'] is Map 
+            ? response.data['data'] as Map 
+            : response.data as Map;
+        final verification = data['verification'] is Map 
+            ? data['verification'] as Map 
+            : {};
 
         return KycStatusResponse(
           success: true,
           status: verification['verified'] != true
-              ? (verification['status'] ?? 'none')
+              ? (verification['status']?.toString() ?? 'none')
               : 'approved',
-          isVerified: verification['verified'] ?? false,
-          documentType: verification['document_type'] ?? data['document_type'],
+          isVerified: verification['verified'] == true,
+          documentType: verification['document_type']?.toString() ?? data['document_type']?.toString(),
           rejectionReason:
-              verification['rejection_reason'] ?? data['rejection_reason'],
-          submittedAt: verification['submitted_at'] ?? data['submitted_at'],
-          verifiedAt: verification['verified_at'] ?? data['verified_at'],
+              verification['rejection_reason']?.toString() ?? data['rejection_reason']?.toString(),
+          submittedAt: verification['submitted_at']?.toString() ?? data['submitted_at']?.toString(),
+          verifiedAt: verification['verified_at']?.toString() ?? data['verified_at']?.toString(),
         );
       }
 
@@ -89,13 +93,13 @@ class KycService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return KycResponse(
           success: true,
-          message: response.data['message'] ?? 'KYC submitted successfully',
+          message: _extractMessage(response.data, 'KYC submitted successfully'),
         );
       }
 
       return KycResponse(
         success: false,
-        message: response.data['message'] ?? 'KYC submission failed',
+        message: _extractMessage(response.data, 'KYC submission failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -111,16 +115,20 @@ class KycService {
     try {
       final response = await _apiClient.dio.get(ApiConstants.kycCreate);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data['data'] is Map 
+            ? response.data['data'] as Map<String, dynamic>
+            : response.data as Map<String, dynamic>;
+            
         return KycFormDataResponse(
           success: true,
-          data: response.data['data'] ?? response.data,
+          data: data,
         );
       }
 
       return KycFormDataResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch KYC form',
+        message: _extractMessage(response.data, 'Failed to fetch KYC form'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -129,6 +137,21 @@ class KycService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map && raw['data'] is List) return raw['data'] as List;
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
   }
 }
 

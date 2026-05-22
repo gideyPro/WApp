@@ -34,22 +34,23 @@ class PaymentService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
+        final data = response.data;
+        final paymentData = (data is Map) ? (data['data'] ?? data) : {};
 
         return PaymentResponse(
           success: true,
-          message: response.data['message'] ?? 'Payment initialized',
-          checkoutUrl: data['checkout_url'],
-          payment: data['payment'] != null
-              ? Payment.fromJson(data['payment'])
+          message: _extractMessage(data, 'Payment initialized'),
+          checkoutUrl: paymentData['checkout_url'],
+          payment: paymentData['payment'] != null
+              ? Payment.fromJson(paymentData['payment'])
               : null,
-          txRef: data['tx_ref'],
+          txRef: paymentData['tx_ref'],
         );
       }
 
       return PaymentResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to initialize payment',
+        message: _extractMessage(response.data, 'Failed to initialize payment'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -69,19 +70,23 @@ class PaymentService {
       );
 
       if (response.statusCode == 200) {
+        final data = response.data;
+        final verified = (data is Map) ? (data['verified'] ?? true) : true;
+        final paymentData = (data is Map) ? (data['data'] ?? data) : null;
+        
         return PaymentResponse(
           success: true,
-          message: response.data['message'] ?? 'Payment verified',
-          verified: response.data['verified'] ?? true,
-          payment: response.data['data'] != null
-              ? Payment.fromJson(response.data['data'])
+          message: _extractMessage(data, 'Payment verified'),
+          verified: verified,
+          payment: (paymentData is Map)
+              ? Payment.fromJson(paymentData as Map<String, dynamic>)
               : null,
         );
       }
 
       return PaymentResponse(
         success: false,
-        message: response.data['message'] ?? 'Payment verification failed',
+        message: _extractMessage(response.data, 'Payment verification failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -108,21 +113,17 @@ class PaymentService {
 
       if (response.statusCode == 200) {
         final responseData = response.data;
-        List<dynamic> paymentsList = [];
+        List<dynamic> paymentsList = _extractList(responseData);
         int currentPage = page;
         int totalPages = 1;
         int total = 0;
 
-        if (responseData is Map && responseData['success'] == true) {
+        if (responseData is Map) {
           final dataField = responseData['data'];
           if (dataField is Map) {
-            final listRaw = dataField['data'];
-            if (listRaw is List) paymentsList = listRaw;
             currentPage = _safeInt(dataField['current_page']) ?? page;
             totalPages = _safeInt(dataField['last_page']) ?? 1;
             total = _safeInt(dataField['total']) ?? 0;
-          } else if (dataField is List) {
-            paymentsList = dataField;
           }
         }
 
@@ -142,7 +143,7 @@ class PaymentService {
 
       return PaymentHistoryResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch payments',
+        message: _extractMessage(response.data, 'Failed to fetch payments'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -169,8 +170,11 @@ class PaymentService {
       );
 
       if (response.statusCode == 200) {
+        final data = response.data;
+        final paymentData = (data is Map) ? (data['data'] ?? data) : {};
+        
         final payment = Payment.fromJson(
-          response.data['data'] ?? response.data,
+          paymentData is Map ? paymentData as Map<String, dynamic> : {},
         );
 
         return PaymentResponse(
@@ -181,7 +185,7 @@ class PaymentService {
 
       return PaymentResponse(
         success: false,
-        message: response.data['message'] ?? 'Payment not found',
+        message: _extractMessage(response.data, 'Payment not found'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -190,6 +194,25 @@ class PaymentService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map) {
+      final data = raw['data'] ?? raw['payments'];
+      if (data is List) return data;
+      if (data is Map && data['data'] is List) return data['data'] as List;
+    }
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
   }
 }
 

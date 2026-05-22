@@ -25,21 +25,10 @@ class FavoriteService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-
-        // Handle different response structures safely
-        List<dynamic> dataList = [];
-        if (data is Map) {
-          final dataListRaw = data['data'] ?? data['listings'] ?? data['items'];
-          if (dataListRaw is List) {
-            dataList = dataListRaw;
-          } else if (dataListRaw is Map) {
-            // Some APIs return data as a map with numeric keys
-            dataList = dataListRaw.values.toList();
-          }
-        } else if (data is List) {
-          dataList = data;
-        }
+        final data = response.data;
+        final dataMap = (data is Map) ? data : {};
+        
+        final dataList = _extractList(data);
 
         final listings = dataList
             .whereType<Map>()
@@ -47,9 +36,9 @@ class FavoriteService {
             .toList();
 
         // Safely parse pagination fields
-        int currentPage = _safeInt(data['current_page']) ?? page;
-        int totalPages = _safeInt(data['last_page']) ?? 1;
-        int total = _safeInt(data['total']) ?? 0;
+        int currentPage = _safeInt(dataMap['current_page']) ?? page;
+        int totalPages = _safeInt(dataMap['last_page']) ?? 1;
+        int total = _safeInt(dataMap['total']) ?? 0;
 
         return FavoriteResponse(
           success: true,
@@ -62,7 +51,7 @@ class FavoriteService {
 
       return FavoriteResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch favorites',
+        message: _extractMessage(response.data, 'Failed to fetch favorites'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -92,13 +81,13 @@ class FavoriteService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return FavoriteResponse(
           success: true,
-          message: response.data['message'] ?? 'Added to favorites',
+          message: _extractMessage(response.data, 'Added to favorites'),
         );
       }
 
       return FavoriteResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to add favorite',
+        message: _extractMessage(response.data, 'Failed to add favorite'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -119,13 +108,13 @@ class FavoriteService {
       if (response.statusCode == 200) {
         return FavoriteResponse(
           success: true,
-          message: response.data['message'] ?? 'Removed from favorites',
+          message: _extractMessage(response.data, 'Removed from favorites'),
         );
       }
 
       return FavoriteResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to remove favorite',
+        message: _extractMessage(response.data, 'Failed to remove favorite'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -144,16 +133,19 @@ class FavoriteService {
       );
 
       if (response.statusCode == 200) {
+        final data = response.data;
+        final added = (data is Map) ? (data['added'] ?? false) : false;
+        
         return FavoriteResponse(
           success: true,
-          message: response.data['message'] ?? 'Favorite toggled',
-          isFavorite: response.data['added'] ?? false,
+          message: _extractMessage(data, 'Favorite toggled'),
+          isFavorite: added,
         );
       }
 
       return FavoriteResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to toggle favorite',
+        message: _extractMessage(response.data, 'Failed to toggle favorite'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -162,6 +154,25 @@ class FavoriteService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map) {
+      final data = raw['data'] ?? raw['listings'] ?? raw['items'];
+      if (data is List) return data;
+      if (data is Map) return data.values.toList();
+    }
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
   }
 }
 

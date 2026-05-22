@@ -29,26 +29,16 @@ class MessageService {
       );
 
       if (response.statusCode == 200) {
-        final responseData = response.data;
-        dev.log('Response: $responseData', name: 'Messages');
+        final raw = response.data;
+        dev.log('Response: $raw', name: 'Messages');
 
-        List<dynamic> dataList = [];
-        int currentPage = page;
-        int totalPages = 1;
-        int total = 0;
-
-        if (responseData is Map && responseData['success'] == true) {
-          final dataField = responseData['data'];
-          if (dataField is Map) {
-            final dataListRaw = dataField['data'];
-            if (dataListRaw is List) dataList = dataListRaw;
-            currentPage = _safeInt(dataField['current_page']) ?? page;
-            totalPages = _safeInt(dataField['last_page']) ?? 1;
-            total = _safeInt(dataField['total']) ?? 0;
-          } else if (dataField is List) {
-            dataList = dataField;
-          }
-        }
+        final dataList = _extractList(raw);
+        
+        // Pagination metadata can be at root or under 'data'
+        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
+        int currentPage = _safeInt(paginationSource['current_page']) ?? page;
+        int totalPages = _safeInt(paginationSource['last_page']) ?? 1;
+        int total = _safeInt(paginationSource['total']) ?? 0;
 
         final conversations = dataList
             .whereType<Map>()
@@ -66,7 +56,7 @@ class MessageService {
 
       return ConversationResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch conversations',
+        message: _extractMessage(response.data, 'Failed to fetch conversations'),
       );
     } catch (e, stackTrace) {
       dev.log('Error fetching conversations: $e\n$stackTrace', name: 'Messages');
@@ -76,6 +66,35 @@ class MessageService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Robustly extract a list from various API response structures
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw == null) return [];
+    if (raw is List) return raw;
+    if (raw is Map) {
+      final data = raw['data'];
+      if (data is List) return data;
+      if (data is Map) {
+        final nestedData = data['data'] ?? data['conversations'] ?? data['messages'] ?? data['items'];
+        if (nestedData is List) return nestedData;
+      }
+      final directList = raw['conversations'] ?? raw['messages'] ?? raw['items'];
+      if (directList is List) return directList;
+    }
+    return [];
+  }
+
+  /// Robustly extract a message from various API response structures
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map) {
+      return raw['message']?.toString() ?? 
+             raw['error']?.toString() ?? 
+             raw['errors']?.toString() ?? 
+             defaultMessage;
+    }
+    if (raw is String) return raw;
+    return defaultMessage;
   }
 
   /// Safely convert dynamic value to int
@@ -108,21 +127,13 @@ class MessageService {
           final dataField = raw['data'];
           if (dataField is Map) {
             innerData = Map<String, dynamic>.from(dataField);
+          } else {
+            innerData = Map<String, dynamic>.from(raw);
           }
         }
 
         // Extract messages from paginator
-        List<dynamic> msgList = [];
-        final messagesRaw = innerData['messages'];
-        if (messagesRaw is Map) {
-          // Laravel paginator: { data: [...], current_page, ... }
-          final listRaw = messagesRaw['data'] ??
-              messagesRaw['listings'] ??
-              messagesRaw['items'];
-          if (listRaw is List) msgList = listRaw;
-        } else if (messagesRaw is List) {
-          msgList = messagesRaw;
-        }
+        final msgList = _extractList(innerData['messages'] ?? innerData);
 
         final messages = msgList
             .whereType<Map>()
@@ -137,16 +148,14 @@ class MessageService {
         }
 
         // Extract related conversations
-        List<msg.Conversation> relatedConversations = [];
         final relatedRaw = innerData['related_conversations'];
-        if (relatedRaw is List) {
-          relatedConversations = relatedRaw
+        final relatedList = relatedRaw is List ? relatedRaw : [];
+        final relatedConversations = relatedList
               .whereType<Map>()
               .map((json) => msg.Conversation.fromJson(
                   json as Map<String, dynamic>,
                   currentUserId: currentUserId))
               .toList();
-        }
 
         return MessageResponse(
           success: true,
@@ -158,7 +167,7 @@ class MessageService {
 
       return MessageResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch messages',
+        message: _extractMessage(response.data, 'Failed to fetch messages'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -186,20 +195,24 @@ class MessageService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final message = response.data['data'] != null
-            ? msg.Message.fromJson(response.data['data'])
-            : null;
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
+
+        final message = data != null ? msg.Message.fromJson(data) : null;
 
         return MessageResponse(
           success: true,
-          message: 'Message sent',
+          message: _extractMessage(response.data, 'Message sent'),
           messageData: message,
         );
       }
 
       return MessageResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to send message',
+        message: _extractMessage(response.data, 'Failed to send message'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -220,20 +233,24 @@ class MessageService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final conversation = response.data['data'] != null
-            ? msg.Conversation.fromJson(response.data['data'])
-            : null;
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
+
+        final conversation = data != null ? msg.Conversation.fromJson(data) : null;
 
         return ConversationResponse(
           success: true,
           conversation: conversation,
-          message: 'Conversation started',
+          message: _extractMessage(response.data, 'Conversation started'),
         );
       }
 
       return ConversationResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to start conversation',
+        message: _extractMessage(response.data, 'Failed to start conversation'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -254,20 +271,24 @@ class MessageService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final conversation = response.data['data'] != null
-            ? msg.Conversation.fromJson(response.data['data'])
-            : null;
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
+
+        final conversation = data != null ? msg.Conversation.fromJson(data) : null;
 
         return ConversationResponse(
           success: true,
           conversation: conversation,
-          message: 'Conversation started',
+          message: _extractMessage(response.data, 'Conversation started'),
         );
       }
 
       return ConversationResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to start conversation',
+        message: _extractMessage(response.data, 'Failed to start conversation'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -288,13 +309,13 @@ class MessageService {
       if (response.statusCode == 200) {
         return ConversationResponse(
           success: true,
-          message: response.data['message'] ?? 'Conversation deleted',
+          message: _extractMessage(response.data, 'Conversation deleted'),
         );
       }
 
       return ConversationResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to delete conversation',
+        message: _extractMessage(response.data, 'Failed to delete conversation'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -322,16 +343,7 @@ class MessageService {
       );
 
       if (response.statusCode == 200) {
-        final raw = response.data;
-        List<dynamic> msgList = [];
-
-        // Backend returns { messages: [...] } directly
-        if (raw is Map) {
-          final messagesRaw = raw['messages'] ?? raw['data'];
-          if (messagesRaw is List) msgList = messagesRaw;
-        } else if (raw is List) {
-          msgList = raw;
-        }
+        final msgList = _extractList(response.data);
 
         final messages = msgList
             .whereType<Map>()
@@ -346,7 +358,7 @@ class MessageService {
 
       return MessageResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch messages',
+        message: _extractMessage(response.data, 'Failed to fetch messages'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);

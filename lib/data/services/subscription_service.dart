@@ -19,12 +19,16 @@ class SubscriptionServiceApi {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-        final plansData = data['plans'] ?? [];
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
 
-        final plans = (plansData as List? ?? [])
-            .whereType<Map<String, dynamic>>()
-            .map((json) => SubscriptionPlan.fromJson(json))
+        final plansData = data?['plans'];
+        final plans = (plansData is List ? plansData : [])
+            .whereType<Map>()
+            .map((json) => SubscriptionPlan.fromJson(Map<String, dynamic>.from(json)))
             .toList();
 
         return SubscriptionPlansResponse(
@@ -35,7 +39,7 @@ class SubscriptionServiceApi {
 
       return SubscriptionPlansResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to fetch plans',
+        message: _extractMessage(response.data, 'Failed to fetch plans'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -46,6 +50,34 @@ class SubscriptionServiceApi {
     }
   }
 
+  /// Robustly extract a list from various API response structures
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw == null) return [];
+    if (raw is List) return raw;
+    if (raw is Map) {
+      final data = raw['data'];
+      if (data is List) return data;
+      if (data is Map) {
+        final nestedData = data['data'] ?? data['plans'] ?? data['items'] ?? data['subscriptions'];
+        if (nestedData is List) return nestedData;
+      }
+      final directList = raw['plans'] ?? raw['items'] ?? raw['subscriptions'];
+      if (directList is List) return directList;
+    }
+    return [];
+  }
+
+  /// Robustly extract a message from various API response structures
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map) {
+      return raw['message']?.toString() ?? 
+             raw['error']?.toString() ?? 
+             raw['errors']?.toString() ?? 
+             defaultMessage;
+    }
+    if (raw is String) return raw;
+    return defaultMessage;
+  }
 
   /// Get current user subscription
   Future<CurrentSubscriptionResponse> getCurrentSubscription() async {
@@ -55,16 +87,22 @@ class SubscriptionServiceApi {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-        final subscription = data['current_subscription'] != null
-            ? Subscription.fromJson(data['current_subscription'])
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
+
+        final subData = data?['current_subscription'];
+        final subscription = subData is Map
+            ? Subscription.fromJson(Map<String, dynamic>.from(subData))
             : null;
 
         return CurrentSubscriptionResponse(
           success: true,
           subscription: subscription,
-          canCreateListing: data['can_create_listing'] ?? false,
-          canFeatureListing: data['can_feature_listing'] ?? false,
+          canCreateListing: data?['can_create_listing'] ?? false,
+          canFeatureListing: data?['can_feature_listing'] ?? false,
         );
       }
 
@@ -90,23 +128,29 @@ class SubscriptionServiceApi {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-        final planData = data['plan'] != null
-            ? SubscriptionPlan.fromJson(data['plan'])
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
+
+        final planData = data?['plan'];
+        final planObj = planData is Map
+            ? SubscriptionPlan.fromJson(Map<String, dynamic>.from(planData))
             : null;
 
         return SubscriptionResponse(
           success: true,
-          message: response.data['message'] ?? 'Subscription initiated',
-          checkoutUrl: data['checkout_url'],
-          plan: planData,
-          requiresPayment: data['requires_payment'] == true,
+          message: _extractMessage(response.data, 'Subscription initiated'),
+          checkoutUrl: data?['checkout_url']?.toString(),
+          plan: planObj,
+          requiresPayment: data?['requires_payment'] == true,
         );
       }
 
       return SubscriptionResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to subscribe',
+        message: _extractMessage(response.data, 'Failed to subscribe'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -128,23 +172,27 @@ class SubscriptionServiceApi {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
         
-        if (data['free_plan'] == true) {
+        if (data?['free_plan'] == true) {
           return SubscriptionResponse(
             success: true,
-            message: data['message'] ?? 'Free plan activated',
+            message: _extractMessage(response.data, 'Free plan activated'),
             requiresPayment: false,
           );
         }
         
         return SubscriptionResponse(
           success: true,
-          message: response.data['message'] ?? 'Payment initiated',
-          txRef: data['tx_ref'],
-          paymentId: data['payment_id'],
-          amount: data['amount'] != null 
-              ? (data['amount'] is num ? data['amount'] : double.tryParse(data['amount'].toString()))
+          message: _extractMessage(response.data, 'Payment initiated'),
+          txRef: data?['tx_ref']?.toString(),
+          paymentId: data?['payment_id'] is int ? data!['payment_id'] : null,
+          amount: data?['amount'] != null 
+              ? (data!['amount'] is num ? (data['amount'] as num).toDouble() : double.tryParse(data['amount'].toString()))
               : null,
           requiresPayment: true,
         );
@@ -152,7 +200,7 @@ class SubscriptionServiceApi {
 
       return SubscriptionResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to initiate payment',
+        message: _extractMessage(response.data, 'Failed to initiate payment'),
         requiresPayment: false,
       );
     } catch (e) {
@@ -178,17 +226,22 @@ class SubscriptionServiceApi {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
+        
         return SubscriptionResponse(
           success: true,
-          message: response.data['message'] ?? 'Payment processed',
-          checkoutUrl: data['checkout_url'],
+          message: _extractMessage(response.data, 'Payment processed'),
+          checkoutUrl: data?['checkout_url']?.toString(),
         );
       }
 
       return SubscriptionResponse(
         success: false,
-        message: response.data['message'] ?? 'Payment processing failed',
+        message: _extractMessage(response.data, 'Payment processing failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -210,13 +263,13 @@ class SubscriptionServiceApi {
       if (response.statusCode == 200) {
         return SubscriptionResponse(
           success: true,
-          message: response.data['message'] ?? 'Subscription activated',
+          message: _extractMessage(response.data, 'Subscription activated'),
         );
       }
 
       return SubscriptionResponse(
         success: false,
-        message: response.data['message'] ?? 'Activation failed',
+        message: _extractMessage(response.data, 'Activation failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -236,10 +289,10 @@ class SubscriptionServiceApi {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'];
-        if (data != null && data['data'] != null && (data['data'] as List).isNotEmpty) {
-          final payment = data['data'][0] as Map<String, dynamic>;
-          return payment['status'] as String?;
+        final dataList = _extractList(response.data);
+        if (dataList.isNotEmpty && dataList[0] is Map) {
+          final payment = dataList[0] as Map;
+          return payment['status']?.toString();
         }
       }
       return null;
@@ -258,13 +311,13 @@ class SubscriptionServiceApi {
       if (response.statusCode == 200) {
         return SubscriptionResponse(
           success: true,
-          message: response.data['message'] ?? 'Subscription cancelled',
+          message: _extractMessage(response.data, 'Subscription cancelled'),
         );
       }
 
       return SubscriptionResponse(
         success: false,
-        message: response.data['message'] ?? 'Cancellation failed',
+        message: _extractMessage(response.data, 'Cancellation failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);

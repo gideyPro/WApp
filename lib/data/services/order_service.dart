@@ -119,27 +119,24 @@ class OrderService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
-        List<Order> orders = [];
-        int currentPage = page;
-        int totalPages = 1;
-        int total = 0;
+        final data = response.data;
+        final dataMap = (data is Map) ? data : {};
+        
+        final dataList = _extractList(data);
+        final orders = dataList
+            .whereType<Map>()
+            .map((j) => Order.fromJson(j as Map<String, dynamic>))
+            .toList();
 
-        if (data is Map) {
-          if (data['data'] is List) {
-            orders = (data['data'] as List)
-                .map((j) => Order.fromJson(j as Map<String, dynamic>))
-                .toList();
-          }
-          currentPage = _safeInt(data['current_page']);
-          totalPages = _safeInt(data['last_page']);
-          total = _safeInt(data['total']);
-        } else if (data is List) {
-          orders = data
-              .map((j) => Order.fromJson(j as Map<String, dynamic>))
-              .toList();
-          total = orders.length;
-        }
+        // Safely parse pagination fields
+        final paginationData = dataMap['data'] is Map ? dataMap['data'] : dataMap;
+        int currentPage = _safeInt(paginationData['current_page']) > 0 
+            ? _safeInt(paginationData['current_page']) 
+            : page;
+        int totalPages = _safeInt(paginationData['last_page']) > 0 
+            ? _safeInt(paginationData['last_page']) 
+            : 1;
+        int total = _safeInt(paginationData['total']);
 
         return OrderResponse(
           success: true,
@@ -152,7 +149,7 @@ class OrderService {
 
       return OrderResponse(
         success: false,
-        message: response.data?['message'] ?? 'Failed to fetch orders',
+        message: _extractMessage(response.data, 'Failed to fetch orders'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -167,15 +164,17 @@ class OrderService {
     try {
       final response = await _apiClient.dio.get('$_basePath/$id');
       if (response.statusCode == 200) {
-        final data = response.data['data'] ?? response.data;
+        final data = response.data;
+        final orderData = (data is Map) ? (data['data'] ?? data) : {};
+        
         return OrderResponse(
           success: true,
-          orders: [Order.fromJson(data is Map ? data as Map<String, dynamic> : {})],
+          orders: [Order.fromJson(orderData is Map ? orderData as Map<String, dynamic> : {})],
         );
       }
       return OrderResponse(
         success: false,
-        message: response.data?['message'] ?? 'Failed to fetch order',
+        message: _extractMessage(response.data, 'Failed to fetch order'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -190,16 +189,18 @@ class OrderService {
     try {
       final response = await _apiClient.dio.post(_basePath, data: data);
       if (response.statusCode == 201) {
-        final orderData = response.data['data'] ?? response.data;
+        final responseData = response.data;
+        final orderData = (responseData is Map) ? (responseData['data'] ?? responseData) : {};
+        
         return OrderResponse(
           success: true,
-          message: response.data['message'] ?? 'Order created',
+          message: _extractMessage(responseData, 'Order created'),
           orders: [Order.fromJson(orderData is Map ? orderData as Map<String, dynamic> : {})],
         );
       }
       return OrderResponse(
         success: false,
-        message: response.data?['message'] ?? 'Failed to create order',
+        message: _extractMessage(response.data, 'Failed to create order'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -216,12 +217,12 @@ class OrderService {
       if (response.statusCode == 200) {
         return OrderResponse(
           success: true,
-          message: response.data['message'] ?? 'Order cancelled',
+          message: _extractMessage(response.data, 'Order cancelled'),
         );
       }
       return OrderResponse(
         success: false,
-        message: response.data?['message'] ?? 'Failed to cancel order',
+        message: _extractMessage(response.data, 'Failed to cancel order'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -238,12 +239,12 @@ class OrderService {
       if (response.statusCode == 200) {
         return OrderResponse(
           success: true,
-          message: response.data['message'] ?? 'Order updated',
+          message: _extractMessage(response.data, 'Order updated'),
         );
       }
       return OrderResponse(
         success: false,
-        message: response.data?['message'] ?? 'Failed to update order',
+        message: _extractMessage(response.data, 'Failed to update order'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -252,6 +253,25 @@ class OrderService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  /// Helper to extract list from dynamic response
+  List<dynamic> _extractList(dynamic raw) {
+    if (raw is List) return raw;
+    if (raw is Map) {
+      final data = raw['data'] ?? raw['orders'];
+      if (data is List) return data;
+      if (data is Map && data['data'] is List) return data['data'] as List;
+    }
+    return [];
+  }
+
+  /// Helper to extract message from dynamic response
+  String _extractMessage(dynamic raw, String defaultMessage) {
+    if (raw is Map && raw['message'] != null) {
+      return raw['message'].toString();
+    }
+    return defaultMessage;
   }
 
   // Allow passing a custom Dio instance or base URL override for tests
