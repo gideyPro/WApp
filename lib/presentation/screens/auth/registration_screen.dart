@@ -177,8 +177,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     ),
                     child: Column(
                       children: [
-                        // Language switcher
-                        _buildLanguageSwitcher(),
                         // Step 1: Registration Form
                         if (!_isOtpSent) ...[
                           _buildSectionTitle(l10n.authPersonalInfo),
@@ -231,6 +229,20 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
                         // Login Link (only show before OTP is sent)
                         if (!_isOtpSent) _buildLoginLink(),
+
+                        // Language switcher at bottom
+                        Container(
+                          margin: const EdgeInsets.only(top: 16),
+                          padding: const EdgeInsets.only(top: 12),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: AppColors.primary200.withValues(alpha: 0.4),
+                              ),
+                            ),
+                          ),
+                          child: _buildLanguageSwitcher(),
+                        ),
                       ],
                     ),
                   ),
@@ -514,35 +526,29 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       {'code': 'ti', 'label': 'TI'},
     ];
 
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: supportedLocales.map((lang) {
-            final isActive = currentLocale == lang['code'];
-            return GestureDetector(
-              onTap: () => ref.read(localeProvider.notifier).setLocale(Locale(lang['code']!)),
-              child: Container(
-                margin: const EdgeInsets.only(left: 4),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isActive ? AppColors.primary600 : Colors.transparent,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Text(
-                  lang['label']!,
-                  style: AppTextStyles.caption.copyWith(
-                    color: isActive ? Colors.white : AppColors.primary400,
-                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                  ),
-                ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: supportedLocales.map((lang) {
+        final isActive = currentLocale == lang['code'];
+        return GestureDetector(
+          onTap: () => ref.read(localeProvider.notifier).setLocale(Locale(lang['code']!)),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: isActive ? AppColors.primary600 : Colors.transparent,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Text(
+              lang['label']!,
+              style: AppTextStyles.caption.copyWith(
+                color: isActive ? Colors.white : AppColors.primary400,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
               ),
-            );
-          }).toList(),
-        ),
-      ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
