@@ -443,34 +443,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   void _confirmChangeNumber() {
-    final l10n = AppLocalizations.of(context);
-    showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        title: Text(l10n.authChangeNumber),
-        content: Text(l10n.authChangeNumberConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.commonCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              l10n.commonContinue,
-              style: const TextStyle(color: AppColors.error),
-            ),
-          ),
-        ],
-      ),
-    ).then((confirmed) {
-      if (confirmed == true && mounted) {
-        ref.read(authStateProvider.notifier).clearOtpSent();
-        _countdownTimer?.cancel();
-        setState(() => _resendCountdown = 0);
-      }
-    });
+    _showExitDialog();
   }
 
   void _showExitDialog() {
