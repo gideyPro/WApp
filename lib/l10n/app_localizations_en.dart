@@ -69,6 +69,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonYes => 'Yes';
 
   @override
+  String get commonContinue => 'Continue';
+
+  @override
   String get commonNoData => 'No data available';
 
   @override
@@ -1495,6 +1498,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authChangeNumber => 'Change Number';
+
+  @override
+  String get authChangeNumberConfirm =>
+      'Are you sure you want to change your phone number?';
 
   @override
   String get authNoAccount => 'Don\'t have an account? ';

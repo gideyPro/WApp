@@ -69,6 +69,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonYes => 'እወ';
 
   @override
+  String get commonContinue => 'ቀጽል';
+
+  @override
   String get commonNoData => 'ዝተረኽበ መረዳእታ የለን';
 
   @override
@@ -1477,6 +1480,9 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get authChangeNumber => 'ቁጽሪ ቀይር';
+
+  @override
+  String get authChangeNumberConfirm => 'ናይ ስልክ ቁጽሪኹም ክትቅይሩ ዶ ትደልዩ?';
 
   @override
   String get authNoAccount => 'መለያ የብልኩምን? ';

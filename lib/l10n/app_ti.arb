@@ -490,6 +490,7 @@
   "authOtpSentMessage": "ናይ 6 ኣሃዝ ኮድ ናብ {phone} ሰዲድና ኣለና",
   "authResendCountdown": "ኮድ ድሕሪ {seconds} ሰከንድ ደጊምካ ስደድ",
   "authChangeNumber": "ቁጽሪ ቀይር",
+  "authChangeNumberConfirm": "ናይ ስልክ ቁጽሪኹም ክትቅይሩ ዶ ትደልዩ?",
   "authNoAccount": "መለያ የብልኩምን? ",
   "authRegister": "ተመዝገብ",
   "authCreateAccount": "መለያኹም ፍጠሩ",

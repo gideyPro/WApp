@@ -69,6 +69,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonYes => 'አዎ';
 
   @override
+  String get commonContinue => 'ቀጥል';
+
+  @override
   String get commonNoData => 'ምንም መረጃ የለም';
 
   @override
@@ -1478,6 +1481,9 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get authChangeNumber => 'ቁጥር ይቀይሩ';
+
+  @override
+  String get authChangeNumberConfirm => 'የስልክ ቁጥርዎን መቀየር ይፈልጋሉ?';
 
   @override
   String get authNoAccount => 'መለያ የለዎትም? ';

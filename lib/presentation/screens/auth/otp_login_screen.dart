@@ -388,11 +388,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   Widget _buildChangeNumberButton() {
     return TextButton.icon(
-      onPressed: () {
-        ref.read(authStateProvider.notifier).clearOtpSent();
-        _countdownTimer?.cancel();
-        setState(() => _resendCountdown = 0);
-      },
+      onPressed: () => _confirmChangeNumber(),
       icon: const Icon(Icons.arrow_back_rounded, size: 16, color: AppColors.primary600),
       label: Text(
         l10n.authChangeNumber,
@@ -444,6 +440,37 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         ],
       ),
     );
+  }
+
+  void _confirmChangeNumber() {
+    final l10n = AppLocalizations.of(context);
+    showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        title: Text(l10n.authChangeNumber),
+        content: Text(l10n.authChangeNumberConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.commonCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              l10n.commonContinue,
+              style: const TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    ).then((confirmed) {
+      if (confirmed == true && mounted) {
+        ref.read(authStateProvider.notifier).clearOtpSent();
+        _countdownTimer?.cancel();
+        setState(() => _resendCountdown = 0);
+      }
+    });
   }
 
   Future<void> _sendOtp() async {

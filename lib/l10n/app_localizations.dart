@@ -220,6 +220,12 @@ abstract class AppLocalizations {
   /// **'Yes'**
   String get commonYes;
 
+  /// No description provided for @commonContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get commonContinue;
+
   /// No description provided for @commonNoData.
   ///
   /// In en, this message translates to:
@@ -2901,6 +2907,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change Number'**
   String get authChangeNumber;
+
+  /// No description provided for @authChangeNumberConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to change your phone number?'**
+  String get authChangeNumberConfirm;
 
   /// No description provided for @authNoAccount.
   ///
