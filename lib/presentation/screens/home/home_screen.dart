@@ -1240,18 +1240,6 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                                 size: 14,
                               ),
                             ),
-                          )
-                        else
-                          Padding(
-                            padding: const EdgeInsets.only(right: 4),
-                            child: Tooltip(
-                              message: 'Filter Search',
-                              child: Icon(
-                                Icons.tune_rounded,
-                                color: context.theme.iconSecondary,
-                                size: 20,
-                              ),
-                            ),
                           ),
                         VerticalDivider(
                           color: context.divider,
