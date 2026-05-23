@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 import '../../core/network/error_handler.dart';
+import '../../l10n/app_localizations.dart';
 import '../models/address.dart';
 
 double? _parseDouble(dynamic value) {
@@ -73,20 +75,59 @@ class Order {
     );
   }
 
-  String get locationDisplay {
-    if (address == null) return '';
-    final parts = <String>[
-      address!.region ?? '',
-      address!.zone ?? '',
-      address!.woreda ?? '',
-      address!.kebele ?? '',
-    ];
-    return parts.where((p) => p.isNotEmpty).join(' > ');
-  }
-
   bool get isActive => status == 'active';
   bool get isFulfilled => status == 'fulfilled';
   bool get isCancelled => status == 'cancelled';
+
+  String getLocalizedHoldingType(BuildContext context) {
+    if (holdingType == null) return '';
+    final l10n = AppLocalizations.of(context);
+    switch (holdingType) {
+      case 'Free Hold':
+        return l10n.listingFreeHold;
+      case 'Lease Hold':
+        return l10n.listingLeaseHold;
+      case 'Cooperative':
+        return l10n.listingCooperative;
+      default:
+        return holdingType!;
+    }
+  }
+
+  String getLocalizedFacingDirection(BuildContext context) {
+    if (facingDirection == null) return '';
+    final l10n = AppLocalizations.of(context);
+    final normalized = facingDirection!
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}')
+        .join(' ');
+
+    switch (normalized) {
+      case 'North':
+        return l10n.listingNorth;
+      case 'South':
+        return l10n.listingSouth;
+      case 'East':
+        return l10n.listingEast;
+      case 'West':
+        return l10n.listingWest;
+      case 'North East':
+        return l10n.listingNorthEast;
+      case 'North West':
+        return l10n.listingNorthWest;
+      case 'South East':
+        return l10n.listingSouthEast;
+      case 'South West':
+        return l10n.listingSouthWest;
+      case 'Facing 3 Directions':
+        return l10n.listingFacing3Directions;
+      case 'Facing All Directions':
+        return l10n.listingFacingAllDirections;
+      default:
+        return facingDirection!;
+    }
+  }
 }
 
 class OrderResponse {

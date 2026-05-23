@@ -78,7 +78,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             Text(l10n.ordersTitle),
             if (state.total > 0)
               Text(
-                '${state.total} ${l10n.ordersTitle.toLowerCase()}',
+                l10n.ordersCount(state.total.toString()),
                 style: AppTextStyles.caption
                     .copyWith(color: context.theme.textMuted),
               ),
@@ -170,7 +170,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           if (order.holdingType != null) ...[
                             const SizedBox(width: 6),
                             _buildBadge(
-                              order.holdingType!,
+                              order.getLocalizedHoldingType(context),
                               AppColors.stone100,
                               AppColors.primary800,
                             ),
@@ -337,11 +337,12 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   }
 
   String _formatRange(double? min, double? max, String unit) {
+    final l10n = AppLocalizations.of(context);
     if (min != null && max != null) {
       return '${_formatPrice(min)} - ${_formatPrice(max)} $unit';
     }
     if (min != null) return '${_formatPrice(min)}+ $unit';
-    if (max != null) return 'Up to ${_formatPrice(max)} $unit';
+    if (max != null) return l10n.orderUpTo(_formatPrice(max), unit);
     return '';
   }
 }

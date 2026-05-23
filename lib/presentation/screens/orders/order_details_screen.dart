@@ -237,7 +237,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 const SizedBox(width: 6),
                 if (_order.holdingType != null)
                   _buildBadge(
-                    _order.holdingType!,
+                    _order.getLocalizedHoldingType(context),
                     AppColors.stone100,
                     AppColors.primary800,
                   ),
@@ -269,7 +269,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             if (_order.facingDirection != null) ...[
               _detailRow(
                 l10n.ordersFacing,
-                _order.facingDirection!.replaceAll('_', ' '),
+                _order.getLocalizedFacingDirection(context),
               ),
               const Divider(height: 16),
             ],
@@ -396,7 +396,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   children: [
                     Text(
                       suggestion.listingTitle ??
-                          'Listing #${suggestion.listingId}',
+                          l10n.listingIdLabel(suggestion.listingId.toString()),
                       style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.primary900,
                         fontWeight: FontWeight.w600,
@@ -404,7 +404,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     ),
                     if (suggestion.listingPrice != null)
                       Text(
-                        '${_formatPrice(suggestion.listingPrice)} ETB',
+                        l10n.listingsPriceFixed(_formatPrice(suggestion.listingPrice)),
                         style: AppTextStyles.caption
                             .copyWith(color: ThemeColors(context).textSecondary),
                       ),
@@ -621,11 +621,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   }
 
   String _formatRange(double? min, double? max, String unit) {
+    final l10n = AppLocalizations.of(context);
     if (min != null && max != null) {
       return '${_formatPrice(min)} - ${_formatPrice(max)} $unit';
     }
     if (min != null) return '${_formatPrice(min)}+ $unit';
-    if (max != null) return 'Up to ${_formatPrice(max)} $unit';
+    if (max != null) return l10n.orderUpTo(_formatPrice(max), unit);
     return '';
   }
 

@@ -1178,6 +1178,8 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
                     'north_west': l10n.listingNorthWest,
                     'south_east': l10n.listingSouthEast,
                     'south_west': l10n.listingSouthWest,
+                    'facing_3_directions': l10n.listingFacing3Directions,
+                    'Facing All Directions': l10n.listingFacingAllDirections,
                   },
                   label: l10n.listingFacingDirection,
                   hintText: l10n.listingSelectDirection,

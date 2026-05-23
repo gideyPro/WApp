@@ -338,14 +338,15 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DropdownButtonFormField<String>(
-                    initialValue: _holdingType,
+                    value: _holdingType,
                     style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     dropdownColor: context.sheetBg,
                     items: [
                       DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted))),
-                      ...['Free Hold', 'Lease Hold', 'Cooperative'].map((v) =>
-                          DropdownMenuItem(value: v, child: Text(v, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))),
+                      DropdownMenuItem(value: 'Free Hold', child: Text(l10n.listingFreeHold, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'Lease Hold', child: Text(l10n.listingLeaseHold, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'Cooperative', child: Text(l10n.listingCooperative, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
                     ],
                     onChanged: (v) => setState(() => _holdingType = v),
                   ),
@@ -354,14 +355,22 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    initialValue: _facingDirection,
+                    value: _facingDirection,
                     style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     dropdownColor: context.sheetBg,
                     items: [
                       DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted))),
-                      ...['north', 'south', 'east', 'west', 'north_east', 'north_west', 'south_east', 'south_west', 'facing_3_directions', 'Facing All Directions'].map((v) =>
-                          DropdownMenuItem(value: v, child: Text(v.replaceAll('_', ' '), style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))),
+                      DropdownMenuItem(value: 'north', child: Text(l10n.listingNorth, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'south', child: Text(l10n.listingSouth, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'east', child: Text(l10n.listingEast, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'west', child: Text(l10n.listingWest, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'north_east', child: Text(l10n.listingNorthEast, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'north_west', child: Text(l10n.listingNorthWest, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'south_east', child: Text(l10n.listingSouthEast, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'south_west', child: Text(l10n.listingSouthWest, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'facing_3_directions', child: Text(l10n.listingFacing3Directions, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'Facing All Directions', child: Text(l10n.listingFacingAllDirections, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
                     ],
                     onChanged: (v) => setState(() => _facingDirection = v),
                   ),
