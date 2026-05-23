@@ -87,10 +87,14 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   }
 
   Future<void> _loadRegions() async {
-    final response = await _addressService.getRegions();
+    final locale = Localizations.localeOf(context).languageCode;
+    final response = await _addressService.getRegions(locale: locale);
     if (mounted && response.success) {
       setState(() {
-        _regions = response.regions.map((a) => a.region ?? '').where((n) => n.isNotEmpty).toList();
+        _regions = response.regions
+            .map((a) => a.region ?? '')
+            .where((n) => n.isNotEmpty)
+            .toList();
       });
     }
   }
@@ -121,7 +125,8 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     });
     if (region == null) return;
     setState(() => _loadingZones = true);
-    final response = await _addressService.getZones(region: region);
+    final locale = Localizations.localeOf(context).languageCode;
+    final response = await _addressService.getZones(region: region, locale: locale);
     if (mounted) {
       setState(() {
         _loadingZones = false;
@@ -142,7 +147,8 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     });
     if (zone == null || _selectedRegion == null) return;
     setState(() => _loadingWoredas = true);
-    final response = await _addressService.getWoredas(region: _selectedRegion!, zone: zone);
+    final locale = Localizations.localeOf(context).languageCode;
+    final response = await _addressService.getWoredas(region: _selectedRegion!, zone: zone, locale: locale);
     if (mounted) {
       setState(() {
         _loadingWoredas = false;
@@ -162,10 +168,12 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     });
     if (woreda == null || _selectedRegion == null || _selectedZone == null) return;
     setState(() => _loadingKebeles = true);
+    final locale = Localizations.localeOf(context).languageCode;
     final response = await _addressService.getKebeles(
       region: _selectedRegion!,
       zone: _selectedZone!,
       woreda: woreda,
+      locale: locale,
     );
     if (mounted) {
       setState(() {
