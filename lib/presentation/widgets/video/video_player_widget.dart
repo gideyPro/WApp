@@ -3,6 +3,7 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import 'minimal_video_controls.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
@@ -179,7 +180,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Failed to load video',
+              AppLocalizations.of(context).errorVideoLoad,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primary600,
               ),
@@ -188,7 +189,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             TextButton.icon(
               onPressed: _retry,
               icon: const Icon(Icons.refresh, size: 18),
-              label: const Text('Retry'),
+              label: Text(AppLocalizations.of(context).commonRetry),
             ),
           ],
         ),

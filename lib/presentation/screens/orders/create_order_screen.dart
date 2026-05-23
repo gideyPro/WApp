@@ -218,7 +218,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   }
 
   String? _requiredValidator(String? value) {
-    if (value == null || value.trim().isEmpty) return 'Required';
+    if (value == null || value.trim().isEmpty) return AppLocalizations.of(context).orderRequired;
     return null;
   }
 
@@ -240,7 +240,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
           children: [
             _sectionCard(
               title: l10n.ordersTypeLabel,
-              subtitle: 'Select the type of property',
+              subtitle: l10n.orderSelectPropertyType,
               child: Row(
                 children: [
                   _typeChip('house', l10n.ordersTypeHouse, Icons.home_outlined),
@@ -252,7 +252,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
             _sectionCard(
               title: l10n.ordersListingType,
-              subtitle: 'Budget, area, and transaction type',
+              subtitle: l10n.orderBudgetAreaSubtitle,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -325,7 +325,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
             _sectionCard(
               title: l10n.ordersHoldingType,
-              subtitle: 'Holding type and facing direction',
+              subtitle: l10n.orderHoldingFacingSubtitle,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -420,7 +420,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
             _sectionCard(
               title: l10n.ordersDescription,
-              subtitle: 'Describe the property you need in detail',
+              subtitle: l10n.orderDescriptionSubtitle,
               child: TextFormField(
                 controller: _descriptionCtrl,
                 style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),

@@ -121,7 +121,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (state.errorMessage != null) {
       return WaveMessageScreen.error(
         isEmbedded: true,
-        title: 'Error Loading Profile',
+        title: AppLocalizations.of(context).errorLoadingProfile,
         subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(profileProvider.notifier).loadProfile();

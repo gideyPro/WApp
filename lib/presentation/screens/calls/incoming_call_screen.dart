@@ -117,7 +117,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(response.message.isNotEmpty ? response.message : 'Cannot open join link'),
+            content: Text(response.message.isNotEmpty ? response.message : AppLocalizations.of(context).errorJoinCallGeneric),
             backgroundColor: AppColors.error,
           ),
         );
@@ -128,7 +128,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to join call: $e'),
+            content: Text(AppLocalizations.of(context).errorJoinCall(e.toString())),
             backgroundColor: AppColors.error,
           ),
         );

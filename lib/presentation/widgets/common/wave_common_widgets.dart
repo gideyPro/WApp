@@ -510,43 +510,31 @@ final _typeStyles = {
     icon: Icons.error_outline_rounded,
     iconBg: Color(0xFFfee2e2),
     iconColor: Color(0xFFef4444),
-    defaultTitle: 'Something Went Wrong',
-    defaultSubtitle: "We couldn't complete your request.",
   ),
   WaveMessageType.warning: const _MessageStyle(
     icon: Icons.warning_amber_rounded,
     iconBg: Color(0xFFfef3c7),
     iconColor: Color(0xFFf59e0b),
-    defaultTitle: 'Warning',
-    defaultSubtitle: 'Please review this important message.',
   ),
   WaveMessageType.success: const _MessageStyle(
     icon: Icons.check_circle_outline_rounded,
     iconBg: Color(0xFFd1fae5),
     iconColor: Color(0xFF10b981),
-    defaultTitle: 'Success!',
-    defaultSubtitle: 'Your action was completed successfully.',
   ),
   WaveMessageType.info: const _MessageStyle(
     icon: Icons.info_outline_rounded,
     iconBg: Color(0xFFdbeafe),
     iconColor: Color(0xFF3b82f6),
-    defaultTitle: 'Info',
-    defaultSubtitle: 'Here is some important information.',
   ),
   WaveMessageType.networkError: const _MessageStyle(
     icon: Icons.wifi_off_rounded,
     iconBg: Color(0xFFe7e5e4),
     iconColor: Color(0xFF78716c),
-    defaultTitle: 'No Internet Connection',
-    defaultSubtitle: 'Check your connection and try again.',
   ),
   WaveMessageType.empty: const _MessageStyle(
     icon: Icons.inbox_outlined,
     iconBg: Color(0xFFf5f5f4),
     iconColor: Color(0xFFa8a29e),
-    defaultTitle: 'Nothing Here',
-    defaultSubtitle: "There's nothing to show right now.",
   ),
 };
 
@@ -663,6 +651,8 @@ class WaveMessageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
+
     final style = type == WaveMessageType.custom
         ? _MessageStyle(
             icon: customIcon ?? Icons.help_outline,
@@ -671,8 +661,40 @@ class WaveMessageScreen extends StatelessWidget {
           )
         : _typeStyles[type]!;
 
-    final effectiveTitle = title ?? style.defaultTitle ?? '';
-    final effectiveSubtitle = subtitle ?? style.defaultSubtitle ?? '';
+    String? defaultTitle;
+    String? defaultSubtitle;
+
+    switch (type) {
+      case WaveMessageType.error:
+        defaultTitle = l10n.messageErrorTitle;
+        defaultSubtitle = l10n.messageErrorSubtitle;
+        break;
+      case WaveMessageType.warning:
+        defaultTitle = l10n.messageWarningTitle;
+        defaultSubtitle = l10n.messageWarningSubtitle;
+        break;
+      case WaveMessageType.success:
+        defaultTitle = l10n.messageSuccessTitle;
+        defaultSubtitle = l10n.messageSuccessSubtitle;
+        break;
+      case WaveMessageType.info:
+        defaultTitle = l10n.messageInfoTitle;
+        defaultSubtitle = l10n.messageInfoSubtitle;
+        break;
+      case WaveMessageType.networkError:
+        defaultTitle = l10n.messageNetworkTitle;
+        defaultSubtitle = l10n.messageNetworkSubtitle;
+        break;
+      case WaveMessageType.empty:
+        defaultTitle = l10n.messageEmptyTitle;
+        defaultSubtitle = l10n.messageEmptySubtitle;
+        break;
+      default:
+        break;
+    }
+
+    final effectiveTitle = title ?? defaultTitle ?? '';
+    final effectiveSubtitle = subtitle ?? defaultSubtitle ?? '';
 
     final card = _buildCard(style, effectiveTitle, effectiveSubtitle, context, isDark);
 

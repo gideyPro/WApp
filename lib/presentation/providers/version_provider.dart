@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 
@@ -34,10 +35,24 @@ class VersionNotifier extends StateNotifier<VersionState> {
 
   Future<void> checkForUpdate() async {
     try {
+      final info = await PackageInfo.fromPlatform();
+      final currentBuild = int.tryParse(info.buildNumber) ?? 0;
+
       final response = await ApiClient()
           .dio
           .get('${ApiConstants.apiBase}/settings');
       final data = response.data['data'] ?? {};
+
+      final latestVersionCode = (data['latest_app_version_code'] ?? 0) as int;
+
+      // Only check if a newer version exists
+      if (currentBuild >= latestVersionCode) {
+        state = const VersionState(
+          isLoading: false,
+          updateType: UpdateType.none,
+        );
+        return;
+      }
 
       final updateTypeStr = data['update_type'] as String? ?? 'none';
       final updateType = UpdateType.values.firstWhere(

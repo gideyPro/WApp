@@ -3363,6 +3363,354 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please review this important message.'**
   String get messageWarningSubtitle;
+
+  /// No description provided for @listingUpgradeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Now'**
+  String get listingUpgradeNow;
+
+  /// No description provided for @listingFeatureNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature Now'**
+  String get listingFeatureNow;
+
+  /// No description provided for @listingViewPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'View Plans'**
+  String get listingViewPlans;
+
+  /// No description provided for @listingFeatureThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature this Listing'**
+  String get listingFeatureThis;
+
+  /// No description provided for @commonGoodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Morning'**
+  String get commonGoodMorning;
+
+  /// No description provided for @commonGoodAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Afternoon'**
+  String get commonGoodAfternoon;
+
+  /// No description provided for @commonGoodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Evening'**
+  String get commonGoodEvening;
+
+  /// No description provided for @errorLoadingListings.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Listings'**
+  String get errorLoadingListings;
+
+  /// No description provided for @errorLoadingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Profile'**
+  String get errorLoadingProfile;
+
+  /// No description provided for @errorLoadingPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Payments'**
+  String get errorLoadingPayments;
+
+  /// No description provided for @errorLoadingNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Notifications'**
+  String get errorLoadingNotifications;
+
+  /// No description provided for @errorLoadingFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Favorites'**
+  String get errorLoadingFavorites;
+
+  /// No description provided for @errorLoadingConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Conversations'**
+  String get errorLoadingConversations;
+
+  /// No description provided for @errorLoadingMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Messages'**
+  String get errorLoadingMessages;
+
+  /// No description provided for @errorSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Error'**
+  String get errorSubscription;
+
+  /// No description provided for @errorSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Error'**
+  String get errorSearch;
+
+  /// No description provided for @errorJoinCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to join call: {error}'**
+  String errorJoinCall(Object error);
+
+  /// No description provided for @subscriptionPaymentNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment could not be verified.'**
+  String get subscriptionPaymentNotVerified;
+
+  /// No description provided for @subscriptionPaymentSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment successful!'**
+  String get subscriptionPaymentSuccess;
+
+  /// No description provided for @subscriptionUnexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred: {error}'**
+  String subscriptionUnexpectedError(Object error);
+
+  /// No description provided for @subscriptionRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Required'**
+  String get subscriptionRequiredTitle;
+
+  /// No description provided for @subscriptionRequiredListingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You need an active subscription to post a listing.'**
+  String get subscriptionRequiredListingSubtitle;
+
+  /// No description provided for @subscriptionRequiredDetailsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You need an active subscription to view property details and contact owners.'**
+  String get subscriptionRequiredDetailsSubtitle;
+
+  /// No description provided for @subscriptionLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached your listing limit. Upgrade your subscription to post more listings.'**
+  String get subscriptionLimitReached;
+
+  /// No description provided for @kycRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC Verification Required'**
+  String get kycRequiredTitle;
+
+  /// No description provided for @kycPendingSubtitleReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Your KYC verification is still pending review. You can post a listing once it\'s approved.'**
+  String get kycPendingSubtitleReview;
+
+  /// No description provided for @kycRequiredSubtitlePost.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to complete identity verification (KYC) before you can post a listing.'**
+  String get kycRequiredSubtitlePost;
+
+  /// No description provided for @kycVerifyNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Now'**
+  String get kycVerifyNow;
+
+  /// No description provided for @orderSelectPropertyType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the type of property'**
+  String get orderSelectPropertyType;
+
+  /// No description provided for @orderBudgetAreaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget, area, and transaction type'**
+  String get orderBudgetAreaSubtitle;
+
+  /// No description provided for @orderHoldingFacingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Holding type and facing direction'**
+  String get orderHoldingFacingSubtitle;
+
+  /// No description provided for @orderDescriptionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the property you need in detail'**
+  String get orderDescriptionSubtitle;
+
+  /// No description provided for @orderRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get orderRequired;
+
+  /// No description provided for @orderUpTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {price} {unit}'**
+  String orderUpTo(Object price, Object unit);
+
+  /// No description provided for @listingErrorPropertyTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Property type is required'**
+  String get listingErrorPropertyTypeRequired;
+
+  /// No description provided for @listingErrorHoldingTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Holding type is required'**
+  String get listingErrorHoldingTypeRequired;
+
+  /// No description provided for @listingErrorListingTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing type is required'**
+  String get listingErrorListingTypeRequired;
+
+  /// No description provided for @listingErrorUseTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Use type is required'**
+  String get listingErrorUseTypeRequired;
+
+  /// No description provided for @listingErrorAddressRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a complete address'**
+  String get listingErrorAddressRequired;
+
+  /// No description provided for @listingErrorMinPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price must be at least 1,000 ETB'**
+  String get listingErrorMinPrice;
+
+  /// No description provided for @listingErrorLeasedYearRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Leased year is required'**
+  String get listingErrorLeasedYearRequired;
+
+  /// No description provided for @listingErrorCooperativeNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooperative name is required'**
+  String get listingErrorCooperativeNameRequired;
+
+  /// No description provided for @listingErrorCooperativeCodeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooperative code is required'**
+  String get listingErrorCooperativeCodeRequired;
+
+  /// No description provided for @listingErrorRoomsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Total rooms is required'**
+  String get listingErrorRoomsRequired;
+
+  /// No description provided for @listingErrorHouseTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'House type is required'**
+  String get listingErrorHouseTypeRequired;
+
+  /// No description provided for @listingErrorAreaRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Total area is required'**
+  String get listingErrorAreaRequired;
+
+  /// No description provided for @listingErrorDescriptionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is required'**
+  String get listingErrorDescriptionRequired;
+
+  /// No description provided for @listingErrorImageRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one property image is required'**
+  String get listingErrorImageRequired;
+
+  /// No description provided for @listingErrorSitePlanRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one site plan is required'**
+  String get listingErrorSitePlanRequired;
+
+  /// No description provided for @listingErrorOwnershipProofRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Ownership proof is required for cooperative properties'**
+  String get listingErrorOwnershipProofRequired;
+
+  /// No description provided for @listingErrorLeaseContractRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Lease contract is required for lease hold properties'**
+  String get listingErrorLeaseContractRequired;
+
+  /// No description provided for @listingErrorTermsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You must accept the Terms & Conditions'**
+  String get listingErrorTermsRequired;
+
+  /// No description provided for @notificationJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get notificationJustNow;
+
+  /// No description provided for @messageConversationId.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation #{id}'**
+  String messageConversationId(Object id);
+
+  /// No description provided for @messageDirectChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Chat'**
+  String get messageDirectChat;
+
+  /// No description provided for @listingPriceUnder5M.
+  ///
+  /// In en, this message translates to:
+  /// **'Under 5M'**
+  String get listingPriceUnder5M;
+
+  /// No description provided for @listingUpgradeToFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Feature'**
+  String get listingUpgradeToFeature;
+
+  /// No description provided for @listingUpgradeToFeatureSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.'**
+  String get listingUpgradeToFeatureSubtitle;
 }
 
 class _AppLocalizationsDelegate

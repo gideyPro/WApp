@@ -68,7 +68,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
 
     if (state.errorMessage != null && state.payments.isEmpty) {
       return WaveMessageScreen.error(
-        title: 'Error Loading Payments',
+        title: l10n.errorLoadingPayments,
         subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(paymentHistoryProvider.notifier).loadPayments();
@@ -247,7 +247,7 @@ class _PaymentTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  payment.statusLabel,
+                  payment.getStatusLabel(l10n),
                   style: AppTextStyles.labelSmall.copyWith(
                     color: _statusColor(payment),
                     fontWeight: FontWeight.w600,

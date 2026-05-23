@@ -110,7 +110,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
 
     if (state.errorMessage != null && state.conversations.isEmpty) {
       return WaveMessageScreen.error(
-        title: 'Error Loading Conversations',
+        title: l10n.errorLoadingConversations,
         subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(conversationsProvider.notifier).loadConversations();
@@ -788,7 +788,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ],
                   ),
                   Text(
-                    'with $otherUserName',
+                    l10n.messagesWith(otherUserName),
                     style: AppTextStyles.caption.copyWith(
                       fontSize: 11,
                       color: context.theme.textMuted,
@@ -820,7 +820,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     : chatState.errorMessage != null && chatState.messages.isEmpty
                         ? WaveMessageScreen.error(
                             isEmbedded: true,
-                            title: 'Error Loading Messages',
+                            title: l10n.errorLoadingMessages,
                             subtitle: chatState.errorMessage!,
                             onRetry: () {
                               ref
@@ -990,19 +990,6 @@ Widget _buildMessagesSkeleton() {
   );
 }
 
-/// Format message time for bubbles
-String _formatMessageTime(DateTime createdAt, AppLocalizations l10n) {
-  final now = DateTime.now();
-  final diff = now.difference(createdAt);
-
-  if (diff.inMinutes < 1) return l10n.commonNow;
-  if (diff.inHours < 1) return '${diff.inMinutes}m';
-  if (diff.inDays < 1) return '${diff.inHours}h';
-  if (diff.inDays < 7) return '${diff.inDays}d';
-
-  return '${createdAt.day}/${createdAt.month}/${createdAt.year}';
-}
-
 /// Message Bubble Widget - WhatsApp-like with actual user initials
 class _MessageBubble extends ConsumerWidget {
   final msg.Message message;
@@ -1113,7 +1100,7 @@ class _MessageBubble extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            _formatMessageTime(message.createdAt, l10n),
+                            message.getDisplayTime(l10n),
                             style: AppTextStyles.caption.copyWith(
                               fontSize: 10,
                               color: isOwn

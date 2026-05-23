@@ -33,6 +33,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   /// Pre-flight check before opening Create Listing — KYC then Subscription
   Future<void> _onCreateListingTap() async {
     setState(() => _isCreatingListing = true);
+    final l10n = AppLocalizations.of(context);
     try {
       await ref.read(kycStatusProvider.notifier).loadKycStatus();
       if (!mounted) return;
@@ -49,11 +50,11 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
         final goKyc = await _showAccessDialog(
           icon: Icons.verified_user_outlined,
           iconColor: AppColors.warning,
-          title: 'KYC Verification Required',
+          title: l10n.kycRequiredTitle,
           message: kycState.isPending
-              ? 'Your KYC verification is still pending review. You can post a listing once it\'s approved.'
-              : 'You need to complete identity verification (KYC) before you can post a listing.',
-          actionLabel: kycState.isPending ? null : 'Verify Now',
+              ? l10n.kycPendingSubtitleReview
+              : l10n.kycRequiredSubtitlePost,
+          actionLabel: kycState.isPending ? null : l10n.kycVerifyNow,
         );
         if (goKyc == true && mounted) {
           Navigator.of(context).push(
@@ -68,10 +69,9 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
         final goSub = await _showAccessDialog(
           icon: Icons.workspace_premium_outlined,
           iconColor: AppColors.accent500,
-          title: 'Subscription Required',
-          message:
-              'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
-          actionLabel: 'View Plans',
+          title: l10n.subscriptionRequiredTitle,
+          message: l10n.subscriptionLimitReached,
+          actionLabel: l10n.listingViewPlans,
         );
         if (goSub == true && mounted) {
           Navigator.of(context).push(

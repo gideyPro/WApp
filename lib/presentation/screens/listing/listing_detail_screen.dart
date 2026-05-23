@@ -300,7 +300,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                     );
                   },
                   icon: const Icon(Icons.star, size: 18),
-                  label: const Text('Upgrade Now'),
+                  label: Text(l10n.listingUpgradeNow),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.accent500,
                     foregroundColor: Colors.white,
@@ -1086,8 +1086,9 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text('Feature this Listing?',
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text(l10n.listingFeatureThis + '?',
             style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
         content: Text(
           'Your listing will be featured on the home page and search results for 30 days.',
@@ -1108,7 +1109,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            child: const Text('Feature Now'),
+            child: Text(l10n.listingFeatureNow),
           ),
         ],
       ),
@@ -1147,23 +1148,24 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   }
 
   Future<bool?> _showFeatureUpgradeDialog() {
+    final l10n = AppLocalizations.of(context);
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         icon: const Icon(Icons.workspace_premium_outlined,
             color: AppColors.accent500, size: 40),
-        title: Text('Upgrade to Feature',
+        title: Text(l10n.listingUpgradeToFeature,
             style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
         content: Text(
-          'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.',
+          l10n.listingUpgradeToFeatureSubtitle,
           style: AppTextStyles.bodyMedium
               .copyWith(color: context.theme.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(AppLocalizations.of(context).commonCancel),
+            child: Text(l10n.commonCancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -1175,7 +1177,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            child: const Text('View Plans'),
+            child: Text(l10n.listingViewPlans),
           ),
         ],
       ),
@@ -1240,7 +1242,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 child: OutlinedButton.icon(
                   onPressed: () => _featureListing(listing),
                   icon: const Icon(Icons.workspace_premium_outlined, size: 20),
-                  label: const Text('Feature this Listing'),
+                  label: Text(l10n.listingFeatureThis),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: AppColors.accent500),

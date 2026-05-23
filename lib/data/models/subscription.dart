@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../../l10n/app_localizations.dart';
 
 /// Subscription Plan Model
 class SubscriptionPlan {
@@ -167,9 +168,9 @@ class Subscription {
     return endsAt!.difference(now).inDays;
   }
 
-  String get statusLabel {
-    if (isCancelled) return 'Cancelled';
-    if (isExpired) return 'Expired';
-    return 'Active';
+  String getStatusLabel(AppLocalizations l10n) {
+    if (isCancelled) return l10n.statusCancelled;
+    if (isExpired) return l10n.statusExpired;
+    return l10n.statusActive;
   }
 }

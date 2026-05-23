@@ -94,7 +94,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     // Error state
     if (state.errorMessage != null && state.notifications.isEmpty) {
       return WaveMessageScreen.error(
-        title: 'Error Loading Notifications',
+        title: AppLocalizations.of(context).errorLoadingNotifications,
         subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(notificationsProvider.notifier).loadNotifications();
@@ -240,13 +240,13 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              Text('Subscription Required',
+              Text(AppLocalizations.of(ctx).subscriptionRequiredTitle,
                   style:
                       AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
                   textAlign: TextAlign.center),
               const SizedBox(height: 10),
               Text(
-                  'You need an active subscription to view property details and contact owners.',
+                  AppLocalizations.of(ctx).subscriptionRequiredDetailsSubtitle,
                   style: AppTextStyles.bodyMedium
                       .copyWith(color: context.theme.textSecondary),
                   textAlign: TextAlign.center),
@@ -276,7 +276,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
-                      child: const Text('View Plans'),
+                      child: Text(AppLocalizations.of(ctx).listingViewPlans),
                     ),
                   ),
                 ],
@@ -403,7 +403,7 @@ class _NotificationTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  notification.displayTime,
+                  notification.getDisplayTime(l10n),
                   style: AppTextStyles.caption.copyWith(
                     color: context.theme.textMuted,
                   ),

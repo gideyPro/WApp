@@ -83,7 +83,7 @@ class _SubscriptionPlansScreenState
 
     if (state.errorMessage != null && state.plans.isEmpty) {
       return WaveMessageScreen.error(
-        title: 'Subscription Error',
+        title: l10n.errorSubscription,
         subtitle: state.errorMessage!,
         onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
         isEmbedded: true,
@@ -311,7 +311,7 @@ class _SubscriptionPlansScreenState
               ),
               const SizedBox(width: 8),
               Text(
-                '${sub.statusLabel} Plan: ${localPlan?.name ?? l10n.commonUnknown}',
+                '${sub.getStatusLabel(l10n)} Plan: ${localPlan?.name ?? l10n.commonUnknown}',
                 style: AppTextStyles.title.copyWith(
                   color: AppColors.primary900,
                   fontSize: 15,
@@ -420,7 +420,7 @@ class _SubscriptionPlansScreenState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: $e'),
+              content: Text(l10n.subscriptionUnexpectedError(e.toString())),
               backgroundColor: AppColors.error,
             ),
           );
@@ -511,11 +511,11 @@ class _SubscriptionPlansScreenState
       // Handle Failures & Retries
       if (result == 'retry' || result == 'failed' || result == 'technical_failure') {
         final failureTitle = result == 'technical_failure' 
-            ? 'Connection Error' 
-            : 'Payment Failed';
+            ? l10n.errorConnection 
+            : l10n.subscriptionPaymentFailedTitle;
         final failureSubtitle = result == 'technical_failure'
-            ? 'The payment gateway could not be reached. Please check your connection.'
-            : 'Your transaction was not completed. Would you like to try again?';
+            ? l10n.subscriptionTechnicalFailureSubtitle
+            : l10n.subscriptionPaymentFailedSubtitle;
 
         final retryAction = await Navigator.of(context).push(
           MaterialPageRoute(
@@ -554,7 +554,7 @@ class _SubscriptionPlansScreenState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Your payment could not be verified.'),
+              content: Text(l10n.subscriptionPaymentNotVerified),
               backgroundColor: AppColors.error,
             ),
           );
@@ -563,7 +563,7 @@ class _SubscriptionPlansScreenState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Payment successful!'),
+              content: Text(l10n.subscriptionPaymentSuccess),
               backgroundColor: AppColors.success,
             ),
           );
@@ -573,7 +573,7 @@ class _SubscriptionPlansScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('An unexpected error occurred: $e'),
+            content: Text(l10n.subscriptionUnexpectedError(e.toString())),
             backgroundColor: AppColors.error,
           ),
         );

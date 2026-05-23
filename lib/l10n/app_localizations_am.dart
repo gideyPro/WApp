@@ -1722,4 +1722,201 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get messageWarningSubtitle => 'እባክዎ ይህን አስፈላጊ መልእክት ይገምግሙ።';
+
+  @override
+  String get listingUpgradeNow => 'Upgrade Now';
+
+  @override
+  String get listingFeatureNow => 'Feature Now';
+
+  @override
+  String get listingViewPlans => 'View Plans';
+
+  @override
+  String get listingFeatureThis => 'Feature this Listing';
+
+  @override
+  String get commonGoodMorning => 'Good Morning';
+
+  @override
+  String get commonGoodAfternoon => 'Good Afternoon';
+
+  @override
+  String get commonGoodEvening => 'Good Evening';
+
+  @override
+  String get errorLoadingListings => 'Error Loading Listings';
+
+  @override
+  String get errorLoadingProfile => 'Error Loading Profile';
+
+  @override
+  String get errorLoadingPayments => 'Error Loading Payments';
+
+  @override
+  String get errorLoadingNotifications => 'Error Loading Notifications';
+
+  @override
+  String get errorLoadingFavorites => 'Error Loading Favorites';
+
+  @override
+  String get errorLoadingConversations => 'Error Loading Conversations';
+
+  @override
+  String get errorLoadingMessages => 'Error Loading Messages';
+
+  @override
+  String get errorSubscription => 'Subscription Error';
+
+  @override
+  String get errorSearch => 'Search Error';
+
+  @override
+  String errorJoinCall(Object error) {
+    return 'Failed to join call: $error';
+  }
+
+  @override
+  String get subscriptionPaymentNotVerified =>
+      'Your payment could not be verified.';
+
+  @override
+  String get subscriptionPaymentSuccess => 'Payment successful!';
+
+  @override
+  String subscriptionUnexpectedError(Object error) {
+    return 'An unexpected error occurred: $error';
+  }
+
+  @override
+  String get subscriptionRequiredTitle => 'Subscription Required';
+
+  @override
+  String get subscriptionRequiredListingSubtitle =>
+      'You need an active subscription to post a listing.';
+
+  @override
+  String get subscriptionRequiredDetailsSubtitle =>
+      'You need an active subscription to view property details and contact owners.';
+
+  @override
+  String get subscriptionLimitReached =>
+      'You\'ve reached your listing limit. Upgrade your subscription to post more listings.';
+
+  @override
+  String get kycRequiredTitle => 'KYC Verification Required';
+
+  @override
+  String get kycPendingSubtitleReview =>
+      'Your KYC verification is still pending review. You can post a listing once it\'s approved.';
+
+  @override
+  String get kycRequiredSubtitlePost =>
+      'You need to complete identity verification (KYC) before you can post a listing.';
+
+  @override
+  String get kycVerifyNow => 'Verify Now';
+
+  @override
+  String get orderSelectPropertyType => 'Select the type of property';
+
+  @override
+  String get orderBudgetAreaSubtitle => 'Budget, area, and transaction type';
+
+  @override
+  String get orderHoldingFacingSubtitle => 'Holding type and facing direction';
+
+  @override
+  String get orderDescriptionSubtitle =>
+      'Describe the property you need in detail';
+
+  @override
+  String get orderRequired => 'Required';
+
+  @override
+  String orderUpTo(Object price, Object unit) {
+    return 'Up to $price $unit';
+  }
+
+  @override
+  String get listingErrorPropertyTypeRequired => 'Property type is required';
+
+  @override
+  String get listingErrorHoldingTypeRequired => 'Holding type is required';
+
+  @override
+  String get listingErrorListingTypeRequired => 'Listing type is required';
+
+  @override
+  String get listingErrorUseTypeRequired => 'Use type is required';
+
+  @override
+  String get listingErrorAddressRequired => 'Please select a complete address';
+
+  @override
+  String get listingErrorMinPrice => 'Price must be at least 1,000 ETB';
+
+  @override
+  String get listingErrorLeasedYearRequired => 'Leased year is required';
+
+  @override
+  String get listingErrorCooperativeNameRequired =>
+      'Cooperative name is required';
+
+  @override
+  String get listingErrorCooperativeCodeRequired =>
+      'Cooperative code is required';
+
+  @override
+  String get listingErrorRoomsRequired => 'Total rooms is required';
+
+  @override
+  String get listingErrorHouseTypeRequired => 'House type is required';
+
+  @override
+  String get listingErrorAreaRequired => 'Total area is required';
+
+  @override
+  String get listingErrorDescriptionRequired => 'Description is required';
+
+  @override
+  String get listingErrorImageRequired =>
+      'At least one property image is required';
+
+  @override
+  String get listingErrorSitePlanRequired =>
+      'At least one site plan is required';
+
+  @override
+  String get listingErrorOwnershipProofRequired =>
+      'Ownership proof is required for cooperative properties';
+
+  @override
+  String get listingErrorLeaseContractRequired =>
+      'Lease contract is required for lease hold properties';
+
+  @override
+  String get listingErrorTermsRequired =>
+      'You must accept the Terms & Conditions';
+
+  @override
+  String get notificationJustNow => 'Just now';
+
+  @override
+  String messageConversationId(Object id) {
+    return 'Conversation #$id';
+  }
+
+  @override
+  String get messageDirectChat => 'Direct Chat';
+
+  @override
+  String get listingPriceUnder5M => 'Under 5M';
+
+  @override
+  String get listingUpgradeToFeature => 'Upgrade to Feature';
+
+  @override
+  String get listingUpgradeToFeatureSubtitle =>
+      'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.';
 }

@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../l10n/app_localizations.dart';
 import 'image.dart';
 
 /// Complete form data for create/edit listing
@@ -399,78 +400,78 @@ class ListingFormData {
   }
 
   /// Validate step 1 (Basics)
-  List<String> validateStep1() {
+  List<String> validateStep1(AppLocalizations l10n) {
     final errors = <String>[];
-    if (type.isEmpty) errors.add('Property type is required');
-    if (holdingType.isEmpty) errors.add('Holding type is required');
-    if (listingType.isEmpty) errors.add('Listing type is required');
-    if (useType.isEmpty) errors.add('Use type is required');
-    if (addressId == null) errors.add('Please select a complete address');
+    if (type.isEmpty) errors.add(l10n.listingErrorPropertyTypeRequired);
+    if (holdingType.isEmpty) errors.add(l10n.listingErrorHoldingTypeRequired);
+    if (listingType.isEmpty) errors.add(l10n.listingErrorListingTypeRequired);
+    if (useType.isEmpty) errors.add(l10n.listingErrorUseTypeRequired);
+    if (addressId == null) errors.add(l10n.listingErrorAddressRequired);
     if (priceFixed == null || priceFixed! < 1000)
-      errors.add('Price must be at least 1,000 ETB');
+      errors.add(l10n.listingErrorMinPrice);
 
     // Holding-specific validation
     if (holdingType == 'Free Hold') {
       if (taxPaidUntilYear != null &&
           (taxPaidUntilYear! < 2000 ||
               taxPaidUntilYear! > DateTime.now().year + 10)) {
-        errors.add(
-            'Tax paid year must be between 2000 and ${DateTime.now().year + 10}');
+        errors.add(l10n.listingErrorTaxYearRange(
+            '2000', (DateTime.now().year + 10).toString()));
       }
     } else if (holdingType == 'Lease Hold') {
-      if (leasedYear == null) errors.add('Leased year is required');
+      if (leasedYear == null) errors.add(l10n.listingErrorLeasedYearRequired);
     } else if (holdingType == 'Cooperative') {
       if (cooperativeName == null || cooperativeName!.trim().isEmpty)
-        errors.add('Cooperative name is required');
+        errors.add(l10n.listingErrorCooperativeNameRequired);
       if (cooperativeCode == null || cooperativeCode!.trim().isEmpty)
-        errors.add('Cooperative code is required');
+        errors.add(l10n.listingErrorCooperativeCodeRequired);
     }
 
     return errors;
   }
 
   /// Validate step 2 (Details)
-  List<String> validateStep2() {
+  List<String> validateStep2(AppLocalizations l10n) {
     final errors = <String>[];
     if (type == 'house') {
       if (totalRooms == null || totalRooms! < 1)
-        errors.add('Total rooms is required');
+        errors.add(l10n.listingErrorRoomsRequired);
       if (houseType == null || houseType!.isEmpty)
-        errors.add('House type is required');
+        errors.add(l10n.listingErrorHouseTypeRequired);
       if (yearBuilt != null &&
           (yearBuilt! < 1900 || yearBuilt! > DateTime.now().year)) {
-        errors
-            .add('Year built must be between 1900 and ${DateTime.now().year}');
+        errors.add(
+            l10n.listingErrorYearBuiltRange('1900', DateTime.now().year.toString()));
       }
     }
     if (totalSquareMeters == null || totalSquareMeters! <= 0)
-      errors.add('Total area is required');
+      errors.add(l10n.listingErrorAreaRequired);
     if (description == null || description!.trim().isEmpty)
-      errors.add('Description is required');
+      errors.add(l10n.listingErrorDescriptionRequired);
     return errors;
   }
 
   /// Validate step 3 (Media)
-  List<String> validateStep3() {
+  List<String> validateStep3(AppLocalizations l10n) {
     final errors = <String>[];
 
     // Check new images OR existing images that weren't removed
     final hasImages = images.isNotEmpty ||
         (existingImages.isNotEmpty &&
             existingImages.length > removedImageIds.length);
-    if (!hasImages) errors.add('At least one property image is required');
+    if (!hasImages) errors.add(l10n.listingErrorImageRequired);
 
     // Check new site plan OR existing site plan that wasn't removed
     final hasSitePlan =
         sitePlan != null || (existingSitePlanUrl != null && !removeExistingSitePlan);
-    if (!hasSitePlan) errors.add('At least one site plan is required');
+    if (!hasSitePlan) errors.add(l10n.listingErrorSitePlanRequired);
 
     // Ownership proof - check new upload OR existing URL
     if (holdingType == 'Cooperative') {
       final hasOwnership =
           ownershipProof != null || existingOwnershipProofUrl != null;
       if (!hasOwnership)
-        errors.add('Ownership proof is required for cooperative properties');
+        errors.add(l10n.listingErrorOwnershipProofRequired);
     }
 
     // Lease contract - check new upload OR existing URL
@@ -478,16 +479,16 @@ class ListingFormData {
       final hasLease =
           leaseContract != null || existingLeaseContractUrl != null;
       if (!hasLease)
-        errors.add('Lease contract is required for lease hold properties');
+        errors.add(l10n.listingErrorLeaseContractRequired);
     }
 
     return errors;
   }
 
   /// Validate step 4 (Review)
-  List<String> validateStep4() {
+  List<String> validateStep4(AppLocalizations l10n) {
     final errors = <String>[];
-    if (!termsAccepted) errors.add('You must accept the Terms & Conditions');
+    if (!termsAccepted) errors.add(l10n.listingErrorTermsRequired);
     return errors;
   }
 }

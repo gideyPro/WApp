@@ -290,13 +290,13 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Subscription Required',
+                  AppLocalizations.of(ctx).subscriptionRequiredTitle,
                   style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'You need an active subscription to post a listing.',
+                  AppLocalizations.of(ctx).subscriptionRequiredListingSubtitle,
                   style: AppTextStyles.bodyMedium
                       .copyWith(color: context.theme.textSecondary),
                   textAlign: TextAlign.center,
@@ -327,17 +327,16 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: const Text('View Plans'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
+                        child: Text(AppLocalizations.of(ctx).listingViewPlans),
+                        ),
+                        ),
+                        ],
+                        ),
+                        ],
+                        ),
+                        ),
+                        ),
+                        );
       if (goSub == true && mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),

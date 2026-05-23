@@ -110,33 +110,33 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         _buildCategorySection(
           icon: Icons.account_circle_outlined,
           title: l10n.helpCategoryAccount,
-          articles: _allArticles.where((a) => a.category == 'Account').toList(),
+          articles: _allArticles.where((a) => a.category == l10n.helpCategoryAccount).toList(),
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
           icon: Icons.home_outlined,
           title: l10n.helpCategoryListings,
           articles:
-              _allArticles.where((a) => a.category == 'Listings').toList(),
+              _allArticles.where((a) => a.category == l10n.helpCategoryListings).toList(),
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
           icon: Icons.payment_outlined,
           title: l10n.helpCategoryPayments,
           articles:
-              _allArticles.where((a) => a.category == 'Payments').toList(),
+              _allArticles.where((a) => a.category == l10n.helpCategoryPayments).toList(),
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
           icon: Icons.verified_user_outlined,
           title: l10n.helpCategoryKyc,
-          articles: _allArticles.where((a) => a.category == 'KYC').toList(),
+          articles: _allArticles.where((a) => a.category == l10n.helpCategoryKyc).toList(),
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
           icon: Icons.security_outlined,
           title: l10n.helpCategorySafety,
-          articles: _allArticles.where((a) => a.category == 'Safety').toList(),
+          articles: _allArticles.where((a) => a.category == l10n.helpCategorySafety).toList(),
         ),
         const SizedBox(height: 32),
 
@@ -434,84 +434,84 @@ List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
       _HelpArticle(
         title: l10n.helpAccCreateTitle,
         content: l10n.helpAccCreateContent,
-        category: 'Account',
+        category: l10n.helpCategoryAccount,
       ),
       _HelpArticle(
         title: l10n.helpAccEditTitle,
         content: l10n.helpAccEditContent,
-        category: 'Account',
+        category: l10n.helpCategoryAccount,
       ),
       _HelpArticle(
         title: l10n.helpAccResetTitle,
         content: l10n.helpAccResetContent,
-        category: 'Account',
+        category: l10n.helpCategoryAccount,
       ),
 
       // Listings
       _HelpArticle(
         title: l10n.helpListCreateTitle,
         content: l10n.helpListCreateContent,
-        category: 'Listings',
+        category: l10n.helpCategoryListings,
       ),
       _HelpArticle(
         title: l10n.helpListManageTitle,
         content: l10n.helpListManageContent,
-        category: 'Listings',
+        category: l10n.helpCategoryListings,
       ),
       _HelpArticle(
         title: l10n.helpListTipsTitle,
         content: l10n.helpListTipsContent,
-        category: 'Listings',
+        category: l10n.helpCategoryListings,
       ),
 
       // Payments
       _HelpArticle(
         title: l10n.helpPayPlansTitle,
         content: l10n.helpPayPlansContent,
-        category: 'Payments',
+        category: l10n.helpCategoryPayments,
       ),
       _HelpArticle(
         title: l10n.helpPayMakeTitle,
         content: l10n.helpPayMakeContent,
-        category: 'Payments',
+        category: l10n.helpCategoryPayments,
       ),
       _HelpArticle(
         title: l10n.helpPaySecurityTitle,
         content: l10n.helpPaySecurityContent,
-        category: 'Payments',
+        category: l10n.helpCategoryPayments,
       ),
 
       // KYC
       _HelpArticle(
         title: l10n.helpKycWhyTitle,
         content: l10n.helpKycWhyContent,
-        category: 'KYC',
+        category: l10n.helpCategoryKyc,
       ),
       _HelpArticle(
         title: l10n.helpKycHowTitle,
         content: l10n.helpKycHowContent,
-        category: 'KYC',
+        category: l10n.helpCategoryKyc,
       ),
       _HelpArticle(
         title: l10n.helpKycRejectTitle,
         content: l10n.helpKycRejectContent,
-        category: 'KYC',
+        category: l10n.helpCategoryKyc,
       ),
 
       // Safety
       _HelpArticle(
         title: l10n.helpSafeStayTitle,
         content: l10n.helpSafeStayContent,
-        category: 'Safety',
+        category: l10n.helpCategorySafety,
       ),
       _HelpArticle(
         title: l10n.helpSafePrivacyTitle,
         content: l10n.helpSafePrivacyContent,
-        category: 'Safety',
+        category: l10n.helpCategorySafety,
       ),
       _HelpArticle(
         title: l10n.helpSafeReportTitle,
         content: l10n.helpSafeReportContent,
-        category: 'Safety',
+        category: l10n.helpCategorySafety,
       ),
     ];

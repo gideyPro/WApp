@@ -197,7 +197,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text('Feature this Listing?',
+        title: Text(l10n.listingFeatureThis + '?',
             style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
         content: Text(
           'Your listing will be featured on the home page and search results for 30 days.',
@@ -218,7 +218,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            child: const Text('Feature Now'),
+            child: Text(l10n.listingFeatureNow),
           ),
         ],
       ),
@@ -286,10 +286,10 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                     builder: (ctx) => AlertDialog(
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
                       icon: const Icon(Icons.wifi_off, color: AppColors.error, size: 40),
-                      title: Text('Connection Error',
+                      title: Text(AppLocalizations.of(ctx).errorConnection,
                           style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
                       content: Text(
-                        'Could not check your subscription status. Please try again.',
+                        AppLocalizations.of(ctx).errorCheckSubscription,
                         style: AppTextStyles.bodyMedium
                             .copyWith(color: context.theme.textSecondary),
                       ),
@@ -311,7 +311,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
-                          child: const Text('Retry'),
+                          child: Text(AppLocalizations.of(ctx).commonRetry),
                         ),
                       ],
                     ),
@@ -325,10 +325,10 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
                       icon: const Icon(Icons.workspace_premium_outlined,
                           color: AppColors.accent500, size: 40),
-                      title: Text('Subscription Required',
+                      title: Text(AppLocalizations.of(ctx).subscriptionRequiredTitle,
                           style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
                       content: Text(
-                        'You\'ve reached your listing limit. Upgrade your subscription to post more listings.',
+                        AppLocalizations.of(ctx).subscriptionLimitReached,
                         style: AppTextStyles.bodyMedium
                             .copyWith(color: context.theme.textSecondary),
                       ),
@@ -347,7 +347,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
-                          child: const Text('View Plans'),
+                          child: Text(AppLocalizations.of(ctx).listingViewPlans),
                         ),
                       ],
                     ),
@@ -388,7 +388,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
 
     if (_errorMessage != null && _myListings.isEmpty) {
       return WaveMessageScreen.error(
-        title: 'Error Loading Listings',
+        title: AppLocalizations.of(context).errorLoadingListings,
         subtitle: _errorMessage!,
         onRetry: () => _loadMyListings(),
         isEmbedded: true,

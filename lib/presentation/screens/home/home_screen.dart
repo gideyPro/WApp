@@ -591,13 +591,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              Text('Subscription Required',
+              Text(AppLocalizations.of(context).subscriptionRequiredTitle,
                   style: AppTextStyles.title.copyWith(
                       fontWeight: FontWeight.w800),
                   textAlign: TextAlign.center),
               const SizedBox(height: 10),
               Text(
-                'You need an active subscription to view property details and contact owners.',
+                AppLocalizations.of(context).subscriptionRequiredDetailsSubtitle,
                 style: AppTextStyles.bodyMedium
                     .copyWith(color: context.textSecondary),
                 textAlign: TextAlign.center,
@@ -628,7 +628,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
-                      child: const Text('View Plans'),
+                      child: Text(AppLocalizations.of(ctx).listingViewPlans),
                     ),
                   ),
                 ],
@@ -865,7 +865,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (state.errorMessage != null && state.listings.isEmpty) {
       return SliverFillRemaining(
         child: WaveMessageScreen.error(
-          title: 'Search Error',
+          title: l10n.errorSearch,
           subtitle: state.errorMessage!,
           onRetry: _performSearch,
           isEmbedded: true,
@@ -1090,50 +1090,19 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     required this.onFilterTap,
   });
 
-  String _getGreeting() {
+  String _getGreeting(AppLocalizations l10n) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) return l10n.commonGoodMorning;
+    if (hour < 17) return l10n.commonGoodAfternoon;
+    return l10n.commonGoodEvening;
   }
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context);
-
-    // Calculate dynamic values based on scroll
-    // 0.0 at max extent, 1.0 at min extent
-    final progress = shrinkOffset / (maxExtent - minExtent);
-    final clampedProgress = progress.clamp(0.0, 1.0);
-
-    // Greeting row opacity: fades out early
-    final greetingOpacity = (1.0 - clampedProgress * 2).clamp(0.0, 1.0);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: (isDark ? AppColors.primary900 : AppColors.primary50)
-            .withValues(alpha: clampedProgress),
-        boxShadow: [
-          if (clampedProgress > 0.5)
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-        ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            // Personalized Greeting Row (Fades out on scroll)
-            if (greetingOpacity > 0)
-              Opacity(
-                opacity: greetingOpacity,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+    final l10n = AppLocalizations.of(context)!;
+...
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -1141,7 +1110,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _getGreeting(),
+                            _getGreeting(l10n),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: context.textSecondary,
                               letterSpacing: 0.5,

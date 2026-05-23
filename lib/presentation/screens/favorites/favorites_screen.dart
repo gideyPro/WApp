@@ -92,9 +92,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                 child: const Icon(Icons.workspace_premium_outlined, size: 32, color: AppColors.accent600),
               ),
               const SizedBox(height: 16),
-              Text('Subscription Required', style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800), textAlign: TextAlign.center),
+              Text(AppLocalizations.of(ctx).subscriptionRequiredTitle, style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800), textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              Text('You need an active subscription to view property details and contact owners.', style: AppTextStyles.bodyMedium.copyWith(color: ThemeColors(ctx).textSecondary), textAlign: TextAlign.center),
+              Text(AppLocalizations.of(ctx).subscriptionRequiredDetailsSubtitle, style: AppTextStyles.bodyMedium.copyWith(color: ThemeColors(ctx).textSecondary), textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -121,7 +121,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
-                      child: const Text('View Plans'),
+                      child: Text(AppLocalizations.of(ctx).listingViewPlans),
                     ),
                   ),
                 ],
@@ -174,7 +174,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     // Error state
     if (state.errorMessage != null) {
       return WaveMessageScreen.error(
-        title: 'Error Loading Favorites',
+        title: AppLocalizations.of(context).errorLoadingFavorites,
         subtitle: state.errorMessage!,
         onRetry: () {
           ref.read(favoritesProvider.notifier).loadFavorites();
@@ -195,7 +195,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                 icon: Icons.favorite_border,
                 title: AppLocalizations.of(context).favoritesEmpty,
                 subtitle: AppLocalizations.of(context).favoritesEmptySubtitle,
-                actionLabel: 'Browse Properties',
+                actionLabel: AppLocalizations.of(context).commonBrowseProperties,
                 onAction: () {
                   ref.read(selectedTabProvider.notifier).state = 0;
                 },

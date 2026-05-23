@@ -97,15 +97,16 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   }
 
   List<String> _validateCurrentStep() {
+    final l10n = AppLocalizations.of(context);
     switch (_currentStep) {
       case 0:
-        return _formData.validateStep1();
+        return _formData.validateStep1(l10n);
       case 1:
-        return _formData.validateStep2();
+        return _formData.validateStep2(l10n);
       case 2:
-        return _formData.validateStep3();
+        return _formData.validateStep3(l10n);
       case 3:
-        return _formData.validateStep4();
+        return _formData.validateStep4(l10n);
       default:
         return [];
     }

@@ -116,40 +116,16 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   }
 
   List<String> _validateCurrentStep() {
+    final l10n = AppLocalizations.of(context);
     switch (_currentStep) {
       case 0:
-        return _formData.validateStep1();
+        return _formData.validateStep1(l10n);
       case 1:
-        return _formData.validateStep2();
+        return _formData.validateStep2(l10n);
       case 2:
-        final errors = <String>[];
-        
-        // 1. Check images (must have at least one either existing or new)
-        final hasImages = _formData.images.isNotEmpty || 
-            (_formData.existingImages.length > _formData.removedImageIds.length);
-        if (!hasImages) errors.add('At least one property image is required');
-
-        // 2. Site Plan is mandatory (Industry Standard #3)
-        final hasSitePlan = _formData.sitePlan != null ||
-            (_formData.existingSitePlanUrl != null &&
-                !_formData.removeExistingSitePlan);
-        if (!hasSitePlan) errors.add('A site plan is required');
-
-        // 3. Ownership Proof for Cooperative (Industry Standard #3)
-        if (_formData.holdingType == 'Cooperative') {
-          final hasOwnership = _formData.ownershipProof != null || _formData.existingOwnershipProofUrl != null;
-          if (!hasOwnership) errors.add('Ownership proof is required for cooperative properties');
-        }
-
-        // 4. Lease Contract for Lease Hold (Industry Standard #3)
-        if (_formData.holdingType == 'Lease Hold') {
-          final hasLease = _formData.leaseContract != null || _formData.existingLeaseContractUrl != null;
-          if (!hasLease) errors.add('Lease contract is required for lease hold properties');
-        }
-
-        return errors;
+        return _formData.validateStep3(l10n);
       case 3:
-        return _formData.validateStep4();
+        return _formData.validateStep4(l10n);
       default:
         return [];
     }

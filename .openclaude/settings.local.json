@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /initrd/mnt/dev_save/dev/projects/wavemartapp/lib -name \"*.dart\" -exec cat {} +)",
+      "Bash(find /initrd/mnt/dev_save/dev/projects/wavemartapp/WaveMart -name \"*.php\" -not -path \"*/vendor/*\" -not -path \"*/node_modules/*\" -exec cat {} +)",
+      "Bash(find /initrd/mnt/dev_save/dev/projects/wavemartapp/WaveMart/app -name \"*.php\" -not -path \"*/vendor/*\" -exec cat {} +)",
+      "Bash(flutter analyze:*)",
+      "Bash(git checkout:*)",
+      "Bash(grep -rn \"terms\\\\.\\\\|privacy\\\\.\" /opt/lampp/htdocs/WaveMart/database/migrations/2025_12_10_*.php)",
+      "Bash(flutter gen-l10n:*)",
+      "Read(//initrd/mnt/dev_save/GideyData/Projects/WaveMart/**)",
+      "Bash(php artisan:*)"
+    ]
+  }
+}

@@ -1,4 +1,5 @@
 import 'user.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Payment status
 enum PaymentStatus { pending, success, failed, cancelled, refunded }
@@ -119,18 +120,18 @@ class Payment {
   bool get isFailed => status == PaymentStatus.failed;
   bool get isCancelled => status == PaymentStatus.cancelled;
 
-  String get statusLabel {
+  String getStatusLabel(AppLocalizations l10n) {
     switch (status) {
       case PaymentStatus.pending:
-        return 'Pending';
+        return l10n.statusPending;
       case PaymentStatus.success:
-        return 'Success';
+        return l10n.statusSuccess;
       case PaymentStatus.failed:
-        return 'Failed';
+        return l10n.statusFailed;
       case PaymentStatus.cancelled:
-        return 'Cancelled';
+        return l10n.statusCancelled;
       case PaymentStatus.refunded:
-        return 'Refunded';
+        return l10n.statusRefunded;
     }
   }
 }
