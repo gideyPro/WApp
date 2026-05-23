@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/theme_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -8,6 +7,7 @@ import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import 'widgets/listing_form_steps.dart';
 
@@ -33,7 +33,9 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   void initState() {
     super.initState();
     final listing = widget.listing;
-    
+    final localeCode = ref.read(localeProvider).locale?.languageCode ?? 'en';
+    final useLocalized = localeCode != 'en';
+
     _formData = ListingFormData(
       type: listing.propertyType == PropertyType.house ? 'house' : 'land',
       listingType: listing.listingType == ListingType.sale ? 'sale' : 'rental',
@@ -68,10 +70,18 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       facingDirection: listing.facingDirection,
       specificLocation: listing.specificLocation,
       rentalPeriodUnit: listing.rentalPeriodUnit?.toString().split('.').last,
-      addressRegion: listing.address?.region,
-      addressZone: listing.address?.zone,
-      addressWoreda: listing.address?.woreda,
-      addressKebele: listing.address?.kebele,
+      addressRegion: useLocalized && listing.address?.regionLocalized != null
+          ? listing.address!.regionLocalized!
+          : listing.address?.region,
+      addressZone: useLocalized && listing.address?.zoneLocalized != null
+          ? listing.address!.zoneLocalized!
+          : listing.address?.zone,
+      addressWoreda: useLocalized && listing.address?.woredaLocalized != null
+          ? listing.address!.woredaLocalized!
+          : listing.address?.woreda,
+      addressKebele: useLocalized && listing.address?.kebeleLocalized != null
+          ? listing.address!.kebeleLocalized!
+          : listing.address?.kebele,
       addressId: listing.addressId,
       existingImages: listing.images,
       existingSitePlanUrl: listing.sitePlanUrl,
