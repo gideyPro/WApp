@@ -103,6 +103,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   }
 
   Widget _buildBody(OrdersState state, AppLocalizations l10n) {
+    final cache = ref.watch(addressCacheProvider);
     if (state.isLoading) {
       return _buildSkeletonList(5);
     }
@@ -211,7 +212,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                             ),
                         ],
                       ),
-                      if (order.locationDisplay.isNotEmpty) ...[
+                      if (order.address != null) ...[
                         const SizedBox(height: 6),
                         Row(
                           children: [
@@ -220,7 +221,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                order.locationDisplay,
+                                order.address!.getLocalizedAddress(context, cache),
                                 style: AppTextStyles.caption
                                     .copyWith(color: ThemeColors(context).textMuted),
                                 maxLines: 1,

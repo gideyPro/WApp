@@ -217,6 +217,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   }
 
   Widget _buildOrderInfoSection(AppLocalizations l10n) {
+    final cache = ref.watch(addressCacheProvider);
     final isActive = _order.isActive ?? false;
 
     return WaveGlass(
@@ -274,8 +275,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             ],
 
             // Location
-            if (_order.locationDisplay.isNotEmpty) ...[
-              _detailRow(l10n.ordersLocation, _order.locationDisplay),
+            if (_order.address != null) ...[
+              _detailRow(l10n.ordersLocation,
+                  _order.address!.getLocalizedAddress(context, cache)),
               const Divider(height: 16),
             ],
 

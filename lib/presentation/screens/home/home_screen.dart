@@ -1101,8 +1101,39 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
-...
+    final l10n = AppLocalizations.of(context);
+
+    // Calculate dynamic values based on scroll
+    // 0.0 at max extent, 1.0 at min extent
+    final progress = shrinkOffset / (maxExtent - minExtent);
+    final clampedProgress = progress.clamp(0.0, 1.0);
+
+    // Greeting row opacity: fades out early
+    final greetingOpacity = (1.0 - clampedProgress * 2).clamp(0.0, 1.0);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: (isDark ? AppColors.primary900 : AppColors.primary50)
+            .withValues(alpha: clampedProgress),
+        boxShadow: [
+          if (clampedProgress > 0.5)
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            // Personalized Greeting Row (Fades out on scroll)
+            if (greetingOpacity > 0)
+              Opacity(
+                opacity: greetingOpacity,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -1149,54 +1180,74 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                   child: Container(
                     height: 56,
                     decoration: BoxDecoration(
-                      color: context.cardBg.withValues(alpha: isDark ? 0.8 : 0.9),
-                      borderRadius: BorderRadius.circular(4),
+                      color: (isDark ? AppColors.primary800 : Colors.white)
+                          .withValues(alpha: isDark ? 0.6 : 0.9),
                       border: Border.all(
-                        color: hasActiveFilters
-                            ? AppColors.accent500.withValues(alpha: 0.5)
-                            : (isDark
-                                ? Colors.white.withValues(alpha: 0.1)
-                                : Colors.black.withValues(alpha: 0.05)),
-                        width: 1.5,
+                        color: (isDark ? Colors.white : AppColors.primary900)
+                            .withValues(alpha: 0.08),
                       ),
-                      boxShadow: AppColors.shadowPremium,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
-                        const SizedBox(width: 16),
-                        Icon(
-                          Icons.search_rounded,
-                          color: hasActiveFilters
-                              ? AppColors.accent500
-                              : context.theme.iconSecondary,
-                          size: 24,
+                        const Padding(
+                          padding: EdgeInsets.only(left: 16, right: 12),
+                          child: Icon(
+                            Icons.search_rounded,
+                            color: AppColors.accent500,
+                            size: 24,
+                          ),
                         ),
-                        const SizedBox(width: 12),
                         Expanded(
                           child: TextField(
                             controller: searchController,
                             focusNode: focusNode,
                             onChanged: onSearchChanged,
                             onSubmitted: onSubmitted,
-                            style: AppTextStyles.bodyLarge
-                                .copyWith(color: context.textPrimary),
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: context.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
                             decoration: InputDecoration(
                               hintText: l10n.searchPlaceholder,
-                              hintStyle: AppTextStyles.bodyMedium
-                                  .copyWith(color: context.textSecondary),
+                              hintStyle: AppTextStyles.bodyMedium.copyWith(
+                                color: context.textSecondary,
+                              ),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            textInputAction: TextInputAction.search,
                           ),
                         ),
                         if (searchQuery.isNotEmpty)
-                          GestureDetector(
-                            onTap: onClear,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
+                          IconButton(
+                            onPressed: onClear,
+                            icon: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: context.theme.divider,
+                                shape: BoxShape.circle,
+                              ),
                               child: Icon(
                                 Icons.close_rounded,
+                                color: context.theme.iconSecondary,
+                                size: 14,
+                              ),
+                            ),
+                          )
+                        else
+                          Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: Tooltip(
+                              message: 'Filter Search',
+                              child: Icon(
+                                Icons.tune_rounded,
                                 color: context.theme.iconSecondary,
                                 size: 20,
                               ),
@@ -1219,9 +1270,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
         ),
       ),
     );
-  }
-
-  Widget _buildProfileAvatar(BuildContext context) {
+  }  Widget _buildProfileAvatar(BuildContext context) {
     return Container(
       width: 44,
       height: 44,

@@ -3676,6 +3676,18 @@ abstract class AppLocalizations {
   /// **'You must accept the Terms & Conditions'**
   String get listingErrorTermsRequired;
 
+  /// No description provided for @listingErrorTaxYearRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax paid year must be between {min} and {max}'**
+  String listingErrorTaxYearRange(Object max, Object min);
+
+  /// No description provided for @listingErrorYearBuiltRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Year built must be between {min} and {max}'**
+  String listingErrorYearBuiltRange(Object max, Object min);
+
   /// No description provided for @notificationJustNow.
   ///
   /// In en, this message translates to:
@@ -3711,6 +3723,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.'**
   String get listingUpgradeToFeatureSubtitle;
+
+  /// No description provided for @errorConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get errorConnection;
+
+  /// No description provided for @errorCheckSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not check your subscription status. Please try again.'**
+  String get errorCheckSubscription;
+
+  /// No description provided for @commonBrowseProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Properties'**
+  String get commonBrowseProperties;
+
+  /// No description provided for @subscriptionPaymentFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Failed'**
+  String get subscriptionPaymentFailedTitle;
+
+  /// No description provided for @subscriptionPaymentFailedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your transaction was not completed. Would you like to try again?'**
+  String get subscriptionPaymentFailedSubtitle;
+
+  /// No description provided for @subscriptionTechnicalFailureSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The payment gateway could not be reached. Please check your connection.'**
+  String get subscriptionTechnicalFailureSubtitle;
+
+  /// No description provided for @messagesWith.
+  ///
+  /// In en, this message translates to:
+  /// **'with {name}'**
+  String messagesWith(Object name);
+
+  /// No description provided for @errorJoinCallGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot open join link'**
+  String get errorJoinCallGeneric;
+
+  /// No description provided for @errorVideoLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load video'**
+  String get errorVideoLoad;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusActive;
+
+  /// No description provided for @statusExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get statusExpired;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get statusSuccess;
+
+  /// No description provided for @statusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get statusFailed;
+
+  /// No description provided for @statusRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Refunded'**
+  String get statusRefunded;
 }
 
 class _AppLocalizationsDelegate

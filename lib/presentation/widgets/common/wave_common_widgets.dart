@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'wave_button.dart';
 
 /// WaveMart AppBar — tight leading defaults to fix font-metric spacing with Cinzel
@@ -651,7 +652,7 @@ class WaveMessageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final style = type == WaveMessageType.custom
         ? _MessageStyle(

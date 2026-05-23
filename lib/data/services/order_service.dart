@@ -1,6 +1,7 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 import '../../core/network/error_handler.dart';
+import '../models/address.dart';
 
 double? _parseDouble(dynamic value) {
   if (value == null) return null;
@@ -32,7 +33,7 @@ class Order {
   final String status;
   final String createdAt;
   final String? updatedAt;
-  final Map<String, dynamic>? address;
+  final Address? address;
 
   Order({
     required this.id,
@@ -66,17 +67,19 @@ class Order {
       status: json['status'] ?? 'active',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'],
-      address: json['address'] ?? json['kebele'],
+      address: json['address'] is Map
+          ? Address.fromJson(json['address'] as Map<String, dynamic>)
+          : null,
     );
   }
 
   String get locationDisplay {
     if (address == null) return '';
     final parts = <String>[
-      address!['region'] ?? '',
-      address!['zone'] ?? '',
-      address!['woreda'] ?? '',
-      address!['kebele'] ?? '',
+      address!.region ?? '',
+      address!.zone ?? '',
+      address!.woreda ?? '',
+      address!.kebele ?? '',
     ];
     return parts.where((p) => p.isNotEmpty).join(' > ');
   }

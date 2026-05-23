@@ -1923,6 +1923,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'You must accept the Terms & Conditions';
 
   @override
+  String listingErrorTaxYearRange(Object max, Object min) {
+    return 'Tax paid year must be between $min and $max';
+  }
+
+  @override
+  String listingErrorYearBuiltRange(Object max, Object min) {
+    return 'Year built must be between $min and $max';
+  }
+
+  @override
   String get notificationJustNow => 'Just now';
 
   @override
@@ -1942,4 +1952,57 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get listingUpgradeToFeatureSubtitle =>
       'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.';
+
+  @override
+  String get errorConnection => 'Connection Error';
+
+  @override
+  String get errorCheckSubscription =>
+      'Could not check your subscription status. Please try again.';
+
+  @override
+  String get commonBrowseProperties => 'Browse Properties';
+
+  @override
+  String get subscriptionPaymentFailedTitle => 'Payment Failed';
+
+  @override
+  String get subscriptionPaymentFailedSubtitle =>
+      'Your transaction was not completed. Would you like to try again?';
+
+  @override
+  String get subscriptionTechnicalFailureSubtitle =>
+      'The payment gateway could not be reached. Please check your connection.';
+
+  @override
+  String messagesWith(Object name) {
+    return 'with $name';
+  }
+
+  @override
+  String get errorJoinCallGeneric => 'Cannot open join link';
+
+  @override
+  String get errorVideoLoad => 'Failed to load video';
+
+  @override
+  String get statusActive => 'Active';
+
+  @override
+  String get statusExpired => 'Expired';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusSuccess => 'Success';
+
+  @override
+  String get statusFailed => 'Failed';
+
+  @override
+  String get statusRefunded => 'Refunded';
 }

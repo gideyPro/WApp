@@ -4,6 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../data/models/notification.dart' as app;
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -13,7 +14,6 @@ import '../messages/messages_screen.dart';
 import '../orders/order_details_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../settings/settings_screen.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 
 /// Notifications Screen - Wired to notificationsProvider
@@ -351,6 +351,7 @@ class _NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: AppSpacing.paddingLg,
       child: Row(
