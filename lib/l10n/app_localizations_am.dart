@@ -1085,6 +1085,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsVideoTour => 'የቪዲዮ ጉብኝት';
 
   @override
+  String get listingsVideoOptimizing => 'ቪዲዮ እየተመቻቸ ነው…';
+
+  @override
+  String get listingsViewOriginal => 'ዋናውን ቪዲዮ ይመልከቱ';
+
+  @override
   String get listingsNoDescription => 'ምንም መግለጫ አልተሰጠም';
 
   @override

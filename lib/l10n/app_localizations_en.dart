@@ -1095,6 +1095,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsVideoTour => 'Video Tour';
 
   @override
+  String get listingsVideoOptimizing => 'Optimizing video…';
+
+  @override
+  String get listingsViewOriginal => 'View original video';
+
+  @override
   String get listingsNoDescription => 'No description provided.';
 
   @override

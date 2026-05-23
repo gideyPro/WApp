@@ -66,6 +66,41 @@ enum ListingStatus { pending, active, rejected, sold, rented, frozen }
 /// Rental period units
 enum RentalPeriod { day, month, year }
 
+/// Video processing status
+enum VideoProcessingStatus { pending, processing, ready, failed }
+
+/// Video processing info returned by backend's video_processing appended attribute
+class VideoProcessing {
+  final VideoProcessingStatus status;
+  final String? processedUrl;
+  final String? errorMessage;
+
+  const VideoProcessing({
+    required this.status,
+    this.processedUrl,
+    this.errorMessage,
+  });
+
+  factory VideoProcessing.fromJson(Map<String, dynamic> json) {
+    return VideoProcessing(
+      status: VideoProcessingStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+        orElse: () => VideoProcessingStatus.pending,
+      ),
+      processedUrl: json['processed_url'],
+      errorMessage: json['error_message'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status.name,
+      'processed_url': processedUrl,
+      'error_message': errorMessage,
+    };
+  }
+}
+
 /// Listing Model
 class Listing extends ChangeNotifier {
   final int id;
@@ -92,9 +127,23 @@ class Listing extends ChangeNotifier {
   final String? debtEncumbranceFileLink;
   final bool priceRevisionPossible;
   final String? videoLink;
+  final VideoProcessing? videoProcessing;
 
   /// Returns the full video URL by prepending base URL if needed
   String? get videoUrl => _formatUrl(videoLink);
+
+  /// Returns the full processed video URL by prepending base URL if needed
+  String? get processedVideoUrl => videoProcessing?.processedUrl != null
+      ? _formatUrl(videoProcessing!.processedUrl!)
+      : null;
+
+  /// Whether the backend returned video_processing info
+  bool get hasVideoProcessing => videoProcessing != null;
+
+  /// Whether the video is currently being processed (pending or processing)
+  bool get isVideoBeingProcessed => videoProcessing != null &&
+      (videoProcessing!.status == VideoProcessingStatus.pending ||
+       videoProcessing!.status == VideoProcessingStatus.processing);
 
   /// Returns full URL for site plan
   String? get sitePlanUrl => _formatUrl(sitePlanImageLink);
@@ -190,6 +239,7 @@ class Listing extends ChangeNotifier {
     this.debtEncumbranceFileLink,
     this.priceRevisionPossible = false,
     this.videoLink,
+    this.videoProcessing,
     this.sitePlanImageLink,
     this.ownershipProofLink,
     this.leaseContractLink,
@@ -381,6 +431,10 @@ class Listing extends ChangeNotifier {
       userInterestStatus: json['user_interest_status'],
       userInterestId: _safeInt(json['user_interest_id']),
       viewCount: _safeInt(json['view_count'], defaultValue: 0) ?? 0,
+      videoProcessing: json['video_processing'] is Map
+          ? VideoProcessing.fromJson(
+              json['video_processing'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -410,6 +464,7 @@ class Listing extends ChangeNotifier {
       'debt_encumbrance_file_link': debtEncumbranceFileLink,
       'price_revision_possible': priceRevisionPossible,
       'video_link': videoLink,
+      'video_processing': videoProcessing?.toJson(),
       'site_plan_image_link': sitePlanImageLink,
       'ownership_proof_link': ownershipProofLink,
       'lease_contract_link': leaseContractLink,

@@ -346,6 +346,8 @@
   "listingsEncumbrance": "ዕዳ/እገዳ",
   "listingsEncumbranceYes": "አዎ ({amount} ብር)",
   "listingsVideoTour": "የቪዲዮ ጉብኝት",
+  "listingsVideoOptimizing": "ቪዲዮ እየተመቻቸ ነው…",
+  "listingsViewOriginal": "ዋናውን ቪዲዮ ይመልከቱ",
   "listingsNoDescription": "ምንም መግለጫ አልተሰጠም",
   "listingsNoFeatures": "ምንም ዋና መገለጫዎች አልተጠቀሱም",
   "listingsNotFound": "ንብረቱ አልተገኘም",

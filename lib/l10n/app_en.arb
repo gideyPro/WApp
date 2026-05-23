@@ -349,6 +349,8 @@
   "listingsEncumbrance": "Encumbrance",
   "listingsEncumbranceYes": "Yes ({amount} ETB)",
   "listingsVideoTour": "Video Tour",
+  "listingsVideoOptimizing": "Optimizing video…",
+  "listingsViewOriginal": "View original video",
   "listingsNoDescription": "No description provided.",
   "listingsNoFeatures": "No key features specified",
   "listingsNotFound": "Listing Not Found",

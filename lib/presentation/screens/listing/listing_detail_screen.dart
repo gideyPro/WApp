@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +21,7 @@ import '../subscriptions/subscription_plans_screen.dart';
 import 'edit_listing_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../video/full_screen_video_screen.dart';
 
 /// Listing Detail Screen with skeleton loaders
 class ListingDetailScreen extends ConsumerStatefulWidget {
@@ -35,6 +37,7 @@ class ListingDetailScreen extends ConsumerStatefulWidget {
 class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   final PageController _pageController = PageController();
   int _currentImageIndex = 0;
+  Timer? _videoPollTimer;
 
   @override
   void initState() {
@@ -46,13 +49,35 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   @override
   void dispose() {
+    _videoPollTimer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _startVideoPolling() {
+    if (_videoPollTimer != null) return;
+    _videoPollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      ref.read(listingDetailProvider.notifier).refreshListing(widget.listingId);
+    });
+  }
+
+  void _stopVideoPolling() {
+    _videoPollTimer?.cancel();
+    _videoPollTimer = null;
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(listingDetailProvider);
+
+    // Manage video processing polling based on current listing state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (state.listing != null && state.listing!.isVideoBeingProcessed) {
+        _startVideoPolling();
+      } else {
+        _stopVideoPolling();
+      }
+    });
 
     // Show skeleton while loading, error banner, or content
     if (state.isLoading) {
@@ -891,13 +916,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       details.add({'label': l10n.listingsEncumbrance, 'value': amount});
     }
     bool hasVideo = listing.videoUrl != null && listing.videoUrl!.isNotEmpty;
+    bool hasVideoProcessing = listing.hasVideoProcessing;
 
-    if (details.isEmpty && !hasVideo) return const SizedBox.shrink();
+    if (details.isEmpty && !hasVideo && !hasVideoProcessing) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (hasVideo) _buildVideoTourSection(listing.videoUrl!),
+        if (hasVideo || hasVideoProcessing) _buildVideoSection(listing),
         Text(l10n.listingsPropertyDetails, style: AppTextStyles.title),
         const SizedBox(height: 12),
         WaveCard(
@@ -940,7 +966,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     );
   }
 
-  Widget _buildVideoTourSection(String videoUrl) {
+  Widget _buildVideoSection(Listing listing) {
     final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -949,26 +975,159 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.videocam,
-                size: 20,
-                color: AppColors.accent500,
-              ),
+              const Icon(Icons.videocam, size: 20, color: AppColors.accent500),
               const SizedBox(width: 8),
-              Text(
-                l10n.listingsVideoTour,
-                style: AppTextStyles.title,
-              ),
+              Text(l10n.listingsVideoTour, style: AppTextStyles.title),
+              if (listing.videoProcessing != null) ...[
+                const SizedBox(width: 8),
+                _buildVideoStatusBadge(listing.videoProcessing!.status),
+              ],
             ],
           ),
           const SizedBox(height: 12),
-          VideoPlayerWidget(
-            videoUrl: videoUrl,
-            autoPlay: false,
-            looping: false,
-            title: l10n.listingsVideoTour,
-          ),
+          _buildVideoContent(listing),
         ],
+      ),
+    );
+  }
+
+  Widget _buildVideoStatusBadge(VideoProcessingStatus status) {
+    final (Color bg, Color fg, String text) = switch (status) {
+      VideoProcessingStatus.pending ||
+      VideoProcessingStatus.processing =>
+        (AppColors.warningLight, AppColors.warning, 'Processing'),
+      VideoProcessingStatus.ready =>
+        (AppColors.successLight, AppColors.success, 'Ready'),
+      VideoProcessingStatus.failed =>
+        (AppColors.errorLight, AppColors.error, 'Failed'),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        text,
+        style: AppTextStyles.caption.copyWith(
+          color: fg,
+          fontWeight: FontWeight.w600,
+          fontSize: 10,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVideoContent(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    final vp = listing.videoProcessing;
+
+    if (vp == null) {
+      return VideoPlayerWidget(
+        videoUrl: listing.videoUrl!,
+        autoPlay: false,
+        looping: false,
+        title: l10n.listingsVideoTour,
+      );
+    }
+
+    return switch (vp.status) {
+      VideoProcessingStatus.pending ||
+      VideoProcessingStatus.processing =>
+        _buildProcessingIndicator(),
+      VideoProcessingStatus.ready => Column(
+          children: [
+            VideoPlayerWidget(
+              videoUrl: listing.processedVideoUrl ?? listing.videoUrl!,
+              autoPlay: false,
+              looping: false,
+              title: l10n.listingsVideoTour,
+            ),
+            const SizedBox(height: 8),
+            _buildViewOriginalLink(listing.videoUrl!),
+          ],
+        ),
+      VideoProcessingStatus.failed => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            VideoPlayerWidget(
+              videoUrl: listing.videoUrl!,
+              autoPlay: false,
+              looping: false,
+              title: l10n.listingsVideoTour,
+            ),
+            if (vp.errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  vp.errorMessage!,
+                  style: AppTextStyles.caption.copyWith(color: AppColors.error),
+                ),
+              ),
+          ],
+        ),
+    };
+  }
+
+  Widget _buildProcessingIndicator() {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        color: AppColors.zinc100,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              width: 32,
+              height: 32,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                color: AppColors.accent500,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.listingsVideoOptimizing,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.primary600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildViewOriginalLink(String originalUrl) {
+    final l10n = AppLocalizations.of(context);
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => FullScreenVideoScreen(videoUrl: originalUrl),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.listingsViewOriginal,
+              style: AppTextStyles.labelMedium.copyWith(
+                color: AppColors.accent500,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+            const SizedBox(width: 4),
+            const Icon(Icons.open_in_new, size: 14, color: AppColors.accent500),
+          ],
+        ),
       ),
     );
   }

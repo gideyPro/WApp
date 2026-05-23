@@ -2140,6 +2140,18 @@ abstract class AppLocalizations {
   /// **'Video Tour'**
   String get listingsVideoTour;
 
+  /// No description provided for @listingsVideoOptimizing.
+  ///
+  /// In en, this message translates to:
+  /// **'Optimizing video…'**
+  String get listingsVideoOptimizing;
+
+  /// No description provided for @listingsViewOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'View original video'**
+  String get listingsViewOriginal;
+
   /// No description provided for @listingsNoDescription.
   ///
   /// In en, this message translates to:

@@ -346,6 +346,8 @@
   "listingsEncumbrance": "ዕዳ/እገዳ",
   "listingsEncumbranceYes": "እወ ({amount} ቅርሺ)",
   "listingsVideoTour": "ናይ ቪዲዮ ዑደት",
+  "listingsVideoOptimizing": "ቪዲዮ ይትሕዝ ኣሎ…",
+  "listingsViewOriginal": "መበቆላዊ ቪዲዮ ርአ",
   "listingsNoDescription": "መግለጺ ኣይተዋህበን",
   "listingsNoFeatures": "ቀንዲ መገለጺታት ኣይተጠቐሱን",
   "listingsNotFound": "ንብረቱ ኣይተረኽበን",

@@ -166,6 +166,14 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
       );
     }
   }
+
+  /// Re-fetches listing without setting isLoading, for polling
+  Future<void> refreshListing(int id) async {
+    final response = await _listingService.getListingDetail(id);
+    if (response.success && response.listing != null) {
+      state = ListingDetailState.loaded(response.listing!);
+    }
+  }
 }
 
 class ListingsState {

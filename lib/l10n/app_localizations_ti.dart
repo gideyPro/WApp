@@ -1085,6 +1085,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsVideoTour => 'ናይ ቪዲዮ ዑደት';
 
   @override
+  String get listingsVideoOptimizing => 'ቪዲዮ ይትሕዝ ኣሎ…';
+
+  @override
+  String get listingsViewOriginal => 'መበቆላዊ ቪዲዮ ርአ';
+
+  @override
   String get listingsNoDescription => 'መግለጺ ኣይተዋህበን';
 
   @override
