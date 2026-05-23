@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 
@@ -10,19 +9,22 @@ class VersionState {
   final UpdateType updateType;
   final String latestVersion;
   final String updateUrl;
+  final String whatsNew;
 
   const VersionState({
     required this.isLoading,
     this.updateType = UpdateType.none,
     this.latestVersion = '',
     this.updateUrl = '',
+    this.whatsNew = '',
   });
 
   const VersionState.initial()
       : isLoading = true,
         updateType = UpdateType.none,
         latestVersion = '',
-        updateUrl = '';
+        updateUrl = '',
+        whatsNew = '';
 }
 
 class VersionNotifier extends StateNotifier<VersionState> {
@@ -32,33 +34,23 @@ class VersionNotifier extends StateNotifier<VersionState> {
 
   Future<void> checkForUpdate() async {
     try {
-      final info = await PackageInfo.fromPlatform();
-      final currentBuild = int.tryParse(info.buildNumber) ?? 0;
-
       final response = await ApiClient()
           .dio
           .get('${ApiConstants.apiBase}/settings');
       final data = response.data['data'] ?? {};
 
-      final latestVersionCode = (data['latest_app_version_code'] ?? 0) as int;
-      final minVersionCode = (data['min_app_version_code'] ?? 0) as int;
-      final latestVersion = data['latest_app_version'] as String? ?? '';
-      final updateUrl = data['app_update_url'] as String? ?? '';
-
-      UpdateType updateType;
-      if (currentBuild < minVersionCode) {
-        updateType = UpdateType.blocking;
-      } else if (currentBuild < latestVersionCode) {
-        updateType = UpdateType.nonBlocking;
-      } else {
-        updateType = UpdateType.none;
-      }
+      final updateTypeStr = data['update_type'] as String? ?? 'none';
+      final updateType = UpdateType.values.firstWhere(
+        (e) => e.toString().split('.').last == updateTypeStr,
+        orElse: () => UpdateType.none,
+      );
 
       state = VersionState(
         isLoading: false,
         updateType: updateType,
-        latestVersion: latestVersion,
-        updateUrl: updateUrl,
+        latestVersion: data['latest_app_version'] as String? ?? '',
+        updateUrl: data['app_update_url'] as String? ?? '',
+        whatsNew: data['whats_new'] as String? ?? '',
       );
     } catch (_) {
       state = const VersionState(

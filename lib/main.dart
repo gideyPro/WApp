@@ -138,7 +138,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
     if (versionState.updateType == UpdateType.nonBlocking && !_nonBlockingDialogShown) {
       _nonBlockingDialogShown = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showUpdateDialog(context, versionState, isBlocking: false);
+        _showUpdateDialog(context, versionState);
       });
     }
 
@@ -197,7 +197,8 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
     );
   }
 
-  void _showUpdateDialog(BuildContext context, VersionState state, {required bool isBlocking}) {
+  void _showUpdateDialog(BuildContext context, VersionState state) {
+    final isBlocking = state.updateType == UpdateType.blocking;
     showDialog(
       context: context,
       barrierDismissible: !isBlocking,
@@ -205,7 +206,14 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
         canPop: !isBlocking,
         child: AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-          title: Text(isBlocking ? 'Update Required' : 'Update Available'),
+          title: Row(
+            children: [
+              Icon(isBlocking ? Icons.warning_amber_rounded : Icons.system_update,
+                   color: const Color(0xFFF59E0B), size: 28),
+              const SizedBox(width: 8),
+              Text(isBlocking ? 'Update Required' : 'Update Available'),
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,14 +221,20 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
               Text(
                 isBlocking
                     ? 'This version of the app is no longer supported. Please update to continue using WaveMart.'
-                    : 'A new version${state.latestVersion.isNotEmpty ? ' (${state.latestVersion})' : ''} is available. Please update to get the latest features and improvements.',
+                    : 'A new version${state.latestVersion.isNotEmpty ? ' (${state.latestVersion})' : ''} is available.',
               ),
+              if (state.whatsNew.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                const Text("What's New", style: TextStyle(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 4),
+                Text(state.whatsNew, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700])),
+              ],
               if (state.latestVersion.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: Row(
                     children: [
-                      const Text('Latest version: ', style: TextStyle(fontWeight: FontWeight.w600)),
+                      const Text('Version: ', style: TextStyle(fontWeight: FontWeight.w600)),
                       Text(state.latestVersion),
                     ],
                   ),
@@ -234,9 +248,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
                 child: const Text('Later'),
               ),
             ElevatedButton(
-              onPressed: () {
-                _openUpdateUrl(state.updateUrl, ctx);
-              },
+              onPressed: () => _openUpdateUrl(state.updateUrl, ctx),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 backgroundColor: const Color(0xFFF59E0B),
@@ -287,11 +299,18 @@ class _BlockingUpdateOverlay extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                 ),
+                if (state.whatsNew.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Text("What's New", style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 4),
+                  Text(state.whatsNew, textAlign: TextAlign.center,
+                       style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700])),
+                ],
                 if (state.latestVersion.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
-                      'Latest version: ${state.latestVersion}',
+                      'Version: ${state.latestVersion}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
