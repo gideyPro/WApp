@@ -481,7 +481,12 @@ class Listing extends ChangeNotifier {
   String getLocalizedFacingDirection(BuildContext context) {
     if (facingDirection == null) return '';
     final l10n = AppLocalizations.of(context);
-    switch (facingDirection) {
+    final normalized = facingDirection!
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}')
+        .join(' ');
+    switch (normalized) {
       case 'North':
         return l10n.listingNorth;
       case 'South':
