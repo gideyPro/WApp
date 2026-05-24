@@ -134,7 +134,7 @@ class AppTextStyles {
   static TextStyle get labelLarge => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 14,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         color: AppColors.primary800,
         letterSpacing: 0.1,
       );
@@ -142,7 +142,7 @@ class AppTextStyles {
   static TextStyle get labelMedium => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 12,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         color: AppColors.primary800,
         letterSpacing: 0.1,
       );
@@ -150,7 +150,7 @@ class AppTextStyles {
   static TextStyle get labelSmall => const TextStyle(
         fontFamily: _bodyFont,
         fontSize: 10,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         color: AppColors.primary700,
         letterSpacing: 0.3,
       );

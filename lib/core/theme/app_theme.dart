@@ -134,11 +134,11 @@ class AppTheme {
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone400),
         labelStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.stone700,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w700,
         ),
         floatingLabelStyle: AppTextStyles.bodySmall.copyWith(
           color: AppColors.primary900,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
       ),
 
@@ -361,11 +361,11 @@ class AppTheme {
         // FIX: label must be white (not default dark onSurface) in dark mode
         labelStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.primary300,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w700,
         ),
         floatingLabelStyle: AppTextStyles.bodySmall.copyWith(
           color: AppColors.accent400,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
       ),
 
