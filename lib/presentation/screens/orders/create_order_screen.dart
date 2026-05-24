@@ -370,7 +370,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       DropdownMenuItem(value: 'south_east', child: Text(l10n.listingSouthEast, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
                       DropdownMenuItem(value: 'south_west', child: Text(l10n.listingSouthWest, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
                       DropdownMenuItem(value: 'facing_3_directions', child: Text(l10n.listingFacing3Directions, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
-                      DropdownMenuItem(value: 'Facing All Directions', child: Text(l10n.listingFacingAllDirections, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'facing_all_directions', child: Text(l10n.listingFacingAllDirections, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
                     ],
                     onChanged: (v) => setState(() => _facingDirection = v),
                   ),

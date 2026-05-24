@@ -747,6 +747,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingSelectDirection => 'አቅጣጫ ይምረጡ';
 
   @override
+  String get listingFacing3Directions => '3 አቅጣጫዎችን የሚመለከት';
+
+  @override
+  String get listingFacingAllDirections => 'ሁሉንም አቅጣጫዎች የሚመለከት';
+
+  @override
   String get listingDescriptionLabel => 'መግለጫ';
 
   @override
@@ -1106,6 +1112,11 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsLoadError => 'ንብረቱን መጫን አልተቻለም';
 
   @override
+  String listingIdLabel(Object id) {
+    return 'ንብረት #$id';
+  }
+
+  @override
   String listingsTitleTemplate(Object action, Object location, Object type) {
     return '$type $action በ$location';
   }
@@ -1131,6 +1142,11 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get ordersTitle => 'ትዕዛዞች';
+
+  @override
+  String ordersCount(Object count) {
+    return '$count ትዕዛዞች';
+  }
 
   @override
   String get ordersDetailTitle => 'የትዕዛዝ ዝርዝር';
@@ -1730,262 +1746,254 @@ class AppLocalizationsAm extends AppLocalizations {
   String get messageWarningSubtitle => 'እባክዎ ይህን አስፈላጊ መልእክት ይገምግሙ።';
 
   @override
-  String get listingUpgradeNow => 'Upgrade Now';
+  String get listingUpgradeNow => 'አሁን ያሳድጉ';
 
   @override
-  String get listingFeatureNow => 'Feature Now';
+  String get listingFeatureNow => 'አሁን ለይተው ያውጡ';
 
   @override
-  String get listingViewPlans => 'View Plans';
+  String get listingViewPlans => 'ዕቅዶችን ይመልከቱ';
 
   @override
-  String get listingFeatureThis => 'Feature this Listing';
+  String get listingFeatureThis => 'ይህንን ንብረት ለይተው ያውጡ';
 
   @override
-  String get commonGoodMorning => 'Good Morning';
+  String get commonGoodMorning => 'እንደምን አደሩ';
 
   @override
-  String get commonGoodAfternoon => 'Good Afternoon';
+  String get commonGoodAfternoon => 'እንደምን ዋሉ';
 
   @override
-  String get commonGoodEvening => 'Good Evening';
+  String get commonGoodEvening => 'እንደምን አመሹ';
 
   @override
-  String get errorLoadingListings => 'Error Loading Listings';
+  String get errorLoadingListings => 'ንብረቶችን መጫን አልተቻለም';
 
   @override
-  String get errorLoadingProfile => 'Error Loading Profile';
+  String get errorLoadingProfile => 'መገለጫን መጫን አልተቻለም';
 
   @override
-  String get errorLoadingPayments => 'Error Loading Payments';
+  String get errorLoadingPayments => 'ክፍያዎችን መጫን አልተቻለም';
 
   @override
-  String get errorLoadingNotifications => 'Error Loading Notifications';
+  String get errorLoadingNotifications => 'ማሳወቂያዎችን መጫን አልተቻለም';
 
   @override
-  String get errorLoadingFavorites => 'Error Loading Favorites';
+  String get errorLoadingFavorites => 'ተወዳጆችን መጫን አልተቻለም';
 
   @override
-  String get errorLoadingConversations => 'Error Loading Conversations';
+  String get errorLoadingConversations => 'ውይይቶችን መጫን አልተቻለም';
 
   @override
-  String get errorLoadingMessages => 'Error Loading Messages';
+  String get errorLoadingMessages => 'መልእክቶችን መጫን አልተቻለም';
 
   @override
-  String get errorSubscription => 'Subscription Error';
+  String get errorSubscription => 'የምዝገባ ስህተት';
 
   @override
-  String get errorSearch => 'Search Error';
+  String get errorSearch => 'የፍለጋ ስህተት';
 
   @override
   String errorJoinCall(Object error) {
-    return 'Failed to join call: $error';
+    return 'ጥሪውን መቀላቀል አልተቻለም: $error';
   }
 
   @override
-  String get subscriptionPaymentNotVerified =>
-      'Your payment could not be verified.';
+  String get subscriptionPaymentNotVerified => 'ክፍያዎ ሊረጋገጥ አልቻለም።';
 
   @override
-  String get subscriptionPaymentSuccess => 'Payment successful!';
+  String get subscriptionPaymentSuccess => 'ክፍያ ተሳክቷል!';
 
   @override
   String subscriptionUnexpectedError(Object error) {
-    return 'An unexpected error occurred: $error';
+    return 'ያልተጠበቀ ስህተት ተከስቷል: $error';
   }
 
   @override
-  String get subscriptionRequiredTitle => 'Subscription Required';
+  String get subscriptionRequiredTitle => 'ምዝገባ ያስፈልጋል';
 
   @override
   String get subscriptionRequiredListingSubtitle =>
-      'You need an active subscription to post a listing.';
+      'ንብረት ለመመዝገብ ንቁ ምዝገባ ያስፈልግዎታል።';
 
   @override
   String get subscriptionRequiredDetailsSubtitle =>
-      'You need an active subscription to view property details and contact owners.';
+      'የንብረት ዝርዝሮችን ለማየት እና ባለቤቶችን ለማነጋገር ንቁ ምዝገባ ያስፈልግዎታል።';
 
   @override
   String get subscriptionLimitReached =>
-      'You\'ve reached your listing limit. Upgrade your subscription to post more listings.';
+      'የምዝገባ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገብ ምዝገባዎን ያሳድጉ።';
 
   @override
-  String get kycRequiredTitle => 'KYC Verification Required';
+  String get kycRequiredTitle => 'የማንነት ማረጋገጫ (KYC) ያስፈልጋል';
 
   @override
   String get kycPendingSubtitleReview =>
-      'Your KYC verification is still pending review. You can post a listing once it\'s approved.';
+      'የማንነት ማረጋገጫዎ ገና በግምገማ ላይ ነው። ሲጸድቅ ንብረት መመዝገብ ይችላሉ።';
 
   @override
   String get kycRequiredSubtitlePost =>
-      'You need to complete identity verification (KYC) before you can post a listing.';
+      'ንብረት ከመመዝገብዎ በፊት የማንነት ማረጋገጫ (KYC) ማጠናቀቅ አለብዎት።';
 
   @override
-  String get kycVerifyNow => 'Verify Now';
+  String get kycVerifyNow => 'አሁን ያረጋግጡ';
 
   @override
-  String get orderSelectPropertyType => 'Select the type of property';
+  String get orderSelectPropertyType => 'የንብረት አይነት ይምረጡ';
 
   @override
-  String get orderBudgetAreaSubtitle => 'Budget, area, and transaction type';
+  String get orderBudgetAreaSubtitle => 'በጀት፣ ስፋት እና የግብይት አይነት';
 
   @override
-  String get orderHoldingFacingSubtitle => 'Holding type and facing direction';
+  String get orderHoldingFacingSubtitle => 'የይዞታ አይነት እና የሚመለከተው አቅጣጫ';
 
   @override
-  String get orderDescriptionSubtitle =>
-      'Describe the property you need in detail';
+  String get orderDescriptionSubtitle => 'የሚያስፈልገዎትን ንብረት በዝርዝር ይግለጹ';
 
   @override
-  String get orderRequired => 'Required';
+  String get orderRequired => 'አስፈላጊ';
 
   @override
   String orderUpTo(Object price, Object unit) {
-    return 'Up to $price $unit';
+    return 'እስከ $price $unit';
   }
 
   @override
-  String get listingErrorPropertyTypeRequired => 'Property type is required';
+  String get listingErrorPropertyTypeRequired => 'የንብረት አይነት ያስፈልጋል';
 
   @override
-  String get listingErrorHoldingTypeRequired => 'Holding type is required';
+  String get listingErrorHoldingTypeRequired => 'የይዞታ አይነት ያስፈልጋል';
 
   @override
-  String get listingErrorListingTypeRequired => 'Listing type is required';
+  String get listingErrorListingTypeRequired => 'የማስፈርድ አይነት ያስፈልጋል';
 
   @override
-  String get listingErrorUseTypeRequired => 'Use type is required';
+  String get listingErrorUseTypeRequired => 'የአጠቃቀም አይነት ያስፈልጋል';
 
   @override
-  String get listingErrorAddressRequired => 'Please select a complete address';
+  String get listingErrorAddressRequired => 'እባክዎ ሙሉ አድራሻ ይምረጡ';
 
   @override
-  String get listingErrorMinPrice => 'Price must be at least 1,000 ETB';
+  String get listingErrorMinPrice => 'ዋጋ ቢያንስ 1,000 ብር መሆን አለበት';
 
   @override
-  String get listingErrorLeasedYearRequired => 'Leased year is required';
+  String get listingErrorLeasedYearRequired => 'የሊዝ ዓመት ያስፈልጋል';
 
   @override
-  String get listingErrorCooperativeNameRequired =>
-      'Cooperative name is required';
+  String get listingErrorCooperativeNameRequired => 'የማህበሩ ስም ያስፈልጋል';
 
   @override
-  String get listingErrorCooperativeCodeRequired =>
-      'Cooperative code is required';
+  String get listingErrorCooperativeCodeRequired => 'የማህበሩ ኮድ ያስፈልጋል';
 
   @override
-  String get listingErrorRoomsRequired => 'Total rooms is required';
+  String get listingErrorRoomsRequired => 'ጠቅላላ ክፍሎች ያስፈልጋሉ';
 
   @override
-  String get listingErrorHouseTypeRequired => 'House type is required';
+  String get listingErrorHouseTypeRequired => 'የቤት አይነት ያስፈልጋል';
 
   @override
-  String get listingErrorAreaRequired => 'Total area is required';
+  String get listingErrorAreaRequired => 'ጠቅላላ ስፋት ያስፈልጋል';
 
   @override
-  String get listingErrorDescriptionRequired => 'Description is required';
+  String get listingErrorDescriptionRequired => 'መግለጫ ያስፈልጋል';
 
   @override
-  String get listingErrorImageRequired =>
-      'At least one property image is required';
+  String get listingErrorImageRequired => 'ቢያንስ አንድ የንብረት ምስል ያስፈልጋል';
 
   @override
-  String get listingErrorSitePlanRequired =>
-      'At least one site plan is required';
+  String get listingErrorSitePlanRequired => 'ቢያንስ አንድ ሳይት ፕላን ያስፈልጋል';
 
   @override
   String get listingErrorOwnershipProofRequired =>
-      'Ownership proof is required for cooperative properties';
+      'ለማህበር ንብረቶች የባለቤትነት ማረጋገጫ ያስፈልጋል';
 
   @override
-  String get listingErrorLeaseContractRequired =>
-      'Lease contract is required for lease hold properties';
+  String get listingErrorLeaseContractRequired => 'ለሊዝ ንብረቶች የሊዝ ውል ያስፈልጋል';
 
   @override
-  String get listingErrorTermsRequired =>
-      'You must accept the Terms & Conditions';
+  String get listingErrorTermsRequired => 'የአገልግሎት ውሎችን እና ደንቦችን መቀበል አለብዎት';
 
   @override
   String listingErrorTaxYearRange(Object max, Object min) {
-    return 'Tax paid year must be between $min and $max';
+    return 'ግብር የተከፈለበት ዓመት በ $min እና $max መካከል መሆን አለበት';
   }
 
   @override
   String listingErrorYearBuiltRange(Object max, Object min) {
-    return 'Year built must be between $min and $max';
+    return 'የተገነባበት ዓመት በ $min እና $max መካከል መሆን አለበት';
   }
 
   @override
-  String get notificationJustNow => 'Just now';
+  String get notificationJustNow => 'አሁን';
 
   @override
   String messageConversationId(Object id) {
-    return 'Conversation #$id';
+    return 'ውይይት #$id';
   }
 
   @override
-  String get messageDirectChat => 'Direct Chat';
+  String get messageDirectChat => 'ቀጥታ ውይይት';
 
   @override
-  String get listingPriceUnder5M => 'Under 5M';
+  String get listingPriceUnder5M => 'ከ5 ሚሊዮን በታች';
 
   @override
-  String get listingUpgradeToFeature => 'Upgrade to Feature';
+  String get listingUpgradeToFeature => 'ለይቶ ለማውጣት ያሳድጉ';
 
   @override
   String get listingUpgradeToFeatureSubtitle =>
-      'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.';
+      'የአሁኑ ዕቅድዎ ልዩ ንብረቶችን አያካትትም። ንብረትዎን ለይቶ ለማውጣት ወደ ፕሮ ያሳድጉ።';
 
   @override
-  String get errorConnection => 'Connection Error';
+  String get errorConnection => 'የግንኙነት ስህተት';
 
   @override
   String get errorCheckSubscription =>
-      'Could not check your subscription status. Please try again.';
+      'የምዝገባ ሁኔታዎን ማረጋገጥ አልተቻለም። እባክዎ እንደገና ይሞክሩ።';
 
   @override
-  String get commonBrowseProperties => 'Browse Properties';
+  String get commonBrowseProperties => 'ንብረቶችን ይመልከቱ';
 
   @override
-  String get subscriptionPaymentFailedTitle => 'Payment Failed';
+  String get subscriptionPaymentFailedTitle => 'ክፍያ አልተሳካም';
 
   @override
   String get subscriptionPaymentFailedSubtitle =>
-      'Your transaction was not completed. Would you like to try again?';
+      'ግብይትዎ አልተጠናቀቀም። እንደገና መሞከር ይፈልጋሉ?';
 
   @override
   String get subscriptionTechnicalFailureSubtitle =>
-      'The payment gateway could not be reached. Please check your connection.';
+      'የክፍያ መንገዱን ማግኘት አልተቻለም። እባክዎ ግንኙነትዎን ያረጋግጡ።';
 
   @override
   String messagesWith(Object name) {
-    return 'with $name';
+    return 'ከ $name ጋር';
   }
 
   @override
-  String get errorJoinCallGeneric => 'Cannot open join link';
+  String get errorJoinCallGeneric => 'የመቀላቀያ ሊንኩን መክፈት አልተቻለም';
 
   @override
-  String get errorVideoLoad => 'Failed to load video';
+  String get errorVideoLoad => 'ቪዲዮውን መጫን አልተሳካም';
 
   @override
-  String get statusActive => 'Active';
+  String get statusActive => 'ንቁ';
 
   @override
-  String get statusExpired => 'Expired';
+  String get statusExpired => 'ጊዜው ያለፈበት';
 
   @override
-  String get statusCancelled => 'Cancelled';
+  String get statusCancelled => 'የተሰረዘ';
 
   @override
-  String get statusPending => 'Pending';
+  String get statusPending => 'በመጠባበቅ ላይ';
 
   @override
-  String get statusSuccess => 'Success';
+  String get statusSuccess => 'ተሳክቷል';
 
   @override
-  String get statusFailed => 'Failed';
+  String get statusFailed => 'አልተሳካም';
 
   @override
-  String get statusRefunded => 'Refunded';
+  String get statusRefunded => 'የተመለሰ';
 }

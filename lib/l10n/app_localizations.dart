@@ -1510,6 +1510,18 @@ abstract class AppLocalizations {
   /// **'Select direction'**
   String get listingSelectDirection;
 
+  /// No description provided for @listingFacing3Directions.
+  ///
+  /// In en, this message translates to:
+  /// **'Facing 3 Directions'**
+  String get listingFacing3Directions;
+
+  /// No description provided for @listingFacingAllDirections.
+  ///
+  /// In en, this message translates to:
+  /// **'Facing All Directions'**
+  String get listingFacingAllDirections;
+
   /// No description provided for @listingDescriptionLabel.
   ///
   /// In en, this message translates to:
@@ -2182,6 +2194,12 @@ abstract class AppLocalizations {
   /// **'Could not load property'**
   String get listingsLoadError;
 
+  /// No description provided for @listingIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing #{id}'**
+  String listingIdLabel(Object id);
+
   /// No description provided for @listingsTitleTemplate.
   ///
   /// In en, this message translates to:
@@ -2223,6 +2241,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Orders'**
   String get ordersTitle;
+
+  /// No description provided for @ordersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} orders'**
+  String ordersCount(Object count);
 
   /// No description provided for @ordersDetailTitle.
   ///

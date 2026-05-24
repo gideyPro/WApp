@@ -753,6 +753,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingSelectDirection => 'Select direction';
 
   @override
+  String get listingFacing3Directions => 'Facing 3 Directions';
+
+  @override
+  String get listingFacingAllDirections => 'Facing All Directions';
+
+  @override
   String get listingDescriptionLabel => 'Description';
 
   @override
@@ -1116,6 +1122,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsLoadError => 'Could not load property';
 
   @override
+  String listingIdLabel(Object id) {
+    return 'Listing #$id';
+  }
+
+  @override
   String listingsTitleTemplate(Object action, Object location, Object type) {
     return '$type $action in $location';
   }
@@ -1141,6 +1152,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ordersTitle => 'Orders';
+
+  @override
+  String ordersCount(Object count) {
+    return '$count orders';
+  }
 
   @override
   String get ordersDetailTitle => 'Order Details';
