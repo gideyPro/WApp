@@ -135,20 +135,22 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_hasError || _chewieController == null) {
+    if (_hasError) {
       return _buildErrorWidget();
     }
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: AspectRatio(
-        aspectRatio: _videoController?.value.aspectRatio ?? 16 / 9,
+        aspectRatio: _videoController?.value.isInitialized == true
+            ? _videoController!.value.aspectRatio
+            : 16 / 9,
         child: Stack(
+          fit: StackFit.expand,
           children: [
             if (_chewieController != null)
               Chewie(controller: _chewieController!),
-            if (_isLoading || (!_userTappedPlay && widget.thumbnailUrl != null))
-              _buildThumbnailOverlay(),
+            if (!_userTappedPlay || _isLoading) _buildThumbnailOverlay(),
           ],
         ),
       ),
@@ -157,7 +159,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   Widget _buildThumbnailOverlay() {
     return GestureDetector(
-      onTap: _onPlay,
+      onTap: _isLoading ? null : _onPlay,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -182,6 +184,13 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: const Icon(
                   Icons.play_arrow_rounded,
