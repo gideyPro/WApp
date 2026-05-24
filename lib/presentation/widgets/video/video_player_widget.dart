@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
@@ -8,6 +9,7 @@ import 'minimal_video_controls.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
+  final String? thumbnailUrl;
   final bool autoPlay;
   final bool looping;
   final String? title;
@@ -15,6 +17,7 @@ class VideoPlayerWidget extends StatefulWidget {
   const VideoPlayerWidget({
     super.key,
     required this.videoUrl,
+    this.thumbnailUrl,
     this.autoPlay = false,
     this.looping = false,
     this.title,
@@ -29,6 +32,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   ChewieController? _chewieController;
   bool _isLoading = true;
   bool _hasError = false;
+  bool _userTappedPlay = false;
 
   @override
   void initState() {
@@ -44,6 +48,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       setState(() {
         _isLoading = true;
         _hasError = false;
+        _userTappedPlay = false;
       });
       _initializeVideo();
     }
@@ -130,10 +135,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return _buildLoadingWidget();
-    }
-
     if (_hasError || _chewieController == null) {
       return _buildErrorWidget();
     }
@@ -141,25 +142,62 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: AspectRatio(
-        aspectRatio: _videoController!.value.aspectRatio,
-        child: Chewie(controller: _chewieController!),
+        aspectRatio: _videoController?.value.aspectRatio ?? 16 / 9,
+        child: Stack(
+          children: [
+            if (_chewieController != null)
+              Chewie(controller: _chewieController!),
+            if (_isLoading || (!_userTappedPlay && widget.thumbnailUrl != null))
+              _buildThumbnailOverlay(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildLoadingWidget() {
-    return Container(
-      height: 200,
-      decoration: BoxDecoration(
-        color: AppColors.zinc100,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.accent500,
-        ),
+  Widget _buildThumbnailOverlay() {
+    return GestureDetector(
+      onTap: _onPlay,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (widget.thumbnailUrl != null)
+            CachedNetworkImage(
+              imageUrl: widget.thumbnailUrl!,
+              fit: BoxFit.cover,
+              placeholder: (_, __) => Container(color: AppColors.zinc100),
+              errorWidget: (_, __, ___) => Container(color: AppColors.zinc100),
+            )
+          else
+            Container(color: AppColors.zinc100),
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(color: AppColors.accent500),
+            )
+          else
+            Center(
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.play_arrow_rounded,
+                  size: 36,
+                  color: AppColors.accent500,
+                ),
+              ),
+            ),
+        ],
       ),
     );
+  }
+
+  void _onPlay() {
+    setState(() => _userTappedPlay = true);
+    _videoController?.play();
   }
 
   Widget _buildErrorWidget() {

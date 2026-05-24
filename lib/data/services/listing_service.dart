@@ -247,6 +247,24 @@ class ListingService {
     }
   }
 
+  /// Lightweight poll: get only video processing status for a listing
+  Future<VideoProcessing?> getVideoStatus(int listingId) async {
+    try {
+      final response = await _apiClient.dio.get(
+        '${ApiConstants.listingDetail}/$listingId/video-status',
+      );
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['status'] != null) {
+          return VideoProcessing.fromJson(data);
+        }
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Get similar listings
   Future<ListingResponse> getSimilarListings(int listingId) async {
     try {

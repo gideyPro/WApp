@@ -57,7 +57,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   void _startVideoPolling() {
     if (_videoPollTimer != null) return;
     _videoPollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      ref.read(listingDetailProvider.notifier).refreshListing(widget.listingId);
+      ref.read(listingDetailProvider.notifier).refreshVideoStatus(widget.listingId);
     });
   }
 
@@ -978,7 +978,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               const Icon(Icons.videocam, size: 20, color: AppColors.accent500),
               const SizedBox(width: 8),
               Text(l10n.listingsVideoTour, style: AppTextStyles.title),
-              if (listing.videoProcessing != null) ...[
+              if (listing.videoProcessing != null && listing.videoProcessing!.status != VideoProcessingStatus.none) ...[
                 const SizedBox(width: 8),
                 _buildVideoStatusBadge(listing.videoProcessing!.status),
               ],
@@ -1000,6 +1000,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         (AppColors.successLight, AppColors.success, 'Ready'),
       VideoProcessingStatus.failed =>
         (AppColors.errorLight, AppColors.error, 'Failed'),
+      VideoProcessingStatus.none =>
+        (AppColors.successLight, AppColors.success, 'Available'),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -1039,6 +1041,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           children: [
             VideoPlayerWidget(
               videoUrl: listing.processedVideoUrl ?? listing.videoUrl!,
+              thumbnailUrl: vp.thumbnailUrl,
               autoPlay: false,
               looping: false,
               title: l10n.listingsVideoTour,
@@ -1052,6 +1055,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           children: [
             VideoPlayerWidget(
               videoUrl: listing.videoUrl!,
+              thumbnailUrl: vp.thumbnailUrl,
               autoPlay: false,
               looping: false,
               title: l10n.listingsVideoTour,
@@ -1065,6 +1069,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                 ),
               ),
           ],
+        ),
+      VideoProcessingStatus.none => VideoPlayerWidget(
+          videoUrl: listing.videoUrl!,
+          thumbnailUrl: vp.thumbnailUrl,
+          autoPlay: false,
+          looping: false,
+          title: l10n.listingsVideoTour,
         ),
     };
   }

@@ -67,17 +67,19 @@ enum ListingStatus { pending, active, rejected, sold, rented, frozen }
 enum RentalPeriod { day, month, year }
 
 /// Video processing status
-enum VideoProcessingStatus { pending, processing, ready, failed }
+enum VideoProcessingStatus { none, pending, processing, ready, failed }
 
 /// Video processing info returned by backend's video_processing appended attribute
 class VideoProcessing {
   final VideoProcessingStatus status;
   final String? processedUrl;
+  final String? thumbnailUrl;
   final String? errorMessage;
 
   const VideoProcessing({
     required this.status,
     this.processedUrl,
+    this.thumbnailUrl,
     this.errorMessage,
   });
 
@@ -88,6 +90,7 @@ class VideoProcessing {
         orElse: () => VideoProcessingStatus.pending,
       ),
       processedUrl: json['processed_url'],
+      thumbnailUrl: json['thumbnail_url'],
       errorMessage: json['error_message'],
     );
   }
@@ -96,6 +99,7 @@ class VideoProcessing {
     return {
       'status': status.name,
       'processed_url': processedUrl,
+      'thumbnail_url': thumbnailUrl,
       'error_message': errorMessage,
     };
   }

@@ -174,6 +174,17 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
       state = ListingDetailState.loaded(response.listing!);
     }
   }
+
+  /// Lightweight video status poll — updates only videoProcessing on current listing
+  Future<void> refreshVideoStatus(int id) async {
+    final current = state.listing;
+    if (current == null) return;
+    final vp = await _listingService.getVideoStatus(id);
+    if (vp == null) return;
+    final updatedJson = current.toJson();
+    updatedJson['video_processing'] = vp.toJson();
+    state = ListingDetailState.loaded(Listing.fromJson(updatedJson));
+  }
 }
 
 class ListingsState {
