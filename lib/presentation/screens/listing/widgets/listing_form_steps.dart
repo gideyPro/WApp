@@ -1690,7 +1690,7 @@ class ListingStep4Review extends StatelessWidget {
                       icon: formData.type == 'house' ? Icons.home_rounded : Icons.landscape_rounded)),
                   const SizedBox(width: 8),
                   Expanded(child: _summaryCard(context, l10n.listingLocation,
-                      '${formData.addressRegion ?? ''}\n${formData.addressZone ?? ''}',
+                      '${[formData.addressKebele, formData.addressWoreda].where((e) => e != null && e!.isNotEmpty).join(', ')}\n${[formData.addressZone, formData.addressRegion].where((e) => e != null && e!.isNotEmpty).join(', ')}',
                       icon: Icons.location_on_rounded)),
                 ],
               ),

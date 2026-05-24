@@ -380,7 +380,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
             _sectionCard(
               title: l10n.listingLocation,
-              subtitle: '${l10n.listingRegion}, ${l10n.listingZone}, ${l10n.listingWoreda}, ${l10n.listingKebele}',
+              subtitle: '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

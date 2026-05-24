@@ -84,17 +84,33 @@ class Address {
   }
 
   String get fullAddress {
-    final parts = [region, zone, woreda, kebele, specificLocation]
+    final mainParts = [kebele, woreda, zone, region]
         .where((e) => e != null && e.isNotEmpty)
         .toList();
-    return parts.join(', ');
+    
+    String base = mainParts.join(', ');
+    if (specificLocation != null && specificLocation!.isNotEmpty) {
+      if (base.isNotEmpty) {
+        return '$base - $specificLocation';
+      }
+      return specificLocation!;
+    }
+    return base;
   }
 
   String get shortAddress {
-    final parts = [zone, kebele, specificLocation]
+    final mainParts = [kebele, woreda, zone]
         .where((e) => e != null && e.isNotEmpty)
         .toList();
-    return parts.join(', ');
+    
+    String base = mainParts.join(', ');
+    if (specificLocation != null && specificLocation!.isNotEmpty) {
+      if (base.isNotEmpty) {
+        return '$base - $specificLocation';
+      }
+      return specificLocation!;
+    }
+    return base;
   }
 
   /// Get address string localized for the current app locale
@@ -110,31 +126,39 @@ class Address {
     }
 
     // Use localized values only when not in English locale.
-    // The API always sets *_localized from addresses_et (Amharic/Tigrinya).
-    // For English users the primary field values are already correct.
     String? localizedOr(String? field, String? localized) =>
         (locale != 'en' && localized != null) ? localized : translate(field);
+        
     String? r = localizedOr(region, regionLocalized);
     String? z = localizedOr(zone, zoneLocalized);
     String? w = localizedOr(woreda, woredaLocalized);
     String? k = localizedOr(kebele, kebeleLocalized);
     String? s = localizedOr(specificLocation, specificLocationLocalized);
 
-    // If restricted, we only show up to Woreda (Zone, Woreda)
-    final components = isRestricted ? [z, w] : [z, w, k, s];
+    // New Order: Kebele, Woreda, Zone, Region - Special Location
+    // If restricted, we hide Kebele and Special Location
+    final List<String?> mainComponents = isRestricted 
+        ? [w, z, r] 
+        : [k, w, z, r];
     
-    final parts = components
+    final parts = mainComponents
         .where((e) => e != null && e.isNotEmpty)
+        .map((e) => e!)
         .toList();
     
-    if (parts.isEmpty) return r ?? '';
+    if (parts.isEmpty && (s == null || s.isEmpty || isRestricted)) return '';
     
-    // Append region at the end if it exists
-    if (r != null && r.isNotEmpty) {
-      parts.add(r);
+    String base = parts.join(', ');
+    
+    // Add Special Location with a dash if not restricted
+    if (!isRestricted && s != null && s.isNotEmpty) {
+      if (base.isNotEmpty) {
+        return '$base - $s';
+      }
+      return s;
     }
     
-    return parts.join(', ');
+    return base;
   }
 
   @override
