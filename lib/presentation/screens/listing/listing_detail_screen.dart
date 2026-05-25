@@ -935,7 +935,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (hasVideo || hasVideoProcessing) _buildVideoSection(listing),
+        if (hasVideo) _buildVideoSection(listing),
         Text(l10n.listingsPropertyDetails, style: AppTextStyles.title),
         const SizedBox(height: 12),
         WaveCard(
