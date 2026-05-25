@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
+import '../../widgets/common/wave_card.dart';
 import '../listing/listing_detail_screen.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../data/models/listing.dart';
