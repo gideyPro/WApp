@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -38,6 +39,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   final PageController _pageController = PageController();
   int _currentImageIndex = 0;
   Timer? _videoPollTimer;
+  String? _precachedVideoUrl;
 
   @override
   void initState() {
@@ -64,6 +66,15 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   void _stopVideoPolling() {
     _videoPollTimer?.cancel();
     _videoPollTimer = null;
+  }
+
+  void _precacheVideo(Listing listing) {
+    final vp = listing.videoProcessing;
+    if (vp == null || vp.status != VideoProcessingStatus.ready) return;
+    final url = listing.processedVideoUrl;
+    if (url == null || url.isEmpty || url == _precachedVideoUrl) return;
+    _precachedVideoUrl = url;
+    CachedVideoPlayerPlus.preCacheVideo(Uri.parse(url));
   }
 
   @override
@@ -389,6 +400,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   }
 
   Widget _buildContent(Listing listing) {
+    _precacheVideo(listing);
     final favState = ref.watch(favoritesProvider);
     final isFavorited = favState.favorites.any((f) => f.id == listing.id);
 
