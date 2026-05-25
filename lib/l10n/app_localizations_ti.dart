@@ -350,6 +350,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get profileFirstNameRequired => 'ሽም የድሊ እዩ';
 
   @override
+  String get profileEmailRequired => 'Email is required';
+
+  @override
   String get profileEmailInvalid => 'በጃኹም ትኽክለኛ ኢሜይል ኣእትዉ';
 
   @override
@@ -1496,6 +1499,11 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
+  String authOtpSentEmailMessage(Object email) {
+    return 'We sent a 6-digit code to $email';
+  }
+
+  @override
   String authResendCountdown(Object seconds) {
     return 'ኮድ ድሕሪ $seconds ሰከንድ ደጊምካ ስደድ';
   }
@@ -1514,6 +1522,9 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get authNoAccount => 'መለያ የብልኩምን? ';
+
+  @override
+  String get authEmail => 'Email';
 
   @override
   String get authCreateAccount => 'መለያኹም ፍጠሩ';

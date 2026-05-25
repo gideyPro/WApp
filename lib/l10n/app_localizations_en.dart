@@ -352,6 +352,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileFirstNameRequired => 'First name is required';
 
   @override
+  String get profileEmailRequired => 'Email is required';
+
+  @override
   String get profileEmailInvalid => 'Please enter a valid email';
 
   @override
@@ -1514,6 +1517,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String authOtpSentEmailMessage(Object email) {
+    return 'We sent a 6-digit code to $email';
+  }
+
+  @override
   String authResendCountdown(Object seconds) {
     return 'Resend code in ${seconds}s';
   }
@@ -1534,6 +1542,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authNoAccount => 'Don\'t have an account? ';
+
+  @override
+  String get authEmail => 'Email';
 
   @override
   String get authCreateAccount => 'Create Your Account';

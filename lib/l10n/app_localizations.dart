@@ -748,6 +748,12 @@ abstract class AppLocalizations {
   /// **'First name is required'**
   String get profileFirstNameRequired;
 
+  /// No description provided for @profileEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get profileEmailRequired;
+
   /// No description provided for @profileEmailInvalid.
   ///
   /// In en, this message translates to:
@@ -2932,6 +2938,12 @@ abstract class AppLocalizations {
   /// **'We sent a 6-digit code to {phone}'**
   String authOtpSentMessage(Object phone);
 
+  /// No description provided for @authOtpSentEmailMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to {email}'**
+  String authOtpSentEmailMessage(Object email);
+
   /// No description provided for @authResendCountdown.
   ///
   /// In en, this message translates to:
@@ -2967,6 +2979,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t have an account? '**
   String get authNoAccount;
+
+  /// No description provided for @authEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authEmail;
 
   /// No description provided for @authCreateAccount.
   ///

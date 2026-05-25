@@ -26,6 +26,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final GlobalKey<OtpInputFieldState> _otpKey = GlobalKey();
   String _otpCode = '';
 
@@ -48,6 +49,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _firstNameController.addListener(_markDataEntered);
     _lastNameController.addListener(_markDataEntered);
     _phoneController.addListener(_markDataEntered);
+    _emailController.addListener(_markDataEntered);
   }
 
   void _markDataEntered() {
@@ -61,6 +63,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneController.dispose();
+    _emailController.dispose();
     _countdownTimer?.cancel();
     super.dispose();
   }
@@ -183,6 +186,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           const SizedBox(height: 20),
                           _buildNameInputs(),
                           const SizedBox(height: 16),
+                          _buildEmailInput(),
+                          const SizedBox(height: 16),
                           _buildPhoneInput(),
                           const SizedBox(height: 16),
                           _buildGenderSelection(),
@@ -203,7 +208,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           _buildSectionTitle(l10n.authVerifyPhone),
                           const SizedBox(height: 8),
                           Text(
-                            l10n.authOtpSentMessage(_phoneController.text),
+                            _selectedCountry.code == '+251' 
+                              ? l10n.authOtpSentMessage(_phoneController.text)
+                              : l10n.authOtpSentEmailMessage(_emailController.text),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: ThemeColors(context).textMuted,
                             ),
@@ -323,6 +330,16 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildEmailInput() {
+    final isEthiopia = _selectedCountry.code == '+251';
+    return _buildInputField(
+      controller: _emailController,
+      hint: isEthiopia ? l10n.profileEmail : '${l10n.profileEmail} (${l10n.orderRequired})',
+      icon: Icons.email_outlined,
+      keyboardType: TextInputType.emailAddress,
     );
   }
 
@@ -610,6 +627,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             lastName: _lastNameController.text.trim(),
             phoneNumber: fullPhone,
             gender: _selectedGender!,
+            email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
           );
 
       if (response.success) {
@@ -641,6 +659,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             lastName: _lastNameController.text.trim(),
             phoneNumber: '${_selectedCountry.code}${_phoneController.text.trim()}',
             gender: _selectedGender!,
+            email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
             otpCode: _otpCode,
           );
 
@@ -666,7 +685,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
     final phone = _phoneController.text.trim();
+    final email = _emailController.text.trim();
     final l10n = AppLocalizations.of(context);
+    final isEthiopia = _selectedCountry.code == '+251';
 
     if (firstName.isEmpty) {
       _showErrorSnackBar(l10n.authFirstNameRequired);
@@ -675,6 +696,16 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
     if (lastName.isEmpty) {
       _showErrorSnackBar(l10n.authLastNameRequired);
+      return false;
+    }
+
+    if (!isEthiopia && email.isEmpty) {
+      _showErrorSnackBar(l10n.profileEmailRequired); // Assuming this key exists or should be used
+      return false;
+    }
+
+    if (email.isNotEmpty && !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      _showErrorSnackBar(l10n.profileEmailInvalid);
       return false;
     }
 

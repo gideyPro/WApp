@@ -138,6 +138,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String lastName,
     required String phoneNumber,
     required String gender,
+    String? email,
     String? otpCode,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
@@ -146,6 +147,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       lastName: lastName,
       phoneNumber: phoneNumber,
       gender: gender,
+      email: email,
       otpCode: otpCode,
     );
     if (response.success) {

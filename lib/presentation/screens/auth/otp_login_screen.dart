@@ -368,6 +368,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Widget _buildOtpInfoBanner(String phone) {
+    final isEthiopia = _selectedCountry.code == '+251';
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -381,7 +382,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              l10n.authOtpSentMessage(phone),
+              isEthiopia 
+                  ? l10n.authOtpSentMessage(phone)
+                  : l10n.authOtpSentEmailMessage('your email'),
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.primary800,
               ),

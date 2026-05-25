@@ -187,6 +187,7 @@ class AuthService {
     required String lastName,
     required String phoneNumber,
     required String gender,
+    String? email,
     String? otpCode,
   }) async {
     try {
@@ -199,6 +200,7 @@ class AuthService {
             'last_name': lastName,
             'phone_number': phoneNumber,
             'gender': gender,
+            'email': email,
             'send_otp': true,
           },
         );
@@ -223,6 +225,7 @@ class AuthService {
             'last_name': lastName,
             'phone_number': phoneNumber,
             'gender': gender,
+            'email': email,
             'otp_code': otpCode,
           },
         );

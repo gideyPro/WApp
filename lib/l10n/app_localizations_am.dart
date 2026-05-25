@@ -350,6 +350,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get profileFirstNameRequired => 'የመጀመሪያ ስም ያስፈልጋል';
 
   @override
+  String get profileEmailRequired => 'ኢሜይል ያስፈልጋል';
+
+  @override
   String get profileEmailInvalid => 'እባክዎን ትክክለኛ ኢሜይል ያስገቡ';
 
   @override
@@ -1497,6 +1500,11 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
+  String authOtpSentEmailMessage(Object email) {
+    return 'ባለ 6 አሃዝ ኮድ ወደ $email ልከናል።';
+  }
+
+  @override
   String authResendCountdown(Object seconds) {
     return 'ኮዱን በ $seconds ሰከንድ ውስጥ ድጋሚ ይላኩ';
   }
@@ -1515,6 +1523,9 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get authNoAccount => 'መለያ የለዎትም? ';
+
+  @override
+  String get authEmail => 'Email';
 
   @override
   String get authCreateAccount => 'መለያዎን ይፍጠሩ';
