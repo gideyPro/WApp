@@ -474,6 +474,7 @@ class ListingService {
       final response = await _apiClient.dio.post(
         ApiConstants.createListing,
         data: dioFormData,
+        options: Options(sendTimeout: const Duration(seconds: 300)),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -525,7 +526,7 @@ class ListingService {
       final response = await _apiClient.dio.request(
         url,
         data: data,
-        options: Options(method: method),
+        options: Options(method: method, sendTimeout: const Duration(seconds: 300)),
       );
 
       if (response.statusCode == 200) {
