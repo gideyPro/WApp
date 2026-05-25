@@ -33,6 +33,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   bool _isLoading = true;
   bool _hasError = false;
   bool _userTappedPlay = false;
+  bool _isFinished = false;
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       }
 
       _player = player;
+      player.controller.addListener(_onVideoProgress);
       _chewieController = ChewieController(
         videoPlayerController: player.controller,
         autoPlay: widget.autoPlay,
@@ -121,7 +123,18 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _initializeVideo();
   }
 
+  void _onVideoProgress() {
+    final controller = _player?.controller;
+    if (controller == null || !controller.value.isInitialized) return;
+    final isFinished = controller.value.position >= controller.value.duration &&
+        controller.value.duration.inSeconds > 0;
+    if (isFinished != _isFinished && mounted) {
+      setState(() => _isFinished = isFinished);
+    }
+  }
+
   void _disposeControllers() {
+    _player?.controller.removeListener(_onVideoProgress);
     _chewieController?.dispose();
     _chewieController = null;
     _player?.dispose();
@@ -151,7 +164,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           children: [
             if (_chewieController != null)
               Chewie(controller: _chewieController!),
-            if (!_userTappedPlay || _isLoading) _buildThumbnailOverlay(),
+            if (!_userTappedPlay || _isLoading || _isFinished) _buildThumbnailOverlay(),
           ],
         ),
       ),
@@ -193,8 +206,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.play_arrow_rounded,
+                child: Icon(
+                  _isFinished ? Icons.replay_rounded : Icons.play_arrow_rounded,
                   size: 36,
                   color: AppColors.accent500,
                 ),
@@ -206,8 +219,22 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _onPlay() {
-    setState(() => _userTappedPlay = true);
-    _player?.controller.play();
+    if (_isFinished) {
+      _replay();
+    } else {
+      setState(() => _userTappedPlay = true);
+      _player?.controller.play();
+    }
+  }
+
+  void _replay() {
+    _disposeControllers();
+    setState(() {
+      _isLoading = true;
+      _userTappedPlay = true;
+      _isFinished = false;
+    });
+    _initializeVideo();
   }
 
   Widget _buildErrorWidget() {

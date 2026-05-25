@@ -43,7 +43,7 @@ class _FullScreenVideoScreenState extends State<FullScreenVideoScreen> {
       allowFullScreen: false,
       showControls: true,
       showOptions: false,
-      customControls: MinimalVideoControls(),
+      customControls: const MinimalVideoControls(),
       materialProgressColors: ChewieProgressColors(
         playedColor: AppColors.accent500,
         handleColor: AppColors.accent500,

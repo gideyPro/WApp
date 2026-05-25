@@ -1270,7 +1270,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       builder: (ctx) => AlertDialog(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text(l10n.listingFeatureThis + '?',
+        title: Text('${l10n.listingFeatureThis}?',
             style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
         content: Text(
           'Your listing will be featured on the home page and search results for 30 days.',
@@ -1518,7 +1518,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(response.message ?? l10n.listingsInterestSubmitted),
+              content: Text(response.message),
               backgroundColor: AppColors.emerald600,
             ),
           );
@@ -1528,48 +1528,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(response.message ?? l10n.commonError),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.commonError),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _cancelInterest(int listingId, int? interestId) async {
-    if (interestId == null) return;
-
-    final l10n = AppLocalizations.of(context);
-
-    try {
-      final service = LeadService();
-      final response = await service.cancelInterest(interestId);
-
-      if (response.success) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.message ?? l10n.listingsInterestCancelled),
-              backgroundColor: AppColors.emerald600,
-            ),
-          );
-          ref.read(listingDetailProvider.notifier).loadListing(listingId);
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.message ?? l10n.commonError),
+              content: Text(response.message),
               backgroundColor: AppColors.error,
             ),
           );
