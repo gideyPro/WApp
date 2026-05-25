@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:chewie/chewie.dart';
 import '../../widgets/video/minimal_video_controls.dart';
 import '../../../core/constants/app_colors.dart';
@@ -14,7 +14,7 @@ class FullScreenVideoScreen extends StatefulWidget {
 }
 
 class _FullScreenVideoScreenState extends State<FullScreenVideoScreen> {
-  VideoPlayerController? _videoController;
+  CachedVideoPlayerPlus? _player;
   ChewieController? _chewieController;
 
   @override
@@ -24,21 +24,22 @@ class _FullScreenVideoScreenState extends State<FullScreenVideoScreen> {
   }
 
   Future<void> _initializeVideo() async {
-    final controller = VideoPlayerController.networkUrl(
+    final player = CachedVideoPlayerPlus.networkUrl(
       Uri.parse(widget.videoUrl),
+      invalidateCacheIfOlderThan: const Duration(days: 30),
     );
-    await controller.initialize();
+    await player.initialize();
     if (!mounted) {
-      controller.dispose();
+      player.dispose();
       return;
     }
 
-    _videoController = controller;
+    _player = player;
     _chewieController = ChewieController(
-      videoPlayerController: controller,
+      videoPlayerController: player.controller,
       autoPlay: true,
       looping: false,
-      aspectRatio: controller.value.aspectRatio,
+      aspectRatio: player.controller.value.aspectRatio,
       allowFullScreen: false,
       showControls: true,
       showOptions: false,
@@ -56,7 +57,7 @@ class _FullScreenVideoScreenState extends State<FullScreenVideoScreen> {
   @override
   void dispose() {
     _chewieController?.dispose();
-    _videoController?.dispose();
+    _player?.dispose();
     super.dispose();
   }
 

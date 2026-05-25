@@ -18,6 +18,8 @@ import 'l10n/app_localizations.dart';
 import 'core/network/local_notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart' as cache;
+import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'data/services/fcm_service.dart';
 import 'presentation/widgets/common/wave_connectivity_banner.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -64,6 +66,14 @@ void main() async {
 
   // Fonts are bundled locally in assets/fonts/
   GoogleFonts.config.allowRuntimeFetching = false;
+
+  // Configure video cache: max 10 cached videos
+  CachedVideoPlayerPlus.cacheManager = cache.CacheManager(
+    cache.Config(
+      'libCachedVideoPlayerPlusData',
+      maxNrOfCacheObjects: 10,
+    ),
+  );
 
   // Global error handler for crash logging
   FlutterError.onError = (details) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:chewie/chewie.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/constants/app_colors.dart';
@@ -28,7 +28,7 @@ class VideoPlayerWidget extends StatefulWidget {
 }
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  VideoPlayerController? _videoController;
+  CachedVideoPlayerPlus? _player;
   ChewieController? _chewieController;
   bool _isLoading = true;
   bool _hasError = false;
@@ -56,23 +56,24 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   Future<void> _initializeVideo() async {
     try {
-      final controller = VideoPlayerController.networkUrl(
+      final player = CachedVideoPlayerPlus.networkUrl(
         Uri.parse(widget.videoUrl),
+        invalidateCacheIfOlderThan: const Duration(days: 30),
       );
 
-      await controller.initialize();
+      await player.initialize();
 
       if (!mounted) {
-        controller.dispose();
+        player.dispose();
         return;
       }
 
-      _videoController = controller;
+      _player = player;
       _chewieController = ChewieController(
-        videoPlayerController: controller,
+        videoPlayerController: player.controller,
         autoPlay: widget.autoPlay,
         looping: widget.looping,
-        aspectRatio: controller.value.aspectRatio,
+        aspectRatio: player.controller.value.aspectRatio,
         allowFullScreen: true,
         showControls: true,
         showOptions: false,
@@ -123,8 +124,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void _disposeControllers() {
     _chewieController?.dispose();
     _chewieController = null;
-    _videoController?.dispose();
-    _videoController = null;
+    _player?.dispose();
+    _player = null;
   }
 
   @override
@@ -142,8 +143,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: AspectRatio(
-        aspectRatio: _videoController?.value.isInitialized == true
-            ? _videoController!.value.aspectRatio
+        aspectRatio: _player?.controller.value.isInitialized == true
+            ? _player!.controller.value.aspectRatio
             : 16 / 9,
         child: Stack(
           fit: StackFit.expand,
@@ -206,7 +207,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   void _onPlay() {
     setState(() => _userTappedPlay = true);
-    _videoController?.play();
+    _player?.controller.play();
   }
 
   Widget _buildErrorWidget() {
