@@ -345,6 +345,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             MaterialPageRoute(builder: (_) => const MessagesScreen()),
                           ),
                         ),
+                        _MenuItemData(
+                          icon: Icons.interests_outlined,
+                          title: l10n.profileMyInterests,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const MyInterestsScreen()),
+                          ),
+                        ),
                         if (subscriptionEnabled) ...[
                           _MenuItemData(
                             icon: Icons.payment_outlined,
@@ -366,13 +373,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             ),
                           ),
                         ],
-                        _MenuItemData(
-                          icon: Icons.interests_outlined,
-                          title: l10n.profileMyInterests,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const MyInterestsScreen()),
-                          ),
-                        ),
                         _MenuItemData(
                           icon: Icons.verified_user_outlined,
                           title: l10n.profileKyc,

@@ -6,8 +6,12 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../listing/listing_detail_screen.dart';
+import '../../../../core/constants/app_spacing.dart';
+import '../../../data/models/listing.dart';
+import '../../widgets/listing_card.dart';
 
 class MyInterestsScreen extends ConsumerStatefulWidget {
   const MyInterestsScreen({super.key});
@@ -17,6 +21,8 @@ class MyInterestsScreen extends ConsumerStatefulWidget {
 }
 
 class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
+  final Set<int> _cancellingInterests = {};
+
   @override
   void initState() {
     super.initState();
@@ -63,26 +69,27 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
   }
 
   Future<void> _cancelInterest(int interestId) async {
+    setState(() => _cancellingInterests.add(interestId));
     final service = ref.read(leadServiceProvider);
     final response = await service.cancelInterest(interestId);
     if (mounted) {
+      setState(() => _cancellingInterests.remove(interestId));
       if (response.success) {
         ref.read(myInterestsProvider.notifier).loadInterests();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.message),
-            backgroundColor: AppColors.emerald600,
-          ),
-        );
+        WaveToast.showSuccess(context, response.message);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, response.message);
       }
     }
+  }
+
+  void _handleListingTap(int listingId) {
+    if (listingId <= 0) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ListingDetailScreen(listingId: listingId),
+      ),
+    );
   }
 
   @override
@@ -92,253 +99,186 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(l10n.profileMyInterests),
-        backgroundColor: context.cardBg,
-        surfaceTintColor: context.cardBg,
+        centerTitle: false,
       ),
-      body: interestsState.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : interestsState.errorMessage != null
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.error_outline,
-                            size: 48, color: context.textSecondary),
-                        const SizedBox(height: 16),
-                        Text(interestsState.errorMessage!,
-                            textAlign: TextAlign.center,
-                            style: AppTextStyles.bodyMedium
-                                .copyWith(color: context.textSecondary)),
-                        const SizedBox(height: 16),
-                        FilledButton.tonal(
-                          onPressed: () => ref
-                              .read(myInterestsProvider.notifier)
-                              .loadInterests(),
-                          child: Text(l10n.commonRetry),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : interestsState.interests.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.interests_outlined,
-                                size: 80,
-                                color: context.textSecondary
-                                    .withValues(alpha: 0.4)),
-                            const SizedBox(height: 16),
-                            Text(
-                              'No interests yet',
-                              style: AppTextStyles.title,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Properties you express interest in will appear here',
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                  color: context.textSecondary),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: () => ref
-                          .read(myInterestsProvider.notifier)
-                          .loadInterests(),
-                      child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                        itemCount: interestsState.interests.length,
-                        itemBuilder: (context, index) {
-                          final lead = interestsState.interests[index];
-                          final listing = lead.listing;
-                          final listingId = lead.listingId;
-                          final stage = lead.stage;
-
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: WaveGlass(
-                              borderRadius: 12,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(12),
-                                onTap: () {
-                                  if (listingId > 0) {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => ListingDetailScreen(
-                                            listingId: listingId),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 4),
-                                              decoration: BoxDecoration(
-                                                color: _stageColor(stage)
-                                                    .withValues(alpha: 0.15),
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                              ),
-                                              child: Text(
-                                                _stageLabel(stage),
-                                                style: AppTextStyles.caption
-                                                    .copyWith(
-                                                  color: _stageColor(stage),
-                                                  fontWeight: FontWeight.w800,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          if (lead.buyerMessage != null &&
-                                              lead.buyerMessage!.isNotEmpty)
-                                            Icon(Icons.message_outlined,
-                                                size: 16,
-                                                color: context.textSecondary),
-                                          const SizedBox(width: 8),
-                                          InkWell(
-                                            onTap: () =>
-                                                _cancelInterest(lead.id),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(6),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.error
-                                                    .withValues(alpha: 0.1),
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                              ),
-                                              child: const Icon(
-                                                  Icons.close_rounded,
-                                                  size: 16,
-                                                  color: AppColors.error),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      if (lead.buyerMessage != null &&
-                                          lead.buyerMessage!.isNotEmpty) ...[
-                                        const SizedBox(height: 8),
-                                        Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: context.theme.isDark
-                                                ? AppColors.primary800
-                                                : AppColors.primary50,
-                                            borderRadius:
-                                                BorderRadius.circular(6),
-                                            border: Border.all(
-                                              color: context.divider
-                                                  .withValues(alpha: 0.3),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            lead.buyerMessage!,
-                                            style: AppTextStyles.caption
-                                                .copyWith(
-                                              color: context.textSecondary,
-                                              fontStyle: FontStyle.italic,
-                                            ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                      if (listing != null) ...[
-                                        const SizedBox(height: 12),
-                                        Text(
-                                          listing['title'] ??
-                                              listing['description'] ??
-                                              'Listing #$listingId',
-                                          style: AppTextStyles.bodyMedium
-                                              .copyWith(
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        if (listing['price_fixed'] != null ||
-                                            listing['price'] != null)
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 4),
-                                            child: Text(
-                                              'ETB ${_formatPrice(listing['price_fixed'] ?? listing['price'])}',
-                                              style: AppTextStyles.bodyMedium
-                                                  .copyWith(
-                                                color: AppColors.accent600,
-                                                fontWeight: FontWeight.w800,
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.access_time_rounded,
-                                              size: 14,
-                                              color: context.textSecondary),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            _formatDate(lead.createdAt),
-                                            style: AppTextStyles.caption
-                                                .copyWith(
-                                              color: context.textSecondary,
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+      body: _buildBody(interestsState, l10n),
     );
   }
 
-  String _formatPrice(dynamic price) {
-    if (price == null) return '0';
-    final n = price is int ? price : (price is double ? price : 0);
-    final formatter =
-        NumberFormat('#,##0', AppLocalizations.of(context).localeName);
-    return formatter.format(n);
+  Widget _buildBody(MyInterestsState state, AppLocalizations l10n) {
+    if (state.isLoading) {
+      return ListView.builder(
+        padding: AppSpacing.paddingLg,
+        itemCount: 5,
+        itemBuilder: (_, __) => const Padding(
+          padding: EdgeInsets.only(bottom: 16),
+          child: PropertyListingCard(isLoading: true),
+        ),
+      );
+    }
+
+    if (state.errorMessage != null) {
+      return WaveMessageScreen.error(
+        title: l10n.commonError,
+        subtitle: state.errorMessage!,
+        onRetry: () => ref.read(myInterestsProvider.notifier).loadInterests(),
+        isEmbedded: true,
+      );
+    }
+
+    if (state.interests.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: () => ref.read(myInterestsProvider.notifier).loadInterests(),
+        child: ListView(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: WaveEmptyState(
+                icon: Icons.interests_outlined,
+                title: 'No interests yet',
+                subtitle: 'Properties you express interest in will appear here',
+                actionLabel: l10n.commonBrowseProperties,
+                onAction: () {
+                  ref.read(selectedTabProvider.notifier).state = 0;
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(myInterestsProvider.notifier).loadInterests(),
+      child: ListView.builder(
+        padding: AppSpacing.paddingLg,
+        itemCount: state.interests.length,
+        itemBuilder: (context, index) {
+          final lead = state.interests[index];
+          final listingJson = lead.listing;
+          final listing = listingJson != null ? Listing.fromJson(listingJson as Map<String, dynamic>) : null;
+          final stage = lead.stage;
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Stack(
+              children: [
+                if (listing != null)
+                  PropertyListingCard(
+                    listing: listing,
+                    hideFavoriteButton: true,
+                    onTap: () => _handleListingTap(listing.id),
+                  )
+                else
+                  _buildMissingListingCard(lead.listingId),
+                
+                // Interest Status Badge
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _stageColor(stage),
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      _stageLabel(stage).toUpperCase(),
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Close/Cancel button
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: GestureDetector(
+                    onTap: _cancellingInterests.contains(lead.id)
+                        ? null
+                        : () => _cancelInterest(lead.id),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.7),
+                        shape: BoxShape.circle,
+                      ),
+                      child: _cancellingInterests.contains(lead.id)
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : const Icon(Icons.close, size: 18, color: Colors.white),
+                    ),
+                  ),
+                ),
+
+                // Message Preview Overlay (at the bottom of the image section)
+                if (lead.buyerMessage != null && lead.buyerMessage!.isNotEmpty)
+                  Positioned(
+                    top: 160, // Approximate bottom of image in 4:3 aspect ratio
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.6),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.message_outlined, size: 14, color: Colors.white70),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              lead.buyerMessage!,
+                              style: AppTextStyles.caption.copyWith(
+                                color: Colors.white,
+                                fontStyle: FontStyle.italic,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
-  String _formatDate(String dateStr) {
-    if (dateStr.isEmpty) return '';
-    try {
-      final dt = DateTime.parse(dateStr);
-      final formatter = DateFormat('MMM d, yyyy');
-      return formatter.format(dt);
-    } catch (_) {
-      return dateStr;
-    }
+  Widget _buildMissingListingCard(int listingId) {
+    return WaveCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          const Icon(Icons.broken_image_outlined, size: 48, color: AppColors.error),
+          const SizedBox(height: 8),
+          Text('Listing #$listingId is no longer available', style: AppTextStyles.bodyMedium),
+        ],
+      ),
+    );
   }
 }
