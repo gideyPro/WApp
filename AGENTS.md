@@ -22,7 +22,7 @@
 | `flutter analyze` | Lint (flutter_lints) |
 | `flutter run --dart-define=API_BASE_URL=<url>` | Run with custom API |
 | `flutter build apk --debug` | Debug APK |
-| `flutter build apk --release` | Release APK |
+| `flutter build apk --release` | Release APK (arm64-v8a + armeabi-v7a only; `x86_64` excluded via `abiFilters` in `android/app/build.gradle`) |
 | `dart run build_runner build --delete-conflicting-outputs` | Codegen (Hive adapters) |
 | `flutter gen-l10n` | Regenerate localization Dart files |
 
@@ -57,6 +57,11 @@
 ## Reference docs
 - `API_CALL.md` — cURL examples for auth flow, conference flow, endpoints
 - `fcm_guide.md` — FCM push notification setup for Flutter + Laravel backend
+
+### APK size
+- Release APK excludes `x86_64` ABI (emulator-only) via `abiFilters` in `android/app/build.gradle`
+- `disable-abi-filtering=true` in `android/gradle.properties` prevents Flutter Gradle plugin from overriding the ABI filter
+- Universal APK: ~45 MB (vs ~60 MB with all 3 ABIs)
 
 ## Do not modify
 - `.kilo/`, `.gemini/`, `.qwen/`, `.agent/` — agent state dirs
