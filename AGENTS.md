@@ -60,7 +60,7 @@
 
 ### APK size
 - Release APK excludes `x86_64` ABI (emulator-only) via `abiFilters` in `android/app/build.gradle`
-- `disable-abi-filtering=true` in `android/gradle.properties` prevents Flutter Gradle plugin from overriding the ABI filter
+- `disable-abi-filtering=false` in `android/gradle.properties` ensures the Flutter Gradle plugin respects the `abiFilters` in `build.gradle` (setting it to `true` would skip filtering and include all ABIs)
 - Universal APK: ~45 MB (vs ~60 MB with all 3 ABIs)
 
 ## Do not modify
