@@ -43,6 +43,15 @@ class VersionNotifier extends StateNotifier<VersionState> {
           .get('${ApiConstants.apiBase}/settings');
       final data = response.data['data'] ?? {};
 
+      final updateCheckEnabled = data['update_check_enabled'] as bool? ?? true;
+      if (!updateCheckEnabled) {
+        state = const VersionState(
+          isLoading: false,
+          updateType: UpdateType.none,
+        );
+        return;
+      }
+
       final latestVersionCode = (data['latest_app_version_code'] ?? 0) as int;
 
       // Only check if a newer version exists
