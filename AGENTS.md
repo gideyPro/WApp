@@ -23,6 +23,7 @@
 | `flutter run --dart-define=API_BASE_URL=<url>` | Run with custom API |
 | `flutter build apk --debug` | Debug APK |
 | `flutter build apk --release --target-platform android-arm64,android-arm` | Release APK (arm64-v8a + armeabi-v7a only; `x86_64` excluded via `--target-platform`) |
+| `flutter build apk --release --split-per-abi --target-platform android-arm64,android-arm` | Split APKs (separate per ABI) |
 | `dart run build_runner build --delete-conflicting-outputs` | Codegen (Hive adapters) |
 | `flutter gen-l10n` | Regenerate localization Dart files |
 
