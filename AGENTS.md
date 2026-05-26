@@ -22,7 +22,7 @@
 | `flutter analyze` | Lint (flutter_lints) |
 | `flutter run --dart-define=API_BASE_URL=<url>` | Run with custom API |
 | `flutter build apk --debug` | Debug APK |
-| `flutter build apk --release` | Release APK (arm64-v8a + armeabi-v7a only; `x86_64` excluded via `abiFilters` in `android/app/build.gradle`) |
+| `flutter build apk --release --target-platform android-arm64,android-arm` | Release APK (arm64-v8a + armeabi-v7a only; `x86_64` excluded via `--target-platform`) |
 | `dart run build_runner build --delete-conflicting-outputs` | Codegen (Hive adapters) |
 | `flutter gen-l10n` | Regenerate localization Dart files |
 
@@ -59,8 +59,8 @@
 - `fcm_guide.md` — FCM push notification setup for Flutter + Laravel backend
 
 ### APK size
-- Release APK excludes `x86_64` ABI (emulator-only) via `abiFilters` in `android/app/build.gradle`
-- `disable-abi-filtering=true` in `android/gradle.properties` prevents Flutter Gradle plugin from overriding the ABI filter
+- Release APK excludes `x86_64` ABI (emulator-only) via `--target-platform android-arm64,android-arm` (or `--split-per-abi` for separate APKs)
+- The `abiFilters` in `android/app/build.gradle` + `disable-abi-filtering=true` in `gradle.properties` provide a secondary filter but alone are insufficient — Flutter's engine `.so` files for all ABIs are bundled regardless. Use the `--target-platform` flag to ensure Flutter only builds engine binaries for the desired architectures.
 - Universal APK: ~45 MB (vs ~60 MB with all 3 ABIs)
 
 ## Do not modify
