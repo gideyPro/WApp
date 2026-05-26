@@ -54,11 +54,15 @@ class VersionNotifier extends StateNotifier<VersionState> {
         return;
       }
 
-      final updateTypeStr = data['update_type'] as String? ?? 'none';
-      final updateType = UpdateType.values.firstWhere(
-        (e) => e.toString().split('.').last == updateTypeStr,
-        orElse: () => UpdateType.none,
-      );
+      const updateTypeMap = {
+        'none': UpdateType.none,
+        'non_blocking': UpdateType.nonBlocking,
+        'blocking': UpdateType.blocking,
+      };
+      final updateType = updateTypeMap[
+            data['update_type'] as String? ?? 'none'
+          ] ??
+          UpdateType.none;
 
       state = VersionState(
         isLoading: false,
