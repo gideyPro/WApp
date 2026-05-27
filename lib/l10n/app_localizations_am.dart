@@ -1505,6 +1505,9 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
+  String get authSpamFolderHint => 'ኢሜሉን ካላዩት እባክዎ የስፓም አቃፊዎን ያረጋግጡ።';
+
+  @override
   String authResendCountdown(Object seconds) {
     return 'ኮዱን በ $seconds ሰከንድ ውስጥ ድጋሚ ይላኩ';
   }

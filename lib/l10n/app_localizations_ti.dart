@@ -1504,6 +1504,10 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
+  String get authSpamFolderHint => "If you don't see the email, check your spam folder.";
+
+
+  @override
   String authResendCountdown(Object seconds) {
     return 'ኮድ ድሕሪ $seconds ሰከንድ ደጊምካ ስደድ';
   }

@@ -482,6 +482,7 @@
   "authWelcomeTitle": "ናብ ዌቭማርት ብድሓን መጹ",
   "authWelcomeSubtitle": "ናይ ኢትዮጵያ ቀዳማይ ናይ ሪል ስቴት ዕዳጋ",
   "authOtpSentMessage": "ናይ 6 ኣሃዝ ኮድ ናብ {phone} ሰዲድና ኣለና",
+  "authSpamFolderHint": "ነቲ ኢመይል እንተ ዘይርእይዎ፡ ናይ ስፓም ፎልደር ይረኣእዎ።",
   "authResendCountdown": "ኮድ ድሕሪ {seconds} ሰከንድ ደጊምካ ስደድ",
   "authChangeNumber": "ቁጽሪ ቀይር",
   "authChangeNumberConfirm": "ናይ ስልክ ቁጽሪኹም ክትቅይሩ ዶ ትደልዩ?",

@@ -484,6 +484,7 @@
   "authWelcomeSubtitle": "የኢትዮጵያ ቀዳሚ የሪል ስቴት ገበያ",
   "authOtpSentMessage": "ባለ 6 አሃዝ ኮድ ወደ {phone} ልከናል።",
   "authOtpSentEmailMessage": "ባለ 6 አሃዝ ኮድ ወደ {email} ልከናል።",
+  "authSpamFolderHint": "ኢሜሉን ካላዩት እባክዎ የስፓም አቃፊዎን ያረጋግጡ።",
   "authResendCountdown": "ኮዱን በ {seconds} ሰከንድ ውስጥ ድጋሚ ይላኩ",
   "authChangeNumber": "ቁጥር ይቀይሩ",
   "authChangeNumberConfirm": "የስልክ ቁጥርዎን መቀየር ይፈልጋሉ?",

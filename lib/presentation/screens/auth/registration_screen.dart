@@ -208,7 +208,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           _buildSectionTitle(l10n.authVerifyPhone),
                           const SizedBox(height: 8),
                           Text(
-                            _selectedCountry.code == '+251' 
+                            _selectedCountry.code == '+251'
                               ? l10n.authOtpSentMessage(_phoneController.text)
                               : l10n.authOtpSentEmailMessage(_emailController.text),
                             style: AppTextStyles.bodySmall.copyWith(
@@ -216,6 +216,16 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                             ),
                             textAlign: TextAlign.center,
                           ),
+                          if (_selectedCountry.code != '+251') ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              l10n.authSpamFolderHint,
+                              style: AppTextStyles.caption.copyWith(
+                                color: AppColors.stone500,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                           const SizedBox(height: 24),
                           _buildOtpInput(),
                           const SizedBox(height: 24),

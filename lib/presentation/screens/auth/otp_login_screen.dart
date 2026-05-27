@@ -368,6 +368,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Widget _buildOtpInfoBanner(String phone) {
+    final authState = ref.watch(authStateProvider);
     final isEthiopia = _selectedCountry.code == '+251';
     return Container(
       padding: const EdgeInsets.all(12),
@@ -376,20 +377,36 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: AppColors.primary200),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, size: 20, color: AppColors.primary600),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              isEthiopia 
-                  ? l10n.authOtpSentMessage(phone)
-                  : l10n.authOtpSentEmailMessage('your email'),
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.primary800,
+          Row(
+            children: [
+              const Icon(Icons.info_outline, size: 20, color: AppColors.primary600),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  authState.otpMessage != null
+                      ? authState.otpMessage!
+                      : isEthiopia
+                          ? l10n.authOtpSentMessage(phone)
+                          : l10n.authOtpSentEmailMessage('your email'),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.primary800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (!isEthiopia) ...[
+            const SizedBox(height: 6),
+            Text(
+              l10n.authSpamFolderHint,
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.stone500,
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

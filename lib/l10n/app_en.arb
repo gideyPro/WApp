@@ -486,6 +486,7 @@
   "authWelcomeSubtitle": "Ethiopia's Premier Real Estate Marketplace",
   "authOtpSentMessage": "We sent a 6-digit code to {phone}",
   "authOtpSentEmailMessage": "We sent a 6-digit code to {email}",
+  "authSpamFolderHint": "If you don't see the email, check your spam folder.",
   "authResendCountdown": "Resend code in {seconds}s",
   "authChangeNumber": "Change Number",
   "authChangeNumberConfirm": "Are you sure you want to change your phone number?",
