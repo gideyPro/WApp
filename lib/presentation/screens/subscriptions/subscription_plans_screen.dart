@@ -9,6 +9,7 @@ import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/services/subscription_service.dart';
 import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_chip.dart';
@@ -29,13 +30,16 @@ class _SubscriptionPlansScreenState
     extends ConsumerState<SubscriptionPlansScreen> with RouteAware {
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   int? _processingPlanId;
-  String _selectedCurrency = 'ETB';
+  late final String _selectedCurrency;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
   @override
   void initState() {
     super.initState();
+    final authState = ref.read(authStateProvider);
+    final phone = authState.user?.phoneNumber ?? authState.phoneNumber ?? '';
+    _selectedCurrency = phone.startsWith('+251') ? 'ETB' : 'USD';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(subscriptionProvider.notifier).refresh();
     });
@@ -146,7 +150,6 @@ class _SubscriptionPlansScreenState
                     ],
                   ),
                 ),
-                _buildCurrencySwitch(),
               ],
             ),
             const SizedBox(height: 24),
@@ -583,54 +586,6 @@ class _SubscriptionPlansScreenState
         setState(() => _processingPlanId = null);
       }
     }
-  }
-  Widget _buildCurrencySwitch() {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: AppColors.stone100,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildCurrencyToggleItem('ETB'),
-          _buildCurrencyToggleItem('USD'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCurrencyToggleItem(String currency) {
-    final isSelected = _selectedCurrency == currency;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedCurrency = currency),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(4),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  )
-                ]
-              : null,
-        ),
-        child: Text(
-          currency,
-          style: AppTextStyles.bodySmall.copyWith(
-            fontSize: 13,
-            color: isSelected ? AppColors.accent600 : AppColors.stone600,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-          ),
-        ),
-      ),
-    );
   }
 }
 
