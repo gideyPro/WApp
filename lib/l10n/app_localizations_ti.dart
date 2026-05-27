@@ -1504,8 +1504,7 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get authSpamFolderHint => "If you don't see the email, check your spam folder.";
-
+  String get authSpamFolderHint => 'ነቲ ኢመይል እንተ ዘይርእይዎ፡ ናይ ስፓም ፎልደር ይረኣእዎ።';
 
   @override
   String authResendCountdown(Object seconds) {

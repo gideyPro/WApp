@@ -2947,7 +2947,7 @@ abstract class AppLocalizations {
   /// No description provided for @authSpamFolderHint.
   ///
   /// In en, this message translates to:
-  /// **'If you don't see the email, check your spam folder.'**
+  /// **'If you don\'t see the email, check your spam folder.'**
   String get authSpamFolderHint;
 
   /// No description provided for @authResendCountdown.
