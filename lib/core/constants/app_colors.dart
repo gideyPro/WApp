@@ -106,6 +106,10 @@ class AppColors {
   static const Color zinc800 = stone800;
   static const Color zinc900 = stone900;
 
+  // VIP / Premium Colors
+  static const Color vip = Color(0xFF8B5CF6);
+  static const Color vipLight = Color(0xFFEDE9FE);
+
   // Semantic Colors
   static const Color error = Color(0xFF991B1B);
   static const Color errorLight = Color(0xFFFEE2E2);

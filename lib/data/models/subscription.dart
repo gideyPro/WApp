@@ -12,6 +12,7 @@ class SubscriptionPlan {
   final int durationMonths;
   final int maxListings;
   final int? maxFeaturedListings;
+  final int? maxVipListings;
   final List<String>? features;
   final bool isActive;
   final int? sortOrder;
@@ -28,6 +29,7 @@ class SubscriptionPlan {
     this.durationMonths = 1,
     this.maxListings = 1,
     this.maxFeaturedListings,
+    this.maxVipListings,
     this.features,
     this.isActive = true,
     this.sortOrder,
@@ -46,6 +48,7 @@ class SubscriptionPlan {
       durationMonths: json['duration_months'] ?? 1,
       maxListings: json['max_listings'] ?? 1,
       maxFeaturedListings: json['max_featured_listings'],
+      maxVipListings: json['max_vip_listings'],
       features: _parseFeatures(json['features']),
       isActive: json['is_active'] ?? true,
       sortOrder: json['sort_order'],
@@ -113,6 +116,7 @@ class Subscription {
   final DateTime? cancelledAt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final int? vipListingsUsed;
   final SubscriptionPlan? plan;
 
   Subscription({
@@ -125,6 +129,7 @@ class Subscription {
     this.cancelledAt,
     this.createdAt,
     this.updatedAt,
+    this.vipListingsUsed,
     this.plan,
   });
 
@@ -147,6 +152,7 @@ class Subscription {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
+      vipListingsUsed: json['vip_listings_used'],
       plan:
           json['plan'] != null ? SubscriptionPlan.fromJson(json['plan']) : null,
     );

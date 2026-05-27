@@ -117,12 +117,14 @@ class _SubscriptionPlansScreenState
                 subscription,
                 state.canCreateListing,
                 state.canFeatureListing,
+                state.canVipListing,
               )
             else
               _buildInactiveSubscriptionBanner(
                 subscription,
                 state.canCreateListing,
                 state.canFeatureListing,
+                state.canVipListing,
               ),
             const SizedBox(height: 8),
           ],
@@ -179,7 +181,7 @@ class _SubscriptionPlansScreenState
   }
 
   Widget _buildCurrentSubscriptionBanner(
-      Subscription sub, bool canCreateListing, bool canFeatureListing) {
+      Subscription sub, bool canCreateListing, bool canFeatureListing, bool canVipListing) {
     final localPlan = sub.plan;
 
     return Container(
@@ -275,6 +277,11 @@ class _SubscriptionPlansScreenState
                 label: l10n.listingFeatured,
                 included: canFeatureListing,
               ),
+              _buildStatPill(
+                icon: Icons.diamond,
+                label: 'VIP',
+                included: canVipListing,
+              ),
               if (sub.daysRemaining < 999) ...[
                 _buildStatPill(
                   icon: Icons.timer,
@@ -292,6 +299,7 @@ class _SubscriptionPlansScreenState
     Subscription sub,
     bool canCreateListing,
     bool canFeatureListing,
+    bool canVipListing,
   ) {
     final localPlan = sub.plan;
 
@@ -715,6 +723,15 @@ class _PlanCard extends StatelessWidget {
                       : l10n.subscriptionsNoFeaturedListings,
                   included: plan.maxFeaturedListings != null &&
                       plan.maxFeaturedListings! > 0,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _buildFeatureRow(context,
+                  icon: Icons.diamond,
+                  label: plan.maxVipListings != null
+                      ? '${plan.maxVipListings} VIP Listings'
+                      : 'No VIP Listings',
+                  included: plan.maxVipListings != null &&
+                      plan.maxVipListings! > 0,
                 ),
                 // Additional features from JSON (if any)
                 if (plan.features != null && plan.features!.isNotEmpty) ...[

@@ -837,6 +837,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           subscription: currentSubResponse.subscription,
           canCreateListing: currentSubResponse.canCreateListing,
           canFeatureListing: currentSubResponse.canFeatureListing,
+          canVipListing: currentSubResponse.canVipListing,
           hasPaidSubscription: currentSubResponse.hasPaidSubscription,
         );
       } else {
@@ -857,6 +858,7 @@ class SubscriptionState {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canFeatureListing;
+  final bool canVipListing;
   final bool hasPaidSubscription;
   final String? errorMessage;
 
@@ -866,6 +868,7 @@ class SubscriptionState {
     this.subscription,
     this.canCreateListing = false,
     this.canFeatureListing = false,
+    this.canVipListing = false,
     this.hasPaidSubscription = false,
     this.errorMessage,
   });
@@ -876,6 +879,7 @@ class SubscriptionState {
         subscription = null,
         canCreateListing = false,
         canFeatureListing = false,
+        canVipListing = false,
         hasPaidSubscription = false,
         errorMessage = null;
 
@@ -884,6 +888,7 @@ class SubscriptionState {
     this.subscription,
     this.canCreateListing = false,
     this.canFeatureListing = false,
+    this.canVipListing = false,
     this.hasPaidSubscription = false,
   })  : isLoading = false,
         errorMessage = null;
@@ -894,6 +899,7 @@ class SubscriptionState {
     Subscription? subscription,
     bool? canCreateListing,
     bool? canFeatureListing,
+    bool? canVipListing,
     bool? hasPaidSubscription,
     String? errorMessage,
   }) {
@@ -903,6 +909,7 @@ class SubscriptionState {
       subscription: subscription ?? this.subscription,
       canCreateListing: canCreateListing ?? this.canCreateListing,
       canFeatureListing: canFeatureListing ?? this.canFeatureListing,
+      canVipListing: canVipListing ?? this.canVipListing,
       hasPaidSubscription: hasPaidSubscription ?? this.hasPaidSubscription,
       errorMessage: errorMessage ?? this.errorMessage,
     );

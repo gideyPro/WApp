@@ -118,6 +118,7 @@ class Listing extends ChangeNotifier {
   final RentalPeriod? rentalPeriodUnit;
   final ListingStatus status;
   final bool isFeatured;
+  final bool isVip;
   final DateTime? featuredUntil;
   final int? addressId;
   final String? specificLocation;
@@ -230,6 +231,7 @@ class Listing extends ChangeNotifier {
     this.rentalPeriodUnit,
     this.status = ListingStatus.pending,
     this.isFeatured = false,
+    this.isVip = false,
     this.featuredUntil,
     this.addressId,
     this.specificLocation,
@@ -317,6 +319,7 @@ class Listing extends ChangeNotifier {
         orElse: () => ListingStatus.pending,
       ),
       isFeatured: json['is_featured'] ?? false,
+      isVip: json['is_vip'] ?? false,
       featuredUntil: json['featured_until'] != null
           ? DateTime.parse(json['featured_until'])
           : null,
@@ -455,6 +458,7 @@ class Listing extends ChangeNotifier {
       'rental_period_unit': rentalPeriodUnit?.toString().split('.').last,
       'status': status.toString().split('.').last,
       'is_featured': isFeatured,
+      'is_vip': isVip,
       'featured_until': featuredUntil?.toIso8601String(),
       'address_id': addressId,
       'specific_location': specificLocation,
@@ -629,6 +633,8 @@ class Listing extends ChangeNotifier {
     return isFeatured &&
         (featuredUntil == null || featuredUntil!.isAfter(DateTime.now()));
   }
+
+  bool get isVipActive => isVip;
 
   @override
   String toString() => 'Listing(id: $id)';

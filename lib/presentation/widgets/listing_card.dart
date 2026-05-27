@@ -263,6 +263,11 @@ class PropertyListingCard extends ConsumerWidget {
                   padding: const EdgeInsets.only(left: AppSpacing.xs),
                   child: _buildBadge(l10n.listingFeatured, AppColors.accent600),
                 ),
+              if (listing?.isVip ?? false)
+                Padding(
+                  padding: const EdgeInsets.only(left: AppSpacing.xs),
+                  child: _buildBadge('VIP', AppColors.vip),
+                ),
             ],
           ),
         ),
@@ -720,6 +725,11 @@ class FeaturedListingCard extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(left: 4),
             child: _buildBadge(l10n.listingFeatured, AppColors.accent600),
+          ),
+        if (listing?.isVip == true)
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: _buildBadge('VIP', AppColors.vip),
           ),
       ],
     );

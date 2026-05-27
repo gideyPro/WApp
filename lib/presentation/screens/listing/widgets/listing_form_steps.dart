@@ -1716,8 +1716,46 @@ class ListingStep4Review extends StatelessWidget {
                 style: AppTextStyles.bodyMedium,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
           ],
+          Row(
+            children: [
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: Checkbox(
+                  value: formData.isVip,
+                  onChanged: (v) => onUpdate(formData.copyWith(isVip: v ?? false)),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => onUpdate(formData.copyWith(isVip: !formData.isVip)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.diamond, size: 16, color: AppColors.vip),
+                          const SizedBox(width: 4),
+                          Text('Mark as VIP', style: AppTextStyles.labelMedium.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.vip,
+                            letterSpacing: 0.3,
+                          )),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text('Get a VIP badge for premium visibility', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           Row(
             children: [
               SizedBox(

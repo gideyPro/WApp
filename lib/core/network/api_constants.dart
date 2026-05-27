@@ -33,6 +33,7 @@ class ApiConstants {
   static const String updateListing = '$apiBase/listings'; // + /{id}
   static const String deleteListing = '$apiBase/listings'; // + /{id}
   static const String featureListing = '$apiBase/listings'; // + /{id}/feature
+  static const String vipListing = '$apiBase/listings'; // + /{id}/vip
 
   // ==========================================================================
   // 3. FAVORITES ENDPOINTS

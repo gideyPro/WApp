@@ -68,6 +68,9 @@ class ListingFormData {
   // --- Lease ---
   int? leaseExpiryYear;
 
+  // --- Options ---
+  bool isVip = false;
+
   // --- Terms ---
   bool termsAccepted = false;
 
@@ -131,6 +134,7 @@ class ListingFormData {
     this.debtAmount,
     this.debtHolder,
     this.leaseExpiryYear,
+    this.isVip = false,
     this.termsAccepted = false,
     this.existingImages = const [],
     this.removedImageIds = const [],
@@ -192,6 +196,7 @@ class ListingFormData {
         'debtAmount': debtAmount,
         'debtHolder': debtHolder,
         'leaseExpiryYear': leaseExpiryYear,
+        'isVip': isVip,
         'termsAccepted': termsAccepted,
         'savedAt': DateTime.now().toIso8601String(),
       };
@@ -261,6 +266,7 @@ class ListingFormData {
         debtAmount: data['debtAmount'],
         debtHolder: data['debtHolder'],
         leaseExpiryYear: data['leaseExpiryYear'],
+        isVip: data['isVip'] ?? false,
         termsAccepted: data['termsAccepted'] ?? false,
       );
     } catch (_) {
@@ -320,6 +326,7 @@ class ListingFormData {
     double? debtAmount,
     String? debtHolder,
     int? leaseExpiryYear,
+    bool? isVip,
     bool? termsAccepted,
     List<XFile>? images,
     XFile? sitePlan,
@@ -379,6 +386,7 @@ class ListingFormData {
       debtAmount: debtAmount ?? this.debtAmount,
       debtHolder: debtHolder ?? this.debtHolder,
       leaseExpiryYear: leaseExpiryYear ?? this.leaseExpiryYear,
+      isVip: isVip ?? this.isVip,
       termsAccepted: termsAccepted ?? this.termsAccepted,
       existingImages: existingImages ?? this.existingImages,
       removedImageIds: removedImageIds ?? this.removedImageIds,

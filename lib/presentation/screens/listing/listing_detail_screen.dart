@@ -597,6 +597,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           _buildBadge(l10n.listingForRent.toUpperCase(), AppColors.accent600),
         if (listing.isFeatured)
           _buildBadge(l10n.listingFeatured.toUpperCase(), AppColors.accent500),
+        if (listing.isVip)
+          _buildBadge('VIP', AppColors.vip),
         if (listing.isNew)
           _buildBadge(l10n.listingNew.toUpperCase(), AppColors.warning),
         if (listing.status == ListingStatus.frozen)
@@ -1252,6 +1254,83 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     }
   }
 
+  Future<void> _vipListing(Listing listing) async {
+    final subState = ref.read(subscriptionProvider);
+    if (!subState.canVipListing) {
+      final goSub = await _showFeatureUpgradeDialog();
+      if (goSub == true && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+        );
+      }
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4))),
+        title: Text('Mark as VIP?',
+            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
+        content: Text(
+          'Your listing will be highlighted with a VIP badge for extra visibility.',
+          style: AppTextStyles.bodyMedium
+              .copyWith(color: context.theme.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.vip,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            child: const Text('Mark VIP'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      final service = ListingService();
+      final result = await service.vipListing(listing.id);
+      if (result.success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: AppColors.emerald600,
+          ),
+        );
+        ref.read(listingDetailProvider.notifier).loadListing(listing.id);
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).commonError),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _featureListing(Listing listing) async {
     final subState = ref.read(subscriptionProvider);
     if (!subState.canFeatureListing) {
@@ -1429,6 +1508,22 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: AppColors.accent500),
                     foregroundColor: AppColors.accent500,
+                  ),
+                ),
+              ),
+            if (!listing.isVipActive)
+              const SizedBox(height: 12),
+            if (!listing.isVipActive)
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => _vipListing(listing),
+                  icon: const Icon(Icons.diamond_outlined, size: 20),
+                  label: Text('Mark as VIP'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: const BorderSide(color: AppColors.vip),
+                    foregroundColor: AppColors.vip,
                   ),
                 ),
               ),

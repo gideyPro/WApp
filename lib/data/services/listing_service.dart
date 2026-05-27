@@ -359,6 +359,11 @@ class ListingService {
       if (formData.buildingStatus != null) dioFormData.fields.add(MapEntry('building_status', formData.buildingStatus!));
     }
 
+    // VIP option
+    if (formData.isVip) {
+      dioFormData.fields.add(MapEntry('is_vip', '1'));
+    }
+
     // Add new images
     for (int i = 0; i < formData.images.length; i++) {
       final file = formData.images[i];
@@ -563,6 +568,26 @@ class ListingService {
       return ListingResponse(
         success: false,
         message: response.data['message'] ?? 'Failed to delete listing',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return ListingResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  /// Mark listing as VIP
+  Future<ListingResponse> vipListing(int listingId) async {
+    try {
+      final response = await _apiClient.dio.post('${ApiConstants.vipListing}/$listingId/vip');
+      if (response.statusCode == 200) {
+        return ListingResponse(success: true, message: 'Listing marked as VIP successfully');
+      }
+      return ListingResponse(
+        success: false,
+        message: response.data['message'] ?? 'Failed to mark listing as VIP',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
