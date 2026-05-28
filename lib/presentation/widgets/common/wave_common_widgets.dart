@@ -495,14 +495,10 @@ class _MessageStyle {
   final IconData icon;
   final Color iconBg;
   final Color iconColor;
-  final String? defaultTitle;
-  final String? defaultSubtitle;
   const _MessageStyle({
     required this.icon,
     required this.iconBg,
     required this.iconColor,
-    this.defaultTitle,
-    this.defaultSubtitle,
   });
 }
 

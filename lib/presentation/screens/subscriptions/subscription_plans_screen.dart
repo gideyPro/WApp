@@ -229,7 +229,7 @@ class _SubscriptionPlansScreenState
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 4,
-                  children: localFeatures!
+                  children: localFeatures
                       .take(4) // Limit to first 4 features to avoid overflow
                       .map((feature) => Container(
                             padding: const EdgeInsets.symmetric(
@@ -514,7 +514,7 @@ class _SubscriptionPlansScreenState
       );
 
       // Stop polling
-      paymentCheckTimer?.cancel();
+      paymentCheckTimer.cancel();
       webViewClosed = true;
 
       if (!mounted) return;
@@ -718,20 +718,14 @@ class _PlanCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 _buildFeatureRow(context,
                   icon: Icons.star_border,
-                  label: plan.maxFeaturedListings != null
-                      ? '${plan.maxFeaturedListings} ${l10n.subscriptionsFeaturedListings}'
-                      : l10n.subscriptionsNoFeaturedListings,
-                  included: plan.maxFeaturedListings != null &&
-                      plan.maxFeaturedListings! > 0,
+                  label: '${plan.maxFeaturedListings} ${l10n.subscriptionsFeaturedListings}',
+                  included: plan.maxFeaturedListings > 0,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 _buildFeatureRow(context,
                   icon: Icons.diamond,
-                  label: plan.maxVipListings != null
-                      ? '${plan.maxVipListings} VIP Listings'
-                      : 'No VIP Listings',
-                  included: plan.maxVipListings != null &&
-                      plan.maxVipListings! > 0,
+                  label: '${plan.maxVipListings} VIP Listings',
+                  included: plan.maxVipListings > 0,
                 ),
                 // Additional features from JSON (if any)
                 if (plan.features != null && plan.features!.isNotEmpty) ...[

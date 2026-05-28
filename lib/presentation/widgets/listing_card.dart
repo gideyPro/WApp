@@ -8,6 +8,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../data/models/listing.dart';
+import '../../../data/models/subscription.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../presentation/providers/app_providers.dart';
 import 'common/wave_card.dart';

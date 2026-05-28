@@ -53,7 +53,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
 
     final l10n = AppLocalizations.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Determine KYC status display
     String kycSubtitle = l10n.settingsKycRequired;

@@ -8,7 +8,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing_form_data.dart';
-import '../../../../data/models/image.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../data/services/listing_media_manager.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -1542,7 +1541,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
           Center(
             child: InteractiveViewer(
               child: url != null
-                  ? Image.network(url!, fit: BoxFit.contain)
+                  ? Image.network(url, fit: BoxFit.contain)
                   : Image.file(file!, fit: BoxFit.contain),
             ),
           ),
@@ -2267,7 +2266,7 @@ class ListingStep4Review extends StatelessWidget {
                       icon: formData.type == 'house' ? Icons.home_rounded : Icons.landscape_rounded)),
                   const SizedBox(width: 8),
                   Expanded(child: _summaryCard(context, l10n.listingLocation,
-                      '${[formData.addressKebele, formData.addressWoreda].where((e) => e != null && e!.isNotEmpty).join(', ')}\n${[formData.addressZone, formData.addressRegion].where((e) => e != null && e!.isNotEmpty).join(', ')}',
+                      '${[formData.addressKebele, formData.addressWoreda].where((e) => e != null && e.isNotEmpty).join(', ')}\n${[formData.addressZone, formData.addressRegion].where((e) => e != null && e.isNotEmpty).join(', ')}',
                       icon: Icons.location_on_rounded)),
                 ],
               ),

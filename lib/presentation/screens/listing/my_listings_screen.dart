@@ -281,7 +281,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                   // proceed to create screen
                 } else if (subState.errorMessage != null) {
                   // Network error — offer retry
-                  final retry = await showDialog<bool>(
+                  await showDialog<bool>(
                     context: context,
                     builder: (ctx) => AlertDialog(
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),

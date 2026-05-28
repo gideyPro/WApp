@@ -130,13 +130,6 @@ class ProfileService {
     }
   }
 
-  /// Helper to extract list from dynamic response
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw is List) return raw;
-    if (raw is Map && raw['data'] is List) return raw['data'] as List;
-    return [];
-  }
-
   /// Helper to extract message from dynamic response
   String _extractMessage(dynamic raw, String defaultMessage) {
     if (raw is Map && raw['message'] != null) {

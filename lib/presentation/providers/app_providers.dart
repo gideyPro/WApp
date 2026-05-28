@@ -16,7 +16,6 @@ import '../../data/services/address_service.dart';
 import '../../data/models/subscription.dart';
 import '../../core/network/connectivity_service.dart';
 import '../../core/network/api_client.dart';
-import '../../core/network/local_notification_service.dart';
 import 'auth_provider.dart';
 import '../../data/models/message.dart' as msg;
 
@@ -463,7 +462,7 @@ class UnreadCountNotifier extends StateNotifier<int> {
       if (response.success) {
         int totalUnread = 0;
         for (var conv in response.conversations) {
-          totalUnread += (conv.unreadCount ?? 0) as int;
+          totalUnread += (conv.unreadCount ?? 0);
         }
         state = totalUnread;
       }
@@ -1078,12 +1077,11 @@ class IncomingCall {
 
 final incomingCallProvider =
     StateNotifierProvider<IncomingCallNotifier, IncomingCall?>((ref) {
-  return IncomingCallNotifier(ref.watch(conferenceServiceProvider));
+  return IncomingCallNotifier();
 });
 
 class IncomingCallNotifier extends StateNotifier<IncomingCall?> {
-  final ConferenceService _conferenceService;
-  IncomingCallNotifier(this._conferenceService) : super(null);
+  IncomingCallNotifier() : super(null);
 
   void setIncomingCall(IncomingCall? call) {
     state = call;

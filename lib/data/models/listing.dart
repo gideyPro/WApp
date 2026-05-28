@@ -37,8 +37,8 @@ PropertyType _parsePropertyType(dynamic value) {
   if (value == null) return PropertyType.house;
   final str = value.toString();
   // Extract class name from full namespace like 'App\Models\House'
-  final className = str.contains('\')
-      ? str.split('\').last.toLowerCase()
+  final className = str.contains('\\')
+      ? str.split('\\').last.toLowerCase()
       : str.toLowerCase();
   if (className == 'house') return PropertyType.house;
   if (className == 'land') return PropertyType.land;
@@ -528,7 +528,7 @@ class Listing extends ChangeNotifier {
     final l10n = AppLocalizations.of(context);
     switch (acquisitionType) {
       case 'Purchase':
-        return l10n.listingPurchasedd;
+        return l10n.listingPurchased;
       case 'Inheritance':
         return l10n.listingInherited;
       case 'Gift':

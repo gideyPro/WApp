@@ -9,6 +9,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
+import '../../../../data/models/subscription.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../../../data/services/lead_service.dart';
 import '../../../../data/services/listing_service.dart';

@@ -172,10 +172,6 @@ class AddressService {
     return defaultMessage;
   }
 
-  /// Parse address list from response
-  List<Address> _parseList(dynamic data) {
-    return _extractList(data).map((json) => Address.fromJson(json)).toList();
-  }
 }
 
 /// Response wrapper for address operations
