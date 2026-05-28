@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -1377,219 +1378,702 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
-      padding: AppSpacing.paddingLg,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(l10n.listingImages),
-          const SizedBox(height: 8),
-          _buildImageGrid(widget.formData.images, widget.formData.existingImages),
+          _buildImagesSection(),
           const SizedBox(height: 16),
-          _sectionTitle(l10n.listingSitePlans),
-          const SizedBox(height: 8),
-          _buildSitePlanView(),
+          _buildSitePlanSection(),
           const SizedBox(height: 16),
-          if (widget.formData.holdingType == 'Cooperative') ...[
-            _sectionTitle(l10n.listingOwnershipProof),
-            const SizedBox(height: 8),
-            _buildOwnershipProofView(),
+          if (widget.formData.holdingType == 'Cooperative')
+            _buildOwnershipSection(),
+          if (widget.formData.holdingType == 'Cooperative')
             const SizedBox(height: 16),
-          ],
-          if (widget.formData.holdingType == 'Lease Hold') ...[
-            _sectionTitle(l10n.listingLeaseContract),
-            const SizedBox(height: 8),
-            _buildLeaseContractView(),
+          if (widget.formData.holdingType == 'Lease Hold')
+            _buildLeaseSection(),
+          if (widget.formData.holdingType == 'Lease Hold')
             const SizedBox(height: 16),
-          ],
-          _sectionTitle(l10n.listingsVideoTour),
-          const SizedBox(height: 8),
-          _buildVideoTourView(),
-          const SizedBox(height: 32),
-
+          _buildVideoSection(),
         ],
       ),
     );
   }
 
-  Widget _sectionTitle(String title) {
-    return Text(title,
-        style: AppTextStyles.titleSmall
-            .copyWith(fontWeight: FontWeight.w700, fontSize: 16));
-  }
-
-  Widget _buildImageGrid(List<XFile> newImages, List<ImageModel> existingImages) {
-    final l10n = AppLocalizations.of(context);
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () => _pickImages(false),
-          child: Container(
-            height: 120,
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: context.theme.divider, width: 2, style: BorderStyle.solid),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                  Icon(Icons.add_photo_alternate,
-                      size: 32, color: context.theme.iconSecondary),
-                  const SizedBox(height: 8),
-                  Text(l10n.listingTapToAdd,
-                      style: AppTextStyles.bodySmall.copyWith(color: context.theme.textSecondary)),
-                ])),
+  Widget _mediaSection({required String title, required Widget child}) {
+    return WaveCard(
+      isGlass: false,
+      showShadow: false,
+      showBorder: true,
+      borderRadius: AppSpacing.borderRadiusMd,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: context.theme.primary,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(title, style: AppTextStyles.titleSmall),
+            ],
           ),
-        ),
-        if (existingImages.isNotEmpty || newImages.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 90,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                // Existing Images
-                ...existingImages.where((img) => !widget.formData.removedImageIds.contains(img.id)).map((img) => _ImageThumb(
-                  url: img.imageUrl,
-                  onRemove: () {
-                    final removedIds = List<int>.from(widget.formData.removedImageIds)..add(img.id);
-                    widget.onUpdate(widget.formData.copyWith(removedImageIds: removedIds));
-                  },
-                )),
-                // New Images
-                ...newImages.map((file) => _ImageThumb(
-                  file: File(file.path),
-                  onRemove: () {
-                    final updated = List<XFile>.from(newImages)..remove(file);
-                    widget.onUpdate(widget.formData.copyWith(images: updated));
-                  },
-                )),
-              ],
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(l10n.listingImagesSelected(existingImages.length - widget.formData.removedImageIds.length + newImages.length),
-              style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+          const SizedBox(height: 16),
+          child,
         ],
-      ],
+      ),
     );
   }
 
-  Widget _buildSitePlanView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.formData.existingSitePlanUrl != null &&
-            widget.formData.sitePlan == null &&
-            !widget.formData.removeExistingSitePlan)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Stack(
+  Widget _uploadZone({
+    required IconData icon,
+    required String label,
+    String? subtitle,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+        decoration: BoxDecoration(
+          border: Border.all(color: context.theme.inputBorder, width: 1.5),
+          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
+          color: context.theme.inputBg,
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 36, color: context.theme.iconSecondary),
+            const SizedBox(height: 10),
+            Text(label, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(subtitle, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _filePreviewCard({
+    required String fileName,
+    required String? subtitle,
+    required IconData icon,
+    required Widget? thumbnail,
+    required VoidCallback onRemove,
+    required VoidCallback onPreview,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: context.theme.border),
+        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
+        color: context.theme.cardBg,
+      ),
+      child: Row(
+        children: [
+          if (thumbnail != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: thumbnail,
+              ),
+            )
+          else
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: context.theme.iconBg,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Icon(icon, size: 28, color: context.theme.iconSecondary),
+            ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(widget.formData.existingSitePlanUrl!,
-                      height: 100, width: 100, fit: BoxFit.cover),
+                Text(fileName, style: AppTextStyles.bodySmall, overflow: TextOverflow.ellipsis),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
+                  Text(subtitle, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+                ],
+                const SizedBox(height: 4),
+                GestureDetector(
+                  onTap: onPreview,
+                  child: Text('Tap to preview', style: AppTextStyles.caption.copyWith(color: context.theme.primary, decoration: TextDecoration.underline)),
                 ),
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: GestureDetector(
-                    onTap: () => widget.onUpdate(
-                        widget.formData.copyWith(removeExistingSitePlan: true)),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: onRemove,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.close, size: 16, color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showImagePreview(BuildContext context, {String? url, File? file}) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (ctx) => Stack(
+        children: [
+          Center(
+            child: InteractiveViewer(
+              child: url != null
+                  ? Image.network(url!, fit: BoxFit.contain)
+                  : Image.file(file!, fit: BoxFit.contain),
+            ),
+          ),
+          Positioned(
+            top: 40,
+            right: 16,
+            child: GestureDetector(
+              onTap: () => Navigator.of(ctx).pop(),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, size: 24, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _playVideo(BuildContext context, String filePath) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _VideoPlayerScreen(filePath: filePath),
+      ),
+    );
+  }
+
+  // ---- Images ----
+  Widget _buildImagesSection() {
+    final l10n = AppLocalizations.of(context);
+    final newImages = widget.formData.images;
+    final existingImages = widget.formData.existingImages;
+    final totalCount = existingImages.length -
+        widget.formData.removedImageIds.length +
+        newImages.length;
+
+    return _mediaSection(
+      title: l10n.listingImages,
+      child: Column(
+        children: [
+          _uploadZone(
+            icon: Icons.add_photo_alternate_outlined,
+            label: l10n.listingTapToAdd,
+            subtitle: 'JPEG, PNG, WebP',
+            onTap: () => _pickImages(false),
+          ),
+          if (totalCount > 0) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 108,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  ...existingImages
+                      .where((img) =>
+                          !widget.formData.removedImageIds.contains(img.id))
+                      .map((img) => _ImageThumb(
+                            url: img.imageUrl,
+                            onRemove: () {
+                              final removedIds =
+                                  List<int>.from(widget.formData.removedImageIds)
+                                    ..add(img.id);
+                              widget.onUpdate(widget.formData
+                                  .copyWith(removedImageIds: removedIds));
+                            },
+                          )),
+                  ...newImages.map((file) => _ImageThumb(
+                        file: File(file.path),
+                        onRemove: () {
+                          final updated = List<XFile>.from(newImages)
+                            ..remove(file);
+                          widget.onUpdate(widget.formData
+                              .copyWith(images: updated));
+                        },
+                      )),
+                  GestureDetector(
+                    onTap: () => _pickImages(false),
                     child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: const BoxDecoration(
-                          color: AppColors.error, shape: BoxShape.circle),
-                      child:
-                          const Icon(Icons.close, size: 14, color: Colors.white),
+                      width: 100,
+                      height: 100,
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: context.theme.inputBorder, width: 1.5),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.borderRadiusMd),
+                        color: context.theme.inputBg,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add,
+                              size: 28, color: context.theme.iconSecondary),
+                          const SizedBox(height: 4),
+                          Text('Add',
+                              style: AppTextStyles.caption
+                                  .copyWith(color: context.theme.textMuted)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        _buildSingleFilePicker('sitePlan', widget.formData.sitePlan),
-      ],
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                l10n.listingImagesSelected(totalCount),
+                style: AppTextStyles.caption
+                    .copyWith(color: context.theme.textMuted),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 
-  Widget _buildOwnershipProofView() {
+  // ---- Site Plan ----
+  Widget _buildSitePlanSection() {
     final l10n = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-         if (widget.formData.existingOwnershipProofUrl != null && widget.formData.ownershipProof == null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text(l10n.listingExistingFile(widget.formData.existingOwnershipProofUrl!.split('/').last), style: AppTextStyles.caption),
-          ),
-        _buildSingleFilePicker('ownership', widget.formData.ownershipProof),
-      ],
+    final hasExisting = widget.formData.existingSitePlanUrl != null &&
+        widget.formData.sitePlan == null &&
+        !widget.formData.removeExistingSitePlan;
+    final pickedFile = widget.formData.sitePlan;
+
+    return _mediaSection(
+      title: l10n.listingSitePlans,
+      child: Column(
+        children: [
+          if (hasExisting)
+            _existingSitePlanCard(),
+          if (pickedFile != null) ...[
+            _filePreviewCard(
+              fileName: pickedFile.name,
+              subtitle: _formatFileSize(pickedFile.path),
+              icon: Icons.image,
+              thumbnail: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.file(File(pickedFile.path),
+                    width: 64, height: 64, fit: BoxFit.cover),
+              ),
+              onRemove: () =>
+                  widget.onUpdate(widget.formData.copyWith(sitePlan: null)),
+              onPreview: () => _showImagePreview(context,
+                  file: File(pickedFile.path)),
+            ),
+            const SizedBox(height: 12),
+          ],
+          if (!hasExisting && pickedFile == null)
+            _uploadZone(
+              icon: Icons.map_outlined,
+              label: l10n.listingTapToAdd,
+              subtitle: 'Site plan image',
+              onTap: () => _pickSingleFile('sitePlan'),
+            )
+          else
+            _buildChangeButton('sitePlan', pickedFile),
+        ],
+      ),
     );
   }
 
-  Widget _buildLeaseContractView() {
-    final l10n = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-         if (widget.formData.existingLeaseContractUrl != null && widget.formData.leaseContract == null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text(l10n.listingExistingFile(widget.formData.existingLeaseContractUrl!.split('/').last), style: AppTextStyles.caption),
-          ),
-        _buildSingleFilePicker('lease', widget.formData.leaseContract),
-      ],
+  Widget _existingSitePlanCard() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: _filePreviewCard(
+        fileName: widget.formData.existingSitePlanUrl!.split('/').last,
+        subtitle: 'Existing site plan',
+        icon: Icons.image,
+        thumbnail: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Image.network(widget.formData.existingSitePlanUrl!,
+              width: 64, height: 64, fit: BoxFit.cover),
+        ),
+        onRemove: () => widget.onUpdate(
+            widget.formData.copyWith(removeExistingSitePlan: true)),
+        onPreview: () => _showImagePreview(context,
+            url: widget.formData.existingSitePlanUrl),
+      ),
     );
   }
 
-  Widget _buildVideoTourView() {
+  // ---- Ownership ----
+  Widget _buildOwnershipSection() {
     final l10n = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.formData.existingVideoUrl != null &&
-            widget.formData.videoFile == null &&
-            !widget.formData.deleteVideo)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              children: [
-                Icon(Icons.video_collection, color: context.theme.iconSecondary),
-                const SizedBox(width: 8),
-                Expanded(
+    final hasExisting = widget.formData.existingOwnershipProofUrl != null &&
+        widget.formData.ownershipProof == null;
+    final pickedFile = widget.formData.ownershipProof;
+
+    return _mediaSection(
+      title: l10n.listingOwnershipProof,
+      child: Column(
+        children: [
+          if (hasExisting) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: context.theme.inputBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.description_outlined,
+                      size: 18, color: context.theme.textMuted),
+                  const SizedBox(width: 8),
+                  Expanded(
                     child: Text(
-                        l10n.listingExistingFile(widget.formData.existingVideoUrl!.split('/').last),
-                        style: AppTextStyles.caption)),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: AppColors.error, size: 20),
-                  onPressed: () => widget.onUpdate(
-                      widget.formData.copyWith(deleteVideo: true)),
-                ),
-              ],
+                      l10n.listingExistingFile(
+                          widget.formData.existingOwnershipProofUrl!
+                              .split('/')
+                              .last),
+                      style: AppTextStyles.caption,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        Text(l10n.listingVideoMaxSize, style: AppTextStyles.caption),
-        const SizedBox(height: 4),
-        _buildSingleFilePicker('video', widget.formData.videoFile),
-      ],
+          ],
+          if (pickedFile != null) ...[
+            _filePreviewCard(
+              fileName: pickedFile.name,
+              subtitle: _formatFileSize(pickedFile.path),
+              icon: Icons.image,
+              thumbnail: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.file(File(pickedFile.path),
+                    width: 64, height: 64, fit: BoxFit.cover),
+              ),
+              onRemove: () => widget.onUpdate(
+                  widget.formData.copyWith(ownershipProof: null)),
+              onPreview: () => _showImagePreview(context,
+                  file: File(pickedFile.path)),
+            ),
+            const SizedBox(height: 12),
+          ],
+          if (!hasExisting && pickedFile == null)
+            _uploadZone(
+              icon: Icons.verified_outlined,
+              label: l10n.listingTapToAdd,
+              subtitle: 'Ownership document',
+              onTap: () => _pickSingleFile('ownership'),
+            )
+          else
+            _buildChangeButton('ownership', pickedFile),
+        ],
+      ),
     );
   }
 
-  Widget _buildSingleFilePicker(String type, XFile? file) {
+  // ---- Lease ----
+  Widget _buildLeaseSection() {
     final l10n = AppLocalizations.of(context);
-    return ElevatedButton.icon(
-      onPressed: () => _pickSingleFile(type),
-      icon: const Icon(Icons.upload_file),
-      label: Text(file != null
-          ? l10n.listingChangeFile(file.name.split('/').last)
-          : l10n.listingBrowseFile),
-      style: ElevatedButton.styleFrom(backgroundColor: AppColors.navy950),
+    final hasExisting = widget.formData.existingLeaseContractUrl != null &&
+        widget.formData.leaseContract == null;
+    final pickedFile = widget.formData.leaseContract;
+
+    return _mediaSection(
+      title: l10n.listingLeaseContract,
+      child: Column(
+        children: [
+          if (hasExisting) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: context.theme.inputBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.description_outlined,
+                      size: 18, color: context.theme.textMuted),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.listingExistingFile(
+                          widget.formData.existingLeaseContractUrl!
+                              .split('/')
+                              .last),
+                      style: AppTextStyles.caption,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (pickedFile != null) ...[
+            _filePreviewCard(
+              fileName: pickedFile.name,
+              subtitle: _formatFileSize(pickedFile.path),
+              icon: Icons.image,
+              thumbnail: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.file(File(pickedFile.path),
+                    width: 64, height: 64, fit: BoxFit.cover),
+              ),
+              onRemove: () => widget.onUpdate(
+                  widget.formData.copyWith(leaseContract: null)),
+              onPreview: () => _showImagePreview(context,
+                  file: File(pickedFile.path)),
+            ),
+            const SizedBox(height: 12),
+          ],
+          if (!hasExisting && pickedFile == null)
+            _uploadZone(
+              icon: Icons.article_outlined,
+              label: l10n.listingTapToAdd,
+              subtitle: 'Lease contract',
+              onTap: () => _pickSingleFile('lease'),
+            )
+          else
+            _buildChangeButton('lease', pickedFile),
+        ],
+      ),
     );
+  }
+
+  // ---- Video ----
+  Widget _buildVideoSection() {
+    final l10n = AppLocalizations.of(context);
+    final hasExisting = widget.formData.existingVideoUrl != null &&
+        widget.formData.videoFile == null &&
+        !widget.formData.deleteVideo;
+    final pickedFile = widget.formData.videoFile;
+
+    return _mediaSection(
+      title: l10n.listingsVideoTour,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.listingVideoMaxSize,
+              style: AppTextStyles.caption
+                  .copyWith(color: context.theme.textMuted)),
+          const SizedBox(height: 8),
+          if (hasExisting)
+            _existingVideoCard(),
+          if (pickedFile != null) ...[
+            _videoPreviewCard(pickedFile),
+            const SizedBox(height: 12),
+          ],
+          if (!hasExisting && pickedFile == null)
+            _uploadZone(
+              icon: Icons.videocam_outlined,
+              label: l10n.listingTapToAdd,
+              subtitle: 'MP4, max 5 minutes',
+              onTap: () => _pickSingleFile('video'),
+            )
+          else
+            _buildChangeButton('video', pickedFile),
+        ],
+      ),
+    );
+  }
+
+  Widget _existingVideoCard() {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: context.theme.border),
+          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
+          color: context.theme.cardBg,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: context.theme.iconBg,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Icon(Icons.videocam,
+                  size: 28, color: context.theme.iconSecondary),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.listingExistingFile(
+                        widget.formData.existingVideoUrl!.split('/').last),
+                    style: AppTextStyles.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text('Existing video',
+                      style: AppTextStyles.caption
+                          .copyWith(color: context.theme.textMuted)),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () => widget.onUpdate(
+                  widget.formData.copyWith(deleteVideo: true)),
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child:
+                    const Icon(Icons.close, size: 16, color: AppColors.error),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _videoPreviewCard(XFile file) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: context.theme.border),
+        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
+        color: context.theme.cardBg,
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: context.theme.iconBg,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Icon(Icons.play_circle_fill,
+                    size: 32, color: AppColors.primary900),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(file.name,
+                        style: AppTextStyles.bodySmall,
+                        overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 2),
+                    Text(_formatFileSize(file.path),
+                        style: AppTextStyles.caption
+                            .copyWith(color: context.theme.textMuted)),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () => widget.onUpdate(
+                    widget.formData.copyWith(videoFile: null)),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.close,
+                      size: 16, color: AppColors.error),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _playVideo(context, file.path),
+              icon: const Icon(Icons.play_arrow, size: 18),
+              label: const Text('Play Preview'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: context.theme.primary,
+                side: BorderSide(color: context.theme.primary),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChangeButton(String type, XFile? currentFile) {
+    final l10n = AppLocalizations.of(context);
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () => _pickSingleFile(type),
+        icon: const Icon(Icons.swap_horiz, size: 18),
+        label: Text(currentFile != null
+            ? l10n.listingChangeFile(currentFile.name)
+            : l10n.listingBrowseFile),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: context.theme.textSecondary,
+          side: BorderSide(color: context.theme.border),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatFileSize(String path) {
+    try {
+      final file = File(path);
+      if (!file.existsSync()) return '';
+      final bytes = file.lengthSync();
+      if (bytes < 1024) return '$bytes B';
+      if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    } catch (_) {
+      return '';
+    }
   }
 }
 
@@ -1603,33 +2087,32 @@ class _ImageThumb extends StatelessWidget {
   void _showPreview(BuildContext context) {
     showDialog(
       context: context,
-      builder: (ctx) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: const EdgeInsets.all(12),
-        child: Stack(
-          children: [
-            InteractiveViewer(
+      barrierColor: Colors.black87,
+      builder: (ctx) => Stack(
+        children: [
+          Center(
+            child: InteractiveViewer(
               child: url != null
                   ? Image.network(url!, fit: BoxFit.contain)
                   : Image.file(file!, fit: BoxFit.contain),
             ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: GestureDetector(
-                onTap: () => Navigator.of(ctx).pop(),
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    color: Colors.black54,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.close, size: 20, color: Colors.white),
+          ),
+          Positioned(
+            top: 40,
+            right: 16,
+            child: GestureDetector(
+              onTap: () => Navigator.of(ctx).pop(),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
                 ),
+                child: const Icon(Icons.close, size: 24, color: Colors.white),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1642,26 +2125,116 @@ class _ImageThumb extends StatelessWidget {
         onTap: () => _showPreview(context),
         child: Stack(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: url != null 
-                  ? Image.network(url!, width: 80, height: 80, fit: BoxFit.cover)
-                  : Image.file(file!, width: 80, height: 80, fit: BoxFit.cover),
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                border: Border.all(color: context.theme.border),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(9),
+                child: url != null
+                    ? Image.network(url!,
+                        width: 100, height: 100, fit: BoxFit.cover)
+                    : Image.file(file!,
+                        width: 100, height: 100, fit: BoxFit.cover),
+              ),
             ),
             Positioned(
-                top: 2,
-                right: 2,
-                child: GestureDetector(
-                  onTap: onRemove,
-                  child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: const BoxDecoration(
-                          color: AppColors.error, shape: BoxShape.circle),
-                      child: const Icon(Icons.close,
-                          size: 12, color: Colors.white)),
-                )),
+              top: 4,
+              right: 4,
+              child: GestureDetector(
+                onTap: onRemove,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: AppColors.error,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.close, size: 14, color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _VideoPlayerScreen extends StatefulWidget {
+  final String filePath;
+  const _VideoPlayerScreen({required this.filePath});
+
+  @override
+  State<_VideoPlayerScreen> createState() => _VideoPlayerScreenState();
+}
+
+class _VideoPlayerScreenState extends State<_VideoPlayerScreen> {
+  VideoPlayerController? _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initPlayer();
+  }
+
+  Future<void> _initPlayer() async {
+    _controller = VideoPlayerController.file(File(widget.filePath));
+    await _controller!.initialize();
+    _controller!.play();
+    if (mounted) setState(() => _initialized = true);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
+      ),
+      body: Center(
+        child: _initialized
+            ? GestureDetector(
+                onTap: () {
+                  if (_controller!.value.isPlaying) {
+                    _controller!.pause();
+                  } else {
+                    _controller!.play();
+                  }
+                  setState(() {});
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: _controller!.value.aspectRatio,
+                      child: VideoPlayer(_controller!),
+                    ),
+                    if (!_controller!.value.isPlaying)
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.black38,
+                          shape: BoxShape.circle,
+                        ),
+                        padding: const EdgeInsets.all(20),
+                        child: const Icon(Icons.play_arrow,
+                            size: 56, color: Colors.white),
+                      ),
+                  ],
+                ),
+              )
+            : const CircularProgressIndicator(color: Colors.white),
       ),
     );
   }
