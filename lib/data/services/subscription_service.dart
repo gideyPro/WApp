@@ -103,7 +103,8 @@ class SubscriptionServiceApi {
           subscription: subscription,
           canCreateListing: data?['can_create_listing'] ?? false,
           canFeatureListing: data?['can_feature_listing'] ?? false,
-          canVipListing: data?['can_vip_listing'] ?? false,
+          canCreateVipListing: data?['can_create_vip_listing'] ?? false,
+          canCreateOrder: data?['can_create_order'] ?? false,
           hasPaidSubscription: data?['has_paid_subscription'] ?? false,
         );
       }
@@ -351,7 +352,8 @@ class CurrentSubscriptionResponse {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canFeatureListing;
-  final bool canVipListing;
+  final bool canCreateVipListing;
+  final bool canCreateOrder;
   final bool hasPaidSubscription;
 
   const CurrentSubscriptionResponse({
@@ -360,7 +362,8 @@ class CurrentSubscriptionResponse {
     this.subscription,
     this.canCreateListing = true,
     this.canFeatureListing = true,
-    this.canVipListing = true,
+    this.canCreateVipListing = true,
+    this.canCreateOrder = true,
     this.hasPaidSubscription = false,
   });
 }

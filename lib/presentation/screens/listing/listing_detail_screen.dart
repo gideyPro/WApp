@@ -641,7 +641,11 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   Widget _buildLocation(Listing listing) {
     final l10n = AppLocalizations.of(context);
     final cache = ref.watch(addressCacheProvider);
-    final location = listing.address?.getLocalizedAddress(context, cache) ??
+    
+    final subState = ref.watch(subscriptionProvider);
+    final isRestricted = subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
+
+    final location = listing.address?.getLocalizedAddress(context, cache, isRestricted) ??
         l10n.listingUnknownLocation;
 
     return Row(
@@ -1036,6 +1040,30 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   Widget _buildVideoContent(Listing listing) {
     final l10n = AppLocalizations.of(context);
+    
+    if (listing.videoBlocked) {
+      return Container(
+        height: 200,
+        decoration: BoxDecoration(
+          color: context.shimmerBase,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock_outline, size: 40, color: context.theme.textMuted),
+              const SizedBox(height: 12),
+              Text(
+                "Upgrade your plan to watch property videos",
+                style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textMuted),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final vp = listing.videoProcessing;
 
     if (vp == null) {
@@ -1534,7 +1562,11 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
               if (!isOwner && !hasInterest)
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () => _submitInterest(listing.id),
+                    onPressed: listing.userContactHidden 
+                      ? () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()))
+                      : () => _submitInterest(listing.id),
+                    icon: Icon(listing.userContactHidden ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
+                    label: Text(listing.userContactHidden ? "Upgrade to Contact" : l10n.listingsImInterested),
                     icon: const Icon(Icons.handyman_outlined, size: 20),
                     label: Text(l10n.listingsImInterested),
                     style: OutlinedButton.styleFrom(

@@ -424,7 +424,7 @@ class PropertyListingCard extends ConsumerWidget {
     final cache = ref.watch(addressCacheProvider);
     
     final subState = ref.watch(subscriptionProvider);
-    final isRestricted = !subState.hasPaidSubscription;
+    final isRestricted = subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
 
     final location = listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
         listing?.address?.region ??
@@ -786,7 +786,7 @@ class FeaturedListingCard extends ConsumerWidget {
     final cache = ref.watch(addressCacheProvider);
     
     final subState = ref.watch(subscriptionProvider);
-    final isRestricted = !subState.hasPaidSubscription;
+    final isRestricted = subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
 
     return Row(
       children: [

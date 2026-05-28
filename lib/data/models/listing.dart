@@ -37,8 +37,8 @@ PropertyType _parsePropertyType(dynamic value) {
   if (value == null) return PropertyType.house;
   final str = value.toString();
   // Extract class name from full namespace like 'App\Models\House'
-  final className = str.contains('\\')
-      ? str.split('\\').last.toLowerCase()
+  final className = str.contains('\')
+      ? str.split('\').last.toLowerCase()
       : str.toLowerCase();
   if (className == 'house') return PropertyType.house;
   if (className == 'land') return PropertyType.land;
@@ -118,7 +118,6 @@ class Listing extends ChangeNotifier {
   final RentalPeriod? rentalPeriodUnit;
   final ListingStatus status;
   final bool isFeatured;
-  final bool isVip;
   final DateTime? featuredUntil;
   final int? addressId;
   final String? specificLocation;
@@ -133,6 +132,8 @@ class Listing extends ChangeNotifier {
   final bool priceRevisionPossible;
   final String? videoLink;
   final VideoProcessing? videoProcessing;
+  final bool userContactHidden;
+  final bool videoBlocked;
 
   /// Returns the full video URL by prepending base URL if needed
   String? get videoUrl => _formatUrl(videoLink);
@@ -231,7 +232,6 @@ class Listing extends ChangeNotifier {
     this.rentalPeriodUnit,
     this.status = ListingStatus.pending,
     this.isFeatured = false,
-    this.isVip = false,
     this.featuredUntil,
     this.addressId,
     this.specificLocation,
@@ -246,6 +246,8 @@ class Listing extends ChangeNotifier {
     this.priceRevisionPossible = false,
     this.videoLink,
     this.videoProcessing,
+    this.userContactHidden = false,
+    this.videoBlocked = false,
     this.sitePlanImageLink,
     this.ownershipProofLink,
     this.leaseContractLink,
@@ -319,7 +321,6 @@ class Listing extends ChangeNotifier {
         orElse: () => ListingStatus.pending,
       ),
       isFeatured: json['is_featured'] ?? false,
-      isVip: json['is_vip'] ?? false,
       featuredUntil: json['featured_until'] != null
           ? DateTime.parse(json['featured_until'])
           : null,
@@ -336,6 +337,9 @@ class Listing extends ChangeNotifier {
       debtEncumbranceFileLink: json['debt_encumbrance_file_link'] ?? (property is Map ? property['debt_encumbrance_file_link'] : null),
       priceRevisionPossible: json['price_revision_possible'] ?? false,
       videoLink: json['video_link'] ?? (property is Map ? property['video_link'] : null),
+      videoProcessing: json['video_processing'] != null ? VideoProcessing.fromJson(json['video_processing']) : null,
+      userContactHidden: json['user_contact_hidden'] ?? false,
+      videoBlocked: json['video_blocked'] ?? false,
       sitePlanImageLink: json['site_plan_image_link'] ?? 
           (property is Map ? property['site_plan_image_link'] : null),
       ownershipProofLink: json['ownership_proof_link'] ?? 
@@ -421,90 +425,15 @@ class Listing extends ChangeNotifier {
       salons: _safeInt(property is Map ? property['salons'] : json['salons'], defaultValue: 0),
       kitchens:
           _safeInt(property is Map ? property['kitchens'] : json['kitchens'], defaultValue: 0),
-      imageCount: images.isNotEmpty
-          ? images.length
-          : _safeInt(json['image_count'] ??
-              (property is Map ? property['image_count'] : 0)),
+      imageCount: _safeInt(json['image_count']),
       images: images,
-      address: (json['address'] is Map)
-          ? Address.fromJson(json['address'] as Map<String, dynamic>)
-          : null,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
-          : null,
+      address: json['address'] != null ? Address.fromJson(json['address']) : null,
+      createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
+      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
       userInterestStatus: json['user_interest_status'],
       userInterestId: _safeInt(json['user_interest_id']),
-      viewCount: _safeInt(json['view_count'], defaultValue: 0) ?? 0,
-      videoProcessing: json['video_processing'] is Map
-          ? VideoProcessing.fromJson(
-              json['video_processing'] as Map<String, dynamic>)
-          : null,
+      viewCount: _safeInt(json['view_count'], defaultValue: 0)!,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'property_id': propertyId,
-      'property_type': propertyType.toString().split('.').last,
-      'listing_type': listingType.toString().split('.').last,
-      'price_fixed': priceFixed,
-      'price_min': priceMin,
-      'price_max': priceMax,
-      'rental_period_unit': rentalPeriodUnit?.toString().split('.').last,
-      'status': status.toString().split('.').last,
-      'is_featured': isFeatured,
-      'is_vip': isVip,
-      'featured_until': featuredUntil?.toIso8601String(),
-      'address_id': addressId,
-      'specific_location': specificLocation,
-      'use_type': useType,
-      'facing_direction': facingDirection,
-      'total_square_meters': totalSquareMeters,
-      'front_area_sqm': frontAreaSqm,
-      'side_area_sqm': sideAreaSqm,
-      'has_debt_or_encumbrance': hasDebtOrEncumbrance,
-      'debt_amount': debtAmount,
-      'debt_encumbrance_file_link': debtEncumbranceFileLink,
-      'price_revision_possible': priceRevisionPossible,
-      'video_link': videoLink,
-      'video_processing': videoProcessing?.toJson(),
-      'site_plan_image_link': sitePlanImageLink,
-      'ownership_proof_link': ownershipProofLink,
-      'lease_contract_link': leaseContractLink,
-      'holding_type': holdingType,
-      'description': description,
-      'bedrooms': bedrooms,
-      'bathrooms': bathrooms,
-      'salons': salons,
-      'image_count': imageCount,
-      'images': images.map((e) => e.toJson()).toList(),
-      'address': address?.toJson(),
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-      'view_count': viewCount,
-    };
-  }
-
-  String getLocalizedUseType(BuildContext context) {
-    if (useType == null) return '';
-    final l10n = AppLocalizations.of(context);
-    switch (useType) {
-      case 'Residential':
-        return l10n.listingResidential;
-      case 'Commercial':
-        return l10n.listingCommercial;
-      case 'Mixed':
-        return l10n.listingMixed;
-      case 'Investment':
-        return l10n.listingInvestment;
-      default:
-        return useType!;
-    }
   }
 
   String getLocalizedHoldingType(BuildContext context) {
@@ -522,20 +451,41 @@ class Listing extends ChangeNotifier {
     }
   }
 
+  String getLocalizedUseType(BuildContext context) {
+    if (useType == null) return '';
+    final l10n = AppLocalizations.of(context);
+    switch (useType) {
+      case 'Residential':
+        return l10n.listingResidential;
+      case 'Commercial':
+        return l10n.listingCommercial;
+      case 'Mixed Use':
+        return l10n.listingMixedUse;
+      case 'Industrial':
+        return l10n.listingIndustrial;
+      case 'Agricultural':
+        return l10n.listingAgricultural;
+      case 'Institutional':
+        return l10n.listingInstitutional;
+      case 'Other':
+        return l10n.listingOther;
+      default:
+        return useType!;
+    }
+  }
+
   String getLocalizedAcquisitionType(BuildContext context) {
     if (acquisitionType == null) return '';
     final l10n = AppLocalizations.of(context);
     switch (acquisitionType) {
-      case 'Purchased':
-        return l10n.listingPurchased;
-      case 'Inherited':
-        return l10n.listingInherited;
+      case 'Purchase':
+        return l10n.listingPurchase;
+      case 'Inheritance':
+        return l10n.listingInheritance;
       case 'Gift':
         return l10n.listingGift;
-      case 'Assignment':
-        return l10n.listingAssignment;
-      case 'Other':
-        return l10n.listingOther;
+      case 'Government Grant':
+        return l10n.listingGovernmentGrant;
       default:
         return acquisitionType!;
     }
@@ -594,7 +544,7 @@ class Listing extends ChangeNotifier {
 
   String getLocalizedPrice(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final formatter = NumberFormat('#,###');
+    final formatter = NumberFormat("#,###");
 
     if (priceFixed != null) {
       return l10n.listingsPriceFixed(formatter.format(priceFixed!.toInt()));
@@ -634,8 +584,6 @@ class Listing extends ChangeNotifier {
         (featuredUntil == null || featuredUntil!.isAfter(DateTime.now()));
   }
 
-  bool get isVipActive => isVip;
-
   @override
-  String toString() => 'Listing(id: $id)';
+  String toString() => "Listing(id: $id)";
 }

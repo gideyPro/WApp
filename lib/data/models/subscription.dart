@@ -1,6 +1,14 @@
 import 'dart:convert';
 import '../../l10n/app_localizations.dart';
 
+/// Subscription Detail Access levels
+enum DetailsAccess {
+  discovery,
+  withoutVideoAndContact,
+  withoutContact,
+  full
+}
+
 /// Subscription Plan Model
 class SubscriptionPlan {
   final int id;
@@ -11,8 +19,10 @@ class SubscriptionPlan {
   final double priceUsd;
   final int durationMonths;
   final int maxListings;
-  final int? maxFeaturedListings;
-  final int? maxVipListings;
+  final int maxFeaturedListings;
+  final int maxVipListings;
+  final int maxOrders;
+  final DetailsAccess detailsAccess;
   final List<String>? features;
   final bool isActive;
   final int? sortOrder;
@@ -28,8 +38,10 @@ class SubscriptionPlan {
     this.priceUsd = 0.0,
     this.durationMonths = 1,
     this.maxListings = 1,
-    this.maxFeaturedListings,
-    this.maxVipListings,
+    this.maxFeaturedListings = 0,
+    this.maxVipListings = 0,
+    this.maxOrders = 0,
+    this.detailsAccess = DetailsAccess.discovery,
     this.features,
     this.isActive = true,
     this.sortOrder,
@@ -47,8 +59,10 @@ class SubscriptionPlan {
       priceUsd: _parseDouble(json['price_usd']),
       durationMonths: json['duration_months'] ?? 1,
       maxListings: json['max_listings'] ?? 1,
-      maxFeaturedListings: json['max_featured_listings'],
-      maxVipListings: json['max_vip_listings'],
+      maxFeaturedListings: json['max_featured_listings'] ?? 0,
+      maxVipListings: json['max_vip_listings'] ?? 0,
+      maxOrders: json['max_orders'] ?? 0,
+      detailsAccess: _parseDetailsAccess(json['details_access']),
       features: _parseFeatures(json['features']),
       isActive: json['is_active'] ?? true,
       sortOrder: json['sort_order'],
@@ -59,6 +73,21 @@ class SubscriptionPlan {
           ? DateTime.parse(json['updated_at'])
           : null,
     );
+  }
+
+  static DetailsAccess _parseDetailsAccess(dynamic value) {
+    if (value == null) return DetailsAccess.discovery;
+    final str = value.toString();
+    switch (str) {
+      case 'without_video_and_contact':
+        return DetailsAccess.withoutVideoAndContact;
+      case 'without_contact':
+        return DetailsAccess.withoutContact;
+      case 'full':
+        return DetailsAccess.full;
+      default:
+        return DetailsAccess.discovery;
+    }
   }
 
   static List<String>? _parseFeatures(dynamic value) {
@@ -114,9 +143,13 @@ class Subscription {
   final DateTime startsAt;
   final DateTime? endsAt;
   final DateTime? cancelledAt;
+  final DateTime? expiredAt;
+  final int listingsUsed;
+  final int featuredListingsUsed;
+  final int vipListingsUsed;
+  final int ordersUsed;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-  final int? vipListingsUsed;
   final SubscriptionPlan? plan;
 
   Subscription({
@@ -127,9 +160,13 @@ class Subscription {
     required this.startsAt,
     this.endsAt,
     this.cancelledAt,
+    this.expiredAt,
+    this.listingsUsed = 0,
+    this.featuredListingsUsed = 0,
+    this.vipListingsUsed = 0,
+    this.ordersUsed = 0,
     this.createdAt,
     this.updatedAt,
-    this.vipListingsUsed,
     this.plan,
   });
 
@@ -146,13 +183,19 @@ class Subscription {
       cancelledAt: json['cancelled_at'] != null
           ? DateTime.parse(json['cancelled_at'])
           : null,
+      expiredAt: json['expired_at'] != null
+          ? DateTime.parse(json['expired_at'])
+          : null,
+      listingsUsed: json['listings_used'] ?? 0,
+      featuredListingsUsed: json['featured_listings_used'] ?? 0,
+      vipListingsUsed: json['vip_listings_used'] ?? 0,
+      ordersUsed: json['orders_used'] ?? 0,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
-      vipListingsUsed: json['vip_listings_used'],
       plan:
           json['plan'] != null ? SubscriptionPlan.fromJson(json['plan']) : null,
     );
@@ -163,9 +206,9 @@ class Subscription {
       (cancelledAt == null || cancelledAt!.isAfter(DateTime.now())) &&
       (endsAt == null || endsAt!.isAfter(DateTime.now()));
 
-  bool get isExpired => endsAt != null && endsAt!.isBefore(DateTime.now());
+  bool get isExpired => status == 'expired' || (endsAt != null && endsAt!.isBefore(DateTime.now()));
 
-  bool get isCancelled => cancelledAt != null;
+  bool get isCancelled => status == 'cancelled' || cancelledAt != null;
 
   int get daysRemaining {
     if (endsAt == null) return 999;
