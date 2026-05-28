@@ -118,6 +118,7 @@ class Listing extends ChangeNotifier {
   final RentalPeriod? rentalPeriodUnit;
   final ListingStatus status;
   final bool isFeatured;
+  final bool isVip;
   final DateTime? featuredUntil;
   final int? addressId;
   final String? specificLocation;
@@ -232,6 +233,7 @@ class Listing extends ChangeNotifier {
     this.rentalPeriodUnit,
     this.status = ListingStatus.pending,
     this.isFeatured = false,
+    this.isVip = false,
     this.featuredUntil,
     this.addressId,
     this.specificLocation,
@@ -321,6 +323,7 @@ class Listing extends ChangeNotifier {
         orElse: () => ListingStatus.pending,
       ),
       isFeatured: json['is_featured'] ?? false,
+      isVip: json['is_vip'] ?? false,
       featuredUntil: json['featured_until'] != null
           ? DateTime.parse(json['featured_until'])
           : null,
@@ -436,6 +439,52 @@ class Listing extends ChangeNotifier {
     );
   }
 
+  
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'property_id': propertyId,
+      'property_type': propertyType.toString().split('.').last,
+      'listing_type': listingType.toString().split('.').last,
+      'price_fixed': priceFixed,
+      'price_min': priceMin,
+      'price_max': priceMax,
+      'rental_period_unit': rentalPeriodUnit?.toString().split('.').last,
+      'status': status.toString().split('.').last,
+      'is_featured': isFeatured,
+      'is_vip': isVip,
+      'featured_until': featuredUntil?.toIso8601String(),
+      'address_id': addressId,
+      'specific_location': specificLocation,
+      'use_type': useType,
+      'facing_direction': facingDirection,
+      'total_square_meters': totalSquareMeters,
+      'front_area_sqm': frontAreaSqm,
+      'side_area_sqm': sideAreaSqm,
+      'has_debt_or_encumbrance': hasDebtOrEncumbrance,
+      'debt_amount': debtAmount,
+      'debt_encumbrance_file_link': debtEncumbranceFileLink,
+      'price_revision_possible': priceRevisionPossible,
+      'video_link': videoLink,
+      'video_processing': videoProcessing?.toJson(),
+      'site_plan_image_link': sitePlanImageLink,
+      'ownership_proof_link': ownershipProofLink,
+      'lease_contract_link': leaseContractLink,
+      'holding_type': holdingType,
+      'description': description,
+      'bedrooms': bedrooms,
+      'bathrooms': bathrooms,
+      'salons': salons,
+      'image_count': imageCount,
+      'images': images.map((e) => e.toJson()).toList(),
+      'address': address?.toJson(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+      'view_count': viewCount,
+    };
+  }
+
   String getLocalizedHoldingType(BuildContext context) {
     if (holdingType == null) return '';
     final l10n = AppLocalizations.of(context);
@@ -460,13 +509,13 @@ class Listing extends ChangeNotifier {
       case 'Commercial':
         return l10n.listingCommercial;
       case 'Mixed Use':
-        return l10n.listingMixedUse;
+        return l10n.listingMixed;
       case 'Industrial':
-        return l10n.listingIndustrial;
+        return l10n.listingOther;
       case 'Agricultural':
-        return l10n.listingAgricultural;
+        return l10n.listingOther;
       case 'Institutional':
-        return l10n.listingInstitutional;
+        return l10n.listingOther;
       case 'Other':
         return l10n.listingOther;
       default:
@@ -479,13 +528,13 @@ class Listing extends ChangeNotifier {
     final l10n = AppLocalizations.of(context);
     switch (acquisitionType) {
       case 'Purchase':
-        return l10n.listingPurchase;
+        return l10n.listingPurchasedd;
       case 'Inheritance':
-        return l10n.listingInheritance;
+        return l10n.listingInherited;
       case 'Gift':
         return l10n.listingGift;
       case 'Government Grant':
-        return l10n.listingGovernmentGrant;
+        return l10n.listingAssignment;
       default:
         return acquisitionType!;
     }
@@ -578,6 +627,8 @@ class Listing extends ChangeNotifier {
     final daysOld = DateTime.now().difference(createdAt).inDays;
     return daysOld <= 7;
   }
+
+  bool get isVipActive => isVip;
 
   bool get isFeaturedActive {
     return isFeatured &&

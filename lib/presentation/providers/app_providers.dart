@@ -862,6 +862,7 @@ class SubscriptionState {
   final bool canCreateVipListing;
   final bool canCreateOrder;
   final bool hasPaidSubscription;
+  bool get canVipListing => canCreateVipListing;
   final String? errorMessage;
 
   const SubscriptionState({
@@ -882,6 +883,8 @@ class SubscriptionState {
         subscription = null,
         canCreateListing = false,
         canFeatureListing = false,
+        canCreateVipListing = false,
+        canCreateOrder = false,
         hasPaidSubscription = false,
         errorMessage = null;
 

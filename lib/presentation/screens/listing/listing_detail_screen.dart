@@ -1567,8 +1567,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                       : () => _submitInterest(listing.id),
                     icon: Icon(listing.userContactHidden ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
                     label: Text(listing.userContactHidden ? "Upgrade to Contact" : l10n.listingsImInterested),
-                    icon: const Icon(Icons.handyman_outlined, size: 20),
-                    label: Text(l10n.listingsImInterested),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.accent500),
