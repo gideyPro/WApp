@@ -445,19 +445,24 @@ class ListingService {
     int totalSize = 0;
     
     for (final file in formData.images) {
-      totalSize += await File(file.path).length();
+      final f = File(file.path);
+      if (await f.exists()) totalSize += await f.length();
     }
     if (formData.sitePlan != null) {
-      totalSize += await File(formData.sitePlan!.path).length();
+      final f = File(formData.sitePlan!.path);
+      if (await f.exists()) totalSize += await f.length();
     }
     if (formData.ownershipProof != null) {
-      totalSize += await File(formData.ownershipProof!.path).length();
+      final f = File(formData.ownershipProof!.path);
+      if (await f.exists()) totalSize += await f.length();
     }
     if (formData.leaseContract != null) {
-      totalSize += await File(formData.leaseContract!.path).length();
+      final f = File(formData.leaseContract!.path);
+      if (await f.exists()) totalSize += await f.length();
     }
     if (formData.videoFile != null) {
-      totalSize += await File(formData.videoFile!.path).length();
+      final f = File(formData.videoFile!.path);
+      if (await f.exists()) totalSize += await f.length();
     }
     
     return totalSize;

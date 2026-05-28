@@ -6,6 +6,7 @@ import '../../../../data/models/listing.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
+import '../../../../data/services/listing_media_manager.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -26,6 +27,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   late ListingFormData _formData;
   int _currentStep = 0;
   bool _isSubmitting = false;
+  bool _submittedSuccessfully = false;
   final _addressService = AddressService();
   final Map<int, List<String>> _stepErrors = {};
 
@@ -94,6 +96,9 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    if (!_submittedSuccessfully) {
+      ListingMediaManager.cleanFormDataFiles(_formData);
+    }
     super.dispose();
   }
 
@@ -153,6 +158,8 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       
       if (mounted) {
         if (result.success) {
+          _submittedSuccessfully = true;
+          await ListingMediaManager.cleanFormDataFiles(_formData);
           WaveToast.showSuccess(context, 'Listing updated successfully');
           Navigator.of(context).pop(true);
         } else {

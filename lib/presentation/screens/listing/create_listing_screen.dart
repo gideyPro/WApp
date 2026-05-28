@@ -7,6 +7,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
+import '../../../../data/services/listing_media_manager.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'widgets/listing_form_steps.dart';
@@ -23,6 +24,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   ListingFormData _formData = ListingFormData.empty();
   int _currentStep = 0;
   bool _isSubmitting = false;
+  bool _submittedSuccessfully = false;
   Timer? _autoSaveTimer;
   final _addressService = AddressService();
 
@@ -42,6 +44,9 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   void dispose() {
     _pageController.dispose();
     _autoSaveTimer?.cancel();
+    if (!_submittedSuccessfully) {
+      ListingMediaManager.cleanFormDataFiles(_formData);
+    }
     super.dispose();
   }
 
@@ -119,7 +124,9 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       final response = await service.createListing(formData: _formData);
       if (mounted) {
         if (response.success) {
+          _submittedSuccessfully = true;
           await _clearDraft();
+          await ListingMediaManager.cleanFormDataFiles(_formData);
           WaveToast.showSuccess(context, l10n.listingSuccess);
           Navigator.of(context).pop(true);
         } else {

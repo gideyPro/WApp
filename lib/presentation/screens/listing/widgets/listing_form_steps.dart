@@ -9,6 +9,7 @@ import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/models/image.dart';
 import '../../../../data/services/address_service.dart';
+import '../../../../data/services/listing_media_manager.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../providers/app_providers.dart';
@@ -1331,14 +1332,16 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
       final file = await _picker.pickImage(
           imageQuality: 85, maxWidth: 1920, source: ImageSource.gallery);
       if (file != null) {
-        widget.onUpdate(widget.formData.copyWith(sitePlan: file));
+        final persisted = await ListingMediaManager.persistFile(file);
+        widget.onUpdate(widget.formData.copyWith(sitePlan: persisted));
       }
     } else {
       final files =
           await _picker.pickMultiImage(imageQuality: 85, maxWidth: 1920);
       if (files.isNotEmpty) {
+        final persisted = await ListingMediaManager.persistFiles(files);
         widget.onUpdate(widget.formData
-            .copyWith(images: [...widget.formData.images, ...files]));
+            .copyWith(images: [...widget.formData.images, ...persisted]));
       }
     }
   }
@@ -1354,18 +1357,19 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     }
 
     if (file != null) {
+      final persisted = await ListingMediaManager.persistFile(file);
       switch (type) {
         case 'sitePlan':
-          widget.onUpdate(widget.formData.copyWith(sitePlan: file));
+          widget.onUpdate(widget.formData.copyWith(sitePlan: persisted));
           break;
         case 'ownership':
-          widget.onUpdate(widget.formData.copyWith(ownershipProof: file));
+          widget.onUpdate(widget.formData.copyWith(ownershipProof: persisted));
           break;
         case 'lease':
-          widget.onUpdate(widget.formData.copyWith(leaseContract: file));
+          widget.onUpdate(widget.formData.copyWith(leaseContract: persisted));
           break;
         case 'video':
-          widget.onUpdate(widget.formData.copyWith(videoFile: file));
+          widget.onUpdate(widget.formData.copyWith(videoFile: persisted));
           break;
       }
     }
