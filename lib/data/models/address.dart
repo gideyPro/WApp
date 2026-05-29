@@ -135,10 +135,10 @@ class Address {
     String? k = localizedOr(kebele, kebeleLocalized);
     String? s = localizedOr(specificLocation, specificLocationLocalized);
 
-    // New Order: Kebele, Woreda, Zone, Region - Special Location
-    // If restricted, we hide Kebele and Special Location
+    // Order: Kebele, Woreda, Zone, Region - Special Location
+    // If restricted, show only Zone and Region
     final List<String?> mainComponents = isRestricted 
-        ? [w, z, r] 
+        ? [z, r] 
         : [k, w, z, r];
     
     final parts = mainComponents

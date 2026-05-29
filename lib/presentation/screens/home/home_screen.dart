@@ -9,6 +9,7 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
 import '../../../data/models/listing.dart';
+import '../../../data/models/subscription.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
