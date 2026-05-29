@@ -439,11 +439,21 @@ class PropertyListingCard extends ConsumerWidget {
         ),
         const SizedBox(width: 4),
         Expanded(
-          child: Text(
-            location,
-            style: AppTextStyles.bodySmall,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          child: Row(
+            children: [
+              Flexible(
+                child: Text(
+                  location,
+                  style: AppTextStyles.bodySmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (isRestricted) ...[
+                const SizedBox(width: 4),
+                Icon(Icons.lock_outline, size: 10, color: context.theme.textMuted),
+              ],
+            ],
           ),
         ),
       ],
@@ -798,15 +808,25 @@ class FeaturedListingCard extends ConsumerWidget {
         ),
         const SizedBox(width: 3),
         Expanded(
-          child: Text(
-            listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
-                listing?.address?.region ??
-                l10n.listingUnknownLocation,
-            style: AppTextStyles.bodySmall.copyWith(
-              fontSize: 11,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          child: Row(
+            children: [
+              Flexible(
+                child: Text(
+                  listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
+                      listing?.address?.region ??
+                      l10n.listingUnknownLocation,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontSize: 11,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (isRestricted) ...[
+                const SizedBox(width: 4),
+                Icon(Icons.lock_outline, size: 10, color: Colors.white70),
+              ],
+            ],
           ),
         ),
       ],

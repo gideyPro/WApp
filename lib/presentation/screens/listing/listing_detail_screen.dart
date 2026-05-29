@@ -654,11 +654,21 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         const Icon(Icons.location_on, size: 18, color: AppColors.accent500),
         const SizedBox(width: 4),
         Expanded(
-          child: Text(
-            location,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.primary600,
-            ),
+          child: Row(
+            children: [
+              Flexible(
+                child: Text(
+                  location,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.primary600,
+                  ),
+                ),
+              ),
+              if (isRestricted) ...[
+                const SizedBox(width: 6),
+                Icon(Icons.lock_outline, size: 14, color: context.theme.textMuted),
+              ],
+            ],
           ),
         ),
       ],
