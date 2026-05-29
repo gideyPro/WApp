@@ -183,6 +183,7 @@ class _SubscriptionPlansScreenState
   Widget _buildCurrentSubscriptionBanner(
       Subscription sub, bool canCreateListing, bool canFeatureListing, bool canVipListing) {
     final localPlan = sub.plan;
+    if (localPlan == null) return const SizedBox.shrink();
 
     return Container(
       padding: AppSpacing.paddingLg,
@@ -311,6 +312,7 @@ class _SubscriptionPlansScreenState
     bool canVipListing,
   ) {
     final localPlan = sub.plan;
+    if (localPlan == null) return const SizedBox.shrink();
 
     return Container(
       padding: AppSpacing.paddingLg,
