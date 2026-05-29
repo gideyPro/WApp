@@ -61,7 +61,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     );
 
     final isOwner = user != null && listing.userId == user.id;
-    if (!isOwner && subscriptionEnabled && !subState.hasPaidSubscription) {
+    final isDiscovery = subState.subscription == null || subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
+    if (!isOwner && subscriptionEnabled && isDiscovery) {
       _showSubscriptionRequiredDialog();
       return;
     }
