@@ -267,21 +267,30 @@ class _SubscriptionPlansScreenState
             spacing: 8,
             runSpacing: 8,
             children: [
-              _buildStatPill(
-                icon: Icons.home,
-                label: l10n.subscriptionsListings,
-                included: canCreateListing,
-              ),
-              _buildStatPill(
-                icon: Icons.star_border,
-                label: l10n.listingFeatured,
-                included: canFeatureListing,
-              ),
-              _buildStatPill(
-                icon: Icons.diamond,
-                label: 'VIP',
-                included: canVipListing,
-              ),
+              if (localPlan.maxListings > 0)
+                _buildStatPill(
+                  icon: Icons.home,
+                  label: l10n.subscriptionsListings,
+                  value: "${sub.listingsUsed}/${localPlan.maxListings}",
+                ),
+              if (localPlan.maxFeaturedListings > 0)
+                _buildStatPill(
+                  icon: Icons.star_border,
+                  label: l10n.listingFeatured,
+                  value: "${sub.featuredListingsUsed}/${localPlan.maxFeaturedListings}",
+                ),
+              if (localPlan.maxVipListings > 0)
+                _buildStatPill(
+                  icon: Icons.diamond,
+                  label: 'VIP',
+                  value: "${sub.vipListingsUsed}/${localPlan.maxVipListings}",
+                ),
+              if (localPlan.maxOrders > 0)
+                _buildStatPill(
+                  icon: Icons.shopping_cart_outlined,
+                  label: 'Orders',
+                  value: "${sub.ordersUsed}/${localPlan.maxOrders}",
+                ),
               if (sub.daysRemaining < 999) ...[
                 _buildStatPill(
                   icon: Icons.timer,
@@ -370,6 +379,7 @@ class _SubscriptionPlansScreenState
     required IconData icon,
     required String label,
     bool? included,
+    String? value,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -389,7 +399,7 @@ class _SubscriptionPlansScreenState
           ),
           const SizedBox(width: 4),
           Text(
-            label,
+            value != null ? "$label: $value" : label,
             style: AppTextStyles.caption.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w600,
