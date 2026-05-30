@@ -13,6 +13,8 @@ import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/otp_input_field.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
+import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 import 'otp_login_screen.dart';
 
 class RegistrationScreen extends ConsumerStatefulWidget {
@@ -278,36 +280,27 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       return;
     }
 
-    showDialog(
+    WaveDialog.show(
       context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-          contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-          content: Text(
-            l10n.authCancelRegistration,
-            style: AppTextStyles.bodyLargePlus.copyWith(fontWeight: FontWeight.w600),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.commonNo),
-            ),
-            TextButton(
-              onPressed: () {
-                _countdownTimer?.cancel();
-                ref.read(authStateProvider.notifier).resetState();
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              style: TextButton.styleFrom(foregroundColor: AppColors.error),
-              child: Text(l10n.commonOk),
-            ),
-          ],
-        );
-      },
+      message: l10n.authCancelRegistration,
+      type: DialogType.confirm,
+      actions: [
+        WaveButton(
+          text: l10n.commonNo,
+          variant: ButtonVariant.outline,
+          onPressed: () => Navigator.pop(context),
+        ),
+        WaveButton(
+          text: l10n.commonOk,
+          variant: ButtonVariant.danger,
+          onPressed: () {
+            _countdownTimer?.cancel();
+            ref.read(authStateProvider.notifier).resetState();
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+        ),
+      ],
     );
   }
 
@@ -732,15 +725,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    );
+    WaveToast.showError(context, message);
   }
 }

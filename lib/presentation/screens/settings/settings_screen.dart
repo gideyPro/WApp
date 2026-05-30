@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../widgets/common/wave_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../widgets/common/wave_button.dart';
+import '../../widgets/common/wave_card.dart';
+import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -19,7 +22,6 @@ import '../auth/otp_login_screen.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_constants.dart';
 import '../../../core/constants/app_spacing.dart';
-import '../../widgets/common/wave_common_widgets.dart';
 
 final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
   try {
@@ -232,37 +234,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _showLogoutConfirmation(
       BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
-    showDialog(
+    WaveDialog.show(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text(l10n.settingsLogout,
-            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-        content: Text(l10n.authLogoutConfirm,
-            style: AppTextStyles.bodyMedium
-                .copyWith(color: context.theme.textSecondary)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.commonCancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              await ref.read(authStateProvider.notifier).logout();
-              if (context.mounted) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
-                  (route) => false,
-                );
-              }
-            },
-            child: Text(l10n.settingsLogout,
-                style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.error, fontWeight: FontWeight.w700)),
-          ),
-        ],
-      ),
+      title: l10n.settingsLogout,
+      message: l10n.authLogoutConfirm,
+      type: DialogType.confirm,
+      actions: [
+        WaveButton(
+          text: l10n.commonCancel,
+          variant: ButtonVariant.outline,
+          onPressed: () => Navigator.pop(context),
+        ),
+        WaveButton(
+          text: l10n.settingsLogout,
+          variant: ButtonVariant.danger,
+          onPressed: () async {
+            Navigator.pop(context);
+            await ref.read(authStateProvider.notifier).logout();
+            if (context.mounted) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
+                (route) => false,
+              );
+            }
+          },
+        ),
+      ],
     );
   }
 
@@ -274,9 +271,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.settingsWebOpenError(title))),
-        );
+        WaveToast.showError(context, l10n.settingsWebOpenError(title));
       }
     }
   }

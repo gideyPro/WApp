@@ -1283,15 +1283,6 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersSuggestionsError => 'አስተያየትን ማስኬድ አልተሳካም።';
 
   @override
-  String get ordersLimitTitle => 'የትእዛዝ ገደብ ደርሷል';
-
-  @override
-  String get ordersLimitMessage => 'የትእዛዝ ገደብዎ ላይ ደርሰዋል። እባክዎ ተጨማሪ ትእዛዞችን ለመፍጠር እቅድዎን ያሻሽሉ።';
-
-  @override
-  String get ordersUpgradePlan => 'እቅድ አሻሽል';
-
-  @override
   String get favoritesEmpty => 'ምንም ተወዳጅ የለም';
 
   @override
@@ -2019,4 +2010,29 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get statusRefunded => 'የተመለሰ';
+
+  @override
+  String get connectivityOffline => 'የመረብ ግንኙነት የለም';
+
+  @override
+  String get connectivityConnecting => 'በመገናኘት ላይ...';
+
+  @override
+  String get connectivityOnline => 'መረብ ተመልሷል';
+
+  @override
+  String get markAsVipTitle => 'እንደ VIP ልመርቅ?';
+
+  @override
+  String get markAsVip => 'እንደ VIP ምረጥ';
+
+  @override
+  String get ordersLimitTitle => 'የትዕዛዝ ገደብ ተደርሷል';
+
+  @override
+  String get ordersLimitMessage =>
+      'ለአሁኑ ዕቅድዎ ከፍተኛ የትዕዛዝ ብዛት ተደርሷል። ተጨማሪ ትዕዛዞች ለመፍጠር ዕቅድዎን ያሻሽሉ።';
+
+  @override
+  String get ordersUpgradePlan => 'ዕቅድ ያሻሽሉ';
 }

@@ -12,6 +12,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 
 import '../../providers/app_providers.dart';
 import '../subscriptions/subscription_plans_screen.dart';
@@ -66,32 +67,32 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     if (subState.canCreateOrder) return;
 
     final l10n = AppLocalizations.of(context);
-    showDialog(
+    WaveDialog.show(
       context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.ordersLimitTitle),
-        content: Text(l10n.ordersLimitMessage),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              Navigator.of(context).pop();
-            },
-            child: Text(l10n.commonCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              Navigator.of(context).pop();
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-              );
-            },
-            child: Text(l10n.ordersUpgradePlan),
-          ),
-        ],
-      ),
+      title: l10n.ordersLimitTitle,
+      message: l10n.ordersLimitMessage,
+      type: DialogType.confirm,
+      dismissible: false,
+      actions: [
+        WaveButton(
+          text: l10n.commonCancel,
+          variant: ButtonVariant.outline,
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          },
+        ),
+        WaveButton(
+          text: l10n.ordersUpgradePlan,
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+            );
+          },
+        ),
+      ],
     );
   }
 

@@ -22,7 +22,9 @@ import '../../../../l10n/app_localizations.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import 'edit_listing_screen.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 import '../video/full_screen_video_screen.dart';
 
 /// Listing Detail Screen with skeleton loaders
@@ -316,7 +318,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               const SizedBox(height: 16),
               Text(
                 isSubscriptionError
-                    ? 'Subscription Required'
+                    ? l10n.subscriptionRequiredTitle
                     : l10n.listingsLoadError,
                 style: AppTextStyles.title,
               ),
@@ -1212,14 +1214,12 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
     if (mounted) {
       final l10n = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded,
-          ),
-          backgroundColor: success ? AppColors.accent500 : AppColors.error,
-        ),
-      );
+      final msg = isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded;
+      if (success) {
+        WaveToast.showSuccess(context, msg);
+      } else {
+        WaveToast.showError(context, msg);
+      }
     }
   }
 
@@ -1250,32 +1250,13 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
   Future<void> _deleteListing(Listing listing) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await WaveDialog.showConfirm(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text(l10n.listingDeleteConfirmTitle,
-            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-        content: Text(l10n.listingDeleteConfirmMessage,
-            style: AppTextStyles.bodyMedium
-                .copyWith(color: context.theme.textSecondary)),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.commonCancel)),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+      title: l10n.listingDeleteConfirmTitle,
+      message: l10n.listingDeleteConfirmMessage,
+      confirmLabel: l10n.commonDelete,
+      cancelLabel: l10n.commonCancel,
+      destructive: true,
     );
     if (confirmed != true) return;
     try {
@@ -1284,11 +1265,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       if (result.success && mounted) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context).commonError),
-              backgroundColor: AppColors.error),
-        );
+        WaveToast.showError(context, AppLocalizations.of(context).commonError);
       }
     }
   }
@@ -1306,36 +1283,23 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     }
 
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await WaveDialog.show<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text('Mark as VIP?',
-            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-        content: Text(
-          'Your listing will be highlighted with a VIP badge for extra visibility.',
-          style: AppTextStyles.bodyMedium
-              .copyWith(color: context.theme.textSecondary),
+      title: l10n.markAsVipTitle,
+      message: 'Your listing will be highlighted with a VIP badge for extra visibility.',
+      type: DialogType.confirm,
+      actions: [
+        WaveButton(
+          text: l10n.commonCancel,
+          variant: ButtonVariant.outline,
+          onPressed: () => Navigator.pop(context, false),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.vip,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            child: const Text('Mark VIP'),
-          ),
-        ],
-      ),
+        WaveButton(
+          text: l10n.markAsVip,
+          variant: ButtonVariant.primary,
+          onPressed: () => Navigator.pop(context, true),
+        ),
+      ],
     );
     if (confirmed != true) return;
 
@@ -1343,29 +1307,14 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       final service = ListingService();
       final result = await service.vipListing(listing.id);
       if (result.success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message),
-            backgroundColor: AppColors.emerald600,
-          ),
-        );
+        WaveToast.showSuccess(context, result.message);
         ref.read(listingDetailProvider.notifier).loadListing(listing.id);
       } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, result.message);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context).commonError),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, AppLocalizations.of(context).commonError);
       }
     }
   }
@@ -1383,36 +1332,22 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     }
 
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await WaveDialog.show<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text('${l10n.listingFeatureThis}?',
-            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-        content: Text(
-          'Your listing will be featured on the home page and search results for 30 days.',
-          style: AppTextStyles.bodyMedium
-              .copyWith(color: context.theme.textSecondary),
+      title: '${l10n.listingFeatureThis}?',
+      message: 'Your listing will be featured on the home page and search results for 30 days.',
+      type: DialogType.confirm,
+      actions: [
+        WaveButton(
+          text: l10n.commonCancel,
+          variant: ButtonVariant.outline,
+          onPressed: () => Navigator.pop(context, false),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accent500,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            child: Text(l10n.listingFeatureNow),
-          ),
-        ],
-      ),
+        WaveButton(
+          text: l10n.listingFeatureNow,
+          onPressed: () => Navigator.pop(context, true),
+        ),
+      ],
     );
     if (confirmed != true) return;
 
@@ -1420,67 +1355,36 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       final service = ListingService();
       final result = await service.featureListing(listing.id);
       if (result.success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message),
-            backgroundColor: AppColors.emerald600,
-          ),
-        );
+        WaveToast.showSuccess(context, result.message);
         ref.read(listingDetailProvider.notifier).loadListing(listing.id);
       } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, result.message);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context).commonError),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, AppLocalizations.of(context).commonError);
       }
     }
   }
 
   Future<bool?> _showFeatureUpgradeDialog() {
     final l10n = AppLocalizations.of(context);
-    return showDialog<bool>(
+    return WaveDialog.show<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        icon: const Icon(Icons.workspace_premium_outlined,
-            color: AppColors.accent500, size: 40),
-        title: Text(l10n.listingUpgradeToFeature,
-            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-        content: Text(
-          l10n.listingUpgradeToFeatureSubtitle,
-          style: AppTextStyles.bodyMedium
-              .copyWith(color: context.theme.textSecondary),
+      title: l10n.listingUpgradeToFeature,
+      message: l10n.listingUpgradeToFeatureSubtitle,
+      type: DialogType.confirm,
+      actions: [
+        WaveButton(
+          text: l10n.commonCancel,
+          variant: ButtonVariant.outline,
+          onPressed: () => Navigator.pop(context, false),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.commonCancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              backgroundColor: AppColors.accent500,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            child: Text(l10n.listingViewPlans),
-          ),
-        ],
-      ),
+        WaveButton(
+          text: l10n.listingViewPlans,
+          onPressed: () => Navigator.pop(context, true),
+        ),
+      ],
     );
   }
 
@@ -1558,7 +1462,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 child: OutlinedButton.icon(
                   onPressed: () => _vipListing(listing),
                   icon: const Icon(Icons.diamond_outlined, size: 20),
-                  label: const Text('Mark as VIP'),
+                  label: Text(l10n.markAsVip),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: AppColors.vip),
@@ -1652,32 +1556,17 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
       if (response.success) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.message),
-              backgroundColor: AppColors.emerald600,
-            ),
-          );
+          WaveToast.showSuccess(context, response.message);
           ref.read(listingDetailProvider.notifier).loadListing(listingId);
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.message),
-              backgroundColor: AppColors.error,
-            ),
-          );
+          WaveToast.showError(context, response.message);
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.commonError),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, l10n.commonError);
       }
     }
   }

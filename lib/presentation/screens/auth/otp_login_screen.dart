@@ -11,6 +11,8 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
+import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/otp_input_field.dart';
 import 'registration_screen.dart';
 import '../navigation/main_navigation_shell.dart';
@@ -480,26 +482,13 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     }
 
     final l10n = AppLocalizations.of(context);
-    showDialog<bool>(
+    WaveDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        title: Text(l10n.authExitLogin),
-        content: Text(l10n.authExitLoginConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.commonNo),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              l10n.commonYes,
-              style: const TextStyle(color: AppColors.error),
-            ),
-          ),
-        ],
-      ),
+      title: l10n.authExitLogin,
+      message: l10n.authExitLoginConfirm,
+      confirmLabel: l10n.commonYes,
+      cancelLabel: l10n.commonNo,
+      destructive: true,
     ).then((confirmed) {
       if (confirmed == true && mounted) {
         _countdownTimer?.cancel();
@@ -513,12 +502,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     final phone = _phoneController.text.trim();
     final l10n = AppLocalizations.of(context);
     if (phone.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.authEnterPhonePrompt),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      WaveToast.showError(context, l10n.authEnterPhonePrompt);
       return;
     }
 
@@ -533,12 +517,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   Future<void> _verifyOtp() async {
     final l10n = AppLocalizations.of(context);
     if (_otpCode.length != 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.authEnterOtpPrompt),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      WaveToast.showError(context, l10n.authEnterOtpPrompt);
       return;
     }
 
@@ -560,19 +539,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     if (mounted) {
       if (response.success) {
         _startCountdown();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.message),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        WaveToast.showSuccess(context, response.message);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, response.message);
       }
     }
   }

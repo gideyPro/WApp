@@ -399,9 +399,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       await launchUrl(uri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).helpErrorEmail)),
-        );
+        WaveToast.showError(context, AppLocalizations.of(context).helpErrorEmail);
       }
     }
   }
@@ -412,9 +410,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       await launchUrl(uri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).helpErrorPhone)),
-        );
+        WaveToast.showError(context, AppLocalizations.of(context).helpErrorPhone);
       }
     }
   }

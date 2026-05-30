@@ -10,6 +10,7 @@ import '../../../data/services/order_service.dart';
 import '../../../data/services/lead_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../listing/listing_detail_screen.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -62,27 +63,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   }
 
   Future<void> _cancelOrder(int orderId, AppLocalizations l10n) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await WaveDialog.showConfirm(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text(l10n.ordersCancel,
-            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-        content: Text(l10n.ordersCancelConfirm,
-            style: AppTextStyles.bodyMedium
-                .copyWith(color: context.theme.textSecondary)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonNo),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: context.theme.textSecondary),
-            child: Text(l10n.listingsYes),
-          ),
-        ],
-      ),
+      title: l10n.ordersCancel,
+      message: l10n.ordersCancelConfirm,
+      confirmLabel: l10n.listingsYes,
+      cancelLabel: l10n.commonNo,
     );
 
     if (confirmed != true || !mounted) return;

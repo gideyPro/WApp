@@ -6,7 +6,9 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
+import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_glass.dart';
 
 import '../subscriptions/subscription_plans_screen.dart';
@@ -32,27 +34,27 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
 
   void _showOrderLimitDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    showDialog(
+    WaveDialog.show(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.ordersLimitTitle),
-        content: Text(l10n.ordersLimitMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-              );
-            },
-            child: Text(l10n.ordersUpgradePlan),
-          ),
-        ],
-      ),
+      title: l10n.ordersLimitTitle,
+      message: l10n.ordersLimitMessage,
+      type: DialogType.confirm,
+      actions: [
+        WaveButton(
+          text: l10n.commonCancel,
+          variant: ButtonVariant.outline,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        WaveButton(
+          text: l10n.ordersUpgradePlan,
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+            );
+          },
+        ),
+      ],
     );
   }
 

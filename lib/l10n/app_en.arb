@@ -644,5 +644,13 @@
   "statusPending": "Pending",
   "statusSuccess": "Success",
   "statusFailed": "Failed",
-  "statusRefunded": "Refunded"
+  "statusRefunded": "Refunded",
+  "connectivityOffline": "No internet connection",
+  "connectivityConnecting": "Connecting...",
+  "connectivityOnline": "Back Online",
+  "markAsVipTitle": "Mark as VIP?",
+  "markAsVip": "Mark as VIP",
+  "ordersLimitTitle": "Order Limit Reached",
+  "ordersLimitMessage": "You've reached the maximum number of orders for your current plan. Upgrade to create more orders.",
+  "ordersUpgradePlan": "Upgrade Plan"
 }

@@ -1282,15 +1282,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersSuggestionsError => 'ሓሳብ ክሳለል ኣይከኣለን።';
 
   @override
-  String get ordersLimitTitle => 'መደብ ገደብ በጺሑ';
-
-  @override
-  String get ordersLimitMessage => 'ናብ መደብ ገደብኩም በጺሕኩም። ተወሳኺ መደባት ንምፍጣር እባኽኩም ፕላንኩም ኣመሓይሹ።';
-
-  @override
-  String get ordersUpgradePlan => 'ፕላን ኣመሓይሽ';
-
-  @override
   String get favoritesEmpty => 'ዝተመርጸ ንብረት የለን';
 
   @override
@@ -2017,4 +2008,29 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get statusRefunded => 'ዝተመልሰ';
+
+  @override
+  String get connectivityOffline => 'ናይ መረብ ርክብ የለን';
+
+  @override
+  String get connectivityConnecting => 'በጽባሒት ላይ...';
+
+  @override
+  String get connectivityOnline => 'መረብ ተመሊሱ';
+
+  @override
+  String get markAsVipTitle => 'ናይ VIP ምርጫ?';
+
+  @override
+  String get markAsVip => 'እንደ VIP ምረጽ';
+
+  @override
+  String get ordersLimitTitle => 'ናይ ትእዛዝ ገደብ ተበጂሱ';
+
+  @override
+  String get ordersLimitMessage =>
+      'ንናይ ሕጂ ዕቅድኩም ዝለዓለ ቁጽሪ ትእዛዝ ተበጂሑ። ተወሳኺ ትእዛዝ ንምፍጠር ዕቅድኩም ምሓሹ።';
+
+  @override
+  String get ordersUpgradePlan => 'ዕቅድ ምሓሹ';
 }

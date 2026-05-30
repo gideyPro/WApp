@@ -1296,15 +1296,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersSuggestionsError => 'Failed to process suggestion.';
 
   @override
-  String get ordersLimitTitle => 'Order limit reached';
-
-  @override
-  String get ordersLimitMessage => 'You have reached your order limit. Please upgrade your plan to create more orders.';
-
-  @override
-  String get ordersUpgradePlan => 'Upgrade Plan';
-
-  @override
   String get favoritesEmpty => 'No favorites yet';
 
   @override
@@ -2051,4 +2042,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusRefunded => 'Refunded';
+
+  @override
+  String get connectivityOffline => 'No internet connection';
+
+  @override
+  String get connectivityConnecting => 'Connecting...';
+
+  @override
+  String get connectivityOnline => 'Back Online';
+
+  @override
+  String get markAsVipTitle => 'Mark as VIP?';
+
+  @override
+  String get markAsVip => 'Mark as VIP';
+
+  @override
+  String get ordersLimitTitle => 'Order Limit Reached';
+
+  @override
+  String get ordersLimitMessage =>
+      'You\'ve reached the maximum number of orders for your current plan. Upgrade to create more orders.';
+
+  @override
+  String get ordersUpgradePlan => 'Upgrade Plan';
 }

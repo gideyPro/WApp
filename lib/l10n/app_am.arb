@@ -632,5 +632,13 @@
   "statusPending": "በመጠባበቅ ላይ",
   "statusSuccess": "ተሳክቷል",
   "statusFailed": "አልተሳካም",
-  "statusRefunded": "የተመለሰ"
+  "statusRefunded": "የተመለሰ",
+  "connectivityOffline": "የመረብ ግንኙነት የለም",
+  "connectivityConnecting": "በመገናኘት ላይ...",
+  "connectivityOnline": "መረብ ተመልሷል",
+  "markAsVipTitle": "እንደ VIP ልመርቅ?",
+  "markAsVip": "እንደ VIP ምረጥ",
+  "ordersLimitTitle": "የትዕዛዝ ገደብ ተደርሷል",
+  "ordersLimitMessage": "ለአሁኑ ዕቅድዎ ከፍተኛ የትዕዛዝ ብዛት ተደርሷል። ተጨማሪ ትዕዛዞች ለመፍጠር ዕቅድዎን ያሻሽሉ።",
+  "ordersUpgradePlan": "ዕቅድ ያሻሽሉ"
 }

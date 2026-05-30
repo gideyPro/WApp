@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/models/listing.dart';
 import '../../../../data/services/listing_service.dart';
+import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/listing_card.dart';
 import '../listing/listing_detail_screen.dart';
 import '../listing/create_listing_screen.dart';
@@ -128,12 +130,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
     if (!mounted) return;
     setState(() => _editingListingId = null);
     if (!detail.success || detail.listing == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).commonError),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      WaveToast.showError(context, AppLocalizations.of(context).commonError);
       return;
     }
     final result = await Navigator.of(context).push<bool>(
@@ -146,33 +143,13 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
 
   Future<void> _deleteListing(Listing listing) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await WaveDialog.showConfirm(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text(l10n.listingDeleteConfirmTitle,
-            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-        content: Text(l10n.listingDeleteConfirmMessage,
-            style: AppTextStyles.bodyMedium
-                .copyWith(color: context.theme.textSecondary)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+      title: l10n.listingDeleteConfirmTitle,
+      message: l10n.listingDeleteConfirmMessage,
+      confirmLabel: l10n.commonDelete,
+      cancelLabel: l10n.commonCancel,
+      destructive: true,
     );
     if (confirmed != true) return;
     try {
@@ -181,76 +158,43 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
       if (result.success && mounted) _loadMyListings();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context).commonError),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, AppLocalizations.of(context).commonError);
       }
     }
   }
 
   Future<void> _featureListing(Listing listing) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await WaveDialog.show<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text('${l10n.listingFeatureThis}?',
-            style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-        content: Text(
-          'Your listing will be featured on the home page and search results for 30 days.',
-          style: AppTextStyles.bodyMedium
-              .copyWith(color: context.theme.textSecondary),
+      title: '${l10n.listingFeatureThis}?',
+      message: 'Your listing will be featured on the home page and search results for 30 days.',
+      type: DialogType.confirm,
+      actions: [
+        WaveButton(
+          text: l10n.commonCancel,
+          variant: ButtonVariant.outline,
+          onPressed: () => Navigator.pop(context, false),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accent500,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            child: Text(l10n.listingFeatureNow),
-          ),
-        ],
-      ),
+        WaveButton(
+          text: l10n.listingFeatureNow,
+          onPressed: () => Navigator.pop(context, true),
+        ),
+      ],
     );
     if (confirmed != true) return;
     try {
       final service = ListingService();
       final result = await service.featureListing(listing.id);
       if (result.success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message),
-            backgroundColor: AppColors.emerald600,
-          ),
-        );
+        WaveToast.showSuccess(context, result.message);
         _loadMyListings();
       } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, result.message);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.commonError),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, l10n.commonError);
       }
     }
   }
@@ -282,40 +226,25 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                   // proceed to create screen
                 } else if (subState.errorMessage != null) {
                   // Network error — offer retry
-                  await showDialog<bool>(
+                  await WaveDialog.show(
                     context: context,
-                    builder: (ctx) => AlertDialog(
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-                      icon: const Icon(Icons.wifi_off, color: AppColors.error, size: 40),
-                      title: Text(AppLocalizations.of(ctx).errorConnection,
-                          style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-                      content: Text(
-                        AppLocalizations.of(ctx).errorCheckSubscription,
-                        style: AppTextStyles.bodyMedium
-                            .copyWith(color: context.theme.textSecondary),
+                    title: AppLocalizations.of(context).errorConnection,
+                    message: AppLocalizations.of(context).errorCheckSubscription,
+                    type: DialogType.confirm,
+                    actions: [
+                      WaveButton(
+                        text: AppLocalizations.of(context).commonCancel,
+                        variant: ButtonVariant.outline,
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(ctx).pop(false),
-                          child: Text(AppLocalizations.of(ctx).commonCancel),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            ref.read(subscriptionProvider.notifier).refresh();
-                            Navigator.of(ctx).pop(false);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                            backgroundColor: AppColors.accent500,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                          child: Text(AppLocalizations.of(ctx).commonRetry),
-                        ),
-                      ],
-                    ),
+                      WaveButton(
+                        text: AppLocalizations.of(context).commonRetry,
+                        onPressed: () {
+                          ref.read(subscriptionProvider.notifier).refresh();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
                   );
                   return;
                 } else {
@@ -323,38 +252,22 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                   final message = subState.hasPaidSubscription
                       ? AppLocalizations.of(context).subscriptionLimitReached
                       : AppLocalizations.of(context).subscriptionRequiredListingSubtitle;
-                  final goSub = await showDialog<bool>(
+                  final goSub = await WaveDialog.show<bool>(
                     context: context,
-                    builder: (ctx) => AlertDialog(
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-                      icon: const Icon(Icons.workspace_premium_outlined,
-                          color: AppColors.accent500, size: 40),
-                      title: Text(AppLocalizations.of(ctx).subscriptionRequiredTitle,
-                          style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
-                      content: Text(
-                        message,
-                        style: AppTextStyles.bodyMedium
-                            .copyWith(color: context.theme.textSecondary),
+                    title: AppLocalizations.of(context).subscriptionRequiredTitle,
+                    message: message,
+                    type: DialogType.confirm,
+                    actions: [
+                      WaveButton(
+                        text: AppLocalizations.of(context).commonCancel,
+                        variant: ButtonVariant.outline,
+                        onPressed: () => Navigator.of(context).pop(false),
                       ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(ctx).pop(false),
-                          child: Text(AppLocalizations.of(ctx).commonCancel),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.of(ctx).pop(true),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                            backgroundColor: AppColors.accent500,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                          child: Text(AppLocalizations.of(ctx).listingViewPlans),
-                        ),
-                      ],
-                    ),
+                      WaveButton(
+                        text: AppLocalizations.of(context).listingViewPlans,
+                        onPressed: () => Navigator.of(context).pop(true),
+                      ),
+                    ],
                   );
                   if (goSub == true) {
                     nav.push(

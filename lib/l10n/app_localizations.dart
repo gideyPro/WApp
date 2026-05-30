@@ -2512,24 +2512,6 @@ abstract class AppLocalizations {
   /// **'Failed to process suggestion.'**
   String get ordersSuggestionsError;
 
-  /// No description provided for @ordersLimitTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Order limit reached'**
-  String get ordersLimitTitle;
-
-  /// No description provided for @ordersLimitMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'You have reached your order limit for this month. Please upgrade your plan to continue.'**
-  String get ordersLimitMessage;
-
-  /// No description provided for @ordersUpgradePlan.
-  ///
-  /// In en, this message translates to:
-  /// **'Upgrade Plan'**
-  String get ordersUpgradePlan;
-
   /// No description provided for @favoritesEmpty.
   ///
   /// In en, this message translates to:
@@ -3897,6 +3879,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refunded'**
   String get statusRefunded;
+
+  /// No description provided for @connectivityOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get connectivityOffline;
+
+  /// No description provided for @connectivityConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get connectivityConnecting;
+
+  /// No description provided for @connectivityOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Back Online'**
+  String get connectivityOnline;
+
+  /// No description provided for @markAsVipTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as VIP?'**
+  String get markAsVipTitle;
+
+  /// No description provided for @markAsVip.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as VIP'**
+  String get markAsVip;
+
+  /// No description provided for @ordersLimitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Limit Reached'**
+  String get ordersLimitTitle;
+
+  /// No description provided for @ordersLimitMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the maximum number of orders for your current plan. Upgrade to create more orders.'**
+  String get ordersLimitMessage;
+
+  /// No description provided for @ordersUpgradePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Plan'**
+  String get ordersUpgradePlan;
 }
 
 class _AppLocalizationsDelegate

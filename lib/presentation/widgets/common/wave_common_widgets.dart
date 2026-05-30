@@ -287,7 +287,7 @@ class WaveToast {
     _showToast(
       context,
       message,
-      AppColors.accent600,
+      AppColors.success,
       Icons.check_circle_rounded,
     );
   }
@@ -505,33 +505,33 @@ class _MessageStyle {
 final _typeStyles = {
   WaveMessageType.error: const _MessageStyle(
     icon: Icons.error_outline_rounded,
-    iconBg: Color(0xFFfee2e2),
-    iconColor: Color(0xFFef4444),
+    iconBg: AppColors.errorLight,
+    iconColor: AppColors.error,
   ),
   WaveMessageType.warning: const _MessageStyle(
     icon: Icons.warning_amber_rounded,
-    iconBg: Color(0xFFfef3c7),
-    iconColor: Color(0xFFf59e0b),
+    iconBg: AppColors.warningLight,
+    iconColor: AppColors.warning,
   ),
   WaveMessageType.success: const _MessageStyle(
     icon: Icons.check_circle_outline_rounded,
-    iconBg: Color(0xFFd1fae5),
-    iconColor: Color(0xFF10b981),
+    iconBg: AppColors.successLight,
+    iconColor: AppColors.success,
   ),
   WaveMessageType.info: const _MessageStyle(
     icon: Icons.info_outline_rounded,
-    iconBg: Color(0xFFdbeafe),
-    iconColor: Color(0xFF3b82f6),
+    iconBg: AppColors.infoLight,
+    iconColor: AppColors.info,
   ),
   WaveMessageType.networkError: const _MessageStyle(
     icon: Icons.wifi_off_rounded,
-    iconBg: Color(0xFFe7e5e4),
-    iconColor: Color(0xFF78716c),
+    iconBg: AppColors.stone200,
+    iconColor: AppColors.stone600,
   ),
   WaveMessageType.empty: const _MessageStyle(
     icon: Icons.inbox_outlined,
-    iconBg: Color(0xFFf5f5f4),
-    iconColor: Color(0xFFa8a29e),
+    iconBg: AppColors.stone100,
+    iconColor: AppColors.stone400,
   ),
 };
 

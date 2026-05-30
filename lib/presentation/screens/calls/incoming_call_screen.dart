@@ -9,6 +9,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../../data/services/conference_service.dart';
 import 'webview_jitsi_screen.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {
   final int conferenceId;
@@ -115,23 +116,13 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
       if (response.success && response.jitsiRoomUrl != null) {
         _navigateToJitsi(response);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.message.isNotEmpty ? response.message : AppLocalizations.of(context).errorJoinCallGeneric),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, response.message.isNotEmpty ? response.message : AppLocalizations.of(context).errorJoinCallGeneric);
         setState(() => _isConnecting = false);
         _startRinging();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context).errorJoinCall(e.toString())),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, AppLocalizations.of(context).errorJoinCall(e.toString()));
         setState(() => _isConnecting = false);
         _startRinging();
       }

@@ -157,19 +157,19 @@ class AppColors {
   );
 
   static const LinearGradient gradientError = LinearGradient(
-    colors: [Color(0xFFef4444), Color(0xFFdc2626)],
+    colors: [error, Color(0xFF7F1D1D)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient gradientWarning = LinearGradient(
-    colors: [Color(0xFFf59e0b), Color(0xFFd97706)],
+    colors: [warning, Color(0xFF78350F)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient gradientInfo = LinearGradient(
-    colors: [Color(0xFF3b82f6), Color(0xFF2563eb)],
+    colors: [info, Color(0xFF1E40AF)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

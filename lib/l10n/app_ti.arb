@@ -630,5 +630,13 @@
   "statusPending": "ኣብ ምጽባይ",
   "statusSuccess": "ተሳኪዑ",
   "statusFailed": "ኣይተሳኽዐን",
-  "statusRefunded": "ዝተመልሰ"
+  "statusRefunded": "ዝተመልሰ",
+  "connectivityOffline": "ናይ መረብ ርክብ የለን",
+  "connectivityConnecting": "በጽባሒት ላይ...",
+  "connectivityOnline": "መረብ ተመሊሱ",
+  "markAsVipTitle": "ናይ VIP ምርጫ?",
+  "markAsVip": "እንደ VIP ምረጽ",
+  "ordersLimitTitle": "ናይ ትእዛዝ ገደብ ተበጂሱ",
+  "ordersLimitMessage": "ንናይ ሕጂ ዕቅድኩም ዝለዓለ ቁጽሪ ትእዛዝ ተበጂሑ። ተወሳኺ ትእዛዝ ንምፍጠር ዕቅድኩም ምሓሹ።",
+  "ordersUpgradePlan": "ዕቅድ ምሓሹ"
 }

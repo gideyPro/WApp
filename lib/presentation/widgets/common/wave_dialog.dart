@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import 'wave_button.dart';
 
 enum DialogType { alert, confirm, action }
@@ -47,6 +48,38 @@ class WaveDialog extends StatelessWidget {
         dismissible: dismissible,
       ),
     );
+  }
+
+  static Future<bool> showConfirm({
+    required BuildContext context,
+    required String title,
+    required String message,
+    String? confirmLabel,
+    String? cancelLabel,
+    bool destructive = false,
+    bool dismissible = true,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    final result = await show<bool>(
+      context: context,
+      title: title,
+      message: message,
+      type: DialogType.confirm,
+      dismissible: dismissible,
+      actions: [
+        WaveButton(
+          text: cancelLabel ?? l10n.commonCancel,
+          variant: ButtonVariant.outline,
+          onPressed: () => Navigator.pop(context, false),
+        ),
+        WaveButton(
+          text: confirmLabel ?? l10n.commonOk,
+          variant: destructive ? ButtonVariant.danger : ButtonVariant.primary,
+          onPressed: () => Navigator.pop(context, true),
+        ),
+      ],
+    );
+    return result ?? false;
   }
 
   @override
@@ -121,35 +154,6 @@ class WaveDialog extends StatelessWidget {
     }).toList();
   }
 
-  static Future<bool> showConfirm({
-    required BuildContext context,
-    required String title,
-    required String message,
-    String confirmText = 'Confirm',
-    String cancelText = 'Cancel',
-    bool isDestructive = false,
-  }) async {
-    final result = await show<bool>(
-      context: context,
-      title: title,
-      message: message,
-      type: DialogType.confirm,
-      actions: [
-        WaveButton(
-          text: cancelText,
-          onPressed: () => Navigator.of(context).pop(false),
-          variant: ButtonVariant.outline,
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        WaveButton(
-          text: confirmText,
-          onPressed: () => Navigator.of(context).pop(true),
-          variant: isDestructive ? ButtonVariant.danger : ButtonVariant.primary,
-        ),
-      ],
-    );
-    return result ?? false;
-  }
 }
 
 class WaveBottomSheet extends StatelessWidget {

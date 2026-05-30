@@ -418,30 +418,15 @@ class _SubscriptionPlansScreenState
         final response = await _subscriptionService.subscribe(plan.id);
         if (mounted) {
           if (response.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subscriptionsFreeSuccess),
-                backgroundColor: AppColors.success,
-              ),
-            );
+            WaveToast.showSuccess(context, l10n.subscriptionsFreeSuccess);
             ref.read(subscriptionProvider.notifier).refresh();
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(response.message),
-                backgroundColor: AppColors.error,
-              ),
-            );
+            WaveToast.showError(context, response.message);
           }
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.subscriptionUnexpectedError(e.toString())),
-              backgroundColor: AppColors.error,
-            ),
-          );
+          WaveToast.showError(context, l10n.subscriptionUnexpectedError(e.toString()));
         }
       } finally {
         if (mounted) {
@@ -467,12 +452,7 @@ class _SubscriptionPlansScreenState
 
       if (!paymentResponse.success) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(paymentResponse.message),
-              backgroundColor: AppColors.error,
-            ),
-          );
+          WaveToast.showError(context, paymentResponse.message);
         }
         return;
       }
@@ -570,31 +550,16 @@ class _SubscriptionPlansScreenState
 
       if (!isActive && paymentStatus != 'pending') {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.subscriptionPaymentNotVerified),
-              backgroundColor: AppColors.error,
-            ),
-          );
+          WaveToast.showError(context, l10n.subscriptionPaymentNotVerified);
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.subscriptionPaymentSuccess),
-              backgroundColor: AppColors.success,
-            ),
-          );
+          WaveToast.showSuccess(context, l10n.subscriptionPaymentSuccess);
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.subscriptionUnexpectedError(e.toString())),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        WaveToast.showError(context, l10n.subscriptionUnexpectedError(e.toString()));
       }
     } finally {
       if (mounted) {

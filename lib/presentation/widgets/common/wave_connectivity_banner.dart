@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 
 class WaveConnectivityBanner extends ConsumerStatefulWidget {
@@ -151,13 +152,14 @@ class _WaveConnectivityBannerState extends ConsumerState<WaveConnectivityBanner>
   }
 
   String _getMessage(ConnectivityStatus status) {
+    final l10n = AppLocalizations.of(context);
     switch (status) {
       case ConnectivityStatus.offline:
-        return 'No internet connection';
+        return l10n.connectivityOffline;
       case ConnectivityStatus.connecting:
-        return 'Connecting...';
+        return l10n.connectivityConnecting;
       case ConnectivityStatus.online:
-        return 'Back Online';
+        return l10n.connectivityOnline;
     }
   }
 }
