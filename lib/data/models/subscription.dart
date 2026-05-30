@@ -6,6 +6,7 @@ enum DetailsAccess {
   discovery,
   withoutVideoAndContact,
   withoutContact,
+  moderatedContact,
   full
 }
 
@@ -83,6 +84,8 @@ class SubscriptionPlan {
         return DetailsAccess.withoutVideoAndContact;
       case 'without_contact':
         return DetailsAccess.withoutContact;
+      case 'moderated_contact':
+        return DetailsAccess.moderatedContact;
       case 'full':
         return DetailsAccess.full;
       default:
