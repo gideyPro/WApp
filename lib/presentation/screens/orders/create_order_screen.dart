@@ -12,10 +12,8 @@ import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_dialog.dart';
 
 import '../../providers/app_providers.dart';
-import '../subscriptions/subscription_plans_screen.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
 
@@ -57,43 +55,6 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     super.initState();
     _loadRegions();
     _loadSettings();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkOrderLimit();
-    });
-  }
-
-  void _checkOrderLimit() {
-    final subState = ref.read(subscriptionProvider);
-    // Skip check if subscription data is still loading
-    if (subState.isLoading) return;
-    if (subState.canCreateOrder) return;
-
-    final nav = Navigator.of(context);
-    final l10n = AppLocalizations.of(context);
-    String message;
-    if (!subState.hasPaidSubscription) {
-      message = l10n.ordersLimitMessage;
-    } else {
-      final plan = subState.subscription?.plan;
-      if (plan == null || plan.maxOrders == 0) {
-        message = l10n.subscriptionPlanNotSupportedOrder;
-      } else {
-        message = l10n.ordersLimitMessage;
-      }
-    }
-    WaveDialog.showUpgrade(
-      context: context,
-      title: l10n.ordersLimitTitle,
-      message: message,
-      actionLabel: l10n.ordersUpgradePlan,
-    ).then((result) {
-      nav.pop();
-      if (result == true) {
-        nav.push(
-          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-        );
-      }
-    });
   }
 
   @override

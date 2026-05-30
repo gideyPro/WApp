@@ -23,6 +23,8 @@ class OrdersScreen extends ConsumerStatefulWidget {
 }
 
 class _OrdersScreenState extends ConsumerState<OrdersScreen> {
+  bool _isCreatingOrder = false;
+
   @override
   void initState() {
     super.initState();
@@ -31,32 +33,53 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     });
   }
 
-  void _showOrderLimitDialog(BuildContext context, SubscriptionState subState) {
-    final nav = Navigator.of(context);
-    final l10n = AppLocalizations.of(context);
-    String message;
-    if (!subState.hasPaidSubscription) {
-      message = l10n.ordersLimitMessage;
-    } else {
-      final plan = subState.subscription?.plan;
-      if (plan == null || plan.maxOrders == 0) {
-        message = l10n.subscriptionPlanNotSupportedOrder;
-      } else {
-        message = l10n.ordersLimitMessage;
-      }
-    }
-    WaveDialog.showUpgrade(
-      context: context,
-      title: l10n.ordersLimitTitle,
-      message: message,
-      actionLabel: l10n.ordersUpgradePlan,
-    ).then((result) {
-      if (result == true) {
-        nav.push(
-          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+  /// Pre-flight check before opening Create Order — force-refresh subscription, then check
+  Future<void> _onCreateOrderTap() async {
+    setState(() => _isCreatingOrder = true);
+    try {
+      await ref.read(subscriptionProvider.notifier).refresh();
+      if (!mounted) return;
+      final subState = ref.read(subscriptionProvider);
+
+      if (!subState.canCreateOrder) {
+        final l10n = AppLocalizations.of(context);
+        String message;
+        if (!subState.hasPaidSubscription) {
+          message = l10n.ordersLimitMessage;
+        } else {
+          final plan = subState.subscription?.plan;
+          if (plan == null || plan.maxOrders == 0) {
+            message = l10n.subscriptionPlanNotSupportedOrder;
+          } else {
+            message = l10n.ordersLimitMessage;
+          }
+        }
+        final goSub = await WaveDialog.showUpgrade(
+          context: context,
+          icon: Icons.receipt_long_outlined,
+          iconColor: AppColors.accent500,
+          title: l10n.ordersLimitTitle,
+          message: message,
+          actionLabel: l10n.ordersUpgradePlan,
         );
+        if (goSub == true && mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+          );
+        }
+        return;
       }
-    });
+
+      // All good — open create order
+      if (mounted) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
+        );
+        if (mounted) ref.read(ordersProvider.notifier).loadOrders();
+      }
+    } finally {
+      if (mounted) setState(() => _isCreatingOrder = false);
+    }
   }
 
   String _statusLabel(String status, AppLocalizations l10n) {
@@ -117,20 +140,10 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_rounded),
-            onPressed: () async {
-              final subState = ref.read(subscriptionProvider);
-              if (!subState.isLoading && !subState.canCreateOrder) {
-                _showOrderLimitDialog(context, subState);
-                return;
-              }
-              await Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
-              );
-              if (mounted) {
-                ref.read(ordersProvider.notifier).loadOrders();
-              }
-            },
+            icon: _isCreatingOrder
+                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5))
+                : const Icon(Icons.add_rounded),
+            onPressed: _isCreatingOrder ? null : _onCreateOrderTap,
           ),
         ],
       ),
@@ -161,19 +174,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         title: l10n.ordersEmpty,
         subtitle: l10n.ordersEmptySubtitle,
         actionLabel: l10n.ordersCreate,
-        onAction: () async {
-          final subState = ref.read(subscriptionProvider);
-          if (!subState.isLoading && !subState.canCreateOrder) {
-            _showOrderLimitDialog(context, subState);
-            return;
-          }
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
-          );
-          if (mounted) {
-            ref.read(ordersProvider.notifier).loadOrders();
-          }
-        },
+        onAction: _onCreateOrderTap,
       );
     }
 
