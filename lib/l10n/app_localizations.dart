@@ -3916,6 +3916,36 @@ abstract class AppLocalizations {
   /// **'Your listing will be highlighted with a VIP badge for extra visibility.'**
   String get markAsVipMessage;
 
+  /// No description provided for @upgradeToContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Contact'**
+  String get upgradeToContact;
+
+  /// No description provided for @listingsRevealContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal Contact'**
+  String get listingsRevealContact;
+
+  /// No description provided for @listingsRevealing.
+  ///
+  /// In en, this message translates to:
+  /// **'Revealing...'**
+  String get listingsRevealing;
+
+  /// No description provided for @listingsSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Seller'**
+  String get listingsSeller;
+
+  /// No description provided for @listingsContactViewsRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{remaining} of {max} contact views remaining this period'**
+  String listingsContactViewsRemaining(int remaining, int max);
+
   /// No description provided for @ordersLimitTitle.
   ///
   /// In en, this message translates to:

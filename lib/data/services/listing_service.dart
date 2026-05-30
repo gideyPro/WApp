@@ -603,6 +603,31 @@ class ListingService {
     }
   }
 
+  /// Reveal seller contact for a listing
+  Future<ContactRevealResponse> revealContact(int listingId) async {
+    try {
+      final response = await _apiClient.dio.post('${ApiConstants.revealContact}/$listingId/reveal-contact');
+      if (response.statusCode == 200) {
+        final data = response.data is Map ? response.data : {};
+        return ContactRevealResponse(
+          success: true,
+          contact: data['contact']?.toString() ?? '',
+          alreadyRevealed: data['already_revealed'] ?? false,
+        );
+      }
+      return ContactRevealResponse(
+        success: false,
+        message: response.data['error'] ?? response.data['message'] ?? 'Failed to reveal contact',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return ContactRevealResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
   /// Make listing featured
   Future<ListingResponse> featureListing(int listingId) async {
     try {
@@ -656,5 +681,20 @@ class ListingDetailResponse {
     required this.success,
     this.message = '',
     this.listing,
+  });
+}
+
+/// Response wrapper for contact reveal
+class ContactRevealResponse {
+  final bool success;
+  final String message;
+  final String contact;
+  final bool alreadyRevealed;
+
+  const ContactRevealResponse({
+    required this.success,
+    this.message = '',
+    this.contact = '',
+    this.alreadyRevealed = false,
   });
 }

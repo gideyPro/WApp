@@ -134,6 +134,9 @@ class Listing extends ChangeNotifier {
   final String? videoLink;
   final VideoProcessing? videoProcessing;
   final bool userContactHidden;
+  final bool contactRevealed;
+  final int contactRemaining;
+  final int contactMax;
   final bool videoBlocked;
   final bool interestBlocked;
 
@@ -250,6 +253,9 @@ class Listing extends ChangeNotifier {
     this.videoLink,
     this.videoProcessing,
     this.userContactHidden = false,
+    this.contactRevealed = false,
+    this.contactRemaining = 0,
+    this.contactMax = 0,
     this.videoBlocked = false,
     this.interestBlocked = false,
     this.sitePlanImageLink,
@@ -344,6 +350,9 @@ class Listing extends ChangeNotifier {
       videoLink: json['video_link'] ?? (property is Map ? property['video_link'] : null),
       videoProcessing: json['video_processing'] != null ? VideoProcessing.fromJson(json['video_processing']) : null,
       userContactHidden: json['user_contact_hidden'] ?? false,
+      contactRevealed: json['contact_revealed'] ?? false,
+      contactRemaining: json['contact_remaining'] ?? 0,
+      contactMax: json['contact_max'] ?? 0,
       videoBlocked: json['video_blocked'] ?? false,
       interestBlocked: json['interest_blocked'] ?? false,
       sitePlanImageLink: json['site_plan_image_link'] ?? 

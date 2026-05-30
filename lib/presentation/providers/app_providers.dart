@@ -839,6 +839,10 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           canCreateVipListing: currentSubResponse.canCreateVipListing,
           canCreateOrder: currentSubResponse.canCreateOrder,
           hasPaidSubscription: currentSubResponse.hasPaidSubscription,
+          canSeeVideo: currentSubResponse.canSeeVideo,
+          canSeeContact: currentSubResponse.canSeeContact,
+          contactViewsUsed: currentSubResponse.contactViewsUsed,
+          contactViewsRemaining: currentSubResponse.contactViewsRemaining,
         );
       } else {
         state = state.copyWith(
@@ -861,6 +865,10 @@ class SubscriptionState {
   final bool canCreateVipListing;
   final bool canCreateOrder;
   final bool hasPaidSubscription;
+  final bool canSeeVideo;
+  final bool canSeeContact;
+  final int contactViewsUsed;
+  final int contactViewsRemaining;
   bool get canVipListing => canCreateVipListing;
   final String? errorMessage;
 
@@ -873,6 +881,10 @@ class SubscriptionState {
     this.canCreateVipListing = false,
     this.canCreateOrder = false,
     this.hasPaidSubscription = false,
+    this.canSeeVideo = false,
+    this.canSeeContact = false,
+    this.contactViewsUsed = 0,
+    this.contactViewsRemaining = 0,
     this.errorMessage,
   });
 
@@ -885,6 +897,10 @@ class SubscriptionState {
         canCreateVipListing = false,
         canCreateOrder = false,
         hasPaidSubscription = false,
+        canSeeVideo = false,
+        canSeeContact = false,
+        contactViewsUsed = 0,
+        contactViewsRemaining = 0,
         errorMessage = null;
 
   const SubscriptionState.loaded({
@@ -895,6 +911,10 @@ class SubscriptionState {
     this.canCreateVipListing = false,
     this.canCreateOrder = false,
     this.hasPaidSubscription = false,
+    this.canSeeVideo = false,
+    this.canSeeContact = false,
+    this.contactViewsUsed = 0,
+    this.contactViewsRemaining = 0,
   })  : isLoading = false,
         errorMessage = null;
 
@@ -907,6 +927,10 @@ class SubscriptionState {
     bool? canCreateVipListing,
     bool? canCreateOrder,
     bool? hasPaidSubscription,
+    bool? canSeeVideo,
+    bool? canSeeContact,
+    int? contactViewsUsed,
+    int? contactViewsRemaining,
     String? errorMessage,
   }) {
     return SubscriptionState(
@@ -918,6 +942,10 @@ class SubscriptionState {
       canCreateVipListing: canCreateVipListing ?? this.canCreateVipListing,
       canCreateOrder: canCreateOrder ?? this.canCreateOrder,
       hasPaidSubscription: hasPaidSubscription ?? this.hasPaidSubscription,
+      canSeeVideo: canSeeVideo ?? this.canSeeVideo,
+      canSeeContact: canSeeContact ?? this.canSeeContact,
+      contactViewsUsed: contactViewsUsed ?? this.contactViewsUsed,
+      contactViewsRemaining: contactViewsRemaining ?? this.contactViewsRemaining,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

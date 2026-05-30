@@ -651,6 +651,17 @@
   "markAsVipTitle": "Mark as VIP?",
   "markAsVip": "Mark as VIP",
   "markAsVipMessage": "Your listing will be highlighted with a VIP badge for extra visibility.",
+  "upgradeToContact": "Upgrade to Contact",
+  "listingsRevealContact": "Reveal Contact",
+  "listingsRevealing": "Revealing...",
+  "listingsSeller": "Seller",
+  "listingsContactViewsRemaining": "{remaining} of {max} contact views remaining this period",
+  "@listingsContactViewsRemaining": {
+    "placeholders": {
+      "remaining": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
   "ordersLimitTitle": "Order Limit Reached",
   "ordersLimitMessage": "You've reached the maximum number of orders for your current plan. Upgrade to create more orders.",
   "ordersUpgradePlan": "Upgrade Plan",

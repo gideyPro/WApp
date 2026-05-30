@@ -1546,7 +1546,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                       ? () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()))
                       : () => _submitInterest(listing.id),
                     icon: Icon(listing.interestBlocked ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
-                    label: Text(listing.interestBlocked ? "Upgrade to Contact" : l10n.listingsImInterested),
+                    label: Text(listing.interestBlocked ? l10n.upgradeToContact : l10n.listingsImInterested),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.accent500),
@@ -1593,9 +1593,114 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 ),
             ],
           ),
+          // Contact reveal section (non-owner, plan allows contact, not yet revealed)
+          if (!isOwner && listing.userContactHidden && !listing.contactRevealed && !listing.interestBlocked) ...[
+            const SizedBox(height: 12),
+            _buildContactRevealSection(listing),
+          ],
+          // Revealed contact info (non-owner, already revealed)
+          if (!isOwner && listing.contactRevealed) ...[
+            const SizedBox(height: 12),
+            _buildRevealedContactSection(listing),
+          ],
         ],
       ),
     );
+  }
+
+  Widget _buildContactRevealSection(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.accent500.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.accent500.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.lock_outline, size: 28, color: AppColors.accent600),
+          const SizedBox(height: 8),
+          Text(l10n.listingsRevealContact, style: AppTextStyles.title.copyWith(fontSize: 14)),
+          if (listing.contactMax > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              l10n.listingsContactViewsRemaining(listing.contactRemaining, listing.contactMax),
+              style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _isRevealingContact ? null : () => _revealContact(listing.id),
+              icon: _isRevealingContact
+                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  : const Icon(Icons.visibility_outlined, size: 18),
+              label: Text(_isRevealingContact ? l10n.listingsRevealing : l10n.listingsRevealContact),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accent500,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRevealedContactSection(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.success.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.success.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.check_circle_outline, size: 28, color: AppColors.success),
+          const SizedBox(height: 8),
+          Text(
+            l10n.listingsSeller,
+            style: AppTextStyles.title.copyWith(fontSize: 14, color: AppColors.success),
+          ),
+          const SizedBox(height: 4),
+          SelectableText(
+            _revealedContact ?? '---',
+            style: AppTextStyles.title.copyWith(fontSize: 18),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isRevealingContact = false;
+  String? _revealedContact;
+
+  Future<void> _revealContact(int listingId) async {
+    setState(() => _isRevealingContact = true);
+    try {
+      final listingService = ListingService();
+      final response = await listingService.revealContact(listingId);
+      if (response.success && mounted) {
+        setState(() => _revealedContact = response.contact);
+        // Reload listing to get contactRevealed=true
+        ref.read(listingDetailProvider.notifier).loadListing(listingId);
+      } else if (mounted) {
+        WaveToast.showError(context, response.message);
+      }
+    } catch (e) {
+      if (mounted) {
+        WaveToast.showError(context, AppLocalizations.of(context).commonError);
+      }
+    } finally {
+      if (mounted) setState(() => _isRevealingContact = false);
+    }
   }
 
   Future<void> _submitInterest(int listingId, [String? message]) async {

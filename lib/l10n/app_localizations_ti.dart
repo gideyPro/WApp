@@ -350,7 +350,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get profileFirstNameRequired => 'ሽም የድሊ እዩ';
 
   @override
-  String get profileEmailRequired => 'Email is required';
+  String get profileEmailRequired => 'ኢሜይል የድሊ እዩ';
 
   @override
   String get profileEmailInvalid => 'በጃኹም ትኽክለኛ ኢሜይል ኣእትዉ';
@@ -1500,7 +1500,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String authOtpSentEmailMessage(Object email) {
-    return 'We sent a 6-digit code to $email';
+    return '6 ኣሃዝ ኮድ ናብ $email ልኢኹ';
   }
 
   @override
@@ -1527,7 +1527,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get authNoAccount => 'መለያ የብልኩምን? ';
 
   @override
-  String get authEmail => 'Email';
+  String get authEmail => 'ኢሜይል';
 
   @override
   String get authCreateAccount => 'መለያኹም ፍጠሩ';
@@ -2026,6 +2026,23 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get markAsVipMessage => 'ዝርዝርኩም ብናይ VIP ባጅ ንተወሳኺ ርእይቲ ይጥButtonTitles።';
+
+  @override
+  String get upgradeToContact => 'ንምርካብ ዕቅድ ምሓሹ';
+
+  @override
+  String get listingsRevealContact => 'መረጃ ርኢ';
+
+  @override
+  String get listingsRevealing => 'ኣብ ምርኣይ ላይ...';
+
+  @override
+  String get listingsSeller => 'ሻጭ';
+
+  @override
+  String listingsContactViewsRemaining(int remaining, int max) {
+    return 'ብዙሕ $remaining ናይ $max ናይ ምርካብ ተጠቒመ ኣሎ';
+  }
 
   @override
   String get ordersLimitTitle => 'ናይ ትእዛዝ ገደብ ተበጂሱ';

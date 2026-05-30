@@ -2063,6 +2063,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your listing will be highlighted with a VIP badge for extra visibility.';
 
   @override
+  String get upgradeToContact => 'Upgrade to Contact';
+
+  @override
+  String get listingsRevealContact => 'Reveal Contact';
+
+  @override
+  String get listingsRevealing => 'Revealing...';
+
+  @override
+  String get listingsSeller => 'Seller';
+
+  @override
+  String listingsContactViewsRemaining(int remaining, int max) {
+    return '$remaining of $max contact views remaining this period';
+  }
+
+  @override
   String get ordersLimitTitle => 'Order Limit Reached';
 
   @override

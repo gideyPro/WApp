@@ -10,6 +10,24 @@ enum DetailsAccess {
   full
 }
 
+/// Price info with discount details from the API
+class PriceInfo {
+  final double original;
+  final double discounted;
+  final String? type; // 'upgrade' or 'overall'
+  final double? discountPercentage;
+
+  const PriceInfo({
+    required this.original,
+    required this.discounted,
+    this.type,
+    this.discountPercentage,
+  });
+
+  bool get hasDiscount => type != null && discounted < original;
+  bool get isUpgrade => type == 'upgrade';
+}
+
 /// Subscription Plan Model
 class SubscriptionPlan {
   final int id;
@@ -23,10 +41,12 @@ class SubscriptionPlan {
   final int maxFeaturedListings;
   final int maxVipListings;
   final int maxOrders;
+  final int maxContacts;
   final DetailsAccess detailsAccess;
   final List<String>? features;
   final bool isActive;
   final int? sortOrder;
+  final PriceInfo? priceInfo;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -42,10 +62,12 @@ class SubscriptionPlan {
     this.maxFeaturedListings = 0,
     this.maxVipListings = 0,
     this.maxOrders = 0,
+    this.maxContacts = 0,
     this.detailsAccess = DetailsAccess.discovery,
     this.features,
     this.isActive = true,
     this.sortOrder,
+    this.priceInfo,
     this.createdAt,
     this.updatedAt,
   });
@@ -63,15 +85,33 @@ class SubscriptionPlan {
       maxFeaturedListings: json['max_featured_listings'] ?? 0,
       maxVipListings: json['max_vip_listings'] ?? 0,
       maxOrders: json['max_orders'] ?? 0,
+      maxContacts: json['max_contacts'] ?? 0,
       detailsAccess: _parseDetailsAccess(json['details_access']),
       features: _parseFeatures(json['features']),
       isActive: json['is_active'] ?? true,
       sortOrder: json['sort_order'],
+      priceInfo: _parsePriceInfo(json['price_info']),
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
+          : null,
+    );
+  }
+
+  static PriceInfo? _parsePriceInfo(dynamic value) {
+    if (value == null || value is! Map) return null;
+    final map = Map<String, dynamic>.from(value);
+    final original = _parseDouble(map['original']);
+    final discounted = _parseDouble(map['discounted']);
+    if (original == 0 && discounted == 0) return null;
+    return PriceInfo(
+      original: original,
+      discounted: discounted,
+      type: map['type']?.toString(),
+      discountPercentage: map['rule'] != null && map['rule'] is Map
+          ? _parseDouble((map['rule'] as Map)['discount_percentage'])
           : null,
     );
   }

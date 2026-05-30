@@ -1528,7 +1528,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get authNoAccount => 'መለያ የለዎትም? ';
 
   @override
-  String get authEmail => 'Email';
+  String get authEmail => 'ኢሜይል';
 
   @override
   String get authCreateAccount => 'መለያዎን ይፍጠሩ';
@@ -2028,6 +2028,23 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get markAsVipMessage => 'ምዝገባዎ ተጨማሪ ታይታ እንዲያገኝ በ VIP ባጅ ይደምቃል።';
+
+  @override
+  String get upgradeToContact => 'ለመገናኘት ያሻሽሉ';
+
+  @override
+  String get listingsRevealContact => 'መረጃ አሳይ';
+
+  @override
+  String get listingsRevealing => 'በማሳየት ላይ...';
+
+  @override
+  String get listingsSeller => 'ሻጭ';
+
+  @override
+  String listingsContactViewsRemaining(int remaining, int max) {
+    return 'ይህንን ወቅት $remaining ከ$max የመገናኘት ተከፋይ ተከፍቷል';
+  }
 
   @override
   String get ordersLimitTitle => 'የትዕዛዝ ገደብ ተደርሷል';

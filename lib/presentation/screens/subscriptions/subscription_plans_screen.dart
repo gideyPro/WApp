@@ -585,6 +585,14 @@ class _PlanCard extends StatelessWidget {
     required this.onSelect,
   });
 
+  String _formatDiscountedPrice(SubscriptionPlan plan, String currency) {
+    final price = plan.priceInfo!.discounted;
+    if (currency == 'USD') {
+      return '\$${price.toStringAsFixed(2)}';
+    }
+    return 'ETB ${price.toStringAsFixed(0)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isFree = plan.isFree;
@@ -657,18 +665,49 @@ class _PlanCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      plan.getDisplayPrice(selectedCurrency),
-                      style: AppTextStyles.headline3.copyWith(
-                        color: isCurrentPlan ? AppColors.accent600 : context.theme.textPrimary,
+                    if (plan.priceInfo != null && plan.priceInfo!.hasDiscount) ...[
+                      Text(
+                        plan.getDisplayPrice(selectedCurrency),
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          decoration: TextDecoration.lineThrough,
+                          color: context.theme.textMuted,
+                        ),
                       ),
-                    ),
+                      Text(
+                        _formatDiscountedPrice(plan, selectedCurrency),
+                        style: AppTextStyles.headline3.copyWith(
+                          color: isCurrentPlan ? AppColors.accent600 : AppColors.success,
+                        ),
+                      ),
+                    ] else
+                      Text(
+                        plan.getDisplayPrice(selectedCurrency),
+                        style: AppTextStyles.headline3.copyWith(
+                          color: isCurrentPlan ? AppColors.accent600 : context.theme.textPrimary,
+                        ),
+                      ),
                     Text(
                       plan.durationLabel,
                       style: AppTextStyles.caption.copyWith(
                         color: context.theme.textMuted,
                       ),
                     ),
+                    if (plan.priceInfo != null && plan.priceInfo!.hasDiscount) ...[
+                      const SizedBox(height: 2),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: plan.priceInfo!.isUpgrade ? AppColors.accent500 : AppColors.success,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          plan.priceInfo!.isUpgrade
+                              ? 'Upgrade ${plan.priceInfo!.discountPercentage?.toInt()}% off'
+                              : 'Promo ${plan.priceInfo!.discountPercentage?.toInt()}% off',
+                          style: AppTextStyles.caption.copyWith(color: Colors.white, fontSize: 10),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ],
@@ -699,6 +738,14 @@ class _PlanCard extends StatelessWidget {
                   label: '${plan.maxVipListings} VIP Listings',
                   included: plan.maxVipListings > 0,
                 ),
+                if (plan.maxContacts > 0) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  _buildFeatureRow(context,
+                    icon: Icons.contact_phone_outlined,
+                    label: '${plan.maxContacts} Contact Views',
+                    included: true,
+                  ),
+                ],
                 // Additional features from JSON (if any)
                 if (plan.features != null && plan.features!.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.sm),

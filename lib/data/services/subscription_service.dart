@@ -106,6 +106,10 @@ class SubscriptionServiceApi {
           canCreateVipListing: data?['can_create_vip_listing'] ?? false,
           canCreateOrder: data?['can_create_order'] ?? false,
           hasPaidSubscription: data?['has_paid_subscription'] ?? false,
+          canSeeVideo: data?['can_see_video'] ?? false,
+          canSeeContact: data?['can_see_contact'] ?? false,
+          contactViewsUsed: data?['contact_views_used'] ?? 0,
+          contactViewsRemaining: data?['contact_views_remaining'] ?? 0,
         );
       }
 
@@ -355,6 +359,10 @@ class CurrentSubscriptionResponse {
   final bool canCreateVipListing;
   final bool canCreateOrder;
   final bool hasPaidSubscription;
+  final bool canSeeVideo;
+  final bool canSeeContact;
+  final int contactViewsUsed;
+  final int contactViewsRemaining;
 
   const CurrentSubscriptionResponse({
     required this.success,
@@ -365,6 +373,10 @@ class CurrentSubscriptionResponse {
     this.canCreateVipListing = true,
     this.canCreateOrder = true,
     this.hasPaidSubscription = false,
+    this.canSeeVideo = false,
+    this.canSeeContact = false,
+    this.contactViewsUsed = 0,
+    this.contactViewsRemaining = 0,
   });
 }
 
