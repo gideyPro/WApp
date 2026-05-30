@@ -3910,6 +3910,12 @@ abstract class AppLocalizations {
   /// **'Mark as VIP'**
   String get markAsVip;
 
+  /// No description provided for @markAsVipMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your listing will be highlighted with a VIP badge for extra visibility.'**
+  String get markAsVipMessage;
+
   /// No description provided for @ordersLimitTitle.
   ///
   /// In en, this message translates to:

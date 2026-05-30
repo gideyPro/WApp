@@ -1286,7 +1286,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     final confirmed = await WaveDialog.show<bool>(
       context: context,
       title: l10n.markAsVipTitle,
-      message: 'Your listing will be highlighted with a VIP badge for extra visibility.',
+      message: l10n.markAsVipMessage,
       type: DialogType.confirm,
       actions: [
         WaveButton(

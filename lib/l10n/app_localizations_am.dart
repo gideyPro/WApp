@@ -2027,6 +2027,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get markAsVip => 'እንደ VIP ምረጥ';
 
   @override
+  String get markAsVipMessage => 'ምዝገባዎ ተጨማሪ ታይታ እንዲያገኝ በ VIP ባጅ ይደምቃል።';
+
+  @override
   String get ordersLimitTitle => 'የትዕዛዝ ገደብ ተደርሷል';
 
   @override

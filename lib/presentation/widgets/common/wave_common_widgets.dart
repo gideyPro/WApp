@@ -804,6 +804,7 @@ class WaveMessageScreen extends StatelessWidget {
   }
 
   Widget _buildAction(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final hasRetry = onRetry != null;
     final hasAction = onAction != null;
 
@@ -811,7 +812,7 @@ class WaveMessageScreen extends StatelessWidget {
       return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: Text(
-          'Dismiss',
+          l10n.messageDismiss,
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.accent600,
             fontWeight: FontWeight.w600,
@@ -823,7 +824,7 @@ class WaveMessageScreen extends StatelessWidget {
     }
 
     final callback = hasRetry ? onRetry! : onAction!;
-    final label = actionLabel ?? (hasRetry ? 'Try Again' : 'Continue');
+    final label = actionLabel ?? (hasRetry ? l10n.messageRetry : l10n.commonContinue);
 
     return GestureDetector(
       onTap: callback,

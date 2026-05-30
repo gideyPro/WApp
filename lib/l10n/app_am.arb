@@ -638,6 +638,7 @@
   "connectivityOnline": "መረብ ተመልሷል",
   "markAsVipTitle": "እንደ VIP ልመርቅ?",
   "markAsVip": "እንደ VIP ምረጥ",
+  "markAsVipMessage": "ምዝገባዎ ተጨማሪ ታይታ እንዲያገኝ በ VIP ባጅ ይደምቃል።",
   "ordersLimitTitle": "የትዕዛዝ ገደብ ተደርሷል",
   "ordersLimitMessage": "ለአሁኑ ዕቅድዎ ከፍተኛ የትዕዛዝ ብዛት ተደርሷል። ተጨማሪ ትዕዛዞች ለመፍጠር ዕቅድዎን ያሻሽሉ።",
   "ordersUpgradePlan": "ዕቅድ ያሻሽሉ"

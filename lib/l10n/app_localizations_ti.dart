@@ -2025,6 +2025,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get markAsVip => 'እንደ VIP ምረጽ';
 
   @override
+  String get markAsVipMessage => 'ዝርዝርኩም ብናይ VIP ባጅ ንተወሳኺ ርእይቲ ይጥButtonTitles።';
+
+  @override
   String get ordersLimitTitle => 'ናይ ትእዛዝ ገደብ ተበጂሱ';
 
   @override

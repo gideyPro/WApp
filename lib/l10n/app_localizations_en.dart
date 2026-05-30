@@ -2059,6 +2059,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markAsVip => 'Mark as VIP';
 
   @override
+  String get markAsVipMessage =>
+      'Your listing will be highlighted with a VIP badge for extra visibility.';
+
+  @override
   String get ordersLimitTitle => 'Order Limit Reached';
 
   @override
