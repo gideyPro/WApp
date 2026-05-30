@@ -640,6 +640,7 @@
   "ordersLimitTitle": "ናይ ትእዛዝ ገደብ ተበጂሱ",
   "ordersLimitMessage": "ንናይ ሕጂ ዕቅድኩም ዝለዓለ ቁጽሪ ትእዛዝ ተበጂሑ። ተወሳኺ ትእዛዝ ንምፍጠር ዕቅድኩም ምሓሹ።",
   "ordersUpgradePlan": "ዕቅድ ምሓሹ",
+  "subscriptionVideoUpgrade": "ናይ ንብረት ቪዲዮታት ንምርኣይ ዕቅድኩም ምሓሹ",
   "subscriptionPlanNotSupportedListing": "ናይ ሕጂ ዕቅድኩም ዝርዝር ምፍጣር ኣይድግፍን።",
   "subscriptionPlanNotSupportedOrder": "ናይ ሕጂ ዕቅድኩም ትእዛዝ ምፍጣር ኣይድግፍን።"
 }

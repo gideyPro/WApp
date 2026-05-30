@@ -1055,21 +1055,86 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     final l10n = AppLocalizations.of(context);
     
     if (listing.videoBlocked) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       return Container(
-        height: 200,
         decoration: BoxDecoration(
-          color: context.shimmerBase,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+                ? [AppColors.primary800, AppColors.primary900]
+                : [AppColors.accent50, AppColors.primary50],
+          ),
+          border: Border.all(
+            color: isDark
+                ? AppColors.accent500.withValues(alpha: 0.2)
+                : AppColors.accent200,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.accent500.withValues(alpha: isDark ? 0.08 : 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lock_outline, size: 40, color: context.theme.textMuted),
-              const SizedBox(height: 12),
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.accent500.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.workspace_premium_outlined,
+                  size: 30,
+                  color: AppColors.accent500,
+                ),
+              ),
+              const SizedBox(height: 16),
               Text(
-                "Upgrade your plan to watch property videos",
-                style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textMuted),
+                l10n.subscriptionVideoUpgrade,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                l10n.subscriptionRequiredDetailsSubtitle,
+                style: AppTextStyles.caption.copyWith(
+                  color: context.theme.textMuted,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 180,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SubscriptionPlansScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.rocket_launch_outlined, size: 18),
+                  label: Text(l10n.ordersUpgradePlan),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.accent500,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
               ),
             ],
           ),

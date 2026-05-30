@@ -642,6 +642,7 @@
   "ordersLimitTitle": "የትዕዛዝ ገደብ ተደርሷል",
   "ordersLimitMessage": "ለአሁኑ ዕቅድዎ ከፍተኛ የትዕዛዝ ብዛት ተደርሷል። ተጨማሪ ትዕዛዞች ለመፍጠር ዕቅድዎን ያሻሽሉ።",
   "ordersUpgradePlan": "ዕቅድ ያሻሽሉ",
+  "subscriptionVideoUpgrade": "የንብረት ቪዲዮዎችን ለማየት ዕቅድዎን ያሻሽሉ",
   "subscriptionPlanNotSupportedListing": "የአሁኑ ዕቅድዎ ምዝገባዎችን መፍጠር አይደግፍም።",
   "subscriptionPlanNotSupportedOrder": "የአሁኑ ዕቅድዎ ትዕዛዞችን መፍጠር አይደግፍም።"
 }

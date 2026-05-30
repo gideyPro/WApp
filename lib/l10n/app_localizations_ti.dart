@@ -2038,6 +2038,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersUpgradePlan => 'ዕቅድ ምሓሹ';
 
   @override
+  String get subscriptionVideoUpgrade => 'ናይ ንብረት ቪዲዮታት ንምርኣይ ዕቅድኩም ምሓሹ';
+
+  @override
   String get subscriptionPlanNotSupportedListing =>
       'ናይ ሕጂ ዕቅድኩም ዝርዝር ምፍጣር ኣይድግፍን።';
 

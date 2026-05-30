@@ -3934,6 +3934,12 @@ abstract class AppLocalizations {
   /// **'Upgrade Plan'**
   String get ordersUpgradePlan;
 
+  /// No description provided for @subscriptionVideoUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to watch property videos'**
+  String get subscriptionVideoUpgrade;
+
   /// No description provided for @subscriptionPlanNotSupportedListing.
   ///
   /// In en, this message translates to:

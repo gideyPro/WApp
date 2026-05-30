@@ -2073,6 +2073,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersUpgradePlan => 'Upgrade Plan';
 
   @override
+  String get subscriptionVideoUpgrade => 'Upgrade to watch property videos';
+
+  @override
   String get subscriptionPlanNotSupportedListing =>
       'Your current plan does not support creating listings.';
 

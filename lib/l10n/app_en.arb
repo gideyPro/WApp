@@ -654,6 +654,7 @@
   "ordersLimitTitle": "Order Limit Reached",
   "ordersLimitMessage": "You've reached the maximum number of orders for your current plan. Upgrade to create more orders.",
   "ordersUpgradePlan": "Upgrade Plan",
+  "subscriptionVideoUpgrade": "Upgrade to watch property videos",
   "subscriptionPlanNotSupportedListing": "Your current plan does not support creating listings.",
   "subscriptionPlanNotSupportedOrder": "Your current plan does not support creating orders."
 }
