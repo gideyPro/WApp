@@ -1954,7 +1954,22 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingUpgradeToFeatureSubtitle =>
-      'ናይ ሕጂ ትልምኹም ፍሉያት ንብረታት ኣየጠቓልልን። ንብረትኩም ፈሊኹም ንምውጻእ ናብ ፕሮ ኣዕብዩ።';
+      'ናይ ሕጂ ትልምኹም ፍሉያት ንብረታት ኣየጠቓልልን። ንብረትኩም ፈሊኹም ንምውጻእ ዝድግፍ ዕቅድ ምሓሹ።';
+
+  @override
+  String get listingUpgradeToVip => 'ንVIP ዕቅድ ምሓሹ';
+
+  @override
+  String get listingUpgradeToVipSubtitle =>
+      'ናይ ሕጂ ዕቅድኩም ናይ VIP ዝርዝር ኣይሓዝን። ዝርዝርኩም ከም VIP ንምድላይ ዝድግፍ ዕቅድ ምሓሹ።';
+
+  @override
+  String get subscriptionRequiredFeatureSubtitle =>
+      'እዚ ዝርዝር ንምድላይ ናይ ዝተመረጠ ዝርዝር መዳረሻ ዘለዎ ንጡፍ ምዝገባ የድሊ።';
+
+  @override
+  String get subscriptionRequiredVipSubtitle =>
+      'እዚ ዝርዝር ከም VIP ንምድላይ ናይ VIP ዝርዝር መዳረሻ ዘለዎ ንጡፍ ምዝገባ የድሊ።';
 
   @override
   String get errorConnection => 'ናይ ርክብ ጌጋ';

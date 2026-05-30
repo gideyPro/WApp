@@ -226,8 +226,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final l10n = AppLocalizations.of(context);
     final result = await WaveDialog.showUpgrade(
       context: context,
+      icon: Icons.visibility_outlined,
+      iconColor: AppColors.accent500,
       title: l10n.subscriptionRequiredTitle,
       message: l10n.subscriptionRequiredDetailsSubtitle,
+      actionLabel: l10n.listingViewPlans,
     );
     if (result == true && mounted) {
       Navigator.of(context).push(

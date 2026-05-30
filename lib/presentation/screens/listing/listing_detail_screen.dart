@@ -1338,7 +1338,15 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   Future<void> _vipListing(Listing listing) async {
     final subState = ref.read(subscriptionProvider);
     if (!subState.canVipListing) {
-      final goSub = await _showFeatureUpgradeDialog();
+      final l10n = AppLocalizations.of(context);
+      final goSub = await WaveDialog.showUpgrade(
+        context: context,
+        icon: Icons.diamond_outlined,
+        iconColor: AppColors.vip,
+        title: l10n.listingUpgradeToVip,
+        message: l10n.subscriptionRequiredVipSubtitle,
+        actionLabel: l10n.listingViewPlans,
+      );
       if (goSub == true && mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
@@ -1387,7 +1395,15 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   Future<void> _featureListing(Listing listing) async {
     final subState = ref.read(subscriptionProvider);
     if (!subState.canFeatureListing) {
-      final goSub = await _showFeatureUpgradeDialog();
+      final l10n = AppLocalizations.of(context);
+      final goSub = await WaveDialog.showUpgrade(
+        context: context,
+        icon: Icons.workspace_premium_outlined,
+        iconColor: AppColors.accent500,
+        title: l10n.listingUpgradeToFeature,
+        message: l10n.subscriptionRequiredFeatureSubtitle,
+        actionLabel: l10n.listingViewPlans,
+      );
       if (goSub == true && mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
@@ -1430,27 +1446,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
         WaveToast.showError(context, AppLocalizations.of(context).commonError);
       }
     }
-  }
-
-  Future<bool?> _showFeatureUpgradeDialog() {
-    final l10n = AppLocalizations.of(context);
-    return WaveDialog.show<bool>(
-      context: context,
-      title: l10n.listingUpgradeToFeature,
-      message: l10n.listingUpgradeToFeatureSubtitle,
-      type: DialogType.confirm,
-      actions: [
-        WaveButton(
-          text: l10n.commonCancel,
-          variant: ButtonVariant.outline,
-          onPressed: () => Navigator.pop(context, false),
-        ),
-        WaveButton(
-          text: l10n.listingViewPlans,
-          onPressed: () => Navigator.pop(context, true),
-        ),
-      ],
-    );
   }
 
   Widget _buildActionButtons(Listing listing) {
@@ -1666,14 +1661,36 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
           const Icon(Icons.check_circle_outline, size: 28, color: AppColors.success),
           const SizedBox(height: 8),
           Text(
-            l10n.listingsSeller,
+            _revealedName?.isNotEmpty == true ? _revealedName! : l10n.listingsSeller,
             style: AppTextStyles.title.copyWith(fontSize: 14, color: AppColors.success),
           ),
-          const SizedBox(height: 4),
-          SelectableText(
-            _revealedContact ?? '---',
-            style: AppTextStyles.title.copyWith(fontSize: 18),
-          ),
+          const SizedBox(height: 8),
+          if (_revealedContact?.isNotEmpty == true)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.phone_outlined, size: 16, color: AppColors.stone500),
+                const SizedBox(width: 6),
+                SelectableText(
+                  _revealedContact!,
+                  style: AppTextStyles.title.copyWith(fontSize: 18),
+                ),
+              ],
+            ),
+          if (_revealedEmail?.isNotEmpty == true) ...[
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.email_outlined, size: 16, color: AppColors.stone500),
+                const SizedBox(width: 6),
+                SelectableText(
+                  _revealedEmail!,
+                  style: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone600),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -1681,6 +1698,8 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
   bool _isRevealingContact = false;
   String? _revealedContact;
+  String? _revealedName;
+  String? _revealedEmail;
 
   Future<void> _revealContact(int listingId) async {
     setState(() => _isRevealingContact = true);
@@ -1688,7 +1707,11 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       final listingService = ListingService();
       final response = await listingService.revealContact(listingId);
       if (response.success && mounted) {
-        setState(() => _revealedContact = response.contact);
+        setState(() {
+          _revealedContact = response.contact;
+          _revealedName = response.name;
+          _revealedEmail = response.email;
+        });
         // Reload listing to get contactRevealed=true
         ref.read(listingDetailProvider.notifier).loadListing(listingId);
       } else if (mounted) {

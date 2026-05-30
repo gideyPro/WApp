@@ -262,8 +262,11 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                   }
                   final goSub = await WaveDialog.showUpgrade(
                     context: context,
+                    icon: Icons.add_home_work_outlined,
+                    iconColor: AppColors.accent500,
                     title: l10n.subscriptionRequiredTitle,
                     message: message,
+                    actionLabel: l10n.listingViewPlans,
                   );
                   if (goSub == true) {
                     nav.push(
@@ -370,8 +373,11 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                       }
                       final goSub = await WaveDialog.showUpgrade(
                         context: context,
+                        icon: Icons.add_home_work_outlined,
+                        iconColor: AppColors.accent500,
                         title: l10n.subscriptionRequiredTitle,
                         message: message,
+                        actionLabel: l10n.listingViewPlans,
                       );
                       if (goSub == true && mounted) {
                         Navigator.of(context).push(

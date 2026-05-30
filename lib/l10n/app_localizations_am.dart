@@ -1956,7 +1956,22 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get listingUpgradeToFeatureSubtitle =>
-      'የአሁኑ ዕቅድዎ ልዩ ንብረቶችን አያካትትም። ንብረትዎን ለይቶ ለማውጣት ወደ ፕሮ ያሳድጉ።';
+      'የአሁኑ ዕቅድዎ ልዩ ንብረቶችን አያካትትም። ንብረትዎን ለይቶ ለማውጣት የሚደግፍ ዕቅድ ያሻሽሉ።';
+
+  @override
+  String get listingUpgradeToVip => 'ለVIP ያሻሽሉ';
+
+  @override
+  String get listingUpgradeToVipSubtitle =>
+      'የእርስዎ ዕቅድ የVIP ዝርዝሮችን አያካትትም። ዝርዝሮትን እንደ VIP ለመለየት የሚደግፍ ዕቅድ ያሻሽሉ።';
+
+  @override
+  String get subscriptionRequiredFeatureSubtitle =>
+      'ይህንን ዝርዝር ለመለየት የተለዩ ዝርዝር መዳረሻ ያለው ንቁ ምዝገባ ያስፈልግዎታል።';
+
+  @override
+  String get subscriptionRequiredVipSubtitle =>
+      'ይህንን ዝርዝር እንደ VIP ለመለየት የVIP ዝርዝር መዳረሻ ያለው ንቁ ምዝገባ ያስፈልግዎታል።';
 
   @override
   String get errorConnection => 'የግንኙነት ስህተት';

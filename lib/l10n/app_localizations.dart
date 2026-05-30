@@ -3781,8 +3781,32 @@ abstract class AppLocalizations {
   /// No description provided for @listingUpgradeToFeatureSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.'**
+  /// **'Your current plan doesn\'t include featured listings. Upgrade to a supported plan to feature your listings.'**
   String get listingUpgradeToFeatureSubtitle;
+
+  /// No description provided for @listingUpgradeToVip.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to VIP'**
+  String get listingUpgradeToVip;
+
+  /// No description provided for @listingUpgradeToVipSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current plan doesn\'t include VIP listings. Upgrade to a supported plan to mark listings as VIP.'**
+  String get listingUpgradeToVipSubtitle;
+
+  /// No description provided for @subscriptionRequiredFeatureSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You need an active subscription with featured listing access to feature this listing.'**
+  String get subscriptionRequiredFeatureSubtitle;
+
+  /// No description provided for @subscriptionRequiredVipSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You need an active subscription with VIP listing access to mark this listing as VIP.'**
+  String get subscriptionRequiredVipSubtitle;
 
   /// No description provided for @errorConnection.
   ///

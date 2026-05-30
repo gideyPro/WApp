@@ -612,6 +612,8 @@ class ListingService {
         return ContactRevealResponse(
           success: true,
           contact: data['contact']?.toString() ?? '',
+          name: data['name']?.toString() ?? '',
+          email: data['email']?.toString() ?? '',
           alreadyRevealed: data['already_revealed'] ?? false,
         );
       }
@@ -689,12 +691,16 @@ class ContactRevealResponse {
   final bool success;
   final String message;
   final String contact;
+  final String name;
+  final String email;
   final bool alreadyRevealed;
 
   const ContactRevealResponse({
     required this.success,
     this.message = '',
     this.contact = '',
+    this.name = '',
+    this.email = '',
     this.alreadyRevealed = false,
   });
 }

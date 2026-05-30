@@ -120,7 +120,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             icon: const Icon(Icons.add_rounded),
             onPressed: () async {
               final subState = ref.read(subscriptionProvider);
-              if (!subState.canCreateOrder) {
+              if (!subState.isLoading && !subState.canCreateOrder) {
                 _showOrderLimitDialog(context, subState);
                 return;
               }
@@ -163,7 +163,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         actionLabel: l10n.ordersCreate,
         onAction: () async {
           final subState = ref.read(subscriptionProvider);
-          if (!subState.canCreateOrder) {
+          if (!subState.isLoading && !subState.canCreateOrder) {
             _showOrderLimitDialog(context, subState);
             return;
           }

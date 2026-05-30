@@ -1988,7 +1988,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingUpgradeToFeatureSubtitle =>
-      'Your current plan doesn\'t include featured listings. Upgrade to Pro to feature your listings.';
+      'Your current plan doesn\'t include featured listings. Upgrade to a supported plan to feature your listings.';
+
+  @override
+  String get listingUpgradeToVip => 'Upgrade to VIP';
+
+  @override
+  String get listingUpgradeToVipSubtitle =>
+      'Your current plan doesn\'t include VIP listings. Upgrade to a supported plan to mark listings as VIP.';
+
+  @override
+  String get subscriptionRequiredFeatureSubtitle =>
+      'You need an active subscription with featured listing access to feature this listing.';
+
+  @override
+  String get subscriptionRequiredVipSubtitle =>
+      'You need an active subscription with VIP listing access to mark this listing as VIP.';
 
   @override
   String get errorConnection => 'Connection Error';

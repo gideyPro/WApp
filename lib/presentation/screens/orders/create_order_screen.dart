@@ -64,6 +64,8 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   void _checkOrderLimit() {
     final subState = ref.read(subscriptionProvider);
+    // Skip check if subscription data is still loading
+    if (subState.isLoading) return;
     if (subState.canCreateOrder) return;
 
     final nav = Navigator.of(context);
