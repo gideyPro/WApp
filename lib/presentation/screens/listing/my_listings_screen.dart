@@ -11,6 +11,7 @@ import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../settings/settings_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
@@ -207,7 +208,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
         title: Text(AppLocalizations.of(context).profileMyListings),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle_outline),
+            icon: const Icon(Icons.add_rounded),
             onPressed: () async {
               final nav = Navigator.of(context);
               // Check subscription limit before navigating
@@ -309,47 +310,86 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
 
     if (_myListings.isEmpty) {
       final l10n = AppLocalizations.of(context);
-      return WaveEmptyState(
-        icon: Icons.home_outlined,
-        title: l10n.listingsNoResults,
-        subtitle: l10n.myListingsEmptySubtitle,
-        actionLabel: l10n.listingsCreate,
-        onAction: () async {
-          final subState = ref.read(subscriptionProvider);
-          final settingsAsync = ref.read(appSettingsProvider);
-          final subscriptionEnabled = settingsAsync.maybeWhen(
-            data: (data) => data['subscription_enabled'] == true,
-            orElse: () => false,
-          );
-          if (subscriptionEnabled && !subState.canCreateListing) {
-            String message;
-            if (!subState.hasPaidSubscription) {
-              message = l10n.subscriptionRequiredListingSubtitle;
-            } else {
-              final plan = subState.subscription?.plan;
-              if (plan == null || plan.maxListings == 0) {
-                message = l10n.subscriptionPlanNotSupportedListing;
-              } else {
-                message = l10n.subscriptionLimitReached;
-              }
-            }
-            final goSub = await WaveDialog.showUpgrade(
-              context: context,
-              title: l10n.subscriptionRequiredTitle,
-              message: message,
-            );
-            if (goSub == true && mounted) {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-              );
-            }
-            return;
-          }
-          if (!mounted) return;
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const CreateListingScreen()),
-          );
-        },
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary50,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.home_outlined,
+                  size: 40,
+                  color: AppColors.primary400,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                l10n.listingsNoResults,
+                style: AppTextStyles.title,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.myListingsEmptySubtitle,
+                style: AppTextStyles.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: 220,
+                child: WaveButton(
+                  text: l10n.listingsCreate,
+                  icon: Icons.add,
+                  variant: ButtonVariant.success,
+                  isFullWidth: true,
+                  onPressed: () async {
+                    final subState = ref.read(subscriptionProvider);
+                    final settingsAsync = ref.read(appSettingsProvider);
+                    final subscriptionEnabled = settingsAsync.maybeWhen(
+                      data: (data) => data['subscription_enabled'] == true,
+                      orElse: () => false,
+                    );
+                    if (subscriptionEnabled && !subState.canCreateListing) {
+                      String message;
+                      if (!subState.hasPaidSubscription) {
+                        message = l10n.subscriptionRequiredListingSubtitle;
+                      } else {
+                        final plan = subState.subscription?.plan;
+                        if (plan == null || plan.maxListings == 0) {
+                          message = l10n.subscriptionPlanNotSupportedListing;
+                        } else {
+                          message = l10n.subscriptionLimitReached;
+                        }
+                      }
+                      final goSub = await WaveDialog.showUpgrade(
+                        context: context,
+                        title: l10n.subscriptionRequiredTitle,
+                        message: message,
+                      );
+                      if (goSub == true && mounted) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+                        );
+                      }
+                      return;
+                    }
+                    if (!mounted) return;
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const CreateListingScreen()),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
 

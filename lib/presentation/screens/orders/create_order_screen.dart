@@ -509,6 +509,8 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
             WaveButton(
               text: l10n.ordersSubmit,
+              icon: Icons.add,
+              variant: ButtonVariant.success,
               onPressed: _submitting ? null : _submit,
               isLoading: _submitting,
               isFullWidth: true,
