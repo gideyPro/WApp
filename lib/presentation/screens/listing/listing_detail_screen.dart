@@ -1588,10 +1588,13 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 ),
             ],
           ),
-          // Contact reveal section (non-owner, plan allows contact, not yet revealed)
+          // Contact reveal section — only when plan supports it
           if (!isOwner && listing.userContactHidden && !listing.contactRevealed && !listing.interestBlocked) ...[
             const SizedBox(height: 12),
-            _buildContactRevealSection(listing),
+            if (listing.contactMax > 0)
+              _buildContactRevealSection(listing)
+            else
+              _buildContactUpgradeSection(listing),
           ],
           // Revealed contact info (non-owner, already revealed)
           if (!isOwner && listing.contactRevealed) ...[
@@ -1634,6 +1637,42 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                   ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                   : const Icon(Icons.visibility_outlined, size: 18),
               label: Text(_isRevealingContact ? l10n.listingsRevealing : l10n.listingsRevealContact),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accent500,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContactUpgradeSection(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.accent500.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.accent500.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.lock_outline, size: 28, color: AppColors.accent600),
+          const SizedBox(height: 8),
+          Text(l10n.upgradeToContact, style: AppTextStyles.title.copyWith(fontSize: 14)),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+              ),
+              icon: const Icon(Icons.upgrade_outlined, size: 18),
+              label: Text(l10n.listingViewPlans),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.accent500,
                 foregroundColor: Colors.white,
