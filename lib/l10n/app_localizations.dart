@@ -2512,6 +2512,24 @@ abstract class AppLocalizations {
   /// **'Failed to process suggestion.'**
   String get ordersSuggestionsError;
 
+  /// No description provided for @ordersLimitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order limit reached'**
+  String get ordersLimitTitle;
+
+  /// No description provided for @ordersLimitMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached your order limit for this month. Please upgrade your plan to continue.'**
+  String get ordersLimitMessage;
+
+  /// No description provided for @ordersUpgradePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Plan'**
+  String get ordersUpgradePlan;
+
   /// No description provided for @favoritesEmpty.
   ///
   /// In en, this message translates to:

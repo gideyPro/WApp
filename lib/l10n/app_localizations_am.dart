@@ -1283,6 +1283,15 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersSuggestionsError => 'አስተያየትን ማስኬድ አልተሳካም።';
 
   @override
+  String get ordersLimitTitle => 'የትእዛዝ ገደብ ደርሷል';
+
+  @override
+  String get ordersLimitMessage => 'የትእዛዝ ገደብዎ ላይ ደርሰዋል። እባክዎ ተጨማሪ ትእዛዞችን ለመፍጠር እቅድዎን ያሻሽሉ።';
+
+  @override
+  String get ordersUpgradePlan => 'እቅድ አሻሽል';
+
+  @override
   String get favoritesEmpty => 'ምንም ተወዳጅ የለም';
 
   @override

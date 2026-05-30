@@ -1296,6 +1296,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersSuggestionsError => 'Failed to process suggestion.';
 
   @override
+  String get ordersLimitTitle => 'Order limit reached';
+
+  @override
+  String get ordersLimitMessage => 'You have reached your order limit. Please upgrade your plan to create more orders.';
+
+  @override
+  String get ordersUpgradePlan => 'Upgrade Plan';
+
+  @override
   String get favoritesEmpty => 'No favorites yet';
 
   @override

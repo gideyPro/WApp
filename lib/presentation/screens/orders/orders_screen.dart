@@ -8,6 +8,8 @@ import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
+import '../../widgets/common/wave_dialog.dart';
+import '../subscriptions/subscription_plans_screen.dart';
 import 'create_order_screen.dart';
 import 'order_details_screen.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -26,6 +28,32 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(ordersProvider.notifier).loadOrders();
     });
+  }
+
+  void _showOrderLimitDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.ordersLimitTitle),
+        content: Text(l10n.ordersLimitMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+              );
+            },
+            child: Text(l10n.ordersUpgradePlan),
+          ),
+        ],
+      ),
+    );
   }
 
   String _statusLabel(String status, AppLocalizations l10n) {
@@ -88,6 +116,11 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () async {
+              final subState = ref.read(subscriptionProvider);
+              if (!subState.canCreateOrder) {
+                _showOrderLimitDialog(context);
+                return;
+              }
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
               );
@@ -126,6 +159,11 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         subtitle: l10n.ordersEmptySubtitle,
         actionLabel: l10n.ordersCreate,
         onAction: () async {
+          final subState = ref.read(subscriptionProvider);
+          if (!subState.canCreateOrder) {
+            _showOrderLimitDialog(context);
+            return;
+          }
           await Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
           );

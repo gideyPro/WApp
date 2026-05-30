@@ -1282,6 +1282,15 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersSuggestionsError => 'ሓሳብ ክሳለል ኣይከኣለን።';
 
   @override
+  String get ordersLimitTitle => 'መደብ ገደብ በጺሑ';
+
+  @override
+  String get ordersLimitMessage => 'ናብ መደብ ገደብኩም በጺሕኩም። ተወሳኺ መደባት ንምፍጣር እባኽኩም ፕላንኩም ኣመሓይሹ።';
+
+  @override
+  String get ordersUpgradePlan => 'ፕላን ኣመሓይሽ';
+
+  @override
   String get favoritesEmpty => 'ዝተመርጸ ንብረት የለን';
 
   @override
