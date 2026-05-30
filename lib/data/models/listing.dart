@@ -138,6 +138,7 @@ class Listing extends ChangeNotifier {
   final int contactRemaining;
   final int contactMax;
   final bool videoBlocked;
+  final bool vipBlocked;
   final bool interestBlocked;
 
   /// Returns the full video URL by prepending base URL if needed
@@ -257,6 +258,7 @@ class Listing extends ChangeNotifier {
     this.contactRemaining = 0,
     this.contactMax = 0,
     this.videoBlocked = false,
+    this.vipBlocked = false,
     this.interestBlocked = false,
     this.sitePlanImageLink,
     this.ownershipProofLink,
@@ -354,6 +356,7 @@ class Listing extends ChangeNotifier {
       contactRemaining: json['contact_remaining'] ?? 0,
       contactMax: json['contact_max'] ?? 0,
       videoBlocked: json['video_blocked'] ?? false,
+      vipBlocked: json['vip_blocked'] ?? false,
       interestBlocked: json['interest_blocked'] ?? false,
       sitePlanImageLink: json['site_plan_image_link'] ?? 
           (property is Map ? property['site_plan_image_link'] : null),

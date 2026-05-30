@@ -948,13 +948,15 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     }
     bool hasVideo = (listing.videoUrl != null && listing.videoUrl!.isNotEmpty) || listing.videoBlocked;
     bool hasVideoProcessing = listing.hasVideoProcessing;
+    bool vipBlocked = listing.vipBlocked;
 
-    if (details.isEmpty && !hasVideo && !hasVideoProcessing) return const SizedBox.shrink();
+    if (details.isEmpty && !hasVideo && !hasVideoProcessing && !vipBlocked) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasVideo) _buildVideoSection(listing),
+        if (vipBlocked) _buildVipBlockedSection(listing),
         Text(l10n.listingsPropertyDetails, style: AppTextStyles.title),
         const SizedBox(height: 12),
         WaveCard(
@@ -1018,6 +1020,98 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           const SizedBox(height: 12),
           _buildVideoContent(listing),
         ],
+      ),
+    );
+  }
+
+  Widget _buildVipBlockedSection(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+                ? [AppColors.primary800, AppColors.primary900]
+                : [Colors.purple.shade50, AppColors.primary50],
+          ),
+          border: Border.all(
+            color: isDark
+                ? AppColors.vip.withValues(alpha: 0.2)
+                : AppColors.vip.withValues(alpha: 0.2),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.vip.withValues(alpha: isDark ? 0.08 : 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+          child: Column(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.vip.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.diamond_outlined,
+                  size: 30,
+                  color: AppColors.vip,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.listingUpgradeToVip,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                l10n.subscriptionRequiredDetailsSubtitle,
+                style: AppTextStyles.caption.copyWith(
+                  color: context.theme.textMuted,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 180,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SubscriptionPlansScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.rocket_launch_outlined, size: 18),
+                  label: Text(l10n.ordersUpgradePlan),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.vip,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -1336,25 +1430,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   }
 
   Future<void> _vipListing(Listing listing) async {
-    final subState = ref.read(subscriptionProvider);
-    if (!subState.canVipListing) {
-      final l10n = AppLocalizations.of(context);
-      final goSub = await WaveDialog.showUpgrade(
-        context: context,
-        icon: Icons.diamond_outlined,
-        iconColor: AppColors.vip,
-        title: l10n.listingUpgradeToVip,
-        message: l10n.subscriptionRequiredVipSubtitle,
-        actionLabel: l10n.listingViewPlans,
-      );
-      if (goSub == true && mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-        );
-      }
-      return;
-    }
-
     final l10n = AppLocalizations.of(context);
     final confirmed = await WaveDialog.show<bool>(
       context: context,

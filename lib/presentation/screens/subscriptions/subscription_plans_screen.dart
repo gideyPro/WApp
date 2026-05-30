@@ -117,14 +117,14 @@ class _SubscriptionPlansScreenState
                 subscription,
                 state.canCreateListing,
                 state.canFeatureListing,
-                state.canVipListing,
+                state.canViewVip,
               )
             else
               _buildInactiveSubscriptionBanner(
                 subscription,
                 state.canCreateListing,
                 state.canFeatureListing,
-                state.canVipListing,
+                state.canViewVip,
               ),
             const SizedBox(height: 8),
           ],
@@ -181,7 +181,7 @@ class _SubscriptionPlansScreenState
   }
 
   Widget _buildCurrentSubscriptionBanner(
-      Subscription sub, bool canCreateListing, bool canFeatureListing, bool canVipListing) {
+      Subscription sub, bool canCreateListing, bool canFeatureListing, bool canViewVip) {
     final localPlan = sub.plan;
     if (localPlan == null) return const SizedBox.shrink();
 
@@ -279,11 +279,11 @@ class _SubscriptionPlansScreenState
                   label: l10n.listingFeatured,
                   value: "${sub.featuredListingsUsed}/${localPlan.maxFeaturedListings}",
                 ),
-              if (localPlan.maxVipListings > 0)
+              if (localPlan.viewVip)
                 _buildStatPill(
                   icon: Icons.diamond,
-                  label: 'VIP',
-                  value: "${sub.vipListingsUsed}/${localPlan.maxVipListings}",
+                  label: 'VIP Viewing',
+                  value: '✓',
                 ),
               if (localPlan.maxOrders > 0)
                 _buildStatPill(
@@ -308,7 +308,7 @@ class _SubscriptionPlansScreenState
     Subscription sub,
     bool canCreateListing,
     bool canFeatureListing,
-    bool canVipListing,
+    bool canViewVip,
   ) {
     final localPlan = sub.plan;
     if (localPlan == null) return const SizedBox.shrink();
@@ -735,8 +735,8 @@ class _PlanCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 _buildFeatureRow(context,
                   icon: Icons.diamond,
-                  label: '${plan.maxVipListings} VIP Listings',
-                  included: plan.maxVipListings > 0,
+                  label: plan.viewVip ? 'VIP Listings ✓' : 'VIP Listings',
+                  included: plan.viewVip,
                 ),
                 if (plan.maxContacts > 0) ...[
                   const SizedBox(height: AppSpacing.sm),

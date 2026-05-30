@@ -39,7 +39,7 @@ class SubscriptionPlan {
   final int durationMonths;
   final int maxListings;
   final int maxFeaturedListings;
-  final int maxVipListings;
+  final bool viewVip;
   final int maxOrders;
   final int maxContacts;
   final DetailsAccess detailsAccess;
@@ -60,7 +60,7 @@ class SubscriptionPlan {
     this.durationMonths = 1,
     this.maxListings = 1,
     this.maxFeaturedListings = 0,
-    this.maxVipListings = 0,
+    this.viewVip = false,
     this.maxOrders = 0,
     this.maxContacts = 0,
     this.detailsAccess = DetailsAccess.discovery,
@@ -83,7 +83,7 @@ class SubscriptionPlan {
       durationMonths: json['duration_months'] ?? 1,
       maxListings: json['max_listings'] ?? 1,
       maxFeaturedListings: json['max_featured_listings'] ?? 0,
-      maxVipListings: json['max_vip_listings'] ?? 0,
+      viewVip: json['view_vip'] ?? false,
       maxOrders: json['max_orders'] ?? 0,
       maxContacts: json['max_contacts'] ?? 0,
       detailsAccess: _parseDetailsAccess(json['details_access']),
@@ -189,7 +189,6 @@ class Subscription {
   final DateTime? expiredAt;
   final int listingsUsed;
   final int featuredListingsUsed;
-  final int vipListingsUsed;
   final int ordersUsed;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -206,7 +205,6 @@ class Subscription {
     this.expiredAt,
     this.listingsUsed = 0,
     this.featuredListingsUsed = 0,
-    this.vipListingsUsed = 0,
     this.ordersUsed = 0,
     this.createdAt,
     this.updatedAt,
@@ -231,7 +229,6 @@ class Subscription {
           : null,
       listingsUsed: json['listings_used'] ?? 0,
       featuredListingsUsed: json['featured_listings_used'] ?? 0,
-      vipListingsUsed: json['vip_listings_used'] ?? 0,
       ordersUsed: json['orders_used'] ?? 0,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])

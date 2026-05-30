@@ -827,7 +827,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           subscription: data.subscription,
           canCreateListing: data.canCreateListing,
           canFeatureListing: data.canFeatureListing,
-          canCreateVipListing: data.canCreateVipListing,
+          canViewVip: data.canViewVip,
           canCreateOrder: data.canCreateOrder,
           hasPaidSubscription: data.hasPaidSubscription,
           canSeeVideo: data.canSeeVideo,
@@ -853,14 +853,13 @@ class SubscriptionState {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canFeatureListing;
-  final bool canCreateVipListing;
+  final bool canViewVip;
   final bool canCreateOrder;
   final bool hasPaidSubscription;
   final bool canSeeVideo;
   final bool canSeeContact;
   final int contactViewsUsed;
   final int contactViewsRemaining;
-  bool get canVipListing => canCreateVipListing;
   final String? errorMessage;
 
   const SubscriptionState({
@@ -869,7 +868,7 @@ class SubscriptionState {
     this.subscription,
     this.canCreateListing = false,
     this.canFeatureListing = false,
-    this.canCreateVipListing = false,
+    this.canViewVip = false,
     this.canCreateOrder = false,
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
@@ -885,7 +884,7 @@ class SubscriptionState {
         subscription = null,
         canCreateListing = false,
         canFeatureListing = false,
-        canCreateVipListing = false,
+        canViewVip = false,
         canCreateOrder = false,
         hasPaidSubscription = false,
         canSeeVideo = false,
@@ -899,7 +898,7 @@ class SubscriptionState {
     this.subscription,
     this.canCreateListing = false,
     this.canFeatureListing = false,
-    this.canCreateVipListing = false,
+    this.canViewVip = false,
     this.canCreateOrder = false,
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
@@ -915,7 +914,7 @@ class SubscriptionState {
     Subscription? subscription,
     bool? canCreateListing,
     bool? canFeatureListing,
-    bool? canCreateVipListing,
+    bool? canViewVip,
     bool? canCreateOrder,
     bool? hasPaidSubscription,
     bool? canSeeVideo,
@@ -930,7 +929,7 @@ class SubscriptionState {
       subscription: subscription ?? this.subscription,
       canCreateListing: canCreateListing ?? this.canCreateListing,
       canFeatureListing: canFeatureListing ?? this.canFeatureListing,
-      canCreateVipListing: canCreateVipListing ?? this.canCreateVipListing,
+      canViewVip: canViewVip ?? this.canViewVip,
       canCreateOrder: canCreateOrder ?? this.canCreateOrder,
       hasPaidSubscription: hasPaidSubscription ?? this.hasPaidSubscription,
       canSeeVideo: canSeeVideo ?? this.canSeeVideo,

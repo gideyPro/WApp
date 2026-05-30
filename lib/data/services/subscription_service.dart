@@ -110,7 +110,7 @@ class SubscriptionServiceApi {
           subscription: subscription,
           canCreateListing: data?['can_create_listing'] ?? false,
           canFeatureListing: data?['can_feature_listing'] ?? false,
-          canCreateVipListing: data?['can_create_vip_listing'] ?? false,
+          canViewVip: data?['can_view_vip'] ?? false,
           canCreateOrder: data?['can_create_order'] ?? false,
           hasPaidSubscription: data?['has_paid_subscription'] ?? false,
           canSeeVideo: data?['can_see_video'] ?? false,
@@ -157,7 +157,7 @@ class SubscriptionServiceApi {
           subscription: subscription,
           canCreateListing: data?['can_create_listing'] ?? false,
           canFeatureListing: data?['can_feature_listing'] ?? false,
-          canCreateVipListing: data?['can_create_vip_listing'] ?? false,
+          canViewVip: data?['can_view_vip'] ?? false,
           canCreateOrder: data?['can_create_order'] ?? false,
           hasPaidSubscription: data?['has_paid_subscription'] ?? false,
           canSeeVideo: data?['can_see_video'] ?? false,
@@ -398,7 +398,7 @@ class FullSubscriptionData {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canFeatureListing;
-  final bool canCreateVipListing;
+  final bool canViewVip;
   final bool canCreateOrder;
   final bool hasPaidSubscription;
   final bool canSeeVideo;
@@ -413,7 +413,7 @@ class FullSubscriptionData {
     this.subscription,
     this.canCreateListing = false,
     this.canFeatureListing = false,
-    this.canCreateVipListing = false,
+    this.canViewVip = false,
     this.canCreateOrder = false,
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
@@ -443,7 +443,7 @@ class CurrentSubscriptionResponse {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canFeatureListing;
-  final bool canCreateVipListing;
+  final bool canViewVip;
   final bool canCreateOrder;
   final bool hasPaidSubscription;
   final bool canSeeVideo;
@@ -457,7 +457,7 @@ class CurrentSubscriptionResponse {
     this.subscription,
     this.canCreateListing = true,
     this.canFeatureListing = true,
-    this.canCreateVipListing = true,
+    this.canViewVip = true,
     this.canCreateOrder = true,
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
