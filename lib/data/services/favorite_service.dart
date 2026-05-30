@@ -162,7 +162,12 @@ class FavoriteService {
     if (raw is Map) {
       final data = raw['data'] ?? raw['listings'] ?? raw['items'];
       if (data is List) return data;
-      if (data is Map) return data.values.toList();
+      if (data is Map) {
+        // Handle pagination wrapper: {"current_page":1, "data":[...]}
+        final inner = data['data'] ?? data['listings'] ?? data['items'];
+        if (inner is List) return inner;
+        return data.values.toList();
+      }
     }
     return [];
   }

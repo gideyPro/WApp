@@ -134,7 +134,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
 
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
   List<String> _regions = [], _zones = [], _woredas = [], _kebeles = [];
-  Map<String, int?> _kebeleIds = {};
+  final Map<String, int?> _kebeleIds = {};
   bool _loadingZones = false, _loadingWoredas = false, _loadingKebeles = false;
   int? _addressId;
 
@@ -315,7 +315,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Future<void> _loadKebeles() async {
     if (_selectedRegion == null ||
         _selectedZone == null ||
-        _selectedWoreda == null) return;
+        _selectedWoreda == null) {
+      return;
+    }
     setState(() => _loadingKebeles = true);
     final locale = ref.read(localeProvider).locale?.languageCode ?? 'en';
     try {
@@ -591,7 +593,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     required Function(String?) onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: items.containsKey(value) ? value : null,
+      initialValue: items.containsKey(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
@@ -938,7 +940,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   }) {
     final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
-      value: items.contains(value) ? value : null,
+      initialValue: items.contains(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: AppTextStyles.bodySmall,
@@ -1274,7 +1276,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     required Function(String?) onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: items.containsKey(value) ? value : null,
+      initialValue: items.containsKey(value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
@@ -2314,7 +2316,7 @@ class ListingStep4Review extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.diamond, size: 16, color: AppColors.vip),
+                          const Icon(Icons.diamond, size: 16, color: AppColors.vip),
                           const SizedBox(width: 4),
                           Text('Mark as VIP', style: AppTextStyles.labelMedium.copyWith(
                             fontWeight: FontWeight.w700,

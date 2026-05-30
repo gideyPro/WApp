@@ -59,7 +59,7 @@ class EmptyStateWidget extends StatelessWidget {
     final iconData = icon ?? _getDefaultIcon();
     return Container(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.primary50,
         shape: BoxShape.circle,
       ),

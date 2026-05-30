@@ -366,8 +366,9 @@ class Message {
     if (first.isNotEmpty && last.isNotEmpty) {
       return '${first[0]}${last[0]}'.toUpperCase();
     }
-    if (first.isNotEmpty)
+    if (first.isNotEmpty) {
       return first.substring(0, first.length > 1 ? 2 : 1).toUpperCase();
+    }
     return '??';
   }
 }

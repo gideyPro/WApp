@@ -516,7 +516,7 @@ class PropertyListingCard extends ConsumerWidget {
               : l10n.listingRent,
         ),
         const Spacer(),
-        Icon(
+        const Icon(
           Icons.visibility_outlined,
           size: 16,
           color: AppColors.primary400,
@@ -824,7 +824,7 @@ class FeaturedListingCard extends ConsumerWidget {
               ),
               if (isRestricted) ...[
                 const SizedBox(width: 4),
-                Icon(Icons.lock_outline, size: 10, color: Colors.white70),
+                const Icon(Icons.lock_outline, size: 10, color: Colors.white70),
               ],
             ],
           ),

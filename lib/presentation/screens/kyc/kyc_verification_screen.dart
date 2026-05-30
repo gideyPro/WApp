@@ -82,6 +82,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
   void _showImagePickerOptions(String type) {
     final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
     // For selfies, always open camera directly
     if (type == 'selfie') {
       _pickImage(ImageSource.camera, type);
@@ -91,26 +92,29 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     // For document images, show picker options
     showModalBottomSheet(
       context: context,
+      backgroundColor: theme.bottomSheet,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
       ),
-      builder: (context) => SafeArea(
+      builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: Text(l10n.kycTakePhoto),
+              leading: Icon(Icons.camera_alt, color: theme.textPrimary),
+              title: Text(l10n.kycTakePhoto,
+                  style: TextStyle(color: theme.textPrimary)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(ctx);
                 _pickImage(ImageSource.camera, type);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: Text(l10n.kycChooseGallery),
+              leading: Icon(Icons.photo_library, color: theme.textPrimary),
+              title: Text(l10n.kycChooseGallery,
+                  style: TextStyle(color: theme.textPrimary)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(ctx);
                 _pickImage(ImageSource.gallery, type);
               },
             ),
@@ -223,7 +227,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.emerald50,
                 shape: BoxShape.circle,
               ),
@@ -269,6 +273,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     );
 
     if (subscriptionEnabled && !subState.canCreateListing) {
+      final message = subState.hasPaidSubscription
+          ? AppLocalizations.of(context).subscriptionLimitReached
+          : AppLocalizations.of(context).subscriptionRequiredListingSubtitle;
       final goSub = await showDialog<bool>(
         context: context,
         builder: (ctx) => Dialog(
@@ -296,7 +303,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  AppLocalizations.of(ctx).subscriptionRequiredListingSubtitle,
+                  message,
                   style: AppTextStyles.bodyMedium
                       .copyWith(color: context.theme.textSecondary),
                   textAlign: TextAlign.center,
@@ -363,7 +370,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.accent50,
                 shape: BoxShape.circle,
               ),
@@ -418,11 +425,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.errorLight,
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.cancel_outlined,
                 size: 60,
                 color: AppColors.error,

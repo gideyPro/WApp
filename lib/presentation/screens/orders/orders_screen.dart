@@ -8,7 +8,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
-import '../../widgets/common/wave_dialog.dart';
+
 import '../subscriptions/subscription_plans_screen.dart';
 import 'create_order_screen.dart';
 import 'order_details_screen.dart';

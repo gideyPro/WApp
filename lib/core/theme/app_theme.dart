@@ -76,7 +76,7 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: AppColors.stone200, width: 1.0),
+          side: const BorderSide(color: AppColors.stone200, width: 1.0),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -121,11 +121,11 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: AppColors.stone300),
+          borderSide: const BorderSide(color: AppColors.stone300),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: AppColors.stone300),
+          borderSide: const BorderSide(color: AppColors.stone300),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),

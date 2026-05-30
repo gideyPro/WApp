@@ -109,7 +109,7 @@ class _WaveButtonState extends State<WaveButton> {
   Widget build(BuildContext context) {
     final buttonWidth = widget.isFullWidth
         ? double.infinity
-        : (widget.width ?? null);
+        : widget.width;
 
     return SizedBox(
       width: buttonWidth,

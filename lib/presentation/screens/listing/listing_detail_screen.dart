@@ -944,7 +944,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           : l10n.listingsYes;
       details.add({'label': l10n.listingsEncumbrance, 'value': amount});
     }
-    bool hasVideo = listing.videoUrl != null && listing.videoUrl!.isNotEmpty;
+    bool hasVideo = (listing.videoUrl != null && listing.videoUrl!.isNotEmpty) || listing.videoBlocked;
     bool hasVideoProcessing = listing.hasVideoProcessing;
 
     if (details.isEmpty && !hasVideo && !hasVideoProcessing) return const SizedBox.shrink();
@@ -1558,7 +1558,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 child: OutlinedButton.icon(
                   onPressed: () => _vipListing(listing),
                   icon: const Icon(Icons.diamond_outlined, size: 20),
-                  label: Text('Mark as VIP'),
+                  label: const Text('Mark as VIP'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: AppColors.vip),

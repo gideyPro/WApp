@@ -239,7 +239,7 @@ class WaveEmptyState extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primary50,
                 shape: BoxShape.circle,
               ),
@@ -464,7 +464,7 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                       onTap: () {
                         _controller.reverse().then((_) => widget.onDismiss());
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.close,
                         size: 16,
                         color: AppColors.primary400,
@@ -831,7 +831,7 @@ class WaveMessageScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.refresh_rounded,
             size: 18,
             color: AppColors.accent600,
@@ -1018,8 +1018,8 @@ class WaveSectionHeader extends StatelessWidget {
                     Container(
                       width: 4,
                       height: 20,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
+              decoration: BoxDecoration(
+                        gradient: const LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [AppColors.primary500, AppColors.primary600],

@@ -258,8 +258,8 @@ class _ConversationTile extends ConsumerWidget {
               Container(
                 width: 50,
                 height: 50,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
                     colors: hasUnread
                         ? [AppColors.accent500, AppColors.accent600]
                         : [
@@ -1132,7 +1132,7 @@ class _MessageBubble extends ConsumerWidget {
             Container(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [AppColors.accent400, AppColors.accent600],
                 ),

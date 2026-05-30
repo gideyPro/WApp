@@ -86,7 +86,7 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
                 child: LinearProgressIndicator(
                   value: progress,
                   backgroundColor: Colors.white,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent500),
+                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accent500),
                 ),
               )
             : null,

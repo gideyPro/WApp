@@ -227,7 +227,7 @@ class WaveBottomSheet extends StatelessWidget {
         color: isGlass 
             ? (isDark ? Colors.black.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.85))
             : (isDark ? AppColors.primary800 : Colors.white),
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(AppSpacing.borderRadiusSm),
         ),
         border: isGlass 
@@ -239,7 +239,7 @@ class WaveBottomSheet extends StatelessWidget {
           Container(
             width: 40,
             height: 4,
-            margin: EdgeInsets.only(top: AppSpacing.sm),
+            margin: const EdgeInsets.only(top: AppSpacing.sm),
             decoration: BoxDecoration(
               color: isGlass 
                   ? (isDark ? Colors.white.withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.5))
@@ -249,7 +249,7 @@ class WaveBottomSheet extends StatelessWidget {
           ),
           if (title != null)
             Padding(
-              padding: EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
                   Expanded(
@@ -280,7 +280,7 @@ class WaveBottomSheet extends StatelessWidget {
           ),
           if (actions != null && actions!.isNotEmpty)
             Container(
-              padding: EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
@@ -301,7 +301,7 @@ class WaveBottomSheet extends StatelessWidget {
 
     if (isGlass) {
       return ClipRRect(
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(AppSpacing.borderRadiusSm),
         ),
         child: BackdropFilter(

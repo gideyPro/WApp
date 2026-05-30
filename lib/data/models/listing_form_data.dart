@@ -415,8 +415,9 @@ class ListingFormData {
     if (listingType.isEmpty) errors.add(l10n.listingErrorListingTypeRequired);
     if (useType.isEmpty) errors.add(l10n.listingErrorUseTypeRequired);
     if (addressId == null) errors.add(l10n.listingErrorAddressRequired);
-    if (priceFixed == null || priceFixed! < 1000)
+    if (priceFixed == null || priceFixed! < 1000) {
       errors.add(l10n.listingErrorMinPrice);
+    }
 
     // Holding-specific validation
     if (holdingType == 'Free Hold') {
@@ -429,10 +430,12 @@ class ListingFormData {
     } else if (holdingType == 'Lease Hold') {
       if (leasedYear == null) errors.add(l10n.listingErrorLeasedYearRequired);
     } else if (holdingType == 'Cooperative') {
-      if (cooperativeName == null || cooperativeName!.trim().isEmpty)
+      if (cooperativeName == null || cooperativeName!.trim().isEmpty) {
         errors.add(l10n.listingErrorCooperativeNameRequired);
-      if (cooperativeCode == null || cooperativeCode!.trim().isEmpty)
+      }
+      if (cooperativeCode == null || cooperativeCode!.trim().isEmpty) {
         errors.add(l10n.listingErrorCooperativeCodeRequired);
+      }
     }
 
     return errors;
@@ -442,20 +445,24 @@ class ListingFormData {
   List<String> validateStep2(AppLocalizations l10n) {
     final errors = <String>[];
     if (type == 'house') {
-      if (totalRooms == null || totalRooms! < 1)
+      if (totalRooms == null || totalRooms! < 1) {
         errors.add(l10n.listingErrorRoomsRequired);
-      if (houseType == null || houseType!.isEmpty)
+      }
+      if (houseType == null || houseType!.isEmpty) {
         errors.add(l10n.listingErrorHouseTypeRequired);
+      }
       if (yearBuilt != null &&
           (yearBuilt! < 1900 || yearBuilt! > DateTime.now().year)) {
         errors.add(
             l10n.listingErrorYearBuiltRange('1900', DateTime.now().year.toString()));
       }
     }
-    if (totalSquareMeters == null || totalSquareMeters! <= 0)
+    if (totalSquareMeters == null || totalSquareMeters! <= 0) {
       errors.add(l10n.listingErrorAreaRequired);
-    if (description == null || description!.trim().isEmpty)
+    }
+    if (description == null || description!.trim().isEmpty) {
       errors.add(l10n.listingErrorDescriptionRequired);
+    }
     return errors;
   }
 
@@ -478,16 +485,18 @@ class ListingFormData {
     if (holdingType == 'Cooperative') {
       final hasOwnership =
           ownershipProof != null || existingOwnershipProofUrl != null;
-      if (!hasOwnership)
+      if (!hasOwnership) {
         errors.add(l10n.listingErrorOwnershipProofRequired);
+      }
     }
 
     // Lease contract - check new upload OR existing URL
     if (holdingType == 'Lease Hold') {
       final hasLease =
           leaseContract != null || existingLeaseContractUrl != null;
-      if (!hasLease)
+      if (!hasLease) {
         errors.add(l10n.listingErrorLeaseContractRequired);
+      }
     }
 
     return errors;

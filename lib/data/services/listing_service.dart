@@ -228,7 +228,7 @@ class ListingService {
       }
 
       if (response.statusCode == 401) {
-        return ListingDetailResponse(
+        return const ListingDetailResponse(
           success: false,
           message: 'Please log in to view property details.',
         );
@@ -361,7 +361,7 @@ class ListingService {
 
     // VIP option
     if (formData.isVip) {
-      dioFormData.fields.add(MapEntry('is_vip', '1'));
+      dioFormData.fields.add(const MapEntry('is_vip', '1'));
     }
 
     // Add new images
@@ -420,7 +420,7 @@ class ListingService {
 
     // Update-specific fields
     if (isUpdate) {
-      dioFormData.fields.add(MapEntry('_method', 'PUT'));
+      dioFormData.fields.add(const MapEntry('_method', 'PUT'));
       
       // Sync with backend parameter names: delete_images instead of removed_image_ids
       for (final id in formData.removedImageIds) {
@@ -428,12 +428,12 @@ class ListingService {
       }
       
       if (formData.removeExistingSitePlan) {
-        dioFormData.fields.add(MapEntry('delete_site_plans[]', '0'));
+        dioFormData.fields.add(const MapEntry('delete_site_plans[]', '0'));
         // I use '0' as a marker to delete the main site_plan_image_link too in backend.
       }
       
       if (formData.deleteVideo) {
-        dioFormData.fields.add(MapEntry('delete_video', '1'));
+        dioFormData.fields.add(const MapEntry('delete_video', '1'));
       }
     }
 
@@ -474,7 +474,7 @@ class ListingService {
       // Validate total upload size (150MB limit)
       final totalSize = await _calculateTotalSize(formData);
       if (totalSize > 150 * 1024 * 1024) {
-        return ListingResponse(
+        return const ListingResponse(
           success: false, 
           message: 'Total upload size exceeds 150MB limit. Please reduce file sizes.'
         );
@@ -522,7 +522,7 @@ class ListingService {
         // Validate total upload size (150MB limit)
         final totalSize = await _calculateTotalSize(formData);
         if (totalSize > 150 * 1024 * 1024) {
-          return ListingResponse(
+          return const ListingResponse(
             success: false, 
             message: 'Total upload size exceeds 150MB limit. Please reduce file sizes.'
           );
@@ -567,7 +567,7 @@ class ListingService {
       );
 
       if (response.statusCode == 200) {
-        return ListingResponse(success: true, message: 'Listing deleted successfully');
+        return const ListingResponse(success: true, message: 'Listing deleted successfully');
       }
 
       return ListingResponse(
@@ -588,7 +588,7 @@ class ListingService {
     try {
       final response = await _apiClient.dio.post('${ApiConstants.vipListing}/$listingId/vip');
       if (response.statusCode == 200) {
-        return ListingResponse(success: true, message: 'Listing marked as VIP successfully');
+        return const ListingResponse(success: true, message: 'Listing marked as VIP successfully');
       }
       return ListingResponse(
         success: false,
@@ -608,7 +608,7 @@ class ListingService {
     try {
       final response = await _apiClient.dio.post('${ApiConstants.featureListing}/$listingId/feature');
       if (response.statusCode == 200) {
-        return ListingResponse(success: true, message: 'Listing featured successfully');
+        return const ListingResponse(success: true, message: 'Listing featured successfully');
       }
       return ListingResponse(
         success: false,

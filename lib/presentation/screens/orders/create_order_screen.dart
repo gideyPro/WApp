@@ -12,7 +12,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_dialog.dart';
+
 import '../../providers/app_providers.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../../../core/network/api_client.dart';
@@ -141,7 +141,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   Future<void> _loadSettings() async {
     try {
-      final response = await ApiClient().dio.get(ApiConstants.apiBase + '/settings');
+      final response = await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
       if (response.statusCode == 200 && response.data is Map) {
         final data = response.data['data'];
         if (data is Map && mounted) {
@@ -385,7 +385,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DropdownButtonFormField<String>(
-                    value: _holdingType,
+                    initialValue: _holdingType,
                     style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     dropdownColor: context.sheetBg,
@@ -402,7 +402,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    value: _facingDirection,
+                    initialValue: _facingDirection,
                     style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     dropdownColor: context.sheetBg,

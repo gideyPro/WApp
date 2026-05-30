@@ -160,6 +160,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         if (result.success) {
           _submittedSuccessfully = true;
           await ListingMediaManager.cleanFormDataFiles(_formData);
+          if (!mounted) return;
           WaveToast.showSuccess(context, 'Listing updated successfully');
           Navigator.of(context).pop(true);
         } else {
@@ -242,7 +243,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
           padding: const EdgeInsets.only(bottom: 2),
           child: Row(
             children: [
-              Icon(Icons.error_outline, size: 14, color: AppColors.error),
+              const Icon(Icons.error_outline, size: 14, color: AppColors.error),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(e, style: AppTextStyles.bodySmall.copyWith(color: AppColors.error)),

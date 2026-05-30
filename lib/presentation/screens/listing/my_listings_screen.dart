@@ -197,7 +197,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        title: Text(l10n.listingFeatureThis + '?',
+        title: Text('${l10n.listingFeatureThis}?',
             style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
         content: Text(
           'Your listing will be featured on the home page and search results for 30 days.',
@@ -267,6 +267,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
           IconButton(
             icon: const Icon(Icons.add_circle_outline),
             onPressed: () async {
+              final nav = Navigator.of(context);
               // Check subscription limit before navigating
               final subState = ref.read(subscriptionProvider);
               final settingsAsync = ref.read(appSettingsProvider);
@@ -318,7 +319,10 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                   );
                   return;
                 } else {
-                  // Genuine limit reached
+                  // Genuine limit reached or no subscription
+                  final message = subState.hasPaidSubscription
+                      ? AppLocalizations.of(context).subscriptionLimitReached
+                      : AppLocalizations.of(context).subscriptionRequiredListingSubtitle;
                   final goSub = await showDialog<bool>(
                     context: context,
                     builder: (ctx) => AlertDialog(
@@ -328,7 +332,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                       title: Text(AppLocalizations.of(ctx).subscriptionRequiredTitle,
                           style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800)),
                       content: Text(
-                        AppLocalizations.of(ctx).subscriptionLimitReached,
+                        message,
                         style: AppTextStyles.bodyMedium
                             .copyWith(color: context.theme.textSecondary),
                       ),
@@ -352,8 +356,8 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                       ],
                     ),
                   );
-                  if (goSub == true && mounted) {
-                    Navigator.of(context).push(
+                  if (goSub == true) {
+                    nav.push(
                       MaterialPageRoute(
                         builder: (_) => const SubscriptionPlansScreen(),
                       ),
@@ -362,7 +366,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                 }
                 if (!subState.isLoading && subState.errorMessage == null) return;
               }
-              final result = await Navigator.of(context).push(
+              final result = await nav.push(
                 MaterialPageRoute(builder: (_) => const CreateListingScreen()),
               );
               if (result == true && mounted) {
@@ -402,7 +406,88 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
         title: l10n.listingsNoResults,
         subtitle: l10n.myListingsEmptySubtitle,
         actionLabel: l10n.listingsCreate,
-        onAction: () {
+        onAction: () async {
+          final subState = ref.read(subscriptionProvider);
+          final settingsAsync = ref.read(appSettingsProvider);
+          final subscriptionEnabled = settingsAsync.maybeWhen(
+            data: (data) => data['subscription_enabled'] == true,
+            orElse: () => false,
+          );
+          if (subscriptionEnabled && !subState.canCreateListing) {
+            final message = subState.hasPaidSubscription
+                ? l10n.subscriptionLimitReached
+                : l10n.subscriptionRequiredListingSubtitle;
+            final goSub = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => Dialog(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 64, height: 64,
+                        decoration: BoxDecoration(
+                          color: AppColors.accent500.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.workspace_premium_outlined,
+                            size: 32, color: AppColors.accent500),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(l10n.subscriptionRequiredTitle,
+                          style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                          textAlign: TextAlign.center),
+                      const SizedBox(height: 10),
+                      Text(message,
+                          style: AppTextStyles.bodyMedium
+                              .copyWith(color: context.theme.textSecondary),
+                          textAlign: TextAlign.center),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 13),
+                                side: BorderSide(color: context.theme.divider),
+                                foregroundColor: context.theme.textPrimary,
+                              ),
+                              child: Text(l10n.commonCancel),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 13),
+                                backgroundColor: AppColors.accent500,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              child: Text(l10n.listingViewPlans),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+            if (goSub == true && mounted) {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+              );
+            }
+            return;
+          }
+          if (!mounted) return;
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const CreateListingScreen()),
           );
@@ -433,8 +518,8 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
               hideFavoriteButton: true,
               imageOverlayActions: [
                 if (isEditing)
-                  Padding(
-                    padding: const EdgeInsets.all(6),
+                  const Padding(
+                    padding: EdgeInsets.all(6),
                     child: SizedBox(
                       width: 16,
                       height: 16,

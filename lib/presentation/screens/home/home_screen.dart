@@ -66,6 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ref.read(featuredListingsProvider.notifier).loadFeaturedListings();
       ref.read(listingsProvider.notifier).loadListings();
       ref.read(authStateProvider.notifier).loadUser();
+      ref.read(favoritesProvider.notifier).loadFavorites();
       _lastLoadTime = DateTime.now();
       _headerAnimationController.forward();
       _loadSettings();
@@ -537,7 +538,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   // --- Favorite ---
 
   bool _isFavorite(int listingId) {
-    final favState = ref.read(favoritesProvider);
+    final favState = ref.watch(favoritesProvider);
     return favState.favorites.any((f) => f is Listing && f.id == listingId);
   }
 

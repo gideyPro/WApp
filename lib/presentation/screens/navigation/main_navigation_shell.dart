@@ -66,11 +66,14 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
 
       // 2 — Check subscription (only if enabled globally)
       if (subscriptionEnabled && !subState.canCreateListing) {
+        final message = subState.hasPaidSubscription
+            ? l10n.subscriptionLimitReached
+            : l10n.subscriptionRequiredListingSubtitle;
         final goSub = await _showAccessDialog(
           icon: Icons.workspace_premium_outlined,
           iconColor: AppColors.accent500,
           title: l10n.subscriptionRequiredTitle,
-          message: l10n.subscriptionLimitReached,
+          message: message,
           actionLabel: l10n.listingViewPlans,
         );
         if (goSub == true && mounted) {

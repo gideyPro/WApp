@@ -228,7 +228,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               color: AppColors.accent50,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
+            child: const Icon(
               Icons.article_outlined,
               size: 20,
               color: AppColors.accent600,

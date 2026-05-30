@@ -24,7 +24,7 @@ import '../../widgets/common/wave_common_widgets.dart';
 final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
   try {
     final response =
-        await ApiClient().dio.get(ApiConstants.apiBase + '/settings');
+        await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
     if (response.statusCode == 200 && response.data is Map) {
       return response.data['data'] ?? {};
     }

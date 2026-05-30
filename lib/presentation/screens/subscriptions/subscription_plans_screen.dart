@@ -203,7 +203,7 @@ class _SubscriptionPlansScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${l10n.subscriptionsCurrentPlan}: ${localPlan?.name ?? l10n.commonUnknown}',
+                      '${l10n.subscriptionsCurrentPlan}: ${localPlan.name}',
                       style: AppTextStyles.bodyLargePlus.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -221,8 +221,7 @@ class _SubscriptionPlansScreenState
               ),
             ],
           ),
-          if (localPlan != null)
-            Builder(builder: (context) {
+          Builder(builder: (context) {
               final localFeatures = localPlan.features;
               if (localFeatures!.isEmpty) return const SizedBox.shrink();
               return Padding(
@@ -333,7 +332,7 @@ class _SubscriptionPlansScreenState
               ),
               const SizedBox(width: 8),
               Text(
-                '${sub.getStatusLabel(l10n)} Plan: ${localPlan?.name ?? l10n.commonUnknown}',
+                '${sub.getStatusLabel(l10n)} Plan: ${localPlan.name}',
                 style: AppTextStyles.title.copyWith(
                   color: AppColors.primary900,
                   fontSize: 15,
@@ -360,12 +359,8 @@ class _SubscriptionPlansScreenState
               text: l10n.subscriptionsSubscribe,
               icon: Icons.refresh,
               variant: ButtonVariant.primary,
-              isLoading: _processingPlanId != null && _processingPlanId == localPlan?.id,
-              onPressed: () {
-                if (localPlan != null) {
-                  _selectPlan(localPlan);
-                }
-              },
+              isLoading: _processingPlanId != null && _processingPlanId == localPlan.id,
+              onPressed: () => _selectPlan(localPlan),
             ),
           ),
         ],
@@ -646,7 +641,7 @@ class _PlanCard extends StatelessWidget {
                       ? AppColors.accent50
                       : Colors.transparent,
               borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(AppSpacing.borderRadiusLg)),
+                  const BorderRadius.vertical(top: Radius.circular(AppSpacing.borderRadiusLg)),
             ),
             child: Row(
               children: [
@@ -757,7 +752,7 @@ class _PlanCard extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.check_circle,
+                            const Icon(Icons.check_circle,
                                 size: 16, color: AppColors.accent500),
                             const SizedBox(width: 6),
                             Expanded(

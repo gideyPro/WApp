@@ -126,6 +126,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
           _submittedSuccessfully = true;
           await _clearDraft();
           await ListingMediaManager.cleanFormDataFiles(_formData);
+          if (!mounted) return;
           WaveToast.showSuccess(context, l10n.listingSuccess);
           Navigator.of(context).pop(true);
         } else {
@@ -222,7 +223,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
           padding: const EdgeInsets.only(bottom: 2),
           child: Row(
             children: [
-              Icon(Icons.error_outline, size: 14, color: AppColors.error),
+              const Icon(Icons.error_outline, size: 14, color: AppColors.error),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(e, style: AppTextStyles.bodySmall.copyWith(color: AppColors.error)),
