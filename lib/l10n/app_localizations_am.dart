@@ -2038,4 +2038,12 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get ordersUpgradePlan => 'ዕቅድ ያሻሽሉ';
+
+  @override
+  String get subscriptionPlanNotSupportedListing =>
+      'የአሁኑ ዕቅድዎ ምዝገባዎችን መፍጠር አይደግፍም።';
+
+  @override
+  String get subscriptionPlanNotSupportedOrder =>
+      'የአሁኑ ዕቅድዎ ትዕዛዞችን መፍጠር አይደግፍም።';
 }

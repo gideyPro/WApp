@@ -641,5 +641,7 @@
   "markAsVipMessage": "ምዝገባዎ ተጨማሪ ታይታ እንዲያገኝ በ VIP ባጅ ይደምቃል።",
   "ordersLimitTitle": "የትዕዛዝ ገደብ ተደርሷል",
   "ordersLimitMessage": "ለአሁኑ ዕቅድዎ ከፍተኛ የትዕዛዝ ብዛት ተደርሷል። ተጨማሪ ትዕዛዞች ለመፍጠር ዕቅድዎን ያሻሽሉ።",
-  "ordersUpgradePlan": "ዕቅድ ያሻሽሉ"
+  "ordersUpgradePlan": "ዕቅድ ያሻሽሉ",
+  "subscriptionPlanNotSupportedListing": "የአሁኑ ዕቅድዎ ምዝገባዎችን መፍጠር አይደግፍም።",
+  "subscriptionPlanNotSupportedOrder": "የአሁኑ ዕቅድዎ ትዕዛዞችን መፍጠር አይደግፍም።"
 }

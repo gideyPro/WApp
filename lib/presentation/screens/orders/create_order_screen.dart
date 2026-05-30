@@ -66,34 +66,32 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     final subState = ref.read(subscriptionProvider);
     if (subState.canCreateOrder) return;
 
+    final nav = Navigator.of(context);
     final l10n = AppLocalizations.of(context);
-    WaveDialog.show(
+    String message;
+    if (!subState.hasPaidSubscription) {
+      message = l10n.ordersLimitMessage;
+    } else {
+      final plan = subState.subscription?.plan;
+      if (plan == null || plan.maxOrders == 0) {
+        message = l10n.subscriptionPlanNotSupportedOrder;
+      } else {
+        message = l10n.ordersLimitMessage;
+      }
+    }
+    WaveDialog.showUpgrade(
       context: context,
       title: l10n.ordersLimitTitle,
-      message: l10n.ordersLimitMessage,
-      type: DialogType.confirm,
-      dismissible: false,
-      actions: [
-        WaveButton(
-          text: l10n.commonCancel,
-          variant: ButtonVariant.outline,
-          onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-          },
-        ),
-        WaveButton(
-          text: l10n.ordersUpgradePlan,
-          onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-            );
-          },
-        ),
-      ],
-    );
+      message: message,
+      actionLabel: l10n.ordersUpgradePlan,
+    ).then((result) {
+      nav.pop();
+      if (result == true) {
+        nav.push(
+          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+        );
+      }
+    });
   }
 
   @override
@@ -240,7 +238,19 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     final subState = ref.read(subscriptionProvider);
     if (!subState.canCreateOrder) {
       setState(() => _submitting = false);
-      WaveToast.showError(context, AppLocalizations.of(context).ordersLimitMessage);
+      final l10n = AppLocalizations.of(context);
+      String message;
+      if (!subState.hasPaidSubscription) {
+        message = l10n.ordersLimitMessage;
+      } else {
+        final plan = subState.subscription?.plan;
+        if (plan == null || plan.maxOrders == 0) {
+          message = l10n.subscriptionPlanNotSupportedOrder;
+        } else {
+          message = l10n.ordersLimitMessage;
+        }
+      }
+      WaveToast.showError(context, message);
       return;
     }
 

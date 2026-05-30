@@ -13,6 +13,7 @@ import '../settings/settings_screen.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/common/wave_dialog.dart';
 
 class MainNavigationShell extends ConsumerStatefulWidget {
   const MainNavigationShell({super.key});
@@ -47,14 +48,16 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
 
       // 1 — Check KYC first
       if (!kycState.isVerified && !kycState.isApproved) {
-        final goKyc = await _showAccessDialog(
-          icon: Icons.verified_user_outlined,
-          iconColor: AppColors.warning,
+        final kycAction = kycState.isPending ? null : l10n.kycVerifyNow;
+        final goKyc = await WaveDialog.showUpgrade(
+          context: context,
+          icon: Icons.verified_outlined,
+          iconColor: AppColors.accent500,
           title: l10n.kycRequiredTitle,
           message: kycState.isPending
               ? l10n.kycPendingSubtitleReview
               : l10n.kycRequiredSubtitlePost,
-          actionLabel: kycState.isPending ? null : l10n.kycVerifyNow,
+          actionLabel: kycAction,
         );
         if (goKyc == true && mounted) {
           Navigator.of(context).push(
@@ -66,15 +69,21 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
 
       // 2 — Check subscription (only if enabled globally)
       if (subscriptionEnabled && !subState.canCreateListing) {
-        final message = subState.hasPaidSubscription
-            ? l10n.subscriptionLimitReached
-            : l10n.subscriptionRequiredListingSubtitle;
-        final goSub = await _showAccessDialog(
-          icon: Icons.workspace_premium_outlined,
-          iconColor: AppColors.accent500,
+        String message;
+        if (!subState.hasPaidSubscription) {
+          message = l10n.subscriptionRequiredListingSubtitle;
+        } else {
+          final plan = subState.subscription?.plan;
+          if (plan == null || plan.maxListings == 0) {
+            message = l10n.subscriptionPlanNotSupportedListing;
+          } else {
+            message = l10n.subscriptionLimitReached;
+          }
+        }
+        final goSub = await WaveDialog.showUpgrade(
+          context: context,
           title: l10n.subscriptionRequiredTitle,
           message: message,
-          actionLabel: l10n.listingViewPlans,
         );
         if (goSub == true && mounted) {
           Navigator.of(context).push(
@@ -96,85 +105,6 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   }
 
   /// Shows a styled access-gate dialog.
-  Future<bool?> _showAccessDialog({
-    required IconData icon,
-    required Color iconColor,
-    required String title,
-    required String message,
-    String? actionLabel,
-  }) {
-    return showDialog<bool>(
-      context: context,
-      builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 32, color: iconColor),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style:
-                    AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                message,
-                style: AppTextStyles.bodyMedium
-                    .copyWith(color: context.theme.textSecondary),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: context.theme.divider),
-                        foregroundColor: context.theme.textPrimary,
-                      ),
-                      child: Text(AppLocalizations.of(ctx).commonCancel),
-                    ),
-                  ),
-                  if (actionLabel != null) ...[
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pop(ctx, true),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 13),
-                          backgroundColor: iconColor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        child: Text(actionLabel),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final selectedIndex = ref.watch(selectedTabProvider);

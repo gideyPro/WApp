@@ -9,6 +9,7 @@ import '../../../../data/models/notification.dart' as app;
 import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../listing/listing_detail_screen.dart';
 import '../messages/messages_screen.dart';
@@ -222,73 +223,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }
 
   Future<void> _showSubscriptionRequiredDialog() async {
-    final result = await showDialog<bool>(
+    final l10n = AppLocalizations.of(context);
+    final result = await WaveDialog.showUpgrade(
       context: context,
-      builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppColors.accent500.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.workspace_premium_outlined,
-                    size: 32, color: AppColors.accent600),
-              ),
-              const SizedBox(height: 16),
-              Text(AppLocalizations.of(ctx).subscriptionRequiredTitle,
-                  style:
-                      AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 10),
-              Text(
-                  AppLocalizations.of(ctx).subscriptionRequiredDetailsSubtitle,
-                  style: AppTextStyles.bodyMedium
-                      .copyWith(color: context.theme.textSecondary),
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: context.theme.divider),
-                        foregroundColor: context.theme.textPrimary,
-                      ),
-                      child: Text(AppLocalizations.of(ctx).commonCancel),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(ctx, true),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        backgroundColor: AppColors.accent500,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      child: Text(AppLocalizations.of(ctx).listingViewPlans),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+      title: l10n.subscriptionRequiredTitle,
+      message: l10n.subscriptionRequiredDetailsSubtitle,
     );
-
     if (result == true && mounted) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),

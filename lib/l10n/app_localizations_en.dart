@@ -2071,4 +2071,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ordersUpgradePlan => 'Upgrade Plan';
+
+  @override
+  String get subscriptionPlanNotSupportedListing =>
+      'Your current plan does not support creating listings.';
+
+  @override
+  String get subscriptionPlanNotSupportedOrder =>
+      'Your current plan does not support creating orders.';
 }

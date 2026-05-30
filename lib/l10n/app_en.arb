@@ -653,5 +653,7 @@
   "markAsVipMessage": "Your listing will be highlighted with a VIP badge for extra visibility.",
   "ordersLimitTitle": "Order Limit Reached",
   "ordersLimitMessage": "You've reached the maximum number of orders for your current plan. Upgrade to create more orders.",
-  "ordersUpgradePlan": "Upgrade Plan"
+  "ordersUpgradePlan": "Upgrade Plan",
+  "subscriptionPlanNotSupportedListing": "Your current plan does not support creating listings.",
+  "subscriptionPlanNotSupportedOrder": "Your current plan does not support creating orders."
 }

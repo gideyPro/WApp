@@ -11,8 +11,6 @@ import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/theme/text_styles.dart';
-import '../../../core/theme/theme_colors.dart';
 import '../../providers/app_providers.dart';
 import '../settings/settings_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
@@ -248,26 +246,23 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                   );
                   return;
                 } else {
-                  // Genuine limit reached or no subscription
-                  final message = subState.hasPaidSubscription
-                      ? AppLocalizations.of(context).subscriptionLimitReached
-                      : AppLocalizations.of(context).subscriptionRequiredListingSubtitle;
-                  final goSub = await WaveDialog.show<bool>(
+                  // Genuine limit reached or plan doesn't support
+                  final l10n = AppLocalizations.of(context);
+                  String message;
+                  if (!subState.hasPaidSubscription) {
+                    message = l10n.subscriptionRequiredListingSubtitle;
+                  } else {
+                    final plan = subState.subscription?.plan;
+                    if (plan == null || plan.maxListings == 0) {
+                      message = l10n.subscriptionPlanNotSupportedListing;
+                    } else {
+                      message = l10n.subscriptionLimitReached;
+                    }
+                  }
+                  final goSub = await WaveDialog.showUpgrade(
                     context: context,
-                    title: AppLocalizations.of(context).subscriptionRequiredTitle,
+                    title: l10n.subscriptionRequiredTitle,
                     message: message,
-                    type: DialogType.confirm,
-                    actions: [
-                      WaveButton(
-                        text: AppLocalizations.of(context).commonCancel,
-                        variant: ButtonVariant.outline,
-                        onPressed: () => Navigator.of(context).pop(false),
-                      ),
-                      WaveButton(
-                        text: AppLocalizations.of(context).listingViewPlans,
-                        onPressed: () => Navigator.of(context).pop(true),
-                      ),
-                    ],
                   );
                   if (goSub == true) {
                     nav.push(
@@ -327,71 +322,21 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
             orElse: () => false,
           );
           if (subscriptionEnabled && !subState.canCreateListing) {
-            final message = subState.hasPaidSubscription
-                ? l10n.subscriptionLimitReached
-                : l10n.subscriptionRequiredListingSubtitle;
-            final goSub = await showDialog<bool>(
+            String message;
+            if (!subState.hasPaidSubscription) {
+              message = l10n.subscriptionRequiredListingSubtitle;
+            } else {
+              final plan = subState.subscription?.plan;
+              if (plan == null || plan.maxListings == 0) {
+                message = l10n.subscriptionPlanNotSupportedListing;
+              } else {
+                message = l10n.subscriptionLimitReached;
+              }
+            }
+            final goSub = await WaveDialog.showUpgrade(
               context: context,
-              builder: (ctx) => Dialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 64, height: 64,
-                        decoration: BoxDecoration(
-                          color: AppColors.accent500.withValues(alpha: 0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.workspace_premium_outlined,
-                            size: 32, color: AppColors.accent500),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(l10n.subscriptionRequiredTitle,
-                          style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
-                          textAlign: TextAlign.center),
-                      const SizedBox(height: 10),
-                      Text(message,
-                          style: AppTextStyles.bodyMedium
-                              .copyWith(color: context.theme.textSecondary),
-                          textAlign: TextAlign.center),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 13),
-                                side: BorderSide(color: context.theme.divider),
-                                foregroundColor: context.theme.textPrimary,
-                              ),
-                              child: Text(l10n.commonCancel),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 13),
-                                backgroundColor: AppColors.accent500,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                              child: Text(l10n.listingViewPlans),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              title: l10n.subscriptionRequiredTitle,
+              message: message,
             );
             if (goSub == true && mounted) {
               Navigator.of(context).push(

@@ -639,5 +639,7 @@
   "markAsVipMessage": "ዝርዝርኩም ብናይ VIP ባጅ ንተወሳኺ ርእይቲ ይጥButtonTitles።",
   "ordersLimitTitle": "ናይ ትእዛዝ ገደብ ተበጂሱ",
   "ordersLimitMessage": "ንናይ ሕጂ ዕቅድኩም ዝለዓለ ቁጽሪ ትእዛዝ ተበጂሑ። ተወሳኺ ትእዛዝ ንምፍጠር ዕቅድኩም ምሓሹ።",
-  "ordersUpgradePlan": "ዕቅድ ምሓሹ"
+  "ordersUpgradePlan": "ዕቅድ ምሓሹ",
+  "subscriptionPlanNotSupportedListing": "ናይ ሕጂ ዕቅድኩም ዝርዝር ምፍጣር ኣይድግፍን።",
+  "subscriptionPlanNotSupportedOrder": "ናይ ሕጂ ዕቅድኩም ትእዛዝ ምፍጣር ኣይድግፍን።"
 }

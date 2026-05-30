@@ -6,7 +6,6 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
-import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_glass.dart';
@@ -32,30 +31,32 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     });
   }
 
-  void _showOrderLimitDialog(BuildContext context) {
+  void _showOrderLimitDialog(BuildContext context, SubscriptionState subState) {
+    final nav = Navigator.of(context);
     final l10n = AppLocalizations.of(context);
-    WaveDialog.show(
+    String message;
+    if (!subState.hasPaidSubscription) {
+      message = l10n.ordersLimitMessage;
+    } else {
+      final plan = subState.subscription?.plan;
+      if (plan == null || plan.maxOrders == 0) {
+        message = l10n.subscriptionPlanNotSupportedOrder;
+      } else {
+        message = l10n.ordersLimitMessage;
+      }
+    }
+    WaveDialog.showUpgrade(
       context: context,
       title: l10n.ordersLimitTitle,
-      message: l10n.ordersLimitMessage,
-      type: DialogType.confirm,
-      actions: [
-        WaveButton(
-          text: l10n.commonCancel,
-          variant: ButtonVariant.outline,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        WaveButton(
-          text: l10n.ordersUpgradePlan,
-          onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-            );
-          },
-        ),
-      ],
-    );
+      message: message,
+      actionLabel: l10n.ordersUpgradePlan,
+    ).then((result) {
+      if (result == true) {
+        nav.push(
+          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+        );
+      }
+    });
   }
 
   String _statusLabel(String status, AppLocalizations l10n) {
@@ -120,7 +121,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             onPressed: () async {
               final subState = ref.read(subscriptionProvider);
               if (!subState.canCreateOrder) {
-                _showOrderLimitDialog(context);
+                _showOrderLimitDialog(context, subState);
                 return;
               }
               await Navigator.of(context).push(
@@ -163,7 +164,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         onAction: () async {
           final subState = ref.read(subscriptionProvider);
           if (!subState.canCreateOrder) {
-            _showOrderLimitDialog(context);
+            _showOrderLimitDialog(context, subState);
             return;
           }
           await Navigator.of(context).push(

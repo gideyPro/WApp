@@ -3933,6 +3933,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upgrade Plan'**
   String get ordersUpgradePlan;
+
+  /// No description provided for @subscriptionPlanNotSupportedListing.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current plan does not support creating listings.'**
+  String get subscriptionPlanNotSupportedListing;
+
+  /// No description provided for @subscriptionPlanNotSupportedOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current plan does not support creating orders.'**
+  String get subscriptionPlanNotSupportedOrder;
 }
 
 class _AppLocalizationsDelegate
