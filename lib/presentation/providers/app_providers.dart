@@ -819,35 +819,26 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      // Both getPlans and getCurrentSubscription use the same endpoint
-      // We'll use getPlans as it returns the full plans list
-      final response = await _subscriptionService.getPlans();
-      
-      // We also need the current subscription info which is in the same response
-      // but SubscriptionServiceApi splits them. To be efficient without changing 
-      // the service significantly yet, we'll call getCurrentSubscription 
-      // which is already cached or use a single call if we refactor.
-      // For now, let's just make one call that gets everything.
-      final currentSubResponse = await _subscriptionService.getCurrentSubscription();
+      final data = await _subscriptionService.getFullData();
 
-      if (response.success && currentSubResponse.success) {
+      if (data.success) {
         state = SubscriptionState.loaded(
-          plans: response.plans,
-          subscription: currentSubResponse.subscription,
-          canCreateListing: currentSubResponse.canCreateListing,
-          canFeatureListing: currentSubResponse.canFeatureListing,
-          canCreateVipListing: currentSubResponse.canCreateVipListing,
-          canCreateOrder: currentSubResponse.canCreateOrder,
-          hasPaidSubscription: currentSubResponse.hasPaidSubscription,
-          canSeeVideo: currentSubResponse.canSeeVideo,
-          canSeeContact: currentSubResponse.canSeeContact,
-          contactViewsUsed: currentSubResponse.contactViewsUsed,
-          contactViewsRemaining: currentSubResponse.contactViewsRemaining,
+          plans: data.plans,
+          subscription: data.subscription,
+          canCreateListing: data.canCreateListing,
+          canFeatureListing: data.canFeatureListing,
+          canCreateVipListing: data.canCreateVipListing,
+          canCreateOrder: data.canCreateOrder,
+          hasPaidSubscription: data.hasPaidSubscription,
+          canSeeVideo: data.canSeeVideo,
+          canSeeContact: data.canSeeContact,
+          contactViewsUsed: data.contactViewsUsed,
+          contactViewsRemaining: data.contactViewsRemaining,
         );
       } else {
         state = state.copyWith(
-          isLoading: false, 
-          errorMessage: response.message.isNotEmpty ? response.message : currentSubResponse.message
+          isLoading: false,
+          errorMessage: data.message,
         );
       }
     } catch (e) {

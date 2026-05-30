@@ -79,6 +79,60 @@ class SubscriptionServiceApi {
     return defaultMessage;
   }
 
+  /// Get plans + current subscription + capability flags in a single API call
+  Future<FullSubscriptionData> getFullData() async {
+    try {
+      final response = await _apiClient.dio.get(
+        ApiConstants.currentSubscription,
+      );
+
+      if (response.statusCode == 200) {
+        final raw = response.data;
+        Map<String, dynamic>? data;
+        if (raw is Map) {
+          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
+        }
+
+        final plansData = data?['plans'];
+        final plans = (plansData is List ? plansData : [])
+            .whereType<Map>()
+            .map((json) => SubscriptionPlan.fromJson(Map<String, dynamic>.from(json)))
+            .toList();
+
+        final subData = data?['current_subscription'];
+        final subscription = subData is Map
+            ? Subscription.fromJson(Map<String, dynamic>.from(subData))
+            : null;
+
+        return FullSubscriptionData(
+          success: true,
+          plans: plans,
+          subscription: subscription,
+          canCreateListing: data?['can_create_listing'] ?? false,
+          canFeatureListing: data?['can_feature_listing'] ?? false,
+          canCreateVipListing: data?['can_create_vip_listing'] ?? false,
+          canCreateOrder: data?['can_create_order'] ?? false,
+          hasPaidSubscription: data?['has_paid_subscription'] ?? false,
+          canSeeVideo: data?['can_see_video'] ?? false,
+          canSeeContact: data?['can_see_contact'] ?? false,
+          contactViewsUsed: data?['contact_views_used'] ?? 0,
+          contactViewsRemaining: data?['contact_views_remaining'] ?? 0,
+        );
+      }
+
+      return FullSubscriptionData(
+        success: false,
+        message: _extractMessage(response.data, 'Failed to fetch subscription data'),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return FullSubscriptionData(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
   /// Get current user subscription
   Future<CurrentSubscriptionResponse> getCurrentSubscription() async {
     try {
@@ -334,6 +388,39 @@ class SubscriptionServiceApi {
       );
     }
   }
+}
+
+/// Combined response with plans + current subscription info (single API call)
+class FullSubscriptionData {
+  final bool success;
+  final String message;
+  final List<SubscriptionPlan> plans;
+  final Subscription? subscription;
+  final bool canCreateListing;
+  final bool canFeatureListing;
+  final bool canCreateVipListing;
+  final bool canCreateOrder;
+  final bool hasPaidSubscription;
+  final bool canSeeVideo;
+  final bool canSeeContact;
+  final int contactViewsUsed;
+  final int contactViewsRemaining;
+
+  const FullSubscriptionData({
+    required this.success,
+    this.message = '',
+    this.plans = const [],
+    this.subscription,
+    this.canCreateListing = false,
+    this.canFeatureListing = false,
+    this.canCreateVipListing = false,
+    this.canCreateOrder = false,
+    this.hasPaidSubscription = false,
+    this.canSeeVideo = false,
+    this.canSeeContact = false,
+    this.contactViewsUsed = 0,
+    this.contactViewsRemaining = 0,
+  });
 }
 
 /// Response wrapper for subscription plans
