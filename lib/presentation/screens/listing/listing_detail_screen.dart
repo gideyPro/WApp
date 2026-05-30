@@ -1542,11 +1542,11 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
               if (!isOwner && !hasInterest)
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: listing.userContactHidden 
+                    onPressed: listing.interestBlocked
                       ? () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()))
                       : () => _submitInterest(listing.id),
-                    icon: Icon(listing.userContactHidden ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
-                    label: Text(listing.userContactHidden ? "Upgrade to Contact" : l10n.listingsImInterested),
+                    icon: Icon(listing.interestBlocked ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
+                    label: Text(listing.interestBlocked ? "Upgrade to Contact" : l10n.listingsImInterested),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.accent500),
