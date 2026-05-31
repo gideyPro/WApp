@@ -8,10 +8,7 @@ import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/services/kyc_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
-import '../../widgets/common/wave_dialog.dart';
 import '../listing/create_listing_screen.dart';
-import '../subscriptions/subscription_plans_screen.dart';
-import '../settings/settings_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -241,39 +238,6 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   Future<void> _onCreateListingFromKyc() async {
-    final subState = ref.read(subscriptionProvider);
-    final settingsAsync = ref.read(appSettingsProvider);
-    final subscriptionEnabled = settingsAsync.maybeWhen(
-      data: (data) => data['subscription_enabled'] == true,
-      orElse: () => false,
-    );
-
-    if (subscriptionEnabled && !subState.canCreateListing) {
-      final l10n = AppLocalizations.of(context);
-      String message;
-      if (!subState.hasPaidSubscription) {
-        message = l10n.subscriptionRequiredListingSubtitle;
-      } else {
-        final plan = subState.subscription?.plan;
-        if (plan == null || plan.maxListings == 0) {
-          message = l10n.subscriptionPlanNotSupportedListing;
-        } else {
-          message = l10n.subscriptionLimitReached;
-        }
-      }
-      final goSub = await WaveDialog.showUpgrade(
-        context: context,
-        title: l10n.subscriptionRequiredTitle,
-        message: message,
-      );
-      if (goSub == true && mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-        );
-      }
-      return;
-    }
-
     if (mounted) {
       Navigator.of(context).popUntil((route) => route.isFirst);
       Navigator.of(context).push(

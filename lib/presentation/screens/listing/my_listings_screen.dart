@@ -13,7 +13,6 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
-import '../settings/settings_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import 'edit_listing_screen.dart';
 
@@ -163,6 +162,14 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
   }
 
   Future<void> _featureListing(Listing listing) async {
+    final subState = ref.read(subscriptionProvider);
+    if (!subState.canFeatureListing) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+      );
+      return;
+    }
+
     final l10n = AppLocalizations.of(context);
     final confirmed = await WaveDialog.show<bool>(
       context: context,
@@ -211,73 +218,6 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
             icon: const Icon(Icons.add_rounded),
             onPressed: () async {
               final nav = Navigator.of(context);
-              // Check subscription limit before navigating
-              final subState = ref.read(subscriptionProvider);
-              final settingsAsync = ref.read(appSettingsProvider);
-              final subscriptionEnabled = settingsAsync.maybeWhen(
-                data: (data) => data['subscription_enabled'] == true,
-                orElse: () => false,
-              );
-
-              if (subscriptionEnabled && !subState.canCreateListing) {
-                // If still loading, skip front-end gate — backend validates anyway
-                if (subState.isLoading) {
-                  // proceed to create screen
-                } else if (subState.errorMessage != null) {
-                  // Network error — offer retry
-                  await WaveDialog.show(
-                    context: context,
-                    title: AppLocalizations.of(context).errorConnection,
-                    message: AppLocalizations.of(context).errorCheckSubscription,
-                    type: DialogType.confirm,
-                    actions: [
-                      WaveButton(
-                        text: AppLocalizations.of(context).commonCancel,
-                        variant: ButtonVariant.outline,
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      WaveButton(
-                        text: AppLocalizations.of(context).commonRetry,
-                        onPressed: () {
-                          ref.read(subscriptionProvider.notifier).refresh();
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                  return;
-                } else {
-                  // Genuine limit reached or plan doesn't support
-                  final l10n = AppLocalizations.of(context);
-                  String message;
-                  if (!subState.hasPaidSubscription) {
-                    message = l10n.subscriptionRequiredListingSubtitle;
-                  } else {
-                    final plan = subState.subscription?.plan;
-                    if (plan == null || plan.maxListings == 0) {
-                      message = l10n.subscriptionPlanNotSupportedListing;
-                    } else {
-                      message = l10n.subscriptionLimitReached;
-                    }
-                  }
-                  final goSub = await WaveDialog.showUpgrade(
-                    context: context,
-                    icon: Icons.add_home_work_outlined,
-                    iconColor: AppColors.accent500,
-                    title: l10n.subscriptionRequiredTitle,
-                    message: message,
-                    actionLabel: l10n.listingViewPlans,
-                  );
-                  if (goSub == true) {
-                    nav.push(
-                      MaterialPageRoute(
-                        builder: (_) => const SubscriptionPlansScreen(),
-                      ),
-                    );
-                  }
-                }
-                if (!subState.isLoading && subState.errorMessage == null) return;
-              }
               final result = await nav.push(
                 MaterialPageRoute(builder: (_) => const CreateListingScreen()),
               );
@@ -353,39 +293,6 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                   variant: ButtonVariant.success,
                   isFullWidth: true,
                   onPressed: () async {
-                    final subState = ref.read(subscriptionProvider);
-                    final settingsAsync = ref.read(appSettingsProvider);
-                    final subscriptionEnabled = settingsAsync.maybeWhen(
-                      data: (data) => data['subscription_enabled'] == true,
-                      orElse: () => false,
-                    );
-                    if (subscriptionEnabled && !subState.canCreateListing) {
-                      String message;
-                      if (!subState.hasPaidSubscription) {
-                        message = l10n.subscriptionRequiredListingSubtitle;
-                      } else {
-                        final plan = subState.subscription?.plan;
-                        if (plan == null || plan.maxListings == 0) {
-                          message = l10n.subscriptionPlanNotSupportedListing;
-                        } else {
-                          message = l10n.subscriptionLimitReached;
-                        }
-                      }
-                      final goSub = await WaveDialog.showUpgrade(
-                        context: context,
-                        icon: Icons.add_home_work_outlined,
-                        iconColor: AppColors.accent500,
-                        title: l10n.subscriptionRequiredTitle,
-                        message: message,
-                        actionLabel: l10n.listingViewPlans,
-                      );
-                      if (goSub == true && mounted) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-                        );
-                      }
-                      return;
-                    }
                     if (!mounted) return;
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const CreateListingScreen()),
@@ -448,13 +355,13 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                   color: AppColors.error,
                   onTap: isEditing ? null : () => _deleteListing(listing),
                 ),
-                if (canFeature && !listing.isFeaturedActive)
+                if (!listing.isFeaturedActive)
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
                     child: _buildOwnerActionIcon(
-                      icon: Icons.workspace_premium_outlined,
-                      tooltip: 'Feature',
-                      color: AppColors.accent500,
+                      icon: canFeature ? Icons.workspace_premium_outlined : Icons.lock_outline,
+                      tooltip: canFeature ? 'Feature' : 'Upgrade to Feature',
+                      color: canFeature ? AppColors.accent500 : AppColors.stone400,
                       onTap: isEditing ? null : () => _featureListing(listing),
                     ),
                   ),

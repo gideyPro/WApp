@@ -16,6 +16,8 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../providers/app_providers.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
+import '../settings/settings_screen.dart';
+import '../../widgets/common/wave_upgrade_card.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
   const CreateOrderScreen({super.key});
@@ -198,25 +200,6 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final subState = ref.read(subscriptionProvider);
-    if (!subState.canCreateOrder) {
-      setState(() => _submitting = false);
-      final l10n = AppLocalizations.of(context);
-      String message;
-      if (!subState.hasPaidSubscription) {
-        message = l10n.ordersLimitMessage;
-      } else {
-        final plan = subState.subscription?.plan;
-        if (plan == null || plan.maxOrders == 0) {
-          message = l10n.subscriptionPlanNotSupportedOrder;
-        } else {
-          message = l10n.ordersLimitMessage;
-        }
-      }
-      WaveToast.showError(context, message);
-      return;
-    }
-
     setState(() => _submitting = true);
 
     final data = <String, dynamic>{
@@ -254,6 +237,39 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final subState = ref.watch(subscriptionProvider);
+    final settingsAsync = ref.watch(appSettingsProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => true,
+    );
+
+    if (subscriptionEnabled && !subState.canCreateOrder) {
+      final title = !subState.hasPaidSubscription
+          ? l10n.ordersLimitTitle
+          : l10n.subscriptionPlanNotSupportedOrder;
+      final subtitle = !subState.hasPaidSubscription
+          ? l10n.ordersLimitMessage
+          : l10n.subscriptionPlanNotSupportedOrder;
+      return Scaffold(
+        backgroundColor: context.scaffoldBg,
+        appBar: WaveAppBar(
+          centerTitle: false,
+          title: Text(l10n.ordersCreate),
+        ),
+        body: Center(
+          child: Padding(
+            padding: AppSpacing.paddingLg,
+            child: UpgradeCard(
+              icon: Icons.receipt_long_outlined,
+              iconColor: AppColors.accent500,
+              title: title,
+              subtitle: subtitle,
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,

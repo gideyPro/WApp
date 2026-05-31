@@ -9,11 +9,7 @@ import '../orders/orders_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../account/account_screen.dart';
 import '../listing/create_listing_screen.dart';
-import '../settings/settings_screen.dart';
-import '../kyc/kyc_verification_screen.dart';
-import '../subscriptions/subscription_plans_screen.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../widgets/common/wave_dialog.dart';
 
 class MainNavigationShell extends ConsumerStatefulWidget {
   const MainNavigationShell({super.key});
@@ -31,74 +27,12 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     ref.read(selectedTabProvider.notifier).state = index;
   }
 
-  /// Pre-flight check before opening Create Listing — KYC then Subscription
+  /// Navigate to Create Listing — inline gates handled inside the screen
   Future<void> _onCreateListingTap() async {
     setState(() => _isCreatingListing = true);
-    final l10n = AppLocalizations.of(context);
     try {
-      await ref.read(kycStatusProvider.notifier).loadKycStatus();
-      if (!mounted) return;
-      final kycState = ref.read(kycStatusProvider);
-      final subState = ref.read(subscriptionProvider);
-      final settingsAsync = ref.read(appSettingsProvider);
-      final subscriptionEnabled = settingsAsync.maybeWhen(
-        data: (data) => data['subscription_enabled'] == true,
-        orElse: () => false,
-      );
-
-      // 1 — Check KYC first
-      if (!kycState.isVerified && !kycState.isApproved) {
-        final kycAction = kycState.isPending ? null : l10n.kycVerifyNow;
-        final goKyc = await WaveDialog.showUpgrade(
-          context: context,
-          icon: Icons.verified_outlined,
-          iconColor: AppColors.accent500,
-          title: l10n.kycRequiredTitle,
-          message: kycState.isPending
-              ? l10n.kycPendingSubtitleReview
-              : l10n.kycRequiredSubtitlePost,
-          actionLabel: kycAction,
-        );
-        if (goKyc == true && mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const KycVerificationScreen()),
-          );
-        }
-        return;
-      }
-
-      // 2 — Check subscription (only if enabled globally)
-      if (subscriptionEnabled && !subState.canCreateListing) {
-        String message;
-        if (!subState.hasPaidSubscription) {
-          message = l10n.subscriptionRequiredListingSubtitle;
-        } else {
-          final plan = subState.subscription?.plan;
-          if (plan == null || plan.maxListings == 0) {
-            message = l10n.subscriptionPlanNotSupportedListing;
-          } else {
-            message = l10n.subscriptionLimitReached;
-          }
-        }
-        final goSub = await WaveDialog.showUpgrade(
-          context: context,
-          icon: Icons.add_home_work_outlined,
-          iconColor: AppColors.accent500,
-          title: l10n.subscriptionRequiredTitle,
-          message: message,
-          actionLabel: l10n.listingViewPlans,
-        );
-        if (goSub == true && mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-          );
-        }
-        return;
-      }
-
-      // All good — open the create screen
       if (mounted) {
-        Navigator.of(context).push(
+        await Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const CreateListingScreen()),
         );
       }

@@ -6,16 +6,12 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../data/models/notification.dart' as app;
-import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../listing/listing_detail_screen.dart';
 import '../messages/messages_screen.dart';
 import '../orders/order_details_screen.dart';
-import '../subscriptions/subscription_plans_screen.dart';
-import '../settings/settings_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 
 /// Notifications Screen - Wired to notificationsProvider
@@ -202,41 +198,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }
 
   void _navigateToListingDetail(int listingId) {
-    final subState = ref.read(subscriptionProvider);
-    final settingsAsync = ref.read(appSettingsProvider);
-    final subscriptionEnabled = settingsAsync.maybeWhen(
-      data: (data) => data['subscription_enabled'] == true,
-      orElse: () => true,
-    );
-
-    final isDiscovery = subState.subscription == null || subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
-    if (subscriptionEnabled && isDiscovery) {
-      _showSubscriptionRequiredDialog();
-      return;
-    }
-
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ListingDetailScreen(listingId: listingId),
       ),
     );
-  }
-
-  Future<void> _showSubscriptionRequiredDialog() async {
-    final l10n = AppLocalizations.of(context);
-    final result = await WaveDialog.showUpgrade(
-      context: context,
-      icon: Icons.visibility_outlined,
-      iconColor: AppColors.accent500,
-      title: l10n.subscriptionRequiredTitle,
-      message: l10n.subscriptionRequiredDetailsSubtitle,
-      actionLabel: l10n.listingViewPlans,
-    );
-    if (result == true && mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-      );
-    }
   }
 
   Widget _buildSkeletonList() {

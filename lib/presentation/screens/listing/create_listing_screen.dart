@@ -2,13 +2,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../data/services/listing_media_manager.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_upgrade_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../providers/app_providers.dart';
+import '../kyc/kyc_verification_screen.dart';
+import '../settings/settings_screen.dart';
 import 'widgets/listing_form_steps.dart';
 /// Create Listing Screen - 4-step wizard matching web version
 class CreateListingScreen extends ConsumerStatefulWidget {
@@ -150,6 +156,76 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final subState = ref.watch(subscriptionProvider);
+    final kycState = ref.watch(kycStatusProvider);
+    final settingsAsync = ref.watch(appSettingsProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => true,
+    );
+
+    // KYC gate
+    if (!kycState.isVerified && !kycState.isApproved) {
+      return Scaffold(
+        backgroundColor: context.scaffoldBg,
+        appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
+        body: Center(
+          child: Padding(
+            padding: AppSpacing.paddingLg,
+            child: UpgradeCard(
+              icon: Icons.verified_outlined,
+              iconColor: AppColors.accent500,
+              title: kycState.isPending
+                  ? l10n.kycPendingSubtitleReview
+                  : l10n.kycRequiredTitle,
+              subtitle: kycState.isPending
+                  ? l10n.kycPendingSubtitleReview
+                  : l10n.kycRequiredSubtitlePost,
+              buttonLabel: kycState.isPending ? '' : l10n.kycVerifyNow,
+              onButtonTap: kycState.isPending
+                  ? null
+                  : () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const KycVerificationScreen(),
+                        ),
+                      ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Subscription gate
+    if (subscriptionEnabled && !subState.canCreateListing) {
+      final title = !subState.hasPaidSubscription
+          ? l10n.subscriptionRequiredTitle
+          : (subState.subscription?.plan == null ||
+                  subState.subscription!.plan!.maxListings == 0
+              ? l10n.subscriptionPlanNotSupportedListing
+              : l10n.subscriptionLimitReached);
+      final subtitle = !subState.hasPaidSubscription
+          ? l10n.subscriptionRequiredListingSubtitle
+          : (subState.subscription?.plan == null ||
+                  subState.subscription!.plan!.maxListings == 0
+              ? l10n.subscriptionPlanNotSupportedListing
+              : l10n.subscriptionLimitReached);
+      return Scaffold(
+        backgroundColor: context.scaffoldBg,
+        appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
+        body: Center(
+          child: Padding(
+            padding: AppSpacing.paddingLg,
+            child: UpgradeCard(
+              icon: Icons.add_home_work_outlined,
+              iconColor: AppColors.accent500,
+              title: title,
+              subtitle: subtitle,
+            ),
+          ),
+        ),
+      );
+    }
+
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, _) {

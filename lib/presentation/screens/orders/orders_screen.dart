@@ -7,10 +7,8 @@ import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_glass.dart';
 
-import '../subscriptions/subscription_plans_screen.dart';
 import 'create_order_screen.dart';
 import 'order_details_screen.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -33,44 +31,10 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     });
   }
 
-  /// Pre-flight check before opening Create Order — force-refresh subscription, then check
+  /// Navigate to Create Order — inline gate handled inside the screen
   Future<void> _onCreateOrderTap() async {
     setState(() => _isCreatingOrder = true);
     try {
-      await ref.read(subscriptionProvider.notifier).refresh();
-      if (!mounted) return;
-      final subState = ref.read(subscriptionProvider);
-
-      if (!subState.canCreateOrder) {
-        final l10n = AppLocalizations.of(context);
-        String message;
-        if (!subState.hasPaidSubscription) {
-          message = l10n.ordersLimitMessage;
-        } else {
-          final plan = subState.subscription?.plan;
-          if (plan == null || plan.maxOrders == 0) {
-            message = l10n.subscriptionPlanNotSupportedOrder;
-          } else {
-            message = l10n.ordersLimitMessage;
-          }
-        }
-        final goSub = await WaveDialog.showUpgrade(
-          context: context,
-          icon: Icons.receipt_long_outlined,
-          iconColor: AppColors.accent500,
-          title: l10n.ordersLimitTitle,
-          message: message,
-          actionLabel: l10n.ordersUpgradePlan,
-        );
-        if (goSub == true && mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-          );
-        }
-        return;
-      }
-
-      // All good — open create order
       if (mounted) {
         await Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const CreateOrderScreen()),

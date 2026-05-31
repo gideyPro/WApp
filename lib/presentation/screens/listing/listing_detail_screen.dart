@@ -25,6 +25,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_dialog.dart';
+import '../../widgets/common/wave_upgrade_card.dart';
 import '../video/full_screen_video_screen.dart';
 
 /// Listing Detail Screen with skeleton loaders
@@ -1026,92 +1027,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
   Widget _buildVipBlockedSection(Listing listing) {
     final l10n = AppLocalizations.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [AppColors.primary800, AppColors.primary900]
-                : [Colors.purple.shade50, AppColors.primary50],
-          ),
-          border: Border.all(
-            color: isDark
-                ? AppColors.vip.withValues(alpha: 0.2)
-                : AppColors.vip.withValues(alpha: 0.2),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.vip.withValues(alpha: isDark ? 0.08 : 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-          child: Column(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: AppColors.vip.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.diamond_outlined,
-                  size: 30,
-                  color: AppColors.vip,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                l10n.listingUpgradeToVip,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                l10n.subscriptionRequiredDetailsSubtitle,
-                style: AppTextStyles.caption.copyWith(
-                  color: context.theme.textMuted,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 180,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SubscriptionPlansScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.rocket_launch_outlined, size: 18),
-                  label: Text(l10n.ordersUpgradePlan),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.vip,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+      child: UpgradeCard(
+        icon: Icons.diamond_outlined,
+        iconColor: AppColors.vip,
+        title: l10n.listingUpgradeToVip,
+        subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+        buttonLabel: l10n.ordersUpgradePlan,
       ),
     );
   }
@@ -1149,90 +1072,12 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     final l10n = AppLocalizations.of(context);
     
     if (listing.videoBlocked) {
-      final isDark = Theme.of(context).brightness == Brightness.dark;
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [AppColors.primary800, AppColors.primary900]
-                : [AppColors.accent50, AppColors.primary50],
-          ),
-          border: Border.all(
-            color: isDark
-                ? AppColors.accent500.withValues(alpha: 0.2)
-                : AppColors.accent200,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.accent500.withValues(alpha: isDark ? 0.08 : 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-          child: Column(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: AppColors.accent500.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.workspace_premium_outlined,
-                  size: 30,
-                  color: AppColors.accent500,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                l10n.subscriptionVideoUpgrade,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                l10n.subscriptionRequiredDetailsSubtitle,
-                style: AppTextStyles.caption.copyWith(
-                  color: context.theme.textMuted,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 180,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SubscriptionPlansScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.rocket_launch_outlined, size: 18),
-                  label: Text(l10n.ordersUpgradePlan),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accent500,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+      return UpgradeCard(
+        icon: Icons.workspace_premium_outlined,
+        iconColor: AppColors.accent500,
+        title: l10n.subscriptionVideoUpgrade,
+        subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+        buttonLabel: l10n.ordersUpgradePlan,
       );
     }
 
@@ -1470,16 +1315,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   Future<void> _featureListing(Listing listing) async {
     final subState = ref.read(subscriptionProvider);
     if (!subState.canFeatureListing) {
-      final l10n = AppLocalizations.of(context);
-      final goSub = await WaveDialog.showUpgrade(
-        context: context,
-        icon: Icons.workspace_premium_outlined,
-        iconColor: AppColors.accent500,
-        title: l10n.listingUpgradeToFeature,
-        message: l10n.subscriptionRequiredFeatureSubtitle,
-        actionLabel: l10n.listingViewPlans,
-      );
-      if (goSub == true && mounted) {
+      if (mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
         );
@@ -1526,6 +1362,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   Widget _buildActionButtons(Listing listing) {
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final subState = ref.read(subscriptionProvider);
 
     // Check if current user is the owner
     final authState = ref.read(authStateProvider);
@@ -1576,19 +1413,26 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
             ),
             const SizedBox(height: 12),
             if (!listing.isFeaturedActive)
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () => _featureListing(listing),
-                  icon: const Icon(Icons.workspace_premium_outlined, size: 20),
-                  label: Text(l10n.listingFeatureThis),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    side: const BorderSide(color: AppColors.accent500),
-                    foregroundColor: AppColors.accent500,
-                  ),
-                ),
-              ),
+              subState.canFeatureListing
+                  ? SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _featureListing(listing),
+                        icon: const Icon(Icons.workspace_premium_outlined, size: 20),
+                        label: Text(l10n.listingFeatureThis),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: const BorderSide(color: AppColors.accent500),
+                          foregroundColor: AppColors.accent500,
+                        ),
+                      ),
+                    )
+                  : UpgradeCard(
+                      icon: Icons.workspace_premium_outlined,
+                      iconColor: AppColors.accent500,
+                      title: l10n.listingUpgradeToFeature,
+                      subtitle: l10n.subscriptionRequiredFeatureSubtitle,
+                    ),
             if (!listing.isVipActive)
               const SizedBox(height: 12),
             if (!listing.isVipActive)
@@ -1727,37 +1571,12 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
   Widget _buildContactUpgradeSection(Listing listing) {
     final l10n = AppLocalizations.of(context);
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.accent500.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.accent500.withValues(alpha: 0.2)),
-      ),
-      child: Column(
-        children: [
-          const Icon(Icons.lock_outline, size: 28, color: AppColors.accent600),
-          const SizedBox(height: 8),
-          Text(l10n.upgradeToContact, style: AppTextStyles.title.copyWith(fontSize: 14)),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-              ),
-              icon: const Icon(Icons.upgrade_outlined, size: 18),
-              label: Text(l10n.listingViewPlans),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.accent500,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return UpgradeCard(
+      icon: Icons.lock_outline,
+      iconColor: AppColors.accent500,
+      title: l10n.upgradeToContact,
+      subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+      buttonLabel: l10n.listingViewPlans,
     );
   }
 

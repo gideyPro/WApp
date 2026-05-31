@@ -9,17 +9,13 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
 import '../../../data/models/listing.dart';
-import '../../../data/models/subscription.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_dialog.dart';
 import '../listing/listing_detail_screen.dart';
-import '../subscriptions/subscription_plans_screen.dart';
-import '../settings/settings_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -552,44 +548,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
 
   void _handleListingTap(Listing listing) {
-    final subState = ref.read(subscriptionProvider);
-    final settingsAsync = ref.read(appSettingsProvider);
-    final user = ref.read(profileProvider).user;
-    final subscriptionEnabled = settingsAsync.maybeWhen(
-      data: (data) => data['subscription_enabled'] == true,
-      orElse: () => true,
-    );
-
-    final isOwner = user != null && listing.userId == user.id;
-    final isDiscovery = subState.subscription == null || subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
-    if (!isOwner && subscriptionEnabled && isDiscovery) {
-      _showSubscriptionRequiredDialog();
-      return;
-    }
-
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ListingDetailScreen(listingId: listing.id),
       ),
     );
-  }
-
-  Future<void> _showSubscriptionRequiredDialog() async {
-    final l10n = AppLocalizations.of(context);
-    final result = await WaveDialog.showUpgrade(
-      context: context,
-      icon: Icons.visibility_outlined,
-      iconColor: AppColors.accent500,
-      title: l10n.subscriptionRequiredTitle,
-      message: l10n.subscriptionRequiredDetailsSubtitle,
-      actionLabel: l10n.listingViewPlans,
-    );
-    if (result == true && mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (_) => const SubscriptionPlansScreen()),
-      );
-    }
   }
 
   // --- Build ---
