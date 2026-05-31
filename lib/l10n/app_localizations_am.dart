@@ -1103,6 +1103,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsNoDescription => 'ምንም መግለጫ አልተሰጠም';
 
   @override
+  String get listingsSimilarListings => 'ተመሳሳይ ንብረቶች';
+
+  @override
   String get listingsNoFeatures => 'ምንም ዋና መገለጫዎች አልተጠቀሱም';
 
   @override

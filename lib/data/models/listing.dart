@@ -187,9 +187,7 @@ class Listing extends ChangeNotifier {
   final String? acquisitionType;
 
   // Lease Hold details
-  final String? leaseHolderName;
-  final String? leaseOrganization;
-  final DateTime? leaseExpiryDate;
+  // (fields below in "Additional property details" section)
 
   // Cooperative details
   final String? cooperativeName;
@@ -266,9 +264,6 @@ class Listing extends ChangeNotifier {
     this.holdingType,
     this.taxPaidUntilYear,
     this.acquisitionType,
-    this.leaseHolderName,
-    this.leaseOrganization,
-    this.leaseExpiryDate,
     this.cooperativeName,
     this.cooperativeCode,
     this.yearBuilt,
@@ -380,15 +375,6 @@ class Listing extends ChangeNotifier {
               : null),
 
       // Lease Hold details
-      leaseHolderName: json['leaseholder_name'],
-      leaseOrganization: json['lease_organization'],
-      leaseExpiryDate: json['lease_expiry_date'] != null
-          ? DateTime.tryParse(json['lease_expiry_date'])
-          : (json['lease_holding_detail'] is Map &&
-                  json['lease_holding_detail']['lease_expiry_date'] != null
-              ? DateTime.tryParse(
-                  json['lease_holding_detail']['lease_expiry_date'])
-              : null),
       leasedYear: _safeInt(property is Map ? property['leased_year'] : null) ??
           _safeInt(json['leased_year']) ??
           _safeInt(json['lease_holding_detail'] is Map

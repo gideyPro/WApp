@@ -1113,6 +1113,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsNoDescription => 'No description provided.';
 
   @override
+  String get listingsSimilarListings => 'Similar Listings';
+
+  @override
   String get listingsNoFeatures => 'No key features specified';
 
   @override

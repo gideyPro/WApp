@@ -456,11 +456,15 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                   const Divider(height: 32),
                   _buildKeyFeatures(listing),
                   const SizedBox(height: 24),
+                  _buildAmenities(listing),
+                  const SizedBox(height: 24),
                   _buildDescription(listing),
                   const SizedBox(height: 24),
                   _buildPropertyDetails(listing),
                   const SizedBox(height: 24),
                   _buildActionButtons(listing),
+                  const SizedBox(height: 32),
+                  _buildSimilarListings(listing),
                   const SizedBox(height: 100),
                 ],
               ),
@@ -627,6 +631,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
             '$totalRooms ${l10n.listingTotalRooms.toLowerCase()}',
             AppColors.emerald700,
           ),
+        // House type badge
+        if (listing.propertyType == PropertyType.house &&
+            listing.houseType != null &&
+            listing.houseType!.isNotEmpty)
+          _buildBadge(
+            listing.houseType!.replaceAll('_', ' ').toUpperCase(),
+            AppColors.stone700,
+          ),
       ],
     );
   }
@@ -646,6 +658,76 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           color: color,
           letterSpacing: 0.5,
         ),
+      ),
+    );
+  }
+
+  Widget _buildAmenities(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    final amenities = <Widget>[];
+
+    if (listing.electricity) {
+      amenities.add(_buildAmenityChip(
+        Icons.bolt,
+        l10n.listingElectricity,
+      ));
+    }
+    if (listing.water) {
+      amenities.add(_buildAmenityChip(
+        Icons.water_drop,
+        l10n.listingWater,
+      ));
+    }
+    if (listing.parkingAvailable) {
+      amenities.add(_buildAmenityChip(
+        Icons.local_parking,
+        l10n.listingParking,
+      ));
+    }
+    if (listing.yearBuilt != null && listing.yearBuilt! > 0) {
+      amenities.add(_buildAmenityChip(
+        Icons.calendar_today,
+        '${l10n.listingYearBuilt}: ${listing.yearBuilt}',
+      ));
+    }
+
+    if (amenities.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.listingAmenities, style: AppTextStyles.title),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: amenities,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAmenityChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: context.divider.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: AppColors.accent500),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: AppTextStyles.labelMedium.copyWith(
+              color: context.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -893,24 +975,6 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         if (listing.buildType != null) {
           details.add(
               {'label': l10n.listingBuildType, 'value': listing.buildType!});
-        }
-        if (listing.leaseHolderName != null) {
-          details.add({
-            'label': l10n.listingLeaseHolder,
-            'value': listing.leaseHolderName!
-          });
-        }
-        if (listing.leaseOrganization != null) {
-          details.add({
-            'label': l10n.listingLeaseOrganization,
-            'value': listing.leaseOrganization!
-          });
-        }
-        if (listing.leaseExpiryDate != null) {
-          details.add({
-            'label': l10n.listingLeaseExpiry,
-            'value': listing.leaseExpiryDate!.year.toString()
-          });
         }
       }
 
@@ -1751,20 +1815,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 ),
               ],
             ),
-          if (_revealedEmail?.isNotEmpty == true) ...[
-            const SizedBox(height: 6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.email_outlined, size: 16, color: AppColors.stone500),
-                const SizedBox(width: 6),
-                SelectableText(
-                  _revealedEmail!,
-                  style: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone600),
-                ),
-              ],
-            ),
-          ],
         ],
       ),
     );
@@ -1773,7 +1823,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
   bool _isRevealingContact = false;
   String? _revealedContact;
   String? _revealedName;
-  String? _revealedEmail;
 
   Future<void> _revealContact(int listingId) async {
     setState(() => _isRevealingContact = true);
@@ -1784,7 +1833,6 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
         setState(() {
           _revealedContact = response.contact;
           _revealedName = response.name;
-          _revealedEmail = response.email;
         });
         // Reload listing to get contactRevealed=true
         ref.read(listingDetailProvider.notifier).loadListing(listingId);
@@ -1875,5 +1923,121 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
       default:
         return status ?? '';
     }
+  }
+
+  Widget _buildSimilarListings(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    final similarAsync = ref.watch(similarListingsProvider(listing.id));
+
+    return similarAsync.when(
+      data: (response) {
+        final listings = response.listings;
+        if (listings.isEmpty) return const SizedBox.shrink();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Divider(height: 1),
+            const SizedBox(height: 24),
+            Text(l10n.listingsSimilarListings, style: AppTextStyles.title),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 220,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: listings.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final similar = listings[index];
+                  return SizedBox(
+                    width: 200,
+                    child: _buildSimilarCard(similar),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildSimilarCard(Listing similar) {
+    final l10n = AppLocalizations.of(context);
+    final imageUrl = similar.images.isNotEmpty
+        ? similar.images.first.imageUrl
+        : '';
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ListingDetailScreen(listingId: similar.id),
+          ),
+        );
+      },
+      child: WaveCard(
+        padding: EdgeInsets.zero,
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: imageUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorWidget: (_, __, ___) => Container(
+                        color: AppColors.primary100,
+                        child: const Icon(Icons.image_not_supported),
+                      ),
+                    )
+                  : Container(
+                      color: AppColors.primary100,
+                      child: const Icon(Icons.image_not_supported),
+                    ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      similar.getLocalizedTitle(context, ref.watch(addressCacheProvider)),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.labelMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      similar.getLocalizedPrice(context),
+                      style: AppTextStyles.labelMedium.copyWith(
+                        color: AppColors.emerald600,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (similar.totalSquareMeters != null && similar.totalSquareMeters! > 0)
+                      Text(
+                        l10n.listingUnitM2(similar.totalSquareMeters!.toInt()),
+                        style: AppTextStyles.caption.copyWith(
+                          color: context.textSecondary,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

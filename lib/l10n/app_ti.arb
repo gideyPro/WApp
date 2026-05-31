@@ -350,7 +350,7 @@
   "listingsVideoOptimizing": "ቪዲዮ ይትሕዝ ኣሎ…",
   "listingsViewOriginal": "መበቆላዊ ቪዲዮ ርአ",
   "listingsNoDescription": "መግለጺ ኣይተዋህበን",
-  "listingsNoFeatures": "ቀንዲ መገለጺታት ኣይተጠቐሱን",
+  "listingsSimilarListings": "ተመሳሳሊ ንብረታት",  "listingsNoFeatures": "ቀንዲ መገለጺታት ኣይተጠቐሱን",
   "listingsNotFound": "ንብረቱ ኣይተረኽበን",
   "listingsNotFoundSubtitle": "እዚ ንብረት ተሰሪዙ ክኸውን ይኽእል እዩ",
   "listingsLoadError": "ንብረቱ ክጽዕን ኣይከኣለን",

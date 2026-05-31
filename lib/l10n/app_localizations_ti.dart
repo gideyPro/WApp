@@ -1103,6 +1103,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsNoDescription => 'መግለጺ ኣይተዋህበን';
 
   @override
+  String get listingsSimilarListings => 'ተመሳሳሊ ንብረታት';
+
+  @override
   String get listingsNoFeatures => 'ቀንዲ መገለጺታት ኣይተጠቐሱን';
 
   @override

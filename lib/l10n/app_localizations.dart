@@ -2176,6 +2176,12 @@ abstract class AppLocalizations {
   /// **'No description provided.'**
   String get listingsNoDescription;
 
+  /// No description provided for @listingsSimilarListings.
+  ///
+  /// In en, this message translates to:
+  /// **'Similar Listings'**
+  String get listingsSimilarListings;
+
   /// No description provided for @listingsNoFeatures.
   ///
   /// In en, this message translates to:

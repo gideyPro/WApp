@@ -350,7 +350,7 @@
   "listingsVideoOptimizing": "ቪዲዮ እየተመቻቸ ነው…",
   "listingsViewOriginal": "ዋናውን ቪዲዮ ይመልከቱ",
   "listingsNoDescription": "ምንም መግለጫ አልተሰጠም",
-  "listingsNoFeatures": "ምንም ዋና መገለጫዎች አልተጠቀሱም",
+  "listingsSimilarListings": "ተመሳሳይ ንብረቶች",  "listingsNoFeatures": "ምንም ዋና መገለጫዎች አልተጠቀሱም",
   "listingsNotFound": "ንብረቱ አልተገኘም",
   "listingsNotFoundSubtitle": "ይህ ንብረት ተሰርዞ ሊሆን ይችላል",
   "listingsLoadError": "ንብረቱን መጫን አልተቻለም",
