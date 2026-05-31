@@ -454,6 +454,12 @@ abstract class AppLocalizations {
   /// **'Listings'**
   String get helpCategoryListings;
 
+  /// No description provided for @helpCategoryOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Requests'**
+  String get helpCategoryOrders;
+
   /// No description provided for @helpCategoryPayments.
   ///
   /// In en, this message translates to:
@@ -465,6 +471,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'KYC Verification'**
   String get helpCategoryKyc;
+
+  /// No description provided for @helpCategoryVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Tours & Calls'**
+  String get helpCategoryVideo;
 
   /// No description provided for @helpCategorySafety.
   ///
@@ -481,7 +493,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your phone number or email address\n3. You will receive an OTP (One-Time Password)\n4. Enter the OTP to verify your account\n5. Complete your profile by adding your name and other details\n\nOnce registered, you can browse listings, create your own listings, and communicate with other users.'**
+  /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your phone number or email address\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n5. Complete your profile by adding your name and other details\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
   String get helpAccCreateContent;
 
   /// No description provided for @helpAccEditTitle.
@@ -493,7 +505,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccEditContent.
   ///
   /// In en, this message translates to:
-  /// **'To edit your profile information:\n\n1. Go to the Profile tab\n2. Tap on \"Edit Profile\"\n3. Update your name, email, or other details\n4. Tap \"Save\" to confirm changes\n\nYour profile information helps other users identify you when communicating about listings.'**
+  /// **'To edit your profile information:\n\n1. Go to the Profile tab\n2. Tap on \"Edit Profile\"\n3. Update your name, email, gender, or other details\n4. Tap \"Save\" to confirm changes\n\nYour profile information helps other users identify you and builds trust during property negotiations.'**
   String get helpAccEditContent;
 
   /// No description provided for @helpAccResetTitle.
@@ -505,67 +517,91 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccResetContent.
   ///
   /// In en, this message translates to:
-  /// **'If you need to reset your password:\n\n1. On the login screen, tap \"Forgot Password\"\n2. Enter your registered phone number or email\n3. You will receive an OTP\n4. Enter the OTP and set a new password\n\nMake sure to use a strong password that you do not share with others.'**
+  /// **'If you need to reset your password:\n\n1. On the login screen, tap \"Forgot Password\"\n2. Enter your registered phone number or email\n3. You will receive an OTP via SMS or email\n4. Enter the OTP and set a new strong password\n\nNever share your password or OTP with anyone, including individuals claiming to be from WaveMart support.'**
   String get helpAccResetContent;
 
   /// No description provided for @helpListCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to create a listing'**
+  /// **'How to post a property listing'**
   String get helpListCreateTitle;
 
   /// No description provided for @helpListCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'To create a property listing:\n\n1. Tap the \"+\" button in the bottom navigation\n2. Select your property type (House or Land)\n3. Choose listing type (For Sale or For Rent)\n4. Fill in property details: price, area, description\n5. Add location information\n6. Upload clear photos of your property (up to 10 images)\n7. Review your listing and submit\n\nYour listing will be reviewed before it goes live. This usually takes a few hours.'**
+  /// **'To post a property for sale or rent:\n\n1. Tap the \"+\" button in the navigation bar\n2. Choose between \"House\" or \"Land\"\n3. Select if it is for Sale or Rent\n4. Fill in the details: Price, Area (m²), Number of Rooms, etc.\n5. Select the exact location (Region, Zone, Woreda, Kebele)\n6. Upload at least 5 clear photos and a Site Plan document\n7. Accept the terms and tap \"Submit\"\n\nAll listings are reviewed by our moderation team within 24 hours to ensure quality and authenticity.'**
   String get helpListCreateContent;
 
   /// No description provided for @helpListManageTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to manage your listings'**
+  /// **'Managing your listings'**
   String get helpListManageTitle;
 
   /// No description provided for @helpListManageContent.
   ///
   /// In en, this message translates to:
-  /// **'To manage your property listings:\n\n1. Go to Settings > My Listings\n2. Here you can see all your active listings\n3. Tap on a listing to view its details\n4. You can edit or delete listings from the listing detail page\n\nInactive or pending listings will also appear here with their current status.'**
+  /// **'To manage or update your property posts:\n\n1. Navigate to My Account > My Listings\n2. View the status of your listings (Active, Pending, Rejected, or Sold)\n3. Tap on a listing to see its full details\n4. Use the Edit button to update information or the Delete button to remove it\n\nNote: Significant changes to an active listing may trigger a re-review by our team.'**
   String get helpListManageContent;
 
   /// No description provided for @helpListTipsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Tips for a great listing'**
+  /// **'Tips for better listings'**
   String get helpListTipsTitle;
 
   /// No description provided for @helpListTipsContent.
   ///
   /// In en, this message translates to:
-  /// **'Make your listing stand out:\n\n1. Use clear, well-lit photos (at least 5 images)\n2. Write a detailed description of the property\n3. Include accurate location details\n4. Set a competitive and realistic price\n5. Mention nearby amenities and landmarks\n6. Specify any unique features of the property\n7. Respond promptly to inquiries from interested buyers'**
+  /// **'To make your listing stand out:\n\n1. Use clear, well-lit photos (at least 5 images)\n2. Write a detailed description of the property\n3. Include accurate location details\n4. Set a competitive and fair price\n5. Mention nearby amenities and landmarks\n6. Highlight unique features of the property\n7. Respond promptly to buyer inquiries'**
   String get helpListTipsContent;
+
+  /// No description provided for @helpOrdCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What are Property Requests (Orders)?'**
+  String get helpOrdCreateTitle;
+
+  /// No description provided for @helpOrdCreateContent.
+  ///
+  /// In en, this message translates to:
+  /// **'If you cannot find the exact property you are looking for, you can create a Property Request (Order):\n\n1. Go to the \"Orders\" tab and tap \"Create Order\"\n2. Describe the property you need (Type, Budget, Preferred Location)\n3. Our administrators and agents will look for properties matching your criteria\n4. You will receive suggestions directly in your Orders page\n\nThis feature is ideal for buyers with specific requirements who want a personalized search experience.'**
+  String get helpOrdCreateContent;
+
+  /// No description provided for @helpOrdManageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Handling property suggestions'**
+  String get helpOrdManageTitle;
+
+  /// No description provided for @helpOrdManageContent.
+  ///
+  /// In en, this message translates to:
+  /// **'When an administrator finds a property matching your request:\n\n1. You will receive a notification and a suggestion in your Order details\n2. Review the suggested property details and photos\n3. You can \"Accept\" the suggestion to express interest or \"Decline\" it\n4. Once accepted, you can proceed to contact the owner or agent\n\nYou can cancel your property request at any time once you have found what you need.'**
+  String get helpOrdManageContent;
 
   /// No description provided for @helpPayPlansTitle.
   ///
   /// In en, this message translates to:
-  /// **'Subscription plans explained'**
+  /// **'Membership & Subscription plans'**
   String get helpPayPlansTitle;
 
   /// No description provided for @helpPayPlansContent.
   ///
   /// In en, this message translates to:
-  /// **'WaveMart offers several subscription plans:\n\n- Free Plan: Basic access with limited listings\n- Basic Plan: More listings and basic features\n- Premium Plan: Maximum listings and all features including featured listings\n\nEach plan has different benefits and pricing. You can upgrade or change your plan at any time from the Subscriptions page.'**
+  /// **'WaveMart offers tiered plans to suit different needs:\n\n- Free Plan: For casual users to browse and post limited listings\n- Basic Plan: For individuals with multiple properties or frequent searches\n- Premium Plan: For professional agents and developers, offering unlimited posts and Featured/VIP status for listings\n\nEach plan increases your visibility and the number of active listings you can maintain simultaneously.'**
   String get helpPayPlansContent;
 
   /// No description provided for @helpPayMakeTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to make a payment'**
+  /// **'How to pay for a subscription'**
   String get helpPayMakeTitle;
 
   /// No description provided for @helpPayMakeContent.
   ///
   /// In en, this message translates to:
-  /// **'To subscribe to a plan:\n\n1. Go to Settings > Subscriptions\n2. Choose your desired plan\n3. Tap \"Subscribe Now\"\n4. You will be redirected to Chapa payment gateway\n5. Complete the payment using your preferred method\n6. Once payment is confirmed, your subscription activates immediately\n\nYou can view all your payment transactions in Settings > Payment History.'**
+  /// **'WaveMart uses Chapa, Ethiopia\'s leading payment gateway, for secure transactions:\n\n1. Select your desired plan from the Subscriptions page\n2. Tap \"Subscribe Now\" or \"Upgrade\"\n3. You will be redirected to the secure Chapa payment page\n4. Pay using Telebirr, CBEBirr, M-Pesa, or any supported bank card\n5. After successful payment, your account features will be updated instantly\n\nAlways ensure you are on the official Chapa payment page before entering any details.'**
   String get helpPayMakeContent;
 
   /// No description provided for @helpPaySecurityTitle.
@@ -577,31 +613,43 @@ abstract class AppLocalizations {
   /// No description provided for @helpPaySecurityContent.
   ///
   /// In en, this message translates to:
-  /// **'All payments on WaveMart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted and processed securely.\n\nIf you notice any issues with payments, contact our support team immediately.'**
+  /// **'All payments on WaveMart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted.\n\nIf you encounter any payment-related issues, please contact our support team immediately.'**
   String get helpPaySecurityContent;
+
+  /// No description provided for @helpVidTourTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Tours & Video Calls'**
+  String get helpVidTourTitle;
+
+  /// No description provided for @helpVidTourContent.
+  ///
+  /// In en, this message translates to:
+  /// **'WaveMart offers tools to view properties remotely:\n\n- Recorded Video Tours: Listings may include a recorded walkthrough video. Look for the \"Video Tour\" button on the property details page.\n- Live Video Calls: You can start a live virtual call with owners or agents using our integrated Jitsi system to see the property in real-time.\n\nLive calls are encrypted and secure, allowing you to ask questions while seeing the premises live.'**
+  String get helpVidTourContent;
 
   /// No description provided for @helpKycWhyTitle.
   ///
   /// In en, this message translates to:
-  /// **'What is KYC and why is it required?'**
+  /// **'Why is KYC verification necessary?'**
   String get helpKycWhyTitle;
 
   /// No description provided for @helpKycWhyContent.
   ///
   /// In en, this message translates to:
-  /// **'KYC (Know Your Customer) is a verification process that confirms your identity.\n\nKYC is required to:\n- Create property listings\n- Build trust with other users\n- Comply with local regulations\n- Prevent fraud and misuse\n\nThe verification process is quick and your documents are handled securely.'**
+  /// **'KYC (Know Your Customer) is a security standard used to verify the identity of our users.\n\nIt is required to:\n- Post property listings (Preventing fake/fraudulent posts)\n- Ensure a safe marketplace for all users\n- Comply with Ethiopian digital commerce regulations\n\nVerified users have a badge on their profile, which significantly increases trust with potential buyers.'**
   String get helpKycWhyContent;
 
   /// No description provided for @helpKycHowTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to complete KYC verification'**
+  /// **'How to verify your identity'**
   String get helpKycHowTitle;
 
   /// No description provided for @helpKycHowContent.
   ///
   /// In en, this message translates to:
-  /// **'To complete KYC verification:\n\n1. Go to Settings > KYC Verification\n2. Select your document type (National ID or Passport)\n3. Upload a clear photo of the front of your document\n4. For National ID, also upload the back side\n5. Take a selfie holding your document next to your face\n6. Submit for review\n\nVerification usually takes 24-48 hours. You will be notified once your identity is verified.'**
+  /// **'To complete your identity verification:\n\n1. Go to Settings > KYC Verification\n2. Choose \"National ID\" or \"Passport\"\n3. Take a clear photo of the front and back of the document\n4. Take a clear selfie while holding the document next to your face\n5. Submit the documents\n\nOur team will review your submission within 48 hours. Ensure the text on your ID is perfectly readable in the photos.'**
   String get helpKycHowContent;
 
   /// No description provided for @helpKycRejectTitle.
