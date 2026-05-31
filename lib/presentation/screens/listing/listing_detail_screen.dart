@@ -22,6 +22,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import 'edit_listing_screen.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/utils/ethiopian_date_helper.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_dialog.dart';
@@ -687,7 +688,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     if (listing.yearBuilt != null && listing.yearBuilt! > 0) {
       amenities.add(_buildAmenityChip(
         Icons.calendar_today,
-        '${l10n.listingYearBuilt}: ${listing.yearBuilt}',
+        '${l10n.listingYearBuilt}: ${EthiopianDateHelper.formatYear(listing.yearBuilt!)}',
       ));
     }
 
@@ -825,19 +826,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     }
 
     // Date posted
-    final daysOld = DateTime.now().difference(listing.createdAt).inDays;
-    String dateText;
-    if (daysOld == 0) {
-      dateText = l10n.listingToday;
-    } else if (daysOld == 1) {
-      dateText = l10n.listingYesterday;
-    } else if (daysOld < 7) {
-      dateText = l10n.listingDaysAgo(daysOld);
-    } else if (daysOld < 30) {
-      dateText = l10n.listingWeeksAgo((daysOld / 7).floor());
-    } else {
-      dateText = l10n.listingMonthsAgo((daysOld / 30).floor());
-    }
+    final locale = Localizations.localeOf(context).languageCode;
+    final dateText = EthiopianDateHelper.formatEthiopian(listing.createdAt, locale);
     features.add(_buildFeatureChip(
       icon: Icons.access_time,
       label: dateText,
@@ -941,7 +931,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         if (listing.taxPaidUntilYear != null) {
           details.add({
             'label': l10n.listingTaxPaid,
-            'value': listing.taxPaidUntilYear.toString()
+            'value': EthiopianDateHelper.formatYear(listing.taxPaidUntilYear!)
           });
         }
         if (listing.acquisitionType != null) {
@@ -957,7 +947,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         if (listing.leasedYear != null) {
           details.add({
             'label': l10n.listingLeasedYear,
-            'value': listing.leasedYear.toString()
+            'value': EthiopianDateHelper.formatYear(listing.leasedYear!)
           });
         }
         if (listing.leasePricePerSqm != null) {

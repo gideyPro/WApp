@@ -4,6 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
+import '../../../../core/utils/ethiopian_date_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -280,7 +281,8 @@ class _PaymentTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     if (date == null) return l10n.paymentsUnknownDate;
     if (date is DateTime) {
-      return '${date.day}/${date.month}/${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+      final locale = Localizations.localeOf(context).languageCode;
+      return '${EthiopianDateHelper.formatDual(date, locale)} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
     }
     return date.toString();
   }

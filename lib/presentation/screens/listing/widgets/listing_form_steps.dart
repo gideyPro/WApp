@@ -739,16 +739,38 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           Row(
             children: [
               Expanded(
-                child: _compactTextField(
-                  label: l10n.listingTaxPaidYear,
-                  controller: _taxPaidUntilController,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) {
-                      widget.onUpdate(widget.formData.copyWith(taxPaidUntilYear: n));
-                    }
-                  },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _compactTextField(
+                      label: l10n.listingTaxPaidYear,
+                      controller: _taxPaidUntilController,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) {
+                          widget.onUpdate(widget.formData.copyWith(taxPaidUntilYear: n));
+                        }
+                      },
+                    ),
+                    ListenableBuilder(
+                      listenable: _taxPaidUntilController,
+                      builder: (context, _) {
+                        final year = int.tryParse(_taxPaidUntilController.text);
+                        if (year == null || year < 1900) return const SizedBox.shrink();
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 2, left: 4),
+                          child: Text(
+                            '${year - 8} ዓ/ም',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              fontSize: 9,
+                              color: AppColors.accent600,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 12),
@@ -790,16 +812,38 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           Row(
             children: [
               Expanded(
-                child: _compactTextField(
-                  label: l10n.listingLeasedYear,
-                  controller: _leasedYearController,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) {
-                      widget.onUpdate(widget.formData.copyWith(leasedYear: n));
-                    }
-                  },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _compactTextField(
+                      label: l10n.listingLeasedYear,
+                      controller: _leasedYearController,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) {
+                          widget.onUpdate(widget.formData.copyWith(leasedYear: n));
+                        }
+                      },
+                    ),
+                    ListenableBuilder(
+                      listenable: _leasedYearController,
+                      builder: (context, _) {
+                        final year = int.tryParse(_leasedYearController.text);
+                        if (year == null || year < 1900) return const SizedBox.shrink();
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 2, left: 4),
+                          child: Text(
+                            '${year - 8} ዓ/ም',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              fontSize: 9,
+                              color: AppColors.accent600,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 12),
@@ -1119,10 +1163,32 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
                     onChanged: _onHouseTypeChanged,
                   ),
                   const SizedBox(height: 12),
-                  _compactTextField(label: l10n.listingYearBuilt, controller: _yearBuiltController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
-                  }),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _compactTextField(label: l10n.listingYearBuilt, controller: _yearBuiltController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
+                      }),
+                      ListenableBuilder(
+                        listenable: _yearBuiltController,
+                        builder: (context, _) {
+                          final year = int.tryParse(_yearBuiltController.text);
+                          if (year == null || year < 1900) return const SizedBox.shrink();
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 2, left: 4),
+                            child: Text(
+                              '${year - 8} ዓ/ም',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontSize: 9,
+                                color: AppColors.accent600,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 12),
                   Text(l10n.listingAmenities,
                       style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),

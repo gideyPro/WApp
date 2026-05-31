@@ -6,6 +6,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
+import '../../../../core/utils/ethiopian_date_helper.dart';
 import '../../../../data/services/subscription_service.dart';
 import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
@@ -369,7 +370,8 @@ class _SubscriptionPlansScreenState
   }
 
   String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
+    final locale = Localizations.localeOf(context).languageCode;
+    return EthiopianDateHelper.formatDual(date, locale);
   }
 
   Widget _buildStatPill({
