@@ -353,6 +353,20 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             MaterialPageRoute(builder: (_) => const MyInterestsScreen()),
                           ),
                         ),
+                        _MenuItemData(
+                          icon: Icons.home_work_outlined,
+                          title: l10n.profileMyListings,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const MyListingsScreen()),
+                          ),
+                        ),
+                        _MenuItemData(
+                          icon: Icons.favorite_border_rounded,
+                          title: l10n.profileFavorites,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+                          ),
+                        ),
                         if (subscriptionEnabled) ...[
                           _MenuItemData(
                             icon: Icons.payment_outlined,
