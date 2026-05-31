@@ -140,6 +140,7 @@ class Listing extends ChangeNotifier {
   final bool videoBlocked;
   final bool vipBlocked;
   final bool interestBlocked;
+  final bool contactModerated;
 
   /// Returns the full video URL by prepending base URL if needed
   String? get videoUrl => _formatUrl(videoLink);
@@ -258,6 +259,7 @@ class Listing extends ChangeNotifier {
     this.videoBlocked = false,
     this.vipBlocked = false,
     this.interestBlocked = false,
+    this.contactModerated = false,
     this.sitePlanImageLink,
     this.ownershipProofLink,
     this.leaseContractLink,
@@ -353,6 +355,7 @@ class Listing extends ChangeNotifier {
       videoBlocked: json['video_blocked'] ?? false,
       vipBlocked: json['vip_blocked'] ?? false,
       interestBlocked: json['interest_blocked'] ?? false,
+      contactModerated: json['contact_moderated'] ?? false,
       sitePlanImageLink: json['site_plan_image_link'] ?? 
           (property is Map ? property['site_plan_image_link'] : null),
       ownershipProofLink: json['ownership_proof_link'] ?? 

@@ -1703,7 +1703,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
             ],
           ),
           // Contact reveal section — only when plan supports it
-          if (!isOwner && listing.userContactHidden && !listing.contactRevealed && !listing.interestBlocked) ...[
+          if (!isOwner && listing.userContactHidden && !listing.contactRevealed && !listing.interestBlocked && !listing.contactModerated) ...[
             const SizedBox(height: 12),
             if (listing.contactMax > 0)
               _buildContactRevealSection(listing)
