@@ -350,23 +350,15 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
     if (subscriptionEnabled && !subState.canCreateOrder) {
       final (:title, :subtitle) = _orderGateMessage(subState, l10n);
-      return Scaffold(
-        backgroundColor: context.scaffoldBg,
+      return WaveFullPageUpgrade(
         appBar: WaveAppBar(
           centerTitle: false,
           title: Text(l10n.ordersCreate),
         ),
-        body: Center(
-          child: Padding(
-            padding: AppSpacing.paddingLg,
-            child: UpgradeCard(
-              icon: Icons.receipt_long_outlined,
-              iconColor: AppColors.accent500,
-              title: title,
-              subtitle: subtitle,
-            ),
-          ),
-        ),
+        icon: Icons.receipt_long_outlined,
+        iconColor: AppColors.accent500,
+        title: title,
+        subtitle: subtitle,
       );
     }
 

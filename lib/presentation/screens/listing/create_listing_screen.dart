@@ -11,8 +11,8 @@ import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../data/services/listing_media_manager.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_upgrade_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../widgets/common/wave_upgrade_card.dart';
 import '../../providers/app_providers.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../settings/settings_screen.dart';
@@ -265,54 +265,38 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       return _buildSkeleton();
     }
 
-    // KYC gate
+    // KYC gate — full page matching listing detail error view
     if (!kycState.isVerified && !kycState.isApproved) {
-      return Scaffold(
-        backgroundColor: context.scaffoldBg,
+      return WaveFullPageUpgrade(
         appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
-        body: Center(
-          child: Padding(
-            padding: AppSpacing.paddingLg,
-            child: UpgradeCard(
-              icon: Icons.verified_outlined,
-              iconColor: AppColors.accent500,
-              title: kycState.isPending
-                  ? l10n.kycPendingSubtitleReview
-                  : l10n.kycRequiredTitle,
-              subtitle: kycState.isPending
-                  ? l10n.kycPendingSubtitleReview
-                  : l10n.kycRequiredSubtitlePost,
-              buttonLabel: kycState.isPending ? '' : l10n.kycVerifyNow,
-              onButtonTap: kycState.isPending
-                  ? null
-                  : () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const KycVerificationScreen(),
-                        ),
-                      ),
-            ),
-          ),
-        ),
+        icon: Icons.verified_outlined,
+        iconColor: AppColors.accent500,
+        title: kycState.isPending
+            ? l10n.kycPendingSubtitleReview
+            : l10n.kycRequiredTitle,
+        subtitle: kycState.isPending
+            ? l10n.kycPendingSubtitleReview
+            : l10n.kycRequiredSubtitlePost,
+        buttonLabel: kycState.isPending ? '' : l10n.kycVerifyNow,
+        onButtonTap: kycState.isPending
+            ? null
+            : () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const KycVerificationScreen(),
+                  ),
+                ),
       );
     }
 
-    // Subscription gate — show correct message per case
+    // Subscription gate — full page matching listing detail error view
     if (subscriptionEnabled && !subState.canCreateListing) {
       final (:title, :subtitle) = _listingGateMessage(subState, l10n);
-      return Scaffold(
-        backgroundColor: context.scaffoldBg,
+      return WaveFullPageUpgrade(
         appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
-        body: Center(
-          child: Padding(
-            padding: AppSpacing.paddingLg,
-            child: UpgradeCard(
-              icon: Icons.add_home_work_outlined,
-              iconColor: AppColors.accent500,
-              title: title,
-              subtitle: subtitle,
-            ),
-          ),
-        ),
+        icon: Icons.add_home_work_outlined,
+        iconColor: AppColors.accent500,
+        title: title,
+        subtitle: subtitle,
       );
     }
 

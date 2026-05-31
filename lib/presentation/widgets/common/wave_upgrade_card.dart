@@ -118,3 +118,87 @@ class UpgradeCard extends StatelessWidget {
     }
   }
 }
+
+/// Full-page upgrade/verify view matching ListingDetailScreen's `_buildErrorView`.
+/// Used by create_listing_screen and create_order_screen to replace the entire body.
+class WaveFullPageUpgrade extends StatelessWidget {
+  final Widget? appBar;
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final String buttonLabel;
+  final VoidCallback? onButtonTap;
+
+  const WaveFullPageUpgrade({
+    super.key,
+    this.appBar,
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.subtitle,
+    this.buttonLabel = '',
+    this.onButtonTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final label = buttonLabel.isNotEmpty ? buttonLabel : l10n.listingViewPlans;
+
+    return Scaffold(
+      backgroundColor: context.scaffoldBg,
+      appBar: appBar as PreferredSizeWidget?,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 64, color: iconColor),
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: AppTextStyles.title,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                subtitle,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: context.theme.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: onButtonTap ?? _defaultAction,
+                icon: const Icon(Icons.star, size: 18),
+                label: Text(label),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: iconColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _defaultAction() {
+    final context = navigatorKey.currentContext;
+    if (context != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => const SubscriptionPlansScreen(),
+        ),
+      );
+    }
+  }
+}
