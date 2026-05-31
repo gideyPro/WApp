@@ -463,6 +463,7 @@ class _SubscriptionPlansScreenState
       if (checkoutUrl == null) {
         throw Exception('Failed to get checkout URL');
       }
+      final txRef = paymentResponse.txRef;
 
       // Start polling for payment status - 1s interval for instant feedback
       Timer? paymentCheckTimer;
@@ -540,9 +541,13 @@ class _SubscriptionPlansScreenState
         return;
       }
 
-      // Check payment status from API
-      final paymentStatus = await _subscriptionService.getLatestPaymentStatus();
-      
+      // Explicitly activate subscription via backend verify + activate
+      bool activated = false;
+      if (txRef != null) {
+        final activationResponse = await _subscriptionService.activateSubscription(txRef: txRef);
+        activated = activationResponse.success;
+      }
+
       // Refresh subscription to get latest status
       await ref.read(subscriptionProvider.notifier).refresh();
       final subState = ref.read(subscriptionProvider);
@@ -550,13 +555,21 @@ class _SubscriptionPlansScreenState
 
       if (!mounted) return;
 
-      if (!isActive && paymentStatus != 'pending') {
-        if (mounted) {
-          WaveToast.showError(context, l10n.subscriptionPaymentNotVerified);
-        }
-      } else {
+      if (activated || isActive) {
         if (mounted) {
           WaveToast.showSuccess(context, l10n.subscriptionPaymentSuccess);
+        }
+      } else {
+        // Fallback: check payment status directly in case webhook will arrive soon
+        final paymentStatus = await _subscriptionService.getLatestPaymentStatus();
+        if (paymentStatus == 'pending') {
+          if (mounted) {
+            WaveToast.showSuccess(context, l10n.subscriptionPaymentSuccess);
+          }
+        } else {
+          if (mounted) {
+            WaveToast.showError(context, l10n.subscriptionPaymentNotVerified);
+          }
         }
       }
     } catch (e) {

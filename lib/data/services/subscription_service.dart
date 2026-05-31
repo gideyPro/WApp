@@ -297,6 +297,7 @@ class SubscriptionServiceApi {
           success: true,
           message: _extractMessage(response.data, 'Payment processed'),
           checkoutUrl: data?['checkout_url']?.toString(),
+          txRef: data?['tx_ref']?.toString(),
         );
       }
 
