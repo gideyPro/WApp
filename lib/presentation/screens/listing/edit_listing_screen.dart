@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/text_styles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/services/listing_service.dart';
@@ -11,6 +11,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import 'widgets/listing_form_steps.dart';
+import 'widgets/submission_overlay.dart';
 
  
 class EditListingScreen extends ConsumerStatefulWidget {
@@ -28,6 +29,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   int _currentStep = 0;
   bool _isSubmitting = false;
   bool _submittedSuccessfully = false;
+  ValueNotifier<SubmissionState>? _submissionNotifier;
   final _addressService = AddressService();
   final Map<int, List<String>> _stepErrors = {};
 
@@ -148,31 +150,144 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
 
   Future<void> _submitListing() async {
     if (_isSubmitting) return;
+    if (!mounted) return;
     setState(() => _isSubmitting = true);
+
+    _submissionNotifier = SubmissionOverlay.show(context);
+    _submissionNotifier!.value = SubmissionState.submitting(
+      phase: SubmissionPhase.validating,
+      label: 'Validating data...',
+    );
+
     try {
       final service = ListingService();
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.uploading,
+        label: 'Uploading files...',
+      );
+
       final result = await service.updateListing(
         listingId: widget.listing.id,
         formData: _formData,
       );
-      
-      if (mounted) {
-        if (result.success) {
-          _submittedSuccessfully = true;
-          await ListingMediaManager.cleanFormDataFiles(_formData);
-          if (!mounted) return;
-          WaveToast.showSuccess(context, 'Listing updated successfully');
-          Navigator.of(context).pop(true);
-        } else {
-          WaveToast.showError(context, result.message);
-        }
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: 'Saving changes...',
+        progress: 1.0,
+      );
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      if (!mounted) return;
+      if (result.success) {
+        _submittedSuccessfully = true;
+        await ListingMediaManager.cleanFormDataFiles(_formData);
+        if (!mounted) return;
+        _submissionNotifier!.value = SubmissionState.success(
+          message: 'Listing updated successfully.',
+        );
+        await Future.delayed(const Duration(seconds: 3));
+        if (mounted) Navigator.of(context).pop(true);
+      } else {
+        _submissionNotifier!.value = SubmissionState.error(
+          message: result.message.isNotEmpty
+              ? result.message
+              : 'Something went wrong. Please try again.',
+          onRetry: _retrySubmission,
+          onSaveDraft: _saveDraftAndExit,
+        );
       }
     } catch (e) {
-      if (mounted) {
-        WaveToast.showError(context, 'Failed to update: $e');
-      }
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.error(
+        message: _friendlyErrorMessage(e),
+        onRetry: _retrySubmission,
+        onSaveDraft: _saveDraftAndExit,
+      );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
+  Future<void> _retrySubmission() async {
+    if (!mounted) return;
+
+    _submissionNotifier!.value = SubmissionState.submitting(
+      phase: SubmissionPhase.validating,
+      label: 'Validating data...',
+    );
+
+    try {
+      final service = ListingService();
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.uploading,
+        label: 'Uploading files...',
+      );
+
+      final result = await service.updateListing(
+        listingId: widget.listing.id,
+        formData: _formData,
+      );
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: 'Saving changes...',
+        progress: 1.0,
+      );
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      if (!mounted) return;
+      if (result.success) {
+        _submittedSuccessfully = true;
+        await ListingMediaManager.cleanFormDataFiles(_formData);
+        if (!mounted) return;
+        _submissionNotifier!.value = SubmissionState.success(
+          message: 'Listing updated successfully.',
+        );
+        await Future.delayed(const Duration(seconds: 3));
+        if (mounted) Navigator.of(context).pop(true);
+      } else {
+        _submissionNotifier!.value = SubmissionState.error(
+          message: result.message.isNotEmpty
+              ? result.message
+              : 'Something went wrong. Please try again.',
+          onRetry: _retrySubmission,
+          onSaveDraft: _saveDraftAndExit,
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.error(
+        message: _friendlyErrorMessage(e),
+        onRetry: _retrySubmission,
+        onSaveDraft: _saveDraftAndExit,
+      );
+    }
+  }
+
+  String _friendlyErrorMessage(Object error) {
+    final msg = error.toString();
+    if (msg.contains('Connection refused') || msg.contains('SocketException')) {
+      return 'Connection lost. Your data has been saved.';
+    }
+    if (msg.contains('timeout')) {
+      return 'Request timed out. Your data has been saved.';
+    }
+    return msg.replaceAll(RegExp(r'^Exception:\s*'), '');
+  }
+
+  Future<void> _saveDraftAndExit() async {
+    await _formData.saveDraft();
+    if (mounted) {
+      Navigator.of(context).pop(false);
     }
   }
 
@@ -193,14 +308,9 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
           actions: [
             TextButton(
               onPressed: _isSubmitting ? null : _nextStep,
-              child: _isSubmitting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : Text(_currentStep == 3
-                      ? l10n.listingSubmit
-                      : l10n.listingNext),
+              child: Text(_currentStep == 3
+                  ? l10n.listingSubmit
+                  : l10n.listingNext),
             ),
           ],
         ),

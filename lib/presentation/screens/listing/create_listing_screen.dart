@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
@@ -17,6 +18,7 @@ import '../../providers/app_providers.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../settings/settings_screen.dart';
 import 'widgets/listing_form_steps.dart';
+import 'widgets/submission_overlay.dart';
 /// Create Listing Screen - 4-step wizard matching web version
 class CreateListingScreen extends ConsumerStatefulWidget {
   const CreateListingScreen({super.key});
@@ -31,6 +33,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   int _currentStep = 0;
   bool _isSubmitting = false;
   bool _submittedSuccessfully = false;
+  String? _currentSubmissionKey;
+  ValueNotifier<SubmissionState>? _submissionNotifier;
   Timer? _autoSaveTimer;
   final _addressService = AddressService();
 
@@ -124,30 +128,190 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     }
   }
 
+  String _generateSubmissionKey() {
+    final now = DateTime.now().microsecondsSinceEpoch;
+    final random = Random().nextInt(999999);
+    return 'sub_${now}_$random';
+  }
+
   Future<void> _submitListing() async {
+    if (!mounted) return;
     setState(() => _isSubmitting = true);
+
+    _currentSubmissionKey = _generateSubmissionKey();
+    _submissionNotifier = SubmissionOverlay.show(context);
+    _submissionNotifier!.value = SubmissionState.submitting(
+      phase: SubmissionPhase.validating,
+      label: 'Validating data...',
+    );
+
     try {
       final service = ListingService();
-      final response = await service.createListing(formData: _formData);
-      if (mounted) {
-        if (response.success) {
-          _submittedSuccessfully = true;
-          await _clearDraft();
-          await ListingMediaManager.cleanFormDataFiles(_formData);
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.uploading,
+        label: 'Uploading files...',
+      );
+
+      final response = await service.createListing(
+        formData: _formData,
+        submissionKey: _currentSubmissionKey,
+        onProgress: (progress) {
           if (!mounted) return;
-          WaveToast.showSuccess(context, l10n.listingSuccess);
-          Navigator.of(context).pop(true);
-        } else {
-          WaveToast.showError(context, response.message);
-        }
+          _submissionNotifier!.value = SubmissionState.submitting(
+            phase: SubmissionPhase.uploading,
+            label: 'Uploading files...',
+            progress: progress,
+          );
+        },
+      );
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: 'Saving listing...',
+        progress: 1.0,
+      );
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      if (!mounted) return;
+      if (response.success) {
+        _submittedSuccessfully = true;
+        await _clearDraft();
+        await ListingMediaManager.cleanFormDataFiles(_formData);
+        if (!mounted) return;
+        _submissionNotifier!.value = SubmissionState.success(
+          message: 'Your listing has been submitted.',
+        );
+        await Future.delayed(const Duration(seconds: 3));
+        if (mounted) Navigator.of(context).pop(true);
+      } else {
+        _submissionNotifier!.value = SubmissionState.error(
+          message: response.message.isNotEmpty
+              ? response.message
+              : 'Something went wrong. Please try again.',
+          onRetry: _retrySubmission,
+          onSaveDraft: _saveDraftAndExit,
+        );
       }
     } catch (e) {
-      if (mounted) {
-        final l10n = AppLocalizations.of(context);
-        WaveToast.showError(context, l10n.listingError(e.toString()));
-      }
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.error(
+        message: _friendlyErrorMessage(e),
+        onRetry: _retrySubmission,
+        onSaveDraft: _saveDraftAndExit,
+      );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
+  Future<void> _retrySubmission() async {
+    if (!mounted) return;
+
+    // First check if the listing was actually created despite the error
+    if (_currentSubmissionKey != null) {
+      final service = ListingService();
+      final listingId = await service.checkSubmissionKey(_currentSubmissionKey!);
+      if (listingId != null) {
+        // Listing was already created — show success
+        _submittedSuccessfully = true;
+        await _clearDraft();
+        await ListingMediaManager.cleanFormDataFiles(_formData);
+        if (!mounted) return;
+        _submissionNotifier!.value = SubmissionState.success(
+          message: 'Your listing was submitted successfully.',
+        );
+        await Future.delayed(const Duration(seconds: 3));
+        if (mounted) Navigator.of(context).pop(true);
+        return;
+      }
+    }
+
+    // Normal retry — re-submit
+    _submissionNotifier!.value = SubmissionState.submitting(
+      phase: SubmissionPhase.validating,
+      label: 'Validating data...',
+    );
+
+    try {
+      final service = ListingService();
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.uploading,
+        label: 'Uploading files...',
+      );
+
+      final response = await service.createListing(
+        formData: _formData,
+        submissionKey: _currentSubmissionKey,
+        onProgress: (progress) {
+          if (!mounted) return;
+          _submissionNotifier!.value = SubmissionState.submitting(
+            phase: SubmissionPhase.uploading,
+            label: 'Uploading files...',
+            progress: progress,
+          );
+        },
+      );
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: 'Saving listing...',
+        progress: 1.0,
+      );
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      if (!mounted) return;
+      if (response.success) {
+        _submittedSuccessfully = true;
+        await _clearDraft();
+        await ListingMediaManager.cleanFormDataFiles(_formData);
+        if (!mounted) return;
+        _submissionNotifier!.value = SubmissionState.success(
+          message: 'Your listing has been submitted.',
+        );
+        await Future.delayed(const Duration(seconds: 3));
+        if (mounted) Navigator.of(context).pop(true);
+      } else {
+        _submissionNotifier!.value = SubmissionState.error(
+          message: response.message.isNotEmpty
+              ? response.message
+              : 'Something went wrong. Please try again.',
+          onRetry: _retrySubmission,
+          onSaveDraft: _saveDraftAndExit,
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.error(
+        message: _friendlyErrorMessage(e),
+        onRetry: _retrySubmission,
+        onSaveDraft: _saveDraftAndExit,
+      );
+    }
+  }
+
+  String _friendlyErrorMessage(Object error) {
+    final msg = error.toString();
+    if (msg.contains('Connection refused') || msg.contains('SocketException')) {
+      return 'Connection lost. Your data has been saved.';
+    }
+    if (msg.contains('timeout')) {
+      return 'Request timed out. Your data has been saved.';
+    }
+    return msg.replaceAll(RegExp(r'^Exception:\s*'), '');
+  }
+
+  Future<void> _saveDraftAndExit() async {
+    await _formData.saveDraft();
+    if (mounted) {
+      Navigator.of(context).pop(false);
     }
   }
 
@@ -320,14 +484,9 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
           actions: [
             TextButton(
               onPressed: _isSubmitting ? null : _nextStep,
-              child: _isSubmitting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : Text(_currentStep == 3
-                      ? l10n.listingSubmit
-                      : l10n.listingNext),
+              child: Text(_currentStep == 3
+                  ? l10n.listingSubmit
+                  : l10n.listingNext),
             ),
           ],
         ),

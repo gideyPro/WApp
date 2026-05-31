@@ -474,7 +474,11 @@ class ListingService {
   }
 
   /// Create a new listing
-  Future<ListingResponse> createListing({required ListingFormData formData}) async {
+  Future<ListingResponse> createListing({
+    required ListingFormData formData,
+    String? submissionKey,
+    void Function(double progress)? onProgress,
+  }) async {
     try {
       // Validate total upload size (150MB limit)
       final totalSize = await _calculateTotalSize(formData);
@@ -486,10 +490,22 @@ class ListingService {
       }
 
       final dioFormData = await _buildFormData(formData);
+      final headers = <String, dynamic>{};
+      if (submissionKey != null) {
+        headers['X-Submission-Key'] = submissionKey;
+      }
       final response = await _apiClient.dio.post(
         ApiConstants.createListing,
         data: dioFormData,
-        options: Options(sendTimeout: const Duration(seconds: 300)),
+        options: Options(
+          sendTimeout: const Duration(seconds: 300),
+          headers: headers.isNotEmpty ? headers : null,
+        ),
+        onSendProgress: onProgress != null
+            ? (sent, total) {
+                if (total > 0) onProgress(sent / total);
+              }
+            : null,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -692,6 +708,24 @@ class ListingService {
         success: false,
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
+    }
+  }
+
+  /// Check if a submission key matches an already-created listing
+  Future<int?> checkSubmissionKey(String submissionKey) async {
+    try {
+      final response = await _apiClient.dio.get(
+        '${ApiConstants.checkSubmissionKey}/$submissionKey',
+      );
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['found'] == true && data['listing_id'] != null) {
+          return data['listing_id'] as int;
+        }
+      }
+      return null;
+    } catch (_) {
+      return null;
     }
   }
 }
