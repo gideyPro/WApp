@@ -16,7 +16,16 @@ import '../../providers/app_providers.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 import 'edit_listing_screen.dart';
 
-/// My Listings Screen - Shows user's own listings
+class _TabState {
+  List<Listing> listings = [];
+  bool isLoading = true;
+  bool isLoadingMore = false;
+  String? errorMessage;
+  int currentPage = 1;
+  int totalPages = 1;
+  bool hasMore = false;
+}
+
 class MyListingsScreen extends ConsumerStatefulWidget {
   const MyListingsScreen({super.key});
 
@@ -24,67 +33,105 @@ class MyListingsScreen extends ConsumerStatefulWidget {
   ConsumerState<MyListingsScreen> createState() => _MyListingsScreenState();
 }
 
-class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
+class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
-  List<Listing> _myListings = [];
-  bool _isLoading = true;
-  bool _isLoadingMore = false;
-  String? _errorMessage;
-  int _currentPage = 1;
-  int _totalPages = 1;
-  bool _hasMore = false;
+  late List<_TabState> _tabStates;
+  late List<String Function(AppLocalizations)> _tabLabels;
+
+  static const _tabs = [
+    'all',
+    'active',
+    'pending',
+    'frozen',
+    'rejected',
+    'sold',
+    'rented',
+  ];
+
+  static String? _statusForTab(int index) {
+    if (index == 0) return null;
+    return _tabs[index];
+  }
 
   @override
   void initState() {
     super.initState();
-    _loadMyListings();
+    _tabController = TabController(length: _tabs.length, vsync: this);
+    _tabController.addListener(_onTabChanged);
+    _tabStates = List.generate(_tabs.length, (_) => _TabState());
+    _tabLabels = [
+      (l) => l.searchFilterAll,
+      (l) => l.statusActive,
+      (l) => l.statusPending,
+      (l) => l.statusFrozen,
+      (l) => l.statusRejected,
+      (l) => l.statusSold,
+      (l) => l.statusRented,
+    ];
     _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200 &&
-        !_isLoading &&
-        !_isLoadingMore &&
-        _hasMore) {
-      _loadMyListings(page: _currentPage + 1);
-    }
+    _loadTab(0);
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadMyListings({int page = 1}) async {
-    if (page == 1) {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-    } else {
-      setState(() => _isLoadingMore = true);
+  int get _currentTab => _tabController.index;
+
+  void _onTabChanged() {
+    if (!_tabController.indexIsChanging) {
+      _loadTab(_currentTab);
     }
+  }
+
+  void _onScroll() {
+    final state = _tabStates[_currentTab];
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
+        !state.isLoading &&
+        !state.isLoadingMore &&
+        state.hasMore) {
+      _loadTab(_currentTab, page: state.currentPage + 1);
+    }
+  }
+
+  Future<void> _loadTab(int tabIndex, {int page = 1}) async {
+    final state = _tabStates[tabIndex];
+    if (page == 1) {
+      state.isLoading = true;
+      state.errorMessage = null;
+    } else {
+      state.isLoadingMore = true;
+    }
+    setState(() {});
 
     final service = ListingService();
-    final response = await service.getMyListings(page: page);
+    final response = await service.getMyListings(
+      page: page,
+      status: _statusForTab(tabIndex),
+    );
 
     if (mounted) {
       setState(() {
         if (response.success) {
-          _myListings = page == 1
+          state.listings = page == 1
               ? response.listings
-              : [..._myListings, ...response.listings];
-          _currentPage = response.currentPage ?? page;
-          _totalPages = response.totalPages ?? 1;
-          _hasMore = _currentPage < _totalPages;
+              : [...state.listings, ...response.listings];
+          state.currentPage = response.currentPage ?? page;
+          state.totalPages = response.totalPages ?? 1;
+          state.hasMore = state.currentPage < state.totalPages;
         } else {
-          _errorMessage = response.message;
+          state.errorMessage = response.message;
         }
-        _isLoading = false;
-        _isLoadingMore = false;
+        state.isLoading = false;
+        state.isLoadingMore = false;
       });
     }
   }
@@ -136,7 +183,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
         builder: (_) => EditListingScreen(listing: detail.listing!),
       ),
     );
-    if (result == true && mounted) _loadMyListings();
+    if (result == true && mounted) _loadTab(_currentTab);
   }
 
   Future<void> _deleteListing(Listing listing) async {
@@ -153,7 +200,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
     try {
       final service = ListingService();
       final result = await service.deleteListing(listing.id);
-      if (result.success && mounted) _loadMyListings();
+      if (result.success && mounted) _loadTab(_currentTab);
     } catch (e) {
       if (mounted) {
         WaveToast.showError(context, AppLocalizations.of(context).commonError);
@@ -194,7 +241,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
       final result = await service.featureListing(listing.id);
       if (result.success && mounted) {
         WaveToast.showSuccess(context, result.message);
-        _loadMyListings();
+        _loadTab(_currentTab);
       } else if (mounted) {
         WaveToast.showError(context, result.message);
       }
@@ -209,10 +256,11 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
   Widget build(BuildContext context) {
     final subState = ref.watch(subscriptionProvider);
     final canFeature = subState.canFeatureListing;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: WaveAppBar(
-        title: Text(AppLocalizations.of(context).profileMyListings),
+        title: Text(l10n.profileMyListings),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded),
@@ -222,19 +270,47 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
                 MaterialPageRoute(builder: (_) => const CreateListingScreen()),
               );
               if (result == true && mounted) {
-                _loadMyListings();
+                _loadTab(_currentTab);
               }
             },
-            tooltip: AppLocalizations.of(context).listingsCreate,
+            tooltip: l10n.listingsCreate,
           ),
         ],
       ),
-      body: _buildBody(canFeature),
+      body: Column(
+        children: [
+          TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            labelColor: AppColors.primary500,
+            unselectedLabelColor: AppColors.stone500,
+            indicatorColor: AppColors.primary500,
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+            tabs: _tabs.asMap().entries.map((e) {
+              return Tab(text: _tabLabels[e.key](l10n));
+            }).toList(),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: List.generate(_tabs.length, (i) {
+                return _buildTabBody(i, canFeature);
+              }),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildBody(bool canFeature) {
-    if (_isLoading && _myListings.isEmpty) {
+  Widget _buildTabBody(int tabIndex, bool canFeature) {
+    final state = _tabStates[tabIndex];
+
+    if (state.isLoading && state.listings.isEmpty) {
       return ListView.builder(
         padding: AppSpacing.paddingLg,
         itemCount: 5,
@@ -242,16 +318,16 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
       );
     }
 
-    if (_errorMessage != null && _myListings.isEmpty) {
+    if (state.errorMessage != null && state.listings.isEmpty) {
       return WaveMessageScreen.error(
         title: AppLocalizations.of(context).errorLoadingListings,
-        subtitle: _errorMessage!,
-        onRetry: () => _loadMyListings(),
+        subtitle: state.errorMessage!,
+        onRetry: () => _loadTab(tabIndex),
         isEmbedded: true,
       );
     }
 
-    if (_myListings.isEmpty) {
+    if (state.listings.isEmpty) {
       final l10n = AppLocalizations.of(context);
       return Center(
         child: Padding(
@@ -307,20 +383,20 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => _loadMyListings(),
+      onRefresh: () => _loadTab(tabIndex),
       child: ListView.builder(
-        controller: _scrollController,
+        controller: tabIndex == _currentTab ? _scrollController : null,
         padding: AppSpacing.paddingLg,
-        itemCount: _myListings.length + (_isLoadingMore ? 1 : 0),
+        itemCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
         itemBuilder: (context, index) {
-          if (index >= _myListings.length) {
+          if (index >= state.listings.length) {
             return const Padding(
               padding: EdgeInsets.only(bottom: 16),
               child: PropertyListingCard(isLoading: true),
             );
           }
 
-          final listing = _myListings[index];
+          final listing = state.listings[index];
           final isEditing = _isEditing(listing.id);
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),

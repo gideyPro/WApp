@@ -44,6 +44,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     super.initState();
     _loadDraft();
     _startAutoSave();
+    ref.read(kycStatusProvider.notifier).loadKycStatus();
   }
 
   @override

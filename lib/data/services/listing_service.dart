@@ -109,14 +109,19 @@ class ListingService {
   Future<ListingResponse> getMyListings({
     int page = 1,
     int perPage = 15,
+    String? status,
   }) async {
     try {
+      final queryParams = <String, dynamic>{
+        'page': page,
+        'per_page': perPage,
+      };
+      if (status != null && status.isNotEmpty) {
+        queryParams['status'] = status;
+      }
       final response = await _apiClient.dio.get(
         '${ApiConstants.listings}/my-listings',
-        queryParameters: {
-          'page': page,
-          'per_page': perPage,
-        },
+        queryParameters: queryParams,
       );
 
       if (response.statusCode == 200) {
