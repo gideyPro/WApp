@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
@@ -234,6 +235,104 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     return null;
   }
 
+  ({String title, String subtitle}) _orderGateMessage(
+      SubscriptionState subState, AppLocalizations l10n) {
+    if (!subState.hasPaidSubscription) {
+      return (
+        title: l10n.ordersLimitTitle,
+        subtitle: 'You need an active subscription that supports order '
+            'creation.',
+      );
+    }
+    final plan = subState.subscription?.plan;
+    if (plan == null || plan.maxOrders == 0) {
+      return (
+        title: l10n.subscriptionPlanNotSupportedOrder,
+        subtitle: l10n.subscriptionPlanNotSupportedOrder,
+      );
+    }
+    return (
+      title: l10n.ordersLimitTitle,
+      subtitle: l10n.ordersLimitMessage,
+    );
+  }
+
+  Widget _buildSkeleton() {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: context.scaffoldBg,
+      appBar: WaveAppBar(
+        centerTitle: false,
+        title: Text(l10n.ordersCreate),
+      ),
+      body: Shimmer.fromColors(
+        baseColor: context.shimmerBase,
+        highlightColor: context.shimmerHighlight,
+        child: Padding(
+          padding: AppSpacing.paddingLg,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 14,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: context.shimmerHighlight,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: context.shimmerHighlight,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              for (int i = 0; i < 4; i++) ...[
+                Container(
+                  height: 14,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: context.shimmerHighlight,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 44,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: context.shimmerHighlight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -244,13 +343,13 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       orElse: () => true,
     );
 
+    // Loading state — wait for data before gating
+    if (subState.isLoading) {
+      return _buildSkeleton();
+    }
+
     if (subscriptionEnabled && !subState.canCreateOrder) {
-      final title = !subState.hasPaidSubscription
-          ? l10n.ordersLimitTitle
-          : l10n.subscriptionPlanNotSupportedOrder;
-      final subtitle = !subState.hasPaidSubscription
-          ? l10n.ordersLimitMessage
-          : l10n.subscriptionPlanNotSupportedOrder;
+      final (:title, :subtitle) = _orderGateMessage(subState, l10n);
       return Scaffold(
         backgroundColor: context.scaffoldBg,
         appBar: WaveAppBar(

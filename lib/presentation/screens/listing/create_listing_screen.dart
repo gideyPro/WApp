@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -153,6 +154,101 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     setState(() => _formData = newData);
   }
 
+  ({String title, String subtitle}) _listingGateMessage(
+      SubscriptionState subState, AppLocalizations l10n) {
+    if (!subState.hasPaidSubscription) {
+      return (
+        title: l10n.subscriptionRequiredTitle,
+        subtitle: 'You need an active subscription that supports listing '
+            'creation.',
+      );
+    }
+    final plan = subState.subscription?.plan;
+    if (plan == null || plan.maxListings == 0) {
+      return (
+        title: l10n.subscriptionPlanNotSupportedListing,
+        subtitle: l10n.subscriptionPlanNotSupportedListing,
+      );
+    }
+    return (
+      title: l10n.subscriptionLimitReached,
+      subtitle: l10n.subscriptionLimitReached,
+    );
+  }
+
+  Widget _buildSkeleton() {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: context.scaffoldBg,
+      appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
+      body: Shimmer.fromColors(
+        baseColor: context.shimmerBase,
+        highlightColor: context.shimmerHighlight,
+        child: Padding(
+          padding: AppSpacing.paddingLg,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (int i = 0; i < 3; i++) ...[
+                Container(
+                  height: 14,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: context.shimmerHighlight,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 44,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: context.shimmerHighlight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              const SizedBox(height: 12),
+              Container(
+                height: 14,
+                width: 140,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: context.shimmerHighlight,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: context.shimmerHighlight,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -163,6 +259,11 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       data: (data) => data['subscription_enabled'] == true,
       orElse: () => true,
     );
+
+    // Loading state — wait for data before gating
+    if (subState.isLoading || kycState.isLoading) {
+      return _buildSkeleton();
+    }
 
     // KYC gate
     if (!kycState.isVerified && !kycState.isApproved) {
@@ -195,20 +296,9 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       );
     }
 
-    // Subscription gate
+    // Subscription gate — show correct message per case
     if (subscriptionEnabled && !subState.canCreateListing) {
-      final title = !subState.hasPaidSubscription
-          ? l10n.subscriptionRequiredTitle
-          : (subState.subscription?.plan == null ||
-                  subState.subscription!.plan!.maxListings == 0
-              ? l10n.subscriptionPlanNotSupportedListing
-              : l10n.subscriptionLimitReached);
-      final subtitle = !subState.hasPaidSubscription
-          ? l10n.subscriptionRequiredListingSubtitle
-          : (subState.subscription?.plan == null ||
-                  subState.subscription!.plan!.maxListings == 0
-              ? l10n.subscriptionPlanNotSupportedListing
-              : l10n.subscriptionLimitReached);
+      final (:title, :subtitle) = _listingGateMessage(subState, l10n);
       return Scaffold(
         backgroundColor: context.scaffoldBg,
         appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
