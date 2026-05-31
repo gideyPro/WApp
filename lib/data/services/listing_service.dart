@@ -649,6 +649,46 @@ class ListingService {
       );
     }
   }
+
+  /// Remove featured status
+  Future<ListingResponse> unfeatureListing(int listingId) async {
+    try {
+      final response = await _apiClient.dio.post('${ApiConstants.featureListing}/$listingId/unfeature');
+      if (response.statusCode == 200) {
+        return const ListingResponse(success: true, message: 'Featured status removed');
+      }
+      return ListingResponse(
+        success: false,
+        message: response.data['message'] ?? 'Failed to remove featured status',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return ListingResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  /// Remove VIP status
+  Future<ListingResponse> unvipListing(int listingId) async {
+    try {
+      final response = await _apiClient.dio.post('${ApiConstants.vipListing}/$listingId/unvip');
+      if (response.statusCode == 200) {
+        return const ListingResponse(success: true, message: 'VIP status removed');
+      }
+      return ListingResponse(
+        success: false,
+        message: response.data['message'] ?? 'Failed to remove VIP status',
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return ListingResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
 }
 
 /// Response wrapper for listing operations

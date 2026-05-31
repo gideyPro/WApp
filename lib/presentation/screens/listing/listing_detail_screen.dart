@@ -1367,6 +1367,60 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
     }
   }
 
+  Future<void> _unfeatureListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await WaveDialog.showConfirm(
+      context: context,
+      title: 'Unfeature Listing?',
+      message: 'Your listing will no longer appear as featured. You can feature it again later.',
+      confirmLabel: 'Unfeature',
+      cancelLabel: l10n.commonCancel,
+    );
+    if (confirmed != true) return;
+
+    try {
+      final service = ListingService();
+      final result = await service.unfeatureListing(listing.id);
+      if (result.success && mounted) {
+        WaveToast.showSuccess(context, result.message);
+        ref.read(listingDetailProvider.notifier).loadListing(listing.id);
+      } else if (mounted) {
+        WaveToast.showError(context, result.message);
+      }
+    } catch (e) {
+      if (mounted) {
+        WaveToast.showError(context, AppLocalizations.of(context).commonError);
+      }
+    }
+  }
+
+  Future<void> _unvipListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await WaveDialog.showConfirm(
+      context: context,
+      title: 'Remove VIP Status?',
+      message: 'Your listing will no longer be a VIP listing. You can mark it as VIP again later.',
+      confirmLabel: 'Remove VIP',
+      cancelLabel: l10n.commonCancel,
+    );
+    if (confirmed != true) return;
+
+    try {
+      final service = ListingService();
+      final result = await service.unvipListing(listing.id);
+      if (result.success && mounted) {
+        WaveToast.showSuccess(context, result.message);
+        ref.read(listingDetailProvider.notifier).loadListing(listing.id);
+      } else if (mounted) {
+        WaveToast.showError(context, result.message);
+      }
+    } catch (e) {
+      if (mounted) {
+        WaveToast.showError(context, AppLocalizations.of(context).commonError);
+      }
+    }
+  }
+
   Widget _buildActionButtons(Listing listing) {
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1420,7 +1474,47 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
               ],
             ),
             const SizedBox(height: 12),
-            if (!listing.isFeaturedActive)
+            // Feature toggle
+            if (listing.isFeaturedActive)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.success.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.success.withValues(alpha: 0.25)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle, size: 18, color: AppColors.success),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.listingUpgradeToFeature.replaceFirst('Feature', 'Featured'),
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.success,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () => _unfeatureListing(listing),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        foregroundColor: AppColors.stone500,
+                      ),
+                      child: Text(
+                        'Unfeature',
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.stone500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else
               subState.canFeatureListing
                   ? SizedBox(
                       width: double.infinity,
@@ -1441,9 +1535,48 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                       title: l10n.listingUpgradeToFeature,
                       subtitle: l10n.subscriptionRequiredFeatureSubtitle,
                     ),
-            if (!listing.isVipActive)
-              const SizedBox(height: 12),
-            if (!listing.isVipActive)
+            const SizedBox(height: 12),
+            // VIP toggle
+            if (listing.isVipActive)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.vip.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.vip.withValues(alpha: 0.25)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle, size: 18, color: AppColors.vip),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.markAsVip,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.vip,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () => _unvipListing(listing),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        foregroundColor: AppColors.stone500,
+                      ),
+                      child: Text(
+                        'Un-VIP',
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.stone500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
