@@ -239,7 +239,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       SubscriptionState subState, AppLocalizations l10n) {
     if (!subState.hasPaidSubscription) {
       return (
-        title: l10n.ordersLimitTitle,
+        title: l10n.subscriptionRequiredTitle,
         subtitle: 'You need an active subscription that supports order '
             'creation.',
       );
