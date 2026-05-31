@@ -6,6 +6,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/services/kyc_service.dart';
+import '../../../../data/services/listing_media_manager.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../listing/create_listing_screen.dart';
@@ -30,8 +31,25 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   bool _isSubmitting = false;
   final ImagePicker _picker = ImagePicker();
   final KycService _kycService = KycService();
+  final List<String> _persistedPaths = [];
 
   bool _showFormManually = false;
+
+  void _cleanPersistedFiles() {
+    for (final path in _persistedPaths) {
+      final file = File(path);
+      if (file.existsSync()) {
+        file.delete();
+      }
+    }
+    _persistedPaths.clear();
+  }
+
+  @override
+  void dispose() {
+    _cleanPersistedFiles();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -46,22 +64,21 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     try {
       final XFile? image = await _picker.pickImage(
         source: source,
-        maxWidth: 1920,
-        maxHeight: 1920,
-        imageQuality: 85,
       );
 
       if (image != null) {
+        final persisted = await ListingMediaManager.persistFile(image);
+        _persistedPaths.add(persisted.path);
         setState(() {
           switch (type) {
             case 'front':
-              _frontImage = File(image.path);
+              _frontImage = File(persisted.path);
               break;
             case 'back':
-              _backImage = File(image.path);
+              _backImage = File(persisted.path);
               break;
             case 'selfie':
-              _selfieImage = File(image.path);
+              _selfieImage = File(persisted.path);
               break;
           }
         });
@@ -142,6 +159,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
     if (mounted) {
       if (response.success) {
+        _cleanPersistedFiles();
         WaveToast.showSuccess(context, l10n.kycSuccess);
         ref.read(kycStatusProvider.notifier).loadKycStatus();
       } else {
