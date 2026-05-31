@@ -301,24 +301,6 @@ class WaveToast {
     );
   }
 
-  static void showInfo(BuildContext context, String message) {
-    _showToast(
-      context,
-      message,
-      AppColors.primary600,
-      Icons.info_outline_rounded,
-    );
-  }
-
-  static void showWarning(BuildContext context, String message) {
-    _showToast(
-      context,
-      message,
-      AppColors.warning,
-      Icons.warning_amber_rounded,
-    );
-  }
-
   static void _showToast(
     BuildContext context,
     String message,
