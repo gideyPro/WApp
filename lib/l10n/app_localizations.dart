@@ -3886,6 +3886,30 @@ abstract class AppLocalizations {
   /// **'Pending'**
   String get statusPending;
 
+  /// No description provided for @statusFrozen.
+  ///
+  /// In en, this message translates to:
+  /// **'Frozen'**
+  String get statusFrozen;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @statusSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get statusSold;
+
+  /// No description provided for @statusRented.
+  ///
+  /// In en, this message translates to:
+  /// **'Rented'**
+  String get statusRented;
+
   /// No description provided for @statusSuccess.
   ///
   /// In en, this message translates to:

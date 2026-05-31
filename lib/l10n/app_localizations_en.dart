@@ -2050,6 +2050,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusPending => 'Pending';
 
   @override
+  String get statusFrozen => 'Frozen';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get statusSold => 'Sold';
+
+  @override
+  String get statusRented => 'Rented';
+
+  @override
   String get statusSuccess => 'Success';
 
   @override

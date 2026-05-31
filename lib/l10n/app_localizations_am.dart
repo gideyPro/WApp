@@ -211,11 +211,11 @@ class AppLocalizationsAm extends AppLocalizations {
       'የመገለጫ መረጃዎን ለማስተካከል:\n\n1. ወደ መገለጫ (Profile) ይሂዱ\n2. \"መገለጫ ያስተካክሉ\" የሚለውን ይንኩ\n3. ስምዎን፣ ኢሜይልዎን ወይም ሌሎች ዝርዝሮችን ያዘምኑ\n4. ለውጦቹን ለማረጋገጥ \"አስቀምጥ\" የሚለውን ይንኩ\n\nየመገለጫ መረጃዎ ስለ ንብረቶች በሚነጋገሩበት ጊዜ ሌሎች ተጠቃሚዎች እርስዎን እንዲያውቁ ይረዳል።';
 
   @override
-  String get helpAccResetTitle => 'የይለፍ ቃልዎን እንዴት መቀየር እንደሚችሉ';
+  String get helpAccResetTitle => 'የይለፍ ቃል እንዴት እንደገና ማዘጋጀት እንደሚቻል';
 
   @override
   String get helpAccResetContent =>
-      'የይለፍ ቃልዎን መቀየር ካለብዎ:\n\n1. በመግቢያ ገጹ ላይ \"የይለፍ ቃል ረስተዋል?\" የሚለውን ይንኩ\n2. የተመዘገቡበትን ስልክ ቁጥር ወይም ኢሜይል ያስገቡ\n3. ባለ 6 አሃዝ ኮድ ይላክልዎታል\n4. ኮዱን ያስገቡ እና አዲስ የይለፍ ቃል ያዘጋጁ\n\nለሌሎች ሰዎች የማይጋሩት ጠንካራ የይለፍ ቃል መጠቀሙን ያረጋግጡ።';
+      'የይለፍ ቃልዎን እንደገና ማዘጋጀት ካለብዎ:\n\n1. በመግቢያ ገጹ ላይ \"የይለፍ ቃል ረስተዋል?\" የሚለውን ይንኩ\n2. የተመዘገቡበትን ስልክ ቁጥር ወይም ኢሜይል ያስገቡ\n3. ባለ 6 አሃዝ ኮድ ይላክልዎታል\n4. ኮዱን ያስገቡ እና አዲስ የይለፍ ቃል ያዘጋጁ\n\nለሌሎች ሰዎች የማይጋሩት ጠንካራ የይለፍ ቃል መጠቀሙን ያረጋግጡ።';
 
   @override
   String get helpListCreateTitle => 'ንብረት እንዴት እንደሚመዘገብ';
@@ -278,7 +278,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpKycRejectContent =>
-      'ለማረጋገጫ ውድቅ መደረግ የተለመዱ ምክንያቶች:\n\n1. ግልጽ ያልሆነ ወይም የማይነበብ የሰነድ ፎቶ\n2. ጊዜው ያለፈበት ሰነድ\n3. ፎቶው (Selfie) ፊትዎን እና ሰነዱን በግልጽ አለማሳየቱ\n4. የተመረጠው የሰነድ አይነት ከፎቶው ጋር አለመመሳሰሉ\n5. ሙሉ በሙሉ የማይታይ ወይም የተቆረጠ የሰነድ ፎቶ\n\nእንደገና ለመላክ:\n- ወደ የማንነት ማረጋገጫ ይሂዱ\n- \"ሰነዶችን እንደገና ላክ\" የሚለውን ይንኩ\n- ሁሉም ፎቶዎች ግልጽ መሆናቸውን ያረጋግጡ';
+      'ለማረጋገጫ ውድቅ መደረግ የተለመዱ ምክንያቶች:\n\n1. ግልጽ ያልሆነ ወይም የማይነበብ የሰነድ ፎቶ\n2. ጊዜው ያለፈበት ሰነድ\n3. ፎቶው (Selfie) ፊትዎን እና ሰነዱን በግልጽ አለሳየቱ\n4. የተመረጠው የሰነድ አይነት ከፎቶው ጋር አለመመሳሰሉ\n5. ሙሉ በሙሉ የማይታይ ወይም የተቆረጠ የሰነድ ፎቶ\n\nእንደገና ለመላክ:\n- ወደ የማንነት ማረጋገጫ ይሂዱ\n- \"ሰነዶችን እንደገና ላክ\" የሚለውን ይንኩ\n- ሁሉም ፎቶዎች ግልጽ መሆናቸውን ያረጋግጡ';
 
   @override
   String get helpSafeStayTitle => 'በዌቭማርት ላይ ደህንነትዎን እንዴት እንደሚጠብቁ';
@@ -1313,7 +1313,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get messagesUnread => 'ያልተነበቡ';
 
   @override
-  String get messagesSwitchContext => 'አውራጅ ለውጥ';
+  String get messagesSwitchContext => 'አውድ ይቀይሩ';
 
   @override
   String get settingsTitle => 'ቅንብሮች';
@@ -1411,31 +1411,31 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsDarkMode => 'ጨለማ ሁኔታ';
 
   @override
-  String get listingEditTitle => 'ማስተካከያ';
+  String get listingEditTitle => 'ንብረት ያስተካክሉ';
 
   @override
-  String get listingDeleteConfirmTitle => 'ማስወገን';
+  String get listingDeleteConfirmTitle => 'ንብረት ሰርዝ';
 
   @override
-  String get listingDeleteConfirmMessage => 'ይህን ማስተካከያ ለማስወገን እርግጠኛ ነህ?';
+  String get listingDeleteConfirmMessage => 'ይህንን ንብረት ለመሰረዝ እርግጠኛ ነዎት?';
 
   @override
-  String get listingDeletedSuccess => 'ማስተካከያ ተሰርዟል';
+  String get listingDeletedSuccess => 'ንብረቱ ተሰርዟል';
 
   @override
-  String get listingUpdatedSuccess => 'ማስተካከያ ተስተካክሏል';
+  String get listingUpdatedSuccess => 'ንብረቱ ተስተካክሏል';
 
   @override
-  String get listingUpdate => 'ማስተካከያ';
+  String get listingUpdate => 'ንብረት አዘምን';
 
   @override
-  String get listingReviewTitle => 'ለውጦችን ይልተማካክ';
+  String get listingReviewTitle => 'ለውጦችን ይገምግሙ';
 
   @override
-  String get listingDiscardTitle => 'ለውጦችን እርሳ';
+  String get listingDiscardTitle => 'ለውጦችን ተው';
 
   @override
-  String get listingDiscardMessage => 'ለውጦችን ማጥፋት እርግጠኛ ነዎት?';
+  String get listingDiscardMessage => 'ለውጦችን ለመተው እርግጠኛ ነዎት?';
 
   @override
   String get languageTitle => 'ቋንቋ ይምረጡ';
@@ -1516,10 +1516,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get authChangeNumber => 'ቁጥር ይቀይሩ';
 
   @override
-  String get authChangeNumberConfirm => 'የስልክ ቁጥርዎን መቀየር ይፈልጋሉ?';
+  String get authChangeNumberConfirm => 'የስልክ ቁጥርዎን ለመቀየር እርግጠኛ ነዎት?';
 
   @override
-  String get authExitLogin => 'መግቢያ ይሁኑ';
+  String get authExitLogin => 'ከመግቢያ ውጣ';
 
   @override
   String get authExitLoginConfirm => 'የመግቢያ ሂደቱን ማቋረጥ ይፈልጋሉ?';
@@ -1721,7 +1721,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get messageGoBack => 'ተመለስ';
 
   @override
-  String get messageDismiss => 'ዘግን';
+  String get messageDismiss => 'ዝጋ';
 
   @override
   String get messageNetworkTitle => 'የበይነመረብ ግንኙነት የለም';
@@ -1836,7 +1836,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get subscriptionLimitReached =>
-      'የምዝገባ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገብ ምዝገባዎን ያሳድጉ።';
+      'የምዝገባ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገዝ ምዝገባዎን ያሳድጉ።';
 
   @override
   String get kycRequiredTitle => 'የማንነት ማረጋገጫ (KYC) ያስፈልጋል';
@@ -2018,6 +2018,18 @@ class AppLocalizationsAm extends AppLocalizations {
   String get statusPending => 'በመጠባበቅ ላይ';
 
   @override
+  String get statusFrozen => 'የቀዘቀዘ';
+
+  @override
+  String get statusRejected => 'ውድቅ የተደረገ';
+
+  @override
+  String get statusSold => 'የተሸጠ';
+
+  @override
+  String get statusRented => 'የተከራየ';
+
+  @override
   String get statusSuccess => 'ተሳክቷል';
 
   @override
@@ -2036,7 +2048,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get connectivityOnline => 'መረብ ተመልሷል';
 
   @override
-  String get markAsVipTitle => 'እንደ VIP ልመርቅ?';
+  String get markAsVipTitle => 'እንደ VIP ልምረጥ?';
 
   @override
   String get markAsVip => 'እንደ VIP ምረጥ';
@@ -2058,7 +2070,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String listingsContactViewsRemaining(int remaining, int max) {
-    return 'ይህንን ወቅት $remaining ከ$max የመገናኘት ተከፋይ ተከፍቷል';
+    return 'በዚህ ጊዜ $remaining ከ $max የሻጭ ስልክ ቁጥሮች ማየት ይችላሉ';
   }
 
   @override
