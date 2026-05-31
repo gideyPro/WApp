@@ -300,7 +300,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     final isSubscriptionError = message.toLowerCase().contains('subscription');
 
     return Scaffold(
-      appBar: WaveAppBar(title: Text(l10n.listingsTitle)),
+      appBar: WaveAppBar(
+        title: Text(
+          isSubscriptionError
+              ? l10n.subscriptionRequiredTitle
+              : l10n.listingsTitle,
+        ),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -325,7 +331,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                message,
+                isSubscriptionError
+                    ? l10n.subscriptionRequiredDetailsSubtitle
+                    : message,
                 style: AppTextStyles.bodyMedium
                     .copyWith(color: context.theme.textSecondary),
                 textAlign: TextAlign.center,
