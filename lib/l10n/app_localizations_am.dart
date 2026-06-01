@@ -119,6 +119,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get homeLatestRecently => 'በቅርቡ የወጡ';
 
   @override
+  String get homeVipEyebrow => 'VIP ዝርዝሮች';
+
+  @override
+  String get homeVipTitle => 'ፕሪሚየም VIP ንብረቶች';
+
+  @override
   String get homeViewAll => 'ሁሉንም ይመልከቱ';
 
   @override

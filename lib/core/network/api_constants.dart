@@ -28,6 +28,7 @@ class ApiConstants {
   static const String listings = '$apiBase/listings';
   static const String listingDetail = '$apiBase/listings'; // + /{id}
   static const String featuredListings = '$apiBase/listings/featured';
+  static const String vipListings = '$apiBase/listings/vip-listings';
   static const String similarListings = '$apiBase/listings'; // + /{id}/similar
   static const String createListing = '$apiBase/listings';
   static const String updateListing = '$apiBase/listings'; // + /{id}

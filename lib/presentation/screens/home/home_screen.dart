@@ -61,6 +61,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(featuredListingsProvider.notifier).loadFeaturedListings();
+      ref.read(vipListingsProvider.notifier).loadVipListings();
       ref.read(listingsProvider.notifier).loadListings();
       ref.read(authStateProvider.notifier).loadUser();
       ref.read(favoritesProvider.notifier).loadFavorites();
@@ -560,6 +561,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final featuredState = ref.watch(featuredListingsProvider);
+    final vipState = ref.watch(vipListingsProvider);
     final listingsState = ref.watch(listingsProvider);
     final searchState = ref.watch(searchResultsProvider);
     final l10n = AppLocalizations.of(context);
@@ -625,6 +627,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         _buildSectionHeader(
                             l10n.listingsFeatured, isFeatured: true),
                         _buildFeaturedListings(featuredState),
+                        if (ref.watch(subscriptionProvider).canViewVip) ...[
+                          _buildSectionHeader(l10n.homeVipTitle,
+                              isFeatured: false, eyebrow: l10n.homeVipEyebrow),
+                          _buildVipListings(vipState),
+                        ],
                         _buildSectionHeader(l10n.listingsTitle),
                       ],
                     ),
@@ -841,7 +848,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildSectionHeader(String title, {bool isFeatured = false}) {
+  Widget _buildSectionHeader(String title, {bool isFeatured = false, String? eyebrow}) {
     final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
@@ -849,9 +856,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            isFeatured
-                ? l10n.homeFeaturedPremium.toUpperCase()
-                : l10n.homeLatestRecently.toUpperCase(),
+            eyebrow ??
+                (isFeatured
+                    ? l10n.homeFeaturedPremium.toUpperCase()
+                    : l10n.homeLatestRecently.toUpperCase()),
             style: AppTextStyles.eyebrow,
           ),
           const SizedBox(height: 4),
@@ -896,6 +904,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       );
     }
+    return SizedBox(
+      height: 180,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: state.listings.length,
+        itemBuilder: (context, index) {
+          final listing = state.listings[index];
+          final fav = _isFavorite(listing.id);
+          return Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: SizedBox(
+              width: 280,
+              child: FeaturedListingCard(
+                listing: listing,
+                isFavorite: fav,
+                isTogglingFavorite: _isToggling(listing.id),
+                onFavorite: () => _toggleFavorite(listing.id),
+                onTap: () => _handleListingTap(listing),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildVipListings(ListingsState state) {
+    if (state.isLoading) {
+      return SizedBox(
+        height: 180,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: 3,
+          itemBuilder: (context, index) => const Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: SizedBox(
+              width: 280,
+              child:
+                  FeaturedListingCard(listing: null, isLoading: true),
+            ),
+          ),
+        ),
+      );
+    }
+    if (state.listings.isEmpty) return const SizedBox.shrink();
     return SizedBox(
       height: 180,
       child: ListView.builder(

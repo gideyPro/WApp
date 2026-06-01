@@ -316,6 +316,18 @@ abstract class AppLocalizations {
   /// **'Recently added'**
   String get homeLatestRecently;
 
+  /// No description provided for @homeVipEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'VIP Listings'**
+  String get homeVipEyebrow;
+
+  /// No description provided for @homeVipTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium VIP Properties'**
+  String get homeVipTitle;
+
   /// No description provided for @homeViewAll.
   ///
   /// In en, this message translates to:

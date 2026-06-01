@@ -119,6 +119,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeLatestRecently => 'Recently added';
 
   @override
+  String get homeVipEyebrow => 'VIP Listings';
+
+  @override
+  String get homeVipTitle => 'Premium VIP Properties';
+
+  @override
   String get homeViewAll => 'View All';
 
   @override

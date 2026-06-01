@@ -119,6 +119,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get homeLatestRecently => 'ብቀረባ ዝወጹ';
 
   @override
+  String get homeVipEyebrow => 'VIP ዝርዝራት';
+
+  @override
+  String get homeVipTitle => 'ፕሪሚየም VIP ንብረታት';
+
+  @override
   String get homeViewAll => 'ኹሉ ተዓዘብ';
 
   @override

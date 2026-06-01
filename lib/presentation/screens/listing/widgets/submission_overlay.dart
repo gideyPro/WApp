@@ -169,12 +169,15 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                           width: 3,
                         ),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: SizedBox(
                           width: 28,
                           height: 28,
                           child: CircularProgressIndicator(
                             strokeWidth: 3,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.accent500,
+                            ),
                           ),
                         ),
                       ),
@@ -270,14 +273,18 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                     child: Container(
                       width: 80,
                       height: 80,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.successLight,
+                        color: themeColors.isDark
+                            ? AppColors.success.withValues(alpha: 0.2)
+                            : AppColors.successLight,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.check_rounded,
                         size: 40,
-                        color: AppColors.success,
+                        color: themeColors.isDark
+                            ? AppColors.accent400
+                            : AppColors.success,
                       ),
                     ),
                   );
@@ -313,8 +320,8 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                 height: AppSpacing.buttonHeightMd,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accent500,
-                    foregroundColor: Colors.white,
+                    backgroundColor: themeColors.primary,
+                    foregroundColor: themeColors.primaryText,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                     ),
@@ -333,7 +340,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     foregroundColor: themeColors.textPrimary,
-                    side: BorderSide(color: themeColors.textMuted),
+                    side: BorderSide(color: themeColors.border),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                     ),
@@ -372,14 +379,18 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                     child: Container(
                       width: 80,
                       height: 80,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.errorLight,
+                        color: themeColors.isDark
+                            ? AppColors.error.withValues(alpha: 0.2)
+                            : AppColors.errorLight,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.close_rounded,
                         size: 40,
-                        color: AppColors.error,
+                        color: themeColors.isDark
+                            ? AppColors.error
+                            : AppColors.error,
                       ),
                     ),
                   );
@@ -398,13 +409,17 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: AppColors.errorLight,
+                  color: themeColors.isDark
+                      ? AppColors.error.withValues(alpha: 0.15)
+                      : AppColors.errorLight,
                   borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                 ),
                 child: Text(
                   state.message,
                   style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.error,
+                    color: themeColors.isDark
+                        ? AppColors.stone300
+                        : AppColors.error,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -416,8 +431,8 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                   height: AppSpacing.buttonHeightMd,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.accent500,
-                      foregroundColor: Colors.white,
+                      backgroundColor: themeColors.primary,
+                      foregroundColor: themeColors.primaryText,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                       ),
@@ -438,7 +453,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: themeColors.textPrimary,
-                      side: BorderSide(color: themeColors.textMuted),
+                      side: BorderSide(color: themeColors.border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                       ),
@@ -454,11 +469,11 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
               ],
               TextButton(
                 onPressed: widget.onDismiss,
-                  child: Text(
-                    'Submitting Your Listing',
-                    style: AppTextStyles.headline3.copyWith(
-                      color: themeColors.textPrimary,
-                    ),
+                child: Text(
+                  'Go Back',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: themeColors.textTertiary,
+                  ),
                 ),
               ),
             ],

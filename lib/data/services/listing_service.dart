@@ -160,6 +160,52 @@ class ListingService {
     }
   }
 
+  /// Get VIP listings for the home screen catalogue
+  Future<ListingResponse> getVipListings({
+    int page = 1,
+    int perPage = 12,
+  }) async {
+    try {
+      final response = await _apiClient.dio.get(
+        ApiConstants.vipListings,
+        queryParameters: {
+          'page': page,
+          'per_page': perPage,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final raw = response.data;
+        final dataList = _extractList(raw);
+        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
+
+        final listings = dataList
+            .whereType<Map>()
+            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
+            .toList();
+
+        return ListingResponse(
+          success: true,
+          listings: listings,
+          currentPage: _safeInt(paginationSource['current_page']) ?? page,
+          totalPages: _safeInt(paginationSource['last_page']) ?? 1,
+          total: _safeInt(paginationSource['total']) ?? 0,
+        );
+      }
+
+      return ListingResponse(
+        success: false,
+        message: _extractMessage(response.data, 'Failed to fetch VIP listings'),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return ListingResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
   /// Get featured listings only
   Future<ListingResponse> getFeaturedListings({
     int page = 1,

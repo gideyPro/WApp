@@ -24,6 +24,11 @@ final featuredListingsProvider = StateNotifierProvider<FeaturedListingsNotifier,
   return FeaturedListingsNotifier(ref.watch(listingServiceProvider));
 });
 
+/// VIP listings (for VIP catalogue on home screen)
+final vipListingsProvider = StateNotifierProvider<VipListingsNotifier, ListingsState>((ref) {
+  return VipListingsNotifier(ref.watch(listingServiceProvider));
+});
+
 /// Single listing detail
 final listingDetailProvider = StateNotifierProvider<ListingDetailNotifier, ListingDetailState>((ref) {
   return ListingDetailNotifier(ref.watch(listingServiceProvider));
@@ -127,6 +132,35 @@ class FeaturedListingsNotifier extends StateNotifier<ListingsState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final response = await _listingService.getFeaturedListings(
+      page: page,
+    );
+
+    if (response.success) {
+      state = ListingsState.loaded(
+        listings: response.listings,
+        currentPage: response.currentPage ?? page,
+        totalPages: response.totalPages ?? 1,
+        total: response.total ?? 0,
+      );
+    } else {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: response.message,
+      );
+    }
+  }
+}
+
+class VipListingsNotifier extends StateNotifier<ListingsState> {
+  final ListingService _listingService;
+
+  VipListingsNotifier(this._listingService)
+      : super(const ListingsState.initial());
+
+  Future<void> loadVipListings({int page = 1}) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+
+    final response = await _listingService.getVipListings(
       page: page,
     );
 
