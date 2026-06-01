@@ -4,6 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/provider_utils.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_dialog.dart';
@@ -408,6 +409,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           onPressed: () async {
             Navigator.pop(context);
             await ref.read(authStateProvider.notifier).logout();
+            clearCachedProviders(ref);
             if (context.mounted) {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const OtpLoginScreen()),

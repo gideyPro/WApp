@@ -5,6 +5,7 @@ import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_dialog.dart';
+import '../../providers/provider_utils.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -251,6 +252,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           onPressed: () async {
             Navigator.pop(context);
             await ref.read(authStateProvider.notifier).logout();
+            clearCachedProviders(ref);
             if (context.mounted) {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const OtpLoginScreen()),

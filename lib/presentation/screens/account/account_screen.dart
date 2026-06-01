@@ -8,6 +8,7 @@ import '../../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/provider_utils.dart';
 import '../../providers/theme_provider.dart';
 import '../kyc/kyc_verification_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
@@ -34,6 +35,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(profileProvider.notifier).loadProfile();
+      ref.read(kycStatusProvider.notifier).loadKycStatus();
     });
   }
 
@@ -629,6 +631,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       onPressed: () async {
                         Navigator.pop(dialogContext);
                         await ref.read(authStateProvider.notifier).logout();
+                        clearCachedProviders(ref);
                         if (context.mounted) {
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(builder: (_) => const OtpLoginScreen()),

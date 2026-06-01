@@ -25,6 +25,10 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   void _onItemTapped(int index) {
     if (index == 2) return; // FAB button
     ref.read(selectedTabProvider.notifier).state = index;
+    if (index == 4) {
+      ref.read(profileProvider.notifier).loadProfile();
+      ref.read(kycStatusProvider.notifier).loadKycStatus();
+    }
   }
 
   /// Navigate to Create Listing — inline gates handled inside the screen
