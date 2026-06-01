@@ -16,7 +16,6 @@ import '../../../../l10n/app_localizations.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../../providers/app_providers.dart';
 import '../kyc/kyc_verification_screen.dart';
-import '../settings/settings_screen.dart';
 import 'widgets/listing_form_steps.dart';
 import 'widgets/submission_overlay.dart';
 /// Create Listing Screen - 4-step wizard matching web version

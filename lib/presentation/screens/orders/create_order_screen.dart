@@ -17,7 +17,6 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../providers/app_providers.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
-import '../settings/settings_screen.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {

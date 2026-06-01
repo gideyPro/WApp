@@ -19,7 +19,6 @@ import '../help/help_center_screen.dart';
 import '../messages/messages_screen.dart';
 import '../auth/otp_login_screen.dart';
 import '../../widgets/common/wave_glass.dart';
-import '../settings/settings_screen.dart';
 import '../interests/my_interests_screen.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {

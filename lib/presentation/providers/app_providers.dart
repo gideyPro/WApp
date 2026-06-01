@@ -10,12 +10,12 @@ import '../../data/services/message_service.dart';
 import '../../data/services/payment_service.dart';
 import '../../data/services/subscription_service.dart';
 import '../../data/services/kyc_service.dart';
-import '../../data/services/conference_service.dart';
 import '../../data/services/lead_service.dart';
 import '../../data/services/address_service.dart';
 import '../../data/models/subscription.dart';
 import '../../core/network/connectivity_service.dart';
 import '../../core/network/api_client.dart';
+import '../../core/network/api_constants.dart';
 import 'auth_provider.dart';
 import '../../data/models/message.dart' as msg;
 
@@ -23,6 +23,17 @@ import '../../data/models/message.dart' as msg;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 /// Global Route Observer for navigation tracking
+
+final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
+  try {
+    final response =
+        await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
+    if (response.statusCode == 200 && response.data is Map) {
+      return response.data['data'] ?? {};
+    }
+  } catch (_) {}
+  return {'subscription_enabled': false};
+});
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 /// Selected Tab Provider for MainNavigationShell
@@ -1026,54 +1037,6 @@ class KycStatusState {
   bool get isApproved => status == 'approved';
   bool get isRejected => status == 'rejected';
   bool get isNone => status == 'none' || status == 'error' || status.isEmpty;
-}
-
-/// Conference Provider
-final conferenceServiceProvider =
-    Provider<ConferenceService>((ref) => ConferenceService());
-final conferencesProvider =
-    StateNotifierProvider<ConferencesNotifier, ConferencesState>((ref) {
-  return ConferencesNotifier(ref.watch(conferenceServiceProvider));
-});
-
-class ConferencesNotifier extends StateNotifier<ConferencesState> {
-  final ConferenceService _conferenceService;
-  ConferencesNotifier(this._conferenceService)
-      : super(const ConferencesState.initial());
-
-  Future<void> loadConferences() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _conferenceService.getConferences();
-    if (response.success) {
-      state = ConferencesState.loaded(conferences: response.conferences);
-    } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
-    }
-  }
-}
-
-class ConferencesState {
-  final bool isLoading;
-  final List<dynamic> conferences;
-  final String? errorMessage;
-  const ConferencesState(
-      {required this.isLoading,
-      this.conferences = const [],
-      this.errorMessage});
-  const ConferencesState.initial()
-      : isLoading = true,
-        conferences = const [],
-        errorMessage = null;
-  const ConferencesState.loaded({required this.conferences})
-      : isLoading = false,
-        errorMessage = null;
-  ConferencesState copyWith(
-      {bool? isLoading, List<dynamic>? conferences, String? errorMessage}) {
-    return ConferencesState(
-        isLoading: isLoading ?? this.isLoading,
-        conferences: conferences ?? this.conferences,
-        errorMessage: errorMessage);
-  }
 }
 
 /// Incoming Call Provider
