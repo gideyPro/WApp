@@ -324,19 +324,18 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     if (!subState.hasPaidSubscription) {
       return (
         title: l10n.subscriptionRequiredTitle,
-        subtitle: 'You need an active subscription that supports listing '
-            'creation.',
+        subtitle: l10n.subscriptionRequiredListingSubtitle,
       );
     }
     final plan = subState.subscription?.plan;
     if (plan == null || plan.maxListings == 0) {
       return (
         title: l10n.subscriptionPlanNotSupportedListing,
-        subtitle: l10n.subscriptionPlanNotSupportedListing,
+        subtitle: l10n.subscriptionPlanNotSupportedListingSubtitle,
       );
     }
     return (
-      title: l10n.subscriptionLimitReached,
+      title: l10n.subscriptionLimitReachedTitle,
       subtitle: l10n.subscriptionLimitReached,
     );
   }

@@ -3628,11 +3628,23 @@ abstract class AppLocalizations {
   /// **'You need an active subscription to view property details and contact owners.'**
   String get subscriptionRequiredDetailsSubtitle;
 
+  /// No description provided for @subscriptionRequiredOrderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You need an active subscription to create an order.'**
+  String get subscriptionRequiredOrderSubtitle;
+
   /// No description provided for @subscriptionLimitReached.
   ///
   /// In en, this message translates to:
   /// **'You\'ve reached your listing limit. Upgrade your subscription to post more listings.'**
   String get subscriptionLimitReached;
+
+  /// No description provided for @subscriptionLimitReachedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing Limit Reached'**
+  String get subscriptionLimitReachedTitle;
 
   /// No description provided for @kycRequiredTitle.
   ///
@@ -4090,11 +4102,23 @@ abstract class AppLocalizations {
   /// **'Your current plan does not support creating listings.'**
   String get subscriptionPlanNotSupportedListing;
 
+  /// No description provided for @subscriptionPlanNotSupportedListingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upgrade to a plan that supports listing creation.'**
+  String get subscriptionPlanNotSupportedListingSubtitle;
+
   /// No description provided for @subscriptionPlanNotSupportedOrder.
   ///
   /// In en, this message translates to:
   /// **'Your current plan does not support creating orders.'**
   String get subscriptionPlanNotSupportedOrder;
+
+  /// No description provided for @subscriptionPlanNotSupportedOrderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upgrade to a plan that supports order creation.'**
+  String get subscriptionPlanNotSupportedOrderSubtitle;
 }
 
 class _AppLocalizationsDelegate

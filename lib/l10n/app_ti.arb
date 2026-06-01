@@ -591,7 +591,9 @@
   "subscriptionRequiredTitle": "ምዝገባ የድሊ",
   "subscriptionRequiredListingSubtitle": "ንብረት ንምምዝጋብ ንጡፍ ምዝገባ የድሊ።",
   "subscriptionRequiredDetailsSubtitle": "ዝርዝር ንብረታት ንምርኣይን ምስ ዋናታት ንምርኻብን ንጡፍ ምዝገባ የድሊ።",
+  "subscriptionRequiredOrderSubtitle": "ትእዛዝ ንምፍጣር ንጡፍ ምዝገባ የድሊ።",
   "subscriptionLimitReached": "ናይ ምዝገባ ደረትኩም በጺሕኩም ኣለኹም። ተወሳኺ ንብረታት ንምምዝጋብ ምዝገባኩም ኣዕብዩ።",
+  "subscriptionLimitReachedTitle": "ናይ ምዝገባ ደረት በጺሑ",
   "kycRequiredTitle": "መረጋገጺ መንነት (KYC) የድሊ",
   "kycPendingSubtitleReview": "መረጋገጺ መንነትኩም ገና ኣብ ገምጋም ይርከብ። ምስ ጸደቐ ንብረት ክትምዝግቡ ትኽእሉ ኢኹም።",
   "kycRequiredSubtitlePost": "ንብረት ቅድሚ ምምዝጋብኩም መረጋገጺ መንነት (KYC) ክተጠናቕቑ ኣለኩም።",
@@ -668,5 +670,7 @@
   "ordersUpgradePlan": "ዕቅድ ምሕያሽ",
   "subscriptionVideoUpgrade": "ናይ ንብረት ቪዲዮታት ንምርኣይ ዕቅድኩም ምሕያሽ",
   "subscriptionPlanNotSupportedListing": "ናይ ሕጂ ዕቅድኩም ዝርዝር ምፍጣር ኣይድግፍን።",
-  "subscriptionPlanNotSupportedOrder": "ናይ ሕጂ ዕቅድኩም ትእዛዝ ምፍጣር ኣይድግፍን።"
+  "subscriptionPlanNotSupportedListingSubtitle": "በጃኹም ዝርዝር ምፍጣር ዝድግፍ ዕቅድ ምሕየሹ።",
+  "subscriptionPlanNotSupportedOrder": "ናይ ሕጂ ዕቅድኩም ትእዛዝ ምፍጣር ኣይድግፍን።",
+  "subscriptionPlanNotSupportedOrderSubtitle": "በጃኹም ትእዛዝ ምፍጣር ዝድግፍ ዕቅድ ምሕየሹ።"
 }

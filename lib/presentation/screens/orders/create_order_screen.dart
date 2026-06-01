@@ -240,15 +240,14 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     if (!subState.hasPaidSubscription) {
       return (
         title: l10n.subscriptionRequiredTitle,
-        subtitle: 'You need an active subscription that supports order '
-            'creation.',
+        subtitle: l10n.subscriptionRequiredOrderSubtitle,
       );
     }
     final plan = subState.subscription?.plan;
     if (plan == null || plan.maxOrders == 0) {
       return (
         title: l10n.subscriptionPlanNotSupportedOrder,
-        subtitle: l10n.subscriptionPlanNotSupportedOrder,
+        subtitle: l10n.subscriptionPlanNotSupportedOrderSubtitle,
       );
     }
     return (

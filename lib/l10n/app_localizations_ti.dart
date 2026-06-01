@@ -1869,8 +1869,14 @@ class AppLocalizationsTi extends AppLocalizations {
       'ዝርዝር ንብረታት ንምርኣይን ምስ ዋናታት ንምርኻብን ንጡፍ ምዝገባ የድሊ።';
 
   @override
+  String get subscriptionRequiredOrderSubtitle => 'ትእዛዝ ንምፍጣር ንጡፍ ምዝገባ የድሊ።';
+
+  @override
   String get subscriptionLimitReached =>
       'ናይ ምዝገባ ደረትኩም በጺሕኩም ኣለኹም። ተወሳኺ ንብረታት ንምምዝጋብ ምዝገባኩም ኣዕብዩ።';
+
+  @override
+  String get subscriptionLimitReachedTitle => 'ናይ ምዝገባ ደረት በጺሑ';
 
   @override
   String get kycRequiredTitle => 'መረጋገጺ መንነት (KYC) የድሊ';
@@ -2125,6 +2131,14 @@ class AppLocalizationsTi extends AppLocalizations {
       'ናይ ሕጂ ዕቅድኩም ዝርዝር ምፍጣር ኣይድግፍን።';
 
   @override
+  String get subscriptionPlanNotSupportedListingSubtitle =>
+      'በጃኹም ዝርዝር ምፍጣር ዝድግፍ ዕቅድ ምሕየሹ።';
+
+  @override
   String get subscriptionPlanNotSupportedOrder =>
       'ናይ ሕጂ ዕቅድኩም ትእዛዝ ምፍጣር ኣይድግፍን።';
+
+  @override
+  String get subscriptionPlanNotSupportedOrderSubtitle =>
+      'በጃኹም ትእዛዝ ምፍጣር ዝድግፍ ዕቅድ ምሕየሹ።';
 }

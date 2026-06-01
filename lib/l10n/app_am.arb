@@ -591,7 +591,9 @@
   "subscriptionRequiredTitle": "ምዝገባ ያስፈልጋል",
   "subscriptionRequiredListingSubtitle": "ንብረት ለመመዝገብ ንቁ ምዝገባ ያስፈልግዎታል።",
   "subscriptionRequiredDetailsSubtitle": "የንብረት ዝርዝሮችን ለማየት እና ባለቤቶችን ለማነጋገር ንቁ ምዝገባ ያስፈልግዎታል።",
+  "subscriptionRequiredOrderSubtitle": "ትእዛዝ ለመፍጠር ንቁ ምዝገባ ያስፈልግዎታል።",
   "subscriptionLimitReached": "የምዝገባ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገዝ ምዝገባዎን ያሳድጉ።",
+  "subscriptionLimitReachedTitle": "የምዝገባ ገደብ ደርሷል",
   "kycRequiredTitle": "የማንነት ማረጋገጫ (KYC) ያስፈልጋል",
   "kycPendingSubtitleReview": "የማንነት ማረጋገጫዎ ገና በግምገማ ላይ ነው። ሲጸድቅ ንብረት መመዝገብ ይችላሉ።",
   "kycRequiredSubtitlePost": "ንብረት ከመመዝገብዎ በፊት የማንነት ማረጋገጫ (KYC) ማጠናቀቅ አለብዎት።",
@@ -668,5 +670,7 @@
   "ordersUpgradePlan": "ዕቅድ ያሻሽሉ",
   "subscriptionVideoUpgrade": "የንብረት ቪዲዮዎችን ለማየት ዕቅድዎን ያሻሽሉ",
   "subscriptionPlanNotSupportedListing": "የአሁኑ ዕቅድዎ ምዝገባዎችን መፍጠር አይደግፍም።",
-  "subscriptionPlanNotSupportedOrder": "የአሁኑ ዕቅድዎ ትዕዛዞችን መፍጠር አይደግፍም።"
+  "subscriptionPlanNotSupportedListingSubtitle": "እባክዎ ምዝገባዎችን መፍጠር ወደሚደግፍ ዕቅድ ያሻሽሉ።",
+  "subscriptionPlanNotSupportedOrder": "የአሁኑ ዕቅድዎ ትዕዛዞችን መፍጠር አይደግፍም።",
+  "subscriptionPlanNotSupportedOrderSubtitle": "እባክዎ ትዕዛዞችን መፍጠር ወደሚደግፍ ዕቅድ ያሻሽሉ።"
 }

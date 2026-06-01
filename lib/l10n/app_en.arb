@@ -603,7 +603,9 @@
   "subscriptionRequiredTitle": "Subscription Required",
   "subscriptionRequiredListingSubtitle": "You need an active subscription to post a listing.",
   "subscriptionRequiredDetailsSubtitle": "You need an active subscription to view property details and contact owners.",
+  "subscriptionRequiredOrderSubtitle": "You need an active subscription to create an order.",
   "subscriptionLimitReached": "You've reached your listing limit. Upgrade your subscription to post more listings.",
+  "subscriptionLimitReachedTitle": "Listing Limit Reached",
   "kycRequiredTitle": "KYC Verification Required",
   "kycPendingSubtitleReview": "Your KYC verification is still pending review. You can post a listing once it's approved.",
   "kycRequiredSubtitlePost": "You need to complete identity verification (KYC) before you can post a listing.",
@@ -686,5 +688,7 @@
   "ordersUpgradePlan": "Upgrade Plan",
   "subscriptionVideoUpgrade": "Upgrade to watch property videos",
   "subscriptionPlanNotSupportedListing": "Your current plan does not support creating listings.",
-  "subscriptionPlanNotSupportedOrder": "Your current plan does not support creating orders."
+  "subscriptionPlanNotSupportedListingSubtitle": "Please upgrade to a plan that supports listing creation.",
+  "subscriptionPlanNotSupportedOrder": "Your current plan does not support creating orders.",
+  "subscriptionPlanNotSupportedOrderSubtitle": "Please upgrade to a plan that supports order creation."
 }

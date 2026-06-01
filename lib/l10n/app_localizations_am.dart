@@ -1871,8 +1871,15 @@ class AppLocalizationsAm extends AppLocalizations {
       'የንብረት ዝርዝሮችን ለማየት እና ባለቤቶችን ለማነጋገር ንቁ ምዝገባ ያስፈልግዎታል።';
 
   @override
+  String get subscriptionRequiredOrderSubtitle =>
+      'ትእዛዝ ለመፍጠር ንቁ ምዝገባ ያስፈልግዎታል።';
+
+  @override
   String get subscriptionLimitReached =>
       'የምዝገባ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገዝ ምዝገባዎን ያሳድጉ።';
+
+  @override
+  String get subscriptionLimitReachedTitle => 'የምዝገባ ገደብ ደርሷል';
 
   @override
   String get kycRequiredTitle => 'የማንነት ማረጋገጫ (KYC) ያስፈልጋል';
@@ -2127,6 +2134,14 @@ class AppLocalizationsAm extends AppLocalizations {
       'የአሁኑ ዕቅድዎ ምዝገባዎችን መፍጠር አይደግፍም።';
 
   @override
+  String get subscriptionPlanNotSupportedListingSubtitle =>
+      'እባክዎ ምዝገባዎችን መፍጠር ወደሚደግፍ ዕቅድ ያሻሽሉ።';
+
+  @override
   String get subscriptionPlanNotSupportedOrder =>
       'የአሁኑ ዕቅድዎ ትዕዛዞችን መፍጠር አይደግፍም።';
+
+  @override
+  String get subscriptionPlanNotSupportedOrderSubtitle =>
+      'እባክዎ ትዕዛዞችን መፍጠር ወደሚደግፍ ዕቅድ ያሻሽሉ።';
 }

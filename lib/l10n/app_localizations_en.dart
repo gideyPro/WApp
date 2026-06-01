@@ -1896,8 +1896,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'You need an active subscription to view property details and contact owners.';
 
   @override
+  String get subscriptionRequiredOrderSubtitle =>
+      'You need an active subscription to create an order.';
+
+  @override
   String get subscriptionLimitReached =>
       'You\'ve reached your listing limit. Upgrade your subscription to post more listings.';
+
+  @override
+  String get subscriptionLimitReachedTitle => 'Listing Limit Reached';
 
   @override
   String get kycRequiredTitle => 'KYC Verification Required';
@@ -2160,6 +2167,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your current plan does not support creating listings.';
 
   @override
+  String get subscriptionPlanNotSupportedListingSubtitle =>
+      'Please upgrade to a plan that supports listing creation.';
+
+  @override
   String get subscriptionPlanNotSupportedOrder =>
       'Your current plan does not support creating orders.';
+
+  @override
+  String get subscriptionPlanNotSupportedOrderSubtitle =>
+      'Please upgrade to a plan that supports order creation.';
 }
