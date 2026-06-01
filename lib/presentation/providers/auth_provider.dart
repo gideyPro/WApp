@@ -57,6 +57,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         phoneNumber: phoneNumber,
         otpSent: true,
         otpMessage: response.message,
+        destination: response.destination,
       );
     } else {
       state = state.copyWith(isLoading: false, errorMessage: response.message);
@@ -104,6 +105,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = state.copyWith(
         isLoading: false,
         otpMessage: response.message,
+        destination: response.destination,
       );
     } else {
       state = state.copyWith(isLoading: false, errorMessage: response.message);
@@ -162,6 +164,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           phoneNumber: phoneNumber,
           otpSent: true,
           otpMessage: response.message,
+          destination: response.destination,
         );
       } else {
         // Registration complete, user authenticated
@@ -185,6 +188,7 @@ class AuthState {
   final String? phoneNumber;
   final String? otpMessage;
   final String? errorMessage;
+  final String? destination;
 
   const AuthState({
     required this.isAuthenticated,
@@ -194,6 +198,7 @@ class AuthState {
     this.phoneNumber,
     this.otpMessage,
     this.errorMessage,
+    this.destination,
   });
 
   factory AuthState.initial() => const AuthState(
@@ -228,6 +233,7 @@ class AuthState {
     String? phoneNumber,
     String? otpMessage,
     String? errorMessage,
+    String? destination,
   }) {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
@@ -237,6 +243,7 @@ class AuthState {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       otpMessage: otpMessage,
       errorMessage: errorMessage,
+      destination: destination,
     );
   }
 }

@@ -209,25 +209,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                         if (_isOtpSent) ...[
                           _buildSectionTitle(l10n.authVerifyPhone),
                           const SizedBox(height: 8),
-                          Text(
-                            _selectedCountry.code == '+251'
-                              ? l10n.authOtpSentMessage(_phoneController.text)
-                              : l10n.authOtpSentEmailMessage(_emailController.text),
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: ThemeColors(context).textMuted,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          if (_selectedCountry.code != '+251') ...[
-                            const SizedBox(height: 4),
-                            Text(
-                              l10n.authSpamFolderHint,
-                              style: AppTextStyles.caption.copyWith(
-                                color: AppColors.stone500,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                          _buildOtpInfoBanner(),
                           const SizedBox(height: 24),
                           _buildOtpInput(),
                           const SizedBox(height: 24),
@@ -301,6 +283,165 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           },
         ),
       ],
+    );
+  }
+
+  String _maskDestination(String destination) {
+    if (destination.contains('@')) {
+      final parts = destination.split('@');
+      final local = parts[0];
+      final domain = parts[1];
+      if (local.length <= 1) return '***@$domain';
+      final maskedLocal = '${local[0]}${'*' * (local.length - 1)}';
+      return '$maskedLocal@$domain';
+    }
+    if (destination.length <= 4) return destination;
+    return '${destination.substring(0, 4)}****${destination.substring(destination.length - 3)}';
+  }
+
+  Widget _buildOtpInfoBanner() {
+    final authState = ref.watch(authStateProvider);
+    final isEthiopia = _selectedCountry.code == '+251';
+    final dest = authState.destination;
+    final displayDestination = dest != null ? _maskDestination(dest) : null;
+
+    final effectiveMessage = authState.otpMessage != null
+        ? authState.otpMessage!
+        : isEthiopia
+            ? l10n.authOtpSentMessage(_phoneController.text)
+            : l10n.authOtpSentEmailMessage(displayDestination ?? _emailController.text);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: context.theme.isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : AppColors.primary200,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: (context.theme.isDark ? AppColors.accent500 : AppColors.primary500)
+                .withValues(alpha: 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 4,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: isEthiopia
+                      ? [AppColors.emerald500, AppColors.emerald400]
+                      : [AppColors.accent500, AppColors.accent400],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: (isEthiopia ? AppColors.emerald500 : AppColors.accent500)
+                                .withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
+                            size: 16,
+                            color: isEthiopia ? AppColors.emerald600 : AppColors.accent600,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            effectiveMessage,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: context.textPrimary,
+                              fontWeight: FontWeight.w600,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (displayDestination != null) ...[
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: context.theme.isDark
+                              ? Colors.white.withValues(alpha: 0.05)
+                              : AppColors.primary50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: context.theme.isDark
+                                ? Colors.white.withValues(alpha: 0.06)
+                                : AppColors.primary200,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isEthiopia ? Icons.phone_outlined : Icons.email_outlined,
+                              size: 14,
+                              color: context.textSecondary,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              displayDestination,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: context.textPrimary,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    if (!isEthiopia) ...[
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 12,
+                            color: context.textSecondary,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            l10n.authSpamFolderHint,
+                            style: AppTextStyles.caption.copyWith(
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

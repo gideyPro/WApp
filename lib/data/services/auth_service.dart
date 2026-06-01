@@ -24,12 +24,14 @@ class AuthService {
         return AuthResponse(
           success: true,
           message: _extractMessage(response.data, 'OTP sent successfully'),
+          destination: _extractDestination(response.data),
         );
       }
 
       return AuthResponse(
         success: false,
         message: _extractMessage(response.data, 'Failed to send OTP'),
+        destination: _extractDestination(response.data),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -152,12 +154,14 @@ class AuthService {
         return AuthResponse(
           success: true,
           message: _extractMessage(response.data, 'OTP resent successfully'),
+          destination: _extractDestination(response.data),
         );
       }
 
       return AuthResponse(
         success: false,
         message: _extractMessage(response.data, 'Failed to resend OTP'),
+        destination: _extractDestination(response.data),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -209,12 +213,14 @@ class AuthService {
           return AuthResponse(
             success: true,
             message: _extractMessage(response.data, 'OTP sent successfully'),
+            destination: _extractDestination(response.data),
           );
         }
 
         return AuthResponse(
           success: false,
           message: _extractMessage(response.data, 'Failed to send OTP'),
+          destination: _extractDestination(response.data),
         );
       } else {
         // Step 2: Verify OTP and create account
@@ -291,7 +297,13 @@ class AuthService {
     return await _apiClient.isAuthenticated();
   }
 
-  /// Helper to extract message from dynamic response
+  /// Helper to extract destination from dynamic response
+  String? _extractDestination(dynamic raw) {
+    if (raw is Map && raw['destination'] != null) {
+      return raw['destination'].toString();
+    }
+    return null;
+  }
   String _extractMessage(dynamic raw, String defaultMessage) {
     if (raw is Map && raw['message'] != null) {
       return raw['message'].toString();
@@ -306,12 +318,14 @@ class AuthResponse {
   final String message;
   final User? user;
   final String? token;
+  final String? destination;
 
   const AuthResponse({
     required this.success,
     required this.message,
     this.user,
     this.token,
+    this.destination,
   });
 
   @override
