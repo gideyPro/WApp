@@ -109,6 +109,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
   }
 
+  Future<void> _onRefresh() async {
+    _lastLoadTime = DateTime.now();
+    await Future.wait([
+      ref.read(featuredListingsProvider.notifier).loadFeaturedListings(),
+      ref.read(vipListingsProvider.notifier).loadVipListings(),
+      ref.read(listingsProvider.notifier).loadListings(),
+      ref.read(favoritesProvider.notifier).loadFavorites(),
+    ]);
+  }
+
   void _onScroll() {
     if (_hasSearched) {
       final state = ref.read(searchResultsProvider);
@@ -592,7 +602,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             ),
           ),
-          CustomScrollView(
+          RefreshIndicator(
+            onRefresh: _onRefresh,
+            displacement: 80,
+            color: AppColors.accent500,
+            child: CustomScrollView(
             controller: _scrollController,
             slivers: [
               SliverPersistentHeader(
@@ -640,6 +654,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 _buildLatestListings(listingsState),
               ],
             ],
+          ),
           ),
         ],
       ),
@@ -877,6 +892,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildFeaturedListings(ListingsState state) {
+    final l10n = AppLocalizations.of(context);
+    if (state.errorMessage != null && state.listings.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: _buildSectionRetry(state.errorMessage!, () {
+          ref.read(featuredListingsProvider.notifier).loadFeaturedListings();
+        }),
+      );
+    }
     if (state.isLoading) {
       return SizedBox(
         height: 180,
@@ -900,7 +924,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         height: 80,
         child: Center(
           child:
-              Text(AppLocalizations.of(context).listingsNoResults),
+              Text(l10n.listingsNoResults),
         ),
       );
     }
@@ -932,6 +956,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildVipListings(ListingsState state) {
+    if (state.errorMessage != null && state.listings.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: _buildSectionRetry(state.errorMessage!, () {
+          ref.read(vipListingsProvider.notifier).loadVipListings();
+        }),
+      );
+    }
     if (state.isLoading) {
       return SizedBox(
         height: 180,
@@ -979,6 +1011,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildLatestListings(ListingsState state) {
+    if (state.errorMessage != null && state.listings.isEmpty) {
+      return SliverFillRemaining(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: _buildSectionRetry(state.errorMessage!, () {
+              ref.read(listingsProvider.notifier).loadListings();
+            }),
+          ),
+        ),
+      );
+    }
     if (state.isLoading && state.listings.isEmpty) {
       return SliverPadding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
@@ -1026,6 +1070,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               state.listings.length + (state.isLoadingMore ? 1 : 0),
         ),
       ),
+    );
+  }
+
+  Widget _buildSectionRetry(String message, VoidCallback onRetry) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.signal_wifi_off_rounded, size: 32, color: context.textMuted),
+        const SizedBox(height: 8),
+        Text(
+          message,
+          style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 12),
+        ElevatedButton.icon(
+          onPressed: onRetry,
+          icon: const Icon(Icons.refresh, size: 16),
+          label: Text(l10n.commonRetry),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.navy950,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            textStyle: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          ),
+        ),
+      ],
     );
   }
 }
