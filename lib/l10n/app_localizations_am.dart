@@ -493,6 +493,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get kycChooseGallery => 'ከጋለሪ ምረጥ';
 
   @override
+  String get kycConnectionErrorTitle => 'የግንኙነት ስህተት';
+
+  @override
+  String get kycConnectionErrorSubtitle =>
+      'የ KYC ሁኔታዎን መጫን አልተቻለም። እባክዎን ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።';
+
+  @override
+  String get kycRetry => 'እንደገና ሞክር';
+
+  @override
   String get profileKycStatusVerified => 'ተረጋግጧል';
 
   @override

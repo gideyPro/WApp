@@ -1012,6 +1012,24 @@ abstract class AppLocalizations {
   /// **'Choose from Gallery'**
   String get kycChooseGallery;
 
+  /// No description provided for @kycConnectionErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get kycConnectionErrorTitle;
+
+  /// No description provided for @kycConnectionErrorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load your KYC status. Please check your connection and try again.'**
+  String get kycConnectionErrorSubtitle;
+
+  /// No description provided for @kycRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get kycRetry;
+
   /// No description provided for @profileKycStatusVerified.
   ///
   /// In en, this message translates to:

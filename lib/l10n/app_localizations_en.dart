@@ -497,6 +497,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kycChooseGallery => 'Choose from Gallery';
 
   @override
+  String get kycConnectionErrorTitle => 'Connection Error';
+
+  @override
+  String get kycConnectionErrorSubtitle =>
+      'Unable to load your KYC status. Please check your connection and try again.';
+
+  @override
+  String get kycRetry => 'Retry';
+
+  @override
   String get profileKycStatusVerified => 'Verified';
 
   @override

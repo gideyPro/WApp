@@ -428,6 +428,26 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       return _buildSkeleton();
     }
 
+    // KYC network error — retry before any gate
+    if (kycState.hasError) {
+      return WaveMessageScreen.error(
+        title: l10n.kycConnectionErrorTitle,
+        subtitle: kycState.errorMessage ?? l10n.kycConnectionErrorSubtitle,
+        onRetry: () => ref.read(kycStatusProvider.notifier).loadKycStatus(),
+        isEmbedded: true,
+      );
+    }
+
+    // Subscription network error — retry before any gate
+    if (subState.hasError) {
+      return WaveMessageScreen.error(
+        title: l10n.errorSubscription,
+        subtitle: subState.errorMessage!,
+        onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
+        isEmbedded: true,
+      );
+    }
+
     // KYC gate — full page matching listing detail error view
     if (!kycState.isVerified && !kycState.isApproved) {
       return WaveFullPageUpgrade(

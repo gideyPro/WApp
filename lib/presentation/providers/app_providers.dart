@@ -86,6 +86,8 @@ class ConnectivityNotifier extends StateNotifier<ConnectivityStatus> {
       _ref.read(unreadMessagesCountProvider.notifier).refresh();
       _ref.read(conversationsProvider.notifier).loadConversations();
       _ref.read(notificationsProvider.notifier).loadNotifications();
+      _ref.read(kycStatusProvider.notifier).loadKycStatus();
+      _ref.read(subscriptionProvider.notifier).refresh();
     }
   }
 
@@ -950,6 +952,8 @@ class SubscriptionState {
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
+
+  bool get hasError => errorMessage != null;
 }
 
 /// KYC Provider
@@ -979,11 +983,10 @@ class KycStatusNotifier extends StateNotifier<KycStatusState> {
         rejectionReason: response.rejectionReason,
       );
     } else {
-      // Set status to error or keep existing to stop loading spinner
       state = state.copyWith(
         isLoading: false,
-        errorMessage: response.status,
-        status: state.status == 'none' ? 'error' : state.status,
+        errorMessage: response.errorMessage ?? response.status,
+        status: response.status,
       );
     }
   }
@@ -1036,7 +1039,8 @@ class KycStatusState {
   bool get isPending => status == 'pending';
   bool get isApproved => status == 'approved';
   bool get isRejected => status == 'rejected';
-  bool get isNone => status == 'none' || status == 'error' || status.isEmpty;
+  bool get hasError => status == 'error';
+  bool get isNone => status == 'none' || status.isEmpty;
 }
 
 /// Incoming Call Provider

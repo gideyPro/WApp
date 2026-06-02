@@ -493,6 +493,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get kycChooseGallery => 'ካብ ጋለሪ ምረፅ';
 
   @override
+  String get kycConnectionErrorTitle => 'ጸገም ምትእስሳር';
+
+  @override
+  String get kycConnectionErrorSubtitle =>
+      'ኵነታት KYC ንምጽዓን ኣይተኻእለን። በጃኹም ምትእስሳርኩም መርምሩ እንደገና ፈትኑ።';
+
+  @override
+  String get kycRetry => 'ደጊምካ ፈትን';
+
+  @override
   String get profileKycStatusVerified => 'ተረጋጊጹ';
 
   @override

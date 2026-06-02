@@ -346,6 +346,16 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       return _buildSkeleton();
     }
 
+    // Subscription network error — retry before any gate
+    if (subState.hasError) {
+      return WaveMessageScreen.error(
+        title: l10n.errorSubscription,
+        subtitle: subState.errorMessage!,
+        onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
+        isEmbedded: true,
+      );
+    }
+
     if (subscriptionEnabled && !subState.canCreateOrder) {
       final (:title, :subtitle) = _orderGateMessage(subState, l10n);
       return WaveFullPageUpgrade(

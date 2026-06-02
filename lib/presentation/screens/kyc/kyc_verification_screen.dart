@@ -189,6 +189,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   Widget _buildBody(KycStatusState state, AppLocalizations l10n) {
+    // Network error state
+    if (state.hasError) {
+      return _buildErrorState(state, l10n);
+    }
+
     // Verified state
     if (state.isVerified || state.isApproved) {
       return _buildVerifiedState(state, l10n);
@@ -206,6 +211,57 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
     // Not submitted state or manual form show - show form
     return _buildKycForm(state, l10n);
+  }
+
+  Widget _buildErrorState(KycStatusState state, AppLocalizations l10n) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: context.theme.isDark
+                    ? Colors.white.withValues(alpha: 0.05)
+                    : AppColors.primary50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.signal_wifi_off_rounded,
+                size: 60,
+                color: context.textMuted,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              l10n.kycConnectionErrorTitle,
+              style: AppTextStyles.headline3,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              state.errorMessage ?? l10n.kycConnectionErrorSubtitle,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: context.theme.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            WaveButton(
+              text: l10n.kycRetry,
+              icon: Icons.refresh,
+              onPressed: () {
+                ref.read(kycStatusProvider.notifier).loadKycStatus();
+              },
+              variant: ButtonVariant.primary,
+              isFullWidth: true,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildVerifiedState(KycStatusState state, AppLocalizations l10n) {

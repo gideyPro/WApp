@@ -43,10 +43,12 @@ class KycService {
         isVerified: false,
       );
     } catch (e) {
-      return const KycStatusResponse(
+      final exception = ApiErrorHandler.handle(e);
+      return KycStatusResponse(
         success: false,
-        status: 'none',
+        status: 'error',
         isVerified: false,
+        errorMessage: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
@@ -151,12 +153,13 @@ class KycService {
 /// Response wrapper for KYC status
 class KycStatusResponse {
   final bool success;
-  final String status; // none, pending, approved, rejected
+  final String status; // none, pending, approved, rejected, error
   final bool isVerified;
   final String? documentType;
   final String? rejectionReason;
   final String? submittedAt;
   final String? verifiedAt;
+  final String? errorMessage;
 
   const KycStatusResponse({
     required this.success,
@@ -166,6 +169,7 @@ class KycStatusResponse {
     this.rejectionReason,
     this.submittedAt,
     this.verifiedAt,
+    this.errorMessage,
   });
 
   bool get isPending => status == 'pending';
