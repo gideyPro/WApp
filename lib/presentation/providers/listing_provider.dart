@@ -142,11 +142,48 @@ class FeaturedListingsNotifier extends StateNotifier<ListingsState> {
         totalPages: response.totalPages ?? 1,
         total: response.total ?? 0,
       );
+
+      if (response.listings.isNotEmpty) {
+        _cacheFeaturedListings(response.listings);
+      }
     } else {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: response.message,
-      );
+      if (state.listings.isEmpty) {
+        final cached = await _loadCachedFeaturedListings();
+        if (cached != null) {
+          state = ListingsState.loaded(listings: cached, total: cached.length);
+        } else {
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: response.message,
+          );
+        }
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: response.message,
+        );
+      }
+    }
+  }
+
+  Future<void> _cacheFeaturedListings(List<Listing> listings) async {
+    try {
+      final box = await Hive.openBox('listings_cache');
+      await box.put('featured_listings', jsonEncode(listings.map((l) => l.toJson()).toList()));
+    } catch (_) {}
+  }
+
+  Future<List<Listing>?> _loadCachedFeaturedListings() async {
+    try {
+      final box = await Hive.openBox('listings_cache');
+      final raw = box.get('featured_listings');
+      if (raw == null) return null;
+      final List<dynamic> decoded = jsonDecode(raw as String);
+      return decoded
+          .map((e) => Listing.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return null;
     }
   }
 }
@@ -171,11 +208,48 @@ class VipListingsNotifier extends StateNotifier<ListingsState> {
         totalPages: response.totalPages ?? 1,
         total: response.total ?? 0,
       );
+
+      if (response.listings.isNotEmpty) {
+        _cacheVipListings(response.listings);
+      }
     } else {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: response.message,
-      );
+      if (state.listings.isEmpty) {
+        final cached = await _loadCachedVipListings();
+        if (cached != null) {
+          state = ListingsState.loaded(listings: cached, total: cached.length);
+        } else {
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: response.message,
+          );
+        }
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: response.message,
+        );
+      }
+    }
+  }
+
+  Future<void> _cacheVipListings(List<Listing> listings) async {
+    try {
+      final box = await Hive.openBox('listings_cache');
+      await box.put('vip_listings', jsonEncode(listings.map((l) => l.toJson()).toList()));
+    } catch (_) {}
+  }
+
+  Future<List<Listing>?> _loadCachedVipListings() async {
+    try {
+      final box = await Hive.openBox('listings_cache');
+      final raw = box.get('vip_listings');
+      if (raw == null) return null;
+      final List<dynamic> decoded = jsonDecode(raw as String);
+      return decoded
+          .map((e) => Listing.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return null;
     }
   }
 }

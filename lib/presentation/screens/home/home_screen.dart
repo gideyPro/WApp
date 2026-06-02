@@ -836,12 +836,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     if (state.errorMessage != null && state.listings.isEmpty) {
       return SliverFillRemaining(
-        child: WaveMessageScreen.error(
-          title: l10n.errorSearch,
-          subtitle: state.errorMessage!,
-          onRetry: _performSearch,
-          isEmbedded: true,
-        ),
+        child: Center(child: _buildPullToRefreshHint()),
       );
     }
 
@@ -988,9 +983,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (state.errorMessage != null && displayList.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: _buildSectionRetry(state.errorMessage!, () {
-          ref.read(featuredListingsProvider.notifier).loadFeaturedListings();
-        }),
+        child: _buildPullToRefreshHint(),
       );
     }
     if (state.isLoading) {
@@ -1062,9 +1055,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (state.errorMessage != null && state.listings.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: _buildSectionRetry(state.errorMessage!, () {
-          ref.read(vipListingsProvider.notifier).loadVipListings();
-        }),
+        child: _buildPullToRefreshHint(),
       );
     }
     if (state.isLoading) {
@@ -1375,9 +1366,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: _buildSectionRetry(state.errorMessage!, () {
-              ref.read(listingsProvider.notifier).loadListings();
-            }),
+            child: _buildPullToRefreshHint(),
           ),
         ),
       );
@@ -1432,32 +1421,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildSectionRetry(String message, VoidCallback onRetry) {
+  Widget _buildPullToRefreshHint() {
     final l10n = AppLocalizations.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.signal_wifi_off_rounded, size: 32, color: context.textMuted),
+        Icon(Icons.swap_vert_rounded, size: 32, color: context.textMuted),
         const SizedBox(height: 8),
         Text(
-          message,
+          l10n.commonRetryMessage,
           style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary),
           textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 12),
-        ElevatedButton.icon(
-          onPressed: onRetry,
-          icon: const Icon(Icons.refresh, size: 16),
-          label: Text(l10n.commonRetry),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.navy950,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            textStyle: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          ),
         ),
       ],
     );
