@@ -14,6 +14,7 @@ class SubmissionState {
   final String label;
   final double progress;
   final String message;
+  final bool isEdit;
   final VoidCallback? onRetry;
   final VoidCallback? onSaveDraft;
 
@@ -25,6 +26,7 @@ class SubmissionState {
     this.label = '',
     this.progress = 0,
     this.message = '',
+    this.isEdit = false,
     this.onRetry,
     this.onSaveDraft,
   });
@@ -42,8 +44,8 @@ class SubmissionState {
     );
   }
 
-  factory SubmissionState.success({required String message}) {
-    return SubmissionState._(isSuccess: true, message: message);
+  factory SubmissionState.success({required String message, bool isEdit = false}) {
+    return SubmissionState._(isSuccess: true, message: message, isEdit: isEdit);
   }
 
   factory SubmissionState.error({
@@ -334,24 +336,25 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                 ),
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: AppSpacing.buttonHeightMd,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: themeColors.textPrimary,
-                    side: BorderSide(color: themeColors.border),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
+              if (!widget.state.isEdit)
+                SizedBox(
+                  width: double.infinity,
+                  height: AppSpacing.buttonHeightMd,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: themeColors.textPrimary,
+                      side: BorderSide(color: themeColors.border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
+                      ),
+                    ),
+                    onPressed: () => widget.onDismiss?.call(false),
+                    child: Text(
+                      'Create Another',
+                      style: AppTextStyles.buttonMedium,
                     ),
                   ),
-                  onPressed: () => widget.onDismiss?.call(false),
-                  child: Text(
-                    'Create Another',
-                    style: AppTextStyles.buttonMedium,
-                  ),
                 ),
-              ),
             ],
           ),
         ),

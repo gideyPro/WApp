@@ -95,6 +95,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       existingOwnershipProofUrl: listing.ownershipProofUrl,
       existingLeaseContractUrl: listing.leaseContractUrl,
       existingVideoUrl: listing.videoUrl,
+      isVip: listing.isVip,
     );
   }
 
@@ -215,6 +216,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         if (!mounted) return;
         _submissionNotifier!.value = SubmissionState.success(
           message: 'Listing updated successfully.',
+          isEdit: true,
         );
         final dismissResult = await _submissionDismissed;
         if (mounted && dismissResult == true) Navigator.of(context).pop(true);
@@ -298,6 +300,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         if (!mounted) return;
         _submissionNotifier!.value = SubmissionState.success(
           message: 'Listing updated successfully.',
+          isEdit: true,
         );
         final dismissResult = await _submissionDismissed;
         if (mounted && dismissResult == true) Navigator.of(context).pop(true);
