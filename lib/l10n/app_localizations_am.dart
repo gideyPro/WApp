@@ -152,6 +152,11 @@ class AppLocalizationsAm extends AppLocalizations {
   String get myListingsEmptySubtitle => 'ለመጀመር የመጀመሪያዎን ንብረት ይጨምሩ';
 
   @override
+  String noStatusListings(Object status) {
+    return 'ምንም $status ንብረቶች አልተገኙም';
+  }
+
+  @override
   String get profileFavorites => 'ተወዳጆች';
 
   @override

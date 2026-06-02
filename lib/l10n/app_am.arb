@@ -51,6 +51,8 @@
   "profileEditSubtitle": "መረጃዎን ያዘምኑ",
   "profileMyListings": "የእኔ ንብረቶች",
   "myListingsEmptySubtitle": "ለመጀመር የመጀመሪያዎን ንብረት ይጨምሩ",
+
+  "noStatusListings": "ምንም {status} ንብረቶች አልተገኙም",
   "profileFavorites": "ተወዳጆች",
   "profileMessages": "መልእክቶች",
   "profilePayments": "የክፍያ ታሪክ",

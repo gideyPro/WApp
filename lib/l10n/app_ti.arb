@@ -51,6 +51,8 @@
   "profileEditSubtitle": "ሓበሬታኹም ኣሐድሱ",
   "profileMyListings": "ናተይ ንብረታት",
   "myListingsEmptySubtitle": "ንምጅማር ናይ መጀመሪያ ንብረትኩም ወስኹ",
+
+  "noStatusListings": "ዝተረኽበ {status} ንብረት የለን",
   "profileFavorites": "ዝተመርፁ",
   "profileMessages": "መልእኽታት",
   "profilePayments": "ታሪኽ ክፍሊት",

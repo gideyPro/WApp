@@ -51,6 +51,13 @@
   "profileEditSubtitle": "Update your information",
   "profileMyListings": "My Listings",
   "myListingsEmptySubtitle": "Create your first listing to get started",
+
+  "noStatusListings": "No {status} listings",
+  "@noStatusListings": {
+    "placeholders": {
+      "status": {}
+    }
+  },
   "profileFavorites": "Favorites",
   "profileMessages": "Messages",
   "profilePayments": "Payment History",

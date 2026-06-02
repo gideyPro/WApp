@@ -382,6 +382,12 @@ abstract class AppLocalizations {
   /// **'Create your first listing to get started'**
   String get myListingsEmptySubtitle;
 
+  /// No description provided for @noStatusListings.
+  ///
+  /// In en, this message translates to:
+  /// **'No {status} listings'**
+  String noStatusListings(Object status);
+
   /// No description provided for @profileFavorites.
   ///
   /// In en, this message translates to:

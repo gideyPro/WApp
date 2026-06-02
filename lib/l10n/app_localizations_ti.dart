@@ -152,6 +152,11 @@ class AppLocalizationsTi extends AppLocalizations {
   String get myListingsEmptySubtitle => 'ንምጅማር ናይ መጀመሪያ ንብረትኩም ወስኹ';
 
   @override
+  String noStatusListings(Object status) {
+    return 'ዝተረኽበ $status ንብረት የለን';
+  }
+
+  @override
   String get profileFavorites => 'ዝተመርፁ';
 
   @override

@@ -153,6 +153,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Create your first listing to get started';
 
   @override
+  String noStatusListings(Object status) {
+    return 'No $status listings';
+  }
+
+  @override
   String get profileFavorites => 'Favorites';
 
   @override

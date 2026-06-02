@@ -329,6 +329,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
 
     if (state.listings.isEmpty) {
       final l10n = AppLocalizations.of(context);
+      final isAllTab = tabIndex == 0;
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -350,32 +351,36 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
               ),
               const SizedBox(height: 24),
               Text(
-                l10n.listingsNoResults,
+                isAllTab
+                    ? l10n.listingsNoResults
+                    : l10n.noStatusListings(_tabLabels[tabIndex](l10n)),
                 style: AppTextStyles.title,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.myListingsEmptySubtitle,
-                style: AppTextStyles.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: 220,
-                child: WaveButton(
-                  text: l10n.listingsCreate,
-                  icon: Icons.add,
-                  variant: ButtonVariant.success,
-                  isFullWidth: true,
-                  onPressed: () async {
-                    if (!mounted) return;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const CreateListingScreen()),
-                    );
-                  },
+              if (isAllTab) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.myListingsEmptySubtitle,
+                  style: AppTextStyles.bodyMedium,
+                  textAlign: TextAlign.center,
                 ),
-              ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: 220,
+                  child: WaveButton(
+                    text: l10n.listingsCreate,
+                    icon: Icons.add,
+                    variant: ButtonVariant.success,
+                    isFullWidth: true,
+                    onPressed: () async {
+                      if (!mounted) return;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const CreateListingScreen()),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ],
           ),
         ),
