@@ -128,6 +128,15 @@ class AppLocalizationsAm extends AppLocalizations {
   String get homeViewAll => 'ሁሉንም ይመልከቱ';
 
   @override
+  String get vipTeaserCta => 'VIP ዝርዝሮችን ይክፈቱ';
+
+  @override
+  String get vipNoListings => 'እስከ ዛሬ ያልተመደበ VIP ዝርዝር የለም — በቅርቡ ይመልከቱ';
+
+  @override
+  String get vipBadge => 'VIP';
+
+  @override
   String get profileTitle => 'መገለጫ';
 
   @override

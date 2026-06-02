@@ -334,6 +334,24 @@ abstract class AppLocalizations {
   /// **'View All'**
   String get homeViewAll;
 
+  /// No description provided for @vipTeaserCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock VIP Listings'**
+  String get vipTeaserCta;
+
+  /// No description provided for @vipNoListings.
+  ///
+  /// In en, this message translates to:
+  /// **'No VIP listings yet — check back soon'**
+  String get vipNoListings;
+
+  /// No description provided for @vipBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'VIP'**
+  String get vipBadge;
+
   /// No description provided for @profileTitle.
   ///
   /// In en, this message translates to:

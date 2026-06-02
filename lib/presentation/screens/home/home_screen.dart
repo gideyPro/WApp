@@ -16,6 +16,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../listing/listing_detail_screen.dart';
+import '../subscriptions/subscription_plans_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -43,9 +44,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Map<String, dynamic> _activeFilters = {};
   bool _hasSearched = false;
   bool _rentalEnabled = false;
+  bool _isAutoRefreshing = false;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
+  late AnimationController _refreshPillController;
+  late Animation<double> _refreshPillAnimation;
 
   @override
   void initState() {
@@ -58,10 +62,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       parent: _headerAnimationController,
       curve: Curves.easeOutCubic,
     );
+    _refreshPillController = AnimationController(
+      duration: const Duration(milliseconds: 220),
+      vsync: this,
+    );
+    _refreshPillAnimation = CurvedAnimation(
+      parent: _refreshPillController,
+      curve: Curves.easeOutCubic,
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(featuredListingsProvider.notifier).loadFeaturedListings();
-      ref.read(vipListingsProvider.notifier).loadVipListings();
+      if (ref.read(subscriptionProvider).canViewVip) {
+        ref.read(vipListingsProvider.notifier).loadVipListings();
+      }
       ref.read(listingsProvider.notifier).loadListings();
       ref.read(authStateProvider.notifier).loadUser();
       ref.read(favoritesProvider.notifier).loadFavorites();
@@ -104,19 +118,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           now.difference(_lastLoadTime!).inSeconds > 30;
       if (shouldReload) {
         _lastLoadTime = now;
-        ref.read(listingsProvider.notifier).loadListings();
+        _runAutoRefresh();
+      }
+    }
+  }
+
+  Future<void> _runAutoRefresh() async {
+    if (_isAutoRefreshing) return;
+    setState(() => _isAutoRefreshing = true);
+    _refreshPillController.forward();
+    try {
+      await ref.read(listingsProvider.notifier).loadListings();
+    } finally {
+      if (mounted) {
+        await Future.delayed(const Duration(milliseconds: 350));
+        if (mounted) {
+          _refreshPillController.reverse();
+          setState(() => _isAutoRefreshing = false);
+        }
       }
     }
   }
 
   Future<void> _onRefresh() async {
     _lastLoadTime = DateTime.now();
-    await Future.wait([
+    final futures = <Future<void>>[
       ref.read(featuredListingsProvider.notifier).loadFeaturedListings(),
-      ref.read(vipListingsProvider.notifier).loadVipListings(),
       ref.read(listingsProvider.notifier).loadListings(),
       ref.read(favoritesProvider.notifier).loadFavorites(),
-    ]);
+    ];
+    if (ref.read(subscriptionProvider).canViewVip) {
+      futures.add(ref.read(vipListingsProvider.notifier).loadVipListings());
+    }
+    await Future.wait(futures);
   }
 
   void _onScroll() {
@@ -154,6 +188,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     _searchFocusNode.dispose();
     _debounceTimer?.cancel();
     _headerAnimationController.dispose();
+    _refreshPillController.dispose();
     super.dispose();
   }
 
@@ -624,6 +659,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ),
               ),
 
+              SliverToBoxAdapter(
+                child: _buildRefreshPill(),
+              ),
+
               if (_hasActiveFilters)
                 SliverToBoxAdapter(
                   child: _buildActiveFilterChips(l10n),
@@ -641,11 +680,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         _buildSectionHeader(
                             l10n.listingsFeatured, isFeatured: true),
                         _buildFeaturedListings(featuredState),
-                        if (ref.watch(subscriptionProvider).canViewVip) ...[
-                          _buildSectionHeader(l10n.homeVipTitle,
-                              isFeatured: false, eyebrow: l10n.homeVipEyebrow),
-                          _buildVipListings(vipState),
-                        ],
+                        _buildVipSectionHeader(),
+                        if (ref.watch(subscriptionProvider).canViewVip)
+                          _buildVipListings(vipState)
+                        else
+                          _buildVipTeaserSection(),
                         _buildSectionHeader(l10n.listingsTitle),
                       ],
                     ),
@@ -863,37 +902,87 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildSectionHeader(String title, {bool isFeatured = false, String? eyebrow}) {
+  Widget _buildSectionHeader(
+    String title, {
+    bool isFeatured = false,
+    String? eyebrow,
+    IconData? glyph,
+    Color? accentRuleColor,
+    Color? eyebrowColor,
+  }) {
     final l10n = AppLocalizations.of(context);
+    final eyebrowText = eyebrow ??
+        (isFeatured
+            ? l10n.homeFeaturedPremium.toUpperCase()
+            : l10n.homeLatestRecently.toUpperCase());
+    final titleStyle = AppTextStyles.title.copyWith(
+      fontWeight: FontWeight.w700,
+      letterSpacing: -0.5,
+      color: context.textPrimary,
+    );
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            eyebrow ??
-                (isFeatured
-                    ? l10n.homeFeaturedPremium.toUpperCase()
-                    : l10n.homeLatestRecently.toUpperCase()),
-            style: AppTextStyles.eyebrow,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: AppTextStyles.title.copyWith(
-              fontWeight: FontWeight.w700,
-              letterSpacing: -0.5,
-              color: context.textPrimary,
+            eyebrowText,
+            style: AppTextStyles.eyebrow.copyWith(
+              color: eyebrowColor,
             ),
           ),
+          const SizedBox(height: 4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (glyph != null) ...[
+                Icon(glyph, size: 18, color: accentRuleColor ?? AppColors.vip),
+                const SizedBox(width: 6),
+              ],
+              Expanded(
+                child: Text(
+                  title,
+                  style: titleStyle,
+                ),
+              ),
+            ],
+          ),
+          if (accentRuleColor != null) ...[
+            const SizedBox(height: 6),
+            Container(
+              width: 32,
+              height: 2,
+              decoration: BoxDecoration(
+                color: accentRuleColor,
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 
+  Widget _buildVipSectionHeader() {
+    final l10n = AppLocalizations.of(context);
+    return _buildSectionHeader(
+      l10n.homeVipTitle,
+      eyebrow: l10n.homeVipEyebrow,
+      glyph: Icons.diamond,
+      accentRuleColor: AppColors.vip,
+      eyebrowColor: AppColors.vip,
+    );
+  }
+
   Widget _buildFeaturedListings(ListingsState state) {
     final l10n = AppLocalizations.of(context);
-    if (state.errorMessage != null && state.listings.isEmpty) {
+    // For VIP-capable users, suppress VIP listings in Featured
+    // (they're already in the dedicated VIP carousel — VIP supersedes).
+    final canViewVip = ref.watch(subscriptionProvider).canViewVip;
+    final displayList = canViewVip
+        ? state.listings.where((l) => !l.isVip).toList()
+        : state.listings;
+    if (state.errorMessage != null && displayList.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: _buildSectionRetry(state.errorMessage!, () {
@@ -919,7 +1008,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       );
     }
-    if (state.listings.isEmpty) {
+    if (displayList.isEmpty) {
       return SizedBox(
         height: 80,
         child: Center(
@@ -933,9 +1022,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: state.listings.length,
+        itemCount: displayList.length,
         itemBuilder: (context, index) {
-          final listing = state.listings[index];
+          final listing = displayList[index];
           final fav = _isFavorite(listing.id);
           return Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -982,7 +1071,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       );
     }
-    if (state.listings.isEmpty) return const SizedBox.shrink();
+    if (state.listings.isEmpty) {
+      final l10n = AppLocalizations.of(context);
+      return SizedBox(
+        height: 120,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.diamond_outlined,
+                  size: 28, color: AppColors.vip),
+              const SizedBox(height: 8),
+              Text(
+                l10n.vipNoListings,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: context.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return SizedBox(
       height: 180,
       child: ListView.builder(
@@ -1006,6 +1117,240 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildVipTeaserSection() {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 180,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              children: List.generate(2, (_) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: SizedBox(
+                    width: 280,
+                    child: Stack(
+                      children: [
+                        // Skeleton card with VIP chrome
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: context.cardBg,
+                            border: Border.all(
+                              color: AppColors.vip.withValues(alpha: 0.4),
+                              width: 1.5,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x14000000),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Locked image area
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        const BorderRadius.vertical(
+                                            top: Radius.circular(4)),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        AppColors.vip.withValues(alpha: 0.18),
+                                        AppColors.vip.withValues(alpha: 0.06),
+                                      ],
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      const Center(
+                                        child: Icon(
+                                          Icons.home_outlined,
+                                          size: 48,
+                                          color: AppColors.stone400,
+                                        ),
+                                      ),
+                                      Positioned.fill(
+                                        child: Container(
+                                          color: Colors.black
+                                              .withValues(alpha: 0.25),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: Container(
+                                          padding: const EdgeInsets
+                                              .symmetric(
+                                              horizontal: 14,
+                                              vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.vip
+                                                .withValues(alpha: 0.95),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Color(0x33000000),
+                                                blurRadius: 8,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            mainAxisSize:
+                                                MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                  Icons.diamond,
+                                                  size: 14,
+                                                  color: Colors.white),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                l10n.vipBadge,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight:
+                                                      FontWeight.w800,
+                                                  fontSize: 11,
+                                                  letterSpacing: 1.0,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              // Body hint
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 140,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        color: context.shimmerBase,
+                                        borderRadius:
+                                            BorderRadius.circular(2),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Container(
+                                      width: 90,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        color: context.shimmerBase,
+                                        borderRadius:
+                                            BorderRadius.circular(2),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const SubscriptionPlansScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.diamond, size: 18),
+                label: Text(l10n.vipTeaserCta),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.vip,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRefreshPill() {
+    return SizeTransition(
+      sizeFactor: _refreshPillAnimation,
+      axisAlignment: -1,
+      child: FadeTransition(
+        opacity: _refreshPillAnimation,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.accent500.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppColors.accent500.withValues(alpha: 0.3),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              SizedBox(
+                width: 12,
+                height: 12,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(AppColors.accent500),
+                ),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Refreshing…',
+                style: TextStyle(
+                  color: AppColors.accent500,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

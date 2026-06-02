@@ -128,6 +128,15 @@ class AppLocalizationsTi extends AppLocalizations {
   String get homeViewAll => 'ኹሉ ተዓዘብ';
 
   @override
+  String get vipTeaserCta => 'VIP ዝርዝራት ክፈት';
+
+  @override
+  String get vipNoListings => 'ክሳብ ሕጂ VIP ዝርዝር የለን — ብቐረባ ተዓዘብ';
+
+  @override
+  String get vipBadge => 'VIP';
+
+  @override
   String get profileTitle => 'መገለጺ';
 
   @override

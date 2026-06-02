@@ -615,7 +615,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
         if (listing.isFeatured)
           _buildBadge(l10n.listingFeatured.toUpperCase(), AppColors.accent500),
         if (listing.isVip)
-          _buildBadge('VIP', AppColors.vip),
+          _buildBadge(l10n.vipBadge, AppColors.vip),
         if (listing.isNew)
           _buildBadge(l10n.listingNew.toUpperCase(), AppColors.warning),
         if (listing.status == ListingStatus.frozen)

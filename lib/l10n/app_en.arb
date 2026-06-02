@@ -42,6 +42,9 @@
   "homeVipEyebrow": "VIP Listings",
   "homeVipTitle": "Premium VIP Properties",
   "homeViewAll": "View All",
+  "vipTeaserCta": "Unlock VIP Listings",
+  "vipNoListings": "No VIP listings yet — check back soon",
+  "vipBadge": "VIP",
 
   "profileTitle": "Profile",
   "profileEdit": "Edit Profile",

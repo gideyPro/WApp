@@ -128,6 +128,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeViewAll => 'View All';
 
   @override
+  String get vipTeaserCta => 'Unlock VIP Listings';
+
+  @override
+  String get vipNoListings => 'No VIP listings yet — check back soon';
+
+  @override
+  String get vipBadge => 'VIP';
+
+  @override
   String get profileTitle => 'Profile';
 
   @override
