@@ -163,6 +163,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
       label: 'Validating data...',
+      progress: 0.2,
     );
 
     try {
@@ -186,7 +187,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
           _submissionNotifier!.value = SubmissionState.submitting(
             phase: SubmissionPhase.uploading,
             label: 'Uploading files...',
-            progress: progress,
+            progress: 0.2 + progress * 0.7,
           );
         },
       );
@@ -197,9 +198,15 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.saving,
         label: 'Saving changes...',
-        progress: 1.0,
+        progress: 0.9,
       );
       await Future.delayed(const Duration(milliseconds: 300));
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: 'Saving changes...',
+        progress: 1.0,
+      );
 
       if (!mounted) return;
       if (result.success) {
@@ -239,6 +246,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
       label: 'Validating data...',
+      progress: 0.2,
     );
 
     try {
@@ -262,7 +270,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
           _submissionNotifier!.value = SubmissionState.submitting(
             phase: SubmissionPhase.uploading,
             label: 'Uploading files...',
-            progress: progress,
+            progress: 0.2 + progress * 0.7,
           );
         },
       );
@@ -273,9 +281,15 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.saving,
         label: 'Saving changes...',
-        progress: 1.0,
+        progress: 0.9,
       );
       await Future.delayed(const Duration(milliseconds: 300));
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: 'Saving changes...',
+        progress: 1.0,
+      );
 
       if (!mounted) return;
       if (result.success) {
@@ -309,7 +323,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
 
   void _startUploadProgressSimulation() {
     _uploadProgressTimer?.cancel();
-    double simulatedProgress = 0;
+    double simulatedProgress = 0.2;
     _uploadProgressTimer = Timer.periodic(
       const Duration(milliseconds: 300),
       (_) {

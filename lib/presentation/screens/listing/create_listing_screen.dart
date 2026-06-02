@@ -147,6 +147,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
       label: 'Validating data...',
+      progress: 0.2,
     );
 
     try {
@@ -170,7 +171,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
           _submissionNotifier!.value = SubmissionState.submitting(
             phase: SubmissionPhase.uploading,
             label: 'Uploading files...',
-            progress: progress,
+            progress: 0.2 + progress * 0.7,
           );
         },
       );
@@ -181,9 +182,15 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.saving,
         label: 'Saving listing...',
-        progress: 1.0,
+        progress: 0.9,
       );
       await Future.delayed(const Duration(milliseconds: 300));
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: 'Saving listing...',
+        progress: 1.0,
+      );
 
       if (!mounted) return;
       if (response.success) {
@@ -220,7 +227,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
 
   void _startUploadProgressSimulation() {
     _uploadProgressTimer?.cancel();
-    double simulatedProgress = 0;
+    double simulatedProgress = 0.2;
     _uploadProgressTimer = Timer.periodic(
       const Duration(milliseconds: 300),
       (_) {
@@ -270,6 +277,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
       label: 'Validating data...',
+      progress: 0.2,
     );
 
     try {
@@ -282,26 +290,37 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         label: 'Uploading files...',
       );
 
+      _startUploadProgressSimulation();
+
       final response = await service.createListing(
         formData: _formData,
         submissionKey: _currentSubmissionKey,
         onProgress: (progress) {
           if (!mounted) return;
+          _stopUploadProgressSimulation();
           _submissionNotifier!.value = SubmissionState.submitting(
             phase: SubmissionPhase.uploading,
             label: 'Uploading files...',
-            progress: progress,
+            progress: 0.2 + progress * 0.7,
           );
         },
       );
 
+      _stopUploadProgressSimulation();
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: 'Saving listing...',
+        progress: 0.9,
+      );
+      await Future.delayed(const Duration(milliseconds: 300));
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.saving,
         label: 'Saving listing...',
         progress: 1.0,
       );
-      await Future.delayed(const Duration(milliseconds: 300));
 
       if (!mounted) return;
       if (response.success) {
