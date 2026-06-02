@@ -1079,7 +1079,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.diamond_outlined,
+              const Icon(Icons.diamond_outlined,
                   size: 28, color: AppColors.vip),
               const SizedBox(height: 8),
               Text(
@@ -1327,9 +1327,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               color: AppColors.accent500.withValues(alpha: 0.3),
             ),
           ),
-          child: Row(
+          child: const Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               SizedBox(
                 width: 12,
                 height: 12,

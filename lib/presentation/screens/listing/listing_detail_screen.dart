@@ -28,6 +28,8 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../video/full_screen_video_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Listing Detail Screen with skeleton loaders
 class ListingDetailScreen extends ConsumerStatefulWidget {
@@ -1777,6 +1779,10 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 
   Widget _buildRevealedContactSection(Listing listing) {
     final l10n = AppLocalizations.of(context);
+    final displayName = listing.revealedName ?? _revealedName;
+    final displayContact = listing.revealedContact ?? _revealedContact;
+    final contact = displayContact ?? '';
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1789,25 +1795,56 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
           const Icon(Icons.check_circle_outline, size: 28, color: AppColors.success),
           const SizedBox(height: 8),
           Text(
-            _revealedName?.isNotEmpty == true ? _revealedName! : l10n.listingsSeller,
+            displayName?.isNotEmpty == true ? displayName! : l10n.listingsSeller,
             style: AppTextStyles.title.copyWith(fontSize: 14, color: AppColors.success),
           ),
           const SizedBox(height: 8),
-          if (_revealedContact?.isNotEmpty == true)
+          if (contact.isNotEmpty) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(Icons.phone_outlined, size: 16, color: AppColors.stone500),
                 const SizedBox(width: 6),
                 SelectableText(
-                  _revealedContact!,
+                  contact,
                   style: AppTextStyles.title.copyWith(fontSize: 18),
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _ContactActionButton(
+                  iconAsset: 'assets/icons/message_circle.svg',
+                  color: const Color(0xFF25D366),
+                  onTap: () => _launchUrl('https://wa.me/${contact.replaceAll('+', '').replaceAll(' ', '')}'),
+                ),
+                const SizedBox(width: 16),
+                _ContactActionButton(
+                  iconAsset: 'assets/icons/send.svg',
+                  color: const Color(0xFF0088CC),
+                  onTap: () => _launchUrl('https://t.me/+${contact.replaceAll(' ', '')}'),
+                ),
+                const SizedBox(width: 16),
+                _ContactActionButton(
+                  iconAsset: 'assets/icons/phone.svg',
+                  color: const Color(0xFF4CAF50),
+                  onTap: () => _launchUrl('tel:$contact'),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  void _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   bool _isRevealingContact = false;
@@ -2026,6 +2063,39 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContactActionButton extends StatelessWidget {
+  final String iconAsset;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ContactActionButton({
+    required this.iconAsset,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: SvgPicture.asset(
+            iconAsset,
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          ),
         ),
       ),
     );
