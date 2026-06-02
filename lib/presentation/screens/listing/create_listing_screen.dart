@@ -34,7 +34,9 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   bool _submittedSuccessfully = false;
   String? _currentSubmissionKey;
   ValueNotifier<SubmissionState>? _submissionNotifier;
+  Future<bool?>? _submissionDismissed;
   Timer? _autoSaveTimer;
+  Timer? _uploadProgressTimer;
   final _addressService = AddressService();
 
   AppLocalizations get l10n => AppLocalizations.of(context);
@@ -54,6 +56,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   void dispose() {
     _pageController.dispose();
     _autoSaveTimer?.cancel();
+    _uploadProgressTimer?.cancel();
     if (!_submittedSuccessfully) {
       ListingMediaManager.cleanFormDataFiles(_formData);
     }
@@ -138,7 +141,9 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     setState(() => _isSubmitting = true);
 
     _currentSubmissionKey = _generateSubmissionKey();
-    _submissionNotifier = SubmissionOverlay.show(context);
+    final (:notifier, :dismissed) = SubmissionOverlay.show(context);
+    _submissionNotifier = notifier;
+    _submissionDismissed = dismissed;
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
       label: 'Validating data...',
@@ -154,11 +159,14 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         label: 'Uploading files...',
       );
 
+      _startUploadProgressSimulation();
+
       final response = await service.createListing(
         formData: _formData,
         submissionKey: _currentSubmissionKey,
         onProgress: (progress) {
           if (!mounted) return;
+          _stopUploadProgressSimulation();
           _submissionNotifier!.value = SubmissionState.submitting(
             phase: SubmissionPhase.uploading,
             label: 'Uploading files...',
@@ -166,6 +174,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
           );
         },
       );
+
+      _stopUploadProgressSimulation();
 
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
@@ -184,8 +194,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         _submissionNotifier!.value = SubmissionState.success(
           message: 'Your listing has been submitted.',
         );
-        await Future.delayed(const Duration(seconds: 3));
-        if (mounted) Navigator.of(context).pop(true);
+        final result = await dismissed;
+        if (mounted && result == true) Navigator.of(context).pop(true);
       } else {
         _submissionNotifier!.value = SubmissionState.error(
           message: response.message.isNotEmpty
@@ -196,6 +206,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         );
       }
     } catch (e) {
+      _stopUploadProgressSimulation();
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.error(
         message: _friendlyErrorMessage(e),
@@ -205,6 +216,32 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
+  }
+
+  void _startUploadProgressSimulation() {
+    _uploadProgressTimer?.cancel();
+    double simulatedProgress = 0;
+    _uploadProgressTimer = Timer.periodic(
+      const Duration(milliseconds: 300),
+      (_) {
+        if (!mounted) return;
+        simulatedProgress += 0.04;
+        if (simulatedProgress >= 0.9) {
+          simulatedProgress = 0.9;
+          _uploadProgressTimer?.cancel();
+        }
+        _submissionNotifier?.value = SubmissionState.submitting(
+          phase: SubmissionPhase.uploading,
+          label: 'Uploading files...',
+          progress: simulatedProgress,
+        );
+      },
+    );
+  }
+
+  void _stopUploadProgressSimulation() {
+    _uploadProgressTimer?.cancel();
+    _uploadProgressTimer = null;
   }
 
   Future<void> _retrySubmission() async {
@@ -223,8 +260,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         _submissionNotifier!.value = SubmissionState.success(
           message: 'Your listing was submitted successfully.',
         );
-        await Future.delayed(const Duration(seconds: 3));
-        if (mounted) Navigator.of(context).pop(true);
+        final result = await _submissionDismissed;
+        if (mounted && result == true) Navigator.of(context).pop(true);
         return;
       }
     }
@@ -275,8 +312,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         _submissionNotifier!.value = SubmissionState.success(
           message: 'Your listing has been submitted.',
         );
-        await Future.delayed(const Duration(seconds: 3));
-        if (mounted) Navigator.of(context).pop(true);
+        final result = await _submissionDismissed;
+        if (mounted && result == true) Navigator.of(context).pop(true);
       } else {
         _submissionNotifier!.value = SubmissionState.error(
           message: response.message.isNotEmpty

@@ -62,7 +62,7 @@ class SubmissionState {
 
 class SubmissionOverlay extends StatefulWidget {
   final SubmissionState state;
-  final VoidCallback? onDismiss;
+  final ValueChanged<bool?>? onDismiss;
 
   const SubmissionOverlay({
     super.key,
@@ -70,7 +70,7 @@ class SubmissionOverlay extends StatefulWidget {
     this.onDismiss,
   });
 
-  static ValueNotifier<SubmissionState> show(BuildContext context) {
+  static ({ValueNotifier<SubmissionState> notifier, Future<bool?> dismissed}) show(BuildContext context) {
     final notifier = ValueNotifier<SubmissionState>(
       SubmissionState.submitting(
         phase: SubmissionPhase.validating,
@@ -78,7 +78,7 @@ class SubmissionOverlay extends StatefulWidget {
       ),
     );
 
-    showGeneralDialog(
+    final future = showGeneralDialog<bool>(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black54,
@@ -91,8 +91,8 @@ class SubmissionOverlay extends StatefulWidget {
             builder: (context, state, _) {
               return SubmissionOverlay(
                 state: state,
-                onDismiss: () {
-                  Navigator.of(context).pop();
+                onDismiss: (result) {
+                  Navigator.of(ctx).pop(result);
                 },
               );
             },
@@ -101,7 +101,7 @@ class SubmissionOverlay extends StatefulWidget {
       },
     );
 
-    return notifier;
+    return (notifier: notifier, dismissed: future);
   }
 
   @override
@@ -326,7 +326,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                       borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                     ),
                   ),
-                  onPressed: () => Navigator.of(context).pop(true),
+                  onPressed: () => widget.onDismiss?.call(true),
                   child: Text(
                     'View My Listings',
                     style: AppTextStyles.buttonMedium,
@@ -345,7 +345,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                       borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                     ),
                   ),
-                  onPressed: () => Navigator.of(context).pop(false),
+                  onPressed: () => widget.onDismiss?.call(false),
                   child: Text(
                     'Create Another',
                     style: AppTextStyles.buttonMedium,
@@ -468,7 +468,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                 const SizedBox(height: 12),
               ],
               TextButton(
-                onPressed: widget.onDismiss,
+                onPressed: () => widget.onDismiss?.call(null),
                 child: Text(
                   'Go Back',
                   style: AppTextStyles.bodySmall.copyWith(

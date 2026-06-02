@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -30,6 +31,8 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   bool _isSubmitting = false;
   bool _submittedSuccessfully = false;
   ValueNotifier<SubmissionState>? _submissionNotifier;
+  Future<bool?>? _submissionDismissed;
+  Timer? _uploadProgressTimer;
   final _addressService = AddressService();
   final Map<int, List<String>> _stepErrors = {};
 
@@ -98,6 +101,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _uploadProgressTimer?.cancel();
     if (!_submittedSuccessfully) {
       ListingMediaManager.cleanFormDataFiles(_formData);
     }
@@ -153,7 +157,9 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     if (!mounted) return;
     setState(() => _isSubmitting = true);
 
-    _submissionNotifier = SubmissionOverlay.show(context);
+    final (:notifier, :dismissed) = SubmissionOverlay.show(context);
+    _submissionNotifier = notifier;
+    _submissionDismissed = dismissed;
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
       label: 'Validating data...',
@@ -169,10 +175,23 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         label: 'Uploading files...',
       );
 
+      _startUploadProgressSimulation();
+
       final result = await service.updateListing(
         listingId: widget.listing.id,
         formData: _formData,
+        onProgress: (progress) {
+          if (!mounted) return;
+          _stopUploadProgressSimulation();
+          _submissionNotifier!.value = SubmissionState.submitting(
+            phase: SubmissionPhase.uploading,
+            label: 'Uploading files...',
+            progress: progress,
+          );
+        },
       );
+
+      _stopUploadProgressSimulation();
 
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
@@ -190,8 +209,8 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         _submissionNotifier!.value = SubmissionState.success(
           message: 'Listing updated successfully.',
         );
-        await Future.delayed(const Duration(seconds: 3));
-        if (mounted) Navigator.of(context).pop(true);
+        final dismissResult = await _submissionDismissed;
+        if (mounted && dismissResult == true) Navigator.of(context).pop(true);
       } else {
         _submissionNotifier!.value = SubmissionState.error(
           message: result.message.isNotEmpty
@@ -202,6 +221,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         );
       }
     } catch (e) {
+      _stopUploadProgressSimulation();
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.error(
         message: _friendlyErrorMessage(e),
@@ -231,10 +251,23 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         label: 'Uploading files...',
       );
 
+      _startUploadProgressSimulation();
+
       final result = await service.updateListing(
         listingId: widget.listing.id,
         formData: _formData,
+        onProgress: (progress) {
+          if (!mounted) return;
+          _stopUploadProgressSimulation();
+          _submissionNotifier!.value = SubmissionState.submitting(
+            phase: SubmissionPhase.uploading,
+            label: 'Uploading files...',
+            progress: progress,
+          );
+        },
       );
+
+      _stopUploadProgressSimulation();
 
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
@@ -252,8 +285,8 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         _submissionNotifier!.value = SubmissionState.success(
           message: 'Listing updated successfully.',
         );
-        await Future.delayed(const Duration(seconds: 3));
-        if (mounted) Navigator.of(context).pop(true);
+        final dismissResult = await _submissionDismissed;
+        if (mounted && dismissResult == true) Navigator.of(context).pop(true);
       } else {
         _submissionNotifier!.value = SubmissionState.error(
           message: result.message.isNotEmpty
@@ -264,6 +297,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         );
       }
     } catch (e) {
+      _stopUploadProgressSimulation();
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.error(
         message: _friendlyErrorMessage(e),
@@ -271,6 +305,32 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
         onSaveDraft: _saveDraftAndExit,
       );
     }
+  }
+
+  void _startUploadProgressSimulation() {
+    _uploadProgressTimer?.cancel();
+    double simulatedProgress = 0;
+    _uploadProgressTimer = Timer.periodic(
+      const Duration(milliseconds: 300),
+      (_) {
+        if (!mounted) return;
+        simulatedProgress += 0.04;
+        if (simulatedProgress >= 0.9) {
+          simulatedProgress = 0.9;
+          _uploadProgressTimer?.cancel();
+        }
+        _submissionNotifier?.value = SubmissionState.submitting(
+          phase: SubmissionPhase.uploading,
+          label: 'Uploading files...',
+          progress: simulatedProgress,
+        );
+      },
+    );
+  }
+
+  void _stopUploadProgressSimulation() {
+    _uploadProgressTimer?.cancel();
+    _uploadProgressTimer = null;
   }
 
   String _friendlyErrorMessage(Object error) {

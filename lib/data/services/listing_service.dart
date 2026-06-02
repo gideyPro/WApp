@@ -579,6 +579,7 @@ class ListingService {
     required int listingId,
     Map<String, dynamic>? listingData,
     ListingFormData? formData,
+    void Function(double progress)? onProgress,
   }) async {
     try {
       dynamic data = listingData;
@@ -604,6 +605,11 @@ class ListingService {
         url,
         data: data,
         options: Options(method: method, sendTimeout: const Duration(seconds: 300)),
+        onSendProgress: onProgress != null
+            ? (sent, total) {
+                if (total > 0) onProgress(sent / total);
+              }
+            : null,
       );
 
       if (response.statusCode == 200) {
