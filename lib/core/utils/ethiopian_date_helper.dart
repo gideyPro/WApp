@@ -32,12 +32,22 @@ class EthiopianDateHelper {
 
   /// Formats a year integer as a dual Gregorian/Ethiopian display.
   /// Returns e.g. "2026 / 2018 ዓ/ም".
-  /// Uses Sept 11 (or 12 for leap) as the reference date for conversion.
+  /// Uses Jan 1 as the reference date so the Ethiopian year shown
+  /// is the one covering most of the Gregorian year.
   static String formatYear(int gregYear) {
-    final ref = DateTime(gregYear, 9, 11);
+    final ref = DateTime(gregYear, 1, 1);
     final kenat = Kenat(ref);
     final eth = kenat.getEthiopian();
     return '$gregYear / ${eth['year']} ዓ/ም';
+  }
+
+  /// Returns just the Ethiopian year suffix e.g. "2018 ዓ/ም"
+  /// for a given Gregorian year.
+  static String toEthiopianYearSuffix(int gregYear) {
+    final ref = DateTime(gregYear, 1, 1);
+    final kenat = Kenat(ref);
+    final eth = kenat.getEthiopian();
+    return '${eth['year']} ዓ/ም';
   }
 
   /// Formats a Gregorian [DateTime] with both calendars side by side.

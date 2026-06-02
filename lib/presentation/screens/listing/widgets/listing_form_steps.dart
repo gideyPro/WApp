@@ -14,6 +14,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../providers/app_providers.dart';
 import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/utils/ethiopian_date_helper.dart';
 
 // ===================== STEP INDICATOR =====================
 
@@ -1178,7 +1179,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
                           return Padding(
                             padding: const EdgeInsets.only(top: 2, left: 4),
                             child: Text(
-                              '${year - 8} ዓ/ም',
+                              EthiopianDateHelper.toEthiopianYearSuffix(year),
                               style: AppTextStyles.bodySmall.copyWith(
                                 fontSize: 9,
                                 color: AppColors.accent600,
