@@ -612,6 +612,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final l10n = AppLocalizations.of(context);
     ref.watch(favoritesProvider);
 
+    ref.listen(subscriptionProvider, (prev, next) {
+      if (prev?.canViewVip != true && next.canViewVip == true) {
+        ref.read(vipListingsProvider.notifier).loadVipListings();
+      }
+    });
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -681,10 +687,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             l10n.listingsFeatured, isFeatured: true),
                         _buildFeaturedListings(featuredState),
                         _buildVipSectionHeader(),
-                        if (ref.watch(subscriptionProvider).canViewVip)
-                          _buildVipListings(vipState)
-                        else
-                          _buildVipTeaserSection(),
+                        _buildVipListingsOrTeaser(vipState),
                         _buildSectionHeader(l10n.listingsTitle),
                       ],
                     ),
@@ -1042,6 +1045,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         },
       ),
     );
+  }
+
+  Widget _buildVipListingsOrTeaser(ListingsState vipState) {
+    final subState = ref.watch(subscriptionProvider);
+    if (subState.isLoading || subState.errorMessage != null) {
+      return const SizedBox.shrink();
+    }
+    if (subState.canViewVip) {
+      return _buildVipListings(vipState);
+    }
+    return _buildVipTeaserSection();
   }
 
   Widget _buildVipListings(ListingsState state) {
