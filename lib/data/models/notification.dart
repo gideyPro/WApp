@@ -5,9 +5,9 @@ import '../../l10n/app_localizations.dart';
 enum NotificationType {
   listingApproved,
   listingRejected,
-  newMessage,
   newInterest,
   paymentSuccess,
+  paymentFailed,
   subscriptionActivated,
   systemAnnouncement,
   featuredListingExpired,
@@ -80,12 +80,7 @@ class Notification {
       userId: json['user_id'] ?? 0,
       title: json['title'] ?? '',
       body: json['message'] ?? json['body'] ?? '',
-      type: NotificationType.values.firstWhere(
-        (e) =>
-            e.toString().split('.').last ==
-            (json['type'] ?? 'systemAnnouncement'),
-        orElse: () => NotificationType.systemAnnouncement,
-      ),
+      type: _parseType(json['type']),
       actionUrl: json['action_url'],
       relatedId: json['related_id'],
       relatedType: json['related_type'],
@@ -98,6 +93,27 @@ class Notification {
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
     );
+  }
+
+  static NotificationType _parseType(String? type) {
+    switch (type) {
+      case 'listing_update':
+      case 'listing_approved':
+        return NotificationType.listingApproved;
+      case 'listing_rejected':
+      case 'listing_rejection':
+        return NotificationType.listingRejected;
+      case 'inquiry':
+        return NotificationType.newInterest;
+      case 'payment_success':
+        return NotificationType.paymentSuccess;
+      case 'payment_failed':
+        return NotificationType.paymentFailed;
+      case 'suggestion':
+        return NotificationType.suggestion;
+      default:
+        return NotificationType.systemAnnouncement;
+    }
   }
 
   String getDisplayTime(AppLocalizations l10n) {
@@ -118,12 +134,12 @@ class Notification {
         return Icons.check_circle_outline;
       case NotificationType.listingRejected:
         return Icons.cancel_outlined;
-      case NotificationType.newMessage:
-        return Icons.message_outlined;
       case NotificationType.newInterest:
         return Icons.interests_outlined;
       case NotificationType.paymentSuccess:
         return Icons.payment_outlined;
+      case NotificationType.paymentFailed:
+        return Icons.error_outline;
       case NotificationType.subscriptionActivated:
         return Icons.star_outline;
       case NotificationType.systemAnnouncement:

@@ -10,8 +10,8 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../listing/listing_detail_screen.dart';
-import '../messages/messages_screen.dart';
 import '../orders/order_details_screen.dart';
+import '../payments/payment_history_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 
 /// Notifications Screen - Wired to notificationsProvider
@@ -185,12 +185,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           }
         }
         break;
-      case app.NotificationType.newMessage:
+      case app.NotificationType.paymentSuccess:
+      case app.NotificationType.paymentFailed:
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const MessagesScreen()),
+          MaterialPageRoute(builder: (_) => const PaymentHistoryScreen()),
         );
         break;
-      case app.NotificationType.paymentSuccess:
       case app.NotificationType.subscriptionActivated:
       case app.NotificationType.systemAnnouncement:
         break;
