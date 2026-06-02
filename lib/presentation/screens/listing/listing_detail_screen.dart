@@ -1702,13 +1702,13 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 ),
             ],
           ),
-          // Contact reveal section — only when plan supports it
-          if (!isOwner && listing.userContactHidden && !listing.contactRevealed && !listing.interestBlocked && !listing.contactModerated) ...[
+          // Contact reveal section
+          if (!isOwner && !listing.contactRevealed && !listing.interestBlocked && !listing.contactModerated) ...[
             const SizedBox(height: 12),
-            if (listing.contactMax > 0)
-              _buildContactRevealSection(listing)
-            else
-              _buildContactUpgradeSection(listing),
+            if (listing.userContactHidden)
+              _buildContactUpgradeSection(listing)
+            else if (listing.contactMax > 0)
+              _buildContactRevealSection(listing),
           ],
           // Revealed contact info (non-owner, already revealed)
           if (!isOwner && listing.contactRevealed) ...[
