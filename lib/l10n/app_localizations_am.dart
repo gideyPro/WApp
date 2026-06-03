@@ -1053,7 +1053,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsKeyFeatures => 'ዋና መገለጫዎች';
 
   @override
-  String get listingsImInterested => 'ፍላጎት አለኝ';
+  String get listingsImInterested => 'ከወኪል ጋር ይገናኙ';
 
   @override
   String get listingsInterestedHint => 'ባለቤቱን በዚህ ንብረት ፍላጎት እንዳለዎት ያሳውቁ';

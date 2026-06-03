@@ -1060,7 +1060,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsKeyFeatures => 'Key Features';
 
   @override
-  String get listingsImInterested => 'I\'m Interested';
+  String get listingsImInterested => 'Contact with Agent';
 
   @override
   String get listingsInterestedHint =>

@@ -1053,7 +1053,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsKeyFeatures => 'ቀንዲ መገለጺታት';
 
   @override
-  String get listingsImInterested => 'ድሌት ኣለኒ';
+  String get listingsImInterested => 'ምስ ወኪል ተራኸብ';
 
   @override
   String get listingsInterestedHint => 'ድሌት ከምዘለኩም ንባዓል ንብረት ኣፍልጡ';

@@ -2083,7 +2083,7 @@ abstract class AppLocalizations {
   /// No description provided for @listingsImInterested.
   ///
   /// In en, this message translates to:
-  /// **'I\'m Interested'**
+  /// **'Contact with Agent'**
   String get listingsImInterested;
 
   /// No description provided for @listingsInterestedHint.
