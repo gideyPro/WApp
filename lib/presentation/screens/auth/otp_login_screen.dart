@@ -545,7 +545,20 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   void _confirmChangeNumber() {
-    _showExitDialog();
+    final l10n = AppLocalizations.of(context);
+    WaveDialog.showConfirm(
+      context: context,
+      title: l10n.authChangeNumber,
+      message: l10n.authChangeNumberConfirm,
+      confirmLabel: l10n.commonYes,
+      cancelLabel: l10n.commonNo,
+      destructive: false,
+    ).then((confirmed) {
+      if (confirmed == true && mounted) {
+        _countdownTimer?.cancel();
+        ref.read(authStateProvider.notifier).clearOtpSent();
+      }
+    });
   }
 
   void _showExitDialog() {

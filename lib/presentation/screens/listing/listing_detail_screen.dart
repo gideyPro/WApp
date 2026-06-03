@@ -1824,7 +1824,7 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
                 _ContactActionButton(
                   iconAsset: 'assets/icons/send.svg',
                   color: const Color(0xFF0088CC),
-                  onTap: () => _launchUrl('https://t.me/+${contact.replaceAll(' ', '')}'),
+                  onTap: () => _launchUrl('https://t.me/+${contact.replaceAll('+', '').replaceAll(' ', '')}'),
                 ),
                 const SizedBox(width: 16),
                 _ContactActionButton(

@@ -78,6 +78,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonRetryMessage => 'እባክዎ እንደገና ይሞክሩ';
 
   @override
+  String get commonPressBackAgain => 'ለመውጣት ደግመው ይጫኑ';
+
+  @override
   String get commonComingSoon => 'በቅርብ ቀን ይገኛል';
 
   @override

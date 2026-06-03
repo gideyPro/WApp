@@ -110,6 +110,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                 subtitle: AppLocalizations.of(context).favoritesEmptySubtitle,
                 actionLabel: AppLocalizations.of(context).commonBrowseProperties,
                 onAction: () {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                   ref.read(selectedTabProvider.notifier).state = 0;
                 },
               ),

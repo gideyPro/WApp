@@ -78,6 +78,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonRetryMessage => 'Please try again';
 
   @override
+  String get commonPressBackAgain => 'Press back again to exit';
+
+  @override
   String get commonComingSoon => 'Coming soon';
 
   @override

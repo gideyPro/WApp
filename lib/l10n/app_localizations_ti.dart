@@ -78,6 +78,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonRetryMessage => 'በጃኹም ደጊምኩም ፈትኑ';
 
   @override
+  String get commonPressBackAgain => 'ንምውጻእ ደጊምኩም ጸቕጡ';
+
+  @override
   String get commonComingSoon => 'ብቀረባ እዋን ክመጽእ እዩ';
 
   @override

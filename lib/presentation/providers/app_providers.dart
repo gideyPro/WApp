@@ -543,12 +543,7 @@ class ConversationsNotifier extends StateNotifier<ConversationsState> {
       state = ConversationsState.loaded(
           conversations: response.conversations, total: response.total ?? 0);
     } else {
-      if (state.conversations.isEmpty) {
-        state = const ConversationsState.loaded(conversations: [], total: 0);
-      } else {
-        state =
-            state.copyWith(isLoading: false, errorMessage: response.message);
-      }
+      state = state.copyWith(isLoading: false, errorMessage: response.message);
     }
   }
 
