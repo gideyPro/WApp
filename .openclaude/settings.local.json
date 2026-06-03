@@ -9,7 +9,19 @@
       "Bash(grep -rn \"terms\\\\.\\\\|privacy\\\\.\" /opt/lampp/htdocs/WaveMart/database/migrations/2025_12_10_*.php)",
       "Bash(flutter gen-l10n:*)",
       "Read(//initrd/mnt/dev_save/GideyData/Projects/WaveMart/**)",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Bash(ls:*)",
+      "Bash(python3:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(pip3 list:*)",
+      "Bash(pip3 install:*)",
+      "WebFetch(domain:mcpmarket.com)",
+      "WebSearch",
+      "Read(//root/.openclaude/**)",
+      "Read(//initrd/mnt/dev_save/user/.openclaude/**)",
+      "Bash(openclaude --help)"
     ]
   }
 }

@@ -470,12 +470,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "flutter_svg",
-      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/flutter_svg-2.2.4",
-      "packageUri": "lib/",
-      "languageVersion": "3.9"
-    },
-    {
       "name": "flutter_test",
       "rootUri": "file:///initrd/mnt/dev_save/dev/flutter_sdk/packages/flutter_test",
       "packageUri": "lib/",
@@ -680,6 +674,12 @@
       "languageVersion": "3.9"
     },
     {
+      "name": "kenat",
+      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/kenat-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "leak_tracker",
       "rootUri": "file:///root/.pub-cache/hosted/pub.dev/leak_tracker-11.0.2",
       "packageUri": "lib/",
@@ -792,12 +792,6 @@
       "rootUri": "file:///root/.pub-cache/hosted/pub.dev/path-1.9.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
-    },
-    {
-      "name": "path_parsing",
-      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/path_parsing-1.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
     },
     {
       "name": "path_provider",
@@ -1182,24 +1176,6 @@
       "rootUri": "file:///root/.pub-cache/hosted/pub.dev/uuid-4.5.3",
       "packageUri": "lib/",
       "languageVersion": "3.0"
-    },
-    {
-      "name": "vector_graphics",
-      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/vector_graphics-1.1.21",
-      "packageUri": "lib/",
-      "languageVersion": "3.9"
-    },
-    {
-      "name": "vector_graphics_codec",
-      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/vector_graphics_codec-1.1.13",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "vector_graphics_compiler",
-      "rootUri": "file:///root/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.2.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.9"
     },
     {
       "name": "vector_math",

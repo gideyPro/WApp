@@ -24,7 +24,6 @@
         "flutter_native_splash",
         "flutter_riverpod",
         "flutter_secure_storage",
-        "flutter_svg",
         "formz",
         "go_router",
         "google_fonts",
@@ -33,6 +32,7 @@
         "image_cropper",
         "image_picker",
         "intl",
+        "kenat",
         "lottie",
         "package_info_plus",
         "path_provider",
@@ -343,6 +343,11 @@
       ]
     },
     {
+      "name": "kenat",
+      "version": "1.0.1",
+      "dependencies": []
+    },
+    {
       "name": "intl",
       "version": "0.20.2",
       "dependencies": [
@@ -471,17 +476,6 @@
         "flutter",
         "flutter_cache_manager",
         "octo_image"
-      ]
-    },
-    {
-      "name": "flutter_svg",
-      "version": "2.2.4",
-      "dependencies": [
-        "flutter",
-        "http",
-        "vector_graphics",
-        "vector_graphics_codec",
-        "vector_graphics_compiler"
       ]
     },
     {
@@ -1651,32 +1645,6 @@
       ]
     },
     {
-      "name": "vector_graphics_compiler",
-      "version": "1.2.0",
-      "dependencies": [
-        "args",
-        "meta",
-        "path",
-        "path_parsing",
-        "vector_graphics_codec",
-        "xml"
-      ]
-    },
-    {
-      "name": "vector_graphics_codec",
-      "version": "1.1.13",
-      "dependencies": []
-    },
-    {
-      "name": "vector_graphics",
-      "version": "1.1.21",
-      "dependencies": [
-        "flutter",
-        "http",
-        "vector_graphics_codec"
-      ]
-    },
-    {
       "name": "sky_engine",
       "version": "0.0.0",
       "dependencies": []
@@ -2054,14 +2022,6 @@
         "ffi",
         "meta",
         "path"
-      ]
-    },
-    {
-      "name": "path_parsing",
-      "version": "1.1.0",
-      "dependencies": [
-        "meta",
-        "vector_math"
       ]
     },
     {

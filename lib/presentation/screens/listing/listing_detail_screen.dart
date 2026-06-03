@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_video_player_plus/cached_video_player_plus.dart';
@@ -28,7 +27,6 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../video/full_screen_video_screen.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Listing Detail Screen with skeleton loaders
@@ -1816,19 +1814,19 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _ContactActionButton(
-                  iconAsset: 'assets/icons/message_circle.svg',
+                  icon: Icons.chat_outlined,
                   color: const Color(0xFF25D366),
                   onTap: () => _launchUrl('https://wa.me/${contact.replaceAll('+', '').replaceAll(' ', '')}'),
                 ),
                 const SizedBox(width: 16),
                 _ContactActionButton(
-                  iconAsset: 'assets/icons/send.svg',
+                  icon: Icons.send_outlined,
                   color: const Color(0xFF0088CC),
                   onTap: () => _launchUrl('https://t.me/+${contact.replaceAll('+', '').replaceAll(' ', '')}'),
                 ),
                 const SizedBox(width: 16),
                 _ContactActionButton(
-                  iconAsset: 'assets/icons/phone.svg',
+                  icon: Icons.phone_outlined,
                   color: const Color(0xFF4CAF50),
                   onTap: () => _launchUrl('tel:$contact'),
                 ),
@@ -2070,12 +2068,12 @@ Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
 }
 
 class _ContactActionButton extends StatelessWidget {
-  final String iconAsset;
+  final IconData icon;
   final Color color;
   final VoidCallback onTap;
 
   const _ContactActionButton({
-    required this.iconAsset,
+    required this.icon,
     required this.color,
     required this.onTap,
   });
@@ -2090,11 +2088,10 @@ class _ContactActionButton extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: SvgPicture.asset(
-            iconAsset,
-            width: 24,
-            height: 24,
-            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          child: Icon(
+            icon,
+            size: 24,
+            color: color,
           ),
         ),
       ),
