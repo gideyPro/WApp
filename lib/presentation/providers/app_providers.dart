@@ -134,7 +134,7 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
     final response = await _favoriteService.toggleFavorite(listingId);
     if (response.success) {
       await loadFavorites();
-      _ref.read(profileProvider.notifier).loadProfile();
+      await _ref.read(profileProvider.notifier).loadProfile();
     }
     return response.success;
   }

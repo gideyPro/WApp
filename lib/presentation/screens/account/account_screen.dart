@@ -28,7 +28,7 @@ class AccountScreen extends ConsumerStatefulWidget {
   ConsumerState<AccountScreen> createState() => _AccountScreenState();
 }
 
-class _AccountScreenState extends ConsumerState<AccountScreen> {
+class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
   @override
   void initState() {
     super.initState();
@@ -36,6 +36,26 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       ref.read(profileProvider.notifier).loadProfile();
       ref.read(kycStatusProvider.notifier).loadKycStatus();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPopNext() {
+    ref.read(profileProvider.notifier).loadProfile();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   @override
