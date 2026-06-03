@@ -13,8 +13,6 @@ import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/otp_input_field.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
-import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_dialog.dart';
 import 'otp_login_screen.dart';
 
 class RegistrationScreen extends ConsumerStatefulWidget {
@@ -262,27 +260,27 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       return;
     }
 
-    WaveDialog.show(
+    showDialog<bool>(
       context: context,
-      message: l10n.authCancelRegistration,
-      type: DialogType.confirm,
-      actions: [
-        WaveButton(
-          text: l10n.commonNo,
-          variant: ButtonVariant.outline,
-          onPressed: () => Navigator.pop(context),
-        ),
-        WaveButton(
-          text: l10n.commonOk,
-          variant: ButtonVariant.danger,
-          onPressed: () {
-            _countdownTimer?.cancel();
-            ref.read(authStateProvider.notifier).resetState();
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
-        ),
-      ],
+      builder: (ctx) => AlertDialog(
+        content: Text(l10n.authCancelRegistration),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonNo),
+          ),
+          TextButton(
+            onPressed: () {
+              _countdownTimer?.cancel();
+              ref.read(authStateProvider.notifier).resetState();
+              Navigator.pop(ctx, true);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: Text(l10n.commonOk),
+          ),
+        ],
+      ),
     );
   }
 
@@ -826,6 +824,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   void _showErrorSnackBar(String message) {
-    WaveToast.showError(context, message);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: AppColors.error),
+    );
   }
 }
