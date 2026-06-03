@@ -219,6 +219,7 @@ class Conversation {
 
   /// Get the other participant's raw data based on currentUserId
   Map<String, dynamic>? _getOtherParticipantData(int currentUserId) {
+    if (currentUserId <= 0) return null;
     final sid = _safeInt(_senderData?['id']);
     final rid = _safeInt(_receiverData?['id']);
 

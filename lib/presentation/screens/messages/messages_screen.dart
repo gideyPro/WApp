@@ -223,11 +223,11 @@ class _ConversationTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
-    final currentUserId = authState.user?.id ?? 0;
+    final currentUserId = authState.user?.id;
     final l10n = AppLocalizations.of(context);
 
-    final initials = conversation.getInitials(currentUserId);
-    final displayName = conversation.getDisplayTitle(currentUserId);
+    final initials = currentUserId != null ? conversation.getInitials(currentUserId) : '??';
+    final displayName = currentUserId != null ? conversation.getDisplayTitle(currentUserId) : (conversation.subject ?? conversation.listingTitle ?? 'Conversation');
 
     final isAssetChat =
         conversation.isAssetChat || conversation.listingId != null;
@@ -243,7 +243,7 @@ class _ConversationTile extends ConsumerWidget {
 
     if (conversation.lastMessage != null &&
         conversation.lastMessage!.isNotEmpty) {
-      final isOwnLastMessage = conversation.isLastMessageFromMe(currentUserId);
+      final isOwnLastMessage = currentUserId != null && conversation.isLastMessageFromMe(currentUserId);
       if (isOwnLastMessage) {
         previewText = '${l10n.commonYou}: $previewText';
       }
@@ -711,7 +711,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  l10n.messagesEmpty,
+                  l10n.messagesUnreadMessages,
                   style: AppTextStyles.caption.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.accent500,
@@ -996,8 +996,8 @@ class _MessageBubble extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
-    final currentUserId = authState.user?.id ?? 0;
-    final isOwn = message.senderId == currentUserId;
+    final currentUserId = authState.user?.id;
+    final isOwn = currentUserId != null && message.senderId == currentUserId;
     final isSeen = message.readAt != null;
     final initials = message.senderInitials;
     final l10n = AppLocalizations.of(context);

@@ -1376,6 +1376,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get messagesUnread => 'ያልተነበቡ';
 
   @override
+  String get messagesUnreadMessages => 'ያልተነበቡ መልእክቶች';
+
+  @override
   String get messagesSwitchContext => 'አውድ ይቀይሩ';
 
   @override

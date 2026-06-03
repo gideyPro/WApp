@@ -435,6 +435,7 @@
   "messagesTypeMessage": "መልእክት ይጻፉ...",
   "messagesSend": "ላክ",
   "messagesUnread": "ያልተነበቡ",
+  "messagesUnreadMessages": "ያልተነበቡ መልእክቶች",
   "messageRetry": "እንደገና ሞክር",
   "messageGoBack": "ተመለስ",
   "messageDismiss": "ዝጋ",

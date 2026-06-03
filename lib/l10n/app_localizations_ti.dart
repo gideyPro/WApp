@@ -1375,6 +1375,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get messagesUnread => 'ያልተነብሡ';
 
   @override
+  String get messagesUnreadMessages => 'ዘይተነብሡ መልእኽታት';
+
+  @override
   String get messagesSwitchContext => 'ኣውድ ቀይር';
 
   @override

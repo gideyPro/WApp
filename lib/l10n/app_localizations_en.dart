@@ -1390,6 +1390,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messagesUnread => 'unread';
 
   @override
+  String get messagesUnreadMessages => 'Unread messages';
+
+  @override
   String get messagesSwitchContext => 'Switch Context';
 
   @override

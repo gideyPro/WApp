@@ -2686,6 +2686,12 @@ abstract class AppLocalizations {
   /// **'unread'**
   String get messagesUnread;
 
+  /// No description provided for @messagesUnreadMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread messages'**
+  String get messagesUnreadMessages;
+
   /// No description provided for @messagesSwitchContext.
   ///
   /// In en, this message translates to:

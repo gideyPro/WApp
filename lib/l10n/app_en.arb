@@ -446,6 +446,7 @@
   "messagesTypeMessage": "Type a message...",
   "messagesSend": "Send",
   "messagesUnread": "unread",
+  "messagesUnreadMessages": "Unread messages",
   "messagesSwitchContext": "Switch Context",
 
   "settingsTitle": "Settings",

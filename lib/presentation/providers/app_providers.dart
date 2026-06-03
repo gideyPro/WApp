@@ -551,6 +551,7 @@ class ConversationsNotifier extends StateNotifier<ConversationsState> {
 
   /// Refresh conversations list (e.g., after reading a message)
   Future<void> refreshConversations({int? currentUserId}) async {
+    if (state.errorMessage != null) return;
     final response = await _messageService.getConversations(
         page: 1, currentUserId: currentUserId);
     if (response.success) {
