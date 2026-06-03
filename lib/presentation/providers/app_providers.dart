@@ -108,12 +108,13 @@ final favoriteServiceProvider =
     Provider<FavoriteService>((ref) => FavoriteService());
 final favoritesProvider =
     StateNotifierProvider<FavoritesNotifier, FavoritesState>((ref) {
-  return FavoritesNotifier(ref.watch(favoriteServiceProvider));
+  return FavoritesNotifier(ref.watch(favoriteServiceProvider), ref);
 });
 
 class FavoritesNotifier extends StateNotifier<FavoritesState> {
   final FavoriteService _favoriteService;
-  FavoritesNotifier(this._favoriteService)
+  final Ref _ref;
+  FavoritesNotifier(this._favoriteService, this._ref)
       : super(const FavoritesState.initial());
 
   Future<void> loadFavorites({int page = 1}) async {
@@ -133,6 +134,7 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
     final response = await _favoriteService.toggleFavorite(listingId);
     if (response.success) {
       await loadFavorites();
+      _ref.invalidate(profileProvider);
     }
     return response.success;
   }
