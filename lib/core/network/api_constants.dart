@@ -43,8 +43,6 @@ class ApiConstants {
   // ==========================================================================
   static const String favorites = '$apiBase/favorites';
   static const String toggleFavorite = '$apiBase/favorites'; // + /{id}/toggle
-  static const String addFavorite = '$apiBase/favorites'; // + /{listing}
-  static const String removeFavorite = '$apiBase/favorites'; // + /{listing}
 
   // ==========================================================================
   // 4. MESSAGES ENDPOINTS

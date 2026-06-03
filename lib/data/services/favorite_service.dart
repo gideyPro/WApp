@@ -71,60 +71,6 @@ class FavoriteService {
     return null;
   }
 
-  /// Add listing to favorites
-  Future<FavoriteResponse> addFavorite(int listingId) async {
-    try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.addFavorite}/$listingId',
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return FavoriteResponse(
-          success: true,
-          message: _extractMessage(response.data, 'Added to favorites'),
-        );
-      }
-
-      return FavoriteResponse(
-        success: false,
-        message: _extractMessage(response.data, 'Failed to add favorite'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return FavoriteResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
-
-  /// Remove listing from favorites
-  Future<FavoriteResponse> removeFavorite(int listingId) async {
-    try {
-      final response = await _apiClient.dio.delete(
-        '${ApiConstants.removeFavorite}/$listingId',
-      );
-
-      if (response.statusCode == 200) {
-        return FavoriteResponse(
-          success: true,
-          message: _extractMessage(response.data, 'Removed from favorites'),
-        );
-      }
-
-      return FavoriteResponse(
-        success: false,
-        message: _extractMessage(response.data, 'Failed to remove favorite'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return FavoriteResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
-
   /// Toggle favorite status
   Future<FavoriteResponse> toggleFavorite(int listingId) async {
     try {
