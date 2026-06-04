@@ -10,6 +10,7 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../../core/constants/app_spacing.dart';
+import 'payment_detail_screen.dart';
 
 /// Payment History Screen
 class PaymentHistoryScreen extends ConsumerStatefulWidget {
@@ -105,8 +106,19 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
           final payment = state.payments[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: WaveGlass(
-              child: _PaymentTile(payment: payment),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => PaymentDetailScreen(
+                      paymentId: payment.id,
+                    ),
+                  ),
+                );
+              },
+              child: WaveGlass(
+                child: _PaymentTile(payment: payment),
+              ),
             ),
           );
         },

@@ -11,6 +11,7 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../listing/listing_detail_screen.dart';
 import '../orders/order_details_screen.dart';
+import '../payments/payment_detail_screen.dart';
 import '../payments/payment_history_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 
@@ -187,9 +188,27 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         break;
       case app.NotificationType.paymentSuccess:
       case app.NotificationType.paymentFailed:
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const PaymentHistoryScreen()),
-        );
+        {
+          final paymentId = notification.relatedId ??
+              (notification.data?['payment_id'] as int?) ??
+              (notification.data?['payment_id'] is num
+                  ? (notification.data!['payment_id'] as num).toInt()
+                  : null);
+          if (paymentId != null) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) =>
+                    PaymentDetailScreen(paymentId: paymentId),
+              ),
+            );
+          } else {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const PaymentHistoryScreen(),
+              ),
+            );
+          }
+        }
         break;
       case app.NotificationType.subscriptionActivated:
       case app.NotificationType.systemAnnouncement:
