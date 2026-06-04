@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/payment.dart';
 // Removed unused import
@@ -35,14 +36,14 @@ class PaymentService {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        final paymentData = (data is Map) ? (data['data'] ?? data) : {};
+        final paymentData = ApiEnvelope.extractData(data);
 
         return PaymentResponse(
           success: true,
-          message: _extractMessage(data, 'Payment initialized'),
+          message: ApiEnvelope.extractMessage(data, 'Payment initialized'),
           checkoutUrl: paymentData['checkout_url'],
           payment: paymentData['payment'] != null
-              ? Payment.fromJson(paymentData['payment'])
+              ? Payment.fromJson(Map<String, dynamic>.from(paymentData['payment'] as Map))
               : null,
           txRef: paymentData['tx_ref'],
         );
@@ -50,7 +51,7 @@ class PaymentService {
 
       return PaymentResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to initialize payment'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to initialize payment'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -72,21 +73,19 @@ class PaymentService {
       if (response.statusCode == 200) {
         final data = response.data;
         final verified = (data is Map) ? (data['verified'] ?? true) : true;
-        final paymentData = (data is Map) ? (data['data'] ?? data) : null;
-        
+        final paymentData = ApiEnvelope.extractData(data);
+
         return PaymentResponse(
           success: true,
-          message: _extractMessage(data, 'Payment verified'),
+          message: ApiEnvelope.extractMessage(data, 'Payment verified'),
           verified: verified,
-          payment: (paymentData is Map)
-              ? Payment.fromJson(paymentData as Map<String, dynamic>)
-              : null,
+          payment: paymentData.isNotEmpty ? Payment.fromJson(paymentData) : null,
         );
       }
 
       return PaymentResponse(
         success: false,
-        message: _extractMessage(response.data, 'Payment verification failed'),
+        message: ApiEnvelope.extractMessage(response.data, 'Payment verification failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -113,19 +112,11 @@ class PaymentService {
 
       if (response.statusCode == 200) {
         final responseData = response.data;
-        List<dynamic> paymentsList = _extractList(responseData);
-        int currentPage = page;
-        int totalPages = 1;
-        int total = 0;
-
-        if (responseData is Map) {
-          final dataField = responseData['data'];
-          if (dataField is Map) {
-            currentPage = _safeInt(dataField['current_page']) ?? page;
-            totalPages = _safeInt(dataField['last_page']) ?? 1;
-            total = _safeInt(dataField['total']) ?? 0;
-          }
-        }
+        List<dynamic> paymentsList = ApiEnvelope.extractList(
+          responseData,
+          itemKeys: const ['payments', 'items'],
+        );
+        final pagination = ApiEnvelope.extractPagination(responseData, fallbackPage: page);
 
         final payments = paymentsList
             .whereType<Map>()
@@ -135,15 +126,15 @@ class PaymentService {
         return PaymentHistoryResponse(
           success: true,
           payments: payments,
-          currentPage: currentPage,
-          totalPages: totalPages,
-          total: total,
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          total: pagination.total,
         );
       }
 
       return PaymentHistoryResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch payments'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch payments'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -152,14 +143,6 @@ class PaymentService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  int? _safeInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    return null;
   }
 
   /// Get single payment details
@@ -170,12 +153,10 @@ class PaymentService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
-        final paymentData = (data is Map) ? (data['data'] ?? data) : {};
-        
-        final payment = Payment.fromJson(
-          paymentData is Map ? paymentData as Map<String, dynamic> : {},
-        );
+        final paymentData = ApiEnvelope.extractData(response.data);
+        final payment = paymentData.isNotEmpty
+            ? Payment.fromJson(paymentData)
+            : Payment.fromJson(const <String, dynamic>{});
 
         return PaymentResponse(
           success: true,
@@ -185,7 +166,7 @@ class PaymentService {
 
       return PaymentResponse(
         success: false,
-        message: _extractMessage(response.data, 'Payment not found'),
+        message: ApiEnvelope.extractMessage(response.data, 'Payment not found'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -194,25 +175,6 @@ class PaymentService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Helper to extract list from dynamic response
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw is List) return raw;
-    if (raw is Map) {
-      final data = raw['data'] ?? raw['payments'];
-      if (data is List) return data;
-      if (data is Map && data['data'] is List) return data['data'] as List;
-    }
-    return [];
-  }
-
-  /// Helper to extract message from dynamic response
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map && raw['message'] != null) {
-      return raw['message'].toString();
-    }
-    return defaultMessage;
   }
 }
 

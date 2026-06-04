@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/notification.dart' as app;
 
@@ -26,23 +27,19 @@ class NotificationService {
 
       if (response.statusCode == 200) {
         final responseData = response.data;
-        
-        List<dynamic> notifList = _extractList(responseData);
-        int currentPage = page;
-        int totalPages = 1;
-        int total = 0;
-        int unreadCount = 0;
 
+        List<dynamic> notifList = ApiEnvelope.extractList(
+          responseData,
+          itemKeys: const ['notifications', 'items'],
+        );
+
+        final pagination = ApiEnvelope.extractPagination(responseData, fallbackPage: page);
+
+        int unreadCount = 0;
         if (responseData is Map) {
           final dataField = responseData['data'];
           if (dataField is Map) {
-            final notificationsRaw = dataField['notifications'];
-            if (notificationsRaw is Map) {
-              currentPage = (notificationsRaw['current_page'] ?? page).toInt();
-              totalPages = (notificationsRaw['last_page'] ?? 1).toInt();
-              total = (notificationsRaw['total'] ?? 0).toInt();
-            }
-            unreadCount = (dataField['unread_count'] ?? 0).toInt();
+            unreadCount = ApiEnvelope.safeIntOr(dataField['unread_count'], 0);
           }
         }
 
@@ -54,16 +51,16 @@ class NotificationService {
         return NotificationResponse(
           success: true,
           notifications: notifications,
-          currentPage: currentPage,
-          totalPages: totalPages,
-          total: total,
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          total: pagination.total,
           unreadCount: unreadCount,
         );
       }
 
       return NotificationResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch notifications'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch notifications'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -82,22 +79,22 @@ class NotificationService {
       if (response.statusCode == 200) {
         final responseData = response.data;
         int count = 0;
-        
+
         if (responseData is Map) {
-          if (responseData['unread_count'] != null) {
-            count = (responseData['unread_count'] as num).toInt();
-          } else if (responseData['count'] != null) {
-            count = (responseData['count'] as num).toInt();
-          } else if (responseData['data'] is Map) {
-            final data = responseData['data'];
-            if (data['unread_count'] != null) {
-              count = (data['unread_count'] as num).toInt();
-            } else if (data['count'] != null) {
-              count = (data['count'] as num).toInt();
-            }
+          // Try top-level keys first, then nested under 'data'
+          count = ApiEnvelope.safeIntOr(
+            responseData['unread_count'] ?? responseData['count'],
+            0,
+          );
+          if (count == 0 && responseData['data'] is Map) {
+            final data = responseData['data'] as Map;
+            count = ApiEnvelope.safeIntOr(
+              data['unread_count'] ?? data['count'],
+              0,
+            );
           }
         }
-        
+
         return NotificationCountResponse(
           success: true,
           count: count,
@@ -123,13 +120,13 @@ class NotificationService {
       if (response.statusCode == 200) {
         return NotificationResponse(
           success: true,
-          message: _extractMessage(response.data, 'Marked as read'),
+          message: ApiEnvelope.extractMessage(response.data, 'Marked as read'),
         );
       }
 
       return NotificationResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to mark as read'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to mark as read'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -148,13 +145,13 @@ class NotificationService {
       if (response.statusCode == 200) {
         return NotificationResponse(
           success: true,
-          message: _extractMessage(response.data, 'All marked as read'),
+          message: ApiEnvelope.extractMessage(response.data, 'All marked as read'),
         );
       }
 
       return NotificationResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to mark all as read'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to mark all as read'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -175,13 +172,13 @@ class NotificationService {
       if (response.statusCode == 200) {
         return NotificationResponse(
           success: true,
-          message: _extractMessage(response.data, 'Notification deleted'),
+          message: ApiEnvelope.extractMessage(response.data, 'Notification deleted'),
         );
       }
 
       return NotificationResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to delete notification'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to delete notification'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -190,32 +187,6 @@ class NotificationService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Helper to extract list from dynamic response
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw is List) return raw;
-    if (raw is Map) {
-      final dataField = raw['data'];
-      if (dataField is Map) {
-        final notificationsRaw = dataField['notifications'];
-        if (notificationsRaw is Map && notificationsRaw['data'] is List) {
-          return notificationsRaw['data'];
-        }
-        if (notificationsRaw is List) return notificationsRaw;
-      }
-      if (raw['notifications'] is List) return raw['notifications'];
-      if (raw['data'] is List) return raw['data'];
-    }
-    return [];
-  }
-
-  /// Helper to extract message from dynamic response
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map && raw['message'] != null) {
-      return raw['message'].toString();
-    }
-    return defaultMessage;
   }
 }
 

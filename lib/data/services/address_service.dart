@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/address.dart';
 
@@ -22,7 +23,9 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final regionNames = _extractList(response.data).whereType<String>().toList();
+        final regionNames = ApiEnvelope.extractList(response.data)
+            .whereType<String>()
+            .toList();
 
         final regions =
             regionNames.map((name) => Address(region: name)).toList();
@@ -31,7 +34,7 @@ class AddressService {
 
       return AddressResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch regions'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch regions'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -55,7 +58,9 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final zoneNames = _extractList(response.data).whereType<String>().toList();
+        final zoneNames = ApiEnvelope.extractList(response.data)
+            .whereType<String>()
+            .toList();
 
         final zones = zoneNames.map((name) => Address(zone: name)).toList();
         return AddressResponse(success: true, zones: zones);
@@ -63,7 +68,7 @@ class AddressService {
 
       return AddressResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch zones'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch zones'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -92,7 +97,9 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final woredaNames = _extractList(response.data).whereType<String>().toList();
+        final woredaNames = ApiEnvelope.extractList(response.data)
+            .whereType<String>()
+            .toList();
 
         final woredas =
             woredaNames.map((name) => Address(woreda: name)).toList();
@@ -101,7 +108,7 @@ class AddressService {
 
       return AddressResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch woredas'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch woredas'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -132,21 +139,21 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final kebeles = _extractList(response.data)
-                .whereType<Map>()
-                .map((m) => Address(
-                      id: m['id'] as int?,
-                      kebele: m['kebele'] as String?,
-                    ))
-                .where((a) => a.kebele != null && a.kebele!.isNotEmpty)
-                .toList();
+        final kebeles = ApiEnvelope.extractList(response.data)
+            .whereType<Map>()
+            .map((m) => Address(
+                  id: m['id'] as int?,
+                  kebele: m['kebele'] as String?,
+                ))
+            .where((a) => a.kebele != null && a.kebele!.isNotEmpty)
+            .toList();
 
         return AddressResponse(success: true, kebeles: kebeles);
       }
 
       return AddressResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch kebeles'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch kebeles'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -156,22 +163,6 @@ class AddressService {
       );
     }
   }
-
-  /// Helper to extract list from dynamic response
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw is List) return raw;
-    if (raw is Map && raw['data'] is List) return raw['data'] as List;
-    return [];
-  }
-
-  /// Helper to extract message from dynamic response
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map && raw['message'] != null) {
-      return raw['message'].toString();
-    }
-    return defaultMessage;
-  }
-
 }
 
 /// Response wrapper for address operations

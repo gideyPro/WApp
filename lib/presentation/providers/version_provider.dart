@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 
 enum UpdateType { none, blocking, nonBlocking }
 
@@ -41,7 +42,7 @@ class VersionNotifier extends StateNotifier<VersionState> {
       final response = await ApiClient()
           .dio
           .get('${ApiConstants.apiBase}/settings');
-      final data = response.data['data'] ?? {};
+      final data = ApiEnvelope.extractData(response.data);
 
       final updateCheckEnabled = data['update_check_enabled'] as bool? ?? true;
       if (!updateCheckEnabled) {

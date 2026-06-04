@@ -16,7 +16,9 @@ import '../../data/models/subscription.dart';
 import '../../core/network/connectivity_service.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import 'auth_provider.dart';
+import 'theme_provider.dart';
 import '../../data/models/message.dart' as msg;
 
 /// Global Navigator Key for context-less navigation (useful for overlays)
@@ -29,7 +31,7 @@ final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
     final response =
         await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
     if (response.statusCode == 200 && response.data is Map) {
-      return response.data['data'] ?? {};
+      return ApiEnvelope.extractData(response.data);
     }
   } catch (_) {}
   return {'subscription_enabled': false};
@@ -1183,9 +1185,9 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
   }
 
   Future<void> _loadSavedLocale() async {
-    // Load from Hive
-    final box = await Hive.openBox('app_preferences');
-    final savedLocale = box.get('locale');
+    // Load from the shared preferences box (opened centrally in main.dart)
+    final box = Hive.box(kPrefsBox);
+    final savedLocale = box.get(PrefsKey.locale);
 
     if (savedLocale != null) {
       state = LocaleState.loaded(locale: Locale(savedLocale));
@@ -1200,7 +1202,7 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
         state = const LocaleState.loaded(locale: Locale('en'));
       }
     }
-    
+
     // Sync to API Client
     if (state.locale != null) {
       ApiClient.currentLocale = state.locale!.languageCode;
@@ -1209,11 +1211,11 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
   }
 
   Future<void> setLocale(Locale locale) async {
-    final box = await Hive.openBox('app_preferences');
-    await box.put('locale', locale.languageCode);
+    final box = Hive.box(kPrefsBox);
+    await box.put(PrefsKey.locale, locale.languageCode);
 
     state = LocaleState.loaded(locale: locale);
-    
+
     // Sync to API Client
     ApiClient.currentLocale = locale.languageCode;
     _warmupAddressCache();

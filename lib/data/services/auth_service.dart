@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/user.dart';
 
@@ -23,15 +24,15 @@ class AuthService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return AuthResponse(
           success: true,
-          message: _extractMessage(response.data, 'OTP sent successfully'),
-          destination: _extractDestination(response.data),
+          message: ApiEnvelope.extractMessage(response.data, 'OTP sent successfully'),
+          destination: ApiEnvelope.extractDestination(response.data),
         );
       }
 
       return AuthResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to send OTP'),
-        destination: _extractDestination(response.data),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to send OTP'),
+        destination: ApiEnvelope.extractDestination(response.data),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -70,7 +71,7 @@ class AuthService {
             data['data'] == null) {
           return AuthResponse(
             success: false,
-            message: _extractMessage(data, 'Login failed'),
+            message: ApiEnvelope.extractMessage(data, 'Login failed'),
           );
         }
 
@@ -97,7 +98,7 @@ class AuthService {
 
       return AuthResponse(
         success: false,
-        message: _extractMessage(response.data, 'Login failed'),
+        message: ApiEnvelope.extractMessage(response.data, 'Login failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -125,13 +126,13 @@ class AuthService {
       if (response.statusCode == 200) {
         return AuthResponse(
           success: true,
-          message: _extractMessage(response.data, 'OTP verified successfully'),
+          message: ApiEnvelope.extractMessage(response.data, 'OTP verified successfully'),
         );
       }
 
       return AuthResponse(
         success: false,
-        message: _extractMessage(response.data, 'OTP verification failed'),
+        message: ApiEnvelope.extractMessage(response.data, 'OTP verification failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -153,15 +154,15 @@ class AuthService {
       if (response.statusCode == 200) {
         return AuthResponse(
           success: true,
-          message: _extractMessage(response.data, 'OTP resent successfully'),
-          destination: _extractDestination(response.data),
+          message: ApiEnvelope.extractMessage(response.data, 'OTP resent successfully'),
+          destination: ApiEnvelope.extractDestination(response.data),
         );
       }
 
       return AuthResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to resend OTP'),
-        destination: _extractDestination(response.data),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to resend OTP'),
+        destination: ApiEnvelope.extractDestination(response.data),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -212,15 +213,15 @@ class AuthService {
         if (response.statusCode == 200 || response.statusCode == 201) {
           return AuthResponse(
             success: true,
-            message: _extractMessage(response.data, 'OTP sent successfully'),
-            destination: _extractDestination(response.data),
+            message: ApiEnvelope.extractMessage(response.data, 'OTP sent successfully'),
+            destination: ApiEnvelope.extractDestination(response.data),
           );
         }
 
         return AuthResponse(
           success: false,
-          message: _extractMessage(response.data, 'Failed to send OTP'),
-          destination: _extractDestination(response.data),
+          message: ApiEnvelope.extractMessage(response.data, 'Failed to send OTP'),
+          destination: ApiEnvelope.extractDestination(response.data),
         );
       } else {
         // Step 2: Verify OTP and create account
@@ -265,7 +266,7 @@ class AuthService {
 
         return AuthResponse(
           success: false,
-          message: _extractMessage(response.data, 'Registration failed'),
+          message: ApiEnvelope.extractMessage(response.data, 'Registration failed'),
         );
       }
     } catch (e) {
@@ -295,20 +296,6 @@ class AuthService {
   /// Check if user is authenticated
   Future<bool> isAuthenticated() async {
     return await _apiClient.isAuthenticated();
-  }
-
-  /// Helper to extract destination from dynamic response
-  String? _extractDestination(dynamic raw) {
-    if (raw is Map && raw['destination'] != null) {
-      return raw['destination'].toString();
-    }
-    return null;
-  }
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map && raw['message'] != null) {
-      return raw['message'].toString();
-    }
-    return defaultMessage;
   }
 }
 

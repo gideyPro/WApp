@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/listing.dart';
 
@@ -26,32 +27,31 @@ class FavoriteService {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        final dataMap = (data is Map) ? data : {};
-        
-        final dataList = _extractList(data);
+
+        final dataList = ApiEnvelope.extractList(
+          data,
+          itemKeys: const ['listings', 'items'],
+        );
 
         final listings = dataList
             .whereType<Map>()
             .map((json) => Listing.fromJson(json as Map<String, dynamic>))
             .toList();
 
-        // Safely parse pagination fields
-        int currentPage = _safeInt(dataMap['current_page']) ?? page;
-        int totalPages = _safeInt(dataMap['last_page']) ?? 1;
-        int total = _safeInt(dataMap['total']) ?? 0;
+        final pagination = ApiEnvelope.extractPagination(data, fallbackPage: page);
 
         return FavoriteResponse(
           success: true,
           listings: listings,
-          currentPage: currentPage,
-          totalPages: totalPages,
-          total: total,
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          total: pagination.total,
         );
       }
 
       return FavoriteResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch favorites'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch favorites'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -60,15 +60,6 @@ class FavoriteService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Safely convert dynamic value to int
-  int? _safeInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    return null;
   }
 
   /// Toggle favorite status
@@ -81,17 +72,17 @@ class FavoriteService {
       if (response.statusCode == 200) {
         final data = response.data;
         final added = (data is Map) ? (data['added'] ?? false) : false;
-        
+
         return FavoriteResponse(
           success: true,
-          message: _extractMessage(data, 'Favorite toggled'),
+          message: ApiEnvelope.extractMessage(data, 'Favorite toggled'),
           isFavorite: added,
         );
       }
 
       return FavoriteResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to toggle favorite'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to toggle favorite'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -100,30 +91,6 @@ class FavoriteService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Helper to extract list from dynamic response
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw is List) return raw;
-    if (raw is Map) {
-      final data = raw['data'] ?? raw['listings'] ?? raw['items'];
-      if (data is List) return data;
-      if (data is Map) {
-        // Handle pagination wrapper: {"current_page":1, "data":[...]}
-        final inner = data['data'] ?? data['listings'] ?? data['items'];
-        if (inner is List) return inner;
-        return data.values.toList();
-      }
-    }
-    return [];
-  }
-
-  /// Helper to extract message from dynamic response
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map && raw['message'] != null) {
-      return raw['message'].toString();
-    }
-    return defaultMessage;
   }
 }
 

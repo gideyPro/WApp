@@ -17,15 +17,12 @@
         "firebase_messaging",
         "flutter",
         "flutter_cache_manager",
-        "flutter_hooks",
         "flutter_inappwebview",
         "flutter_local_notifications",
         "flutter_localizations",
         "flutter_native_splash",
         "flutter_riverpod",
         "flutter_secure_storage",
-        "formz",
-        "go_router",
         "google_fonts",
         "hive",
         "hive_flutter",
@@ -357,13 +354,6 @@
       ]
     },
     {
-      "name": "formz",
-      "version": "0.7.0",
-      "dependencies": [
-        "meta"
-      ]
-    },
-    {
       "name": "flutter_secure_storage",
       "version": "9.2.4",
       "dependencies": [
@@ -418,24 +408,6 @@
         "meta",
         "mime",
         "path"
-      ]
-    },
-    {
-      "name": "go_router",
-      "version": "13.2.5",
-      "dependencies": [
-        "collection",
-        "flutter",
-        "flutter_web_plugins",
-        "logging",
-        "meta"
-      ]
-    },
-    {
-      "name": "flutter_hooks",
-      "version": "0.20.5",
-      "dependencies": [
-        "flutter"
       ]
     },
     {

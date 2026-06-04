@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 
 /// Service for video conferences (Jitsi integration)
@@ -15,7 +16,10 @@ class ConferenceService {
       final response = await _apiClient.dio.get(ApiConstants.conferences);
 
       if (response.statusCode == 200) {
-        final dataList = _extractList(response.data);
+        final dataList = ApiEnvelope.extractList(
+          response.data,
+          itemKeys: const ['conferences', 'items'],
+        );
         final conferences = dataList
             .whereType<Map>()
             .map((json) => Conference.fromJson(json as Map<String, dynamic>))
@@ -29,7 +33,7 @@ class ConferenceService {
 
       return ConferenceResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch conferences'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch conferences'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -38,35 +42,6 @@ class ConferenceService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Robustly extract a list from various API response structures
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw == null) return [];
-    if (raw is List) return raw;
-    if (raw is Map) {
-      final data = raw['data'];
-      if (data is List) return data;
-      if (data is Map) {
-        final nestedData = data['data'] ?? data['conferences'] ?? data['items'];
-        if (nestedData is List) return nestedData;
-      }
-      final directList = raw['conferences'] ?? raw['items'];
-      if (directList is List) return directList;
-    }
-    return [];
-  }
-
-  /// Robustly extract a message from various API response structures
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map) {
-      return raw['message']?.toString() ?? 
-             raw['error']?.toString() ?? 
-             raw['errors']?.toString() ?? 
-             defaultMessage;
-    }
-    if (raw is String) return raw;
-    return defaultMessage;
   }
 
   /// Check for incoming calls
@@ -111,27 +86,22 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final raw = response.data;
-        Map<String, dynamic>? data;
-        
-        if (raw is Map) {
-          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
-        }
+        final data = ApiEnvelope.extractData(response.data);
 
-        final conference = data != null ? Conference.fromJson(data) : null;
+        final conference = data.isNotEmpty ? Conference.fromJson(data) : null;
 
         return ConferenceResponse(
           success: true,
           conference: conference,
           message: 'Conference created',
-          jitsiRoomUrl: data?['jitsi_url']?.toString(),
-          jitsiToken: data?['jitsi_token']?.toString(),
+          jitsiRoomUrl: data['jitsi_url']?.toString(),
+          jitsiToken: data['jitsi_token']?.toString(),
         );
       }
 
       return ConferenceResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to create conference'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to create conference'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -152,26 +122,21 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200) {
-        final raw = response.data;
-        Map<String, dynamic>? data;
-        
-        if (raw is Map) {
-          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
-        }
+        final data = ApiEnvelope.extractData(response.data);
 
-        final conference = data != null ? Conference.fromJson(data) : null;
+        final conference = data.isNotEmpty ? Conference.fromJson(data) : null;
 
         return ConferenceResponse(
           success: true,
           conference: conference,
-          jitsiRoomUrl: data?['jitsi_url']?.toString(),
-          jitsiToken: data?['jitsi_token']?.toString(),
+          jitsiRoomUrl: data['jitsi_url']?.toString(),
+          jitsiToken: data['jitsi_token']?.toString(),
         );
       }
 
       return ConferenceResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to start call'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to start call'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -190,26 +155,21 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200) {
-        final raw = response.data;
-        Map<String, dynamic>? data;
-        
-        if (raw is Map) {
-          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
-        }
+        final data = ApiEnvelope.extractData(response.data);
 
-        final conference = data != null ? Conference.fromJson(data) : null;
+        final conference = data.isNotEmpty ? Conference.fromJson(data) : null;
 
         return ConferenceResponse(
           success: true,
           conference: conference,
-          jitsiRoomUrl: data?['jitsi_url']?.toString(),
-          jitsiToken: data?['jitsi_token']?.toString(),
+          jitsiRoomUrl: data['jitsi_url']?.toString(),
+          jitsiToken: data['jitsi_token']?.toString(),
         );
       }
 
       return ConferenceResponse(
         success: false,
-        message: _extractMessage(response.data, 'Conference not found'),
+        message: ApiEnvelope.extractMessage(response.data, 'Conference not found'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -229,7 +189,7 @@ class ConferenceService {
 
       if (response.statusCode == 200 && response.data != null) {
         final responseData = response.data;
-        
+
         // Handle unexpected response types gracefully
         if (responseData is! Map) {
           return ConferenceResponse(
@@ -239,29 +199,21 @@ class ConferenceService {
           );
         }
 
-        final Map<String, dynamic> rootData = Map<String, dynamic>.from(responseData);
-
         // Backend returns {success: true, data: {jitsi_url: ..., ...}}
-        // Need to look inside rootData['data'] for jitsi_url
-        final Map<String, dynamic> data = rootData['data'] is Map
-            ? Map<String, dynamic>.from(rootData['data'] as Map)
-            : <String, dynamic>{};
-
-        final jitsiUrl = data['jitsi_url']?.toString();
-        final jitsiToken = data['jitsi_token']?.toString();
+        final data = ApiEnvelope.extractData(responseData);
 
         return ConferenceResponse(
           success: true,
           message: 'Joined conference',
-          jitsiRoomUrl: jitsiUrl,
-          jitsiToken: jitsiToken,
-          rawData: rootData,
+          jitsiRoomUrl: data['jitsi_url']?.toString(),
+          jitsiToken: data['jitsi_token']?.toString(),
+          rawData: Map<String, dynamic>.from(responseData),
         );
       }
 
       return ConferenceResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to join conference'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to join conference'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -282,13 +234,13 @@ class ConferenceService {
       if (response.statusCode == 200) {
         return ConferenceResponse(
           success: true,
-          message: _extractMessage(response.data, 'Conference ended'),
+          message: ApiEnvelope.extractMessage(response.data, 'Conference ended'),
         );
       }
 
       return ConferenceResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to end conference'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to end conference'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -312,13 +264,13 @@ class ConferenceService {
       if (response.statusCode == 200) {
         return ConferenceResponse(
           success: true,
-          message: _extractMessage(response.data, 'User invited'),
+          message: ApiEnvelope.extractMessage(response.data, 'User invited'),
         );
       }
 
       return ConferenceResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to invite user'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to invite user'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);

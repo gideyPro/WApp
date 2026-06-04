@@ -3,22 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../core/theme/app_theme.dart';
 
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+/// Hive box name shared by all non-draft app preferences (locale, theme, etc).
+/// Opened centrally in `main.dart` to avoid scattered `Hive.openBox` calls.
+const String kPrefsBox = 'app_preferences';
+
+/// Keys inside the [kPrefsBox].
+class PrefsKey {
+  PrefsKey._();
+  static const String locale = 'locale';
+  static const String themeMode = 'theme_mode';
+}
+
+final themeModeProvider =
+    StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
   return ThemeModeNotifier();
 });
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  static const String _boxKey = 'settings';
-  static const String _themeKey = 'theme_mode';
-
   ThemeModeNotifier() : super(ThemeMode.light) {
     _loadTheme();
   }
 
+  Box get _box => Hive.box(kPrefsBox);
+
   Future<void> _loadTheme() async {
     try {
-      final box = await Hive.openBox(_boxKey);
-      final isDark = box.get(_themeKey, defaultValue: false) as bool;
+      final isDark = _box.get(PrefsKey.themeMode, defaultValue: false) as bool;
       state = isDark ? ThemeMode.dark : ThemeMode.light;
     } catch (_) {
       state = ThemeMode.light;
@@ -26,19 +36,18 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   }
 
   Future<void> toggle() async {
-    final newMode = state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    final newMode =
+        state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     state = newMode;
     try {
-      final box = await Hive.openBox(_boxKey);
-      await box.put(_themeKey, newMode == ThemeMode.dark);
+      await _box.put(PrefsKey.themeMode, newMode == ThemeMode.dark);
     } catch (_) {}
   }
 
   Future<void> setTheme(ThemeMode mode) async {
     state = mode;
     try {
-      final box = await Hive.openBox(_boxKey);
-      await box.put(_themeKey, mode == ThemeMode.dark);
+      await _box.put(PrefsKey.themeMode, mode == ThemeMode.dark);
     } catch (_) {}
   }
 }

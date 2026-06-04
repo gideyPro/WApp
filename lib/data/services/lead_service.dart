@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 
 class Lead {
@@ -132,7 +133,10 @@ class LeadService {
         queryParameters: {'page': page, 'per_page': perPage},
       );
       if (response.statusCode == 200) {
-        final dataList = _extractList(response.data);
+        final dataList = ApiEnvelope.extractList(
+          response.data,
+          itemKeys: const ['leads', 'interests', 'items'],
+        );
         final leads = dataList
             .whereType<Map>()
             .map((json) => Lead.fromJson(json as Map<String, dynamic>))
@@ -141,7 +145,7 @@ class LeadService {
       }
       return LeadResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch interests'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch interests'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -164,20 +168,19 @@ class LeadService {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.data;
-        final leadData = (data is Map) ? (data['data'] ?? data['lead']) : null;
-        final lead = (leadData is Map)
-            ? Lead.fromJson(leadData as Map<String, dynamic>)
+        final lead = (data is Map && data['data'] is Map)
+            ? Lead.fromJson(Map<String, dynamic>.from(data['data'] as Map))
             : null;
-            
+
         return LeadResponse(
           success: true,
-          message: _extractMessage(data, 'Interest expressed'),
+          message: ApiEnvelope.extractMessage(data, 'Interest expressed'),
           lead: lead,
         );
       }
       return LeadResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to express interest'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to express interest'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -197,12 +200,12 @@ class LeadService {
       if (response.statusCode == 200) {
         return LeadResponse(
           success: true,
-          message: _extractMessage(response.data, 'Interest cancelled'),
+          message: ApiEnvelope.extractMessage(response.data, 'Interest cancelled'),
         );
       }
       return LeadResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to cancel interest'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to cancel interest'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -220,7 +223,10 @@ class LeadService {
         '${ApiConstants.apiBase}/orders/$orderId/suggestions',
       );
       if (response.statusCode == 200) {
-        final dataList = _extractList(response.data);
+        final dataList = ApiEnvelope.extractList(
+          response.data,
+          itemKeys: const ['suggestions', 'leads', 'items'],
+        );
         return LeadResponse(
           success: true,
           leads: dataList
@@ -231,7 +237,7 @@ class LeadService {
       }
       return LeadResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch suggestions'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch suggestions'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -250,20 +256,19 @@ class LeadService {
       );
       if (response.statusCode == 200) {
         final data = response.data;
-        final leadData = (data is Map) ? (data['data'] ?? data['lead']) : null;
-        final lead = (leadData is Map)
-            ? Lead.fromJson(leadData as Map<String, dynamic>)
+        final lead = (data is Map && data['data'] is Map)
+            ? Lead.fromJson(Map<String, dynamic>.from(data['data'] as Map))
             : null;
 
         return LeadResponse(
           success: true,
-          message: _extractMessage(data, 'Suggestion accepted'),
+          message: ApiEnvelope.extractMessage(data, 'Suggestion accepted'),
           lead: lead,
         );
       }
       return LeadResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to accept suggestion'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to accept suggestion'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -283,12 +288,12 @@ class LeadService {
       if (response.statusCode == 200) {
         return LeadResponse(
           success: true,
-          message: _extractMessage(response.data, 'Suggestion declined'),
+          message: ApiEnvelope.extractMessage(response.data, 'Suggestion declined'),
         );
       }
       return LeadResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to decline suggestion'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to decline suggestion'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -297,33 +302,6 @@ class LeadService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Helper to extract list from dynamic response
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw is List) return raw;
-    if (raw is Map) {
-      // Try nested data patterns
-      var data = raw['data'];
-      if (data is List) return data;
-      if (data is Map) {
-        var innerData = data['data'];
-        if (innerData is List) return innerData;
-        return data.values.toList();
-      }
-      // Try other common keys
-      data = raw['leads'] ?? raw['interests'] ?? raw['suggestions'];
-      if (data is List) return data;
-    }
-    return [];
-  }
-
-  /// Helper to extract message from dynamic response
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map && raw['message'] != null) {
-      return raw['message'].toString();
-    }
-    return defaultMessage;
   }
 
   factory LeadService.withClient(ApiClient client) => LeadService(apiClient: client);

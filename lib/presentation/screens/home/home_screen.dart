@@ -8,6 +8,7 @@ import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
+import '../../../core/network/api_envelope.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/listing_provider.dart';
@@ -91,8 +92,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       final response =
           await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
       if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data['data'];
-        if (data is Map && mounted) {
+        final data = ApiEnvelope.extractData(response.data);
+        if (data.isNotEmpty && mounted) {
           setState(() {
             _rentalEnabled = data['rental_enabled'] == true;
           });

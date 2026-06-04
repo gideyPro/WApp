@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/user.dart';
 
@@ -17,20 +18,20 @@ class ProfileService {
 
       if (response.statusCode == 200 && response.data is Map) {
         final responseData = response.data as Map;
-        final data = responseData['data'] is Map ? responseData['data'] : responseData;
-        final user = User.fromJson(data is Map ? data as Map<String, dynamic> : {});
+        final data = ApiEnvelope.extractData(responseData);
+        final user = User.fromJson(data);
         final stats = responseData['stats'];
 
         return ProfileResponse(
           success: true,
           user: user,
-          stats: stats is Map ? ProfileStats.fromJson(stats as Map<String, dynamic>) : null,
+          stats: stats is Map ? ProfileStats.fromJson(Map<String, dynamic>.from(stats)) : null,
         );
       }
 
       return ProfileResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch profile'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch profile'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -52,19 +53,19 @@ class ProfileService {
       if (response.statusCode == 200) {
         final responseData = response.data;
         final user = (responseData is Map && responseData['data'] is Map)
-            ? User.fromJson(responseData['data'] as Map<String, dynamic>)
+            ? User.fromJson(Map<String, dynamic>.from(responseData['data'] as Map))
             : null;
 
         return ProfileResponse(
           success: true,
-          message: _extractMessage(responseData, 'Profile updated successfully'),
+          message: ApiEnvelope.extractMessage(responseData, 'Profile updated successfully'),
           user: user,
         );
       }
 
       return ProfileResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to update profile'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to update profile'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -83,13 +84,13 @@ class ProfileService {
       if (response.statusCode == 200) {
         return ProfileResponse(
           success: true,
-          message: _extractMessage(response.data, 'Account deleted successfully'),
+          message: ApiEnvelope.extractMessage(response.data, 'Account deleted successfully'),
         );
       }
 
       return ProfileResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to delete account'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to delete account'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -109,17 +110,23 @@ class ProfileService {
 
       if (response.statusCode == 200 && response.data is Map) {
         final responseData = response.data as Map;
-        final userData = responseData['data'] is Map 
-            ? (responseData['data']?['user'] ?? responseData['data'])
-            : responseData;
-            
-        final user = User.fromJson(userData is Map ? userData as Map<String, dynamic> : {});
+        // Public profile may wrap user under data.data.user OR data.user
+        Map<String, dynamic> userData;
+        if (responseData['data'] is Map) {
+          final inner = responseData['data'] as Map;
+          userData = (inner['user'] is Map)
+              ? Map<String, dynamic>.from(inner['user'] as Map)
+              : Map<String, dynamic>.from(inner);
+        } else {
+          userData = Map<String, dynamic>.from(responseData);
+        }
+        final user = User.fromJson(userData);
         return ProfileResponse(success: true, user: user);
       }
 
       return ProfileResponse(
         success: false,
-        message: _extractMessage(response.data, 'User not found'),
+        message: ApiEnvelope.extractMessage(response.data, 'User not found'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -128,14 +135,6 @@ class ProfileService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Helper to extract message from dynamic response
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map && raw['message'] != null) {
-      return raw['message'].toString();
-    }
-    return defaultMessage;
   }
 }
 

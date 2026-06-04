@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 
 /// Service for KYC (Know Your Customer) verification
@@ -16,12 +17,10 @@ class KycService {
       final response = await _apiClient.dio.get(ApiConstants.kycStatus);
 
       if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data['data'] is Map 
-            ? response.data['data'] as Map 
-            : response.data as Map;
-        final verification = data['verification'] is Map 
-            ? data['verification'] as Map 
-            : {};
+        final data = ApiEnvelope.extractData(response.data);
+        final verification = data['verification'] is Map
+            ? Map<String, dynamic>.from(data['verification'] as Map)
+            : <String, dynamic>{};
 
         return KycStatusResponse(
           success: true,
@@ -95,13 +94,13 @@ class KycService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return KycResponse(
           success: true,
-          message: _extractMessage(response.data, 'KYC submitted successfully'),
+          message: ApiEnvelope.extractMessage(response.data, 'KYC submitted successfully'),
         );
       }
 
       return KycResponse(
         success: false,
-        message: _extractMessage(response.data, 'KYC submission failed'),
+        message: ApiEnvelope.extractMessage(response.data, 'KYC submission failed'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -118,10 +117,7 @@ class KycService {
       final response = await _apiClient.dio.get(ApiConstants.kycCreate);
 
       if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data['data'] is Map 
-            ? response.data['data'] as Map<String, dynamic>
-            : response.data as Map<String, dynamic>;
-            
+        final data = ApiEnvelope.extractData(response.data);
         return KycFormDataResponse(
           success: true,
           data: data,
@@ -130,7 +126,7 @@ class KycService {
 
       return KycFormDataResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch KYC form'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch KYC form'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -139,14 +135,6 @@ class KycService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Helper to extract message from dynamic response
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map && raw['message'] != null) {
-      return raw['message'].toString();
-    }
-    return defaultMessage;
   }
 }
 

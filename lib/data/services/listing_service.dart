@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/listing.dart';
 import '../models/listing_form_data.dart';
@@ -33,31 +34,30 @@ class ListingService {
 
       if (response.statusCode == 200) {
         final raw = response.data;
-        final dataList = _extractList(raw);
+        final dataList = ApiEnvelope.extractList(
+          raw,
+          itemKeys: const ['listings', 'items'],
+        );
 
         final listings = dataList
             .whereType<Map>()
             .map((json) => Listing.fromJson(json as Map<String, dynamic>))
             .toList();
 
-        // Pagination metadata can be at root or under 'data'
-        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
-        int currentPage = _safeInt(paginationSource['current_page']) ?? page;
-        int totalPages = _safeInt(paginationSource['last_page']) ?? 1;
-        int total = _safeInt(paginationSource['total']) ?? 0;
+        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
 
         return ListingResponse(
           success: true,
           listings: listings,
-          currentPage: currentPage,
-          totalPages: totalPages,
-          total: total,
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          total: pagination.total,
         );
       }
 
       return ListingResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch listings'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -66,43 +66,6 @@ class ListingService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Robustly extract a list from various API response structures
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw == null) return [];
-    if (raw is List) return raw;
-    if (raw is Map) {
-      final data = raw['data'];
-      if (data is List) return data;
-      if (data is Map) {
-        final nestedData = data['data'] ?? data['listings'] ?? data['items'];
-        if (nestedData is List) return nestedData;
-      }
-      final directList = raw['listings'] ?? raw['items'];
-      if (directList is List) return directList;
-    }
-    return [];
-  }
-
-  /// Robustly extract a message from various API response structures
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map) {
-      return raw['message']?.toString() ?? 
-             raw['error']?.toString() ?? 
-             raw['errors']?.toString() ?? 
-             defaultMessage;
-    }
-    if (raw is String) return raw;
-    return defaultMessage;
-  }
-
-  int? _safeInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    return null;
   }
 
   /// Get user's own listings
@@ -126,12 +89,12 @@ class ListingService {
 
       if (response.statusCode == 200) {
         final raw = response.data;
-        final dataList = _extractList(raw);
-        
-        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
-        int currentPage = _safeInt(paginationSource['current_page']) ?? page;
-        int totalPages = _safeInt(paginationSource['last_page']) ?? 1;
-        int total = _safeInt(paginationSource['total']) ?? 0;
+        final dataList = ApiEnvelope.extractList(
+          raw,
+          itemKeys: const ['listings', 'items'],
+        );
+
+        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
 
         final listings = dataList
             .whereType<Map>()
@@ -141,15 +104,15 @@ class ListingService {
         return ListingResponse(
           success: true,
           listings: listings,
-          currentPage: currentPage,
-          totalPages: totalPages,
-          total: total,
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          total: pagination.total,
         );
       }
 
       return ListingResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch your listings'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch your listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -176,8 +139,11 @@ class ListingService {
 
       if (response.statusCode == 200) {
         final raw = response.data;
-        final dataList = _extractList(raw);
-        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
+        final dataList = ApiEnvelope.extractList(
+          raw,
+          itemKeys: const ['listings', 'items'],
+        );
+        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
 
         final listings = dataList
             .whereType<Map>()
@@ -187,15 +153,15 @@ class ListingService {
         return ListingResponse(
           success: true,
           listings: listings,
-          currentPage: _safeInt(paginationSource['current_page']) ?? page,
-          totalPages: _safeInt(paginationSource['last_page']) ?? 1,
-          total: _safeInt(paginationSource['total']) ?? 0,
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          total: pagination.total,
         );
       }
 
       return ListingResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch VIP listings'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch VIP listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -222,8 +188,11 @@ class ListingService {
 
       if (response.statusCode == 200) {
         final raw = response.data;
-        final dataList = _extractList(raw);
-        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
+        final dataList = ApiEnvelope.extractList(
+          raw,
+          itemKeys: const ['listings', 'items'],
+        );
+        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
 
         final listings = dataList
             .whereType<Map>()
@@ -233,15 +202,15 @@ class ListingService {
         return ListingResponse(
           success: true,
           listings: listings,
-          currentPage: _safeInt(paginationSource['current_page']) ?? page,
-          totalPages: _safeInt(paginationSource['last_page']) ?? 1,
-          total: _safeInt(paginationSource['total']) ?? 0,
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          total: pagination.total,
         );
       }
 
       return ListingResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch featured listings'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch featured listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -260,19 +229,8 @@ class ListingService {
       );
 
       if (response.statusCode == 200) {
-        final raw = response.data;
-        Map<String, dynamic>? listingJson;
-        
-        if (raw is Map) {
-          final data = raw['data'];
-          if (data is Map) {
-            listingJson = Map<String, dynamic>.from(data);
-          } else {
-            listingJson = Map<String, dynamic>.from(raw);
-          }
-        }
-
-        if (listingJson != null) {
+        final listingJson = ApiEnvelope.extractData(response.data);
+        if (listingJson.isNotEmpty) {
           final listing = Listing.fromJson(listingJson);
           return ListingDetailResponse(success: true, listing: listing);
         }
@@ -287,7 +245,7 @@ class ListingService {
 
       return ListingDetailResponse(
         success: false,
-        message: _extractMessage(response.data, 'Listing not found'),
+        message: ApiEnvelope.extractMessage(response.data, 'Listing not found'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -324,7 +282,10 @@ class ListingService {
       );
 
       if (response.statusCode == 200) {
-        final dataList = _extractList(response.data);
+        final dataList = ApiEnvelope.extractList(
+          response.data,
+          itemKeys: const ['listings', 'items'],
+        );
         final listings = dataList
             .whereType<Map>()
             .map((json) => Listing.fromJson(json as Map<String, dynamic>))
@@ -335,7 +296,7 @@ class ListingService {
 
       return ListingResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch similar listings'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch similar listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -557,13 +518,13 @@ class ListingService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return ListingResponse(
           success: true,
-          message: response.data['message'] ?? 'Listing created successfully',
+          message: ApiEnvelope.extractMessage(response.data, 'Listing created successfully'),
         );
       }
 
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to create listing',
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to create listing'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -615,13 +576,13 @@ class ListingService {
       if (response.statusCode == 200) {
         return ListingResponse(
           success: true,
-          message: response.data['message'] ?? 'Listing updated successfully',
+          message: ApiEnvelope.extractMessage(response.data, 'Listing updated successfully'),
         );
       }
 
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to update listing',
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to update listing'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -645,7 +606,7 @@ class ListingService {
 
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to delete listing',
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to delete listing'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -665,7 +626,7 @@ class ListingService {
       }
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to mark listing as VIP',
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to mark listing as VIP'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -681,7 +642,7 @@ class ListingService {
     try {
       final response = await _apiClient.dio.post('${ApiConstants.revealContact}/$listingId/reveal-contact');
       if (response.statusCode == 200) {
-        final data = response.data is Map ? response.data : {};
+        final data = ApiEnvelope.extractData(response.data);
         return ContactRevealResponse(
           success: true,
           contact: data['contact']?.toString() ?? '',
@@ -692,7 +653,7 @@ class ListingService {
       }
       return ContactRevealResponse(
         success: false,
-        message: response.data['error'] ?? response.data['message'] ?? 'Failed to reveal contact',
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to reveal contact'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -712,7 +673,7 @@ class ListingService {
       }
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to feature listing',
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to feature listing'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -732,7 +693,7 @@ class ListingService {
       }
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to remove featured status',
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to remove featured status'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -752,7 +713,7 @@ class ListingService {
       }
       return ListingResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to remove VIP status',
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to remove VIP status'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);

@@ -1,6 +1,7 @@
 import 'dart:developer' as dev;
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
+import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/message.dart' as msg;
 
@@ -32,13 +33,12 @@ class MessageService {
         final raw = response.data;
         dev.log('Response: $raw', name: 'Messages');
 
-        final dataList = _extractList(raw);
-        
-        // Pagination metadata can be at root or under 'data'
-        final paginationSource = (raw is Map && raw['data'] is Map) ? raw['data'] : (raw is Map ? raw : {});
-        int currentPage = _safeInt(paginationSource['current_page']) ?? page;
-        int totalPages = _safeInt(paginationSource['last_page']) ?? 1;
-        int total = _safeInt(paginationSource['total']) ?? 0;
+        final dataList = ApiEnvelope.extractList(
+          raw,
+          itemKeys: const ['conversations', 'messages', 'items'],
+        );
+
+        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
 
         final conversations = dataList
             .whereType<Map>()
@@ -48,15 +48,15 @@ class MessageService {
         return ConversationResponse(
           success: true,
           conversations: conversations,
-          currentPage: currentPage,
-          totalPages: totalPages,
-          total: total,
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          total: pagination.total,
         );
       }
 
       return ConversationResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch conversations'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch conversations'),
       );
     } catch (e, stackTrace) {
       dev.log('Error fetching conversations: $e\n$stackTrace', name: 'Messages');
@@ -66,44 +66,6 @@ class MessageService {
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
-  }
-
-  /// Robustly extract a list from various API response structures
-  List<dynamic> _extractList(dynamic raw) {
-    if (raw == null) return [];
-    if (raw is List) return raw;
-    if (raw is Map) {
-      final data = raw['data'];
-      if (data is List) return data;
-      if (data is Map) {
-        final nestedData = data['data'] ?? data['conversations'] ?? data['messages'] ?? data['items'];
-        if (nestedData is List) return nestedData;
-      }
-      final directList = raw['conversations'] ?? raw['messages'] ?? raw['items'];
-      if (directList is List) return directList;
-    }
-    return [];
-  }
-
-  /// Robustly extract a message from various API response structures
-  String _extractMessage(dynamic raw, String defaultMessage) {
-    if (raw is Map) {
-      return raw['message']?.toString() ?? 
-             raw['error']?.toString() ?? 
-             raw['errors']?.toString() ?? 
-             defaultMessage;
-    }
-    if (raw is String) return raw;
-    return defaultMessage;
-  }
-
-  /// Safely convert dynamic value to int
-  int? _safeInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    return null;
   }
 
   /// Get conversation messages
@@ -122,18 +84,13 @@ class MessageService {
         final raw = response.data;
 
         // Backend returns: { success: true, data: { conversation, messages: { paginator }, other_user, related_conversations } }
-        Map<String, dynamic> innerData = {};
-        if (raw is Map) {
-          final dataField = raw['data'];
-          if (dataField is Map) {
-            innerData = Map<String, dynamic>.from(dataField);
-          } else {
-            innerData = Map<String, dynamic>.from(raw);
-          }
-        }
+        final innerData = ApiEnvelope.extractData(raw);
 
         // Extract messages from paginator
-        final msgList = _extractList(innerData['messages'] ?? innerData);
+        final msgList = ApiEnvelope.extractList(
+          innerData['messages'] ?? innerData,
+          itemKeys: const ['messages', 'items'],
+        );
 
         final messages = msgList
             .whereType<Map>()
@@ -141,9 +98,10 @@ class MessageService {
             .toList();
 
         msg.Conversation? conversation;
-        if (innerData['conversation'] is Map) {
+        final convData = innerData['conversation'];
+        if (convData is Map) {
           conversation = msg.Conversation.fromJson(
-              innerData['conversation'] as Map<String, dynamic>,
+              Map<String, dynamic>.from(convData),
               currentUserId: currentUserId);
         }
 
@@ -153,7 +111,7 @@ class MessageService {
         final relatedConversations = relatedList
               .whereType<Map>()
               .map((json) => msg.Conversation.fromJson(
-                  json as Map<String, dynamic>,
+                  Map<String, dynamic>.from(json),
                   currentUserId: currentUserId))
               .toList();
 
@@ -167,7 +125,7 @@ class MessageService {
 
       return MessageResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch messages'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch messages'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -195,24 +153,20 @@ class MessageService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final raw = response.data;
-        Map<String, dynamic>? data;
-        if (raw is Map) {
-          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
-        }
+        final data = ApiEnvelope.extractData(response.data);
 
-        final message = data != null ? msg.Message.fromJson(data) : null;
+        final message = data.isNotEmpty ? msg.Message.fromJson(data) : null;
 
         return MessageResponse(
           success: true,
-          message: _extractMessage(response.data, 'Message sent'),
+          message: ApiEnvelope.extractMessage(response.data, 'Message sent'),
           messageData: message,
         );
       }
 
       return MessageResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to send message'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to send message'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -233,24 +187,21 @@ class MessageService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final raw = response.data;
-        Map<String, dynamic>? data;
-        if (raw is Map) {
-          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
-        }
+        final data = ApiEnvelope.extractData(response.data);
 
-        final conversation = data != null ? msg.Conversation.fromJson(data) : null;
+        final conversation =
+            data.isNotEmpty ? msg.Conversation.fromJson(data) : null;
 
         return ConversationResponse(
           success: true,
           conversation: conversation,
-          message: _extractMessage(response.data, 'Conversation started'),
+          message: ApiEnvelope.extractMessage(response.data, 'Conversation started'),
         );
       }
 
       return ConversationResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to start conversation'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to start conversation'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -271,24 +222,21 @@ class MessageService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final raw = response.data;
-        Map<String, dynamic>? data;
-        if (raw is Map) {
-          data = raw['data'] is Map ? Map<String, dynamic>.from(raw['data']) : Map<String, dynamic>.from(raw);
-        }
+        final data = ApiEnvelope.extractData(response.data);
 
-        final conversation = data != null ? msg.Conversation.fromJson(data) : null;
+        final conversation =
+            data.isNotEmpty ? msg.Conversation.fromJson(data) : null;
 
         return ConversationResponse(
           success: true,
           conversation: conversation,
-          message: _extractMessage(response.data, 'Conversation started'),
+          message: ApiEnvelope.extractMessage(response.data, 'Conversation started'),
         );
       }
 
       return ConversationResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to start conversation'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to start conversation'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -309,13 +257,13 @@ class MessageService {
       if (response.statusCode == 200) {
         return ConversationResponse(
           success: true,
-          message: _extractMessage(response.data, 'Conversation deleted'),
+          message: ApiEnvelope.extractMessage(response.data, 'Conversation deleted'),
         );
       }
 
       return ConversationResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to delete conversation'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to delete conversation'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -343,7 +291,10 @@ class MessageService {
       );
 
       if (response.statusCode == 200) {
-        final msgList = _extractList(response.data);
+        final msgList = ApiEnvelope.extractList(
+          response.data,
+          itemKeys: const ['messages', 'items'],
+        );
 
         final messages = msgList
             .whereType<Map>()
@@ -358,7 +309,7 @@ class MessageService {
 
       return MessageResponse(
         success: false,
-        message: _extractMessage(response.data, 'Failed to fetch messages'),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch messages'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
