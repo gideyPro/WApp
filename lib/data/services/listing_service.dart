@@ -360,7 +360,7 @@ class ListingService {
       if (formData.acquisitionClarification != null) dioFormData.fields.add(MapEntry('acquisition_clarification', formData.acquisitionClarification!));
     } else if (formData.holdingType == 'Lease Hold') {
       if (formData.leasedYear != null) dioFormData.fields.add(MapEntry('leased_year', formData.leasedYear.toString()));
-      if (formData.leaseExpiryYear != null) dioFormData.fields.add(MapEntry('lease_expiry_year', formData.leaseExpiryYear.toString()));
+      dioFormData.fields.add(MapEntry('is_transferable', formData.isTransferable ? '1' : '0'));
       if (formData.leasePricePerSqm != null) {
         dioFormData.fields.add(MapEntry('lease_price_per_sqm', formData.leasePricePerSqm.toString()));
         dioFormData.fields.add(MapEntry('price_per_sqm', formData.leasePricePerSqm.toString()));
@@ -414,17 +414,6 @@ class ListingService {
       ));
     }
     
-    if (formData.leaseContract != null) {
-      final fieldName = (isUpdate && formData.holdingType == 'Lease Hold')
-          ? 'lease_contract_image' // API update expects this for lease hold
-          : 'lease_contract[]';
-
-      dioFormData.files.add(MapEntry(
-        fieldName,
-        await MultipartFile.fromFile(formData.leaseContract!.path, filename: 'lease_contract.jpg'),
-      ));
-    }
-
     if (formData.videoFile != null) {
       dioFormData.files.add(MapEntry(
         'video_file',
@@ -468,10 +457,6 @@ class ListingService {
     }
     if (formData.ownershipProof != null) {
       final f = File(formData.ownershipProof!.path);
-      if (await f.exists()) totalSize += await f.length();
-    }
-    if (formData.leaseContract != null) {
-      final f = File(formData.leaseContract!.path);
       if (await f.exists()) totalSize += await f.length();
     }
     if (formData.videoFile != null) {

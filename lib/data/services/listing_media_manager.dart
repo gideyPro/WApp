@@ -45,9 +45,6 @@ class ListingMediaManager {
     if (formData.ownershipProof != null) {
       futures.add(_deleteIfExists(formData.ownershipProof!.path));
     }
-    if (formData.leaseContract != null) {
-      futures.add(_deleteIfExists(formData.leaseContract!.path));
-    }
     if (formData.videoFile != null) {
       futures.add(_deleteIfExists(formData.videoFile!.path));
     }

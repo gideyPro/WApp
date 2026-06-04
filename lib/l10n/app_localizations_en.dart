@@ -840,6 +840,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingLeaseContract => 'Lease Contract';
 
   @override
+  String get listingIsTransferable => 'Transferable';
+
+  @override
+  String get listingTransferable => 'Transferable';
+
+  @override
+  String get listingNotTransferable => 'Not Transferable';
+
+  @override
   String get listingTapToAdd => 'Tap to add images';
 
   @override

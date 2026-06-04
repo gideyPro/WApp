@@ -970,6 +970,12 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
           details.add(
               {'label': l10n.listingBuildType, 'value': listing.buildType!});
         }
+        details.add({
+          'label': l10n.listingIsTransferable,
+          'value': listing.isTransferable
+              ? l10n.listingTransferable
+              : l10n.listingNotTransferable,
+        });
       }
 
       // Cooperative details

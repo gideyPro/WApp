@@ -1672,6 +1672,24 @@ abstract class AppLocalizations {
   /// **'Lease Contract'**
   String get listingLeaseContract;
 
+  /// No description provided for @listingIsTransferable.
+  ///
+  /// In en, this message translates to:
+  /// **'Transferable'**
+  String get listingIsTransferable;
+
+  /// No description provided for @listingTransferable.
+  ///
+  /// In en, this message translates to:
+  /// **'Transferable'**
+  String get listingTransferable;
+
+  /// No description provided for @listingNotTransferable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Transferable'**
+  String get listingNotTransferable;
+
   /// No description provided for @listingTapToAdd.
   ///
   /// In en, this message translates to:

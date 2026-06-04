@@ -24,6 +24,7 @@ class ListingFormData {
   double? leasePricePerSqm;
   String? buildType;
   double? annualPayment;
+  bool isTransferable = true;
 
   // --- Cooperative ---
   String? cooperativeName;
@@ -65,9 +66,6 @@ class ListingFormData {
   double? debtAmount;
   String? debtHolder;
 
-  // --- Lease ---
-  int? leaseExpiryYear;
-
   // --- Options ---
   bool isVip = false;
 
@@ -78,7 +76,6 @@ class ListingFormData {
   List<XFile> images = [];
   XFile? sitePlan;
   XFile? ownershipProof;
-  XFile? leaseContract;
   XFile? videoFile;
 
   // --- Existing Media (for Edit mode) ---
@@ -88,7 +85,6 @@ class ListingFormData {
   bool removeExistingSitePlan = false;
   bool deleteVideo = false;
   String? existingOwnershipProofUrl;
-  String? existingLeaseContractUrl;
   String? existingVideoUrl;
 
   ListingFormData({
@@ -105,6 +101,7 @@ class ListingFormData {
     this.leasePricePerSqm,
     this.buildType,
     this.annualPayment,
+    this.isTransferable = true,
     this.cooperativeName,
     this.cooperativeCode,
     this.buildingStatus,
@@ -133,7 +130,6 @@ class ListingFormData {
     this.hasDebtOrEncumbrance = false,
     this.debtAmount,
     this.debtHolder,
-    this.leaseExpiryYear,
     this.isVip = false,
     this.termsAccepted = false,
     this.existingImages = const [],
@@ -142,7 +138,6 @@ class ListingFormData {
     this.removeExistingSitePlan = false,
     this.deleteVideo = false,
     this.existingOwnershipProofUrl,
-    this.existingLeaseContractUrl,
     this.existingVideoUrl,
   });
 
@@ -167,6 +162,7 @@ class ListingFormData {
         'leasePricePerSqm': leasePricePerSqm,
         'buildType': buildType,
         'annualPayment': annualPayment,
+        'isTransferable': isTransferable,
         'cooperativeName': cooperativeName,
         'cooperativeCode': cooperativeCode,
         'buildingStatus': buildingStatus,
@@ -195,7 +191,6 @@ class ListingFormData {
         'hasDebtOrEncumbrance': hasDebtOrEncumbrance,
         'debtAmount': debtAmount,
         'debtHolder': debtHolder,
-        'leaseExpiryYear': leaseExpiryYear,
         'isVip': isVip,
         'termsAccepted': termsAccepted,
         'savedAt': DateTime.now().toIso8601String(),
@@ -237,6 +232,7 @@ class ListingFormData {
         leasePricePerSqm: data['leasePricePerSqm'],
         buildType: data['buildType'],
         annualPayment: data['annualPayment'],
+        isTransferable: data['isTransferable'] ?? true,
         cooperativeName: data['cooperativeName'],
         cooperativeCode: data['cooperativeCode'],
         buildingStatus: data['buildingStatus'],
@@ -265,7 +261,6 @@ class ListingFormData {
         hasDebtOrEncumbrance: data['hasDebtOrEncumbrance'] ?? false,
         debtAmount: data['debtAmount'],
         debtHolder: data['debtHolder'],
-        leaseExpiryYear: data['leaseExpiryYear'],
         isVip: data['isVip'] ?? false,
         termsAccepted: data['termsAccepted'] ?? false,
       );
@@ -297,6 +292,7 @@ class ListingFormData {
     double? leasePricePerSqm,
     String? buildType,
     double? annualPayment,
+    bool? isTransferable,
     String? cooperativeName,
     String? cooperativeCode,
     String? buildingStatus,
@@ -325,13 +321,11 @@ class ListingFormData {
     bool? hasDebtOrEncumbrance,
     double? debtAmount,
     String? debtHolder,
-    int? leaseExpiryYear,
     bool? isVip,
     bool? termsAccepted,
     List<XFile>? images,
     XFile? sitePlan,
     XFile? ownershipProof,
-    XFile? leaseContract,
     XFile? videoFile,
     List<ImageModel>? existingImages,
     List<int>? removedImageIds,
@@ -339,7 +333,6 @@ class ListingFormData {
     bool? removeExistingSitePlan,
     bool? deleteVideo,
     String? existingOwnershipProofUrl,
-    String? existingLeaseContractUrl,
     String? existingVideoUrl,
   }) {
     return ListingFormData(
@@ -357,6 +350,7 @@ class ListingFormData {
       leasePricePerSqm: leasePricePerSqm ?? this.leasePricePerSqm,
       buildType: buildType ?? this.buildType,
       annualPayment: annualPayment ?? this.annualPayment,
+      isTransferable: isTransferable ?? this.isTransferable,
       cooperativeName: cooperativeName ?? this.cooperativeName,
       cooperativeCode: cooperativeCode ?? this.cooperativeCode,
       buildingStatus: buildingStatus ?? this.buildingStatus,
@@ -385,7 +379,6 @@ class ListingFormData {
       hasDebtOrEncumbrance: hasDebtOrEncumbrance ?? this.hasDebtOrEncumbrance,
       debtAmount: debtAmount ?? this.debtAmount,
       debtHolder: debtHolder ?? this.debtHolder,
-      leaseExpiryYear: leaseExpiryYear ?? this.leaseExpiryYear,
       isVip: isVip ?? this.isVip,
       termsAccepted: termsAccepted ?? this.termsAccepted,
       existingImages: existingImages ?? this.existingImages,
@@ -396,14 +389,11 @@ class ListingFormData {
       deleteVideo: deleteVideo ?? this.deleteVideo,
       existingOwnershipProofUrl:
           existingOwnershipProofUrl ?? this.existingOwnershipProofUrl,
-      existingLeaseContractUrl:
-          existingLeaseContractUrl ?? this.existingLeaseContractUrl,
       existingVideoUrl: existingVideoUrl ?? this.existingVideoUrl,
     )
       ..images = images ?? this.images
       ..sitePlan = sitePlan ?? this.sitePlan
       ..ownershipProof = ownershipProof ?? this.ownershipProof
-      ..leaseContract = leaseContract ?? this.leaseContract
       ..videoFile = videoFile ?? this.videoFile;
   }
 
@@ -487,15 +477,6 @@ class ListingFormData {
           ownershipProof != null || existingOwnershipProofUrl != null;
       if (!hasOwnership) {
         errors.add(l10n.listingErrorOwnershipProofRequired);
-      }
-    }
-
-    // Lease contract - check new upload OR existing URL
-    if (holdingType == 'Lease Hold') {
-      final hasLease =
-          leaseContract != null || existingLeaseContractUrl != null;
-      if (!hasLease) {
-        errors.add(l10n.listingErrorLeaseContractRequired);
       }
     }
 

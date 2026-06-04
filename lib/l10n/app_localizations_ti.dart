@@ -834,6 +834,15 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingLeaseContract => 'ውዕል ሊዝ';
 
   @override
+  String get listingIsTransferable => 'ከተላልፍ ይከኣል';
+
+  @override
+  String get listingTransferable => 'ክተላለፍ ዝኽእል';
+
+  @override
+  String get listingNotTransferable => 'ክተላለፍ ዘይክእል';
+
+  @override
   String get listingTapToAdd => 'ስእሊ ንምውሳኽ ጠውቕ';
 
   @override

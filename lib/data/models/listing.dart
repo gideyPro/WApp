@@ -166,9 +166,6 @@ class Listing extends ChangeNotifier {
   /// Returns full URL for ownership proof
   String? get ownershipProofUrl => _formatUrl(ownershipProofLink);
 
-  /// Returns full URL for lease contract
-  String? get leaseContractUrl => _formatUrl(leaseContractLink);
-
   /// Returns full URL for debt document
   String? get debtDocumentUrl => _formatUrl(debtEncumbranceFileLink);
 
@@ -182,7 +179,6 @@ class Listing extends ChangeNotifier {
 
   final String? sitePlanImageLink;
   final String? ownershipProofLink;
-  final String? leaseContractLink;
   final String? holdingType;
 
   // Free Hold details
@@ -207,6 +203,7 @@ class Listing extends ChangeNotifier {
   final double? leasePricePerSqm;
   final String? buildType;
   final double? annualPayment;
+  final bool isTransferable;
 
   final String? description;
   final int? bedrooms;
@@ -266,7 +263,6 @@ class Listing extends ChangeNotifier {
     this.revealedContact,
     this.sitePlanImageLink,
     this.ownershipProofLink,
-    this.leaseContractLink,
     this.holdingType,
     this.taxPaidUntilYear,
     this.acquisitionType,
@@ -282,6 +278,7 @@ class Listing extends ChangeNotifier {
     this.leasePricePerSqm,
     this.buildType,
     this.annualPayment,
+    this.isTransferable = true,
     this.description,
     this.bedrooms,
     this.bathrooms,
@@ -367,10 +364,6 @@ class Listing extends ChangeNotifier {
       ownershipProofLink: json['ownership_proof_link'] ?? 
           (property is Map ? property['ownership_proof_link'] : null) ??
           (json['cooperative_holding_detail'] is Map ? json['cooperative_holding_detail']['ownership_proof_link'] : null),
-      leaseContractLink: json['lease_contract_link'] ?? 
-          json['lease_contract_image_link'] ??
-          (property is Map ? (property['lease_contract_link'] ?? property['lease_contract_image_link']) : null) ??
-          (json['lease_holding_detail'] is Map ? (json['lease_holding_detail']['lease_contract_link'] ?? json['lease_holding_detail']['lease_contract_image_link']) : null),
       holdingType: json['holding_type'] ?? (property is Map ? property['holding_type'] : null),
 
       // Holding Details from nested objects (API show method with relation)
@@ -404,6 +397,10 @@ class Listing extends ChangeNotifier {
           _parseDouble(json['lease_holding_detail'] is Map
               ? json['lease_holding_detail']['annual_payment']
               : null),
+      isTransferable: _safeBool(property is Map ? property['is_transferable'] : json['is_transferable']) ??
+          _safeBool(json['lease_holding_detail'] is Map
+              ? json['lease_holding_detail']['is_transferable']
+              : null, defaultValue: true),
 
       // Cooperative details
       cooperativeName: json['cooperative_name'] ??
@@ -480,7 +477,6 @@ class Listing extends ChangeNotifier {
       'video_processing': videoProcessing?.toJson(),
       'site_plan_image_link': sitePlanImageLink,
       'ownership_proof_link': ownershipProofLink,
-      'lease_contract_link': leaseContractLink,
       'holding_type': holdingType,
       'description': description,
       'bedrooms': bedrooms,

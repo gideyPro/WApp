@@ -890,6 +890,18 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
               ),
             ],
           ),
+          const SizedBox(height: 12),
+          _compactDropdown(
+            value: widget.formData.isTransferable.toString(),
+            items: {
+              'true': l10n.listingTransferable,
+              'false': l10n.listingNotTransferable,
+            },
+            label: l10n.listingIsTransferable,
+            hintText: l10n.listingSelect,
+            onChanged: (v) => widget.onUpdate(
+                widget.formData.copyWith(isTransferable: v == 'true')),
+          ),
         ],
       ),
     );
@@ -1434,9 +1446,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
         case 'ownership':
           widget.onUpdate(widget.formData.copyWith(ownershipProof: persisted));
           break;
-        case 'lease':
-          widget.onUpdate(widget.formData.copyWith(leaseContract: persisted));
-          break;
         case 'video':
           widget.onUpdate(widget.formData.copyWith(videoFile: persisted));
           break;
@@ -1457,10 +1466,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
           if (widget.formData.holdingType == 'Cooperative')
             _buildOwnershipSection(),
           if (widget.formData.holdingType == 'Cooperative')
-            const SizedBox(height: 16),
-          if (widget.formData.holdingType == 'Lease Hold')
-            _buildLeaseSection(),
-          if (widget.formData.holdingType == 'Lease Hold')
             const SizedBox(height: 16),
           _buildVideoSection(),
         ],
@@ -1863,76 +1868,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             )
           else
             _buildChangeButton('ownership', pickedFile),
-        ],
-      ),
-    );
-  }
-
-  // ---- Lease ----
-  Widget _buildLeaseSection() {
-    final l10n = AppLocalizations.of(context);
-    final hasExisting = widget.formData.existingLeaseContractUrl != null &&
-        widget.formData.leaseContract == null;
-    final pickedFile = widget.formData.leaseContract;
-
-    return _mediaSection(
-      title: l10n.listingLeaseContract,
-      child: Column(
-        children: [
-          if (hasExisting) ...[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              margin: const EdgeInsets.only(bottom: 12),
-              decoration: BoxDecoration(
-                color: context.theme.inputBg,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.description_outlined,
-                      size: 18, color: context.theme.textMuted),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      l10n.listingExistingFile(
-                          widget.formData.existingLeaseContractUrl!
-                              .split('/')
-                              .last),
-                      style: AppTextStyles.caption,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-          if (pickedFile != null) ...[
-            _filePreviewCard(
-              fileName: pickedFile.name,
-              subtitle: _formatFileSize(pickedFile.path),
-              icon: Icons.image,
-              thumbnail: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: Image.file(File(pickedFile.path),
-                    width: 64, height: 64, fit: BoxFit.cover),
-              ),
-              onRemove: () => widget.onUpdate(
-                  widget.formData.copyWith(leaseContract: null)),
-              onPreview: () => _showImagePreview(context,
-                  file: File(pickedFile.path)),
-            ),
-            const SizedBox(height: 12),
-          ],
-          if (!hasExisting && pickedFile == null)
-            _uploadZone(
-              icon: Icons.article_outlined,
-              label: l10n.listingTapToAdd,
-              subtitle: 'Lease contract',
-              onTap: () => _pickSingleFile('lease'),
-            )
-          else
-            _buildChangeButton('lease', pickedFile),
         ],
       ),
     );
@@ -2482,13 +2417,11 @@ class ListingStep4Review extends StatelessWidget {
     final imageCount = data.images.length + data.existingImages.length - data.removedImageIds.length;
     final hasSitePlan = data.sitePlan != null || (data.existingSitePlanUrl != null && !data.removeExistingSitePlan);
     final hasOwnership = data.ownershipProof != null || data.existingOwnershipProofUrl != null;
-    final hasLease = data.leaseContract != null || data.existingLeaseContractUrl != null;
     final hasVideo = data.videoFile != null || (data.existingVideoUrl != null && !data.deleteVideo);
     final lines = <String>[
       '$imageCount ${imageCount == 1 ? 'Picture' : 'Pictures'}',
       if (hasSitePlan) '1 Site Plan',
       if (hasOwnership) '1 Ownership Proof',
-      if (hasLease) '1 Lease Contract',
       if (hasVideo) '1 Video',
     ];
     return lines.join('\n');

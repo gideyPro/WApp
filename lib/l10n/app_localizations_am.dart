@@ -834,6 +834,15 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingLeaseContract => 'የሊዝ ውል';
 
   @override
+  String get listingIsTransferable => 'ማስተላለፍ ይቻላል';
+
+  @override
+  String get listingTransferable => 'ሊተላለፍ የሚችል';
+
+  @override
+  String get listingNotTransferable => 'ሊተላለፍ የማይችል';
+
+  @override
   String get listingTapToAdd => 'ምስል ለመጨመር ይንኩ';
 
   @override
