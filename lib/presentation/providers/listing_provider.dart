@@ -265,7 +265,6 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
       isLoading: true,
       errorMessage: null,
       requiresSubscription: false,
-      redirectHint: null,
     );
 
     final response = await _listingService.getListingDetail(id);
@@ -277,7 +276,6 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
         isLoading: false,
         errorMessage: response.message,
         requiresSubscription: response.subscriptionGate?.required ?? false,
-        redirectHint: response.subscriptionGate?.redirectHint,
       );
     }
   }
@@ -371,42 +369,36 @@ class ListingDetailState {
   final Listing? listing;
   final String? errorMessage;
   final bool requiresSubscription;
-  final String? redirectHint;
 
   const ListingDetailState({
     required this.isLoading,
     this.listing,
     this.errorMessage,
     this.requiresSubscription = false,
-    this.redirectHint,
   });
 
   const ListingDetailState.initial()
       : isLoading = true,
         listing = null,
         errorMessage = null,
-        requiresSubscription = false,
-        redirectHint = null;
+        requiresSubscription = false;
 
   const ListingDetailState.loaded(this.listing)
       : isLoading = false,
         errorMessage = null,
-        requiresSubscription = false,
-        redirectHint = null;
+        requiresSubscription = false;
 
   ListingDetailState copyWith({
     bool? isLoading,
     Listing? listing,
     String? errorMessage,
     bool? requiresSubscription,
-    String? redirectHint,
   }) {
     return ListingDetailState(
       isLoading: isLoading ?? this.isLoading,
       listing: listing ?? this.listing,
       errorMessage: errorMessage,
       requiresSubscription: requiresSubscription ?? this.requiresSubscription,
-      redirectHint: redirectHint,
     );
   }
 }

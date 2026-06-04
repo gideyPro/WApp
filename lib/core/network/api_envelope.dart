@@ -174,7 +174,6 @@ class ApiEnvelope {
   /// Recognized on the raw envelope:
   ///   - `error_code: 'SUBSCRIPTION_REQUIRED'` (canonical Laravel)
   ///   - `requires_subscription: true` (canonical Laravel flag)
-  ///   - `redirect_hint`: web URL or in-app route hint
   ///   - `error_code: 'requires_subscription'` (snake-case alt, future-proof)
   ///
   /// Never throws. Returns `required: false` for any non-matching response.
@@ -191,10 +190,7 @@ class ApiEnvelope {
 
     if (!isGate) return const SubscriptionGate(required: false);
 
-    final hint = raw['redirect_hint']?.toString() ??
-        raw['redirectHint']?.toString();
-
-    return SubscriptionGate(required: true, redirectHint: hint);
+    return const SubscriptionGate(required: true);
   }
 
   /// Debug-only: log the raw envelope shape to help diagnose new endpoints.
@@ -222,13 +218,14 @@ class PaginationMeta {
 
 /// Subscription gate signal extracted from a Laravel
 /// `SubscriptionRequirementException` response (HTTP 403). When
-/// [required] is true, the user must upgrade their plan to proceed. The
-/// optional [redirectHint] is a backend-provided URL for the upgrade flow.
+/// [required] is true, the user must upgrade their plan to proceed; the
+/// client decides where to send them (mobile opens the in-app
+/// `SubscriptionPlansScreen`; web follows the HTTP redirect the server
+/// would have produced for a non-JSON request).
 class SubscriptionGate {
   final bool required;
-  final String? redirectHint;
 
-  const SubscriptionGate({required this.required, this.redirectHint});
+  const SubscriptionGate({required this.required});
 
   static const notRequired = SubscriptionGate(required: false);
 }

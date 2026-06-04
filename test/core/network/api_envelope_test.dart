@@ -351,11 +351,9 @@ void main() {
         'message': 'An active subscription is required.',
         'error_code': 'SUBSCRIPTION_REQUIRED',
         'requires_subscription': true,
-        'redirect_hint': 'https://wavemart.et/subscriptions',
       };
       final gate = ApiEnvelope.extractSubscriptionGate(raw);
       expect(gate.required, isTrue);
-      expect(gate.redirectHint, 'https://wavemart.et/subscriptions');
     });
 
     test('detects via requires_subscription flag without error_code', () {
@@ -366,7 +364,6 @@ void main() {
       };
       final gate = ApiEnvelope.extractSubscriptionGate(raw);
       expect(gate.required, isTrue);
-      expect(gate.redirectHint, isNull);
     });
 
     test('detects via error_code alone', () {
@@ -389,15 +386,17 @@ void main() {
       expect(gate.required, isTrue);
     });
 
-    test('accepts camelCase alias for hint', () {
+    test('ignores stale redirect_hint on the wire', () {
+      // The backend used to ship a web URL in redirect_hint; mobile clients
+      // should never see it. Defensive: extra keys are tolerated.
       final raw = {
         'success': false,
+        'message': 'Subscription required',
         'error_code': 'SUBSCRIPTION_REQUIRED',
         'requires_subscription': true,
-        'redirectHint': '/subscriptions',
+        'redirect_hint': 'https://wavemart.et/subscriptions',
       };
-      final gate = ApiEnvelope.extractSubscriptionGate(raw);
-      expect(gate.redirectHint, '/subscriptions');
+      expect(ApiEnvelope.extractSubscriptionGate(raw).required, isTrue);
     });
 
     test('returns notRequired for generic error envelopes', () {
