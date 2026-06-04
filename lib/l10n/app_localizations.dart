@@ -2908,6 +2908,24 @@ abstract class AppLocalizations {
   /// **'Edit Listing'**
   String get listingEditTitle;
 
+  /// No description provided for @listingEditWindowExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'The edit window has expired. Listings can only be edited within 7 days.'**
+  String get listingEditWindowExpired;
+
+  /// No description provided for @listingMediaLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Media Locked'**
+  String get listingMediaLockedTitle;
+
+  /// No description provided for @listingMediaLockedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Media cannot be modified after listing creation.'**
+  String get listingMediaLockedDesc;
+
   /// No description provided for @listingDeleteConfirmTitle.
   ///
   /// In en, this message translates to:

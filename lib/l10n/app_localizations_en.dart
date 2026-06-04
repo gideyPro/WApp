@@ -1503,6 +1503,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingEditTitle => 'Edit Listing';
 
   @override
+  String get listingEditWindowExpired =>
+      'The edit window has expired. Listings can only be edited within 7 days.';
+
+  @override
+  String get listingMediaLockedTitle => 'Media Locked';
+
+  @override
+  String get listingMediaLockedDesc =>
+      'Media cannot be modified after listing creation.';
+
+  @override
   String get listingDeleteConfirmTitle => 'Delete Listing';
 
   @override

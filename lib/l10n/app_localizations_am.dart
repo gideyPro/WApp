@@ -1489,6 +1489,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingEditTitle => 'ንብረት ያስተካክሉ';
 
   @override
+  String get listingEditWindowExpired =>
+      'የማስተካከያ ጊዜው አልፏል። ንብረቶች በ7 ቀናት ውስጥ ብቻ ማስተካከል ይቻላል።';
+
+  @override
+  String get listingMediaLockedTitle => 'ሚዲያ ተቆልፏል';
+
+  @override
+  String get listingMediaLockedDesc => 'ንብረቱ ከተፈጠረ በኋላ ሚዲያ መቀየር አይቻልም።';
+
+  @override
   String get listingDeleteConfirmTitle => 'ንብረት ሰርዝ';
 
   @override

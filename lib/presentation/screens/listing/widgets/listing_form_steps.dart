@@ -1399,7 +1399,8 @@ class ListingStep3Media extends StatefulWidget {
   final ListingFormData formData;
   final Function(ListingFormData) onUpdate;
   final List<String> stepErrors;
-  const ListingStep3Media({super.key, required this.formData, required this.onUpdate, this.stepErrors = const []});
+  final bool isMediaLocked;
+  const ListingStep3Media({super.key, required this.formData, required this.onUpdate, this.stepErrors = const [], this.isMediaLocked = false});
 
   @override
   State<ListingStep3Media> createState() => _ListingStep3MediaState();
@@ -1455,6 +1456,9 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isMediaLocked) {
+      return _buildMediaLocked();
+    }
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       child: Column(
@@ -1469,6 +1473,39 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             const SizedBox(height: 16),
           _buildVideoSection(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMediaLocked() {
+    final l10n = AppLocalizations.of(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.lock_outline_rounded, size: 64, color: context.theme.textMuted),
+              const SizedBox(height: 16),
+              Text(
+                l10n.listingMediaLockedTitle,
+                style: AppTextStyles.title.copyWith(
+                  color: context.theme.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.listingMediaLockedDesc,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: context.theme.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

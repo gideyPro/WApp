@@ -43,6 +43,20 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     final localeCode = ref.read(localeProvider).locale?.languageCode ?? 'en';
     final useLocalized = localeCode != 'en';
 
+    // 7-day edit window check
+    final editDeadline = (listing.updatedAt ?? listing.createdAt).add(const Duration(days: 7));
+    if (DateTime.now().isAfter(editDeadline)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.listingEditWindowExpired)),
+        );
+        Navigator.of(context).pop();
+      });
+      return;
+    }
+
     _formData = ListingFormData(
       type: listing.propertyType == PropertyType.house ? 'house' : 'land',
       listingType: listing.listingType == ListingType.sale ? 'sale' : 'rental',
@@ -405,7 +419,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
                       addressService: _addressService,
                       isEditMode: true),
                   ListingStep2Details(formData: _formData, onUpdate: _updateFormData),
-                  ListingStep3Media(formData: _formData, onUpdate: _updateFormData),
+                  ListingStep3Media(formData: _formData, onUpdate: _updateFormData, isMediaLocked: true),
                   ListingStep4Review(formData: _formData, onUpdate: _updateFormData),
                 ],
               ),

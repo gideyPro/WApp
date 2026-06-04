@@ -1488,6 +1488,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingEditTitle => 'ንብረት ኣዐሪ';
 
   @override
+  String get listingEditWindowExpired =>
+      'እዋን ምትሕዝት ሐሊፉ ኣሎ። ንብረታት ኣብ ውሽጢ 7 መዓልቲ ጥራይ ክትሕዘዉ ይከኣል።';
+
+  @override
+  String get listingMediaLockedTitle => 'ሚድያ ተዓጊዱ';
+
+  @override
+  String get listingMediaLockedDesc => 'ንብረት ምስ ተፈጠረ ሚድያ ክትቅይር ኣይትከኣልን።';
+
+  @override
   String get listingDeleteConfirmTitle => 'ንብረት ሰርዝ';
 
   @override
