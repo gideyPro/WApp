@@ -1,4 +1,3 @@
-```
 # Build artifacts
 *.pyc
 __pycache__/
@@ -14,6 +13,7 @@ dist/
 build/
 target/
 *.apk
+.dart_tool/
 
 # Dependencies
 node_modules/
@@ -63,6 +63,7 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
 # Opencode
 .opencode/
 .agent/
