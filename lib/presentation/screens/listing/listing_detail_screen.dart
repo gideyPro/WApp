@@ -100,7 +100,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     }
 
     if (state.errorMessage != null) {
-      return _buildErrorView(state.errorMessage!);
+      return _buildErrorView(
+        state.errorMessage!,
+        isSubscriptionGate: state.requiresSubscription,
+      );
     }
 
     if (state.listing == null) {
@@ -295,14 +298,16 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     );
   }
 
-  Widget _buildErrorView(String message) {
+  Widget _buildErrorView(
+    String message, {
+    bool isSubscriptionGate = false,
+  }) {
     final l10n = AppLocalizations.of(context);
-    final isSubscriptionError = message.toLowerCase().contains('subscription');
 
     return Scaffold(
       appBar: WaveAppBar(
         title: Text(
-          isSubscriptionError
+          isSubscriptionGate
               ? l10n.subscriptionRequiredTitle
               : l10n.listingsTitle,
         ),
@@ -314,24 +319,24 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                isSubscriptionError
+                isSubscriptionGate
                     ? Icons.workspace_premium_rounded
                     : Icons.signal_wifi_off_rounded,
                 size: 64,
-                color: isSubscriptionError
+                color: isSubscriptionGate
                     ? AppColors.accent500
                     : ThemeColors(context).textMuted,
               ),
               const SizedBox(height: 16),
               Text(
-                isSubscriptionError
+                isSubscriptionGate
                     ? l10n.subscriptionRequiredTitle
                     : l10n.listingsLoadError,
                 style: AppTextStyles.title,
               ),
               const SizedBox(height: 8),
               Text(
-                isSubscriptionError
+                isSubscriptionGate
                     ? l10n.subscriptionRequiredDetailsSubtitle
                     : message,
                 style: AppTextStyles.bodyMedium
@@ -339,7 +344,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              if (isSubscriptionError)
+              if (isSubscriptionGate)
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.of(context).pushReplacement(

@@ -340,6 +340,100 @@ void main() {
       final meta = ApiEnvelope.extractPagination(raw);
       expect(meta.currentPage, 2);
       expect(meta.totalPages, 5);
+      expect(meta.total, 100);
+    });
+  });
+
+  group('ApiEnvelope.extractSubscriptionGate', () {
+    test('detects canonical Laravel SUBSCRIPTION_REQUIRED response', () {
+      final raw = {
+        'success': false,
+        'message': 'An active subscription is required.',
+        'error_code': 'SUBSCRIPTION_REQUIRED',
+        'requires_subscription': true,
+        'redirect_hint': 'https://wavemart.et/subscriptions',
+      };
+      final gate = ApiEnvelope.extractSubscriptionGate(raw);
+      expect(gate.required, isTrue);
+      expect(gate.redirectHint, 'https://wavemart.et/subscriptions');
+    });
+
+    test('detects via requires_subscription flag without error_code', () {
+      final raw = {
+        'success': false,
+        'message': 'Subscription required',
+        'requires_subscription': true,
+      };
+      final gate = ApiEnvelope.extractSubscriptionGate(raw);
+      expect(gate.required, isTrue);
+      expect(gate.redirectHint, isNull);
+    });
+
+    test('detects via error_code alone', () {
+      final raw = {
+        'success': false,
+        'message': 'Subscription required',
+        'error_code': 'SUBSCRIPTION_REQUIRED',
+      };
+      final gate = ApiEnvelope.extractSubscriptionGate(raw);
+      expect(gate.required, isTrue);
+    });
+
+    test('accepts snake_case error_code alias', () {
+      final raw = {
+        'success': false,
+        'error_code': 'requires_subscription',
+        'requires_subscription': true,
+      };
+      final gate = ApiEnvelope.extractSubscriptionGate(raw);
+      expect(gate.required, isTrue);
+    });
+
+    test('accepts camelCase alias for hint', () {
+      final raw = {
+        'success': false,
+        'error_code': 'SUBSCRIPTION_REQUIRED',
+        'requires_subscription': true,
+        'redirectHint': '/subscriptions',
+      };
+      final gate = ApiEnvelope.extractSubscriptionGate(raw);
+      expect(gate.redirectHint, '/subscriptions');
+    });
+
+    test('returns notRequired for generic error envelopes', () {
+      final raw = {
+        'success': false,
+        'message': 'Unauthenticated.',
+      };
+      expect(ApiEnvelope.extractSubscriptionGate(raw).required, isFalse);
+    });
+
+    test('returns notRequired for success envelopes', () {
+      final raw = {
+        'success': true,
+        'data': {'id': 1},
+      };
+      expect(ApiEnvelope.extractSubscriptionGate(raw).required, isFalse);
+    });
+
+    test('returns notRequired for null', () {
+      expect(ApiEnvelope.extractSubscriptionGate(null).required, isFalse);
+    });
+
+    test('returns notRequired for non-Map raw', () {
+      expect(ApiEnvelope.extractSubscriptionGate('error string').required,
+          isFalse);
+      expect(ApiEnvelope.extractSubscriptionGate(403).required, isFalse);
+      expect(ApiEnvelope.extractSubscriptionGate([]).required, isFalse);
+    });
+
+    test('does not treat false requires_subscription as a gate', () {
+      final raw = {
+        'success': false,
+        'message': 'Some other error',
+        'requires_subscription': false,
+      };
+      expect(ApiEnvelope.extractSubscriptionGate(raw).required, isFalse);
     });
   });
 }

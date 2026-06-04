@@ -166,6 +166,37 @@ class ApiEnvelope {
     );
   }
 
+  /// Detect a Laravel `SubscriptionRequirementException` response and extract
+  /// its gate metadata. Returns a [SubscriptionGate] with
+  /// `required: true` only when the response signals a subscription is
+  /// required to perform the action.
+  ///
+  /// Recognized on the raw envelope:
+  ///   - `error_code: 'SUBSCRIPTION_REQUIRED'` (canonical Laravel)
+  ///   - `requires_subscription: true` (canonical Laravel flag)
+  ///   - `redirect_hint`: web URL or in-app route hint
+  ///   - `error_code: 'requires_subscription'` (snake-case alt, future-proof)
+  ///
+  /// Never throws. Returns `required: false` for any non-matching response.
+  static SubscriptionGate extractSubscriptionGate(dynamic raw) {
+    if (raw is! Map) return const SubscriptionGate(required: false);
+
+    final errorCode = raw['error_code']?.toString();
+    final requiresFlag = raw['requires_subscription'] == true ||
+        raw['requiresSubscription'] == true;
+
+    final isGate = requiresFlag ||
+        errorCode == 'SUBSCRIPTION_REQUIRED' ||
+        errorCode == 'requires_subscription';
+
+    if (!isGate) return const SubscriptionGate(required: false);
+
+    final hint = raw['redirect_hint']?.toString() ??
+        raw['redirectHint']?.toString();
+
+    return SubscriptionGate(required: true, redirectHint: hint);
+  }
+
   /// Debug-only: log the raw envelope shape to help diagnose new endpoints.
   /// No-op in release.
   static void debugLog(String tag, dynamic raw) {
@@ -187,4 +218,17 @@ class PaginationMeta {
     this.totalPages = 1,
     this.total = 0,
   });
+}
+
+/// Subscription gate signal extracted from a Laravel
+/// `SubscriptionRequirementException` response (HTTP 403). When
+/// [required] is true, the user must upgrade their plan to proceed. The
+/// optional [redirectHint] is a backend-provided URL for the upgrade flow.
+class SubscriptionGate {
+  final bool required;
+  final String? redirectHint;
+
+  const SubscriptionGate({required this.required, this.redirectHint});
+
+  static const notRequired = SubscriptionGate(required: false);
 }

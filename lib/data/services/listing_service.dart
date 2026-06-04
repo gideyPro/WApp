@@ -243,9 +243,11 @@ class ListingService {
         );
       }
 
+      final gate = ApiEnvelope.extractSubscriptionGate(response.data);
       return ListingDetailResponse(
         success: false,
         message: ApiEnvelope.extractMessage(response.data, 'Listing not found'),
+        subscriptionGate: gate.required ? gate : null,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -770,11 +772,13 @@ class ListingDetailResponse {
   final bool success;
   final String message;
   final Listing? listing;
+  final SubscriptionGate? subscriptionGate;
 
   const ListingDetailResponse({
     required this.success,
     this.message = '',
     this.listing,
+    this.subscriptionGate,
   });
 }
 

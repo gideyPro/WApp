@@ -261,7 +261,12 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
       : super(const ListingDetailState.initial());
 
   Future<void> loadListing(int id) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      requiresSubscription: false,
+      redirectHint: null,
+    );
 
     final response = await _listingService.getListingDetail(id);
 
@@ -271,6 +276,8 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
       state = state.copyWith(
         isLoading: false,
         errorMessage: response.message,
+        requiresSubscription: response.subscriptionGate?.required ?? false,
+        redirectHint: response.subscriptionGate?.redirectHint,
       );
     }
   }
@@ -363,31 +370,43 @@ class ListingDetailState {
   final bool isLoading;
   final Listing? listing;
   final String? errorMessage;
+  final bool requiresSubscription;
+  final String? redirectHint;
 
   const ListingDetailState({
     required this.isLoading,
     this.listing,
     this.errorMessage,
+    this.requiresSubscription = false,
+    this.redirectHint,
   });
 
   const ListingDetailState.initial()
       : isLoading = true,
         listing = null,
-        errorMessage = null;
+        errorMessage = null,
+        requiresSubscription = false,
+        redirectHint = null;
 
   const ListingDetailState.loaded(this.listing)
       : isLoading = false,
-        errorMessage = null;
+        errorMessage = null,
+        requiresSubscription = false,
+        redirectHint = null;
 
   ListingDetailState copyWith({
     bool? isLoading,
     Listing? listing,
     String? errorMessage,
+    bool? requiresSubscription,
+    String? redirectHint,
   }) {
     return ListingDetailState(
       isLoading: isLoading ?? this.isLoading,
       listing: listing ?? this.listing,
       errorMessage: errorMessage,
+      requiresSubscription: requiresSubscription ?? this.requiresSubscription,
+      redirectHint: redirectHint,
     );
   }
 }
