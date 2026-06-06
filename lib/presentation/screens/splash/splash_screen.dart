@@ -21,11 +21,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _logoController;
   late AnimationController _textController;
-  late AnimationController _pulseController;
   late Animation<double> _logoScale;
   late Animation<double> _logoOpacity;
   late Animation<double> _textOpacity;
-  late Animation<double> _pulseScale;
 
   @override
   void initState() {
@@ -54,14 +52,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       CurvedAnimation(parent: _textController, curve: Curves.easeOut),
     );
 
-    _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    )..repeat(reverse: true);
-    _pulseScale = Tween<double>(begin: 0.8, end: 1.2).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
-
     _logoController.forward();
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) _textController.forward();
@@ -75,29 +65,35 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final hasToken = await client.isAuthenticated();
 
     if (hasToken) {
-      ref.read(authStateProvider.notifier).checkAuth();
+      await ref.read(authStateProvider.notifier).checkAuth();
+      if (!mounted) return;
     }
 
     await minSplashTime;
-
     if (!mounted) return;
 
-    if (hasToken) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const MainNavigationShell()),
-      );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
-      );
-    }
+    final Widget next = hasToken && ref.read(authStateProvider).isAuthenticated
+        ? const MainNavigationShell()
+        : const OtpLoginScreen();
+
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => next,
+        transitionsBuilder: (_, animation, __, child) {
+          return FadeTransition(
+            opacity: CurvedAnimation(parent: animation, curve: Curves.easeInOut),
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 350),
+      ),
+    );
   }
 
   @override
   void dispose() {
     _logoController.dispose();
     _textController.dispose();
-    _pulseController.dispose();
     super.dispose();
   }
 
@@ -149,7 +145,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           Text(
                             'Ethiopia\'s Premier Real Estate Marketplace',
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: Colors.white.withValues(alpha: 0.7),
+                              color: Colors.white.withValues(alpha: 0.85),
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -158,27 +154,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                   ),
                   const SizedBox(height: 48),
-                  ScaleTransition(
-                    scale: _pulseScale,
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.3),
-                          width: 2,
-                        ),
-                      ),
-                      child: const Center(
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.accent500),
-                            strokeWidth: 2.5,
-                          ),
+                  Semantics(
+                    label: 'Loading',
+                    child: SizedBox(
+                      width: 120,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: const LinearProgressIndicator(
+                          minHeight: 3,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.accent500),
+                          backgroundColor: Color(0x33FFFFFF),
                         ),
                       ),
                     ),
@@ -187,14 +173,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               ),
             ),
             Positioned(
-              bottom: 40,
               left: 0,
               right: 0,
-              child: Center(
-                child: Text(
-                  'v${AppColors.appVersion}',
-                  style: AppTextStyles.caption.copyWith(
-                    color: Colors.white.withValues(alpha: 0.4),
+              bottom: 0,
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Center(
+                    child: Text(
+                      'v${AppColors.appVersion}',
+                      style: AppTextStyles.caption.copyWith(
+                        color: Colors.white.withValues(alpha: 0.5),
+                      ),
+                    ),
                   ),
                 ),
               ),

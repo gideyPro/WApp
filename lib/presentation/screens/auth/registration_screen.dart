@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -7,10 +8,10 @@ import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/otp_input_field.dart';
+import '../../widgets/common/wave_language_chip.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
 import 'otp_login_screen.dart';
@@ -27,8 +28,17 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final FocusNode _firstNameFocus = FocusNode();
+  final FocusNode _lastNameFocus = FocusNode();
+  final FocusNode _phoneFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
   final GlobalKey<OtpInputFieldState> _otpKey = GlobalKey();
   String _otpCode = '';
+
+  String? _firstNameError;
+  String? _lastNameError;
+  String? _phoneError;
+  String? _emailError;
 
   String? _selectedGender = 'Male';
   CountryCode _selectedCountry = Countries.defaultCountry;
@@ -50,11 +60,36 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _lastNameController.addListener(_markDataEntered);
     _phoneController.addListener(_markDataEntered);
     _emailController.addListener(_markDataEntered);
+    _firstNameFocus.addListener(() => _onFieldFocusLost(_firstNameFocus, _validateFirstName));
+    _lastNameFocus.addListener(() => _onFieldFocusLost(_lastNameFocus, _validateLastName));
+    _phoneFocus.addListener(() => _onFieldFocusLost(_phoneFocus, _validatePhone));
+    _emailFocus.addListener(() => _onFieldFocusLost(_emailFocus, _validateEmail));
   }
 
   void _markDataEntered() {
     if (!_hasUserData) {
       setState(() => _hasUserData = true);
+    }
+  }
+
+  void _onFieldFocusLost(FocusNode node, String? Function() validator) {
+    if (!node.hasFocus) {
+      final err = validator();
+      if (err != null) {
+        setState(() {
+          if (node == _firstNameFocus) _firstNameError = err;
+          if (node == _lastNameFocus) _lastNameError = err;
+          if (node == _phoneFocus) _phoneError = err;
+          if (node == _emailFocus) _emailError = err;
+        });
+      } else {
+        setState(() {
+          if (node == _firstNameFocus) _firstNameError = null;
+          if (node == _lastNameFocus) _lastNameError = null;
+          if (node == _phoneFocus) _phoneError = null;
+          if (node == _emailFocus) _emailError = null;
+        });
+      }
     }
   }
 
@@ -64,6 +99,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _lastNameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _firstNameFocus.dispose();
+    _lastNameFocus.dispose();
+    _phoneFocus.dispose();
+    _emailFocus.dispose();
     _countdownTimer?.cancel();
     super.dispose();
   }
@@ -95,11 +134,18 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       child: Scaffold(
         body: WaveAuthBackground(
           child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const SizedBox(height: 24),
+            child: Stack(
+              children: [
+                const Positioned(
+                  top: 8,
+                  right: 16,
+                  child: WaveLanguageChip(),
+                ),
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 24),
 
                   // Back button
                   Row(
@@ -186,9 +232,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           const SizedBox(height: 20),
                           _buildNameInputs(),
                           const SizedBox(height: 16),
-                          _buildEmailInput(),
-                          const SizedBox(height: 16),
                           _buildPhoneInput(),
+                          const SizedBox(height: 16),
+                          _buildEmailInput(),
                           const SizedBox(height: 16),
                           _buildGenderSelection(),
                           const SizedBox(height: 24),
@@ -227,26 +273,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           const SizedBox(height: 16),
                           _buildInlineError(authState.errorMessage!),
                         ],
-
-                        // Language switcher at bottom
-                        Container(
-                          margin: const EdgeInsets.only(top: 16),
-                          padding: const EdgeInsets.only(top: 12),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                color: AppColors.primary200.withValues(alpha: 0.4),
-                              ),
-                            ),
-                          ),
-                          child: _buildLanguageSwitcher(),
-                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 24),
                 ],
               ),
+                ),
+              ],
             ),
           ),
         ),
@@ -415,20 +449,29 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildNameInputs() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: _buildInputField(
             controller: _firstNameController,
+            focusNode: _firstNameFocus,
+            errorText: _firstNameError,
+            label: AppLocalizations.of(context).profileFirstName,
             hint: AppLocalizations.of(context).profileFirstName,
             icon: Icons.person_outline,
+            textCapitalization: TextCapitalization.words,
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildInputField(
             controller: _lastNameController,
+            focusNode: _lastNameFocus,
+            errorText: _lastNameError,
+            label: AppLocalizations.of(context).profileLastName,
             hint: AppLocalizations.of(context).profileLastName,
             icon: Icons.person_outline,
+            textCapitalization: TextCapitalization.words,
           ),
         ),
       ],
@@ -439,72 +482,150 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final isEthiopia = _selectedCountry.code == '+251';
     return _buildInputField(
       controller: _emailController,
-      hint: isEthiopia ? l10n.profileEmail : '${l10n.profileEmail} (${l10n.orderRequired})',
+      focusNode: _emailFocus,
+      errorText: _emailError,
+      label: isEthiopia ? l10n.profileEmail : '${l10n.profileEmail} (${l10n.orderRequired})',
+      hint: 'name@example.com',
       icon: Icons.email_outlined,
       keyboardType: TextInputType.emailAddress,
+      autocorrect: false,
+      textCapitalization: TextCapitalization.none,
     );
   }
 
   Widget _buildPhoneInput() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: isDark ? AppColors.primary700 : AppColors.primary200),
-      ),
-      child: Row(
-        children: [
-          CountrySelectorDropdown(
-            selectedCountry: _selectedCountry,
-            onCountrySelected: (country) {
-              setState(() => _selectedCountry = country);
-            },
-          ),
-          Expanded(
-            child: TextField(
-              controller: _phoneController,
-              decoration: InputDecoration(
-                hintText: _selectedCountry.example,
-                hintStyle: AppTextStyles.bodySmall,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              ),
-              keyboardType: TextInputType.phone,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: isDark ? Colors.white : AppColors.primary900,
-              ),
+    final hasError = _phoneError != null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
+          child: Text(
+            l10n.authEnterPhone,
+            style: AppTextStyles.labelMedium.copyWith(
+              color: AppColors.primary800,
             ),
           ),
-        ],
-      ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: hasError
+                  ? AppColors.error.withValues(alpha: 0.5)
+                  : (isDark ? AppColors.primary700 : AppColors.primary200),
+            ),
+          ),
+          child: Row(
+            children: [
+              CountrySelectorDropdown(
+                selectedCountry: _selectedCountry,
+                onCountrySelected: (country) {
+                  setState(() => _selectedCountry = country);
+                },
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _phoneController,
+                  focusNode: _phoneFocus,
+                  decoration: InputDecoration(
+                    hintText: _selectedCountry.example,
+                    hintStyle: AppTextStyles.bodySmall,
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                  ),
+                  keyboardType: TextInputType.number,
+                  autofillHints: const [AutofillHints.telephoneNumber],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(15),
+                  ],
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: isDark ? Colors.white : AppColors.primary900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        _buildFieldError(_phoneError),
+      ],
     );
   }
 
   Widget _buildInputField({
     required TextEditingController controller,
+    required FocusNode focusNode,
+    String? errorText,
+    required String label,
     required String hint,
     required IconData icon,
     TextInputType? keyboardType,
+    bool autocorrect = true,
+    TextCapitalization textCapitalization = TextCapitalization.none,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.primary50.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.primary200),
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-          prefixIcon: Icon(icon, color: context.theme.iconSecondary, size: 18),
-          border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    final hasError = errorText != null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
+          child: Text(
+            label,
+            style: AppTextStyles.labelMedium.copyWith(
+              color: AppColors.primary800,
+            ),
+          ),
         ),
-        keyboardType: keyboardType,
-        style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary900),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.primary50.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: hasError
+                  ? AppColors.error.withValues(alpha: 0.5)
+                  : AppColors.primary200,
+            ),
+          ),
+          child: TextField(
+            controller: controller,
+            focusNode: focusNode,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+              prefixIcon: Icon(icon, color: context.theme.iconSecondary, size: 18),
+              border: InputBorder.none,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+            ),
+            keyboardType: keyboardType,
+            autocorrect: autocorrect,
+            textCapitalization: textCapitalization,
+            style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary900),
+          ),
+        ),
+        _buildFieldError(errorText),
+      ],
+    );
+  }
+
+  Widget _buildFieldError(String? error) {
+    if (error == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, top: 6),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline, size: 14, color: AppColors.error),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              error,
+              style: AppTextStyles.caption.copyWith(color: AppColors.error),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -585,7 +706,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   Widget _buildResendOtp() {
     if (_resendCountdown > 0) {
       return Text(
-        'Resend code in ${_resendCountdown}s',
+        l10n.authResendCountdown(_resendCountdown),
         style: AppTextStyles.bodyMedium.copyWith(
           color: ThemeColors(context).textSecondary,
         ),
@@ -595,10 +716,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     return TextButton(
       onPressed: _sendRegistrationOtp,
       child: Text(
-        'Resend Code',
+        l10n.authResendOtp,
         style: AppTextStyles.bodyLarge.copyWith(
           color: AppColors.accent600,
           fontWeight: FontWeight.w600,
+          decoration: TextDecoration.underline,
+          decorationColor: AppColors.accent600,
         ),
       ),
     );
@@ -632,40 +755,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildLanguageSwitcher() {
-    final currentLocale = ref.watch(localeProvider).locale?.languageCode ?? 'en';
-    const supportedLocales = [
-      {'code': 'en', 'label': 'EN'},
-      {'code': 'am', 'label': 'AM'},
-      {'code': 'ti', 'label': 'TI'},
-    ];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: supportedLocales.map((lang) {
-        final isActive = currentLocale == lang['code'];
-        return GestureDetector(
-          onTap: () => ref.read(localeProvider.notifier).setLocale(Locale(lang['code']!)),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: isActive ? AppColors.primary600 : Colors.transparent,
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Text(
-              lang['label']!,
-              style: AppTextStyles.caption.copyWith(
-                color: isActive ? Colors.white : AppColors.primary400,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-              ),
-            ),
-          ),
-        );
-      }).toList(),
     );
   }
 
@@ -783,44 +872,72 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   bool _validateForm() {
-    final firstName = _firstNameController.text.trim();
-    final lastName = _lastNameController.text.trim();
-    final phone = _phoneController.text.trim();
-    final email = _emailController.text.trim();
-    final l10n = AppLocalizations.of(context);
-    final isEthiopia = _selectedCountry.code == '+251';
-
-    if (firstName.isEmpty) {
-      _showErrorSnackBar(l10n.authFirstNameRequired);
+    final firstNameErr = _validateFirstName();
+    final lastNameErr = _validateLastName();
+    final phoneErr = _validatePhone();
+    final emailErr = _validateEmail();
+    setState(() {
+      _firstNameError = firstNameErr;
+      _lastNameError = lastNameErr;
+      _phoneError = phoneErr;
+      _emailError = emailErr;
+    });
+    if (firstNameErr != null) {
+      _showErrorSnackBar(firstNameErr);
       return false;
     }
-
-    if (lastName.isEmpty) {
-      _showErrorSnackBar(l10n.authLastNameRequired);
+    if (lastNameErr != null) {
+      _showErrorSnackBar(lastNameErr);
       return false;
     }
-
-    if (!isEthiopia && email.isEmpty) {
-      _showErrorSnackBar(l10n.profileEmailRequired); // Assuming this key exists or should be used
+    if (emailErr != null) {
+      _showErrorSnackBar(emailErr);
       return false;
     }
-
-    if (email.isNotEmpty && !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      _showErrorSnackBar(l10n.profileEmailInvalid);
+    if (phoneErr != null) {
+      _showErrorSnackBar(phoneErr);
       return false;
     }
-
-    if (phone.isEmpty || phone.length < 9) {
-      _showErrorSnackBar(l10n.authPhoneRequired);
-      return false;
-    }
-
     if (_selectedGender == null) {
       _showErrorSnackBar(l10n.authSelectGender);
       return false;
     }
-
     return true;
+  }
+
+  String? _validateFirstName() {
+    if (_firstNameController.text.trim().isEmpty) {
+      return l10n.authFirstNameRequired;
+    }
+    return null;
+  }
+
+  String? _validateLastName() {
+    if (_lastNameController.text.trim().isEmpty) {
+      return l10n.authLastNameRequired;
+    }
+    return null;
+  }
+
+  String? _validatePhone() {
+    final phone = _phoneController.text.trim();
+    if (phone.isEmpty || phone.length < 9) {
+      return l10n.authPhoneRequired;
+    }
+    return null;
+  }
+
+  String? _validateEmail() {
+    final email = _emailController.text.trim();
+    final isEthiopia = _selectedCountry.code == '+251';
+    if (!isEthiopia && email.isEmpty) {
+      return l10n.profileEmailRequired;
+    }
+    if (email.isNotEmpty &&
+        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      return l10n.profileEmailInvalid;
+    }
+    return null;
   }
 
   void _showErrorSnackBar(String message) {

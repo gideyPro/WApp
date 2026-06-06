@@ -1,10 +1,33 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 
-class WaveAuthBackground extends StatelessWidget {
+class WaveAuthBackground extends StatefulWidget {
   final Widget? child;
 
   const WaveAuthBackground({super.key, this.child});
+
+  @override
+  State<WaveAuthBackground> createState() => _WaveAuthBackgroundState();
+}
+
+class _WaveAuthBackgroundState extends State<WaveAuthBackground>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 18),
+      vsync: this,
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,33 +46,42 @@ class WaveAuthBackground extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Top-right decorative orb
-          Positioned(
-            top: -80,
-            right: -80,
-            child: Container(
-              width: 384,
-              height: 384,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary500.withValues(alpha: 0.15),
-              ),
-            ),
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              final t = _controller.value;
+              return Stack(
+                children: [
+                  Positioned(
+                    top: -80 + (8 * (0.5 - (t - 0.25).abs() * 2)),
+                    right: -80 + (10 * (0.5 - (t - 0.75).abs() * 2)),
+                    child: Container(
+                      width: 384,
+                      height: 384,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primary500.withValues(alpha: 0.15),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom:
+                        -80 + (10 * (0.5 - (t - 0.5).abs() * 2)),
+                    left: -80 + (8 * (0.5 - (t).abs() * 2)),
+                    child: Container(
+                      width: 384,
+                      height: 384,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primary700.withValues(alpha: 0.10),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-          // Bottom-left decorative orb
-          Positioned(
-            bottom: -80,
-            left: -80,
-            child: Container(
-              width: 384,
-              height: 384,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary700.withValues(alpha: 0.10),
-              ),
-            ),
-          ),
-          if (child != null) child!,
+          if (widget.child != null) widget.child!,
         ],
       ),
     );

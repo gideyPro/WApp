@@ -7,11 +7,11 @@ import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
 import '../../widgets/common/otp_input_field.dart';
+import '../../widgets/common/wave_language_chip.dart';
 import 'registration_screen.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -25,9 +25,11 @@ class OtpLoginScreen extends ConsumerStatefulWidget {
 
 class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
+  final FocusNode _phoneFocus = FocusNode();
   final GlobalKey<OtpInputFieldState> _otpKey = GlobalKey();
   String _otpCode = '';
   bool _hasUserData = false;
+  String? _phoneError;
 
   int _resendCountdown = 0;
   Timer? _countdownTimer;
@@ -41,11 +43,22 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authStateProvider.notifier).clearError();
     });
+    _phoneFocus.addListener(_onPhoneFocusChanged);
+  }
+
+  void _onPhoneFocusChanged() {
+    if (!_phoneFocus.hasFocus) {
+      final phone = _phoneController.text.trim();
+      setState(() {
+        _phoneError = (phone.isEmpty || phone.length < 9) ? l10n.authPhoneRequired : null;
+      });
+    }
   }
 
   @override
   void dispose() {
     _phoneController.dispose();
+    _phoneFocus.dispose();
     _countdownTimer?.cancel();
     super.dispose();
   }
@@ -70,6 +83,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
     if (authState.isAuthenticated) {
       return const Scaffold(
+        backgroundColor: AppColors.primary900,
         body: Center(
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent500),
@@ -87,11 +101,18 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       child: Scaffold(
         body: WaveAuthBackground(
           child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const SizedBox(height: 24),
+            child: Stack(
+              children: [
+                const Positioned(
+                  top: 8,
+                  right: 16,
+                  child: WaveLanguageChip(),
+                ),
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 24),
 
                   // Logo with glassmorphism
                   const GlassLogoContainer(size: 72, logoSize: 52),
@@ -195,20 +216,6 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                             const SizedBox(height: 8),
                             _buildResendOtp(),
                           ],
-
-                          // Language switcher at bottom
-                          Container(
-                            margin: const EdgeInsets.only(top: 16),
-                            padding: const EdgeInsets.only(top: 12),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                  color: AppColors.primary200.withValues(alpha: 0.4),
-                                ),
-                              ),
-                            ),
-                            child: _buildLanguageSwitcher(),
-                          ),
                         ],
                       ),
                     ),
@@ -216,6 +223,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   const SizedBox(height: 24),
                 ],
               ),
+                ),
+              ],
             ),
           ),
         ),
@@ -235,37 +244,78 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   Widget _buildPhoneInput() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: isDark ? AppColors.primary700 : AppColors.primary200),
-      ),
-      child: Row(
-        children: [
-          CountrySelectorDropdown(
-            selectedCountry: _selectedCountry,
-            onCountrySelected: (country) {
-              setState(() => _selectedCountry = country);
-            },
-          ),
-          Expanded(
-            child: TextField(
-              controller: _phoneController,
-              decoration: InputDecoration(
-                hintText: _selectedCountry.example,
-                hintStyle: AppTextStyles.bodySmall,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              ),
-              keyboardType: TextInputType.phone,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: isDark ? Colors.white : AppColors.primary900,
-              ),
+    final hasError = _phoneError != null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
+          child: Text(
+            l10n.authEnterPhone,
+            style: AppTextStyles.labelMedium.copyWith(
+              color: AppColors.primary800,
             ),
           ),
-        ],
-      ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: hasError
+                  ? AppColors.error.withValues(alpha: 0.5)
+                  : (isDark ? AppColors.primary700 : AppColors.primary200),
+            ),
+          ),
+          child: Row(
+            children: [
+              CountrySelectorDropdown(
+                selectedCountry: _selectedCountry,
+                onCountrySelected: (country) {
+                  setState(() => _selectedCountry = country);
+                },
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _phoneController,
+                  focusNode: _phoneFocus,
+                  decoration: InputDecoration(
+                    hintText: _selectedCountry.example,
+                    hintStyle: AppTextStyles.bodySmall,
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                  ),
+                  keyboardType: TextInputType.number,
+                  autofillHints: const [AutofillHints.telephoneNumber],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(15),
+                  ],
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: isDark ? Colors.white : AppColors.primary900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (_phoneError != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 4, top: 6),
+            child: Row(
+              children: [
+                const Icon(Icons.error_outline, size: 14, color: AppColors.error),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    _phoneError!,
+                    style: AppTextStyles.caption.copyWith(color: AppColors.error),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 
@@ -297,6 +347,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         style: AppTextStyles.bodyLarge.copyWith(
           color: AppColors.accent600,
           fontWeight: FontWeight.w600,
+          decoration: TextDecoration.underline,
+          decorationColor: AppColors.accent600,
         ),
       ),
     );
@@ -330,40 +382,6 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildLanguageSwitcher() {
-    final currentLocale = ref.watch(localeProvider).locale?.languageCode ?? 'en';
-    const supportedLocales = [
-      {'code': 'en', 'label': 'EN'},
-      {'code': 'am', 'label': 'AM'},
-      {'code': 'ti', 'label': 'TI'},
-    ];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: supportedLocales.map((lang) {
-        final isActive = currentLocale == lang['code'];
-        return GestureDetector(
-          onTap: () => ref.read(localeProvider.notifier).setLocale(Locale(lang['code']!)),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: isActive ? AppColors.primary600 : Colors.transparent,
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Text(
-              lang['label']!,
-              style: AppTextStyles.caption.copyWith(
-                color: isActive ? Colors.white : AppColors.primary400,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-              ),
-            ),
-          ),
-        );
-      }).toList(),
     );
   }
 
