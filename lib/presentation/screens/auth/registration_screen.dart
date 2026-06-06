@@ -136,11 +136,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           child: SafeArea(
             child: Stack(
               children: [
-                const Positioned(
-                  top: 8,
-                  right: 16,
-                  child: WaveLanguageChip(),
-                ),
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(24),
                   child: Column(
@@ -279,6 +274,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   const SizedBox(height: 24),
                 ],
               ),
+                ),
+                const Positioned(
+                  top: 8,
+                  right: 16,
+                  child: WaveLanguageChip(),
                 ),
               ],
             ),
