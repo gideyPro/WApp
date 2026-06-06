@@ -315,33 +315,6 @@ class SubscriptionServiceApi {
       return null;
     }
   }
-
-  /// Cancel current subscription
-  Future<SubscriptionResponse> cancelSubscription() async {
-    try {
-      final response = await _apiClient.dio.delete(
-        ApiConstants.cancelSubscription,
-      );
-
-      if (response.statusCode == 200) {
-        return SubscriptionResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Subscription cancelled'),
-        );
-      }
-
-      return SubscriptionResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Cancellation failed'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return SubscriptionResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
 }
 
 /// Combined response with plans + current subscription info (single API call)
