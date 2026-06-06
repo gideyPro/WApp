@@ -439,7 +439,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         _scrollToBottom();
       } else {
         final l10n = AppLocalizations.of(context);
-        WaveToast.showError(context, l10n.commonError);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.commonError), backgroundColor: AppColors.error));
       }
     }
   }

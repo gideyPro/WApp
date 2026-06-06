@@ -182,7 +182,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               ),
             );
           } catch (e) {
-            WaveToast.showError(context, 'Failed to open order: $e');
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to open order: $e'), backgroundColor: AppColors.error));
           }
         }
         break;

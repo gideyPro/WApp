@@ -85,7 +85,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       }
     } catch (e) {
       if (mounted) {
-        WaveToast.showError(context, l10n.kycError(e.toString()));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycError(e.toString())), backgroundColor: AppColors.error));
       }
     }
   }
@@ -137,12 +137,12 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   Future<void> _submitKyc() async {
     final l10n = AppLocalizations.of(context);
     if (_documentType == null) {
-      WaveToast.showError(context, l10n.kycSelectDocumentType);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycSelectDocumentType), backgroundColor: AppColors.error));
       return;
     }
 
     if (_frontImage == null) {
-      WaveToast.showError(context, l10n.kycUploadFront);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycUploadFront), backgroundColor: AppColors.error));
       return;
     }
 
@@ -160,10 +160,10 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     if (mounted) {
       if (response.success) {
         _cleanPersistedFiles();
-        WaveToast.showSuccess(context, l10n.kycSuccess);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycSuccess), backgroundColor: AppColors.success));
         ref.read(kycStatusProvider.notifier).loadKycStatus();
       } else {
-        WaveToast.showError(context, response.message);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
       }
     }
   }

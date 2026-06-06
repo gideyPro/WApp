@@ -465,15 +465,15 @@ class _SubscriptionPlansScreenState
         final response = await _subscriptionService.subscribe(plan.id);
         if (mounted) {
           if (response.success) {
-            WaveToast.showSuccess(context, l10n.subscriptionsFreeSuccess);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionsFreeSuccess), backgroundColor: AppColors.success));
             ref.read(subscriptionProvider.notifier).refresh();
           } else {
-            WaveToast.showError(context, response.message);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
           }
         }
       } catch (e) {
         if (mounted) {
-          WaveToast.showError(context, l10n.subscriptionUnexpectedError(e.toString()));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionUnexpectedError(e.toString())), backgroundColor: AppColors.error));
         }
       } finally {
         if (mounted) {
@@ -499,7 +499,7 @@ class _SubscriptionPlansScreenState
 
       if (!paymentResponse.success) {
         if (mounted) {
-          WaveToast.showError(context, paymentResponse.message);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(paymentResponse.message), backgroundColor: AppColors.error));
         }
         return;
       }
@@ -602,24 +602,24 @@ class _SubscriptionPlansScreenState
 
       if (activated || isActive) {
         if (mounted) {
-          WaveToast.showSuccess(context, l10n.subscriptionPaymentSuccess);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
         }
       } else {
         // Fallback: check payment status directly in case webhook will arrive soon
         final paymentStatus = await _subscriptionService.getLatestPaymentStatus();
         if (paymentStatus == 'pending') {
           if (mounted) {
-            WaveToast.showSuccess(context, l10n.subscriptionPaymentSuccess);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
           }
         } else {
           if (mounted) {
-            WaveToast.showError(context, l10n.subscriptionPaymentNotVerified);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentNotVerified), backgroundColor: AppColors.error));
           }
         }
       }
     } catch (e) {
       if (mounted) {
-        WaveToast.showError(context, l10n.subscriptionUnexpectedError(e.toString()));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionUnexpectedError(e.toString())), backgroundColor: AppColors.error));
       }
     } finally {
       if (mounted) {

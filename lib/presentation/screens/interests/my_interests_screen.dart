@@ -75,9 +75,9 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
       setState(() => _cancellingInterests.remove(interestId));
       if (response.success) {
         ref.read(myInterestsProvider.notifier).loadInterests();
-        WaveToast.showSuccess(context, response.message);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.success));
       } else {
-        WaveToast.showError(context, response.message);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
       }
     }
   }

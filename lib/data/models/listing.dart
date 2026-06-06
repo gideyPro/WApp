@@ -397,10 +397,7 @@ class Listing extends ChangeNotifier {
           _parseDouble(json['lease_holding_detail'] is Map
               ? json['lease_holding_detail']['annual_payment']
               : null),
-      isTransferable: _safeBool(property is Map ? property['is_transferable'] : json['is_transferable']) ??
-          _safeBool(json['lease_holding_detail'] is Map
-              ? json['lease_holding_detail']['is_transferable']
-              : null, defaultValue: true),
+      isTransferable: _safeBool(property is Map ? property['is_transferable'] : json['is_transferable']),
 
       // Cooperative details
       cooperativeName: json['cooperative_name'] ??

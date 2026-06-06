@@ -110,6 +110,9 @@ class AppColors {
   static const Color vip = Color(0xFF8B5CF6);
   static const Color vipLight = Color(0xFFEDE9FE);
 
+  // Amber / Warning accent (used in update dialogs)
+  static const Color amber = Color(0xFFF59E0B);
+
   // Semantic Colors
   static const Color error = Color(0xFF991B1B);
   static const Color errorLight = Color(0xFFFEE2E2);
@@ -127,7 +130,7 @@ class AppColors {
 
   // Gradient Definitions
   static const LinearGradient gradientPrimary = LinearGradient(
-    colors: [primary900, Color(0xFF1E293B)],
+    colors: [primary900, primary700],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
@@ -151,7 +154,7 @@ class AppColors {
   );
 
   static const LinearGradient gradientHero = LinearGradient(
-    colors: [primary900, Color(0xFF0F172A)],
+    colors: [primary900, primary800],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

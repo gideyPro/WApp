@@ -10,7 +10,6 @@ import '../../../data/services/order_service.dart';
 import '../../../data/services/lead_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../listing/listing_detail_screen.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -63,12 +62,22 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   }
 
   Future<void> _cancelOrder(int orderId, AppLocalizations l10n) async {
-    final confirmed = await WaveDialog.showConfirm(
+    final confirmed = await showDialog<bool>(
       context: context,
-      title: l10n.ordersCancel,
-      message: l10n.ordersCancelConfirm,
-      confirmLabel: l10n.listingsYes,
-      cancelLabel: l10n.commonNo,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.ordersCancel),
+        content: Text(l10n.ordersCancelConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonNo),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.listingsYes),
+          ),
+        ],
+      ),
     );
 
     if (confirmed != true || !mounted) return;
@@ -80,10 +89,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     if (mounted) {
       setState(() => _isCancelling = false);
       if (success) {
-        WaveToast.showSuccess(context, l10n.ordersCancelled);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersCancelled), backgroundColor: AppColors.success));
         if (mounted) Navigator.of(context).pop();
       } else {
-        WaveToast.showError(context, l10n.commonError);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.commonError), backgroundColor: AppColors.error));
       }
     }
   }
@@ -497,12 +506,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     final response = await LeadService().acceptSuggestion(suggestionId);
     if (mounted) {
       if (response.success) {
-        WaveToast.showSuccess(context, l10n.ordersSuggestionsAcceptedMessage);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersSuggestionsAcceptedMessage), backgroundColor: AppColors.success));
         setState(() {
           _suggestionsFuture = LeadService().getSuggestions(widget.orderId);
         });
       } else {
-        WaveToast.showError(context, l10n.ordersSuggestionsError);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersSuggestionsError), backgroundColor: AppColors.error));
       }
     }
   }
@@ -512,12 +521,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     final response = await LeadService().declineSuggestion(suggestionId);
     if (mounted) {
       if (response.success) {
-        WaveToast.showSuccess(context, l10n.ordersSuggestionsDeclinedMessage);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersSuggestionsDeclinedMessage), backgroundColor: AppColors.success));
         setState(() {
           _suggestionsFuture = LeadService().getSuggestions(widget.orderId);
         });
       } else {
-        WaveToast.showError(context, l10n.ordersSuggestionsError);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersSuggestionsError), backgroundColor: AppColors.error));
       }
     }
   }

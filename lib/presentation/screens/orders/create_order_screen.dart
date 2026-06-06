@@ -222,10 +222,10 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     if (mounted) {
       setState(() => _submitting = false);
       if (response.success) {
-        WaveToast.showSuccess(context, AppLocalizations.of(context).ordersCreated);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).ordersCreated), backgroundColor: AppColors.success));
         Navigator.of(context).pop();
       } else {
-        WaveToast.showError(context, response.message);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
       }
     }
   }

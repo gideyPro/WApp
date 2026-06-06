@@ -171,7 +171,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                           width: 3,
                         ),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: SizedBox(
                           width: 28,
                           height: 28,

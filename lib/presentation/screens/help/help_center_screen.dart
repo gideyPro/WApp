@@ -399,7 +399,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       await launchUrl(uri);
     } else {
       if (mounted) {
-        WaveToast.showError(context, AppLocalizations.of(context).helpErrorEmail);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).helpErrorEmail), backgroundColor: AppColors.error));
       }
     }
   }
@@ -410,7 +410,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       await launchUrl(uri);
     } else {
       if (mounted) {
-        WaveToast.showError(context, AppLocalizations.of(context).helpErrorPhone);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).helpErrorPhone), backgroundColor: AppColors.error));
       }
     }
   }

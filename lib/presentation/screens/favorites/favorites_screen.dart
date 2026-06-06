@@ -37,7 +37,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     if (mounted) {
       setState(() => _togglingFavorites.remove(listingId));
       if (success) {
-        WaveToast.showSuccess(context, AppLocalizations.of(context).favoritesRemoved);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).favoritesRemoved), backgroundColor: AppColors.success));
       }
     }
   }

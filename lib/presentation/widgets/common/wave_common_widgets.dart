@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
@@ -79,6 +78,7 @@ class WaveEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -88,14 +88,14 @@ class WaveEmptyState extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              decoration: const BoxDecoration(
-                color: AppColors.primary50,
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.primary700 : AppColors.primary50,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
                 size: 40,
-                color: AppColors.primary400,
+                color: isDark ? AppColors.primary300 : AppColors.primary400,
               ),
             ),
             const SizedBox(height: 24),
@@ -124,188 +124,6 @@ class WaveEmptyState extends StatelessWidget {
               ),
             ],
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// WaveMart Toast/Snackbar
-class WaveToast {
-  static void showSuccess(BuildContext context, String message) {
-    _showToast(
-      context,
-      message,
-      AppColors.success,
-      Icons.check_circle_rounded,
-    );
-  }
-
-  static void showError(BuildContext context, String message) {
-    _showToast(
-      context,
-      message,
-      AppColors.error,
-      Icons.error_outline_rounded,
-    );
-  }
-
-  static void _showToast(
-    BuildContext context,
-    String message,
-    Color bgColor,
-    IconData icon,
-  ) {
-    final overlay = Overlay.of(context);
-    late OverlayEntry overlayEntry;
-
-    overlayEntry = OverlayEntry(
-      builder: (context) => _ToastWidget(
-        message: message,
-        bgColor: bgColor,
-        icon: icon,
-        onDismiss: () => overlayEntry.remove(),
-      ),
-    );
-
-    overlay.insert(overlayEntry);
-  }
-}
-
-class _ToastWidget extends StatefulWidget {
-  final String message;
-  final Color bgColor;
-  final IconData icon;
-  final VoidCallback onDismiss;
-
-  const _ToastWidget({
-    required this.message,
-    required this.bgColor,
-    required this.icon,
-    required this.onDismiss,
-  });
-
-  @override
-  State<_ToastWidget> createState() => _ToastWidgetState();
-}
-
-class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _offsetAnimation;
-  late Animation<double> _opacityAnimation;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-
-    _offsetAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    ));
-
-    _opacityAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeIn,
-    ));
-
-    _controller.forward();
-
-    _timer = Timer(const Duration(seconds: 3), () {
-      if (mounted) {
-        _controller.reverse().then((_) => widget.onDismiss());
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: MediaQuery.of(context).padding.top + 80,
-      right: 16,
-      left: 16,
-      child: SlideTransition(
-        position: _offsetAnimation,
-        child: FadeTransition(
-          opacity: _opacityAnimation,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 400),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.8)),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary700.withValues(alpha: 0.16),
-                    blurRadius: 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 4,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: widget.bgColor,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(4),
-                        bottomLeft: Radius.circular(4),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Icon(widget.icon, color: widget.bgColor, size: 20),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      child: Text(
-                        widget.message,
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.primary800,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: GestureDetector(
-                      onTap: () {
-                        _controller.reverse().then((_) => widget.onDismiss());
-                      },
-                      child: const Icon(
-                        Icons.close,
-                        size: 16,
-                        color: AppColors.primary400,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ),
       ),
     );
@@ -540,7 +358,7 @@ class WaveMessageScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
+      backgroundColor: isDark ? AppColors.primary900 : AppColors.stone50,
       body: Stack(
         children: [
           if (showBackButton)

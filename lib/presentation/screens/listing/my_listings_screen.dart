@@ -4,7 +4,6 @@ import '../../../../data/models/listing.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_dialog.dart';
 import '../../widgets/listing_card.dart';
 import '../listing/listing_detail_screen.dart';
 import '../listing/create_listing_screen.dart';
@@ -175,7 +174,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     if (!mounted) return;
     setState(() => _editingListingId = null);
     if (!detail.success || detail.listing == null) {
-      WaveToast.showError(context, AppLocalizations.of(context).commonError);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error));
       return;
     }
     final result = await Navigator.of(context).push<bool>(
@@ -188,13 +187,23 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
 
   Future<void> _deleteListing(Listing listing) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await WaveDialog.showConfirm(
+    final confirmed = await showDialog<bool>(
       context: context,
-      title: l10n.listingDeleteConfirmTitle,
-      message: l10n.listingDeleteConfirmMessage,
-      confirmLabel: l10n.commonDelete,
-      cancelLabel: l10n.commonCancel,
-      destructive: true,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.listingDeleteConfirmTitle),
+        content: Text(l10n.listingDeleteConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: Text(l10n.commonDelete),
+          ),
+        ],
+      ),
     );
     if (confirmed != true) return;
     try {
@@ -203,7 +212,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
       if (result.success && mounted) _loadTab(_currentTab);
     } catch (e) {
       if (mounted) {
-        WaveToast.showError(context, AppLocalizations.of(context).commonError);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error));
       }
     }
   }
@@ -218,36 +227,36 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     }
 
     final l10n = AppLocalizations.of(context);
-    final confirmed = await WaveDialog.show<bool>(
+    final confirmed = await showDialog<bool>(
       context: context,
-      title: '${l10n.listingFeatureThis}?',
-      message: 'Your listing will be featured on the home page and search results for 30 days.',
-      type: DialogType.confirm,
-      actions: [
-        WaveButton(
-          text: l10n.commonCancel,
-          variant: ButtonVariant.outline,
-          onPressed: () => Navigator.pop(context, false),
-        ),
-        WaveButton(
-          text: l10n.listingFeatureNow,
-          onPressed: () => Navigator.pop(context, true),
-        ),
-      ],
+      builder: (ctx) => AlertDialog(
+        title: Text('${l10n.listingFeatureThis}?'),
+        content: const Text('Your listing will be featured on the home page and search results for 30 days.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.listingFeatureNow),
+          ),
+        ],
+      ),
     );
     if (confirmed != true) return;
     try {
       final service = ListingService();
       final result = await service.featureListing(listing.id);
       if (result.success && mounted) {
-        WaveToast.showSuccess(context, result.message);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.message), backgroundColor: AppColors.success));
         _loadTab(_currentTab);
       } else if (mounted) {
-        WaveToast.showError(context, result.message);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.message), backgroundColor: AppColors.error));
       }
     } catch (e) {
       if (mounted) {
-        WaveToast.showError(context, l10n.commonError);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.commonError), backgroundColor: AppColors.error));
       }
     }
   }

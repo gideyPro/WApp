@@ -15,6 +15,7 @@ import 'presentation/providers/version_provider.dart';
 import 'presentation/screens/splash/splash_screen.dart';
 import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
+import 'core/constants/app_colors.dart';
 import 'core/network/local_notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -219,7 +220,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
           title: Row(
             children: [
               Icon(isBlocking ? Icons.warning_amber_rounded : Icons.system_update,
-                   color: const Color(0xFFF59E0B), size: 28),
+                   color: AppColors.amber, size: 28),
               const SizedBox(width: 8),
               Text(isBlocking ? 'Update Required' : 'Update Available'),
             ],
@@ -261,7 +262,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
               onPressed: () => _openUpdateUrl(state.updateUrl, ctx),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                backgroundColor: const Color(0xFFF59E0B),
+                backgroundColor: AppColors.amber,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
               ),
@@ -297,7 +298,7 @@ class _BlockingUpdateOverlay extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.system_update, size: 64, color: Color(0xFFF59E0B)),
+                const Icon(Icons.system_update, size: 64, color: AppColors.amber),
                 const SizedBox(height: 24),
                 Text(
                   'Update Required',
@@ -336,7 +337,7 @@ class _BlockingUpdateOverlay extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      backgroundColor: const Color(0xFFF59E0B),
+                      backgroundColor: AppColors.amber,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                     ),
