@@ -69,8 +69,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
       data: (data) => data['subscription_enabled'] == true,
       orElse: () => false,
     );
-    final subscriptionState = ref.watch(subscriptionProvider);
-
     final l10n = AppLocalizations.of(context);
     final user = profileState.user ?? authState.user;
 
@@ -346,13 +344,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
               ),
             ),
 
-            if (subscriptionState.subscription != null)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 24),
-                  child: _buildUsageMeter(context, subscriptionState, l10n),
-                ),
-              ),
             const SliverToBoxAdapter(
               child: SizedBox(height: 24),
             ),
@@ -747,139 +738,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     return themeMode == ThemeMode.dark ? l10n.commonOn : l10n.commonOff;
   }
 
-  Widget _buildUsageMeter(
-    BuildContext context,
-    SubscriptionState subState,
-    AppLocalizations l10n,
-  ) {
-    final sub = subState.subscription!;
-    final plan = sub.plan;
-    final planName = plan?.name ?? l10n.subscriptionsFree;
-    final isFree = plan?.isFree ?? true;
-    final daysLeft = sub.daysRemaining;
-
-    Color statusColor;
-    String statusLabel;
-    if (sub.isExpired) {
-      statusColor = AppColors.error;
-      statusLabel = l10n.statusExpired;
-    } else if (sub.isCancelled) {
-      statusColor = AppColors.warning;
-      statusLabel = l10n.statusCancelled;
-    } else {
-      statusColor = AppColors.accent500;
-      statusLabel = l10n.statusActive;
-    }
-
-    return WaveGlass(
-      borderRadius: 16,
-      blur: 10,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    gradient: isFree
-                        ? AppColors.gradientNetwork
-                        : AppColors.gradientAccent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    isFree ? Icons.person_outline : Icons.auto_awesome,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        planName,
-                        style: AppTextStyles.title.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          color: context.textPrimary,
-                        ),
-                      ),
-                      if (daysLeft > 0 && daysLeft < 999)
-                        Text(
-                          l10n.subscriptionsDaysLeft(daysLeft),
-                          style: AppTextStyles.caption.copyWith(
-                            color: context.textSecondary,
-                            fontSize: 12,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: statusColor.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Text(
-                    statusLabel,
-                    style: AppTextStyles.caption.copyWith(
-                      color: statusColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 11,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            if (plan != null) ...[
-              const SizedBox(height: 20),
-              _UsageBar(
-                label: l10n.profileStatsListings,
-                used: sub.listingsUsed,
-                max: plan.maxListings,
-                icon: Icons.home_work_outlined,
-                color: AppColors.primary500,
-              ),
-              const SizedBox(height: 14),
-              _UsageBar(
-                label: l10n.subscriptionsFeaturedListings,
-                used: sub.featuredListingsUsed,
-                max: plan.maxFeaturedListings,
-                icon: Icons.star_outline,
-                color: AppColors.cta500,
-              ),
-              const SizedBox(height: 14),
-              _UsageBar(
-                label: 'Orders',
-                used: sub.ordersUsed,
-                max: plan.maxOrders,
-                icon: Icons.receipt_long_outlined,
-                color: AppColors.warning,
-              ),
-              const SizedBox(height: 14),
-              _UsageBar(
-                label: 'Contact Views',
-                used: subState.contactViewsUsed,
-                max: subState.contactViewsUsed + subState.contactViewsRemaining,
-                icon: Icons.visibility_outlined,
-                color: AppColors.vip,
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _MenuItemData {
@@ -896,71 +754,4 @@ class _MenuItemData {
     this.textColor,
     required this.onTap,
   });
-}
-
-class _UsageBar extends StatelessWidget {
-  final String label;
-  final int used;
-  final int max;
-  final IconData icon;
-  final Color color;
-
-  const _UsageBar({
-    required this.label,
-    required this.used,
-    required this.max,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final ratio = max > 0 ? used / max : 0.0;
-    final clampedRatio = ratio.clamp(0.0, 1.0);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final displayMax = max > 0 ? max : (used > 0 ? used : 1);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(icon, size: 14, color: context.textSecondary),
-                const SizedBox(width: 6),
-                Text(
-                  label,
-                  style: AppTextStyles.caption.copyWith(
-                    color: context.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            Text(
-              '$used / $displayMax',
-              style: AppTextStyles.caption.copyWith(
-                color: context.textPrimary,
-                fontWeight: FontWeight.w700,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: clampedRatio,
-            minHeight: 6,
-            backgroundColor:
-                isDark ? AppColors.primary700 : AppColors.primary100,
-            valueColor: AlwaysStoppedAnimation<Color>(color),
-          ),
-        ),
-      ],
-    );
-  }
 }

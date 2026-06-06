@@ -1,7 +1,6 @@
 {
   "@@locale": "en",
   "appTitle": "WaveMart",
-  
   "commonUser": "User",
   "commonNA": "N/A",
   "commonAppInitials": "WM",
@@ -26,7 +25,6 @@
   "commonRetryMessage": "Please try again",
   "commonPressBackAgain": "Press back again to exit",
   "commonComingSoon": "Coming soon",
-  
   "navHome": "Home",
   "navListings": "Listings",
   "navSearch": "Search",
@@ -35,7 +33,6 @@
   "navProfile": "Profile",
   "navMessages": "Messages",
   "navSettings": "My Account",
-  
   "homeGreeting": "Hi, {name}",
   "homeDiscover": "Discover your perfect property",
   "homeFeaturedPremium": "Premium properties",
@@ -46,13 +43,11 @@
   "vipTeaserCta": "Unlock VIP Listings",
   "vipNoListings": "No VIP listings yet — check back soon",
   "vipBadge": "VIP",
-
   "profileTitle": "Profile",
   "profileEdit": "Edit Profile",
   "profileEditSubtitle": "Update your information",
   "profileMyListings": "My Listings",
   "myListingsEmptySubtitle": "Create your first listing to get started",
-
   "noStatusListings": "No {status} listings",
   "@noStatusListings": {
     "placeholders": {
@@ -137,7 +132,6 @@
   "profileEmailInvalid": "Please enter a valid email",
   "profileSaveChanges": "Save Changes",
   "profileUpdateError": "Failed to update profile",
-  
   "kycTitle": "KYC Verification",
   "kycVerifiedTitle": "Identity Verified",
   "kycVerifiedSubtitle": "Your identity has been verified. You can now create listings and access all features.",
@@ -174,7 +168,6 @@
   "profileKycStatusVerified": "Verified",
   "profileKycStatusPending": "Pending",
   "profileKycStatusRequired": "Required",
-
   "searchFilters": "Filters",
   "searchPropertyType": "Property Type",
   "searchListingStatus": "Listing Status",
@@ -201,7 +194,6 @@
   "searchSortPriceHigh": "Price ↓",
   "searchFilterAll": "All",
   "searchFilterAny": "Any",
-
   "listingNext": "Next",
   "listingSubmit": "Submit",
   "listingSubmitListing": "Submit Listing",
@@ -391,7 +383,6 @@
   "listingsPriceRange": "{min} - {max} ETB",
   "listingsYes": "Yes",
   "listingsNo": "No",
-
   "favoritesTitle": "Favorites",
   "ordersTitle": "Orders",
   "ordersCount": "{count} orders",
@@ -443,7 +434,6 @@
   "favoritesRemove": "Remove from favorites",
   "favoritesAdded": "Added to favorites",
   "favoritesRemoved": "Removed from favorites",
-  
   "messagesTitle": "Messages",
   "messagesEmpty": "No messages yet",
   "messagesTypeMessage": "Type a message...",
@@ -451,7 +441,6 @@
   "messagesUnread": "unread",
   "messagesUnreadMessages": "Unread messages",
   "messagesSwitchContext": "Switch Context",
-
   "settingsTitle": "Settings",
   "settingsSectionAccount": "My Account",
   "settingsSectionSupport": "Support",
@@ -495,13 +484,11 @@
   "listingReviewTitle": "Review Your Changes",
   "listingDiscardTitle": "Discard Changes",
   "listingDiscardMessage": "Are you sure you want to discard your changes?",
-  
   "languageTitle": "Select Language",
   "languageEnglish": "English",
   "languageAmharic": "አማርኛ (Amharic)",
   "languageTigrinya": "ትግርኛ (Tigrinya)",
   "languageChanged": "Language changed successfully",
-  
   "authPhoneNumber": "Phone Number",
   "authEnterPhone": "Enter your phone number",
   "authSendOtp": "Send OTP",
@@ -525,7 +512,6 @@
   "authExitLogin": "Exit Login",
   "authExitLoginConfirm": "Are you sure you want to exit the login process?",
   "authNoAccount": "Don't have an account? ",
-  "authRegister": "Register",
   "authEmail": "Email",
   "authCreateAccount": "Create Your Account",
   "authJoinMarketplace": "Join Ethiopia's Premier Real Estate Marketplace",
@@ -559,14 +545,13 @@
   "subscriptionsPaymentBrowserMessage": "Complete payment in your browser. Return here after payment.",
   "subscriptionsFreeSuccess": "Free plan activated successfully!",
   "subscriptionsPaymentBrowserError": "Could not open browser for payment",
-   "subscriptionsPaymentError": "Payment error: {error}",
-   "subscriptionsExpiresOn": "Expires on {date}",
-   "subscriptionsCancelledOn": "Cancelled on {date}",
-   "subscriptionsExpiredOn": "Expired on {date}",
-   "subscriptionsFeatures": "Features",
-   "subscriptionsNoPlansAvailable": "No active subscription plans available at this time.",
-
-   "notificationsDeleteTitle": "Delete Notification",
+  "subscriptionsPaymentError": "Payment error: {error}",
+  "subscriptionsExpiresOn": "Expires on {date}",
+  "subscriptionsCancelledOn": "Cancelled on {date}",
+  "subscriptionsExpiredOn": "Expired on {date}",
+  "subscriptionsFeatures": "Features",
+  "subscriptionsNoPlansAvailable": "No active subscription plans available at this time.",
+  "notificationsDeleteTitle": "Delete Notification",
   "notificationsDeleteConfirm": "Remove this notification?",
   "notificationsDelete": "Delete",
   "notificationsEmpty": "No notifications yet",
@@ -585,7 +570,6 @@
   "paymentsFeatured": "Featured Listing",
   "paymentsDirect": "Direct Payment",
   "paymentsGeneral": "Payment",
-
   "messageRetry": "Try Again",
   "messageGoBack": "Go Back",
   "messageDismiss": "Dismiss",
@@ -700,8 +684,12 @@
   "listingsContactViewsRemaining": "{remaining} of {max} contact views remaining this period",
   "@listingsContactViewsRemaining": {
     "placeholders": {
-      "remaining": {"type": "int"},
-      "max": {"type": "int"}
+      "remaining": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
     }
   },
   "ordersLimitTitle": "Order Limit Reached",

@@ -113,13 +113,15 @@ class _SubscriptionPlansScreenState
         children: [
           // Current subscription banner (if any)
           if (subscription != null) ...[
-            if (isActiveSub)
-              _buildCurrentSubscriptionBanner(
-                subscription,
-                state.canCreateListing,
-                state.canFeatureListing,
-                state.canViewVip,
-              )
+              if (isActiveSub)
+                _buildCurrentSubscriptionBanner(
+                  subscription,
+                  state.canCreateListing,
+                  state.canFeatureListing,
+                  state.canViewVip,
+                  contactViewsUsed: state.contactViewsUsed,
+                  contactViewsRemaining: state.contactViewsRemaining,
+                )
             else
               _buildInactiveSubscriptionBanner(
                 subscription,
@@ -182,9 +184,16 @@ class _SubscriptionPlansScreenState
   }
 
   Widget _buildCurrentSubscriptionBanner(
-      Subscription sub, bool canCreateListing, bool canFeatureListing, bool canViewVip) {
+    Subscription sub,
+    bool canCreateListing,
+    bool canFeatureListing,
+    bool canViewVip, {
+    int contactViewsUsed = 0,
+    int contactViewsRemaining = 0,
+  }) {
     final localPlan = sub.plan;
     if (localPlan == null) return const SizedBox.shrink();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: AppSpacing.paddingLg,
@@ -222,86 +231,157 @@ class _SubscriptionPlansScreenState
               ),
             ],
           ),
-          Builder(builder: (context) {
-              final localFeatures = localPlan.features;
-              if (localFeatures!.isEmpty) return const SizedBox.shrink();
-              return Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 4,
-                  children: localFeatures
-                      .take(4) // Limit to first 4 features to avoid overflow
-                      .map((feature) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.check_circle,
-                                    size: 14, color: Colors.white),
-                                const SizedBox(width: 4),
-                                Text(
-                                  feature,
-                                  style: AppTextStyles.caption.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+          if (localPlan.features != null && localPlan.features!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: localPlan.features!
+                    .take(4)
+                    .map((feature) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.check_circle,
+                                  size: 14, color: Colors.white),
+                              const SizedBox(width: 4),
+                              Text(
+                                feature,
+                                style: AppTextStyles.caption.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                              ],
-                            ),
-                          ))
-                      .toList(),
-                ),
-              );
-            }),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              if (localPlan.maxListings > 0)
-                _buildStatPill(
-                  icon: Icons.home,
-                  label: l10n.subscriptionsListings,
-                  value: "${sub.listingsUsed}/${localPlan.maxListings}",
-                ),
-              if (localPlan.maxFeaturedListings > 0)
-                _buildStatPill(
-                  icon: Icons.star_border,
-                  label: l10n.listingFeatured,
-                  value: "${sub.featuredListingsUsed}/${localPlan.maxFeaturedListings}",
-                ),
-              if (localPlan.viewVip)
-                _buildStatPill(
-                  icon: Icons.diamond,
-                  label: 'VIP Viewing',
-                  value: '✓',
-                ),
-              if (localPlan.maxOrders > 0)
-                _buildStatPill(
-                  icon: Icons.shopping_cart_outlined,
-                  label: 'Orders',
-                  value: "${sub.ordersUsed}/${localPlan.maxOrders}",
-                ),
-              if (sub.daysRemaining < 999) ...[
-                _buildStatPill(
-                  icon: Icons.timer,
-                  label: l10n.subscriptionsDaysLeft(sub.daysRemaining),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          const SizedBox(height: 20),
+          _buildUsageBar(
+            label: l10n.subscriptionsListings,
+            used: sub.listingsUsed,
+            max: localPlan.maxListings,
+            icon: Icons.home_work_outlined,
+            color: isDark ? Colors.white70 : Colors.white,
+            bgColor: Colors.white.withValues(alpha: 0.15),
+          ),
+          const SizedBox(height: 14),
+          _buildUsageBar(
+            label: l10n.subscriptionsFeaturedListings,
+            used: sub.featuredListingsUsed,
+            max: localPlan.maxFeaturedListings,
+            icon: Icons.star_outline,
+            color: isDark ? Colors.white70 : Colors.white,
+            bgColor: Colors.white.withValues(alpha: 0.15),
+          ),
+          if (localPlan.maxOrders > 0) ...[
+            const SizedBox(height: 14),
+            _buildUsageBar(
+              label: 'Orders',
+              used: sub.ordersUsed,
+              max: localPlan.maxOrders,
+              icon: Icons.receipt_long_outlined,
+              color: isDark ? Colors.white70 : Colors.white,
+              bgColor: Colors.white.withValues(alpha: 0.15),
+            ),
+          ],
+          if (contactViewsUsed + contactViewsRemaining > 0) ...[
+            const SizedBox(height: 14),
+            _buildUsageBar(
+              label: 'Contact Views',
+              used: contactViewsUsed,
+              max: contactViewsUsed + contactViewsRemaining,
+              icon: Icons.visibility_outlined,
+              color: isDark ? Colors.white70 : Colors.white,
+              bgColor: Colors.white.withValues(alpha: 0.15),
+            ),
+          ],
+          if (sub.daysRemaining < 999) ...[
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                const Icon(Icons.timer, size: 14, color: Colors.white70),
+                const SizedBox(width: 6),
+                Text(
+                  l10n.subscriptionsDaysLeft(sub.daysRemaining),
+                  style: AppTextStyles.caption.copyWith(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
-            ],
-          ),
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildUsageBar({
+    required String label,
+    required int used,
+    required int max,
+    required IconData icon,
+    required Color color,
+    required Color bgColor,
+  }) {
+    final ratio = max > 0 ? used / max : 0.0;
+    final clampedRatio = ratio.clamp(0.0, 1.0);
+    final displayMax = max > 0 ? max : (used > 0 ? used : 1);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 14, color: color),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: AppTextStyles.caption.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            Text(
+              '$used / $displayMax',
+              style: AppTextStyles.caption.copyWith(
+                color: color,
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: clampedRatio,
+            minHeight: 6,
+            backgroundColor: bgColor,
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ),
+      ],
     );
   }
 
@@ -372,41 +452,6 @@ class _SubscriptionPlansScreenState
   String _formatDate(DateTime date) {
     final locale = Localizations.localeOf(context).languageCode;
     return EthiopianDateHelper.formatDual(date, locale);
-  }
-
-  Widget _buildStatPill({
-    required IconData icon,
-    required String label,
-    bool? included,
-    String? value,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            included != null
-                ? (included ? Icons.check_circle : Icons.cancel)
-                : icon,
-            size: 14,
-            color: Colors.white,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            value != null ? "$label: $value" : label,
-            style: AppTextStyles.caption.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Future<void> _selectPlan(SubscriptionPlan plan) async {
