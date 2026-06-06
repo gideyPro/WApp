@@ -474,6 +474,7 @@
   "settingsDarkMode": "Dark Mode",
   "listingEditTitle": "Edit Listing",
   "listingEditWindowExpired": "The edit window has expired. Listings can only be edited within 7 days.",
+  "listingEditCooldownActive": "Listings can only be edited once every 14 days.",
   "listingMediaLockedTitle": "Media Locked",
   "listingMediaLockedDesc": "Media cannot be modified after listing creation.",
   "listingDeleteConfirmTitle": "Delete Listing",

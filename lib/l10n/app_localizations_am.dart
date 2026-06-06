@@ -81,7 +81,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonPressBackAgain => 'ለመውጣት ደግመው ይጫኑ';
 
   @override
-  String get commonComingSoon => 'በቅርብ ቀን ይገኛል';
+  String get commonComingSoon => 'በቅርብ ቀን';
 
   @override
   String get navHome => 'መነሻ';
@@ -93,23 +93,23 @@ class AppLocalizationsAm extends AppLocalizations {
   String get navSearch => 'ፍለጋ';
 
   @override
-  String get navFavorites => 'ተወዳጆች';
+  String get navFavorites => 'የተመረጡ';
 
   @override
   String get navOrders => 'ትዕዛዞች';
 
   @override
-  String get navProfile => 'መገለጫ';
+  String get navProfile => 'ፕሮፋይል';
 
   @override
   String get navMessages => 'መልእክቶች';
 
   @override
-  String get navSettings => 'የእኔ መለያ';
+  String get navSettings => 'የኔ አካውንት';
 
   @override
   String homeGreeting(Object name) {
-    return 'ሰላም፣ $name';
+    return 'ሰላም፡ $name';
   }
 
   @override
@@ -1491,6 +1491,10 @@ class AppLocalizationsAm extends AppLocalizations {
   @override
   String get listingEditWindowExpired =>
       'የማስተካከያ ጊዜው አልፏል። ንብረቶች በ7 ቀናት ውስጥ ብቻ ማስተካከል ይቻላል።';
+
+  @override
+  String get listingEditCooldownActive =>
+      'ንብረቶች በየ14 ቀናት አንድ ጊዜ ብቻ ማስተካከል ይቻላል።';
 
   @override
   String get listingMediaLockedTitle => 'ሚዲያ ተቆልፏል';

@@ -474,6 +474,7 @@
   "settingsDarkMode": "ጨለማ ሁኔታ",
   "listingEditTitle": "ንብረት ያስተካክሉ",
   "listingEditWindowExpired": "የማስተካከያ ጊዜው አልፏል። ንብረቶች በ7 ቀናት ውስጥ ብቻ ማስተካከል ይቻላል።",
+  "listingEditCooldownActive": "ንብረቶች በየ14 ቀናት አንድ ጊዜ ብቻ ማስተካከል ይቻላል።",
   "listingMediaLockedTitle": "ሚዲያ ተቆልፏል",
   "listingMediaLockedDesc": "ንብረቱ ከተፈጠረ በኋላ ሚዲያ መቀየር አይቻልም።",
   "listingDeleteConfirmTitle": "ንብረት ሰርዝ",

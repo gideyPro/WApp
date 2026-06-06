@@ -2914,6 +2914,12 @@ abstract class AppLocalizations {
   /// **'The edit window has expired. Listings can only be edited within 7 days.'**
   String get listingEditWindowExpired;
 
+  /// No description provided for @listingEditCooldownActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Listings can only be edited once every 14 days.'**
+  String get listingEditCooldownActive;
+
   /// No description provided for @listingMediaLockedTitle.
   ///
   /// In en, this message translates to:

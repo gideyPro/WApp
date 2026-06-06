@@ -43,14 +43,14 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     final localeCode = ref.read(localeProvider).locale?.languageCode ?? 'en';
     final useLocalized = localeCode != 'en';
 
-    // 7-day edit window check
-    final editDeadline = (listing.updatedAt ?? listing.createdAt).add(const Duration(days: 7));
-    if (DateTime.now().isAfter(editDeadline)) {
+    // 14-day cooldown check from creation or last edit
+    final nextEditAllowed = (listing.updatedAt ?? listing.createdAt).add(const Duration(days: 14));
+    if (DateTime.now().isBefore(nextEditAllowed)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.listingEditWindowExpired)),
+          SnackBar(content: Text(l10n.listingEditCooldownActive)),
         );
         Navigator.of(context).pop();
       });

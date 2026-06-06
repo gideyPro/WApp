@@ -27,19 +27,19 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonYou => 'ንስኹም';
 
   @override
-  String get commonNow => 'ሕጂ';
+  String get commonNow => 'ሕዚ';
 
   @override
   String get commonOk => 'እሺ';
 
   @override
-  String get commonCancel => 'ይሰረዝ';
+  String get commonCancel => 'ሕደግ';
 
   @override
   String get commonSave => 'ዓቅብ';
 
   @override
-  String get commonDelete => 'ሰርዝ';
+  String get commonDelete => 'ኣጥፍእ';
 
   @override
   String get commonEdit => 'ኣዐሪ';
@@ -60,7 +60,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonOn => 'ተወሊዑ';
 
   @override
-  String get commonOff => 'ተጠፊኡ';
+  String get commonOff => 'ጠፊኡ';
 
   @override
   String get commonNo => 'ኣይ';
@@ -69,19 +69,19 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonYes => 'እወ';
 
   @override
-  String get commonContinue => 'ቀጽል';
+  String get commonContinue => 'ቀፅል';
 
   @override
   String get commonNoData => 'ዝተረኽበ መረዳእታ የለን';
 
   @override
-  String get commonRetryMessage => 'በጃኹም ደጊምኩም ፈትኑ';
+  String get commonRetryMessage => 'በይዝኦም ደጊሞም ይፈትኑ';
 
   @override
-  String get commonPressBackAgain => 'ንምውጻእ ደጊምኩም ጸቕጡ';
+  String get commonPressBackAgain => 'ንምውፃእ ደጊምኩም ፅቐጡ';
 
   @override
-  String get commonComingSoon => 'ብቀረባ እዋን ክመጽእ እዩ';
+  String get commonComingSoon => 'ኣብ ቀረባ እዋን';
 
   @override
   String get navHome => 'መበገሲ';
@@ -90,30 +90,30 @@ class AppLocalizationsTi extends AppLocalizations {
   String get navListings => 'ንብረታት';
 
   @override
-  String get navSearch => 'ደለይ';
+  String get navSearch => 'ድለይ';
 
   @override
-  String get navFavorites => 'ዝተመርፁ';
+  String get navFavorites => 'ዝተመረፁ';
 
   @override
   String get navOrders => 'ትእዛዛት';
 
   @override
-  String get navProfile => 'መገለጺ';
+  String get navProfile => 'ፕሮፋይል';
 
   @override
   String get navMessages => 'መልእኽታት';
 
   @override
-  String get navSettings => 'ናተይ ሕሳብ';
+  String get navSettings => 'ናተይ ኣካውንት';
 
   @override
   String homeGreeting(Object name) {
-    return 'ሰላም፣ $name';
+    return 'ሰላም፡ $name';
   }
 
   @override
-  String get homeDiscover => 'ዝበለጸ ንብረትኩም ኣብዚ ረኸቡ';
+  String get homeDiscover => 'ትደልይዎ ንብረትኩ ኣብዚ ርኸቡ';
 
   @override
   String get homeFeaturedPremium => 'ፍሉያት ንብረታት';
@@ -1490,6 +1490,10 @@ class AppLocalizationsTi extends AppLocalizations {
   @override
   String get listingEditWindowExpired =>
       'እዋን ምትሕዝት ሐሊፉ ኣሎ። ንብረታት ኣብ ውሽጢ 7 መዓልቲ ጥራይ ክትሕዘዉ ይከኣል።';
+
+  @override
+  String get listingEditCooldownActive =>
+      'ንብረታት ኣብ ውሽጢ 14 መዓልቲ ሓደ ጊዜ ጥራይ ክትሕዘዉ ይከኣል።';
 
   @override
   String get listingMediaLockedTitle => 'ሚድያ ተዓጊዱ';

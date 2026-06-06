@@ -474,6 +474,7 @@
   "settingsDarkMode": "ጸሊም መልክዕ",
   "listingEditTitle": "ንብረት ኣዐሪ",
   "listingEditWindowExpired": "እዋን ምትሕዝት ሐሊፉ ኣሎ። ንብረታት ኣብ ውሽጢ 7 መዓልቲ ጥራይ ክትሕዘዉ ይከኣል።",
+  "listingEditCooldownActive": "ንብረታት ኣብ ውሽጢ 14 መዓልቲ ሓደ ጊዜ ጥራይ ክትሕዘዉ ይከኣል።",
   "listingMediaLockedTitle": "ሚድያ ተዓጊዱ",
   "listingMediaLockedDesc": "ንብረት ምስ ተፈጠረ ሚድያ ክትቅይር ኣይትከኣልን።",
   "listingDeleteConfirmTitle": "ንብረት ሰርዝ",

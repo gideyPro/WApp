@@ -1507,6 +1507,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The edit window has expired. Listings can only be edited within 7 days.';
 
   @override
+  String get listingEditCooldownActive =>
+      'Listings can only be edited once every 14 days.';
+
+  @override
   String get listingMediaLockedTitle => 'Media Locked';
 
   @override
