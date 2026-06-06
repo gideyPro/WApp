@@ -231,62 +231,92 @@ class _SubscriptionPlansScreenState
               ),
             ],
           ),
-          if (localPlan.features != null && localPlan.features!.isNotEmpty)
+          if (localPlan.features != null && localPlan.features!.isNotEmpty || localPlan.viewVip)
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: Wrap(
                 spacing: 8,
                 runSpacing: 4,
-                children: localPlan.features!
-                    .take(4)
-                    .map((feature) => Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                children: [
+                  if (localPlan.viewVip)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.diamond,
+                              size: 14, color: Colors.white),
+                          const SizedBox(width: 4),
+                          Text(
+                            'VIP',
+                            style: AppTextStyles.caption.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.check_circle,
-                                  size: 14, color: Colors.white),
-                              const SizedBox(width: 4),
-                              Text(
-                                feature,
-                                style: AppTextStyles.caption.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                        ],
+                      ),
+                    ),
+                  ...?localPlan.features
+                      ?.take(4)
+                      .map((feature) => Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.check_circle,
+                                    size: 14, color: Colors.white),
+                                const SizedBox(width: 4),
+                                Text(
+                                  feature,
+                                  style: AppTextStyles.caption.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ))
-                    .toList(),
+                              ],
+                            ),
+                          )),
+                ],
               ),
             ),
           const SizedBox(height: 20),
-          _buildUsageBar(
-            label: l10n.subscriptionsListings,
-            used: sub.listingsUsed,
-            max: localPlan.maxListings,
-            icon: Icons.home_work_outlined,
-            color: isDark ? Colors.white70 : Colors.white,
-            bgColor: Colors.white.withValues(alpha: 0.15),
-          ),
-          const SizedBox(height: 14),
-          _buildUsageBar(
-            label: l10n.subscriptionsFeaturedListings,
-            used: sub.featuredListingsUsed,
-            max: localPlan.maxFeaturedListings,
-            icon: Icons.star_outline,
-            color: isDark ? Colors.white70 : Colors.white,
-            bgColor: Colors.white.withValues(alpha: 0.15),
-          ),
+          if (localPlan.maxListings > 0)
+            _buildUsageBar(
+              label: l10n.subscriptionsListings,
+              used: sub.listingsUsed,
+              max: localPlan.maxListings,
+              icon: Icons.home_work_outlined,
+              color: isDark ? Colors.white70 : Colors.white,
+              bgColor: Colors.white.withValues(alpha: 0.15),
+            ),
+          if (localPlan.maxListings > 0 && localPlan.maxFeaturedListings > 0)
+            const SizedBox(height: 14),
+          if (localPlan.maxFeaturedListings > 0)
+            _buildUsageBar(
+              label: l10n.subscriptionsFeaturedListings,
+              used: sub.featuredListingsUsed,
+              max: localPlan.maxFeaturedListings,
+              icon: Icons.star_outline,
+              color: isDark ? Colors.white70 : Colors.white,
+              bgColor: Colors.white.withValues(alpha: 0.15),
+            ),
           if (localPlan.maxOrders > 0) ...[
             const SizedBox(height: 14),
             _buildUsageBar(
