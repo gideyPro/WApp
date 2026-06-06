@@ -188,6 +188,9 @@ class AppTheme {
         contentTextStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.stone600,
         ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
       ),
 
       // Checkbox Theme - compact spacing for custom font metrics

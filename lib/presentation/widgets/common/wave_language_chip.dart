@@ -19,13 +19,13 @@ class WaveLanguageChip extends ConsumerWidget {
         ref.watch(localeProvider).locale?.languageCode ?? 'en';
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(100),
+      borderRadius: BorderRadius.circular(4),
       child: BackdropFilter(
         filter: const ColorFilter.mode(Color(0x33000000), BlendMode.srcOver),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(100),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.25),
               width: 1,
@@ -49,7 +49,7 @@ class WaveLanguageChip extends ConsumerWidget {
                     color: isActive
                         ? Colors.white.withValues(alpha: 0.95)
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(100),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     lang['label']!,
