@@ -12,6 +12,7 @@ enum NotificationType {
   systemAnnouncement,
   featuredListingExpired,
   suggestion,
+  subscriptionExpired,
 }
 
 /// Notification Model
@@ -111,6 +112,8 @@ class Notification {
         return NotificationType.paymentFailed;
       case 'suggestion':
         return NotificationType.suggestion;
+      case 'subscription_expired':
+        return NotificationType.subscriptionExpired;
       default:
         return NotificationType.systemAnnouncement;
     }
@@ -148,6 +151,8 @@ class Notification {
         return Icons.timer_outlined;
       case NotificationType.suggestion:
         return Icons.auto_awesome;
+      case NotificationType.subscriptionExpired:
+        return Icons.timer_off_outlined;
     }
   }
 }

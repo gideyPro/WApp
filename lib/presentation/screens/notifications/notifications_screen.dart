@@ -13,6 +13,7 @@ import '../listing/listing_detail_screen.dart';
 import '../orders/order_details_screen.dart';
 import '../payments/payment_detail_screen.dart';
 import '../payments/payment_history_screen.dart';
+import '../subscriptions/subscription_plans_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 
 /// Notifications Screen - Wired to notificationsProvider
@@ -212,6 +213,13 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         break;
       case app.NotificationType.subscriptionActivated:
       case app.NotificationType.systemAnnouncement:
+        break;
+      case app.NotificationType.subscriptionExpired:
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const SubscriptionPlansScreen(),
+          ),
+        );
         break;
     }
   }
