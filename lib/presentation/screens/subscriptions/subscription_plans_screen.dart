@@ -32,6 +32,8 @@ class _SubscriptionPlansScreenState
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   int? _processingPlanId;
   late final String _selectedCurrency;
+  final GlobalKey _plansKey = GlobalKey();
+  Timer? _paymentPollTimer;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
@@ -58,6 +60,7 @@ class _SubscriptionPlansScreenState
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    _paymentPollTimer?.cancel();
     super.dispose();
   }
 
@@ -160,14 +163,21 @@ class _SubscriptionPlansScreenState
             const SizedBox(height: 24),
 
             // Plans list
-            ...activePlans.map((SubscriptionPlan plan) => _PlanCard(
-                  plan: plan,
-                  isCurrentPlan: subscription?.planId == plan.id &&
-                      (subscription?.isActive ?? false),
-                  isLoading: _processingPlanId == plan.id,
-                  selectedCurrency: _selectedCurrency,
-                  onSelect: () => _selectPlan(plan),
-                )),
+            Container(
+              key: _plansKey,
+              child: Column(
+                children: [
+                  ...activePlans.map((SubscriptionPlan plan) => _PlanCard(
+                        plan: plan,
+                        isCurrentPlan: subscription?.planId == plan.id &&
+                            (subscription?.isActive ?? false),
+                        isLoading: _processingPlanId == plan.id,
+                        selectedCurrency: _selectedCurrency,
+                        onSelect: () => _selectPlan(plan),
+                      )),
+                ],
+              ),
+            ),
           ] else ...[
             const SizedBox(height: 32),
             Center(
@@ -193,7 +203,12 @@ class _SubscriptionPlansScreenState
   }) {
     final localPlan = sub.plan;
     if (localPlan == null) return const SizedBox.shrink();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final showDaysLeft = sub.daysRemaining < 999;
+    final isUrgent = sub.daysRemaining <= 7;
+    final hasVip = localPlan.viewVip;
+    final hasFeatures = localPlan.features != null && localPlan.features!.isNotEmpty;
+    final showContactBar = contactViewsUsed + contactViewsRemaining > 0;
 
     return Container(
       padding: AppSpacing.paddingLg,
@@ -204,7 +219,9 @@ class _SubscriptionPlansScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header: plan name + days-left pill
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Icon(Icons.star, color: Colors.white, size: 24),
               const SizedBox(width: 8),
@@ -225,136 +242,116 @@ class _SubscriptionPlansScreenState
                         style: AppTextStyles.bodySmall.copyWith(
                           color: Colors.white70,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                   ],
                 ),
               ),
+              if (showDaysLeft)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: isUrgent
+                        ? Colors.white
+                        : Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.timer,
+                        size: 12,
+                        color: isUrgent ? AppColors.error : Colors.white,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        l10n.subscriptionsDaysLeft(sub.daysRemaining),
+                        style: AppTextStyles.caption.copyWith(
+                          color: isUrgent ? AppColors.error : Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
-          if (localPlan.features != null && localPlan.features!.isNotEmpty || localPlan.viewVip)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 4,
-                children: [
-                  if (localPlan.viewVip)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.diamond,
-                              size: 14, color: Colors.white),
-                          const SizedBox(width: 4),
-                          Text(
-                            'VIP',
-                            style: AppTextStyles.caption.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ...?localPlan.features
-                      ?.take(4)
-                      .map((feature) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.check_circle,
-                                    size: 14, color: Colors.white),
-                                const SizedBox(width: 4),
-                                Text(
-                                  feature,
-                                  style: AppTextStyles.caption.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          )),
-                ],
-              ),
+          // VIP chip (visually distinct row, before features)
+          if (hasVip) ...[
+            const SizedBox(height: 12),
+            _buildVipChip(),
+          ],
+          // Feature chips
+          if (hasFeatures) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                ...?localPlan.features
+                    ?.take(4)
+                    .map((feature) => _buildFeatureChip(feature)),
+              ],
             ),
-          const SizedBox(height: 20),
+          ],
+          const SizedBox(height: 18),
+          // Two key usage bars: Listings (first) + Contact Views
           if (localPlan.maxListings > 0)
             _buildUsageBar(
               label: l10n.subscriptionsListings,
               used: sub.listingsUsed,
               max: localPlan.maxListings,
               icon: Icons.home_work_outlined,
-              color: isDark ? Colors.white70 : Colors.white,
-              bgColor: Colors.white.withValues(alpha: 0.15),
             ),
-          if (localPlan.maxListings > 0 && localPlan.maxFeaturedListings > 0)
-            const SizedBox(height: 14),
-          if (localPlan.maxFeaturedListings > 0)
+          if (localPlan.maxListings > 0 && showContactBar)
+            const SizedBox(height: 12),
+          if (showContactBar)
             _buildUsageBar(
-              label: l10n.subscriptionsFeaturedListings,
-              used: sub.featuredListingsUsed,
-              max: localPlan.maxFeaturedListings,
-              icon: Icons.star_outline,
-              color: isDark ? Colors.white70 : Colors.white,
-              bgColor: Colors.white.withValues(alpha: 0.15),
-            ),
-          if (localPlan.maxOrders > 0) ...[
-            const SizedBox(height: 14),
-            _buildUsageBar(
-              label: 'Orders',
-              used: sub.ordersUsed,
-              max: localPlan.maxOrders,
-              icon: Icons.receipt_long_outlined,
-              color: isDark ? Colors.white70 : Colors.white,
-              bgColor: Colors.white.withValues(alpha: 0.15),
-            ),
-          ],
-          if (contactViewsUsed + contactViewsRemaining > 0) ...[
-            const SizedBox(height: 14),
-            _buildUsageBar(
-              label: 'Contact Views',
+              label: l10n.subscriptionsContactViews,
               used: contactViewsUsed,
               max: contactViewsUsed + contactViewsRemaining,
               icon: Icons.visibility_outlined,
-              color: isDark ? Colors.white70 : Colors.white,
-              bgColor: Colors.white.withValues(alpha: 0.15),
             ),
-          ],
-          if (sub.daysRemaining < 999) ...[
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                const Icon(Icons.timer, size: 14, color: Colors.white70),
-                const SizedBox(width: 6),
-                Text(
-                  l10n.subscriptionsDaysLeft(sub.daysRemaining),
-                  style: AppTextStyles.caption.copyWith(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w600,
+          // Manage / Upgrade CTA
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    final ctx = _plansKey.currentContext;
+                    if (ctx != null) {
+                      Scrollable.ensureVisible(
+                        ctx,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    side: const BorderSide(
+                        color: Colors.white, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: Text(
+                    l10n.subscriptionsManage,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -365,12 +362,15 @@ class _SubscriptionPlansScreenState
     required int used,
     required int max,
     required IconData icon,
-    required Color color,
-    required Color bgColor,
   }) {
     final ratio = max > 0 ? used / max : 0.0;
     final clampedRatio = ratio.clamp(0.0, 1.0);
     final displayMax = max > 0 ? max : (used > 0 ? used : 1);
+    final progressColor = clampedRatio >= 0.9
+        ? AppColors.error
+        : clampedRatio >= 0.7
+            ? AppColors.amber
+            : Colors.white;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,12 +380,12 @@ class _SubscriptionPlansScreenState
           children: [
             Row(
               children: [
-                Icon(icon, size: 14, color: color),
+                Icon(icon, size: 14, color: Colors.white),
                 const SizedBox(width: 6),
                 Text(
                   label,
                   style: AppTextStyles.caption.copyWith(
-                    color: color,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -394,8 +394,8 @@ class _SubscriptionPlansScreenState
             Text(
               '$used / $displayMax',
               style: AppTextStyles.caption.copyWith(
-                color: color,
-                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
                 fontSize: 12,
               ),
             ),
@@ -407,11 +407,72 @@ class _SubscriptionPlansScreenState
           child: LinearProgressIndicator(
             value: clampedRatio,
             minHeight: 6,
-            backgroundColor: bgColor,
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+            backgroundColor: Colors.white.withValues(alpha: 0.15),
+            valueColor: AlwaysStoppedAnimation<Color>(progressColor),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildVipChip() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+        ),
+        borderRadius: BorderRadius.circular(4),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFFD700).withValues(alpha: 0.4),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.diamond, size: 14, color: Colors.white),
+          const SizedBox(width: 4),
+          Text(
+            l10n.subscriptionsVipAccess,
+            style: AppTextStyles.caption.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 11,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureChip(String feature) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.check_circle, size: 14, color: Colors.white),
+          const SizedBox(width: 4),
+          Text(
+            feature,
+            style: AppTextStyles.caption.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 
@@ -540,11 +601,19 @@ class _SubscriptionPlansScreenState
       }
       final txRef = paymentResponse.txRef;
 
-      // Start polling for payment status - 1s interval for instant feedback
-      Timer? paymentCheckTimer;
-      bool webViewClosed = false;
+      // Open WebView for payment (polling starts after WebView opens)
+      final webViewFuture = Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => WaveWebViewPage(
+            url: checkoutUrl,
+            title: l10n.subscriptionsSubscribe,
+          ),
+        ),
+      );
 
-      paymentCheckTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      // Start polling for payment status in parallel with the WebView
+      bool webViewClosed = false;
+      _paymentPollTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
         if (!mounted || webViewClosed) {
           timer.cancel();
           return;
@@ -556,38 +625,28 @@ class _SubscriptionPlansScreenState
           return;
         }
 
-        // If payment failed or cancelled, handle it
         if (status == 'failed' || status == 'cancelled') {
           timer.cancel();
           webViewClosed = true;
-          
           if (mounted) {
-            // Close WebView if it's still open
             Navigator.of(context).pop(status);
           }
         }
       });
 
-      // Open WebView for payment
-      final result = await Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => WaveWebViewPage(
-            url: checkoutUrl,
-            title: l10n.subscriptionsSubscribe,
-          ),
-        ),
-      );
+      final result = await webViewFuture;
 
       // Stop polling
-      paymentCheckTimer.cancel();
+      _paymentPollTimer?.cancel();
+      _paymentPollTimer = null;
       webViewClosed = true;
 
       if (!mounted) return;
 
       // Handle Failures & Retries
       if (result == 'retry' || result == 'failed' || result == 'technical_failure') {
-        final failureTitle = result == 'technical_failure' 
-            ? l10n.errorConnection 
+        final failureTitle = result == 'technical_failure'
+            ? l10n.errorConnection
             : l10n.subscriptionPaymentFailedTitle;
         final failureSubtitle = result == 'technical_failure'
             ? l10n.subscriptionTechnicalFailureSubtitle
@@ -604,15 +663,23 @@ class _SubscriptionPlansScreenState
           ),
         );
 
-        if (retryAction == 'retry' || retryAction == true || retryAction == 'Continue') {
+        if (retryAction == 'retry') {
           setState(() => _processingPlanId = null);
-          _selectPlan(plan); // RE-START FRESH
+          _selectPlan(plan);
           return;
         }
         return;
       }
-      
+
       if (result == 'cancelled' || result == 'closed') {
+        // User closed WebView before payment - show pending state
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.subscriptionsPaymentPending),
+            backgroundColor: AppColors.primary800,
+            duration: const Duration(seconds: 4),
+          ),
+        );
         return;
       }
 
@@ -689,7 +756,7 @@ class _PlanCard extends StatelessWidget {
     final isPopular = plan.slug == 'basic' || plan.slug == 'premium';
     final l10n = AppLocalizations.of(context);
 
-    return WaveCard(
+    final card = WaveCard(
       isGlass: true,
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Column(
@@ -701,10 +768,11 @@ class _PlanCard extends StatelessWidget {
               color: isCurrentPlan
                   ? AppColors.accent50
                   : isPopular
-                      ? AppColors.accent50
+                      ? AppColors.accent100
                       : Colors.transparent,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(AppSpacing.borderRadiusLg)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppSpacing.borderRadiusSm),
+              ),
             ),
             child: Row(
               children: [
@@ -727,12 +795,6 @@ class _PlanCard extends StatelessWidget {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          if (isPopular)
-                            WaveChip(
-                              label: l10n.subscriptionsPopular,
-                              variant: ChipVariant.featured,
-                              size: ChipSize.small,
-                            ),
                           if (isCurrentPlan)
                             WaveChip(
                               label: l10n.subscriptionsCurrent,
@@ -792,8 +854,10 @@ class _PlanCard extends StatelessWidget {
                         ),
                         child: Text(
                           plan.priceInfo!.isUpgrade
-                              ? 'Upgrade ${plan.priceInfo!.discountPercentage?.toInt()}% off'
-                              : 'Promo ${plan.priceInfo!.discountPercentage?.toInt()}% off',
+                              ? l10n.subscriptionsUpgradeOff(
+                                  plan.priceInfo!.discountPercentage?.toInt() ?? 0)
+                              : l10n.subscriptionsPromoOff(
+                                  plan.priceInfo!.discountPercentage?.toInt() ?? 0),
                           style: AppTextStyles.caption.copyWith(color: Colors.white, fontSize: 10),
                         ),
                       ),
@@ -812,33 +876,42 @@ class _PlanCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildFeatureRow(context,
+                _buildComparisonRow(
+                  context,
                   icon: Icons.home_outlined,
-                  label: '${plan.maxListings} ${l10n.subscriptionsListings}',
+                  label: l10n.subscriptionsListings,
+                  value: '${plan.maxListings}',
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                _buildFeatureRow(context,
+                _buildDivider(),
+                _buildComparisonRow(
+                  context,
                   icon: Icons.star_border,
-                  label: '${plan.maxFeaturedListings} ${l10n.subscriptionsFeaturedListings}',
-                  included: plan.maxFeaturedListings > 0,
+                  label: l10n.subscriptionsFeaturedListings,
+                  value: plan.maxFeaturedListings > 0
+                      ? '${plan.maxFeaturedListings}'
+                      : '—',
+                  enabled: plan.maxFeaturedListings > 0,
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                _buildFeatureRow(context,
+                _buildDivider(),
+                _buildComparisonRow(
+                  context,
                   icon: Icons.diamond,
-                  label: plan.viewVip ? 'VIP Listings ✓' : 'VIP Listings',
-                  included: plan.viewVip,
+                  label: l10n.subscriptionsVipAccess,
+                  value: plan.viewVip ? '✓' : '—',
+                  enabled: plan.viewVip,
                 ),
                 if (plan.maxContacts > 0) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  _buildFeatureRow(context,
+                  _buildDivider(),
+                  _buildComparisonRow(
+                    context,
                     icon: Icons.contact_phone_outlined,
-                    label: '${plan.maxContacts} Contact Views',
-                    included: true,
+                    label: l10n.subscriptionsContactViews,
+                    value: '${plan.maxContacts}',
                   ),
                 ],
                 // Additional features from JSON (if any)
                 if (plan.features != null && plan.features!.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.md),
                   const Divider(height: 1, thickness: 1),
                   const SizedBox(height: AppSpacing.md),
                   Text(
@@ -871,6 +944,11 @@ class _PlanCard extends StatelessWidget {
                 ],
                 const SizedBox(height: AppSpacing.lg),
 
+                // Trust signal
+                _buildTrustSignal(l10n.subscriptionsPoweredByChapa),
+
+                const SizedBox(height: AppSpacing.sm),
+
                 // Action button
                 SizedBox(
                   width: double.infinity,
@@ -898,26 +976,119 @@ class _PlanCard extends StatelessWidget {
         ],
       ),
     );
+
+    if (isPopular && !isCurrentPlan) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
+          border: Border.all(color: AppColors.accent500, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.accent500.withValues(alpha: 0.2),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            card,
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: const BoxDecoration(
+                  color: AppColors.accent500,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(AppSpacing.borderRadiusSm - 2),
+                    bottomLeft: Radius.circular(4),
+                  ),
+                ),
+                child: Text(
+                  l10n.subscriptionsPopular,
+                  style: AppTextStyles.caption.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 9,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return card;
   }
 
-  Widget _buildFeatureRow(BuildContext context, {
+  Widget _buildComparisonRow(
+    BuildContext context, {
     required IconData icon,
     required String label,
-    bool included = true,
+    required String value,
+    bool enabled = true,
   }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 18,
+            color: enabled ? AppColors.accent600 : AppColors.stone400,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              label,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: enabled
+                    ? context.theme.textPrimary
+                    : context.theme.textMuted,
+                fontWeight: enabled ? FontWeight.w600 : FontWeight.w500,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: AppTextStyles.bodyLargePlus.copyWith(
+              color: enabled
+                  ? context.theme.textPrimary
+                  : context.theme.textMuted,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: AppColors.primary100.withValues(alpha: 0.5),
+    );
+  }
+
+  Widget _buildTrustSignal(String message) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          icon,
-          size: 18,
-          color: included ? AppColors.accent600 : AppColors.stone400,
+          Icons.lock_outline,
+          size: 12,
+          color: AppColors.primary500.withValues(alpha: 0.7),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 4),
         Text(
-          label,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: included ? context.theme.textPrimary : context.theme.textMuted,
-            fontWeight: included ? FontWeight.w600 : FontWeight.w500,
+          message,
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.primary500.withValues(alpha: 0.8),
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],

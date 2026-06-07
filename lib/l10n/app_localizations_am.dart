@@ -1747,6 +1747,37 @@ class AppLocalizationsAm extends AppLocalizations {
       'በአሁኑ ጊዜ ምንም ንቁ የምዝገባ ዕቅዶች አልተገኙም።';
 
   @override
+  String get subscriptionsOrders => 'ትዕዛዞች';
+
+  @override
+  String get subscriptionsContactViews => 'የእውቂያ እይታዎች';
+
+  @override
+  String get subscriptionsManage => 'አስተዳድር';
+
+  @override
+  String get subscriptionsUpgrade => 'አሻሽል';
+
+  @override
+  String subscriptionsUpgradeOff(Object percent) {
+    return 'አሻሽል $percent% ቅናሽ';
+  }
+
+  @override
+  String subscriptionsPromoOff(Object percent) {
+    return 'ማስተዋወቂያ $percent% ቅናሽ';
+  }
+
+  @override
+  String get subscriptionsPaymentPending => 'ክፍያው ተልኳል። ሲረጋገጥ እናሳውቅዎታለን።';
+
+  @override
+  String get subscriptionsPoweredByChapa => 'ክፍያዎች በቻፓ በአስተማማኝ ሁኔታ ይከናወናሉ';
+
+  @override
+  String get subscriptionsVipAccess => 'የ VIP መዳረሻ';
+
+  @override
   String get notificationsDeleteTitle => 'ማስታወቂያ ሰርዝ';
 
   @override

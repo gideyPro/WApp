@@ -3382,6 +3382,60 @@ abstract class AppLocalizations {
   /// **'No active subscription plans available at this time.'**
   String get subscriptionsNoPlansAvailable;
 
+  /// No description provided for @subscriptionsOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get subscriptionsOrders;
+
+  /// No description provided for @subscriptionsContactViews.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Views'**
+  String get subscriptionsContactViews;
+
+  /// No description provided for @subscriptionsManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get subscriptionsManage;
+
+  /// No description provided for @subscriptionsUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get subscriptionsUpgrade;
+
+  /// No description provided for @subscriptionsUpgradeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade {percent}% off'**
+  String subscriptionsUpgradeOff(Object percent);
+
+  /// No description provided for @subscriptionsPromoOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Promo {percent}% off'**
+  String subscriptionsPromoOff(Object percent);
+
+  /// No description provided for @subscriptionsPaymentPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment submitted. We\'ll notify you when it confirms.'**
+  String get subscriptionsPaymentPending;
+
+  /// No description provided for @subscriptionsPoweredByChapa.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments are processed securely by Chapa'**
+  String get subscriptionsPoweredByChapa;
+
+  /// No description provided for @subscriptionsVipAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'VIP Access'**
+  String get subscriptionsVipAccess;
+
   /// No description provided for @notificationsDeleteTitle.
   ///
   /// In en, this message translates to:

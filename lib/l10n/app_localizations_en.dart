@@ -1770,6 +1770,39 @@ class AppLocalizationsEn extends AppLocalizations {
       'No active subscription plans available at this time.';
 
   @override
+  String get subscriptionsOrders => 'Orders';
+
+  @override
+  String get subscriptionsContactViews => 'Contact Views';
+
+  @override
+  String get subscriptionsManage => 'Manage';
+
+  @override
+  String get subscriptionsUpgrade => 'Upgrade';
+
+  @override
+  String subscriptionsUpgradeOff(Object percent) {
+    return 'Upgrade $percent% off';
+  }
+
+  @override
+  String subscriptionsPromoOff(Object percent) {
+    return 'Promo $percent% off';
+  }
+
+  @override
+  String get subscriptionsPaymentPending =>
+      'Payment submitted. We\'ll notify you when it confirms.';
+
+  @override
+  String get subscriptionsPoweredByChapa =>
+      'Payments are processed securely by Chapa';
+
+  @override
+  String get subscriptionsVipAccess => 'VIP Access';
+
+  @override
   String get notificationsDeleteTitle => 'Delete Notification';
 
   @override

@@ -1746,6 +1746,37 @@ class AppLocalizationsTi extends AppLocalizations {
       'ኣብዚ ግዘ ዝኾነ ንጡፍ ናይ ኣባልነት ትልሚ የለን።';
 
   @override
+  String get subscriptionsOrders => 'ትእዛዛት';
+
+  @override
+  String get subscriptionsContactViews => 'ናይ ርክብ ራእይ';
+
+  @override
+  String get subscriptionsManage => 'ኣመሓዳሪ';
+
+  @override
+  String get subscriptionsUpgrade => 'ኣዕብይ';
+
+  @override
+  String subscriptionsUpgradeOff(Object percent) {
+    return 'ኣዕብይ $percent% ቅናይ';
+  }
+
+  @override
+  String subscriptionsPromoOff(Object percent) {
+    return 'ምስራሽ $percent% ቅናይ';
+  }
+
+  @override
+  String get subscriptionsPaymentPending => 'ክፍሊት ተላኢኹ። ምስተረጋገጸ ክንሕብረኩም ኢና።';
+
+  @override
+  String get subscriptionsPoweredByChapa => 'ክፍሊታት ብቻፓ ብጽኑዕ ኣገባር ይካየዉ';
+
+  @override
+  String get subscriptionsVipAccess => 'ናይ VIP ምብጻሕ';
+
+  @override
   String get notificationsDeleteTitle => 'መጠንቀቕታ ሰርዝ';
 
   @override
