@@ -13,9 +13,7 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_chip.dart';
 import '../../widgets/common/wave_webview_page.dart';
-import '../../widgets/common/wave_card.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Subscription Plans Screen
@@ -299,7 +297,7 @@ class _SubscriptionPlansScreenState
             ),
           ],
           const SizedBox(height: 18),
-          // Two key usage bars: Listings (first) + Contact Views
+          // All usage bars (rendered when the plan defines a max)
           if (localPlan.maxListings > 0)
             _buildUsageBar(
               label: l10n.subscriptionsListings,
@@ -307,7 +305,25 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxListings,
               icon: Icons.home_work_outlined,
             ),
-          if (localPlan.maxListings > 0 && showContactBar)
+          if (localPlan.maxListings > 0 && localPlan.maxFeaturedListings > 0)
+            const SizedBox(height: 12),
+          if (localPlan.maxFeaturedListings > 0)
+            _buildUsageBar(
+              label: l10n.subscriptionsFeaturedListings,
+              used: sub.featuredListingsUsed,
+              max: localPlan.maxFeaturedListings,
+              icon: Icons.star_outline,
+            ),
+          if ((localPlan.maxFeaturedListings > 0) && (localPlan.maxOrders > 0))
+            const SizedBox(height: 12),
+          if (localPlan.maxOrders > 0)
+            _buildUsageBar(
+              label: l10n.subscriptionsOrders,
+              used: sub.ordersUsed,
+              max: localPlan.maxOrders,
+              icon: Icons.receipt_long_outlined,
+            ),
+          if ((localPlan.maxOrders > 0) && showContactBar)
             const SizedBox(height: 12),
           if (showContactBar)
             _buildUsageBar(
@@ -754,128 +770,59 @@ class _PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFree = plan.isFree;
     final isPopular = plan.slug == 'basic' || plan.slug == 'premium';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
+    final hasDiscount = plan.priceInfo != null && plan.priceInfo!.hasDiscount;
 
-    final card = WaveCard(
-      isGlass: true,
+    final cardColor = isDark ? AppColors.primary800 : Colors.white;
+    final borderColor = isPopular || isCurrentPlan
+        ? AppColors.accent500
+        : (isDark ? AppColors.primary700 : AppColors.primary200);
+    final borderWidth = isPopular ? 2.0 : 1.5;
+    final cardShadow = isPopular
+        ? [
+            BoxShadow(
+              color: AppColors.accent500.withValues(alpha: 0.25),
+              blurRadius: 24,
+              offset: const Offset(0, 10),
+            ),
+          ]
+        : null;
+
+    Widget card = Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
+        border: Border.all(color: borderColor, width: borderWidth),
+        boxShadow: cardShadow,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            decoration: BoxDecoration(
-              color: isCurrentPlan
-                  ? AppColors.accent50
-                  : isPopular
-                      ? AppColors.accent100
-                      : Colors.transparent,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(AppSpacing.borderRadiusSm),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Wrap(
-                        spacing: AppSpacing.sm,
-                        runSpacing: AppSpacing.xs,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text(
-                            plan.name,
-                            style: AppTextStyles.title.copyWith(
-                              color: isCurrentPlan
-                                  ? AppColors.accent700
-                                  : context.theme.textPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          if (isCurrentPlan)
-                            WaveChip(
-                              label: l10n.subscriptionsCurrent,
-                              variant: ChipVariant.current,
-                              size: ChipSize.small,
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        plan.description ?? '',
-                        style: AppTextStyles.caption.copyWith(
-                          color: context.theme.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Price
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    if (plan.priceInfo != null && plan.priceInfo!.hasDiscount) ...[
-                      Text(
-                        plan.getDisplayPrice(selectedCurrency),
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          decoration: TextDecoration.lineThrough,
-                          color: context.theme.textMuted,
-                        ),
-                      ),
-                      Text(
-                        _formatDiscountedPrice(plan, selectedCurrency),
-                        style: AppTextStyles.headline3.copyWith(
-                          color: isCurrentPlan ? AppColors.accent600 : AppColors.success,
-                        ),
-                      ),
-                    ] else
-                      Text(
-                        plan.getDisplayPrice(selectedCurrency),
-                        style: AppTextStyles.headline3.copyWith(
-                          color: isCurrentPlan ? AppColors.accent600 : context.theme.textPrimary,
-                        ),
-                      ),
-                    Text(
-                      plan.durationLabel,
-                      style: AppTextStyles.caption.copyWith(
-                        color: context.theme.textMuted,
-                      ),
-                    ),
-                    if (plan.priceInfo != null && plan.priceInfo!.hasDiscount) ...[
-                      const SizedBox(height: 2),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: plan.priceInfo!.isUpgrade ? AppColors.accent500 : AppColors.success,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          plan.priceInfo!.isUpgrade
-                              ? l10n.subscriptionsUpgradeOff(
-                                  plan.priceInfo!.discountPercentage?.toInt() ?? 0)
-                              : l10n.subscriptionsPromoOff(
-                                  plan.priceInfo!.discountPercentage?.toInt() ?? 0),
-                          style: AppTextStyles.caption.copyWith(color: Colors.white, fontSize: 10),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ],
-            ),
+          _buildHeader(
+            context: context,
+            isPopular: isPopular,
+            isFree: isFree,
+            isCurrent: isCurrentPlan,
+            hasDiscount: hasDiscount,
+            l10n: l10n,
           ),
-
-          const Divider(height: 1),
-
-          // Features
           Padding(
             padding: AppSpacing.paddingLg,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (plan.description != null && plan.description!.isNotEmpty) ...[
+                  Text(
+                    plan.description!,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: context.theme.textSecondary,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
                 _buildComparisonRow(
                   context,
                   icon: Icons.home_outlined,
@@ -909,16 +856,15 @@ class _PlanCard extends StatelessWidget {
                     value: '${plan.maxContacts}',
                   ),
                 ],
-                // Additional features from JSON (if any)
                 if (plan.features != null && plan.features!.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.md),
-                  const Divider(height: 1, thickness: 1),
+                  _buildDivider(),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     l10n.subscriptionsFeatures,
                     style: AppTextStyles.titleSmall.copyWith(
                       color: context.theme.textPrimary,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -927,14 +873,20 @@ class _PlanCard extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.check_circle,
-                                size: 16, color: AppColors.accent500),
-                            const SizedBox(width: 6),
+                            Icon(
+                              Icons.check_circle,
+                              size: 16,
+                              color: isPopular
+                                  ? AppColors.accent500
+                                  : AppColors.primary500,
+                            ),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 feature,
-                                style: AppTextStyles.bodySmall.copyWith(
-                                  color: context.theme.textSecondary,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: context.theme.textPrimary,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -943,13 +895,8 @@ class _PlanCard extends StatelessWidget {
                       )),
                 ],
                 const SizedBox(height: AppSpacing.lg),
-
-                // Trust signal
                 _buildTrustSignal(l10n.subscriptionsPoweredByChapa),
-
-                const SizedBox(height: AppSpacing.sm),
-
-                // Action button
+                const SizedBox(height: AppSpacing.md),
                 SizedBox(
                   width: double.infinity,
                   child: WaveButton(
@@ -978,50 +925,249 @@ class _PlanCard extends StatelessWidget {
     );
 
     if (isPopular && !isCurrentPlan) {
+      card = Stack(
+        children: [
+          card,
+          Positioned(
+            top: 0,
+            right: 0,
+            child: _buildPopularRibbon(l10n),
+          ),
+        ],
+      );
+    }
+
+    return card;
+  }
+
+  Widget _buildHeader({
+    required BuildContext context,
+    required bool isPopular,
+    required bool isFree,
+    required bool isCurrent,
+    required bool hasDiscount,
+    required AppLocalizations l10n,
+  }) {
+    if (isPopular) {
       return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
-          border: Border.all(color: AppColors.accent500, width: 2),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.accent500.withValues(alpha: 0.2),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg, AppSpacing.xxl, AppSpacing.lg, AppSpacing.lg),
+        decoration: const BoxDecoration(
+          gradient: AppColors.gradientAccent,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppSpacing.borderRadiusSm - 2),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTierLabel('MOST POPULAR', Colors.white),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              plan.name,
+              style: AppTextStyles.headline2.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
             ),
+            const SizedBox(height: AppSpacing.lg),
+            _buildPriceBlock(textColor: Colors.white, mutedColor: Colors.white70, l10n: l10n),
           ],
         ),
-        child: Stack(
+      );
+    }
+
+    if (isCurrent) {
+      return Container(
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.lg),
+        decoration: const BoxDecoration(
+          color: AppColors.accent50,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppSpacing.borderRadiusSm - 1),
+          ),
+          border: Border(
+            bottom: BorderSide(color: AppColors.accent200, width: 1),
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            card,
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: const BoxDecoration(
-                  color: AppColors.accent500,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(AppSpacing.borderRadiusSm - 2),
-                    bottomLeft: Radius.circular(4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTierLabel('CURRENT PLAN', AppColors.accent700),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    plan.name,
+                    style: AppTextStyles.headline3.copyWith(
+                      color: AppColors.accent800,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-                child: Text(
-                  l10n.subscriptionsPopular,
-                  style: AppTextStyles.caption.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 9,
-                    letterSpacing: 0.8,
-                  ),
-                ),
+                ],
               ),
+            ),
+            _buildPriceBlock(
+              textColor: AppColors.accent800,
+              mutedColor: AppColors.accent700,
+              l10n: l10n,
             ),
           ],
         ),
       );
     }
 
-    return card;
+    // Free / standard
+    return Container(
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.lg),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTierLabel(isFree ? 'FREE' : 'STANDARD',
+                    context.theme.textMuted),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  plan.name,
+                  style: AppTextStyles.headline3.copyWith(
+                    color: context.theme.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _buildPriceBlock(
+            textColor: context.theme.textPrimary,
+            mutedColor: context.theme.textMuted,
+            l10n: l10n,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTierLabel(String label, Color color) {
+    return Text(
+      label,
+      style: TextStyle(
+        fontFamily: 'Montserrat',
+        fontSize: 10,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 1.6,
+        color: color,
+      ),
+    );
+  }
+
+  Widget _buildPriceBlock({
+    required Color textColor,
+    required Color mutedColor,
+    required AppLocalizations l10n,
+  }) {
+    final hasDiscount = plan.priceInfo != null && plan.priceInfo!.hasDiscount;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (hasDiscount) ...[
+          Text(
+            plan.getDisplayPrice(selectedCurrency),
+            style: AppTextStyles.bodySmall.copyWith(
+              decoration: TextDecoration.lineThrough,
+              color: mutedColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 2),
+        ],
+        Text(
+          hasDiscount
+              ? _formatDiscountedPrice(plan, selectedCurrency)
+              : plan.getDisplayPrice(selectedCurrency),
+          style: AppTextStyles.priceLarge.copyWith(
+            color: textColor,
+            fontWeight: FontWeight.w800,
+            fontSize: 26,
+          ),
+        ),
+        Text(
+          plan.durationLabel,
+          style: AppTextStyles.caption.copyWith(
+            color: mutedColor,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
+          ),
+        ),
+        if (hasDiscount) ...[
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: plan.priceInfo!.isUpgrade
+                  ? Colors.white.withValues(alpha: 0.25)
+                  : AppColors.success,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              plan.priceInfo!.isUpgrade
+                  ? l10n.subscriptionsUpgradeOff(
+                      plan.priceInfo!.discountPercentage?.toInt() ?? 0)
+                  : l10n.subscriptionsPromoOff(
+                      plan.priceInfo!.discountPercentage?.toInt() ?? 0),
+              style: AppTextStyles.caption.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 10,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildPopularRibbon(AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: const BoxDecoration(
+        color: AppColors.accent600,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(AppSpacing.borderRadiusSm - 2),
+          bottomLeft: Radius.circular(6),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.star, color: Colors.white, size: 12),
+          const SizedBox(width: 4),
+          Text(
+            l10n.subscriptionsPopular,
+            style: const TextStyle(
+              fontFamily: 'Montserrat',
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 10,
+              letterSpacing: 1.0,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildComparisonRow(
