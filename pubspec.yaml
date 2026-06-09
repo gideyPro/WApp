@@ -73,20 +73,6 @@ flutter:
     - assets/lottie/
 
   fonts:
-    - family: Montserrat
-      fonts:
-        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf
-          weight: 400
-        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf
-          weight: 500
-        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf
-          weight: 600
-        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf
-          weight: 700
-        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf
-          weight: 800
-        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf
-          weight: 900
     - family: Cinzel
       fonts:
         - asset: assets/fonts/cinzel/Cinzel-Variable.ttf

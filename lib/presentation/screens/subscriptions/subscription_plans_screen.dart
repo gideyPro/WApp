@@ -1057,7 +1057,6 @@ class _PlanCard extends StatelessWidget {
     return Text(
       label,
       style: TextStyle(
-        fontFamily: 'Montserrat',
         fontSize: 10,
         fontWeight: FontWeight.w800,
         letterSpacing: 1.6,
@@ -1158,7 +1157,6 @@ class _PlanCard extends StatelessWidget {
           Text(
             l10n.subscriptionsPopular,
             style: const TextStyle(
-              fontFamily: 'Montserrat',
               color: Colors.white,
               fontWeight: FontWeight.w800,
               fontSize: 10,

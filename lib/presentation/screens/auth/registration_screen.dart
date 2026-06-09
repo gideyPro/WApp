@@ -319,11 +319,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Widget _buildOtpInfoBanner() {
+    final authState = ref.watch(authStateProvider);
     final isEthiopia = _selectedCountry.code == '+251';
     final accentColor = isEthiopia ? AppColors.emerald500 : AppColors.accent500;
 
     final message = isEthiopia
-        ? l10n.authOtpSentMessage(_phoneController.text)
+        ? l10n.authOtpSentMessage(authState.phoneNumber ?? _phoneController.text)
         : l10n.authOtpSentEmailMessage(_emailController.text);
 
     return Container(

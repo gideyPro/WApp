@@ -392,7 +392,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
     final message = isEthiopia
         ? l10n.authOtpSentMessage(authState.phoneNumber ?? '')
-        : l10n.authOtpSentEmailMessage(authState.phoneNumber ?? '');
+        : l10n.authOtpSentEmailMessage(authState.destination ?? '');
 
     return Container(
       decoration: BoxDecoration(
