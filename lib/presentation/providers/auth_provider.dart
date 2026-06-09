@@ -75,7 +75,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (response.success && response.user != null) {
       state = AuthState.authenticated(response.user!);
     } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: response.message,
+        otpMessage: state.otpMessage,
+        destination: state.destination,
+      );
     }
     return response;
   }
@@ -90,7 +95,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (response.success) {
       state = state.copyWith(isLoading: false, errorMessage: null);
     } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: response.message,
+        otpMessage: state.otpMessage,
+        destination: state.destination,
+      );
     }
     return response;
   }
@@ -108,7 +118,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
         destination: response.destination,
       );
     } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: response.message,
+        otpMessage: state.otpMessage,
+        destination: state.destination,
+      );
     }
     return response;
   }

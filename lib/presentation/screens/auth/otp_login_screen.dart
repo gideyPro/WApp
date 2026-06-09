@@ -385,31 +385,14 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     );
   }
 
-  String _maskDestination(String destination) {
-    if (destination.contains('@')) {
-      final parts = destination.split('@');
-      final local = parts[0];
-      final domain = parts[1];
-      if (local.length <= 1) return '***@$domain';
-      final maskedLocal = '${local[0]}${'*' * (local.length - 1)}';
-      return '$maskedLocal@$domain';
-    }
-    if (destination.length <= 4) return destination;
-    return '${destination.substring(0, 4)}****${destination.substring(destination.length - 3)}';
-  }
-
   Widget _buildOtpInfoBanner() {
     final authState = ref.watch(authStateProvider);
     final isEthiopia = _selectedCountry.code == '+251';
-    final dest = authState.destination;
-    final displayDestination = dest != null ? _maskDestination(dest) : null;
     final accentColor = isEthiopia ? AppColors.emerald500 : AppColors.accent500;
 
-    final effectiveMessage = authState.otpMessage != null
-        ? authState.otpMessage!
-        : isEthiopia
-            ? l10n.authOtpSentMessage(authState.phoneNumber ?? '')
-            : l10n.authOtpSentEmailMessage(displayDestination ?? 'your email');
+    final message = isEthiopia
+        ? l10n.authOtpSentMessage(authState.phoneNumber ?? '')
+        : l10n.authOtpSentEmailMessage(authState.phoneNumber ?? '');
 
     return Container(
       decoration: BoxDecoration(
@@ -435,69 +418,24 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
           children: [
-            Row(
-              children: [
-                Icon(
-                  isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
-                  size: 18,
-                  color: accentColor,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    effectiveMessage,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: context.textPrimary,
-                      fontWeight: FontWeight.w600,
-                      height: 1.4,
-                    ),
-                  ),
-                ),
-              ],
+            Icon(
+              isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
+              size: 18,
+              color: accentColor,
             ),
-            if (displayDestination != null) ...[
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: context.theme.isDark
-                      ? Colors.white.withValues(alpha: 0.05)
-                      : AppColors.primary50,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      isEthiopia ? Icons.phone_outlined : Icons.email_outlined,
-                      size: 14,
-                      color: context.textSecondary,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      displayDestination,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: context.textPrimary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: context.textPrimary,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
-            if (!isEthiopia) ...[
-              const SizedBox(height: 8),
-              Text(
-                l10n.authSpamFolderHint,
-                style: AppTextStyles.caption.copyWith(
-                  color: context.textSecondary,
-                ),
-              ),
-            ],
+            ),
           ],
         ),
       ),
