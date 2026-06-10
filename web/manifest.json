@@ -1,11 +1,11 @@
 {
-    "name": "wavemart",
-    "short_name": "wavemart",
+    "name": "WaveMart",
+    "short_name": "WaveMart",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0A416B",
+    "theme_color": "#0A416B",
+    "description": "WaveMart - Your Trusted Property Marketplace",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -1309,7 +1309,7 @@ ${listing.getLocalizedTitle(context)}
 ${listing.getLocalizedPrice(context)}
 ${listing.description?.isNotEmpty == true ? '\n${listing.description}' : ''}
 
-Shared from WaveMart - Ethiopia's Premier Real Estate Marketplace
+Shared from WaveMart - Your Trusted Property Marketplace
 ''';
 
     await Share.share(

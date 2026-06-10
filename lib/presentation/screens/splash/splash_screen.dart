@@ -143,7 +143,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Ethiopia\'s Premier Real Estate Marketplace',
+                            'Your Trusted Property Marketplace',
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: Colors.white.withValues(alpha: 0.85),
                               letterSpacing: 0.5,

@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'WaveMart';
+  String get appTitle => 'Wavemart';
 
   @override
   String get commonUser => 'User';
@@ -116,7 +116,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeDiscover => 'Discover your perfect property';
 
   @override
-  String get homeFeaturedPremium => 'Premium properties';
+  String get homeFeaturedPremium => 'Premium Listings';
 
   @override
   String get homeLatestRecently => 'Recently added';
@@ -134,19 +134,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vipTeaserCta => 'Unlock VIP Listings';
 
   @override
-  String get vipNoListings => 'No VIP listings yet — check back soon';
+  String get vipNoListings => 'No VIP listings yet ';
 
   @override
   String get vipBadge => 'VIP';
 
   @override
   String get profileTitle => 'Profile';
-
-  @override
-  String get profileEdit => 'Edit Profile';
-
-  @override
-  String get profileEditSubtitle => 'Update your information';
 
   @override
   String get profileMyListings => 'My Listings';
@@ -1598,8 +1592,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authWelcomeTitle => 'Welcome to WaveMart';
 
   @override
-  String get authWelcomeSubtitle =>
-      'Ethiopia\'s Premier Real Estate Marketplace';
+  String get authWelcomeSubtitle => 'Your Trusted Property Marketplace';
 
   @override
   String authOtpSentMessage(Object phone) {
@@ -1644,8 +1637,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authCreateAccount => 'Create Your Account';
 
   @override
-  String get authJoinMarketplace =>
-      'Join Ethiopia\'s Premier Real Estate Marketplace';
+  String get authJoinMarketplace => 'Join Your Trusted Property Marketplace';
 
   @override
   String get authPersonalInfo => 'Personal Information';

@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'WaveMart'**
+  /// **'Wavemart'**
   String get appTitle;
 
   /// No description provided for @commonUser.
@@ -313,7 +313,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeFeaturedPremium.
   ///
   /// In en, this message translates to:
-  /// **'Premium properties'**
+  /// **'Premium Listings'**
   String get homeFeaturedPremium;
 
   /// No description provided for @homeLatestRecently.
@@ -349,7 +349,7 @@ abstract class AppLocalizations {
   /// No description provided for @vipNoListings.
   ///
   /// In en, this message translates to:
-  /// **'No VIP listings yet — check back soon'**
+  /// **'No VIP listings yet '**
   String get vipNoListings;
 
   /// No description provided for @vipBadge.
@@ -363,18 +363,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile'**
   String get profileTitle;
-
-  /// No description provided for @profileEdit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit Profile'**
-  String get profileEdit;
-
-  /// No description provided for @profileEditSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Update your information'**
-  String get profileEditSubtitle;
 
   /// No description provided for @profileMyListings.
   ///
@@ -3091,7 +3079,7 @@ abstract class AppLocalizations {
   /// No description provided for @authWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Ethiopia\'s Premier Real Estate Marketplace'**
+  /// **'Your Trusted Property Marketplace'**
   String get authWelcomeSubtitle;
 
   /// No description provided for @authOtpSentMessage.
@@ -3163,7 +3151,7 @@ abstract class AppLocalizations {
   /// No description provided for @authJoinMarketplace.
   ///
   /// In en, this message translates to:
-  /// **'Join Ethiopia\'s Premier Real Estate Marketplace'**
+  /// **'Join Your Trusted Property Marketplace'**
   String get authJoinMarketplace;
 
   /// No description provided for @authPersonalInfo.
