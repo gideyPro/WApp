@@ -106,7 +106,7 @@ class VideoProcessing {
 }
 
 /// Listing Model
-class Listing extends ChangeNotifier {
+class Listing {
   final int id;
   final int? userId;
   final int? propertyId;
@@ -443,7 +443,6 @@ class Listing extends ChangeNotifier {
     );
   }
 
-  
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -631,11 +630,6 @@ class Listing extends ChangeNotifier {
     return daysOld <= 7;
   }
 
-  /// Whether the listing is currently displayed as VIP.
-  ///
-  /// Mirrors [isFeaturedActive] structurally so a future `vip_until`
-  /// field can be slotted in without a card-side refactor. Today the
-  /// backend has no VIP expiry, so this is equivalent to [isVip].
   bool get isVipActive => isVip;
 
   bool get isFeaturedActive {

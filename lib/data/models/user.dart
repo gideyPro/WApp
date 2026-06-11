@@ -1,7 +1,5 @@
-import 'package:flutter/foundation.dart';
-
 /// User model
-class User extends ChangeNotifier {
+class User {
   final int id;
   final String firstName;
   final String? lastName;

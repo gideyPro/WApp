@@ -55,7 +55,6 @@ void main() async {
 
   // Initialize Notifications
   await LocalNotificationService.initialize();
-  // Permission request moved to FcmService.initialize() for consolidation
 
   // Initialize Intl
   await initializeDateFormatting();
