@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/models/listing.dart';
-import '../../../../data/services/listing_service.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/listing_card.dart';
@@ -111,8 +110,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     }
     setState(() {});
 
-    final service = ListingService();
-    final response = await service.getMyListings(
+    final response = await ref.read(listingServiceProvider).getMyListings(
       page: page,
       status: _statusForTab(tabIndex),
     );
@@ -169,8 +167,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
 
   Future<void> _editListing(Listing listing) async {
     setState(() => _editingListingId = listing.id);
-    final service = ListingService();
-    final detail = await service.getListingDetail(listing.id);
+    final detail = await ref.read(listingServiceProvider).getListingDetail(listing.id);
     if (!mounted) return;
     setState(() => _editingListingId = null);
     if (!detail.success || detail.listing == null) {
@@ -207,8 +204,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     );
     if (confirmed != true) return;
     try {
-      final service = ListingService();
-      final result = await service.deleteListing(listing.id);
+      final result = await ref.read(listingServiceProvider).deleteListing(listing.id);
       if (result.success && mounted) _loadTab(_currentTab);
     } catch (e) {
       if (mounted) {
@@ -246,8 +242,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     );
     if (confirmed != true) return;
     try {
-      final service = ListingService();
-      final result = await service.featureListing(listing.id);
+      final result = await ref.read(listingServiceProvider).featureListing(listing.id);
       if (result.success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.message), backgroundColor: AppColors.success));
         _loadTab(_currentTab);

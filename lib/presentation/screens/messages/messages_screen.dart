@@ -851,7 +851,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   color: context.isDarkMode ? AppColors.primary900 : AppColors.surface,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.navy950.withValues(alpha: 0.05),
+                      color: AppColors.primary950.withValues(alpha: 0.05),
                       blurRadius: 4,
                       offset: const Offset(0, -2),
                     ),

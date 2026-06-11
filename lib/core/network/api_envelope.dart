@@ -196,10 +196,6 @@ class ApiEnvelope {
   /// Debug-only: log the raw envelope shape to help diagnose new endpoints.
   /// No-op in release.
   static void debugLog(String tag, dynamic raw) {
-    if (kDebugMode) {
-      // ignore: avoid_print
-      print('[$tag] envelope: $raw');
-    }
   }
 }
 

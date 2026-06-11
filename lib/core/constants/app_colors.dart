@@ -18,19 +18,6 @@ class AppColors {
   static const Color primary900 = Color(0xFF0A416B); // Core Logo Navy
   static const Color primary950 = Color(0xFF073254);
 
-  // Deprecated aliases for compatibility
-  static const Color navy50 = primary50;
-  static const Color navy100 = primary100;
-  static const Color navy200 = primary200;
-  static const Color navy300 = primary300;
-  static const Color navy400 = primary400;
-  static const Color navy500 = primary500;
-  static const Color navy600 = primary600;
-  static const Color navy700 = primary700;
-  static const Color navy800 = primary800;
-  static const Color navy900 = primary900;
-  static const Color navy950 = primary950;
-
   // Accent - Logo Emerald
   static const Color accent50 = Color(0xFFECFDF5);
   static const Color accent100 = Color(0xFFD1FAE5);
@@ -43,19 +30,6 @@ class AppColors {
   static const Color accent800 = Color(0xFF047857);
   static const Color accent900 = Color(0xFF064E3B);
   static const Color accent950 = Color(0xFF052B19);
-
-  // Deprecated aliases for compatibility
-  static const Color wave50 = accent50;
-  static const Color wave100 = accent100;
-  static const Color wave200 = accent200;
-  static const Color wave300 = accent300;
-  static const Color wave400 = accent400;
-  static const Color wave500 = accent500;
-  static const Color wave600 = accent600;
-  static const Color wave700 = accent700;
-  static const Color wave800 = accent800;
-  static const Color wave900 = accent900;
-  static const Color wave950 = accent950;
 
   // CTA Blue
   static const Color cta50 = Color(0xFFF0F9FF);

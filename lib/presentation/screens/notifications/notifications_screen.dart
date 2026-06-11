@@ -153,7 +153,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         await ref
             .read(notificationsProvider.notifier)
             .markAsRead(notification.id);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Error: $e');
+      }
     }
 
     if (!mounted) return;

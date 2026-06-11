@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../widgets/status_helpers.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../data/services/order_service.dart';
 import '../../../data/services/lead_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -41,8 +40,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   }
 
   Future<void> _loadOrder() async {
-    final service = OrderService();
-    final response = await service.getOrder(widget.orderId);
+    final response = await ref.read(orderServiceProvider).getOrder(widget.orderId);
     if (mounted && response.success) {
       setState(() {
         _order = response.orders.first;
@@ -225,8 +223,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             Row(
               children: [
                 _buildBadge(
-                  _typeLabel(_order.type, l10n),
-                  _typeColor(_order.type),
+                  typeLabel(_order.type, l10n),
+                  typeColor(_order.type),
                   Colors.white,
                 ),
                 const SizedBox(width: 6),
@@ -238,9 +236,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   ),
                 const Spacer(),
                 _buildBadge(
-                  _statusLabel(_order.status, l10n),
-                  _statusColor(_order.status).withValues(alpha: 0.15),
-                  _statusColor(_order.status),
+                  statusLabel(_order.status, l10n),
+                  statusColor(_order.status).withValues(alpha: 0.15),
+                  statusColor(_order.status),
                 ),
               ],
             ),
@@ -249,14 +247,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             // Budget
             if (_order.minBudget != null || _order.maxBudget != null) ...[
               _detailRow(l10n.ordersBudget,
-                  _formatRange(_order.minBudget, _order.maxBudget, 'ETB')),
+                  formatRange(_order.minBudget, _order.maxBudget, 'ETB', l10n)),
               const Divider(height: 16),
             ],
 
             // Area
             if (_order.minArea != null || _order.maxArea != null) ...[
               _detailRow(l10n.ordersArea,
-                  _formatRange(_order.minArea, _order.maxArea, 'm²')),
+                  formatRange(_order.minArea, _order.maxArea, 'm²', l10n)),
               const Divider(height: 16),
             ],
 
@@ -399,7 +397,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     ),
                     if (suggestion.listingPrice != null)
                       Text(
-                        l10n.listingsPriceFixed(_formatPrice(suggestion.listingPrice)),
+                        l10n.listingsPriceFixed(formatPrice(suggestion.listingPrice)),
                         style: AppTextStyles.caption
                             .copyWith(color: ThemeColors(context).textSecondary),
                       ),
@@ -503,12 +501,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
   Future<void> _acceptSuggestion(
       int suggestionId, AppLocalizations l10n) async {
-    final response = await LeadService().acceptSuggestion(suggestionId);
+    final response = await ref.read(leadServiceProvider).acceptSuggestion(suggestionId);
     if (mounted) {
       if (response.success) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersSuggestionsAcceptedMessage), backgroundColor: AppColors.success));
         setState(() {
-          _suggestionsFuture = LeadService().getSuggestions(widget.orderId);
+          _suggestionsFuture = ref.read(leadServiceProvider).getSuggestions(widget.orderId);
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersSuggestionsError), backgroundColor: AppColors.error));
@@ -518,12 +516,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
   Future<void> _declineSuggestion(
       int suggestionId, AppLocalizations l10n) async {
-    final response = await LeadService().declineSuggestion(suggestionId);
+    final response = await ref.read(leadServiceProvider).declineSuggestion(suggestionId);
     if (mounted) {
       if (response.success) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersSuggestionsDeclinedMessage), backgroundColor: AppColors.success));
         setState(() {
-          _suggestionsFuture = LeadService().getSuggestions(widget.orderId);
+          _suggestionsFuture = ref.read(leadServiceProvider).getSuggestions(widget.orderId);
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.ordersSuggestionsError), backgroundColor: AppColors.error));
@@ -573,56 +571,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         ),
       ),
     );
-  }
-
-  String _statusLabel(String status, AppLocalizations l10n) {
-    switch (status) {
-      case 'active':
-        return l10n.ordersStatusActive;
-      case 'fulfilled':
-        return l10n.ordersStatusFulfilled;
-      case 'cancelled':
-        return l10n.ordersStatusCancelled;
-      default:
-        return status;
-    }
-  }
-
-  Color _statusColor(String status) {
-    switch (status) {
-      case 'active':
-        return AppColors.accent500;
-      case 'fulfilled':
-        return AppColors.success;
-      case 'cancelled':
-        return AppColors.stone400;
-      default:
-        return AppColors.primary400;
-    }
-  }
-
-  String _typeLabel(String type, AppLocalizations l10n) {
-    return type == 'house' ? l10n.ordersTypeHouse : l10n.ordersTypeLand;
-  }
-
-  Color _typeColor(String type) {
-    return type == 'house' ? AppColors.primary600 : AppColors.emerald500;
-  }
-
-  String _formatPrice(double? value) {
-    if (value == null) return '0';
-    final formatter = NumberFormat('#,###', 'en_US');
-    return formatter.format(value);
-  }
-
-  String _formatRange(double? min, double? max, String unit) {
-    final l10n = AppLocalizations.of(context);
-    if (min != null && max != null) {
-      return '${_formatPrice(min)} - ${_formatPrice(max)} $unit';
-    }
-    if (min != null) return '${_formatPrice(min)}+ $unit';
-    if (max != null) return l10n.orderUpTo(_formatPrice(max), unit);
-    return '';
   }
 
   Widget _detailRow(String label, String value, {bool isDescription = false}) {

@@ -1,13 +1,13 @@
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
+import '../../widgets/status_helpers.dart';
 
 import 'create_order_screen.dart';
 import 'order_details_screen.dart';
@@ -44,40 +44,6 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     } finally {
       if (mounted) setState(() => _isCreatingOrder = false);
     }
-  }
-
-  String _statusLabel(String status, AppLocalizations l10n) {
-    switch (status) {
-      case 'active':
-        return l10n.ordersStatusActive;
-      case 'fulfilled':
-        return l10n.ordersStatusFulfilled;
-      case 'cancelled':
-        return l10n.ordersStatusCancelled;
-      default:
-        return status;
-    }
-  }
-
-  Color _statusColor(String status) {
-    switch (status) {
-      case 'active':
-        return AppColors.accent500;
-      case 'fulfilled':
-        return AppColors.success;
-      case 'cancelled':
-        return const Color(0xFF94A3B8);
-      default:
-        return const Color(0xFF64748B);
-    }
-  }
-
-  String _typeLabel(String type, AppLocalizations l10n) {
-    return type == 'house' ? l10n.ordersTypeHouse : l10n.ordersTypeLand;
-  }
-
-  Color _typeColor(String type) {
-    return type == 'house' ? AppColors.primary800 : AppColors.emerald500;
   }
 
   @override
@@ -169,8 +135,8 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                       Row(
                         children: [
                           _buildBadge(
-                            _typeLabel(order.type, l10n),
-                            _typeColor(order.type),
+                            typeLabel(order.type, l10n),
+                            typeColor(order.type),
                             Colors.white,
                           ),
                           if (order.holdingType != null) ...[
@@ -183,9 +149,9 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           ],
                           const Spacer(),
                           _buildBadge(
-                            _statusLabel(order.status, l10n),
-                            _statusColor(order.status).withValues(alpha: 0.15),
-                            _statusColor(order.status),
+                            statusLabel(order.status, l10n),
+                            statusColor(order.status).withValues(alpha: 0.15),
+                            statusColor(order.status),
                           ),
                         ],
                       ),
@@ -204,8 +170,8 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                               order.maxBudget != null)
                             _infoChip(
                               Icons.monetization_on_outlined,
-                              _formatRange(
-                                  order.minBudget, order.maxBudget, 'ETB'),
+                              formatRange(
+                                  order.minBudget, order.maxBudget, 'ETB', l10n),
                             ),
                           if ((order.minBudget != null ||
                                   order.maxBudget != null) &&
@@ -214,7 +180,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           if (order.minArea != null || order.maxArea != null)
                             _infoChip(
                               Icons.square_foot,
-                              _formatRange(order.minArea, order.maxArea, 'm²'),
+                              formatRange(order.minArea, order.maxArea, 'm²', l10n),
                             ),
                         ],
                       ),
@@ -336,19 +302,4 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     );
   }
 
-  String _formatPrice(double? value) {
-    if (value == null) return '0';
-    final formatter = NumberFormat('#,###', 'en_US');
-    return formatter.format(value);
-  }
-
-  String _formatRange(double? min, double? max, String unit) {
-    final l10n = AppLocalizations.of(context);
-    if (min != null && max != null) {
-      return '${_formatPrice(min)} - ${_formatPrice(max)} $unit';
-    }
-    if (min != null) return '${_formatPrice(min)}+ $unit';
-    if (max != null) return l10n.orderUpTo(_formatPrice(max), unit);
-    return '';
-  }
 }

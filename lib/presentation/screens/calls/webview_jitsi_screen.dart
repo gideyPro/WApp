@@ -6,9 +6,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:dio/dio.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../providers/app_providers.dart';
 
 /// WebView-based Jitsi call screen that properly handles authentication
 /// by pre-injecting session cookies to avoid login page redirect
@@ -64,7 +64,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
       }
 
       // 2. Get auth token
-      final apiClient = ApiClient();
+      final apiClient = ref.read(apiClientProvider);
       final token = await apiClient.getAuthToken();
       if (token == null) {
         setState(() {
@@ -93,10 +93,8 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
           final cookieData = sessionResponse.data['data'];
           await _injectSessionCookie(cookieData);
         } else {
-          debugPrint('Failed to get session cookie: ${sessionResponse.data}');
         }
       } catch (e) {
-        debugPrint('Error getting session cookie: $e');
       }
 
       setState(() {
@@ -144,9 +142,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
         isHttpOnly: cookieData['http_only'] ?? true,
       );
 
-      debugPrint('Session cookie injected: $cookieName for domain: $domain secure: $isSecure');
     } catch (e) {
-      debugPrint('Failed to inject session cookie: $e');
     }
   }
 
@@ -160,7 +156,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
   }
 
   Future<String> _getConferenceUrl() async {
-    final apiClient = ApiClient();
+    final apiClient = ref.read(apiClientProvider);
     final token = await apiClient.getAuthToken();
     final uri =
         Uri.parse('${ApiConstants.baseUrl}/conferences/${widget.conferenceId}/join');
@@ -211,7 +207,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.navy950 : Colors.white,
+      backgroundColor: isDark ? AppColors.primary950 : Colors.white,
       appBar: AppBar(
         backgroundColor: isDark ? AppColors.primary900 : Colors.white,
         title: Text(AppLocalizations.of(context).jitsiCallTitle),
@@ -298,7 +294,6 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
         }
 
         final url = snapshot.data!;
-        debugPrint('Loading WebView with URL: $url');
 
         return Stack(
           children: [
@@ -323,13 +318,11 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
             controller.addJavaScriptHandler(
               handlerName: 'onJitsiLeave',
               callback: (args) {
-                debugPrint('Jitsi leave event received via JS');
                 _leaveCall();
               },
             );
           },
           onPermissionRequest: (controller, request) async {
-            debugPrint('WebView permission request: ${request.resources}');
             return PermissionResponse(
               resources: request.resources,
               action: PermissionResponseAction.GRANT,
@@ -339,15 +332,11 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
             setState(() {
               _progress = progress / 100;
             });
-            debugPrint('WebView progress: $progress%');
           },
           onLoadStart: (controller, url) {
-            debugPrint('WebView started loading: $url');
           },
           onLoadStop: (controller, url) async {
-            debugPrint('WebView finished loading: $url');
             if (!_isConferenceUrl(url?.toString())) {
-              debugPrint('Navigated away from conference URL, leaving call');
               _leaveCall();
               return;
             }
@@ -371,7 +360,6 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
             ''');
           },
           onReceivedError: (controller, request, error) {
-            debugPrint('WebView error: ${error.description}');
             if (!_hasLeft) {
               setState(() {
                 _hasError = true;
@@ -382,9 +370,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
           shouldOverrideUrlLoading: (controller, navigationAction) async {
             final uri = navigationAction.request.url;
             if (uri != null) {
-              debugPrint('WebView navigating to: $uri');
               if (!_isConferenceUrl(uri.toString())) {
-                debugPrint('Navigation outside conference detected, leaving call');
                 _leaveCall();
                 return NavigationActionPolicy.CANCEL;
               }
@@ -392,7 +378,6 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
             return NavigationActionPolicy.ALLOW;
           },
           onCloseWindow: (controller) {
-            debugPrint('WebView window closed');
             _leaveCall();
           },
         ),

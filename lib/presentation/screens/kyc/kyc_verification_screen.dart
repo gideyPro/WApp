@@ -30,7 +30,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   File? _selfieImage;
   bool _isSubmitting = false;
   final ImagePicker _picker = ImagePicker();
-  final KycService _kycService = KycService();
+  KycService get _kycService => ref.read(kycServiceProvider);
   final List<String> _persistedPaths = [];
 
   bool _showFormManually = false;

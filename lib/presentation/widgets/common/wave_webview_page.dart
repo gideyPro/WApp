@@ -46,7 +46,6 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
     _watchdogTimer?.cancel();
     _watchdogTimer = Timer(const Duration(minutes: 1), () {
       if (isLoading && mounted) {
-        debugPrint('WebView Watchdog Timeout: Page failed to load in 60s');
         _handleError('Gateway Timeout');
       }
     });
@@ -56,7 +55,6 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
     if (_hasError) return;
     _hasError = true;
     _watchdogTimer?.cancel();
-    debugPrint('WebView Technical Error: $message');
     if (mounted) {
       Navigator.of(context).pop('technical_failure');
     }
@@ -152,12 +150,9 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
   }
 
   void _checkUrl(String url) {
-    debugPrint('WebView navigating to: $url');
-    
     // Check for success URLs
     for (final successUrl in widget.successUrls) {
       if (url.contains(successUrl)) {
-        debugPrint('Success URL detected: $url');
         Navigator.of(context).pop('success');
         return;
       }
@@ -166,7 +161,6 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
     // Check for cancel URLs
     for (final cancelUrl in widget.cancelUrls) {
       if (url.contains(cancelUrl)) {
-        debugPrint('Cancel URL detected: $url');
         Navigator.of(context).pop('cancelled');
         return;
       }

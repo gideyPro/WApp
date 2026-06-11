@@ -6,6 +6,7 @@ import '../../../../core/utils/ethiopian_date_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../data/models/payment.dart';
 import '../../../../data/services/payment_service.dart';
+import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../core/constants/app_spacing.dart';
 
@@ -20,7 +21,7 @@ class PaymentDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
-  final PaymentService _paymentService = PaymentService();
+  PaymentService get _paymentService => ref.read(paymentServiceProvider);
   Payment? _payment;
   bool _isLoading = true;
   String? _error;

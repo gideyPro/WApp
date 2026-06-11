@@ -106,8 +106,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     setState(() => _isConnecting = true);
 
     try {
-      final service = ConferenceService();
-      final response = await service.joinConference(widget.conferenceId);
+      final response = await ref.read(conferenceServiceProvider).joinConference(widget.conferenceId);
       
       if (!mounted) return;
       ref.read(incomingCallProvider.notifier).clearIncomingCall();
@@ -162,7 +161,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.navy950,
+        backgroundColor: AppColors.primary950,
         body: SafeArea(
           child: Column(
             children: [

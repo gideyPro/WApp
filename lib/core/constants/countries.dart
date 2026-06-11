@@ -319,7 +319,7 @@ class CountrySelectorDropdown extends StatelessWidget {
               selectedCountry.code,
               style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white : AppColors.navy900,
+                color: isDark ? Colors.white : AppColors.primary900,
               ),
             ),
             const SizedBox(width: 2),

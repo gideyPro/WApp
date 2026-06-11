@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
-import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
 import '../../../core/network/api_envelope.dart';
 import '../../../data/models/listing.dart';
@@ -90,7 +89,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Future<void> _loadSettings() async {
     try {
       final response =
-          await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
+          await ref.read(apiClientProvider).dio.get('${ApiConstants.apiBase}/settings');
       if (response.statusCode == 200 && response.data is Map) {
         final data = ApiEnvelope.extractData(response.data);
         if (data.isNotEmpty && mounted) {
@@ -99,7 +98,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           });
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
   }
 
   @override

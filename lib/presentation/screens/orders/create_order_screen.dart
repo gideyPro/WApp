@@ -6,7 +6,6 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../data/services/order_service.dart';
 import '../../../data/services/address_service.dart';
 import '../../../data/models/address.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -15,7 +14,6 @@ import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 
 import '../../providers/app_providers.dart';
-import '../../../core/network/api_client.dart';
 import '../../../core/network/api_constants.dart';
 import '../../../core/network/api_envelope.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
@@ -43,7 +41,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   final _descriptionCtrl = TextEditingController();
 
   // Address picker
-  final _addressService = AddressService();
+  AddressService get _addressService => ref.read(addressServiceProvider);
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
   List<String> _regions = [], _zones = [], _woredas = [];
   List<Address> _kebeles = [];
@@ -106,7 +104,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   Future<void> _loadSettings() async {
     try {
-      final response = await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
+      final response = await ref.read(apiClientProvider).dio.get('${ApiConstants.apiBase}/settings');
       if (response.statusCode == 200 && response.data is Map) {
         final data = ApiEnvelope.extractData(response.data);
         if (data.isNotEmpty && mounted) {
@@ -115,7 +113,9 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
           });
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
   }
 
   Future<void> _onRegionSelected(String? region) async {
@@ -216,8 +216,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     if (_minAreaCtrl.text.isNotEmpty) data['min_area'] = _minAreaCtrl.text.replaceAll(',', '');
     if (_maxAreaCtrl.text.isNotEmpty) data['max_area'] = _maxAreaCtrl.text.replaceAll(',', '');
 
-    final service = OrderService();
-    final response = await service.createOrder(data);
+    final response = await ref.read(orderServiceProvider).createOrder(data);
 
     if (mounted) {
       setState(() => _submitting = false);
@@ -611,12 +610,12 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           decoration: BoxDecoration(
             color: selected
-                ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
                 : context.cardBg,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: selected
-                  ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                  ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
                   : context.divider,
               width: 1.5,
             ),
@@ -650,12 +649,12 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           decoration: BoxDecoration(
             color: selected
-                ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
                 : context.cardBg,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: selected
-                  ? (context.isDarkMode ? AppColors.accent500 : AppColors.navy950)
+                  ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
                   : context.divider,
               width: 1.5,
             ),

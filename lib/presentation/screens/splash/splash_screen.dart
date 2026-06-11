@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
-import '../../../../core/network/api_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/otp_login_screen.dart';
 import '../navigation/main_navigation_shell.dart';
@@ -61,7 +61,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _initializeApp() async {
     final minSplashTime = Future.delayed(const Duration(milliseconds: 1500));
 
-    final client = ApiClient();
+    final client = ref.read(apiClientProvider);
     final hasToken = await client.isAuthenticated();
 
     if (hasToken) {

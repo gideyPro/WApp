@@ -8,7 +8,6 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing_form_data.dart';
-import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../data/services/listing_media_manager.dart';
 import '../../widgets/common/wave_common_widgets.dart';
@@ -37,7 +36,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   Future<bool?>? _submissionDismissed;
   Timer? _autoSaveTimer;
   Timer? _uploadProgressTimer;
-  final _addressService = AddressService();
+  AddressService get _addressService => ref.read(addressServiceProvider);
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
@@ -151,7 +150,6 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     );
 
     try {
-      final service = ListingService();
       await Future.delayed(const Duration(milliseconds: 400));
 
       if (!mounted) return;
@@ -162,7 +160,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
 
       _startUploadProgressSimulation();
 
-      final response = await service.createListing(
+      final response = await ref.read(listingServiceProvider).createListing(
         formData: _formData,
         submissionKey: _currentSubmissionKey,
         onProgress: (progress) {
@@ -256,8 +254,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
 
     // First check if the listing was actually created despite the error
     if (_currentSubmissionKey != null) {
-      final service = ListingService();
-      final listingId = await service.checkSubmissionKey(_currentSubmissionKey!);
+      final listingId = await ref.read(listingServiceProvider).checkSubmissionKey(_currentSubmissionKey!);
       if (listingId != null) {
         // Listing was already created — show success
         _submittedSuccessfully = true;
@@ -281,7 +278,6 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     );
 
     try {
-      final service = ListingService();
       await Future.delayed(const Duration(milliseconds: 400));
 
       if (!mounted) return;
@@ -292,7 +288,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
 
       _startUploadProgressSimulation();
 
-      final response = await service.createListing(
+      final response = await ref.read(listingServiceProvider).createListing(
         formData: _formData,
         submissionKey: _currentSubmissionKey,
         onProgress: (progress) {

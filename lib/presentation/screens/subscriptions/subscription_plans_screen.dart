@@ -64,9 +64,6 @@ class _SubscriptionPlansScreenState
 
   @override
   void didPopNext() {
-    // This is called when the top route has been popped off, 
-    // and this route shows up.
-    debugPrint('SubscriptionPlansScreen: didPopNext - refreshing subscription');
     ref.read(subscriptionProvider.notifier).refresh();
   }
 

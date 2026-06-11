@@ -46,7 +46,7 @@ class AppTheme {
         headlineMedium: AppTextStyles.headline5,
         headlineSmall: AppTextStyles.title,
         titleLarge: AppTextStyles.title,
-        titleMedium: AppTextStyles.bodyMedium, // FIX: was titleSmall (Cinzel)
+        titleMedium: AppTextStyles.bodyMedium,
         titleSmall: AppTextStyles.eyebrow,
         bodyLarge: AppTextStyles.bodyLarge,
         bodyMedium: AppTextStyles.bodyMedium,
@@ -248,7 +248,7 @@ class AppTheme {
         headlineMedium: AppTextStyles.headline5,
         headlineSmall: AppTextStyles.title,
         titleLarge: AppTextStyles.title,
-        titleMedium: AppTextStyles.bodyMedium, // FIX: was titleSmall (Cinzel)
+        titleMedium: AppTextStyles.bodyMedium,
         titleSmall: AppTextStyles.eyebrow,
         bodyLarge: AppTextStyles.bodyLarge,
         bodyMedium: AppTextStyles.bodyMedium,
@@ -356,12 +356,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(4),
           borderSide: const BorderSide(color: AppColors.accent400, width: 1.5),
         ),
-        // FIX: hint must be visibly muted, not the same weight as body text
         hintStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.primary400,
           fontWeight: FontWeight.w400,
         ),
-        // FIX: label must be white (not default dark onSurface) in dark mode
         labelStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.primary300,
           fontWeight: FontWeight.w900,

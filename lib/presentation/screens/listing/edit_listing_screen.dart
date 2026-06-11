@@ -5,7 +5,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
 import '../../../../data/models/listing_form_data.dart';
-import '../../../../data/services/listing_service.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../data/services/listing_media_manager.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -33,7 +32,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
   ValueNotifier<SubmissionState>? _submissionNotifier;
   Future<bool?>? _submissionDismissed;
   Timer? _uploadProgressTimer;
-  final _addressService = AddressService();
+  AddressService get _addressService => ref.read(addressServiceProvider);
   final Map<int, List<String>> _stepErrors = {};
 
   @override
@@ -43,7 +42,6 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     final localeCode = ref.read(localeProvider).locale?.languageCode ?? 'en';
     final useLocalized = localeCode != 'en';
 
-    // 14-day cooldown check from creation or last edit
     final nextEditAllowed = (listing.updatedAt ?? listing.createdAt).add(const Duration(days: 14));
     if (DateTime.now().isBefore(nextEditAllowed)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -181,7 +179,6 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     );
 
     try {
-      final service = ListingService();
       await Future.delayed(const Duration(milliseconds: 400));
 
       if (!mounted) return;
@@ -192,7 +189,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
 
       _startUploadProgressSimulation();
 
-      final result = await service.updateListing(
+      final result = await ref.read(listingServiceProvider).updateListing(
         listingId: widget.listing.id,
         formData: _formData,
         onProgress: (progress) {
@@ -265,7 +262,6 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     );
 
     try {
-      final service = ListingService();
       await Future.delayed(const Duration(milliseconds: 400));
 
       if (!mounted) return;
@@ -276,7 +272,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
 
       _startUploadProgressSimulation();
 
-      final result = await service.updateListing(
+      final result = await ref.read(listingServiceProvider).updateListing(
         listingId: widget.listing.id,
         formData: _formData,
         onProgress: (progress) {
