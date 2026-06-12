@@ -288,23 +288,17 @@ class SubscriptionServiceApi {
     }
   }
 
-  /// Check latest payment status - returns 'pending', 'success', 'failed', 'cancelled' or null
-  Future<String?> getLatestPaymentStatus() async {
+  /// Check payment status for a specific transaction reference.
+  /// Returns 'pending', 'success', 'failed', 'cancelled' or null.
+  Future<String?> checkPaymentStatus(String txRef) async {
     try {
       final response = await _apiClient.dio.get(
-        ApiConstants.payments,
-        queryParameters: {'per_page': 1},
+        '${ApiConstants.payments}/status/$txRef',
       );
 
       if (response.statusCode == 200) {
-        final dataList = ApiEnvelope.extractList(
-          response.data,
-          itemKeys: const ['payments', 'items'],
-        );
-        if (dataList.isNotEmpty && dataList[0] is Map) {
-          final payment = dataList[0] as Map;
-          return payment['status']?.toString();
-        }
+        final data = ApiEnvelope.extractData(response.data);
+        return data['status']?.toString();
       }
       return null;
     } catch (e) {

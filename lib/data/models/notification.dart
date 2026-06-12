@@ -111,6 +111,8 @@ class Notification {
         return NotificationType.paymentFailed;
       case 'suggestion':
         return NotificationType.suggestion;
+      case 'subscription_activated':
+        return NotificationType.subscriptionActivated;
       case 'subscription_expired':
         return NotificationType.subscriptionExpired;
       default:
