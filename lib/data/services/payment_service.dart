@@ -61,7 +61,6 @@ class PaymentService {
     }
   }
 
-  /// Verify payment by transaction reference
   Future<PaymentResponse> verifyPayment(String txRef) async {
     try {
       final response = await _apiClient.dio.get(
@@ -95,7 +94,6 @@ class PaymentService {
     }
   }
 
-  /// Get payment history
   Future<PaymentHistoryResponse> getPaymentHistory({
     int page = 1,
     int perPage = 15,
@@ -144,7 +142,6 @@ class PaymentService {
     }
   }
 
-  /// Get single payment details
   Future<PaymentResponse> getPaymentDetail(int paymentId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -177,7 +174,6 @@ class PaymentService {
   }
 }
 
-/// Response wrapper for payment operations
 class PaymentResponse {
   final bool success;
   final String message;
@@ -196,7 +192,6 @@ class PaymentResponse {
   });
 }
 
-/// Response wrapper for payment history
 class PaymentHistoryResponse {
   final bool success;
   final String message;

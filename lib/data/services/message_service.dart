@@ -12,7 +12,6 @@ class MessageService {
   MessageService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get all conversations
   Future<ConversationResponse> getConversations({
     int page = 1,
     int perPage = 15,
@@ -68,7 +67,6 @@ class MessageService {
     }
   }
 
-  /// Get conversation messages
   Future<MessageResponse> getConversationMessages({
     required int conversationId,
     int page = 1,
@@ -137,7 +135,6 @@ class MessageService {
   }
 
 
-  /// Send message in conversation
   Future<MessageResponse> sendMessage({
     required int conversationId,
     required String body,
@@ -177,7 +174,6 @@ class MessageService {
     }
   }
 
-  /// Start conversation from listing
   Future<ConversationResponse> startConversationFromListing({
     required int listingId,
   }) async {
@@ -212,7 +208,6 @@ class MessageService {
     }
   }
 
-  /// Start direct conversation with user
   Future<ConversationResponse> startDirectConversation({
     required int userId,
   }) async {
@@ -247,7 +242,6 @@ class MessageService {
     }
   }
 
-  /// Delete conversation
   Future<ConversationResponse> deleteConversation(int conversationId) async {
     try {
       final response = await _apiClient.dio.delete(
@@ -274,7 +268,7 @@ class MessageService {
     }
   }
 
-  /// Fetch new messages (for polling)
+  /// For polling
   Future<MessageResponse> fetchNewMessages({
     required int conversationId,
     int? lastMessageId,
@@ -321,7 +315,6 @@ class MessageService {
   }
 }
 
-/// Response wrapper for conversation operations
 class ConversationResponse {
   final bool success;
   final String message;
@@ -342,7 +335,6 @@ class ConversationResponse {
   });
 }
 
-/// Response wrapper for message operations
 class MessageResponse {
   final bool success;
   final String message;

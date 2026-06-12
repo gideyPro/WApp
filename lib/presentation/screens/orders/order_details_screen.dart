@@ -529,8 +529,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     }
   }
 
-  // --- Helpers ---
-
   /// Skeleton box for shimmer loading placeholders
   Widget _buildSkeletonBox({required double width, required double height}) {
     return Container(

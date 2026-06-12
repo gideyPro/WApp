@@ -11,7 +11,6 @@ class NotificationService {
   NotificationService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get user's notifications
   Future<NotificationResponse> getNotifications({
     int page = 1,
     String filter = 'all', // 'all', 'unread', 'read'
@@ -71,7 +70,6 @@ class NotificationService {
     }
   }
 
-  /// Get unread notification count
   Future<NotificationCountResponse> getUnreadCount() async {
     try {
       final response = await _apiClient.dio.get(ApiConstants.unreadCount);
@@ -110,7 +108,6 @@ class NotificationService {
     }
   }
 
-  /// Mark notification as read
   Future<NotificationResponse> markAsRead(int notificationId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -137,7 +134,6 @@ class NotificationService {
     }
   }
 
-  /// Mark all notifications as read
   Future<NotificationResponse> markAllAsRead() async {
     try {
       final response = await _apiClient.dio.post(ApiConstants.markAllAsRead);
@@ -162,7 +158,6 @@ class NotificationService {
     }
   }
 
-  /// Delete notification
   Future<NotificationResponse> deleteNotification(int notificationId) async {
     try {
       final response = await _apiClient.dio.delete(
@@ -190,7 +185,6 @@ class NotificationService {
   }
 }
 
-/// Response wrapper for notification operations
 class NotificationResponse {
   final bool success;
   final String message;
@@ -211,7 +205,6 @@ class NotificationResponse {
   });
 }
 
-/// Response wrapper for notification count
 class NotificationCountResponse {
   final bool success;
   final int count;

@@ -11,7 +11,6 @@ class KycService {
 
   KycService({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient();
 
-  /// Get KYC status
   Future<KycStatusResponse> getKycStatus() async {
     try {
       final response = await _apiClient.dio.get(ApiConstants.kycStatus);
@@ -111,7 +110,6 @@ class KycService {
     }
   }
 
-  /// Get KYC form data (document types, requirements)
   Future<KycFormDataResponse> getKycFormData() async {
     try {
       final response = await _apiClient.dio.get(ApiConstants.kycCreate);
@@ -138,7 +136,6 @@ class KycService {
   }
 }
 
-/// Response wrapper for KYC status
 class KycStatusResponse {
   final bool success;
   final String status; // none, pending, approved, rejected, error
@@ -166,7 +163,6 @@ class KycStatusResponse {
   bool get isNone => status == 'none' || status.isEmpty;
 }
 
-/// Response wrapper for KYC operations
 class KycResponse {
   final bool success;
   final String message;
@@ -177,7 +173,6 @@ class KycResponse {
   });
 }
 
-/// Response wrapper for KYC form data
 class KycFormDataResponse {
   final bool success;
   final String message;

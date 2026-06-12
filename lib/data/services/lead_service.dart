@@ -125,7 +125,6 @@ class LeadService {
   LeadService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get user's interest-based leads (my-interests)
   Future<LeadResponse> getMyInterests({int page = 1, int perPage = 15}) async {
     try {
       final response = await _apiClient.dio.get(
@@ -156,7 +155,6 @@ class LeadService {
     }
   }
 
-  /// Express interest in a listing (creates a lead)
   Future<LeadResponse> expressInterest({
     required int listingId,
     String? message,
@@ -191,7 +189,6 @@ class LeadService {
     }
   }
 
-  /// Cancel/remove a lead
   Future<LeadResponse> cancelInterest(int leadId) async {
     try {
       final response = await _apiClient.dio.delete(
@@ -216,7 +213,6 @@ class LeadService {
     }
   }
 
-  /// Get suggestions for an order
   Future<LeadResponse> getSuggestions(int orderId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -248,7 +244,6 @@ class LeadService {
     }
   }
 
-  /// Accept a suggestion lead
   Future<LeadResponse> acceptSuggestion(int suggestionId) async {
     try {
       final response = await _apiClient.dio.patch(
@@ -279,7 +274,6 @@ class LeadService {
     }
   }
 
-  /// Decline a suggestion lead
   Future<LeadResponse> declineSuggestion(int suggestionId) async {
     try {
       final response = await _apiClient.dio.patch(
@@ -305,4 +299,5 @@ class LeadService {
   }
 
   factory LeadService.withClient(ApiClient client) => LeadService(apiClient: client);
+
 }

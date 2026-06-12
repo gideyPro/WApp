@@ -9,8 +9,6 @@ export 'listing_step2_details.dart';
 export 'listing_step3_media.dart';
 export 'listing_step4_review.dart';
 
-// ===================== STEP INDICATOR =====================
-
 class ListingStepIndicator extends StatelessWidget {
   final int currentStep;
   const ListingStepIndicator({super.key, required this.currentStep});

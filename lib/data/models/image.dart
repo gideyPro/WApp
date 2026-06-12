@@ -74,7 +74,6 @@ class ImageModel {
   String toString() => 'Image(id: $id, path: $imagePath)';
 }
 
-/// Site Plan Model
 class SitePlan {
   final int id;
   final String imagePath;

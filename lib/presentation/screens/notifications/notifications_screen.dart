@@ -86,7 +86,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }
 
   Widget _buildBody(NotificationState state, int unreadCount) {
-    // Loading state (initial load)
     if (state.isLoading && state.notifications.isEmpty) {
       return _buildSkeletonList();
     }

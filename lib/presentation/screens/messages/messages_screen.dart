@@ -652,7 +652,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ],
               ),
             ),
-            // Checkmark for selected
             if (isSelected)
               Icon(
                 Icons.check,
@@ -680,7 +679,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       _scrollToFirstUnread(messages, currentUserId);
     });
 
-    // Find first unread index for divider
     int firstUnreadIndex = -1;
     for (int i = 0; i < messages.length; i++) {
       final msg = messages[i];
@@ -695,7 +693,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       padding: const EdgeInsets.all(12),
       itemCount: messages.length,
       itemBuilder: (context, index) {
-        // Add unread divider
         if (index == firstUnreadIndex && firstUnreadIndex >= 0) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -737,7 +734,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Build proper title from conversation data
     String title = widget.conversation.contextDisplayTitle;
     String otherUserName = widget.conversation.getDisplayTitle(currentUserId);
     final relatedConversations = chatState.relatedConversations;

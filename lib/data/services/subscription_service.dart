@@ -97,7 +97,6 @@ class SubscriptionServiceApi {
     }
   }
 
-  /// Get current user subscription
   Future<CurrentSubscriptionResponse> getCurrentSubscription() async {
     try {
       final response = await _apiClient.dio.get(
@@ -141,7 +140,6 @@ class SubscriptionServiceApi {
     }
   }
 
-  /// Subscribe to a plan (initiates payment)
   Future<SubscriptionResponse> subscribe(int planId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -229,7 +227,6 @@ class SubscriptionServiceApi {
   }
 
 
-  /// Process subscription payment
   Future<SubscriptionResponse> processPayment({
     required int planId,
     required Map<String, dynamic> paymentData,
@@ -264,7 +261,6 @@ class SubscriptionServiceApi {
     }
   }
 
-/// Activate subscription after payment
   Future<SubscriptionResponse> activateSubscription({String? txRef}) async {
     try {
       final response = await _apiClient.dio.get(
@@ -317,7 +313,6 @@ class SubscriptionServiceApi {
   }
 }
 
-/// Combined response with plans + current subscription info (single API call)
 class FullSubscriptionData {
   final bool success;
   final String message;
@@ -350,7 +345,6 @@ class FullSubscriptionData {
   });
 }
 
-/// Response wrapper for subscription plans
 class SubscriptionPlansResponse {
   final bool success;
   final String message;
@@ -363,7 +357,6 @@ class SubscriptionPlansResponse {
   });
 }
 
-/// Response wrapper for current subscription
 class CurrentSubscriptionResponse {
   final bool success;
   final String message;
@@ -394,7 +387,6 @@ class CurrentSubscriptionResponse {
   });
 }
 
-/// Response wrapper for subscription operations
 class SubscriptionResponse {
   final bool success;
   final String message;

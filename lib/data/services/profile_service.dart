@@ -11,7 +11,6 @@ class ProfileService {
   ProfileService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get current user profile
   Future<ProfileResponse> getProfile() async {
     try {
       final response = await _apiClient.dio.get(ApiConstants.profile);
@@ -42,7 +41,6 @@ class ProfileService {
     }
   }
 
-  /// Update user profile
   Future<ProfileResponse> updateProfile(Map<String, dynamic> profileData) async {
     try {
       final response = await _apiClient.dio.patch(
@@ -76,7 +74,6 @@ class ProfileService {
     }
   }
 
-  /// Delete user account
   Future<ProfileResponse> deleteAccount() async {
     try {
       final response = await _apiClient.dio.delete(ApiConstants.deleteProfile);
@@ -101,7 +98,6 @@ class ProfileService {
     }
   }
 
-  /// Get public user profile
   Future<ProfileResponse> getPublicProfile(int userId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -138,7 +134,6 @@ class ProfileService {
   }
 }
 
-/// Response wrapper for profile operations
 class ProfileResponse {
   final bool success;
   final String message;
@@ -153,7 +148,6 @@ class ProfileResponse {
   });
 }
 
-/// User profile statistics
 class ProfileStats {
   final int totalListings;
   final int totalFavorites;

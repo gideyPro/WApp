@@ -54,19 +54,14 @@ ListingType _parseListingType(dynamic value) {
   return ListingType.sale;
 }
 
-/// Property types
 enum PropertyType { house, land }
 
-/// Listing types
 enum ListingType { sale, rental }
 
-/// Listing status
 enum ListingStatus { pending, active, rejected, sold, rented, frozen }
 
-/// Rental period units
 enum RentalPeriod { day, month, year }
 
-/// Video processing status
 enum VideoProcessingStatus { none, pending, processing, ready, failed }
 
 /// Video processing info returned by backend's video_processing appended attribute
@@ -144,29 +139,22 @@ class Listing {
   final String? revealedName;
   final String? revealedContact;
 
-  /// Returns the full video URL by prepending base URL if needed
   String? get videoUrl => _formatUrl(videoLink);
 
-  /// Returns the full processed video URL by prepending base URL if needed
   String? get processedVideoUrl => videoProcessing?.processedUrl != null
       ? _formatUrl(videoProcessing!.processedUrl!)
       : null;
 
-  /// Whether the backend returned video_processing info
   bool get hasVideoProcessing => videoProcessing != null;
 
-  /// Whether the video is currently being processed (pending or processing)
   bool get isVideoBeingProcessed => videoProcessing != null &&
       (videoProcessing!.status == VideoProcessingStatus.pending ||
        videoProcessing!.status == VideoProcessingStatus.processing);
 
-  /// Returns full URL for site plan
   String? get sitePlanUrl => _formatUrl(sitePlanImageLink);
 
-  /// Returns full URL for ownership proof
   String? get ownershipProofUrl => _formatUrl(ownershipProofLink);
 
-  /// Returns full URL for debt document
   String? get debtDocumentUrl => _formatUrl(debtEncumbranceFileLink);
 
   String? _formatUrl(String? link) {
@@ -220,7 +208,6 @@ class Listing {
   final int? userInterestId;
   final int viewCount;
 
-  /// Calculate total rooms
   int get totalRooms =>
       (bedrooms ?? 0) + (bathrooms ?? 0) + (salons ?? 0) + (kitchens ?? 0);
 

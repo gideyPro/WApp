@@ -57,7 +57,6 @@ class Address {
     );
   }
 
-  /// Safely convert dynamic value to int
   static int? _safeInt(dynamic value) {
     if (value == null) return null;
     if (value is int) return value;
@@ -165,7 +164,6 @@ class Address {
   String toString() => 'Address($fullAddress)';
 }
 
-/// Region model for cascading dropdowns
 class Region {
   final int id;
   final String name;
@@ -189,7 +187,6 @@ class Region {
   }
 }
 
-/// Zone model
 class Zone {
   final int id;
   final int regionId;
@@ -216,7 +213,6 @@ class Zone {
   }
 }
 
-/// Woreda model
 class Woreda {
   final int id;
   final int zoneId;
@@ -243,7 +239,6 @@ class Woreda {
   }
 }
 
-/// Kebele model
 class Kebele {
   final int id;
   final int woredaId;

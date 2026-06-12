@@ -154,7 +154,6 @@ class Conversation {
   }
 
 
-  /// Safely convert dynamic value to int
   static int? _safeInt(dynamic value) {
     if (value == null) return null;
     if (value is int) return value;
@@ -164,7 +163,6 @@ class Conversation {
     return null;
   }
 
-  /// Get display title (other participant's name) computed dynamically
   String getDisplayTitle(int currentUserId) {
     // First try pre-computed name (if available from parse time)
     if (otherParticipantFirstName != null) {
@@ -188,7 +186,6 @@ class Conversation {
     return 'Conversation #$id';
   }
 
-  /// Get other participant's initials computed dynamically
   String getInitials(int currentUserId) {
     // First try pre-computed name
     if (otherParticipantFirstName != null &&
@@ -217,7 +214,6 @@ class Conversation {
     return '??';
   }
 
-  /// Get the other participant's raw data based on currentUserId
   Map<String, dynamic>? _getOtherParticipantData(int currentUserId) {
     if (currentUserId <= 0) return null;
     final sid = _safeInt(_senderData?['id']);
@@ -228,7 +224,6 @@ class Conversation {
     return null;
   }
 
-  /// Check if the last message was sent by the current user
   bool isLastMessageFromMe(int currentUserId) {
     if (lastMessageSenderId != null) {
       return lastMessageSenderId == currentUserId;
@@ -237,7 +232,6 @@ class Conversation {
     return senderId == currentUserId;
   }
 
-  /// Get the other participant's ID in the conversation
   int? getOtherParticipantId(int currentUserId) {
     if (senderId == currentUserId) return receiverId;
     if (receiverId == currentUserId) return senderId;
@@ -339,7 +333,6 @@ class Message {
     );
   }
 
-  /// Safely convert dynamic value to int
   static int? _safeInt(dynamic value) {
     if (value == null) return null;
     if (value is int) return value;

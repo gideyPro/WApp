@@ -11,9 +11,6 @@ class AuthService {
   AuthService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Send OTP to phone number for registration/login
-  ///
-  /// Returns success message if OTP sent successfully
   Future<AuthResponse> sendOtp({required String phoneNumber}) async {
     try {
       final response = await _apiClient.dio.post(
@@ -43,9 +40,6 @@ class AuthService {
     }
   }
 
-  /// Login with phone number and OTP code
-  ///
-  /// Returns user data and stores auth token
   Future<AuthResponse> login({
     required String phoneNumber,
     required String otpCode,
@@ -75,12 +69,10 @@ class AuthService {
           );
         }
 
-        // Store token if available
         if (token != null) {
           await _apiClient.setAuthToken(token.toString());
         }
 
-        // Parse user data
         User? user;
         if (data['user'] != null) {
           user = User.fromJson(data['user']);
@@ -109,7 +101,6 @@ class AuthService {
     }
   }
 
-  /// Verify OTP code (standalone verification)
   Future<AuthResponse> verifyOtp({
     required String phoneNumber,
     required String otpCode,
@@ -143,7 +134,6 @@ class AuthService {
     }
   }
 
-  /// Resend OTP to phone number
   Future<AuthResponse> resendOtp({required String phoneNumber}) async {
     try {
       final response = await _apiClient.dio.post(
@@ -173,7 +163,6 @@ class AuthService {
     }
   }
 
-  /// Logout user and clear stored token
   Future<void> logout() async {
     try {
       await _apiClient.dio.post(ApiConstants.logout);
@@ -184,7 +173,6 @@ class AuthService {
     }
   }
 
-  /// Register new account with phone, name, and gender
   /// If otpCode is null, sends OTP for registration
   /// If otpCode is provided, verifies and creates account
   Future<AuthResponse> register({
@@ -197,7 +185,6 @@ class AuthService {
   }) async {
     try {
       if (otpCode == null) {
-        // Step 1: Send OTP for registration
         final response = await _apiClient.dio.post(
           ApiConstants.register,
           data: {
@@ -224,7 +211,6 @@ class AuthService {
           destination: ApiEnvelope.extractDestination(response.data),
         );
       } else {
-        // Step 2: Verify OTP and create account
         final response = await _apiClient.dio.post(
           ApiConstants.register,
           data: {
@@ -240,15 +226,12 @@ class AuthService {
         final statusCode = response.statusCode;
         if ((statusCode == 200 || statusCode == 201) && response.data is Map) {
           final data = response.data as Map;
-          // Extract token from response
           final token = data['token'] ?? data['access_token'];
 
-          // Store token if available
           if (token != null) {
             await _apiClient.setAuthToken(token.toString());
           }
 
-          // Parse user data
           User? user;
           if (data['user'] != null) {
             user = User.fromJson(data['user']);
@@ -278,7 +261,6 @@ class AuthService {
     }
   }
 
-  /// Get current authenticated user
   Future<User?> getCurrentUser() async {
     try {
       final response = await _apiClient.dio.get(ApiConstants.currentUser);
@@ -293,13 +275,11 @@ class AuthService {
     }
   }
 
-  /// Check if user is authenticated
   Future<bool> isAuthenticated() async {
     return await _apiClient.isAuthenticated();
   }
 }
 
-/// Response wrapper for authentication operations
 class AuthResponse {
   final bool success;
   final String message;

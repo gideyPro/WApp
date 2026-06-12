@@ -14,7 +14,6 @@ class ListingService {
   ListingService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get all active listings with optional filters
   Future<ListingResponse> getListings({
     int page = 1,
     int perPage = 15,
@@ -68,7 +67,6 @@ class ListingService {
     }
   }
 
-  /// Get user's own listings
   Future<ListingResponse> getMyListings({
     int page = 1,
     int perPage = 15,
@@ -123,7 +121,6 @@ class ListingService {
     }
   }
 
-  /// Get VIP listings for the home screen catalogue
   Future<ListingResponse> getVipListings({
     int page = 1,
     int perPage = 12,
@@ -172,7 +169,6 @@ class ListingService {
     }
   }
 
-  /// Get featured listings only
   Future<ListingResponse> getFeaturedListings({
     int page = 1,
     int perPage = 12,
@@ -221,7 +217,6 @@ class ListingService {
     }
   }
 
-  /// Get single listing details
   Future<ListingDetailResponse> getListingDetail(int listingId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -276,7 +271,6 @@ class ListingService {
     }
   }
 
-  /// Get similar listings
   Future<ListingResponse> getSimilarListings(int listingId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -310,7 +304,6 @@ class ListingService {
   }
 
 
-  /// Build FormData from ListingFormData
   Future<FormData> _buildFormData(ListingFormData formData, {bool isUpdate = false}) async {
     final dioFormData = FormData();
 
@@ -443,7 +436,6 @@ class ListingService {
     return dioFormData;
   }
 
-  /// Calculate total size of files to be uploaded
   Future<int> _calculateTotalSize(ListingFormData formData) async {
     int totalSize = 0;
     
@@ -467,7 +459,6 @@ class ListingService {
     return totalSize;
   }
 
-  /// Create a new listing
   Future<ListingResponse> createListing({
     required ListingFormData formData,
     String? submissionKey,
@@ -522,7 +513,6 @@ class ListingService {
     }
   }
 
-  /// Update an existing listing
   Future<ListingResponse> updateListing({
     required int listingId,
     Map<String, dynamic>? listingData,
@@ -580,7 +570,6 @@ class ListingService {
     }
   }
 
-  /// Delete a listing
   Future<ListingResponse> deleteListing(int listingId) async {
     try {
       final response = await _apiClient.dio.delete(
@@ -604,7 +593,6 @@ class ListingService {
     }
   }
 
-  /// Mark listing as VIP
   Future<ListingResponse> vipListing(int listingId) async {
     try {
       final response = await _apiClient.dio.post('${ApiConstants.vipListing}/$listingId/vip');
@@ -624,7 +612,6 @@ class ListingService {
     }
   }
 
-  /// Reveal seller contact for a listing
   Future<ContactRevealResponse> revealContact(int listingId) async {
     try {
       final response = await _apiClient.dio.post('${ApiConstants.revealContact}/$listingId/reveal-contact');
@@ -651,7 +638,6 @@ class ListingService {
     }
   }
 
-  /// Make listing featured
   Future<ListingResponse> featureListing(int listingId) async {
     try {
       final response = await _apiClient.dio.post('${ApiConstants.featureListing}/$listingId/feature');
@@ -671,7 +657,6 @@ class ListingService {
     }
   }
 
-  /// Remove featured status
   Future<ListingResponse> unfeatureListing(int listingId) async {
     try {
       final response = await _apiClient.dio.post('${ApiConstants.featureListing}/$listingId/unfeature');
@@ -691,7 +676,6 @@ class ListingService {
     }
   }
 
-  /// Remove VIP status
   Future<ListingResponse> unvipListing(int listingId) async {
     try {
       final response = await _apiClient.dio.post('${ApiConstants.vipListing}/$listingId/unvip');
@@ -711,7 +695,6 @@ class ListingService {
     }
   }
 
-  /// Check if a submission key matches an already-created listing
   Future<int?> checkSubmissionKey(String submissionKey) async {
     try {
       final response = await _apiClient.dio.get(
@@ -730,7 +713,6 @@ class ListingService {
   }
 }
 
-/// Response wrapper for listing operations
 class ListingResponse {
   final bool success;
   final String message;
@@ -752,7 +734,6 @@ class ListingResponse {
   String toString() => 'ListingResponse(success: $success, listings: ${listings.length})';
 }
 
-/// Response wrapper for single listing detail
 class ListingDetailResponse {
   final bool success;
   final String message;
@@ -767,7 +748,6 @@ class ListingDetailResponse {
   });
 }
 
-/// Response wrapper for contact reveal
 class ContactRevealResponse {
   final bool success;
   final String message;

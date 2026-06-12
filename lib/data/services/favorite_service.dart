@@ -11,7 +11,6 @@ class FavoriteService {
   FavoriteService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get user's favorite listings
   Future<FavoriteResponse> getFavorites({
     int page = 1,
     int perPage = 15,
@@ -62,7 +61,6 @@ class FavoriteService {
     }
   }
 
-  /// Toggle favorite status
   Future<FavoriteResponse> toggleFavorite(int listingId) async {
     try {
       final response = await _apiClient.dio.post(
@@ -94,7 +92,6 @@ class FavoriteService {
   }
 }
 
-/// Response wrapper for favorite operations
 class FavoriteResponse {
   final bool success;
   final String message;

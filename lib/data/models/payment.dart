@@ -1,10 +1,8 @@
 import 'user.dart';
 import '../../l10n/app_localizations.dart';
 
-/// Payment status
 enum PaymentStatus { pending, success, failed, cancelled, refunded }
 
-/// Payment type
 enum PaymentType { subscription, featuredListing, directPayment }
 
 /// Payment Model

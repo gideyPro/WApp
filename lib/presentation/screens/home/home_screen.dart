@@ -194,8 +194,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     super.dispose();
   }
 
-  // --- Search ---
-
   void _onSearchChanged(String query) {
     _debounceTimer?.cancel();
     if (query.trim().isEmpty && !_hasSearched) {
@@ -273,8 +271,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       _selectedPriceLabel != null ||
       _isFeaturedFilter ||
       _searchController.text.isNotEmpty;
-
-  // --- Filter Sheet ---
 
   void _showFilterSheet() {
     final l10n = AppLocalizations.of(context);
@@ -580,8 +576,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
   }
 
-  // --- Favorite ---
-
   bool _isFavorite(int listingId) {
     final favState = ref.watch(favoritesProvider);
     return favState.favorites.any((f) => f is Listing && f.id == listingId);
@@ -602,8 +596,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ),
     );
   }
-
-  // --- Build ---
 
   @override
   Widget build(BuildContext context) {

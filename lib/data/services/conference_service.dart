@@ -10,7 +10,6 @@ class ConferenceService {
   ConferenceService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get user's conferences
   Future<ConferenceResponse> getConferences() async {
     try {
       final response = await _apiClient.dio.get(ApiConstants.conferences);
@@ -44,7 +43,6 @@ class ConferenceService {
     }
   }
 
-  /// Check for incoming calls
   Future<IncomingCallResponse> checkIncomingCall() async {
     try {
       final response = await _apiClient.dio.get(
@@ -72,7 +70,6 @@ class ConferenceService {
     }
   }
 
-  /// Create conference for a listing
   Future<ConferenceResponse> createConference({
     required int listingId,
     List<int>? participantIds,
@@ -112,7 +109,6 @@ class ConferenceService {
     }
   }
 
-  /// Start direct call from conversation
   Future<ConferenceResponse> startDirectCall({
     required int conversationId,
   }) async {
@@ -147,7 +143,6 @@ class ConferenceService {
     }
   }
 
-  /// Get conference details
   Future<ConferenceResponse> getConferenceDetail(int conferenceId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -180,7 +175,6 @@ class ConferenceService {
     }
   }
 
-  /// Join conference
   Future<ConferenceResponse> joinConference(int conferenceId) async {
     try {
       final response = await _apiClient.dio.get(
@@ -224,7 +218,6 @@ class ConferenceService {
     }
   }
 
-  /// Delete/end conference
   Future<ConferenceResponse> deleteConference(int conferenceId) async {
     try {
       final response = await _apiClient.dio.delete(
@@ -251,7 +244,6 @@ class ConferenceService {
     }
   }
 
-  /// Invite user to conference
   Future<ConferenceResponse> inviteUser({
     required int conferenceId,
     required int userId,
@@ -281,7 +273,6 @@ class ConferenceService {
     }
   }
 
-  /// Ping conference (keep-alive)
   Future<bool> pingConference(int conferenceId) async {
     try {
       final response = await _apiClient.dio.post(
@@ -295,7 +286,6 @@ class ConferenceService {
   }
 }
 
-/// Response wrapper for conference operations
 class ConferenceResponse {
   final bool success;
   final String message;
@@ -316,7 +306,6 @@ class ConferenceResponse {
   });
 }
 
-/// Response for incoming call check
 class IncomingCallResponse {
   final bool success;
   final bool hasIncoming;
@@ -329,7 +318,6 @@ class IncomingCallResponse {
   });
 }
 
-/// Conference model
 class Conference {
   final int id;
   final String roomName;

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import '../../l10n/app_localizations.dart';
 
-/// Subscription Detail Access levels
 enum DetailsAccess {
   discovery,
   withoutVideoAndContact,
@@ -10,7 +9,6 @@ enum DetailsAccess {
   full
 }
 
-/// Price info with discount details from the API
 class PriceInfo {
   final double original;
   final double discounted;

@@ -24,7 +24,6 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   @override
   void initState() {
     super.initState();
-    // Load favorites on mount
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(favoritesProvider.notifier).loadFavorites();
     });
@@ -79,7 +78,6 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   }
 
   Widget _buildBody(FavoritesState state) {
-    // Loading state - show skeleton cards
     if (state.isLoading) {
       return _buildSkeletonList(5);
     }

@@ -141,10 +141,8 @@ class ListingFormData {
     this.existingVideoUrl,
   });
 
-  /// Create empty form data with defaults
   factory ListingFormData.empty() => ListingFormData();
 
-  /// Save to Hive for draft persistence
   Future<void> saveDraft() async {
     try {
       final box = await Hive.openBox('listing_drafts');
@@ -201,7 +199,6 @@ class ListingFormData {
     }
   }
 
-  /// Restore from Hive
   static ListingFormData? loadDraft() {
     try {
       final box = Hive.box('listing_drafts');
@@ -269,7 +266,6 @@ class ListingFormData {
     }
   }
 
-  /// Clear draft from Hive
   static Future<void> clearDraft() async {
     try {
       final box = await Hive.openBox('listing_drafts');
@@ -277,7 +273,6 @@ class ListingFormData {
     } catch (_) {}
   }
 
-  /// Create a copy with some fields updated
   ListingFormData copyWith({
     String? type,
     String? holdingType,
@@ -397,7 +392,6 @@ class ListingFormData {
       ..videoFile = videoFile ?? this.videoFile;
   }
 
-  /// Validate step 1 (Basics)
   List<String> validateStep1(AppLocalizations l10n) {
     final errors = <String>[];
     if (type.isEmpty) errors.add(l10n.listingErrorPropertyTypeRequired);
@@ -431,7 +425,6 @@ class ListingFormData {
     return errors;
   }
 
-  /// Validate step 2 (Details)
   List<String> validateStep2(AppLocalizations l10n) {
     final errors = <String>[];
     if (type == 'house') {
@@ -456,7 +449,6 @@ class ListingFormData {
     return errors;
   }
 
-  /// Validate step 3 (Media)
   List<String> validateStep3(AppLocalizations l10n) {
     final errors = <String>[];
 
@@ -483,7 +475,6 @@ class ListingFormData {
     return errors;
   }
 
-  /// Validate step 4 (Review)
   List<String> validateStep4(AppLocalizations l10n) {
     final errors = <String>[];
     if (!termsAccepted) errors.add(l10n.listingErrorTermsRequired);

@@ -12,7 +12,6 @@ class AddressService {
   AddressService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
-  /// Get all regions
   /// API returns simple string array: ["Tigray", "Amhara", ...]
   /// [locale] - language code: 'en', 'am', 'ti'
   Future<AddressResponse> getRegions({String locale = 'en'}) async {
@@ -45,7 +44,6 @@ class AddressService {
     }
   }
 
-  /// Get zones by region
   /// API returns simple string array: ["Central", "Eastern", ...]
   Future<AddressResponse> getZones({
     required String region,
@@ -79,7 +77,6 @@ class AddressService {
     }
   }
 
-  /// Get woredas by region and zone
   /// API returns simple string array: ["01", "02", ...]
   Future<AddressResponse> getWoredas({
     required String region,
@@ -119,7 +116,6 @@ class AddressService {
     }
   }
 
-  /// Get kebeles by region, zone, and woreda
   /// API returns array of {id, kebele}: [{id: 1, kebele: "Kebele 01"}, ...]
   Future<AddressResponse> getKebeles({
     required String region,
@@ -165,7 +161,6 @@ class AddressService {
   }
 }
 
-/// Response wrapper for address operations
 class AddressResponse {
   final bool success;
   final String message;

@@ -300,7 +300,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     );
   }
 
-  // ---- Images ----
   Widget _buildImagesSection() {
     final l10n = AppLocalizations.of(context);
     final newImages = widget.formData.images;
@@ -391,7 +390,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     );
   }
 
-  // ---- Site Plan ----
   Widget _buildSitePlanSection() {
     final l10n = AppLocalizations.of(context);
     final hasExisting = widget.formData.existingSitePlanUrl != null &&
@@ -456,7 +454,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     );
   }
 
-  // ---- Ownership ----
   Widget _buildOwnershipSection() {
     final l10n = AppLocalizations.of(context);
     final hasExisting = widget.formData.existingOwnershipProofUrl != null &&
@@ -526,7 +523,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     );
   }
 
-  // ---- Video ----
   Widget _buildVideoSection() {
     final l10n = AppLocalizations.of(context);
     final hasExisting = widget.formData.existingVideoUrl != null &&
