@@ -288,12 +288,33 @@ class SubscriptionServiceApi {
     }
   }
 
-  /// Check payment status for a specific transaction reference.
+  /// Read-only local DB status check.
   /// Returns 'pending', 'success', 'failed', 'cancelled' or null.
   Future<String?> checkPaymentStatus(String txRef) async {
     try {
       final response = await _apiClient.dio.get(
         '${ApiConstants.payments}/status/$txRef',
+      );
+
+      if (response.statusCode == 200) {
+        final data = ApiEnvelope.extractData(response.data);
+        return data['status']?.toString();
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Real-time Chapa verification for a specific transaction reference.
+  /// Calls Chapa verify API directly — detects orphaned tx_refs that the
+  /// local DB still shows as 'pending'.
+  /// Returns 'success', 'failed' (incl. orphaned), 'pending', or null on error.
+  Future<String?> verifyPaymentStatus(String txRef) async {
+    try {
+      final response = await _apiClient.dio.get(
+        ApiConstants.verifyPayment,
+        queryParameters: {'tx_ref': txRef},
       );
 
       if (response.statusCode == 200) {

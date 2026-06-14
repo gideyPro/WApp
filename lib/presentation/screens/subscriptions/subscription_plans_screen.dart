@@ -668,7 +668,7 @@ class _SubscriptionPlansScreenState
           return;
         }
 
-        final status = await _subscriptionService.checkPaymentStatus(pollTxRef);
+        final status = await _subscriptionService.verifyPaymentStatus(pollTxRef);
         if (!mounted || webViewClosed) {
           timer.cancel();
           return;
@@ -761,7 +761,7 @@ class _SubscriptionPlansScreenState
       } else {
         // Payment may still be processing (webhook pending)
         final paymentStatus = txRef != null
-            ? await _subscriptionService.checkPaymentStatus(txRef)
+            ? await _subscriptionService.verifyPaymentStatus(txRef)
             : null;
         if (paymentStatus == 'pending') {
           if (mounted) {
