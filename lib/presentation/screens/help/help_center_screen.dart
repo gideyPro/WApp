@@ -88,7 +88,12 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 filled: true,
-                fillColor: AppColors.stone50,
+                fillColor: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.primary800
+                    : AppColors.stone50,
+              ),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: context.theme.textPrimary,
               ),
             ),
           ),

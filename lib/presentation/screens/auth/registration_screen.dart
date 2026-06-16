@@ -14,6 +14,7 @@ import '../../widgets/common/otp_input_field.dart';
 import '../../widgets/common/wave_language_chip.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
+import '../help/help_center_screen.dart';
 import 'otp_login_screen.dart';
 
 class RegistrationScreen extends ConsumerStatefulWidget {
@@ -45,6 +46,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   bool _isOtpSent = false;
   bool _isLoading = false;
   bool _hasUserData = false;
+  bool _agreedToTerms = false;
   int _resendCountdown = 0;
   Timer? _countdownTimer;
 
@@ -232,6 +234,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           _buildEmailInput(),
                           const SizedBox(height: 16),
                           _buildGenderSelection(),
+                          const SizedBox(height: 12),
+                          _buildTermsCheckbox(),
                           const SizedBox(height: 24),
                           WaveButton(
                             text: l10n.listingContinue,
@@ -274,6 +278,39 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   const SizedBox(height: 24),
                 ],
               ),
+                ),
+                Positioned(
+                  top: 8,
+                  left: 16,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: BackdropFilter(
+                        filter: const ColorFilter.mode(Color(0x33000000), BlendMode.srcOver),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.25),
+                              width: 1,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.help_outline_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 const Positioned(
                   top: 8,
@@ -840,7 +877,40 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       _showErrorSnackBar(l10n.authSelectGender);
       return false;
     }
+    if (!_agreedToTerms) {
+      _showErrorSnackBar(l10n.listingErrorTermsRequired);
+      return false;
+    }
     return true;
+  }
+
+  Widget _buildTermsCheckbox() {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        unselectedWidgetColor: AppColors.primary300,
+      ),
+      child: CheckboxListTile(
+        value: _agreedToTerms,
+        onChanged: (val) => setState(() => _agreedToTerms = val ?? false),
+        title: Text(
+          l10n.listingAcceptTerms,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: AppColors.primary800,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          l10n.listingTermsSubtitle,
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.primary500,
+          ),
+        ),
+        controlAffinity: ListTileControlAffinity.leading,
+        contentPadding: EdgeInsets.zero,
+        activeColor: AppColors.accent600,
+        dense: true,
+      ),
+    );
   }
 
   String? _validateFirstName() {

@@ -13,6 +13,7 @@ import '../../widgets/common/auth_background.dart';
 import '../../widgets/common/otp_input_field.dart';
 import '../../widgets/common/wave_language_chip.dart';
 import 'registration_screen.dart';
+import '../help/help_center_screen.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -218,6 +219,39 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   const SizedBox(height: 24),
                 ],
               ),
+                ),
+                Positioned(
+                  top: 8,
+                  left: 16,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: BackdropFilter(
+                        filter: const ColorFilter.mode(Color(0x33000000), BlendMode.srcOver),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.25),
+                              width: 1,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.help_outline_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 const Positioned(
                   top: 8,
