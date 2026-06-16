@@ -158,64 +158,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                     ),
                   ),
 
-                  // Settings dropdown
-                  Positioned(
-                    top: MediaQuery.of(context).padding.top + 8,
-                    right: 8,
-                    child: PopupMenuButton<String>(
-                      icon: const Icon(Icons.settings_outlined, color: Colors.white),
-                      onSelected: (value) {
-                        switch (value) {
-                          case 'language':
-                            _showLanguageSelectionDialog(context, ref);
-                            break;
-                          case 'help':
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
-                            );
-                            break;
-                          case 'theme':
-                            ref.read(themeModeProvider.notifier).toggle();
-                            break;
-                        }
-                      },
-                      itemBuilder: (_) => [
-                        PopupMenuItem(
-                          value: 'language',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.language, size: 18),
-                              const SizedBox(width: 12),
-                              Text(l10n.settingsLanguage),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'help',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.help_outline, size: 18),
-                              const SizedBox(width: 12),
-                              Text(l10n.profileHelp),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'theme',
-                          child: Row(
-                            children: [
-                              Icon(
-                                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 12),
-                              Text(l10n.settingsDarkMode),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   // Floating profile card
                   Positioned(
                     left: 16,
@@ -476,8 +418,37 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                     const SizedBox(height: 16),
                     _buildMenuSection(
                       context,
+                      title: l10n.settingsPreferences,
+                      items: [
+                        _MenuItemData(
+                          icon: Icons.language,
+                          title: l10n.settingsLanguage,
+                          onTap: () => _showLanguageSelectionDialog(context, ref),
+                        ),
+                        _MenuItemData(
+                          icon: isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                          title: l10n.settingsDarkMode,
+                          trailing: Switch.adaptive(
+                            value: isDark,
+                            onChanged: (val) => ref.read(themeModeProvider.notifier).toggle(),
+                            activeColor: AppColors.accent500,
+                          ),
+                          onTap: () => ref.read(themeModeProvider.notifier).toggle(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _buildMenuSection(
+                      context,
                       title: l10n.settingsSectionSupport,
                       items: [
+                        _MenuItemData(
+                          icon: Icons.help_outline,
+                          title: l10n.profileHelp,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
+                          ),
+                        ),
                         _MenuItemData(
                           icon: Icons.privacy_tip_outlined,
                           title: l10n.settingsPrivacyPolicy,
@@ -619,7 +590,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
           subtitle: item.subtitle != null
               ? Text(item.subtitle!, style: AppTextStyles.caption.copyWith(color: context.textSecondary))
               : null,
-          trailing: Icon(Icons.chevron_right, color: ThemeColors(context).iconSecondary),
+          trailing: item.trailing ?? Icon(Icons.chevron_right, color: ThemeColors(context).iconSecondary),
           onTap: item.onTap,
         ),
         if (showDivider) const Divider(height: 1),
@@ -760,6 +731,7 @@ class _MenuItemData {
   final String title;
   final String? subtitle;
   final Color? textColor;
+  final Widget? trailing;
   final VoidCallback onTap;
 
   _MenuItemData({
@@ -767,6 +739,7 @@ class _MenuItemData {
     required this.title,
     this.subtitle,
     this.textColor,
+    this.trailing,
     required this.onTap,
   });
 }
