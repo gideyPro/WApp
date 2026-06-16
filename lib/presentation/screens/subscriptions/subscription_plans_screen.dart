@@ -726,7 +726,7 @@ class _SubscriptionPlansScreenState
         return;
       }
 
-      if (result == 'cancelled' || result == 'closed' || result == 'done') {
+      if (result == null || result == 'cancelled' || result == 'closed' || result == 'done') {
         // User closed WebView before payment completed
         ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -746,14 +746,9 @@ class _SubscriptionPlansScreenState
         activated = activationResponse.success;
       }
 
-      // Refresh subscription to get latest status
-      await ref.read(subscriptionProvider.notifier).refresh();
-      final subState = ref.read(subscriptionProvider);
-      final isActive = subState.subscription?.isActive == true;
-
       if (!mounted) return;
 
-      if (activated || isActive) {
+      if (activated) {
         ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
