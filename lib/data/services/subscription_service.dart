@@ -313,8 +313,7 @@ class SubscriptionServiceApi {
   Future<String?> verifyPaymentStatus(String txRef) async {
     try {
       final response = await _apiClient.dio.get(
-        ApiConstants.verifyPayment,
-        queryParameters: {'tx_ref': txRef},
+        '${ApiConstants.verifyPayment}/$txRef',
       );
 
       if (response.statusCode == 200) {
