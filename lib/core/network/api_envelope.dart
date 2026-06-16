@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// Centralized parser for the inconsistent JSON envelopes returned by the
 /// Laravel backend. The backend returns responses in several different shapes
 /// depending on the endpoint:

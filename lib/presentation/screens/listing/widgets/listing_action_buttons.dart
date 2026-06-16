@@ -6,7 +6,6 @@ import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../widgets/common/wave_upgrade_card.dart';
-import '../../../providers/listing_provider.dart';
 import '../../../providers/app_providers.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../../core/constants/app_spacing.dart';

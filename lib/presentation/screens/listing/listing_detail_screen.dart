@@ -10,7 +10,6 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing.dart';
 import '../../widgets/common/wave_card.dart';
-import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/otp_login_screen.dart';

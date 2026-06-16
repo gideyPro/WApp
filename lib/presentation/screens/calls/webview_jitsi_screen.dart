@@ -92,9 +92,8 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
             sessionResponse.data['success']) {
           final cookieData = sessionResponse.data['data'];
           await _injectSessionCookie(cookieData);
-        } else {
         }
-      } catch (e) {
+      } catch (_) {
       }
 
       setState(() {
@@ -142,7 +141,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
         isHttpOnly: cookieData['http_only'] ?? true,
       );
 
-    } catch (e) {
+    } catch (_) {
     }
   }
 

@@ -10,7 +10,6 @@ import '../../../core/network/api_constants.dart';
 import '../../../core/network/api_envelope.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../providers/listing_provider.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/listing_card.dart';

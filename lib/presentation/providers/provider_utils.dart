@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_providers.dart';
-import 'listing_provider.dart';
 
 void clearCachedProviders(WidgetRef ref) {
   ref.invalidate(profileProvider);
