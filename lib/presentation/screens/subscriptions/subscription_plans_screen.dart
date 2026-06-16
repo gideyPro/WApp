@@ -668,11 +668,13 @@ class _SubscriptionPlansScreenState
           return;
         }
 
-        final status = await _subscriptionService.verifyPaymentStatus(pollTxRef);
+        final rawStatus = await _subscriptionService.verifyPaymentStatus(pollTxRef);
         if (!mounted || webViewClosed) {
           timer.cancel();
           return;
         }
+
+        final status = rawStatus?.toLowerCase() ?? 'pending';
 
         if (status == 'success') {
           timer.cancel();
@@ -680,7 +682,7 @@ class _SubscriptionPlansScreenState
           if (mounted) {
             Navigator.of(context).pop('success');
           }
-        } else if (status == 'failed' || status == 'cancelled') {
+        } else if (status.contains('fail') || status.contains('cancel') || status == 'abandoned' || status == 'voided') {
           timer.cancel();
           webViewClosed = true;
           if (mounted) {

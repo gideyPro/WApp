@@ -59,10 +59,7 @@ class Payment {
       relatedId: json['related_id'],
       amount: _parseAmount(json['amount']),
       currency: json['currency'] ?? 'ETB',
-      status: PaymentStatus.values.firstWhere(
-        (e) => e.toString().split('.').last == (json['status'] ?? 'pending'),
-        orElse: () => PaymentStatus.pending,
-      ),
+      status: _parseStatus(json['status']),
       paymentMethod: json['payment_method'],
       chapaTransactionId: json['chapa_transaction_id'],
       callbackUrl: json['callback_url'],
@@ -78,6 +75,22 @@ class Payment {
           ? DateTime.parse(json['updated_at'])
           : null,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
+    );
+  }
+
+  /// Parse status with robustness for varied backend strings
+  static PaymentStatus _parseStatus(String? status) {
+    if (status == null) return PaymentStatus.pending;
+    final s = status.toLowerCase();
+    
+    if (s == 'success') return PaymentStatus.success;
+    if (s.contains('fail')) return PaymentStatus.failed;
+    if (s.contains('cancel')) return PaymentStatus.cancelled;
+    if (s.contains('refund')) return PaymentStatus.refunded;
+    
+    return PaymentStatus.values.firstWhere(
+      (e) => e.toString().split('.').last == s,
+      orElse: () => PaymentStatus.pending,
     );
   }
 
