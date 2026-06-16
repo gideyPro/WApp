@@ -48,7 +48,6 @@ class ApiConstants {
   // 4. MESSAGES ENDPOINTS
   // ==========================================================================
   static const String messages = '$apiBase/messages';
-  static const String fetchConversations = '$apiBase/messages/fetch-list';
   static const String conversation = '$apiBase/messages'; // + /{id}
   static const String fetchMessages = '$apiBase/messages'; // + /{id}/fetch
   static const String sendMessage = '$apiBase/messages'; // + /{id}
@@ -90,7 +89,6 @@ class ApiConstants {
   // ==========================================================================
   // 9. SUBSCRIPTIONS ENDPOINTS
   // ==========================================================================
-  static const String subscriptionPlans = '$apiBase/subscriptions/plans';
   static const String currentSubscription = '$apiBase/subscriptions';
   static const String subscribeToPlan =
       '$apiBase/subscriptions'; // + /{id}/subscribe
@@ -100,7 +98,6 @@ class ApiConstants {
       '$apiBase/subscriptions'; // + /{id}/process-payment
   static const String activateSubscription =
       '$apiBase/subscriptions/activate';
-  static const String cancelSubscription = '$apiBase/subscriptions/cancel';
 
   // ==========================================================================
   // 10. PAYMENTS ENDPOINTS

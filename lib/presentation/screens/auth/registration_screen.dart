@@ -11,10 +11,9 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/otp_input_field.dart';
-import '../../widgets/common/wave_language_chip.dart';
+import '../../widgets/common/auth_top_bar.dart';
 import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
-import '../help/help_center_screen.dart';
 import 'otp_login_screen.dart';
 
 class RegistrationScreen extends ConsumerStatefulWidget {
@@ -41,7 +40,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   String? _phoneError;
   String? _emailError;
 
-  String? _selectedGender = 'Male';
+  String? _selectedGender = 'male';
   CountryCode _selectedCountry = Countries.defaultCountry;
   bool _isOtpSent = false;
   bool _isLoading = false;
@@ -279,43 +278,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                 ],
               ),
                 ),
-                Positioned(
-                  top: 8,
-                  left: 16,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: BackdropFilter(
-                        filter: const ColorFilter.mode(Color(0x33000000), BlendMode.srcOver),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.25),
-                              width: 1,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.help_outline_rounded,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
                 const Positioned(
                   top: 8,
+                  left: 16,
                   right: 16,
-                  child: WaveLanguageChip(),
+                  child: AuthTopBar(),
                 ),
               ],
             ),
@@ -621,11 +588,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         Row(
           children: [
             Expanded(
-              child: _buildGenderOption(l10n.profileMale, Icons.male),
+              child: _buildGenderOption('male', l10n.profileMale, Icons.male),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildGenderOption(l10n.profileFemale, Icons.female),
+              child: _buildGenderOption('female', l10n.profileFemale, Icons.female),
             ),
           ],
         ),
@@ -633,10 +600,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     );
   }
 
-  Widget _buildGenderOption(String gender, IconData icon) {
-    final isSelected = _selectedGender == gender;
+  Widget _buildGenderOption(String value, String label, IconData icon) {
+    final isSelected = _selectedGender == value;
     return GestureDetector(
-      onTap: () => setState(() => _selectedGender = gender),
+      onTap: () => setState(() => _selectedGender = value),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
@@ -657,7 +624,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             ),
             const SizedBox(width: 6),
             Text(
-              gender,
+              label,
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected ? AppColors.accent700 : ThemeColors(context).textSecondary,
