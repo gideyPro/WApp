@@ -502,12 +502,6 @@ abstract class AppLocalizations {
   /// **'KYC Verification'**
   String get helpCategoryKyc;
 
-  /// No description provided for @helpCategoryVideo.
-  ///
-  /// In en, this message translates to:
-  /// **'Video Tours & Calls'**
-  String get helpCategoryVideo;
-
   /// No description provided for @helpCategorySafety.
   ///
   /// In en, this message translates to:
@@ -526,29 +520,29 @@ abstract class AppLocalizations {
   /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your phone number or email address\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n5. Complete your profile by adding your name and other details\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
   String get helpAccCreateContent;
 
-  /// No description provided for @helpAccEditTitle.
+  /// No description provided for @helpAccFavTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to edit your profile'**
-  String get helpAccEditTitle;
+  /// **'Managing your favorites'**
+  String get helpAccFavTitle;
 
-  /// No description provided for @helpAccEditContent.
+  /// No description provided for @helpAccFavContent.
   ///
   /// In en, this message translates to:
-  /// **'To edit your profile information:\n\n1. Go to the Profile tab\n2. Tap on \"Edit Profile\"\n3. Update your name, email, gender, or other details\n4. Tap \"Save\" to confirm changes\n\nYour profile information helps other users identify you and builds trust during property negotiations.'**
-  String get helpAccEditContent;
+  /// **'To save a property for later:\n\n1. Tap the heart icon on any listing card or on the property detail page\n2. Access your saved items from Profile > Favorites\n3. Tap the heart icon again to remove a listing from your favorites\n\nFavorites are a great way to keep track of properties you are interested in without contacting the owner.'**
+  String get helpAccFavContent;
 
-  /// No description provided for @helpAccResetTitle.
+  /// No description provided for @helpAccMsgTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to reset your password'**
-  String get helpAccResetTitle;
+  /// **'Using in-app messaging'**
+  String get helpAccMsgTitle;
 
-  /// No description provided for @helpAccResetContent.
+  /// No description provided for @helpAccMsgContent.
   ///
   /// In en, this message translates to:
-  /// **'If you need to reset your password:\n\n1. On the login screen, tap \"Forgot Password\"\n2. Enter your registered phone number or email\n3. You will receive an OTP via SMS or email\n4. Enter the OTP and set a new strong password\n\nNever share your password or OTP with anyone, including individuals claiming to be from WaveMart support.'**
-  String get helpAccResetContent;
+  /// **'WaveMart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created\n2. Go to the Messages tab to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.'**
+  String get helpAccMsgContent;
 
   /// No description provided for @helpListCreateTitle.
   ///
@@ -585,6 +579,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'To make your listing stand out:\n\n1. Use clear, well-lit photos (at least 5 images)\n2. Write a detailed description of the property\n3. Include accurate location details\n4. Set a competitive and fair price\n5. Mention nearby amenities and landmarks\n6. Highlight unique features of the property\n7. Respond promptly to buyer inquiries'**
   String get helpListTipsContent;
+
+  /// No description provided for @helpListVideoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Video tours on listings'**
+  String get helpListVideoTitle;
+
+  /// No description provided for @helpListVideoContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Some property listings include a video tour uploaded by the seller:\n\n1. Look for the \"Video Tour\" section on the property detail page\n2. If the video is still processing, you will see a loading indicator\n3. Once ready, tap the video to play it\n4. You can also view the original video if available\n\nVideo tours help you get a better sense of the property before visiting in person. Viewing videos may require an active subscription.'**
+  String get helpListVideoContent;
+
+  /// No description provided for @helpListInterestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to express interest in a property'**
+  String get helpListInterestTitle;
+
+  /// No description provided for @helpListInterestContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To let a seller know you are interested in their property:\n\n1. Open the property listing detail page\n2. Tap the \"Contact with Agent\" button\n3. Optionally add a message to the seller\n4. Tap \"Submit Interest\" to send your request\n\nThe seller will be notified and can respond. You can track your interest status under Profile > My Interests. Statuses include Pending (waiting for response), Accepted, or Rejected. Some plans require an upgrade to contact sellers.'**
+  String get helpListInterestContent;
+
+  /// No description provided for @helpListStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Understanding listing statuses'**
+  String get helpListStatusTitle;
+
+  /// No description provided for @helpListStatusContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Each property listing goes through several statuses:\n\n- Pending: Your listing is under review by our moderation team (usually within 24 hours)\n- Active: Your listing is live and visible to buyers\n- Rejected: The listing did not meet our guidelines. Check the reason and resubmit\n- Sold/Rented: The property has been sold or rented\n- Frozen: The listing is temporarily hidden\n\nYou can view the status of your listings under My Account > My Listings.'**
+  String get helpListStatusContent;
 
   /// No description provided for @helpOrdCreateTitle.
   ///
@@ -646,17 +676,17 @@ abstract class AppLocalizations {
   /// **'All payments on WaveMart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted.\n\nIf you encounter any payment-related issues, please contact our support team immediately.'**
   String get helpPaySecurityContent;
 
-  /// No description provided for @helpVidTourTitle.
+  /// No description provided for @helpPayVipTitle.
   ///
   /// In en, this message translates to:
-  /// **'Video Tours & Video Calls'**
-  String get helpVidTourTitle;
+  /// **'VIP & Featured listings'**
+  String get helpPayVipTitle;
 
-  /// No description provided for @helpVidTourContent.
+  /// No description provided for @helpPayVipContent.
   ///
   /// In en, this message translates to:
-  /// **'WaveMart offers tools to view properties remotely:\n\n- Recorded Video Tours: Listings may include a recorded walkthrough video. Look for the \"Video Tour\" button on the property details page.\n- Live Video Calls: You can start a live virtual call with owners or agents using our integrated Jitsi system to see the property in real-time.\n\nLive calls are encrypted and secure, allowing you to ask questions while seeing the premises live.'**
-  String get helpVidTourContent;
+  /// **'WaveMart offers premium visibility options for your listings:\n\n- Featured: Your listing appears in the \"Premium Listings\" section on the home page and stands out in search results for 30 days\n- VIP: Your listing gets a special VIP badge and appears in the \"Premium VIP Properties\" section\n\nTo feature or mark a listing as VIP:\n1. Go to My Account > My Listings\n2. Open your active listing\n3. Tap \"Feature this Listing\" or \"Mark as VIP\"\n4. Confirm your choice\n\nThese features require an active subscription plan that supports them. Upgrade your plan if needed.'**
+  String get helpPayVipContent;
 
   /// No description provided for @helpKycWhyTitle.
   ///
@@ -729,6 +759,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'If you encounter any issues:\n\n1. Use the in-app Help Center to find solutions\n2. Contact support via email: support@wavemart.et\n3. Call our support line for urgent issues\n4. Report suspicious listings or users through the listing detail page\n\nWe aim to respond to all inquiries within 24 hours.'**
   String get helpSafeReportContent;
+
+  /// No description provided for @helpSafeCallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio calls with owners and agents'**
+  String get helpSafeCallTitle;
+
+  /// No description provided for @helpSafeCallContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Property owners and agents can call you directly through the app for a real-time conversation:\n\n1. When you receive an incoming call, a screen will appear showing the caller\'s name and property\n2. Tap \"Accept\" to join the audio call\n3. Tap \"Decline\" to reject the call\n4. The app will request microphone permission to use the call feature\n\nAudio calls are encrypted and secure. You need an active internet connection to receive calls.'**
+  String get helpSafeCallContent;
 
   /// No description provided for @profileNotLoggedIn.
   ///

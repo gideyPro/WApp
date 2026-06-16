@@ -126,6 +126,12 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         ),
         const SizedBox(height: 24),
         _buildCategorySection(
+          icon: Icons.shopping_cart_outlined,
+          title: l10n.helpCategoryOrders,
+          articles: _allArticles.where((a) => a.category == l10n.helpCategoryOrders).toList(),
+        ),
+        const SizedBox(height: 24),
+        _buildCategorySection(
           icon: Icons.payment_outlined,
           title: l10n.helpCategoryPayments,
           articles:
@@ -410,7 +416,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   }
 
   Future<void> _launchPhone() async {
-    final uri = Uri.parse('tel:+251911000000');
+    final uri = Uri.parse('tel:+251981418181');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
@@ -438,16 +444,15 @@ List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
         category: l10n.helpCategoryAccount,
       ),
       _HelpArticle(
-        title: l10n.helpAccEditTitle,
-        content: l10n.helpAccEditContent,
+        title: l10n.helpAccFavTitle,
+        content: l10n.helpAccFavContent,
         category: l10n.helpCategoryAccount,
       ),
       _HelpArticle(
-        title: l10n.helpAccResetTitle,
-        content: l10n.helpAccResetContent,
+        title: l10n.helpAccMsgTitle,
+        content: l10n.helpAccMsgContent,
         category: l10n.helpCategoryAccount,
       ),
-
       // Listings
       _HelpArticle(
         title: l10n.helpListCreateTitle,
@@ -464,6 +469,33 @@ List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
         content: l10n.helpListTipsContent,
         category: l10n.helpCategoryListings,
       ),
+      _HelpArticle(
+        title: l10n.helpListVideoTitle,
+        content: l10n.helpListVideoContent,
+        category: l10n.helpCategoryListings,
+      ),
+      _HelpArticle(
+        title: l10n.helpListInterestTitle,
+        content: l10n.helpListInterestContent,
+        category: l10n.helpCategoryListings,
+      ),
+      _HelpArticle(
+        title: l10n.helpListStatusTitle,
+        content: l10n.helpListStatusContent,
+        category: l10n.helpCategoryListings,
+      ),
+
+      // Orders
+      _HelpArticle(
+        title: l10n.helpOrdCreateTitle,
+        content: l10n.helpOrdCreateContent,
+        category: l10n.helpCategoryOrders,
+      ),
+      _HelpArticle(
+        title: l10n.helpOrdManageTitle,
+        content: l10n.helpOrdManageContent,
+        category: l10n.helpCategoryOrders,
+      ),
 
       // Payments
       _HelpArticle(
@@ -479,6 +511,11 @@ List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
       _HelpArticle(
         title: l10n.helpPaySecurityTitle,
         content: l10n.helpPaySecurityContent,
+        category: l10n.helpCategoryPayments,
+      ),
+      _HelpArticle(
+        title: l10n.helpPayVipTitle,
+        content: l10n.helpPayVipContent,
         category: l10n.helpCategoryPayments,
       ),
 
@@ -513,6 +550,11 @@ List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
       _HelpArticle(
         title: l10n.helpSafeReportTitle,
         content: l10n.helpSafeReportContent,
+        category: l10n.helpCategorySafety,
+      ),
+      _HelpArticle(
+        title: l10n.helpSafeCallTitle,
+        content: l10n.helpSafeCallContent,
         category: l10n.helpCategorySafety,
       ),
     ];

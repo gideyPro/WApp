@@ -62,7 +62,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     final profileState = ref.watch(profileProvider);
     final authState = ref.watch(authStateProvider);
     final kycState = ref.watch(kycStatusProvider);
-    final localeCode = ref.watch(localeProvider).locale?.languageCode;
     final settingsAsync = ref.watch(appSettingsProvider);
     final subscriptionEnabled = settingsAsync.maybeWhen(
       data: (data) => data['subscription_enabled'] == true,
@@ -159,6 +158,64 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                     ),
                   ),
 
+                  // Settings dropdown
+                  Positioned(
+                    top: MediaQuery.of(context).padding.top + 8,
+                    right: 8,
+                    child: PopupMenuButton<String>(
+                      icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'language':
+                            _showLanguageSelectionDialog(context, ref);
+                            break;
+                          case 'help':
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
+                            );
+                            break;
+                          case 'theme':
+                            ref.read(themeModeProvider.notifier).toggle();
+                            break;
+                        }
+                      },
+                      itemBuilder: (_) => [
+                        PopupMenuItem(
+                          value: 'language',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.language, size: 18),
+                              const SizedBox(width: 12),
+                              Text(l10n.settingsLanguage),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'help',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.help_outline, size: 18),
+                              const SizedBox(width: 12),
+                              Text(l10n.profileHelp),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'theme',
+                          child: Row(
+                            children: [
+                              Icon(
+                                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(l10n.settingsDarkMode),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   // Floating profile card
                   Positioned(
                     left: 16,
@@ -419,34 +476,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                     const SizedBox(height: 16),
                     _buildMenuSection(
                       context,
-                      title: l10n.settingsPreferences,
-                      items: [
-                        _MenuItemData(
-                          icon: Icons.language,
-                          title: l10n.settingsLanguage,
-                          subtitle: _getCurrentLanguageName(context, localeCode),
-                          onTap: () => _showLanguageSelectionDialog(context, ref),
-                        ),
-                        _MenuItemData(
-                          icon: Icons.dark_mode_outlined,
-                          title: l10n.settingsDarkMode,
-                          subtitle: _getDarkModeSubtitle(context, ref),
-                          onTap: () => ref.read(themeModeProvider.notifier).toggle(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildMenuSection(
-                      context,
                       title: l10n.settingsSectionSupport,
                       items: [
-                        _MenuItemData(
-                          icon: Icons.help_outline,
-                          title: l10n.profileHelp,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
-                          ),
-                        ),
                         _MenuItemData(
                           icon: Icons.privacy_tip_outlined,
                           title: l10n.settingsPrivacyPolicy,
@@ -720,21 +751,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
       leading: isSelected ? const Icon(Icons.check_circle, color: AppColors.accent500) : const Icon(Icons.radio_button_unchecked),
       title: Text(languageName, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary, fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
     );
-  }
-
-  String _getCurrentLanguageName(BuildContext context, String? languageCode) {
-    final l10n = AppLocalizations.of(context);
-    switch (languageCode) {
-      case 'am': return l10n.languageAmharic;
-      case 'ti': return l10n.languageTigrinya;
-      default: return l10n.languageEnglish;
-    }
-  }
-
-  String _getDarkModeSubtitle(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeModeProvider);
-    final l10n = AppLocalizations.of(context);
-    return themeMode == ThemeMode.dark ? l10n.commonOn : l10n.commonOff;
   }
 
 }
