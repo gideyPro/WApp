@@ -659,10 +659,10 @@ class _SubscriptionPlansScreenState
         ),
       );
 
-      // Start polling for payment status in parallel with the WebView
+      // Poll every 1s while the webview is open
       final pollTxRef = txRef;
       bool webViewClosed = false;
-      _paymentPollTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+      _paymentPollTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
         if (!mounted || webViewClosed || pollTxRef == null) {
           timer.cancel();
           return;
@@ -684,7 +684,7 @@ class _SubscriptionPlansScreenState
           timer.cancel();
           webViewClosed = true;
           if (mounted) {
-            Navigator.of(context).pop(status);
+            Navigator.of(context).pop('failed');
           }
         }
       });
@@ -721,7 +721,6 @@ class _SubscriptionPlansScreenState
         if (retryAction == 'retry') {
           setState(() => _processingPlanId = null);
           _selectPlan(plan);
-          return;
         }
         return;
       }
