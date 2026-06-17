@@ -431,7 +431,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                           trailing: Switch.adaptive(
                             value: isDark,
                             onChanged: (val) => ref.read(themeModeProvider.notifier).toggle(),
-                            activeColor: AppColors.accent500,
+                            activeThumbColor: AppColors.accent500,
                           ),
                           onTap: () => ref.read(themeModeProvider.notifier).toggle(),
                         ),
