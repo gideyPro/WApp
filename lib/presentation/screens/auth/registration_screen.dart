@@ -204,19 +204,19 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: isDark
-                          ? Colors.white.withValues(alpha: 0.7)
+                          ? context.cardBg
                           : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.08),
+                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                           blurRadius: 24,
                           offset: const Offset(0, 12),
                         ),
                       ],
                       border: Border.all(
                         color: isDark
-                            ? Colors.white.withValues(alpha: 0.2)
+                            ? Colors.white.withValues(alpha: 0.1)
                             : AppColors.stone200,
                       ),
                     ),
@@ -224,7 +224,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                       children: [
                         // Step 1: Registration Form
                         if (!_isOtpSent) ...[
-                          _buildSectionTitle(l10n.authPersonalInfo),
+                          _buildSectionTitle(context, l10n.authPersonalInfo),
                           const SizedBox(height: 20),
                           _buildNameInputs(),
                           const SizedBox(height: 16),
@@ -249,7 +249,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
                         // Step 2: OTP Verification
                         if (_isOtpSent) ...[
-                          _buildSectionTitle(l10n.authVerifyPhone),
+                          _buildSectionTitle(context, l10n.authVerifyPhone),
                           const SizedBox(height: 8),
                           _buildOtpInfoBanner(),
                           const SizedBox(height: 24),
@@ -301,7 +301,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        content: Text(l10n.authCancelRegistration),
+        content: Text(l10n.authCancelRegistration, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -379,12 +379,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
       style: AppTextStyles.titleSmall.copyWith(
         fontWeight: FontWeight.w800,
-        color: AppColors.primary900,
+        color: context.textPrimary,
       ),
     );
   }
@@ -446,18 +446,18 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           child: Text(
             l10n.authEnterPhone,
             style: AppTextStyles.labelMedium.copyWith(
-              color: AppColors.primary800,
+              color: context.textSecondary,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
+            color: isDark ? AppColors.primary900 : AppColors.primary50.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
-                  : (isDark ? AppColors.primary700 : AppColors.primary200),
+                  : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
             ),
           ),
           child: Row(
@@ -474,7 +474,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   focusNode: _phoneFocus,
                   decoration: InputDecoration(
                     hintText: _selectedCountry.example,
-                    hintStyle: AppTextStyles.bodySmall,
+                    hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                   ),
@@ -485,7 +485,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     LengthLimitingTextInputFormatter(15),
                   ],
                   style: AppTextStyles.bodySmall.copyWith(
-                    color: isDark ? Colors.white : AppColors.primary900,
+                    color: context.textPrimary,
                   ),
                 ),
               ),
@@ -509,6 +509,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     TextCapitalization textCapitalization = TextCapitalization.none,
   }) {
     final hasError = errorText != null;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -517,18 +519,18 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           child: Text(
             label,
             style: AppTextStyles.labelMedium.copyWith(
-              color: AppColors.primary800,
+              color: context.textSecondary,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.primary50.withValues(alpha: 0.5),
+            color: isDark ? AppColors.primary900 : AppColors.primary50.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
-                  : AppColors.primary200,
+                  : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
             ),
           ),
           child: TextField(
@@ -536,7 +538,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             focusNode: focusNode,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+              hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
               prefixIcon: Icon(icon, color: context.theme.iconSecondary, size: 18),
               border: InputBorder.none,
               contentPadding:
@@ -545,7 +547,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             keyboardType: keyboardType,
             autocorrect: autocorrect,
             textCapitalization: textCapitalization,
-            style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary900),
+            style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary),
           ),
         ),
         _buildFieldError(errorText),
@@ -574,6 +576,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildGenderSelection() {
     final l10n = AppLocalizations.of(context);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -581,7 +584,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           l10n.profileGender,
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppColors.primary800,
+            color: context.textSecondary,
           ),
         ),
         const SizedBox(height: 10),
@@ -602,15 +605,19 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildGenderOption(String value, String label, IconData icon) {
     final isSelected = _selectedGender == value;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: () => setState(() => _selectedGender = value),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.accent50 : AppColors.primary50.withValues(alpha: 0.5),
+          color: isSelected 
+              ? AppColors.accent500.withValues(alpha: 0.1) 
+              : (isDark ? AppColors.primary900 : AppColors.primary50.withValues(alpha: 0.5)),
           borderRadius: BorderRadius.circular(4),
           border: Border.all(
-            color: isSelected ? AppColors.accent500 : AppColors.primary200,
+            color: isSelected ? AppColors.accent500 : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -620,14 +627,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             Icon(
               icon,
               size: 16,
-              color: isSelected ? AppColors.accent600 : ThemeColors(context).inputBg,
+              color: isSelected ? AppColors.accent500 : context.textMuted,
             ),
             const SizedBox(width: 6),
             Text(
               label,
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.accent700 : ThemeColors(context).textSecondary,
+                color: isSelected ? AppColors.accent500 : context.textSecondary,
               ),
             ),
           ],
@@ -854,7 +861,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   Widget _buildTermsCheckbox() {
     return Theme(
       data: Theme.of(context).copyWith(
-        unselectedWidgetColor: AppColors.primary300,
+        unselectedWidgetColor: context.theme.divider,
       ),
       child: CheckboxListTile(
         value: _agreedToTerms,
@@ -862,14 +869,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         title: Text(
           l10n.listingAcceptTerms,
           style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.primary800,
+            color: context.textPrimary,
             fontWeight: FontWeight.w600,
           ),
         ),
         subtitle: Text(
           l10n.listingTermsSubtitle,
           style: AppTextStyles.caption.copyWith(
-            color: AppColors.primary500,
+            color: context.textSecondary,
           ),
         ),
         controlAffinity: ListTileControlAffinity.leading,

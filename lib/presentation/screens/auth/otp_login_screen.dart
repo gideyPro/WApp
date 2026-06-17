@@ -147,19 +147,19 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   Container(
                     decoration: BoxDecoration(
                       color: isDark
-                          ? Colors.white.withValues(alpha: 0.7)
+                          ? context.cardBg
                           : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.08),
+                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                           blurRadius: 24,
                           offset: const Offset(0, 12),
                         ),
                       ],
                       border: Border.all(
                         color: isDark
-                            ? Colors.white.withValues(alpha: 0.2)
+                            ? Colors.white.withValues(alpha: 0.1)
                             : AppColors.stone200,
                       ),
                     ),
@@ -176,7 +176,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
                           // Step 1: Phone Input
                           if (!authState.otpSent) ...[
-                            _buildSectionTitle(AppLocalizations.of(context).authEnterPhone),
+                            _buildSectionTitle(context, AppLocalizations.of(context).authEnterPhone),
                             const SizedBox(height: 16),
                             _buildPhoneInput(),
                             const SizedBox(height: 20),
@@ -195,7 +195,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                           if (authState.otpSent) ...[
                             _buildOtpInfoBanner(),
                             const SizedBox(height: 16),
-                            _buildSectionTitle(l10n.authEnterOtp),
+                            _buildSectionTitle(context, l10n.authEnterOtp),
                             const SizedBox(height: 16),
                             _buildOtpInput(),
                             const SizedBox(height: 20),
@@ -233,12 +233,12 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
       style: AppTextStyles.titleSmall.copyWith(
         fontWeight: FontWeight.w800,
-        color: AppColors.primary900,
+        color: context.textPrimary,
       ),
     );
   }
@@ -254,18 +254,18 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
           child: Text(
             l10n.authEnterPhone,
             style: AppTextStyles.labelMedium.copyWith(
-              color: AppColors.primary800,
+              color: context.textSecondary,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
+            color: isDark ? AppColors.primary900 : AppColors.primary50.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
-                  : (isDark ? AppColors.primary700 : AppColors.primary200),
+                  : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
             ),
           ),
           child: Row(
@@ -282,7 +282,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   focusNode: _phoneFocus,
                   decoration: InputDecoration(
                     hintText: _selectedCountry.example,
-                    hintStyle: AppTextStyles.bodySmall,
+                    hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                   ),
@@ -293,7 +293,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                     LengthLimitingTextInputFormatter(15),
                   ],
                   style: AppTextStyles.bodySmall.copyWith(
-                    color: isDark ? Colors.white : AppColors.primary900,
+                    color: context.textPrimary,
                   ),
                 ),
               ),
@@ -504,8 +504,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.authChangeNumber),
-        content: Text(l10n.authChangeNumberConfirm),
+        title: Text(l10n.authChangeNumber, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
+        content: Text(l10n.authChangeNumberConfirm, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -536,8 +536,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.authExitLogin),
-        content: Text(l10n.authExitLoginConfirm),
+        title: Text(l10n.authExitLogin, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
+        content: Text(l10n.authExitLoginConfirm, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),

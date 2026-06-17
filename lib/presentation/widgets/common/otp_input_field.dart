@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 
 class OtpInputField extends StatefulWidget {
   final int length;
@@ -78,36 +79,34 @@ class OtpInputFieldState extends State<OtpInputField> {
       style: AppTextStyles.bodyLarge.copyWith(
         fontSize: 20,
         fontWeight: FontWeight.w700,
-        color: isDark ? Colors.white : AppColors.primary900,
+        color: context.textPrimary,
         letterSpacing: 8,
         height: 1.2,
       ),
       decoration: InputDecoration(
         hintText: '0' * widget.length,
         hintStyle: AppTextStyles.bodyLarge.copyWith(
-          color: isDark ? AppColors.primary600 : AppColors.primary200,
+          color: context.textMuted,
           fontWeight: FontWeight.w700,
           letterSpacing: 8,
           height: 1.2,
         ),
         filled: true,
         fillColor: isDark
-            ? AppColors.primary800.withValues(alpha: 0.5)
+            ? AppColors.primary900
             : AppColors.primary50.withValues(alpha: 0.5),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
             color: widget.hasError
                 ? AppColors.error.withValues(alpha: 0.4)
-                : isDark
-                    ? AppColors.primary700
-                    : AppColors.primary200,
+                : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
-            color: isDark ? AppColors.primary700 : AppColors.primary200,
+            color: isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200,
           ),
         ),
         focusedBorder: OutlineInputBorder(

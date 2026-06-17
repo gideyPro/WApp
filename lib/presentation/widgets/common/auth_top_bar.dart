@@ -42,9 +42,9 @@ class AuthTopBar extends ConsumerWidget {
               value: 'language',
               child: Row(
                 children: [
-                  const Icon(Icons.language, size: 18),
+                  Icon(Icons.language, size: 18, color: context.iconPrimary),
                   const SizedBox(width: 12),
-                  Text(l10n.settingsLanguage),
+                  Text(l10n.settingsLanguage, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
                 ],
               ),
             ),
@@ -52,9 +52,9 @@ class AuthTopBar extends ConsumerWidget {
               value: 'help',
               child: Row(
                 children: [
-                  const Icon(Icons.help_outline, size: 18),
+                  Icon(Icons.help_outline, size: 18, color: context.iconPrimary),
                   const SizedBox(width: 12),
-                  Text(l10n.profileHelp),
+                  Text(l10n.profileHelp, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
                 ],
               ),
             ),
@@ -65,14 +65,14 @@ class AuthTopBar extends ConsumerWidget {
                   Icon(
                     isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
                     size: 18,
+                    color: context.iconPrimary,
                   ),
                   const SizedBox(width: 12),
-                  Text(l10n.settingsDarkMode),
+                  Text(l10n.settingsDarkMode, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
                 ],
               ),
             ),
-          ],
-        ),
+          ],        ),
       ],
     );
   }
@@ -82,7 +82,7 @@ class AuthTopBar extends ConsumerWidget {
     final currentLocale = ref.read(localeProvider).locale?.languageCode ?? 'en';
     showModalBottomSheet(
       context: context,
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: context.sheetBg,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(4))),
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
@@ -90,7 +90,7 @@ class AuthTopBar extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.languageTitle, style: AppTextStyles.title),
+            Text(l10n.languageTitle, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
             const SizedBox(height: 24),
             _buildLanguageOption(context, ref, languageCode: 'en', languageName: l10n.languageEnglish, currentLocale: currentLocale),
             _buildLanguageOption(context, ref, languageCode: 'am', languageName: l10n.languageAmharic, currentLocale: currentLocale),
@@ -110,7 +110,13 @@ class AuthTopBar extends ConsumerWidget {
         if (context.mounted) Navigator.pop(context);
       },
       leading: isSelected ? const Icon(Icons.check_circle, color: AppColors.accent500) : const Icon(Icons.radio_button_unchecked),
-      title: Text(languageName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
+      title: Text(
+        languageName,
+        style: AppTextStyles.bodyMedium.copyWith(
+          color: context.textPrimary,
+          fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+        ),
+      ),
     );
   }
 }
