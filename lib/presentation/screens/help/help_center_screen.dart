@@ -330,6 +330,23 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _launchYoutube(),
+              icon: const Icon(Icons.play_circle_outline, size: 18),
+              label: const Text('YouTube'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                side: const BorderSide(color: Colors.white),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -422,6 +439,17 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).helpErrorPhone), backgroundColor: AppColors.error));
+      }
+    }
+  }
+
+  Future<void> _launchYoutube() async {
+    final uri = Uri.parse('https://www.youtube.com/@WaveMart_et');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not open YouTube'), backgroundColor: AppColors.error));
       }
     }
   }
