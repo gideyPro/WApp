@@ -176,8 +176,6 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
                           // Step 1: Phone Input
                           if (!authState.otpSent) ...[
-                            _buildSectionTitle(context, AppLocalizations.of(context).authEnterPhone),
-                            const SizedBox(height: 16),
                             _buildPhoneInput(),
                             const SizedBox(height: 20),
                             WaveButton(
