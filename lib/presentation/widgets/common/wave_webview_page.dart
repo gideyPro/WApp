@@ -118,6 +118,11 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
     _watchdogTimer?.cancel();
     setState(() => _isActivating = true);
 
+    // Signal the poll timer so it won't try to pop 'failed' after us
+    if (widget.externalTxRef != null && !widget.externalTxRef!.isCompleted) {
+      widget.externalTxRef!.complete(txRef);
+    }
+
     try {
       if (widget.onActivate != null) {
         await widget.onActivate!(txRef);
@@ -138,14 +143,17 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
         title: Text(widget.title, style: AppTextStyles.title),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => Navigator.of(context).pop('closed'),
+          onPressed: _isActivating ? null : () => Navigator.of(context).pop('closed'),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop('done'),
+            onPressed: _isActivating ? null : () => Navigator.of(context).pop('done'),
             child: Text(
               'Done',
-              style: AppTextStyles.bodyMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: _isActivating ? Colors.white38 : Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

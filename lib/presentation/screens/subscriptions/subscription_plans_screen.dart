@@ -743,7 +743,10 @@ class _SubscriptionPlansScreenState
         } else if (status.contains('fail') || status.contains('cancel') || status == 'abandoned' || status == 'voided') {
           timer.cancel();
           webViewClosed = true;
-          if (mounted) Navigator.of(context).pop('failed');
+          // Don't pop if URL redirect already triggered activation
+          if (!activateCompleter.isCompleted && mounted) {
+            Navigator.of(context).pop('failed');
+          }
         }
       });
 
