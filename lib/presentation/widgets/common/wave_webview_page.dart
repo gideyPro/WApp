@@ -10,12 +10,18 @@ import '../../../../core/theme/text_styles.dart';
 /// When [urlFuture] is provided the WebView opens immediately with a loading
 /// state and navigates to the real URL once it resolves — avoids blocking the
 /// transition on an upstream API call.
+///
+/// When [onActivate] is provided, success detects (both URL redirect and
+/// [externalTxRef]) show an "Activating your plan..." overlay, call the
+/// callback, and only pop the WebView after it completes.
 class WaveWebViewPage extends StatefulWidget {
   final String? url;
   final Future<String>? urlFuture;
   final String title;
   final List<String> successUrls;
   final List<String> cancelUrls;
+  final Future<void> Function(String txRef)? onActivate;
+  final Completer<String>? externalTxRef;
 
   const WaveWebViewPage({
     super.key,
@@ -24,6 +30,8 @@ class WaveWebViewPage extends StatefulWidget {
     required this.title,
     this.successUrls = const ['subscriptions/activate', 'payments/success'],
     this.cancelUrls = const ['payments/cancel'],
+    this.onActivate,
+    this.externalTxRef,
   }) : assert(url != null || urlFuture != null, 'Either url or urlFuture must be provided');
 
   @override
@@ -36,6 +44,7 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
   double progress = 0;
   bool isLoading = true;
   bool _awaitingUrl = true;
+  bool _isActivating = false;
   Timer? _watchdogTimer;
   bool _hasError = false;
 
@@ -44,12 +53,19 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
     super.initState();
     _startWatchdog();
     _resolveUrl();
+    _listenExternalTxRef();
   }
 
   @override
   void dispose() {
     _watchdogTimer?.cancel();
     super.dispose();
+  }
+
+  void _listenExternalTxRef() {
+    widget.externalTxRef?.future.then((txRef) {
+      if (mounted) _handleSuccess(txRef);
+    });
   }
 
   Future<void> _resolveUrl() async {
@@ -94,6 +110,24 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
     _watchdogTimer?.cancel();
     if (mounted) {
       Navigator.of(context).pop('technical_failure');
+    }
+  }
+
+  Future<void> _handleSuccess(String txRef) async {
+    if (_hasError || _isActivating) return;
+    _watchdogTimer?.cancel();
+    setState(() => _isActivating = true);
+
+    try {
+      if (widget.onActivate != null) {
+        await widget.onActivate!(txRef);
+      }
+    } catch (_) {
+      // Activation failed — still pop so the parent can retry
+    }
+
+    if (mounted) {
+      Navigator.of(context).pop('success');
     }
   }
 
@@ -188,6 +222,42 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
                 ],
               ),
             ),
+          if (_isActivating)
+            Container(
+              color: Colors.black54,
+              child: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Activating your plan...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Please wait a moment',
+                      style: TextStyle(
+                        color: Colors.white60,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -196,7 +266,13 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
   void _checkUrl(String url) {
     for (final successUrl in widget.successUrls) {
       if (url.contains(successUrl)) {
-        Navigator.of(context).pop('success');
+        final uri = Uri.parse(url);
+        final txRef = uri.queryParameters['tx_ref'] ?? uri.queryParameters['trx_ref'];
+        if (txRef != null) {
+          _handleSuccess(txRef);
+        } else {
+          Navigator.of(context).pop('success');
+        }
         return;
       }
     }

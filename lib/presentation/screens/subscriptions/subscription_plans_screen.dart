@@ -673,6 +673,9 @@ class _SubscriptionPlansScreenState
         },
       );
 
+      // Completer so the poll timer can trigger activation inside the WebView
+      final activateCompleter = Completer<String>();
+
       // 2. Open WebView IMMEDIATELY with urlFuture — no waiting for Chapa
       final webViewFuture = Navigator.of(context).push(
         MaterialPageRoute(
@@ -684,6 +687,13 @@ class _SubscriptionPlansScreenState
               return r.checkoutUrl!;
             }),
             title: l10n.subscriptionsSubscribe,
+            onActivate: (txRef) async {
+              final response = await _subscriptionService.activateSubscription(txRef: txRef);
+              if (response.success) {
+                ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
+              }
+            },
+            externalTxRef: activateCompleter,
           ),
         ),
       );
@@ -726,7 +736,10 @@ class _SubscriptionPlansScreenState
         if (status == 'success') {
           timer.cancel();
           webViewClosed = true;
-          if (mounted) Navigator.of(context).pop('success');
+          // Tell WebView to show "Activating..." and activate before closing
+          if (!activateCompleter.isCompleted) {
+            activateCompleter.complete(resolvedTxRef);
+          }
         } else if (status.contains('fail') || status.contains('cancel') || status == 'abandoned' || status == 'voided') {
           timer.cancel();
           webViewClosed = true;
@@ -742,6 +755,11 @@ class _SubscriptionPlansScreenState
       webViewClosed = true;
 
       if (!mounted) return;
+
+      // Resolve completer if WebView closed before poll triggered it
+      if (result == 'success' && resolvedTxRef != null && !activateCompleter.isCompleted) {
+        ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
+      }
 
       // Handle Failures & Retries
       if (result == 'failed' || result == 'technical_failure') {
@@ -783,46 +801,10 @@ class _SubscriptionPlansScreenState
         return;
       }
 
-      // result is 'success' — verify and activate
-      bool activated = false;
-      if (resolvedTxRef != null) {
-        final activationResponse = await _subscriptionService.activateSubscription(txRef: resolvedTxRef);
-        activated = activationResponse.success;
-      }
-
-      if (!mounted) return;
-
-      if (activated) {
-        ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
-        ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
-        }
-      } else {
-        // Payment may still be processing (webhook pending)
-        final paymentStatus = resolvedTxRef != null
-            ? await _subscriptionService.verifyPaymentStatus(resolvedTxRef)
-            : null;
-        if (paymentStatus == 'pending') {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subscriptionsPaymentPending),
-                backgroundColor: AppColors.primary800,
-              ),
-            );
-          }
-        } else if (paymentStatus == 'success') {
-          ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
-          ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
-          }
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentNotVerified), backgroundColor: AppColors.error));
-          }
-        }
+      // result is 'success' — activation already done inside WebView via onActivate
+      ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
       }
     } catch (e) {
       if (mounted) {
