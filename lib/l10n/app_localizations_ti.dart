@@ -51,10 +51,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonLoading => 'ይሰርሕ ኣሎ...';
 
   @override
-  String get commonError => 'ጉድለት';
+  String get commonError => 'ጌጋ';
 
   @override
-  String get commonSuccess => 'ተዓዊቱ';
+  String get commonSuccess => 'ተሳኪዑ';
 
   @override
   String get commonOn => 'ተወሊዑ';
@@ -105,7 +105,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get navMessages => 'መልእኽታት';
 
   @override
-  String get navSettings => 'ናተይ ኣካውንት';
+  String get navSettings => 'ቅጥዒታት';
 
   @override
   String homeGreeting(Object name) {
@@ -202,10 +202,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get helpYoutubeSub => 'ምህሮታት፡ ምኽርታትን ዞራት ንብረታትን ርአዩ';
 
   @override
-  String get helpYoutubeSubscribe => 'ተመዝገቡ';
+  String get helpYoutubeSubscribe => 'ሰብስክራይብ ግበሩ';
 
   @override
-  String get helpCategoryAccount => 'መእተዊን መገለፅን';
+  String get helpCategoryAccount => 'ኣካውንትን ፕሮፋይልን';
 
   @override
   String get helpCategoryListings => 'ንብረታት';
@@ -227,7 +227,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpAccCreateContent =>
-      'ኣብ ዌቭማርት ሕሳብ ንምኽፋት:\n\n1. ነቲ መተግበሪ ይኽፈቱ እሞ \"ይመዝገቡ\" ዝብል ጠውቑ\n2. ቑፅሪ ስልኪኹም ወይ ኢመይልኩም ኣእትዉ\n3. ናይ 6 ኣሃዝ ኮድ (OTP) ክስደደልኩም እዩ\n4. ነቲ ሕሳብኩም ንምርግጋፅ ነቲ ኮድ ኣእትዉ\n5. ስምኩምን ካልኦት ዝርዝራትን ብምውሳኽ መገለፂኹም ኣማልኡ\n\nምስ ተመዝገብኩም ንብረታት ክትርእዩ፣ ናይ ባዕልኹም ንብረታት ከተመዝግቡን ምስ ዋናታት ወይ ወከልቲ (Agents) ክትራኸቡን ትኽእሉ ኢኹም።';
+      'ኣብ ዌቭማርት ኣካውንት ንምኽፋት:\n\n1. ነቲ መተግበሪ ይኽፈቱ እሞ \"ይመዝገቡ\" ዝብል ጠውቑ\n2. ቑፅሪ ስልኪኹም ወይ ኢመይልኩም ኣእትዉ\n3. ናይ 6 ኣሃዝ ኮድ (OTP) ክስደደልኩም እዩ\n4. ነቲ ኣካውንትኩም ንምርግጋፅ ነቲ ኮድ ኣእትዉ\n5. ስምኩምን ካልኦት ዝርዝራትን ብምውሳኽ መገለፂኹም ኣማልኡ\n\nምስ ተመዝገብኩም ንብረታት ክትርእዩ፣ ናይ ባዕልኹም ንብረታት ከተመዝግቡን ምስ ዋናታት ወይ ወከልቲ (Agents) ክትራኸቡን ትኽእሉ ኢኹም።';
 
   @override
   String get helpAccFavTitle => 'ንፈተውቲ ንብረታት ምምሕዳር';
@@ -255,7 +255,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpListManageContent =>
-      'ዘመዝገብኩምዎም ንብረታት ንምምሕዳር ወይ ንምሕዳስ:\n\n1. ናብ ናተይ ሕሳብ > ናተይ ንብረታት ኺዱ\n2. ኵነታት ንብረትኩም ርኣዩ (ንጡፍ፣ ይፅበ ዘሎ፣ ተነፂጉ ወይ ተሸይጡ)\n3. ዝርዝሩ ንምርኣይ ኣብ ሓደ ንብረት ጠውቑ\n4. ሓበሬታ ንምሕዳስ \"ኣዐሪ\" ወይ ንምስራዝ \"ሰርዝ\" ዝብል ተጠቐሙ\n\nመተሓሳሰቢ: ኣብ ንጡፍ ንብረት ዝግበሩ ዓበይቲ ለውጥታት እንደገና ብጉጅለና ንኽግምገም ክገብርዎ ይኽእሉ እዮም።';
+      'ዘመዝገብኩምዎም ንብረታት ንምምሕዳር ወይ ንምሕዳስ:\n\n1. ናብ ናተይ ኣካውንት > ናተይ ንብረታት ኺዱ\n2. ኵነታት ንብረትኩም ርኣዩ (ንጡፍ፣ ይፅበ ዘሎ፣ ተነፂጉ ወይ ተሸይጡ)\n3. ዝርዝሩ ንምርኣይ ኣብ ሓደ ንብረት ጠውቑ\n4. ሓበሬታ ንምሕዳስ \"ኣዐሪ\" ወይ ንምስራዝ \"ሰርዝ\" ዝብል ተጠቐሙ\n\nመተሓሳሰቢ: ኣብ ንጡፍ ንብረት ዝግበሩ ዓበይቲ ለውጥታት እንደገና ብጉጅለና ንኽግምገም ክገብርዎ ይኽእሉ እዮም።';
 
   @override
   String get helpListTipsTitle => 'ንዝበለፀ ምዝገባ ንብረት ዝሕግዙ ነጥብታት';
@@ -283,7 +283,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpListStatusContent =>
-      'ነፍሲ ወከፍ ዝርዝር ንብረት ብዙሕ ደረጃታት የሕልፍ:\n\n- ኣብ ምፅባይ: ዝርዝርኩም ብጉጅለ ግምገማና ይግምገም ኣሎ (መብዛሕትኡ ግዜ ኣብ ውሽጢ 24 ሰዓታት)\n- ንጡፍ: ዝርዝርኩም ንገዛእቲ ይርአ\n- ተነፂጉ: እቲ ዝርዝር መምርሕታትና ኣየማልአን። ምኽንያቱ ርአ እንደገና ኣእቱ\n- ተሸይጡ/ተከራየ: እቲ ንብረት ተሸይጡ ወይ ተከራየ\n- ዝበርደ: እቲ ዝርዝር ንግዚኡ ተሓቢኡ\n\nኵነታት ዝርዝራትኩም ካብ መለያ > ናተይ ንብረታት ክትርእዩ ትኽእሉ ኢኹም።';
+      'ኵነታት ዝርዝርኩም ካብ ኣካውንት > ናተይ ንብረታት ክትርእዩ ትኽእሉ ኢኹም።';
 
   @override
   String get helpOrdCreateTitle => 'ሕቶታት ንብረት (ትእዛዛት) እንታይ እዮም?';
@@ -304,14 +304,14 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpPayPlansContent =>
-      'ዌቭማርት ንዝተፈላለዩ ድሌታት ዝሰማምዑ ትልምታት የቕርብ:\n\n- ናፃ ትልሚ: ንተራ ተጠቀምቲ ንብረታት ንምርኣይን ውሱን ምዝገባታት ንምግባርን\n- መሰረታዊ ትልሚ: ብዙሕ ንብረታት ንዘለዎም ወይ ብተደጋጋሚ ንዝደልዩ ውልቀሰባት\n- ፕሪሚየም ትልሚ: ንኪኢላታት ወከልቲ (Agents)፣ ደረት ዘይብሉ ምዝገባን ንንብረቶም ፍሉይ (Featured/VIP) ኵነታት ዝህብ\n\nነፍሲ ወከፍ ትልሚ ምርኣይ ንብረትኩምን ኣብ ሓደ እዋን ከተመዝግብዎም ትኽእሉ ቁፅሪ ንብረታትን ይውስኽ።';
+      'ዌቭማርት ንዝተፈላለዩ ድሌታት ዝሰማምዑ ትልምታት የቕርብ:\n\n- ናፃ ፓኬጅ: ንተራ ተጠቀምቲ ንብረታት ንምርኣይን ውሱን ምዝገባታት ንምግባርን\n- መሰረታዊ ፓኬጅ: ብዙሕ ንብረታት ንዘለዎም ወይ ብተደጋጋሚ ንዝደልዩ ውልቀሰባት\n- ፕሪሚየም ፓኬጅ: ንኪኢላታት ወከልቲ (Agents)፣ ደረት ዘይብሉ ምዝገባን ንንብረቶም ፍሉይ (Featured/VIP) ኵነታት ዝህብ\n\nነፍሲ ወከፍ ፓኬጅ ምርኣይ ንብረትኩምን ኣብ ሓደ እዋን ከተመዝግብዎም ትኽእሉ ቁፅሪ ንብረታትን ይውስኽ።';
 
   @override
   String get helpPayMakeTitle => 'ክፍሊት ከመይ ከምዝፍፀም';
 
   @override
   String get helpPayMakeContent =>
-      'ዌቭማርት ንውሑስ ክፍሊት ናይ ኢትዮጵያ ቀዳማይ መክፈሊ መንገዲ ዝኾነ ቻፓ (Chapa) ይጥቀም:\n\n1. ካብ ገፅ ኣባልነት ዝደለኹምዎ ትልሚ ምረፁ\n2. \"ሕጂ ተመዝገብ\" ወይ \"ኣዕብዩ\" ዝብል ጠውቑ\n3. ናብቲ ውሑስ ናይ ቻፓ ክፍሊት ገፅ ክትውሰዱ ኢኹም\n4. ብተለብር (Telebirr)፣ CBEBirr፣ M-Pesa ወይ ብዝኾነ ናይ ባንኪ ካርድ ፈፅሙ\n5. ክፍሊት ምስ ተዛዘመ ኣገልግሎት ሕሳብኩም ብኡ ንብኡ ክሕደስ እዩ\n\nዝኾነ ሓበሬታ ቅድሚ ምእታውኩም ኩሉ ግዘ ኣብ ትኽክለኛ ናይ ቻፓ ክፍሊት ገፅ ምህላውኩም ኣረጋግፁ።';
+      'ዌቭማርት ንውሑስ ክፍሊት ናይ ኢትዮጵያ ቀዳማይ መክፈሊ መንገዲ ዝኾነ ቻፓ (Chapa) ይጥቀም:\n\n1. ካብ ገፅ ኣባልነት ዝደለኹምዎ ፓኬጅ ምረፁ\n2. \"ሕጂ ተመዝገብ\" ወይ \"ኣዕብዩ\" ዝብል ጠውቑ\n3. ናብቲ ውሑስ ናይ ቻፓ ክፍሊት ገፅ ክትውሰዱ ኢኹም\n4. ብተለብር (Telebirr)፣ CBEBirr፣ M-Pesa ወይ ብዝኾነ ናይ ባንኪ ካርድ ፈፅሙ\n5. ክፍሊት ምስ ተዛዘመ ኣገልግሎት ኣካውንትኩም ብኡ ንብኡ ክሕደስ እዩ\n\nዝኾነ ሓበሬታ ቅድሚ ምእታውኩም ኩሉ ግዘ ኣብ ትኽክለኛ ናይ ቻፓ ክፍሊት ገፅ ምህላውኩም ኣረጋግፁ።';
 
   @override
   String get helpPaySecurityTitle => 'ድሕንነት ክፍሊት';
@@ -325,7 +325,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpPayVipContent =>
-      'ዌቭማርት ንንብረትኩም ዝለዓለ ምርኣይ ኣማራፂታት የቕርብ:\n\n- ፍሉይ (Featured): ዝርዝርኩም ኣብ መበገሲ ገፅ \"ልዩ ዝርዝሮች\" ክፋል ይርአ ን30 መዓልቲ ኣብ ዳህሳስ ውጺኢታት ጎሊሁ ይርአ\n- VIP: ዝርዝርኩም ፍሉይ ናይ VIP ምልክት የገንዝብ እሞ \"ፕሪሚየም VIP ንብረታት\" ክፋል ይርአ\n\nንብረት ፍሉይ ወይ VIP ንምግባር:\n1. ናብ መለያ > ናተይ ንብረታት ኪዱ\n2. ንጡፍ ዝርዝርኩም ክፈቱ\n3. \"ነዚ ንብረት ፈሊኻ ኣውፅእ\" ወይ \"ከም VIP ምረፅ\" ዝብል ጠውቑ\n4. ምርጫኹም ኣረጋግፁ\n\nእዚኣቶም ባህርያት ዝድግፍ ንጡፍ ናይ ምዝገባ ትልሚ የድልዮም። ኣድላዪ እንተኾይኑ ትልሚኹም ምሕየሹ።';
+      'ዌቭማርት ንንብረትኩም ዝለዓለ ምርኣይ ኣማራፂታት የቕርብ:\n\n- ፍሉይ (Featured): ዝርዝርኩም ኣብ መበገሲ ገፅ \"ልዩ ዝርዝሮች\" ክፋል ይርአ ን30 መዓልቲ ኣብ ዳህሳስ ውጺኢታት ጎሊሁ ይርአ\n- VIP: ዝርዝርኩም ፍሉይ ናይ VIP ምልክት የገንዝብ እሞ \"ፕሪሚየም VIP ንብረታት\" ክፋል ይርአ\n\nንብረት ፍሉይ ወይ VIP ንምግባር:\n1. ናብ ኣካውንት > ናተይ ንብረታት ኪዱ\n2. ንጡፍ ዝርዝርኩም ክፈቱ\n3. \"ነዚ ንብረት ፈሊኻ ኣውፅእ\" ወይ \"ከም VIP ምረፅ\" ዝብል ጠውቑ\n4. ምርጫኹም ኣረጋግፁ\n\nእዚኣቶም ባህርያት ዝድግፍ ንጡፍ ናይ ምዝገባ ፓኬጅ የድልዮም። ኣድላዪ እንተኾይኑ ፓኬጅኹም ምሕየሹ።';
 
   @override
   String get helpKycWhyTitle => 'KYC እንታይ እዩ? ስለምንታይከ የድሊ?';
@@ -1279,13 +1279,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersTypeLabel => 'ዓይነት ንብረት';
 
   @override
-  String get ordersListingType => 'ደሊየ';
+  String get ordersListingType => 'ዓይነት ድሌት';
 
   @override
   String get ordersBuy => 'ምግዛእ';
 
   @override
-  String get ordersRent => 'ክራይ';
+  String get ordersRent => 'ምክራይ';
 
   @override
   String get ordersHoldingType => 'ዓይነት ምትእስሳር';
@@ -1300,10 +1300,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersBudget => 'በጀት (ETB)';
 
   @override
-  String get ordersMin => 'ዝተንእሰለ';
+  String get ordersMin => 'ትሑት';
 
   @override
-  String get ordersMax => 'ዝዓበየ';
+  String get ordersMax => 'ዝለዓለ';
 
   @override
   String get ordersArea => 'ስፍሓት (m²)';
@@ -1418,13 +1418,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsTitle => 'ቅጥዒታት';
 
   @override
-  String get settingsSectionAccount => 'ናይ መለያ ሓበሬታ';
+  String get settingsSectionAccount => 'ናይ ኣካውንት ሓበሬታ';
 
   @override
   String get settingsSectionSupport => 'ሓገዝ';
 
   @override
-  String get settingsSectionAuth => 'መለያ';
+  String get settingsSectionAuth => 'ኣካውንት';
 
   @override
   String get settingsMyListingsSubtitle => 'ንብረትኩም ኣመሓድሩ';
@@ -1504,7 +1504,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsLogout => 'ውፃእ';
 
   @override
-  String get settingsLogoutSubtitle => 'ካብ መለያኹም ንምውፃእ';
+  String get settingsLogoutSubtitle => 'ካብ ኣካውንትኹም ንምውፃእ';
 
   @override
   String get settingsDarkMode => 'ፀሊም መልክዕ';
@@ -1638,13 +1638,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get authExitLoginConfirm => 'ናይ ምእታው መስርሕ ክትቋፅል ዶ ትደልዩ?';
 
   @override
-  String get authNoAccount => 'መለያ የብልኩምን? ';
+  String get authNoAccount => 'ኣካውንት የብልኩምን? ';
 
   @override
   String get authEmail => 'ኢሜይል';
 
   @override
-  String get authCreateAccount => 'መለያኹም ፍጠሩ';
+  String get authCreateAccount => 'ኣካውንትኹም ፍጠሩ';
 
   @override
   String get authJoinMarketplace => 'ነቲ እትኣምንዎ ናይ ንብረት ዕዳጋ ተፀንበሩ';
@@ -1656,13 +1656,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get authVerifyPhone => 'ተሌፎንኩም ኣረጋግፁ';
 
   @override
-  String get authVerifyAndCreate => 'ኣረጋግፅን መለያ ፍጠርን';
+  String get authVerifyAndCreate => 'ኣረጋግፅን ኣካውንት ፍጠርን';
 
   @override
   String get authWelcomeBack => 'እንኳዕ ብደሓን መፃእኩም';
 
   @override
-  String get authAlreadyHaveAccount => 'ቀዲምኩም መለያ ኣለኩም? ';
+  String get authAlreadyHaveAccount => 'ቀዲምኩም ኣካውንት ኣለኩም? ';
 
   @override
   String get authCancelRegistration => 'ምዝገባ ክትሰርዙ ትደልዩ?';
@@ -1686,10 +1686,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsTitle => 'ናይ ኣባልነት ትልምታት';
 
   @override
-  String get subscriptionsSubtitle => 'ንዓኹም ዝበቅዕ ትልሚ ይምረጡ';
+  String get subscriptionsSubtitle => 'ንዓኹም ዝበቅዕ ፓኬጅ ይምረጡ';
 
   @override
-  String get subscriptionsCurrentPlan => 'ናይ ሕጂ ትልሚ';
+  String get subscriptionsCurrentPlan => 'ናይ ሕጂ ፓኬጅ';
 
   @override
   String get subscriptionsFree => 'ብናፃ';
@@ -1704,14 +1704,14 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsSubscribe => 'ሕጂ ተመዝገብ';
 
   @override
-  String get subscriptionsSelectPlan => 'ትልሚ ይምረጡ';
+  String get subscriptionsSelectPlan => 'ፓኬጅ ይምረጡ';
 
   @override
-  String get subscriptionsChoosePlan => 'ትልሚኹም ይምረጡ';
+  String get subscriptionsChoosePlan => 'ፓኬጅኹም ይምረጡ';
 
   @override
   String get subscriptionsSelectPlanSubtitle =>
-      'ንዓኹም ዝበቅዕ ትልሚ ይምረጡ። ኣብ ዝኾነ እዋን ከተዕብይዎ ትኽእሉ ኢኹም።';
+      'ንዓኹም ዝበቅዕ ፓኬጅ ይምረጡ። ኣብ ዝኾነ እዋን ከተዕብይዎ ትኽእሉ ኢኹም።';
 
   @override
   String get subscriptionsListings => 'ንብረታት';
@@ -1738,7 +1738,7 @@ class AppLocalizationsTi extends AppLocalizations {
       'ክፍሊትኩም ኣብ ብራውዘርኩም ወድኡ። ድሕሪ ክፍሊት ናብዚ ተመለሱ።';
 
   @override
-  String get subscriptionsFreeSuccess => 'ነፃ ትልሚ ብትኽክል ተወሊዑ!';
+  String get subscriptionsFreeSuccess => 'ነፃ ፓኬጅ ብትኽክል ተወሊዑ!';
 
   @override
   String get subscriptionsPaymentBrowserError => 'ብራውዘር ንክፍሊት ክኽፈት ኣይከኣለን';
@@ -1768,7 +1768,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get subscriptionsNoPlansAvailable =>
-      'ኣብዚ ግዘ ዝኾነ ንጡፍ ናይ ኣባልነት ትልሚ የለን።';
+      'ኣብዚ ግዘ ዝኾነ ንጡፍ ናይ ኣባልነት ፓኬጅ የለን።';
 
   @override
   String get subscriptionsOrders => 'ትእዛዛት';
@@ -1835,7 +1835,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get paymentsDate => 'ዕለት';
 
   @override
-  String get paymentsPlan => 'ትልሚ';
+  String get paymentsPlan => 'ፓኬጅ';
 
   @override
   String get paymentsMethod => 'መንገዲ ክፍሊት';
@@ -2105,14 +2105,14 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingUpgradeToFeatureSubtitle =>
-      'ናይ ሕጂ ትልምኹም ፍሉያት ንብረታት ኣየጠቓልልን። ንብረትኩም ፈሊኹም ንምውፃእ ዝድግፍ ዕቅድ ምሕያሽ።';
+      'ናይ ሕጂ ትልምኹም ፍሉያት ንብረታት ኣየጠቓልልን። ንብረትኩም ፈሊኹም ንምውፃእ ዝድግፍ ፓኬጅ ምሕያሽ።';
 
   @override
-  String get listingUpgradeToVip => 'ንVIP ዕቅድ ምሕያሽ';
+  String get listingUpgradeToVip => 'ንVIP ፓኬጅ ምሕያሽ';
 
   @override
   String get listingUpgradeToVipSubtitle =>
-      'ናይ ሕጂ ዕቅድኩም ናይ VIP ዝርዝር ኣይሓዝን። ዝርዝርኩም ከም VIP ንምድላይ ዝድግፍ ዕቅድ ምሕያሽ።';
+      'ናይ ሕጂ ፓኬጅኩም ናይ VIP ዝርዝር ኣይሓዝን። ዝርዝርኩም ከም VIP ንምድላይ ዝድግፍ ፓኬጅ ምሕያሽ።';
 
   @override
   String get subscriptionRequiredFeatureSubtitle =>
@@ -2167,7 +2167,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get statusPending => 'ኣብ ምፅባይ';
 
   @override
-  String get statusFrozen => 'ዝበርደ';
+  String get statusFrozen => 'ዝተኣገደ';
 
   @override
   String get statusRejected => 'ውድቅ ዝተገብረ';
@@ -2206,7 +2206,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get markAsVipMessage => 'ምዝገባኹም ዝያዳ ምርኣይ ንኽረክብ ብ VIP ምልክት ክልለ እዩ።';
 
   @override
-  String get upgradeToContact => 'ንምርካብ ዕቅድ ምሕያሽ';
+  String get upgradeToContact => 'ንምርካብ ፓኬጅ ምሕያሽ';
 
   @override
   String get listingsRevealContact => 'መረጃ ርኢ';
@@ -2227,27 +2227,27 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get ordersLimitMessage =>
-      'ንናይ ሕጂ ዕቅድኩም ዝለዓለ ቁፅሪ ትእዛዝ ተበጂሑ። ተወሳኺ ትእዛዝ ንምፍጠር ዕቅድኩም ምሕያሽ።';
+      'ንናይ ሕጂ ፓኬጅኩም ዝለዓለ ቁፅሪ ትእዛዝ ተበጂሑ። ተወሳኺ ትእዛዝ ንምፍጠር ፓኬጅኩም ምሕያሽ።';
 
   @override
-  String get ordersUpgradePlan => 'ዕቅድ ምሕያሽ';
+  String get ordersUpgradePlan => 'ፓኬጅ ምሕያሽ';
 
   @override
-  String get subscriptionVideoUpgrade => 'ናይ ንብረት ቪዲዮታት ንምርኣይ ዕቅድኩም ምሕያሽ';
+  String get subscriptionVideoUpgrade => 'ናይ ንብረት ቪዲዮታት ንምርኣይ ፓኬጅኩም ምሕያሽ';
 
   @override
   String get subscriptionPlanNotSupportedListing =>
-      'ናይ ሕጂ ዕቅድኩም ዝርዝር ምፍጣር ኣይድግፍን።';
+      'ናይ ሕጂ ፓኬጅኩም ዝርዝር ምፍጣር ኣይድግፍን።';
 
   @override
   String get subscriptionPlanNotSupportedListingSubtitle =>
-      'በጃኹም ዝርዝር ምፍጣር ዝድግፍ ዕቅድ ምሕየሹ።';
+      'በጃኹም ዝርዝር ምፍጣር ዝድግፍ ፓኬጅ ምሕየሹ።';
 
   @override
   String get subscriptionPlanNotSupportedOrder =>
-      'ናይ ሕጂ ዕቅድኩም ትእዛዝ ምፍጣር ኣይድግፍን።';
+      'ናይ ሕጂ ፓኬጅኩም ትእዛዝ ምፍጣር ኣይድግፍን።';
 
   @override
   String get subscriptionPlanNotSupportedOrderSubtitle =>
-      'በጃኹም ትእዛዝ ምፍጣር ዝድግፍ ዕቅድ ምሕየሹ።';
+      'በጃኹም ትእዛዝ ምፍጣር ዝድግፍ ፓኬጅ ምሕየሹ።';
 }

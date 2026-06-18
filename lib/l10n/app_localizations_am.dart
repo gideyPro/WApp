@@ -15,7 +15,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonUser => 'ተጠቃሚ';
 
   @override
-  String get commonNA => 'የለም';
+  String get commonNA => 'N/A';
 
   @override
   String get commonAppInitials => 'ዌማ';
@@ -51,7 +51,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonLoading => 'በስራ ላይ...';
 
   @override
-  String get commonError => 'ጉድለት';
+  String get commonError => 'ስህተት';
 
   @override
   String get commonSuccess => 'ተሳክቷል';
@@ -105,7 +105,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get navMessages => 'መልእክቶች';
 
   @override
-  String get navSettings => 'የኔ አካውንት';
+  String get navSettings => 'ቅንብሮች';
 
   @override
   String homeGreeting(Object name) {
@@ -202,10 +202,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get helpYoutubeSub => 'መማሪያዎችን፣ ምክሮችን እና የንብረት ጉብኝቶችን ይመልከቱ';
 
   @override
-  String get helpYoutubeSubscribe => 'ደንበኛ ይሁኑ';
+  String get helpYoutubeSubscribe => 'ሰብስክራይብ ያድርጉ';
 
   @override
-  String get helpCategoryAccount => 'መለያ እና መገለጫ';
+  String get helpCategoryAccount => 'አካውንት እና ፕሮፋይል';
 
   @override
   String get helpCategoryListings => 'ንብረቶች';
@@ -223,11 +223,11 @@ class AppLocalizationsAm extends AppLocalizations {
   String get helpCategorySafety => 'ደህንነት እና ደንቦች';
 
   @override
-  String get helpAccCreateTitle => 'መለያ እንዴት እንደሚከፈት';
+  String get helpAccCreateTitle => 'አካውንት እንዴት እንደሚከፈት';
 
   @override
   String get helpAccCreateContent =>
-      'በዌቭማርት ላይ መለያ ለመክፈት:\n\n1. መተግበሪያውን ይክፈቱ እና \"ይመዝገቡ\" የሚለውን ይንኩ\n2. ስልክ ቁጥርዎን ወይም ኢሜይልዎን ያስገቡ\n3. ባለ 6 አሃዝ ኮድ (OTP) ይላክልዎታል\n4. መለያዎን ለማረጋገጥ ኮዱን ያስገቡ\n5. ስምዎን እና ሌሎች ዝርዝሮችን በማከል መገለጫዎን ያጠናቅቁ\n\nአንዴ ከተመዘገቡ በኋላ ንብረቶችን ማየት፣ የራስዎን ንብረቶች መመዝገብ እና ከባለቤቶች ወይም ወኪሎች (Agents) ጋር መገናኘት ይችላሉ።';
+      'በዌቭማርት ላይ አካውንት ለመክፈት:\n\n1. መተግበሪያውን ይክፈቱ እና \"ይመዝገቡ\" የሚለውን ይንኩ\n2. ስልክ ቁጥርዎን ወይም ኢሜይልዎን ያስገቡ\n3. ባለ 6 አሃዝ ኮድ (OTP) ይላክልዎታል\n4. አካውንትዎን ለማረጋገጥ ኮዱን ያስገቡ\n5. ስምዎን እና ሌሎች ዝርዝሮችን በማከል መገለጫዎን ያጠናቅቁ\n\nአንዴ ከተመዘገቡ በኋላ ንብረቶችን ማየት፣ የራስዎን ንብረቶች መመዝገብ እና ከባለቤቶች ወይም ወኪሎች (Agents) ጋር መገናኘት ይችላሉ።';
 
   @override
   String get helpAccFavTitle => 'የሚወዷቸውን ንብረቶች ማስተዳደር';
@@ -255,7 +255,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpListManageContent =>
-      'የመዘገቧቸውን ንብረቶች ለማስተዳደር ወይም ለማዘመን:\n\n1. ወደ የእኔ መለያ > የእኔ ንብረቶች ይሂዱ\n2. የንብረቶችዎን ሁኔታ ይመልከቱ (ንቁ፣ በመጠባበቅ ላይ፣ ውድቅ የተደረገ፣ ወይም የተሸጠ)\n3. ዝርዝሩን ለማየት በአንድ ንብረት ላይ ይንኩ\n4. መረጃውን ለማዘመን \"አስተካክል\" ወይም ለማጥፋት \"ሰርዝ\" የሚለውን ይጠቀሙ\n\nማሳሰቢያ: በንቁ ንብረት ላይ የሚደረጉ ጉልህ ለውጦች በድጋሚ በቡድናችን እንዲገመገም ሊያደርጉት ይችላሉ።';
+      'የመዘገቧቸውን ንብረቶች ለማስተዳደር ወይም ለማዘመን:\n\n1. ወደ የእኔ አካውንት > የእኔ ንብረቶች ይሂዱ\n2. የንብረቶችዎን ሁኔታ ይመልከቱ (ንቁ፣ በመጠባበቅ ላይ፣ ውድቅ የተደረገ፣ ወይም የተሸጠ)\n3. ዝርዝሩን ለማየት በአንድ ንብረት ላይ ይንኩ\n4. መረጃውን ለማዘመን \"አስተካክል\" ወይም ለማጥፋት \"ሰርዝ\" የሚለውን ይጠቀሙ\n\nማሳሰቢያ: በንቁ ንብረት ላይ የሚደረጉ ጉልህ ለውጦች በድጋሚ በቡድናችን እንዲገመገም ሊያደርጉት ይችላሉ።';
 
   @override
   String get helpListTipsTitle => 'ለተሻለ ንብረት ምዝገባ ጠቃሚ ምክሮች';
@@ -283,7 +283,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpListStatusContent =>
-      'እያንዳንዱ የንብረት ዝርዝር በርካታ ደረጃዎችን ያልፋል:\n\n- በመጠባበቅ ላይ: ዝርዝርዎ በግምገማ ቡድናችን እየተገመገመ ነው (ብዙውን ጊዜ በ24 ሰዓታት ውስጥ)\n- ንቁ: ዝርዝርዎ ለገዢዎች ይታያል\n- ውድቅ የተደረገ: ዝርዝሩ መመሪያችንን አላሟላም። ምክንያቱን ይመልከቱ እና እንደገና ያስገቡ\n- የተሸጠ/የተከራየ: ንብረቱ ተሽጧል ወይም ተከራይቷል\n- የቀዘቀዘ: ዝርዝሩ ለጊዜው ተደብቋል\n\nየዝርዝሮችዎን ሁኔታ ከመለያ > የእኔ ንብረቶች ማየት ይችላሉ።';
+      'እያንዳንዱ የንብረት ዝርዝር በርካታ ደረጃዎችን ያልፋል:\n\n- በመጠባበቅ ላይ: ዝርዝርዎ በግምገማ ቡድናችን እየተገመገመ ነው (ብዙውን ጊዜ በ24 ሰዓታት ውስጥ)\n- ንቁ: ዝርዝርዎ ለገዢዎች ይታያል\n- ውድቅ የተደረገ: ዝርዝሩ መመሪያችንን አላሟላም። ምክንያቱን ይመልከቱ እና እንደገና ያስገቡ\n- የተሸጠ/የተከራየ: ንብረቱ ተሽጧል ወይም ተከራይቷል\n- የቀዘቀዘ: ዝርዝሩ ለጊዜው ተደብቋል\n\nየዝርዝሮችዎን ሁኔታ ከአካውንት > የእኔ ንብረቶች ማየት ይችላሉ።';
 
   @override
   String get helpOrdCreateTitle => 'የንብረት ጥያቄዎች (ትዕዛዞች) ምንድን ናቸው?';
@@ -304,14 +304,14 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpPayPlansContent =>
-      'ዌቭማርት ለተለያዩ ፍላጎቶች የሚስማሙ ዕቅዶችን ያቀርባል:\n\n- ነፃ ዕቅድ: ለተለመዱ ተጠቃሚዎች ንብረቶችን ለማየት እና ውስን ምዝገባዎችን ለማድረግ\n- መሰረታዊ ዕቅድ: ብዙ ንብረቶች ላላቸው ወይም በተደጋጋሚ ለሚፈልጉ ግለሰቦች\n- ፕሪሚየም ዕቅድ: ለባለሙያ ወኪሎች እና አልሚዎች፣ ያልተገደበ ምዝገባ እና ለንብረቶቻቸው የልዩ (Featured/VIP) ሁኔታን የሚሰጥ\n\nእያንዳንዱ ዕቅድ የንብረቶችዎን ታይነት እና በአንድ ጊዜ መመዝገብ የሚችሉትን የንብረት ብዛት ይጨምራል።';
+      'ዌቭማርት ለተለያዩ ፍላጎቶች የሚስማሙ ዕቅዶችን ያቀርባል:\n\n- ነፃ ፓኬጅ: ለተለመዱ ተጠቃሚዎች ንብረቶችን ለማየት እና ውስን ምዝገባዎችን ለማድረግ\n- መሰረታዊ ፓኬጅ: ብዙ ንብረቶች ላላቸው ወይም በተደጋጋሚ ለሚፈልጉ ግለሰቦች\n- ፕሪሚየም ፓኬጅ: ለባለሙያ ወኪሎች እና አልሚዎች፣ ያልተገደበ ምዝገባ እና ለንብረቶቻቸው የልዩ (Featured/VIP) ሁኔታን የሚሰጥ\n\nእያንዳንዱ ፓኬጅ የንብረቶችዎን ታይነት እና በአንድ ጊዜ መመዝገብ የሚችሉትን የንብረት ብዛት ይጨምራል።';
 
   @override
   String get helpPayMakeTitle => 'ክፍያ እንዴት እንደሚፈፀም';
 
   @override
   String get helpPayMakeContent =>
-      'ዌቭማርት ደህንነቱ ለተጠበቀ ክፍያ የኢትዮጵያ ቀዳሚ የክፍያ መንገድ የሆነውን ቻፓን (Chapa) ይጠቀማል:\n\n1. ከአባልነት ገፅ ላይ የሚፈልጉትን ዕቅድ ይምረጡ\n2. \"አሁን ይመዝገቡ\" ወይም \"ያሳድጉ\" የሚለውን ይንኩ\n3. ደህንነቱ ወደተጠበቀው የቻፓ ክፍያ ገፅ ይወሰዳሉ\n4. በቴሌብር (Telebirr)፣ ሲቢኢ ብር (CBEBirr)፣ ኤም-ፔሳ (M-Pesa) ወይም በማንኛውም ባንክ ካርድ ይክፈሉ\n5. ክፍያው እንደተጠናቀቀ የመለያዎ አገልግሎቶች ወዲያውኑ ይዘመናሉ\n\nማንኛውንም መረጃ ከማስገባትዎ በፊት ሁልጊዜ ትክክለኛው የቻፓ ክፍያ ገፅ ላይ መሆንዎን ያረጋግጡ።';
+      'ዌቭማርት ደህንነቱ ለተጠበቀ ክፍያ የኢትዮጵያ ቀዳሚ የክፍያ መንገድ የሆነውን ቻፓን (Chapa) ይጠቀማል:\n\n1. ከአባልነት ገፅ ላይ የሚፈልጉትን ፓኬጅ ይምረጡ\n2. \"አሁን ይመዝገቡ\" ወይም \"ያሳድጉ\" የሚለውን ይንኩ\n3. ደህንነቱ ወደተጠበቀው የቻፓ ክፍያ ገፅ ይወሰዳሉ\n4. በቴሌብር (Telebirr)፣ ሲቢኢ ብር (CBEBirr)፣ ኤም-ፔሳ (M-Pesa) ወይም በማንኛውም ባንክ ካርድ ይክፈሉ\n5. ክፍያው እንደተጠናቀቀ የአካውንትዎ አገልግሎቶች ወዲያውኑ ይዘመናሉ\n\nማንኛውንም መረጃ ከማስገባትዎ በፊት ሁልጊዜ ትክክለኛው የቻፓ ክፍያ ገፅ ላይ መሆንዎን ያረጋግጡ።';
 
   @override
   String get helpPaySecurityTitle => 'የክፍያ ደህንነት';
@@ -325,7 +325,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpPayVipContent =>
-      'ዌቭማርት ለንብረትዎ የላቀ ታይነት አማራጮችን ያቀርባል:\n\n- ተለይቶ የወጣ (Featured): ዝርዝርዎ በመነሻ ገፅ ላይ \"ልዩ ዝርዝሮች\" ክፍል ውስጥ ይታያል እና ለ30 ቀናት በፍለጋ ውጤቶች ውስጥ ጎልቶ ይታያል\n- VIP: ዝርዝርዎ ልዩ የVIP ባጅ ያገኛል እና \"ፕሪሚየም VIP ንብረቶች\" ክፍል ውስጥ ይታያል\n\nንብረትን ተለይቶ እንዲወጣ ወይም VIP ለማድረግ:\n1. ወደ መለያ > የእኔ ንብረቶች ይሂዱ\n2. ንቁ ዝርዝርዎን ይክፈቱ\n3. \"ይህንን ንብረት ለይተው ያውጡ\" ወይም \"እንደ VIP ምረጥ\" የሚለውን ይንኩ\n4. ምርጫዎን ያረጋግጡ\n\nእነዚህ ባህሪያት የሚደግፍ ንቁ የምዝገባ ዕቅድ ያስፈልጋቸዋል። አስፈላጊ ከሆነ ዕቅድዎን ያሻሽሉ።';
+      'ዌቭማርት ለንብረትዎ የላቀ ታይነት አማራጮችን ያቀርባል:\n\n- ተለይቶ የወጣ (Featured): ዝርዝርዎ በመነሻ ገፅ ላይ \"ልዩ ዝርዝሮች\" ክፍል ውስጥ ይታያል እና ለ30 ቀናት በፍለጋ ውጤቶች ውስጥ ጎልቶ ይታያል\n- VIP: ዝርዝርዎ ልዩ የVIP ባጅ ያገኛል እና \"ፕሪሚየም VIP ንብረቶች\" ክፍል ውስጥ ይታያል\n\nንብረትን ተለይቶ እንዲወጣ ወይም VIP ለማድረግ:\n1. ወደ አካውንት > የእኔ ንብረቶች ይሂዱ\n2. ንቁ ዝርዝርዎን ይክፈቱ\n3. \"ይህንን ንብረት ለይተው ያውጡ\" ወይም \"እንደ VIP ምረጥ\" የሚለውን ይንኩ\n4. ምርጫዎን ያረጋግጡ\n\nእነዚህ ባህሪያት የሚደግፍ ንቁ የምዝገባ ፓኬጅ ያስፈልጋቸዋል። አስፈላጊ ከሆነ ፓኬጅዎን ያሻሽሉ።';
 
   @override
   String get helpKycWhyTitle => 'KYC ምንድን ነው? ለምንስ ያስፈልጋል?';
@@ -360,7 +360,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpSafePrivacyContent =>
-      'ዌቭማርት የእርስዎን ግላዊነት ያከብራል እንዲሁም መረጃዎን ይጠብቃል።\n\nእኛ የምንሰበስበው:\n- የመለያ መረጃ (ስም፣ ስልክ፣ ኢሜይል)\n- እርስዎ የሚሰጡት የንብረት መረጃ\n- አገልግሎቱን ለማሻሻል የሚረዱ አጠቃቀሞች\n\nእኛ አናደርግም:\n- የእርስዎን መረጃ ለሌላ አንሸጥም\n- ያለ እርስዎ ፈቃድ መረጃዎን ለሶስተኛ ወገን አናጋራም\n- የክፍያ ዝርዝሮችዎን አናስቀምጥም\n\nለበለጠ መረጃ ድረ-ገፃችንን ይጎብኙ ወይም እኛን ያነጋግሩ።';
+      'ዌቭማርት የእርስዎን ግላዊነት ያከብራል እንዲሁም መረጃዎን ይጠብቃል።\n\nእኛ የምንሰበስበው:\n- የአካውንት መረጃ (ስም፣ ስልክ፣ ኢሜይል)\n- እርስዎ የሚሰጡት የንብረት መረጃ\n- አገልግሎቱን ለማሻሻል የሚረዱ አጠቃቀሞች\n\nእኛ አናደርግም:\n- የእርስዎን መረጃ ለሌላ አንሸጥም\n- ያለ እርስዎ ፈቃድ መረጃዎን ለሶስተኛ ወገን አናጋራም\n- የክፍያ ዝርዝሮችዎን አናስቀምጥም\n\nለበለጠ መረጃ ድረ-ገፃችንን ይጎብኙ ወይም እኛን ያነጋግሩ።';
 
   @override
   String get helpSafeReportTitle => 'ችግርን ሪፖርት ማድረግ';
@@ -673,7 +673,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingTitle => 'ርእስ';
 
   @override
-  String get listingArea => 'ቦታ';
+  String get listingArea => 'ስፋት';
 
   @override
   String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
@@ -684,7 +684,7 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String get listingListingType => 'የማስፈርድ አይነት';
+  String get listingListingType => 'የምዝገባ አይነት';
 
   @override
   String get listingHoldingType => 'የባለቤትነት ሁኔታ';
@@ -1004,7 +1004,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingCooperativeDetails => 'የማህበር ዝርዝሮች';
 
   @override
-  String get listingFinancial => 'ፋይናንሻል';
+  String get listingFinancial => 'የገንዘብ ሁኔታ';
 
   @override
   String get listingSummaryProperty => 'ንብረት';
@@ -1025,7 +1025,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingLands => 'መሬቶች';
 
   @override
-  String get listingPriceOnRequest => 'ዋጋ በጠያቂ';
+  String get listingPriceOnRequest => 'ዋጋው በድርድር';
 
   @override
   String get listingUnknownLocation => 'ያልታወቀ ቦታ';
@@ -1279,13 +1279,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersTypeLabel => 'የንብረት አይነት';
 
   @override
-  String get ordersListingType => 'እፈልጋለሁ';
+  String get ordersListingType => 'የፍላጎት አይነት';
 
   @override
   String get ordersBuy => 'መግዛት';
 
   @override
-  String get ordersRent => 'ማከራየት';
+  String get ordersRent => 'መከራየት';
 
   @override
   String get ordersHoldingType => 'የይዞታ አይነት';
@@ -1419,13 +1419,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsTitle => 'ቅንብሮች';
 
   @override
-  String get settingsSectionAccount => 'የመለያ መረጃ';
+  String get settingsSectionAccount => 'የአካውንት መረጃ';
 
   @override
   String get settingsSectionSupport => 'ድጋፍ';
 
   @override
-  String get settingsSectionAuth => 'መለያ';
+  String get settingsSectionAuth => 'አካውንት';
 
   @override
   String get settingsMyListingsSubtitle => 'ንብረቶችዎን ያስተዳድሩ';
@@ -1505,7 +1505,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsLogout => 'ውጣ';
 
   @override
-  String get settingsLogoutSubtitle => 'ከመለያዎ ለመውጣት';
+  String get settingsLogoutSubtitle => 'ከአካውንትዎ ለመውጣት';
 
   @override
   String get settingsDarkMode => 'ጨለማ ሁኔታ';
@@ -1639,13 +1639,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get authExitLoginConfirm => 'የመግቢያ ሂደቱን ማቋረጥ ይፈልጋሉ?';
 
   @override
-  String get authNoAccount => 'መለያ የለዎትም? ';
+  String get authNoAccount => 'አካውንት የለዎትም? ';
 
   @override
   String get authEmail => 'ኢሜይል';
 
   @override
-  String get authCreateAccount => 'መለያዎን ይፍጠሩ';
+  String get authCreateAccount => 'አካውንትዎን ይፍጠሩ';
 
   @override
   String get authJoinMarketplace => 'የምትተማመኑትን የንብረት ገበያ ይቀላቀሉ';
@@ -1657,13 +1657,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get authVerifyPhone => 'ስልክዎን ያረጋግጡ';
 
   @override
-  String get authVerifyAndCreate => 'አረጋግጥ እና መለያ ፍጠር';
+  String get authVerifyAndCreate => 'አረጋግጥ እና አካውንት ፍጠር';
 
   @override
   String get authWelcomeBack => 'እንኳን ደህና መጡ';
 
   @override
-  String get authAlreadyHaveAccount => 'ቀድሞውኑ መለያ አለዎት? ';
+  String get authAlreadyHaveAccount => 'ቀድሞውኑ አካውንት አለዎት? ';
 
   @override
   String get authCancelRegistration => 'ምዝገባውን መሰረዝ ይፈልጋሉ?';
@@ -1687,10 +1687,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsTitle => 'የአባልነት ዕቅዶች';
 
   @override
-  String get subscriptionsSubtitle => 'ለእርስዎ የሚስማማውን ዕቅድ ይምረጡ';
+  String get subscriptionsSubtitle => 'ለእርስዎ የሚስማማውን ፓኬጅ ይምረጡ';
 
   @override
-  String get subscriptionsCurrentPlan => 'የአሁኑ ዕቅድ';
+  String get subscriptionsCurrentPlan => 'የአሁኑ ፓኬጅ';
 
   @override
   String get subscriptionsFree => 'ነፃ';
@@ -1705,14 +1705,14 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsSubscribe => 'አሁን ይመዝገቡ';
 
   @override
-  String get subscriptionsSelectPlan => 'ዕቅድ ይምረጡ';
+  String get subscriptionsSelectPlan => 'ፓኬጅ ይምረጡ';
 
   @override
-  String get subscriptionsChoosePlan => 'ዕቅድዎን ይምረጡ';
+  String get subscriptionsChoosePlan => 'ፓኬጅዎን ይምረጡ';
 
   @override
   String get subscriptionsSelectPlanSubtitle =>
-      'ለእርስዎ የሚስማማውን ዕቅድ ይምረጡ። በማንኛውም ጊዜ ማሳደግ ይችላሉ።';
+      'ለእርስዎ የሚስማማውን ፓኬጅ ይምረጡ። በማንኛውም ጊዜ ማሳደግ ይችላሉ።';
 
   @override
   String get subscriptionsListings => 'ንብረቶች';
@@ -1739,7 +1739,7 @@ class AppLocalizationsAm extends AppLocalizations {
       'ክፍያውን በብራውዘርዎ ያጠናቅቁ። ከክፍያ በኋላ እዚህ ይመለሱ።';
 
   @override
-  String get subscriptionsFreeSuccess => 'ነፃ ዕቅድ በትክክል ገቢር ሆኗል!';
+  String get subscriptionsFreeSuccess => 'ነፃ ፓኬጅ በትክክል ገቢር ሆኗል!';
 
   @override
   String get subscriptionsPaymentBrowserError => 'ለክፍያ ብራውዘር መክፈት አልተቻለም';
@@ -1836,7 +1836,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get paymentsDate => 'ቀን';
 
   @override
-  String get paymentsPlan => 'ዕቅድ';
+  String get paymentsPlan => 'ፓኬጅ';
 
   @override
   String get paymentsMethod => 'የክፍያ መንገድ';
@@ -2108,14 +2108,14 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get listingUpgradeToFeatureSubtitle =>
-      'የአሁኑ ዕቅድዎ ልዩ ንብረቶችን አያካትትም። ንብረትዎን ለይቶ ለማውጣት የሚደግፍ ዕቅድ ያሻሽሉ።';
+      'የአሁኑ ፓኬጅዎ ልዩ ንብረቶችን አያካትትም። ንብረትዎን ለይቶ ለማውጣት የሚደግፍ ፓኬጅ ያሻሽሉ።';
 
   @override
   String get listingUpgradeToVip => 'ለVIP ያሻሽሉ';
 
   @override
   String get listingUpgradeToVipSubtitle =>
-      'የእርስዎ ዕቅድ የVIP ዝርዝሮችን አያካትትም። ዝርዝሮትን እንደ VIP ለመለየት የሚደግፍ ዕቅድ ያሻሽሉ።';
+      'የእርስዎ ፓኬጅ የVIP ዝርዝሮችን አያካትትም። ዝርዝሮትን እንደ VIP ለመለየት የሚደግፍ ፓኬጅ ያሻሽሉ።';
 
   @override
   String get subscriptionRequiredFeatureSubtitle =>
@@ -2170,7 +2170,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get statusPending => 'በመጠባበቅ ላይ';
 
   @override
-  String get statusFrozen => 'የቀዘቀዘ';
+  String get statusFrozen => 'የታገደ';
 
   @override
   String get statusRejected => 'ውድቅ የተደረገ';
@@ -2230,27 +2230,27 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get ordersLimitMessage =>
-      'ለአሁኑ ዕቅድዎ ከፍተኛ የትዕዛዝ ብዛት ተደርሷል። ተጨማሪ ትዕዛዞች ለመፍጠር ዕቅድዎን ያሻሽሉ።';
+      'ለአሁኑ ፓኬጅዎ ከፍተኛ የትዕዛዝ ብዛት ተደርሷል። ተጨማሪ ትዕዛዞች ለመፍጠር ፓኬጅዎን ያሻሽሉ።';
 
   @override
-  String get ordersUpgradePlan => 'ዕቅድ ያሻሽሉ';
+  String get ordersUpgradePlan => 'ፓኬጅ ያሻሽሉ';
 
   @override
-  String get subscriptionVideoUpgrade => 'የንብረት ቪዲዮዎችን ለማየት ዕቅድዎን ያሻሽሉ';
+  String get subscriptionVideoUpgrade => 'የንብረት ቪዲዮዎችን ለማየት ፓኬጅዎን ያሻሽሉ';
 
   @override
   String get subscriptionPlanNotSupportedListing =>
-      'የአሁኑ ዕቅድዎ ምዝገባዎችን መፍጠር አይደግፍም።';
+      'የአሁኑ ፓኬጅዎ ምዝገባዎችን መፍጠር አይደግፍም።';
 
   @override
   String get subscriptionPlanNotSupportedListingSubtitle =>
-      'እባክዎ ምዝገባዎችን መፍጠር ወደሚደግፍ ዕቅድ ያሻሽሉ።';
+      'እባክዎ ምዝገባዎችን መፍጠር ወደሚደግፍ ፓኬጅ ያሻሽሉ።';
 
   @override
   String get subscriptionPlanNotSupportedOrder =>
-      'የአሁኑ ዕቅድዎ ትዕዛዞችን መፍጠር አይደግፍም።';
+      'የአሁኑ ፓኬጅዎ ትዕዛዞችን መፍጠር አይደግፍም።';
 
   @override
   String get subscriptionPlanNotSupportedOrderSubtitle =>
-      'እባክዎ ትዕዛዞችን መፍጠር ወደሚደግፍ ዕቅድ ያሻሽሉ።';
+      'እባክዎ ትዕዛዞችን መፍጠር ወደሚደግፍ ፓኬጅ ያሻሽሉ።';
 }
