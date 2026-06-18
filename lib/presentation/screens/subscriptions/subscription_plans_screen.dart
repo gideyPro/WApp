@@ -664,8 +664,8 @@ class _SubscriptionPlansScreenState
     setState(() => _processingPlanId = plan.id);
 
     try {
-      // Process payment - initializes Chapa on backend and gets checkoutUrl
-      final paymentResponse = await _subscriptionService.processPayment(
+      // 1. Start the payment API call (Chapa initialize — takes 1-3s)
+      final paymentFuture = _subscriptionService.processPayment(
         planId: plan.id,
         paymentData: {
           'payment_method': 'chapa',
@@ -673,44 +673,49 @@ class _SubscriptionPlansScreenState
         },
       );
 
-      if (!mounted) return;
-
-      if (!paymentResponse.success) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(paymentResponse.message), backgroundColor: AppColors.error));
-        }
-        return;
-      }
-
-      final checkoutUrl = paymentResponse.checkoutUrl;
-      if (checkoutUrl == null) {
-        throw Exception('Failed to get checkout URL');
-      }
-      final txRef = paymentResponse.txRef;
-
-      // Track this pending transaction
-      ref.read(transactionTrackerProvider.notifier).track(plan.id, txRef: txRef);
-
-      // Open WebView for payment (polling starts after WebView opens)
+      // 2. Open WebView IMMEDIATELY with urlFuture — no waiting for Chapa
       final webViewFuture = Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => WaveWebViewPage(
-            url: checkoutUrl,
+            urlFuture: paymentFuture.then((r) {
+              if (!r.success || r.checkoutUrl == null) {
+                throw Exception(r.message);
+              }
+              return r.checkoutUrl!;
+            }),
             title: l10n.subscriptionsSubscribe,
           ),
         ),
       );
 
-      // Poll every 1s while the webview is open
-      final pollTxRef = txRef;
+      // 3. Wait for payment response to get txRef
+      String? resolvedTxRef;
+      try {
+        final paymentResponse = await paymentFuture;
+        resolvedTxRef = paymentResponse.txRef;
+        if (resolvedTxRef != null) {
+          ref.read(transactionTrackerProvider.notifier).track(plan.id, txRef: resolvedTxRef);
+        }
+      } catch (_) {
+        // Payment init failed — WebView handles it via urlFuture rejection
+      }
+
+      if (!mounted) {
+        _paymentPollTimer?.cancel();
+        return;
+      }
+
+      // 4. Poll every 1s while WebView is open
       bool webViewClosed = false;
       _paymentPollTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-        if (!mounted || webViewClosed || pollTxRef == null) {
+        if (!mounted || webViewClosed) {
           timer.cancel();
           return;
         }
 
-        final rawStatus = await _subscriptionService.verifyPaymentStatus(pollTxRef);
+        if (resolvedTxRef == null) return;
+
+        final rawStatus = await _subscriptionService.verifyPaymentStatus(resolvedTxRef);
         if (!mounted || webViewClosed) {
           timer.cancel();
           return;
@@ -721,21 +726,17 @@ class _SubscriptionPlansScreenState
         if (status == 'success') {
           timer.cancel();
           webViewClosed = true;
-          if (mounted) {
-            Navigator.of(context).pop('success');
-          }
+          if (mounted) Navigator.of(context).pop('success');
         } else if (status.contains('fail') || status.contains('cancel') || status == 'abandoned' || status == 'voided') {
           timer.cancel();
           webViewClosed = true;
-          if (mounted) {
-            Navigator.of(context).pop('failed');
-          }
+          if (mounted) Navigator.of(context).pop('failed');
         }
       });
 
+      // 5. Wait for WebView to close
       final result = await webViewFuture;
 
-      // Stop polling
       _paymentPollTimer?.cancel();
       _paymentPollTimer = null;
       webViewClosed = true;
@@ -784,8 +785,8 @@ class _SubscriptionPlansScreenState
 
       // result is 'success' — verify and activate
       bool activated = false;
-      if (txRef != null) {
-        final activationResponse = await _subscriptionService.activateSubscription(txRef: txRef);
+      if (resolvedTxRef != null) {
+        final activationResponse = await _subscriptionService.activateSubscription(txRef: resolvedTxRef);
         activated = activationResponse.success;
       }
 
@@ -793,13 +794,14 @@ class _SubscriptionPlansScreenState
 
       if (activated) {
         ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
+        ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
         }
       } else {
         // Payment may still be processing (webhook pending)
-        final paymentStatus = txRef != null
-            ? await _subscriptionService.verifyPaymentStatus(txRef)
+        final paymentStatus = resolvedTxRef != null
+            ? await _subscriptionService.verifyPaymentStatus(resolvedTxRef)
             : null;
         if (paymentStatus == 'pending') {
           if (mounted) {
@@ -812,6 +814,7 @@ class _SubscriptionPlansScreenState
           }
         } else if (paymentStatus == 'success') {
           ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
+          ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
           }

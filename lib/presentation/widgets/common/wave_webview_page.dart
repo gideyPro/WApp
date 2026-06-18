@@ -4,29 +4,38 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 
-/// A reusable WebView page for handling external flows like Chapa payments
+/// A reusable WebView page for handling external flows like Chapa payments.
+///
+/// Accepts either a [url] directly or a [urlFuture] that resolves to one.
+/// When [urlFuture] is provided the WebView opens immediately with a loading
+/// state and navigates to the real URL once it resolves — avoids blocking the
+/// transition on an upstream API call.
 class WaveWebViewPage extends StatefulWidget {
-  final String url;
+  final String? url;
+  final Future<String>? urlFuture;
   final String title;
   final List<String> successUrls;
   final List<String> cancelUrls;
 
   const WaveWebViewPage({
     super.key,
-    required this.url,
+    this.url,
+    this.urlFuture,
     required this.title,
     this.successUrls = const ['subscriptions/activate', 'payments/success'],
     this.cancelUrls = const ['payments/cancel'],
-  });
+  }) : assert(url != null || urlFuture != null, 'Either url or urlFuture must be provided');
 
   @override
-  State<WaveWebViewPage> createState() => _WaveWebViewPageState();
+  State<WaveWebViewPage> createState() => WaveWebViewPageState();
 }
 
-class _WaveWebViewPageState extends State<WaveWebViewPage> {
+class WaveWebViewPageState extends State<WaveWebViewPage> {
   InAppWebViewController? webViewController;
+  String? _resolvedUrl;
   double progress = 0;
   bool isLoading = true;
+  bool _awaitingUrl = true;
   Timer? _watchdogTimer;
   bool _hasError = false;
 
@@ -34,12 +43,40 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
   void initState() {
     super.initState();
     _startWatchdog();
+    _resolveUrl();
   }
 
   @override
   void dispose() {
     _watchdogTimer?.cancel();
     super.dispose();
+  }
+
+  Future<void> _resolveUrl() async {
+    if (widget.url != null) {
+      setState(() {
+        _resolvedUrl = widget.url;
+        _awaitingUrl = false;
+      });
+      return;
+    }
+
+    try {
+      final url = await widget.urlFuture;
+      if (mounted) {
+        setState(() {
+          _resolvedUrl = url;
+          _awaitingUrl = false;
+        });
+        if (url != null && webViewController != null) {
+          webViewController!.loadUrl(urlRequest: URLRequest(url: WebUri(url)));
+        }
+      }
+    } catch (_) {
+      if (mounted) {
+        _handleError('Failed to load payment URL');
+      }
+    }
   }
 
   void _startWatchdog() {
@@ -91,58 +128,65 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
       ),
       body: Stack(
         children: [
-          InAppWebView(
-            initialUrlRequest: URLRequest(url: WebUri(widget.url)),
-            initialSettings: InAppWebViewSettings(
-              useShouldOverrideUrlLoading: true,
-              mediaPlaybackRequiresUserGesture: false,
-              allowsInlineMediaPlayback: true,
-              iframeAllow: "camera; microphone",
-              iframeAllowFullscreen: true,
+          if (_resolvedUrl != null)
+            InAppWebView(
+              initialUrlRequest: URLRequest(url: WebUri(_resolvedUrl!)),
+              initialSettings: InAppWebViewSettings(
+                useShouldOverrideUrlLoading: true,
+                mediaPlaybackRequiresUserGesture: false,
+                allowsInlineMediaPlayback: true,
+                iframeAllow: "camera; microphone",
+                iframeAllowFullscreen: true,
+              ),
+              onWebViewCreated: (controller) {
+                webViewController = controller;
+              },
+              onProgressChanged: (controller, progress) {
+                setState(() {
+                  this.progress = progress / 100;
+                });
+              },
+              onLoadStart: (controller, url) {
+                setState(() {
+                  isLoading = true;
+                });
+                _checkUrl(url.toString());
+              },
+              onLoadStop: (controller, url) {
+                setState(() {
+                  isLoading = false;
+                  _watchdogTimer?.cancel();
+                });
+                _checkUrl(url.toString());
+              },
+              onReceivedError: (controller, request, error) {
+                if (request.isForMainFrame == true) {
+                  _handleError(error.description);
+                }
+              },
+              onReceivedHttpError: (controller, request, errorResponse) {
+                if (request.isForMainFrame == true) {
+                  _handleError('HTTP ${errorResponse.statusCode}');
+                }
+              },
+              shouldOverrideUrlLoading: (controller, navigationAction) async {
+                var uri = navigationAction.request.url;
+                if (uri != null) {
+                  _checkUrl(uri.toString());
+                }
+                return NavigationActionPolicy.ALLOW;
+              },
             ),
-            onWebViewCreated: (controller) {
-              webViewController = controller;
-            },
-            onProgressChanged: (controller, progress) {
-              setState(() {
-                this.progress = progress / 100;
-              });
-            },
-            onLoadStart: (controller, url) {
-              setState(() {
-                isLoading = true;
-              });
-              _checkUrl(url.toString());
-            },
-            onLoadStop: (controller, url) {
-              setState(() {
-                isLoading = false;
-                _watchdogTimer?.cancel(); // Success!
-              });
-              _checkUrl(url.toString());
-            },
-            onReceivedError: (controller, request, error) {
-              // Ignore some minor errors if needed, but usually network errors are fatal for payment
-              if (request.isForMainFrame == true) {
-                _handleError(error.description);
-              }
-            },
-            onReceivedHttpError: (controller, request, errorResponse) {
-              if (request.isForMainFrame == true) {
-                _handleError('HTTP ${errorResponse.statusCode}');
-              }
-            },
-            shouldOverrideUrlLoading: (controller, navigationAction) async {
-              var uri = navigationAction.request.url;
-              if (uri != null) {
-                _checkUrl(uri.toString());
-              }
-              return NavigationActionPolicy.ALLOW;
-            },
-          ),
-          if (isLoading && progress < 0.1)
+          if (_awaitingUrl || (isLoading && progress < 0.1))
             const Center(
-              child: CircularProgressIndicator(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Connecting to payment gateway...'),
+                ],
+              ),
             ),
         ],
       ),
@@ -150,7 +194,6 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
   }
 
   void _checkUrl(String url) {
-    // Check for success URLs
     for (final successUrl in widget.successUrls) {
       if (url.contains(successUrl)) {
         Navigator.of(context).pop('success');
@@ -158,7 +201,6 @@ class _WaveWebViewPageState extends State<WaveWebViewPage> {
       }
     }
 
-    // Check for cancel URLs
     for (final cancelUrl in widget.cancelUrls) {
       if (url.contains(cancelUrl)) {
         Navigator.of(context).pop('cancelled');
