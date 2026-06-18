@@ -472,6 +472,18 @@ abstract class AppLocalizations {
   /// **'Could not open phone app'**
   String get helpErrorPhone;
 
+  /// No description provided for @helpYoutubeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch tutorials, tips & property tours'**
+  String get helpYoutubeSub;
+
+  /// No description provided for @helpYoutubeSubscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe'**
+  String get helpYoutubeSubscribe;
+
   /// No description provided for @helpCategoryAccount.
   ///
   /// In en, this message translates to:

@@ -199,6 +199,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get helpErrorPhone => 'የስልክ መተግበሪያን መክፈት አልተቻለም';
 
   @override
+  String get helpYoutubeSub => 'መማሪያዎችን፣ ምክሮችን እና የንብረት ጉብኝቶችን ይመልከቱ';
+
+  @override
+  String get helpYoutubeSubscribe => 'ደንበኛ ይሁኑ';
+
+  @override
   String get helpCategoryAccount => 'መለያ እና መገለጫ';
 
   @override

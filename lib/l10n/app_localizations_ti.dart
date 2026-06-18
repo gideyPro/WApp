@@ -199,6 +199,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get helpErrorPhone => 'ናይ ስልኪ መተግበሪያ ክኽፈት ኣይተኽኣለን';
 
   @override
+  String get helpYoutubeSub => 'ምህሮታት፡ ምኽርታትን ዞራት ንብረታትን ርአዩ';
+
+  @override
+  String get helpYoutubeSubscribe => 'ተመዝገቡ';
+
+  @override
   String get helpCategoryAccount => 'መእተዊን መገለፅን';
 
   @override

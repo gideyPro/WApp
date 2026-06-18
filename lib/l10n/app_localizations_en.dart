@@ -201,6 +201,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpErrorPhone => 'Could not open phone app';
 
   @override
+  String get helpYoutubeSub => 'Watch tutorials, tips & property tours';
+
+  @override
+  String get helpYoutubeSubscribe => 'Subscribe';
+
+  @override
   String get helpCategoryAccount => 'Account & Profile';
 
   @override

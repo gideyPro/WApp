@@ -67,6 +67,8 @@
   "helpCall": "Call",
   "helpErrorEmail": "Could not open email app",
   "helpErrorPhone": "Could not open phone app",
+  "helpYoutubeSub": "Watch tutorials, tips & property tours",
+  "helpYoutubeSubscribe": "Subscribe",
   "helpCategoryAccount": "Account & Profile",
   "helpCategoryListings": "Listings",
   "helpCategoryOrders": "Property Requests",

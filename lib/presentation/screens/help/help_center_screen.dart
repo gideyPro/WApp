@@ -151,6 +151,10 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         ),
         const SizedBox(height: 32),
 
+        // YouTube banner
+        _buildYoutubeBanner(),
+        const SizedBox(height: 20),
+
         // Contact support
         _buildContactSupport(),
         const SizedBox(height: 32),
@@ -330,24 +334,101 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _launchYoutube(),
-              icon: const Icon(Icons.play_circle_outline, size: 18),
-              label: const Text('YouTube'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildYoutubeBanner() {
+    final l10n = AppLocalizations.of(context);
+    return GestureDetector(
+      onTap: _launchYoutube,
+      child: Container(
+        width: double.infinity,
+        padding: AppSpacing.paddingLg,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF212121), Color(0xFFCC0000)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFCC0000).withValues(alpha: 0.3),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.play_arrow_rounded,
+                color: Color(0xFFCC0000),
+                size: 36,
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'WaveMart on YouTube',
+                    style: AppTextStyles.bodyLargePlus.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.helpYoutubeSub,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFCC0000),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.subscriptions, color: Colors.white, size: 16),
+                  const SizedBox(width: 6),
+                  Text(
+                    l10n.helpYoutubeSubscribe,
+                    style: AppTextStyles.caption.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
