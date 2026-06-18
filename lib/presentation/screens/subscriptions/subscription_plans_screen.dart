@@ -30,7 +30,7 @@ class _SubscriptionPlansScreenState
     extends ConsumerState<SubscriptionPlansScreen> with RouteAware {
   final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   int? _processingPlanId;
-  late final String _selectedCurrency;
+  String _selectedCurrency = 'ETB';
   final GlobalKey _plansKey = GlobalKey();
   Timer? _paymentPollTimer;
 
@@ -43,7 +43,7 @@ class _SubscriptionPlansScreenState
     final phone = authState.user?.phoneNumber ?? authState.phoneNumber ?? '';
     _selectedCurrency = phone.startsWith('+251') ? 'ETB' : 'USD';
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(subscriptionProvider.notifier).refresh();
+      ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
     });
   }
 
@@ -165,6 +165,7 @@ class _SubscriptionPlansScreenState
           if (activePlans.isNotEmpty) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Column(
@@ -181,6 +182,21 @@ class _SubscriptionPlansScreenState
                           color: AppColors.primary600,
                         ),
                       ),
+                    ],
+                  ),
+                ),
+                // Currency toggle
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.primary200),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildCurrencyTab('ETB'),
+                      _buildCurrencyTab('USD'),
                     ],
                   ),
                 ),
@@ -588,6 +604,32 @@ class _SubscriptionPlansScreenState
   String _formatDate(DateTime date) {
     final locale = Localizations.localeOf(context).languageCode;
     return EthiopianDateHelper.formatDual(date, locale);
+  }
+
+  Widget _buildCurrencyTab(String currency) {
+    final isSelected = _selectedCurrency == currency;
+    return GestureDetector(
+      onTap: () {
+        if (isSelected) return;
+        setState(() => _selectedCurrency = currency);
+        ref.read(subscriptionProvider.notifier).refresh(currency: currency);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          currency,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: isSelected ? AppColors.primary900 : AppColors.primary400,
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _selectPlan(SubscriptionPlan plan) async {

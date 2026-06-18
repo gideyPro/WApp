@@ -75,10 +75,10 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
     refresh();
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh({String currency = 'ETB'}) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final data = await _subscriptionService.getFullData();
+      final data = await _subscriptionService.getFullData(currency: currency);
 
       if (data.success) {
         state = SubscriptionState.loaded(

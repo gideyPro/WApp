@@ -13,10 +13,11 @@ class SubscriptionServiceApi {
 
   /// Get all subscription plans with current subscription info
   /// Uses the combined /subscriptions endpoint for efficiency (single call)
-  Future<SubscriptionPlansResponse> getPlans() async {
+  Future<SubscriptionPlansResponse> getPlans({String currency = 'ETB'}) async {
     try {
       final response = await _apiClient.dio.get(
         ApiConstants.currentSubscription,
+        queryParameters: {'currency': currency},
       );
 
       if (response.statusCode == 200) {
@@ -48,10 +49,11 @@ class SubscriptionServiceApi {
   }
 
   /// Get plans + current subscription + capability flags in a single API call
-  Future<FullSubscriptionData> getFullData() async {
+  Future<FullSubscriptionData> getFullData({String currency = 'ETB'}) async {
     try {
       final response = await _apiClient.dio.get(
         ApiConstants.currentSubscription,
+        queryParameters: {'currency': currency},
       );
 
       if (response.statusCode == 200) {
