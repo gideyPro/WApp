@@ -87,6 +87,7 @@ class KycService {
         data: formData,
         options: Options(
           contentType: 'multipart/form-data',
+          sendTimeout: const Duration(seconds: 300),
         ),
       );
 
@@ -103,9 +104,12 @@ class KycService {
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
+      final msg = exception.toString().replaceAll(RegExp(r'^\w+: '), '');
       return KycResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: msg.contains('timeout')
+            ? 'Upload timed out. Please try again with smaller images or a stable connection.'
+            : msg,
       );
     }
   }
