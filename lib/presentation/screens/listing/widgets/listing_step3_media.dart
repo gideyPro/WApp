@@ -518,11 +518,11 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     final pickedFile = widget.formData.videoFile;
 
     return _mediaSection(
-      title: l10n.listingsVideoTour,
+      title: '${l10n.listingsVideoTour} *',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l10n.listingVideoMaxSize,
+          Text('${l10n.listingVideoMaxSize} — Required',
               style: AppTextStyles.caption
                   .copyWith(color: context.theme.textMuted)),
           const SizedBox(height: 8),

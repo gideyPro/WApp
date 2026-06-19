@@ -653,6 +653,7 @@
   "listingErrorDescriptionRequired": "Description is required",
   "listingErrorImageRequired": "At least one property image is required",
   "listingErrorSitePlanRequired": "At least one site plan is required",
+  "listingErrorVideoRequired": "A video tour is required",
   "listingErrorOwnershipProofRequired": "Ownership proof is required for cooperative properties",
   "listingErrorLeaseContractRequired": "Lease contract is required for lease hold properties",
   "listingErrorTermsRequired": "You must accept the Terms & Conditions",

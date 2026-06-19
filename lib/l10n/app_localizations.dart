@@ -3988,6 +3988,12 @@ abstract class AppLocalizations {
   /// **'At least one site plan is required'**
   String get listingErrorSitePlanRequired;
 
+  /// No description provided for @listingErrorVideoRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A video tour is required'**
+  String get listingErrorVideoRequired;
+
   /// No description provided for @listingErrorOwnershipProofRequired.
   ///
   /// In en, this message translates to:

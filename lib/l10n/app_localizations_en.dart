@@ -2101,6 +2101,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'At least one site plan is required';
 
   @override
+  String get listingErrorVideoRequired =>
+      'A video tour is required';
+
+  @override
   String get listingErrorOwnershipProofRequired =>
       'Ownership proof is required for cooperative properties';
 

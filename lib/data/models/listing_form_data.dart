@@ -463,6 +463,11 @@ class ListingFormData {
         sitePlan != null || (existingSitePlanUrl != null && !removeExistingSitePlan);
     if (!hasSitePlan) errors.add(l10n.listingErrorSitePlanRequired);
 
+    // Check new video OR existing video that wasn't deleted
+    final hasVideo =
+        videoFile != null || (existingVideoUrl != null && !deleteVideo);
+    if (!hasVideo) errors.add(l10n.listingErrorVideoRequired);
+
     // Ownership proof - check new upload OR existing URL
     if (holdingType == 'Cooperative') {
       final hasOwnership =

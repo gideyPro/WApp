@@ -2070,6 +2070,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingErrorSitePlanRequired => 'ቢያንስ አንድ ሳይት ፕላን ያስፈልጋል';
 
   @override
+  String get listingErrorVideoRequired => 'የቪዲዮ ጉብኝት ያስፈልጋል';
+
+  @override
   String get listingErrorOwnershipProofRequired =>
       'ለማህበር ንብረቶች የባለቤትነት ማረጋገጫ ያስፈልጋል';
 

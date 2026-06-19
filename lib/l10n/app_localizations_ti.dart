@@ -2067,6 +2067,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingErrorSitePlanRequired => 'ብውሑዱ ሓደ ሳይት ፕላን የድሊ';
 
   @override
+  String get listingErrorVideoRequired => 'ናይ ቪዲዮ ዑደት የድሊ';
+
+  @override
   String get listingErrorOwnershipProofRequired =>
       'ንናይ ማሕበር ንብረታት መረጋገፂ ዋናነት የድሊ';
 

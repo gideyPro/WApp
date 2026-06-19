@@ -653,6 +653,7 @@
   "listingErrorDescriptionRequired": "መግለጫ ያስፈልጋል",
   "listingErrorImageRequired": "ቢያንስ አንድ የንብረት ምስል ያስፈልጋል",
   "listingErrorSitePlanRequired": "ቢያንስ አንድ ሳይት ፕላን ያስፈልጋል",
+  "listingErrorVideoRequired": "የቪዲዮ ጉብኝት ያስፈልጋል",
   "listingErrorOwnershipProofRequired": "ለማህበር ንብረቶች የባለቤትነት ማረጋገጫ ያስፈልጋል",
   "listingErrorLeaseContractRequired": "ለሊዝ ንብረቶች የሊዝ ውል ያስፈልጋል",
   "listingErrorTermsRequired": "የአገልግሎት ውሎችን እና ደንቦችን መቀበል አለብዎት",
