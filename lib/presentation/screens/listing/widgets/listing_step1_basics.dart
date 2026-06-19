@@ -8,6 +8,7 @@ import '../../../../data/models/listing_form_data.dart';
 import '../../../../data/services/address_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_card.dart';
+import '../../../widgets/common/wave_liquid_glass.dart';
 import '../../../providers/app_providers.dart';
 import '../../../../core/constants/app_spacing.dart';
 
@@ -598,36 +599,29 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   }) {
     final isSelected = groupValue == value;
     final isEnabled = onChanged != null;
-    final bgColor = isSelected
-        ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
-        : context.cardBg;
 
     return Expanded(
-      child: InkWell(
+      child: LiquidGlass(
+        borderRadius: 4,
+        blur: isSelected ? 20 : 16,
+        variant: isSelected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
+        tint: isSelected ? AppColors.accent500 : null,
+        interactive: isEnabled,
         onTap: isEnabled ? () => onChanged(value) : null,
-        borderRadius: BorderRadius.circular(4),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          decoration: BoxDecoration(
-            color: bgColor.withValues(alpha: isEnabled ? 1.0 : 0.6),
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-                color: isSelected
-                    ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
-                    : context.divider,
-                width: 1.5),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon,
-                  color: isSelected ? Colors.white : context.theme.textSecondary,
-                  size: 18),
-              const SizedBox(width: 4),
-              Text(label,
-                  style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600, color: isSelected ? Colors.white : AppColors.primary800)),
-            ],
-          ),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon,
+                size: 16,
+                color: isSelected ? AppColors.accent500 : context.theme.textMuted),
+            const SizedBox(width: 6),
+            Text(label,
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  color: isSelected ? AppColors.accent500 : context.theme.textSecondary,
+                )),
+          ],
         ),
       ),
     );

@@ -12,6 +12,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 
 import '../../providers/app_providers.dart';
 import '../../../core/network/api_constants.dart';
@@ -603,37 +604,27 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   Widget _typeChip(String value, String label, IconData icon) {
     final selected = _type == value;
     return Expanded(
-      child: InkWell(
+      child: LiquidGlass(
+        borderRadius: 4,
+        blur: selected ? 20 : 16,
+        variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
+        tint: selected ? AppColors.accent500 : null,
+        interactive: true,
         onTap: () => setState(() => _type = value),
-        borderRadius: BorderRadius.circular(4),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          decoration: BoxDecoration(
-            color: selected
-                ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
-                : context.cardBg,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: selected
-                  ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
-                  : context.divider,
-              width: 1.5,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon,
-                  color: selected ? Colors.white : context.theme.textSecondary,
-                  size: 18),
-              const SizedBox(width: 4),
-              Text(label,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: selected ? Colors.white : AppColors.primary800,
-                  )),
-            ],
-          ),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon,
+                size: 16,
+                color: selected ? AppColors.accent500 : context.theme.textMuted),
+            const SizedBox(width: 6),
+            Text(label,
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  color: selected ? AppColors.accent500 : context.theme.textSecondary,
+                )),
+          ],
         ),
       ),
     );
@@ -642,39 +633,29 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   Widget _listingTypeChip(String value, String label) {
     final selected = _listingType == value;
     return Expanded(
-      child: InkWell(
+      child: LiquidGlass(
+        borderRadius: 4,
+        blur: selected ? 20 : 16,
+        variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
+        tint: selected ? AppColors.accent500 : null,
+        interactive: true,
         onTap: () => setState(() => _listingType = value),
-        borderRadius: BorderRadius.circular(4),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          decoration: BoxDecoration(
-            color: selected
-                ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
-                : context.cardBg,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: selected
-                  ? (context.isDarkMode ? AppColors.accent500 : AppColors.primary950)
-                  : context.divider,
-              width: 1.5,
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              value == 'sale' ? Icons.sell_rounded : Icons.key_rounded,
+              size: 16,
+              color: selected ? AppColors.accent500 : context.theme.textMuted,
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                value == 'sale' ? Icons.sell_rounded : Icons.key_rounded,
-                color: selected ? Colors.white : context.theme.textSecondary,
-                size: 18,
-              ),
-              const SizedBox(width: 4),
-              Text(label,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: selected ? Colors.white : AppColors.primary800,
-                  )),
-            ],
-          ),
+            const SizedBox(width: 6),
+            Text(label,
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  color: selected ? AppColors.accent500 : context.theme.textSecondary,
+                )),
+          ],
         ),
       ),
     );
