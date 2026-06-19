@@ -8,6 +8,7 @@ import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
 import '../../widgets/common/otp_input_field.dart';
@@ -79,7 +80,6 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (authState.isAuthenticated) {
       return const Scaffold(
@@ -143,74 +143,57 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // Card container
-                  Container(
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? context.cardBg
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-                          blurRadius: 24,
-                          offset: const Offset(0, 12),
-                        ),
-                      ],
-                      border: Border.all(
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.1)
-                            : AppColors.stone200,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        children: [
-                          // Inline Error Message
-                          if (authState.errorMessage != null)
-                            _buildInlineError(authState.errorMessage!),
+                  // Card container — Liquid Glass
+                  LiquidGlass(
+                    borderRadius: 4,
+                    padding: const EdgeInsets.all(24),
+                    variant: LiquidGlassVariant.prominent,
+                    tint: AppColors.accent500,
+                    child: Column(
+                      children: [
+                        // Inline Error Message
+                        if (authState.errorMessage != null)
+                          _buildInlineError(authState.errorMessage!),
 
-                          if (authState.errorMessage != null)
-                            const SizedBox(height: 16),
+                        if (authState.errorMessage != null)
+                          const SizedBox(height: 16),
 
-                          // Step 1: Phone Input
-                          if (!authState.otpSent) ...[
-                            _buildPhoneInput(),
-                            const SizedBox(height: 20),
-                            WaveButton(
-                              text: AppLocalizations.of(context).authSendOtp,
-                              icon: Icons.arrow_forward_rounded,
-                              isLoading: authState.isLoading,
-                              isFullWidth: true,
-                              onPressed: authState.isLoading ? null : _sendOtp,
-                            ),
-                            const SizedBox(height: 16),
-                            _buildRegisterLink(),
-                          ],
-
-                          // Step 2: OTP Input
-                          if (authState.otpSent) ...[
-                            _buildOtpInfoBanner(),
-                            const SizedBox(height: 16),
-                            _buildSectionTitle(context, l10n.authEnterOtp),
-                            const SizedBox(height: 16),
-                            _buildOtpInput(),
-                            const SizedBox(height: 20),
-                            WaveButton(
-                              text: AppLocalizations.of(context).authVerifyOtp,
-                              icon: Icons.check_circle_rounded,
-                              isLoading: authState.isLoading,
-                              isFullWidth: true,
-                              onPressed: authState.isLoading ? null : _verifyOtp,
-                            ),
-                            const SizedBox(height: 12),
-                            _buildChangeNumberButton(),
-                            const SizedBox(height: 8),
-                            _buildResendOtp(),
-                          ],
+                        // Step 1: Phone Input
+                        if (!authState.otpSent) ...[
+                          _buildPhoneInput(),
+                          const SizedBox(height: 20),
+                          WaveButton(
+                            text: AppLocalizations.of(context).authSendOtp,
+                            icon: Icons.arrow_forward_rounded,
+                            isLoading: authState.isLoading,
+                            isFullWidth: true,
+                            onPressed: authState.isLoading ? null : _sendOtp,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildRegisterLink(),
                         ],
-                      ),
+
+                        // Step 2: OTP Input
+                        if (authState.otpSent) ...[
+                          _buildOtpInfoBanner(),
+                          const SizedBox(height: 16),
+                          _buildSectionTitle(context, l10n.authEnterOtp),
+                          const SizedBox(height: 16),
+                          _buildOtpInput(),
+                          const SizedBox(height: 20),
+                          WaveButton(
+                            text: AppLocalizations.of(context).authVerifyOtp,
+                            icon: Icons.check_circle_rounded,
+                            isLoading: authState.isLoading,
+                            isFullWidth: true,
+                            onPressed: authState.isLoading ? null : _verifyOtp,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildChangeNumberButton(),
+                          const SizedBox(height: 8),
+                          _buildResendOtp(),
+                        ],
+                      ],
                     ),
                   ),
                   const SizedBox(height: 24),

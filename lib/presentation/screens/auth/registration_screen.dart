@@ -9,6 +9,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_button.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/otp_input_field.dart';
 import '../../widgets/common/auth_top_bar.dart';
@@ -124,7 +125,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return PopScope(
       canPop: false,
@@ -199,27 +199,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Card container
-                  Container(
+                  // Card container — Liquid Glass
+                  LiquidGlass(
+                    borderRadius: 4,
                     padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? context.cardBg
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-                          blurRadius: 24,
-                          offset: const Offset(0, 12),
-                        ),
-                      ],
-                      border: Border.all(
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.1)
-                            : AppColors.stone200,
-                      ),
-                    ),
+                    variant: LiquidGlassVariant.prominent,
+                    tint: AppColors.accent500,
                     child: Column(
                       children: [
                         // Step 1: Registration Form

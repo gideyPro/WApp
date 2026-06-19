@@ -52,6 +52,7 @@ class _WaveAuthBackgroundState extends State<WaveAuthBackground>
               final t = _controller.value;
               return Stack(
                 children: [
+                  // Primary orb (large, slow)
                   Positioned(
                     top: -80 + (8 * (0.5 - (t - 0.25).abs() * 2)),
                     right: -80 + (10 * (0.5 - (t - 0.75).abs() * 2)),
@@ -64,10 +65,10 @@ class _WaveAuthBackgroundState extends State<WaveAuthBackground>
                       ),
                     ),
                   ),
+                  // Secondary orb
                   Positioned(
-                    bottom:
-                        -80 + (10 * (0.5 - (t - 0.5).abs() * 2)),
-                    left: -80 + (8 * (0.5 - (t).abs() * 2)),
+                    bottom: -80 + (10 * (0.5 - (t - 0.5).abs() * 2)),
+                    left: -80 + (8 * (0.5 - t).abs() * 2),
                     child: Container(
                       width: 384,
                       height: 384,
@@ -77,9 +78,52 @@ class _WaveAuthBackgroundState extends State<WaveAuthBackground>
                       ),
                     ),
                   ),
+                  // Accent orb (color reflection — Liquid Glass style)
+                  Positioned(
+                    top: 120 + (12 * (0.5 - (t - 0.6).abs() * 2)),
+                    right: -40 + (10 * (0.5 - (t - 0.3).abs() * 2)),
+                    child: Container(
+                      width: 256,
+                      height: 256,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.accent500.withValues(alpha: 0.12),
+                      ),
+                    ),
+                  ),
+                  // Emerald orb (secondary accent)
+                  Positioned(
+                    bottom: 60 + (10 * (0.5 - (t - 0.8).abs() * 2)),
+                    left: -40 + (8 * (0.5 - (t - 0.2).abs() * 2)),
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.emerald500.withValues(alpha: 0.08),
+                      ),
+                    ),
+                  ),
                 ],
               );
             },
+          ),
+          // Subtle gradient overlay for depth
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.2),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
           if (widget.child != null) widget.child!,
         ],

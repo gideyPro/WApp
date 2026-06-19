@@ -70,4 +70,9 @@ extension ThemeColorsExtension on BuildContext {
   // Glassmorphism helpers
   Color get glassBg => isDarkMode ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.7);
   Color get glassBorder => isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.8);
+
+  // Liquid Glass helpers (iOS 26 style)
+  Color get liquidGlassBg => isDarkMode ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.75);
+  Color get liquidGlassBorder => isDarkMode ? Colors.white.withValues(alpha: 0.15) : Colors.white.withValues(alpha: 0.85);
+  Color get liquidTint => AppColors.accent500.withValues(alpha: isDarkMode ? 0.12 : 0.06);
 }
