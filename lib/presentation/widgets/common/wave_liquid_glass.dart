@@ -39,11 +39,11 @@ class LiquidGlass extends StatelessWidget {
 
     if (variant == LiquidGlassVariant.prominent) {
       glassBg = isDark
-          ? Colors.white.withValues(alpha: 0.10)
+          ? Colors.white.withValues(alpha: 0.12)
           : Colors.white.withValues(alpha: 0.82);
       glassBorder = isDark
-          ? Colors.white.withValues(alpha: 0.15)
-          : Colors.white.withValues(alpha: 0.85);
+          ? Colors.white.withValues(alpha: 0.22)
+          : Colors.black.withValues(alpha: 0.10);
       shadows = [
         BoxShadow(
           color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
@@ -58,11 +58,11 @@ class LiquidGlass extends StatelessWidget {
       ];
     } else {
       glassBg = isDark
-          ? Colors.white.withValues(alpha: 0.06)
+          ? Colors.white.withValues(alpha: 0.12)
           : Colors.white.withValues(alpha: 0.65);
       glassBorder = isDark
-          ? Colors.white.withValues(alpha: 0.10)
-          : Colors.white.withValues(alpha: 0.75);
+          ? Colors.white.withValues(alpha: 0.18)
+          : Colors.black.withValues(alpha: 0.08);
       shadows = [
         BoxShadow(
           color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
