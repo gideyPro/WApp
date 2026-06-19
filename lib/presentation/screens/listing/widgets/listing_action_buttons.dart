@@ -43,6 +43,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     final hasInterest = interestStatus != null;
 
     return WaveCard(
+      useLiquidGlass: true,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       isGlass: !isDark,
       color: isDark ? AppColors.primary800 : null,

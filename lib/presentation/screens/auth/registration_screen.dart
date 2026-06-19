@@ -143,25 +143,19 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     children: [
                       const SizedBox(height: 24),
 
-                  // Back button
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: _showCancelDialog,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ],
+                  // Back button — Liquid Glass
+                  LiquidGlass(
+                    borderRadius: 8,
+                    blur: 16,
+                    padding: const EdgeInsets.all(8),
+                    variant: LiquidGlassVariant.regular,
+                    interactive: true,
+                    onTap: _showCancelDialog,
+                    child: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
                   const SizedBox(height: 12),
 
@@ -316,51 +310,46 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         ? l10n.authOtpSentMessage(authState.phoneNumber ?? _phoneController.text)
         : l10n.authOtpSentEmailMessage(_emailController.text);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.cardBg,
-        borderRadius: BorderRadius.circular(8),
-        border: Border(
-          left: BorderSide(color: accentColor, width: 4),
-          top: BorderSide(
-            color: context.theme.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : AppColors.primary200,
-          ),
-          bottom: BorderSide(
-            color: context.theme.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : AppColors.primary200,
-          ),
-          right: BorderSide(
-            color: context.theme.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : AppColors.primary200,
+    return Row(
+      children: [
+        Container(
+          width: 4,
+          decoration: BoxDecoration(
+            color: accentColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8),
+              bottomLeft: Radius.circular(8),
+            ),
           ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: [
-            Icon(
-              isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
-              size: 18,
-              color: accentColor,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                message,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: context.textPrimary,
-                  fontWeight: FontWeight.w600,
+        Expanded(
+          child: LiquidGlass(
+            borderRadius: 0,
+            blur: 20,
+            variant: LiquidGlassVariant.regular,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                Icon(
+                  isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
+                  size: 18,
+                  color: accentColor,
                 ),
-              ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: context.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -590,40 +579,32 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildGenderOption(String value, String label, IconData icon) {
     final isSelected = _selectedGender == value;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     
-    return GestureDetector(
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: isSelected ? 20 : 16,
+      variant: isSelected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
+      tint: isSelected ? AppColors.accent500 : null,
+      interactive: true,
       onTap: () => setState(() => _selectedGender = value),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected 
-              ? AppColors.accent500.withValues(alpha: 0.1) 
-              : (isDark ? AppColors.primary900 : AppColors.primary50.withValues(alpha: 0.5)),
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-            color: isSelected ? AppColors.accent500 : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
-            width: isSelected ? 2 : 1,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: isSelected ? AppColors.accent500 : context.textMuted,
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 16,
-              color: isSelected ? AppColors.accent500 : context.textMuted,
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+              color: isSelected ? AppColors.accent500 : context.textSecondary,
             ),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.accent500 : context.textSecondary,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -693,15 +674,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Widget _buildInlineError(String message) {
-    return Container(
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 16,
+      variant: LiquidGlassVariant.regular,
+      tint: AppColors.error,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: AppColors.error.withValues(alpha: 0.2),
-        ),
-      ),
       child: Row(
         children: [
           const Icon(

@@ -53,6 +53,7 @@ class PropertyListingCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 16),
       borderRadius: 4,
       padding: EdgeInsets.zero,
+      useLiquidGlass: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -582,6 +583,7 @@ class FeaturedListingCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 20),
       borderRadius: 4,
       padding: EdgeInsets.zero,
+      useLiquidGlass: true,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -882,6 +884,7 @@ class FeaturedListingCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 20),
       borderRadius: 4,
       padding: EdgeInsets.zero,
+      useLiquidGlass: true,
       child: Shimmer.fromColors(
         baseColor: context.shimmerBase,
         highlightColor: context.shimmerHighlight,

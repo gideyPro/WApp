@@ -2,10 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
+import 'wave_liquid_glass.dart';
 
-/// A universal premium card component for WaveMart
-/// Defaults to visual glassmorphism (translucent + shadow + border)
-/// Use [useBackdropFilter] to enable real frosted blur (works best outside scroll views)
 class WaveCard extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
@@ -15,6 +13,8 @@ class WaveCard extends StatelessWidget {
   final bool showShadow;
   final bool isGlass;
   final bool useBackdropFilter;
+  final bool useLiquidGlass;
+  final Color? tint;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final Clip clipBehavior;
@@ -29,6 +29,8 @@ class WaveCard extends StatelessWidget {
     this.showShadow = true,
     this.isGlass = true,
     this.useBackdropFilter = false,
+    this.useLiquidGlass = false,
+    this.tint,
     this.padding,
     this.margin,
     this.clipBehavior = Clip.antiAlias,
@@ -38,11 +40,24 @@ class WaveCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    if (useLiquidGlass) {
+      return LiquidGlass(
+        borderRadius: borderRadius,
+        blur: 24,
+        variant: LiquidGlassVariant.regular,
+        tint: tint ?? AppColors.accent500,
+        interactive: onTap != null,
+        onTap: onTap,
+        padding: padding,
+        margin: margin,
+        child: child,
+      );
+    }
+
     Color cardColor;
     List<BoxShadow>? shadows;
 
     if (isGlass) {
-      // Visual glass: translucent white background + visible border + premium shadow
       cardColor = isDark
           ? Colors.white.withValues(alpha: 0.08)
           : Colors.white.withValues(alpha: 0.75);

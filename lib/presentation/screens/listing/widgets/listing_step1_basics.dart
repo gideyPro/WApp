@@ -474,6 +474,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
 
   Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
     return WaveCard(
+      useLiquidGlass: true,
       isGlass: true,
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(14),
@@ -635,6 +636,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget _buildFreeHoldFields() {
     final l10n = AppLocalizations.of(context);
     return WaveCard(
+      useLiquidGlass: true,
       isGlass: true,
       padding: const EdgeInsets.all(14),
       child: Column(
@@ -708,6 +710,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget _buildLeaseHoldFields() {
     final l10n = AppLocalizations.of(context);
     return WaveCard(
+      useLiquidGlass: true,
       isGlass: true,
       padding: const EdgeInsets.all(14),
       child: Column(
@@ -817,6 +820,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   Widget _buildCooperativeFields() {
     final l10n = AppLocalizations.of(context);
     return WaveCard(
+      useLiquidGlass: true,
       isGlass: true,
       padding: const EdgeInsets.all(14),
       child: Column(

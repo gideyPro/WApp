@@ -720,6 +720,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
     return WaveCard(
+      useLiquidGlass: true,
       isGlass: true,
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(14),

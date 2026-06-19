@@ -376,51 +376,46 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         ? l10n.authOtpSentMessage(authState.phoneNumber ?? '')
         : l10n.authOtpSentEmailMessage(authState.destination ?? '');
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.cardBg,
-        borderRadius: BorderRadius.circular(8),
-        border: Border(
-          left: BorderSide(color: accentColor, width: 4),
-          top: BorderSide(
-            color: context.theme.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : AppColors.primary200,
-          ),
-          bottom: BorderSide(
-            color: context.theme.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : AppColors.primary200,
-          ),
-          right: BorderSide(
-            color: context.theme.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : AppColors.primary200,
+    return Row(
+      children: [
+        Container(
+          width: 4,
+          decoration: BoxDecoration(
+            color: accentColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8),
+              bottomLeft: Radius.circular(8),
+            ),
           ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: [
-            Icon(
-              isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
-              size: 18,
-              color: accentColor,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                message,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: context.textPrimary,
-                  fontWeight: FontWeight.w600,
+        Expanded(
+          child: LiquidGlass(
+            borderRadius: 0,
+            blur: 20,
+            variant: LiquidGlassVariant.regular,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                Icon(
+                  isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
+                  size: 18,
+                  color: accentColor,
                 ),
-              ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: context.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -439,15 +434,12 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Widget _buildInlineError(String message) {
-    return Container(
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 16,
+      variant: LiquidGlassVariant.regular,
+      tint: AppColors.error,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: AppColors.error.withValues(alpha: 0.2),
-        ),
-      ),
       child: Row(
         children: [
           const Icon(

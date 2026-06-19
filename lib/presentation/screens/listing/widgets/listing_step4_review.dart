@@ -142,6 +142,7 @@ class ListingStep4Review extends StatelessWidget {
 
   Widget _summaryCard(BuildContext context, String title, String content, {IconData? icon}) {
     return WaveCard(
+      useLiquidGlass: true,
       isGlass: true,
       padding: const EdgeInsets.all(12),
       child: Column(

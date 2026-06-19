@@ -481,6 +481,7 @@ class ListingDetailSections extends ConsumerWidget {
         Text(l10n.listingsPropertyDetails, style: AppTextStyles.title),
         const SizedBox(height: 12),
         WaveCard(
+          useLiquidGlass: true,
           isGlass: true,
           showBorder: false,
           padding: EdgeInsets.zero,

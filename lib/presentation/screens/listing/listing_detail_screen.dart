@@ -568,6 +568,7 @@ Shared from WaveMart - Your Trusted Property Marketplace
         );
       },
       child: WaveCard(
+        useLiquidGlass: true,
         padding: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
         child: Column(

@@ -270,6 +270,7 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
 
   Widget _buildMissingListingCard(int listingId) {
     return WaveCard(
+      useLiquidGlass: true,
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [

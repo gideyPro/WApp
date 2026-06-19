@@ -8,6 +8,7 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../../../data/models/message.dart' as msg;
 import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -493,20 +494,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       bool isDark, List<msg.Conversation> relatedConversations) {
     return GestureDetector(
       onTap: _closeContextDropdown,
-      child: Container(
+      child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 320),
-        decoration: BoxDecoration(
-          color: context.cardBgElevated,
-          borderRadius: BorderRadius.circular(4),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-          ],
-          border: Border.all(color: context.divider.withValues(alpha: 0.5)),
-        ),
+        child: LiquidGlass(
+          borderRadius: 4,
+          blur: 24,
+          variant: LiquidGlassVariant.prominent,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: Column(
@@ -547,6 +540,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

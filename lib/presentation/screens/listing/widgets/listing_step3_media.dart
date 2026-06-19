@@ -128,6 +128,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
 
   Widget _mediaSection({required String title, required Widget child}) {
     return WaveCard(
+      useLiquidGlass: true,
       isGlass: false,
       showShadow: false,
       showBorder: true,

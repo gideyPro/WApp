@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -7,6 +8,7 @@ import '../../providers/app_providers.dart';
 import '../../providers/theme_provider.dart';
 import '../../screens/help/help_center_screen.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'wave_liquid_glass.dart';
 
 class AuthTopBar extends ConsumerWidget {
   const AuthTopBar({super.key});
@@ -20,7 +22,13 @@ class AuthTopBar extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         PopupMenuButton<String>(
-          icon: const Icon(Icons.settings_outlined, color: Colors.white, size: 24),
+          icon: const LiquidGlass(
+            borderRadius: 8,
+            blur: 16,
+            padding: EdgeInsets.all(6),
+            variant: LiquidGlassVariant.regular,
+            child: Icon(Icons.settings_outlined, color: Colors.white, size: 20),
+          ),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 180),
           onSelected: (value) {
@@ -83,11 +91,19 @@ class AuthTopBar extends ConsumerWidget {
     final currentLocale = ref.read(localeProvider).locale?.languageCode ?? 'en';
     showModalBottomSheet(
       context: context,
-      backgroundColor: context.sheetBg,
+      backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(4))),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
+      builder: (context) => ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: context.liquidGlassBg,
+              border: Border(top: BorderSide(color: context.liquidGlassBorder)),
+            ),
+            child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -100,6 +116,8 @@ class AuthTopBar extends ConsumerWidget {
           ],
         ),
       ),
+      ),
+    ),
     );
   }
 
