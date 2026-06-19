@@ -523,23 +523,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       runSpacing: 8,
       children: options.map((chip) {
         final (label, value, isSelected) = chip;
-        return GestureDetector(
+        return LiquidGlass(
+          borderRadius: 4,
+          blur: isSelected ? 20 : 16,
+          variant: isSelected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
+          tint: isSelected ? AppColors.accent500 : null,
+          interactive: true,
           onTap: () => onSelected(value),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color:
-                  isSelected ? AppColors.accent500 : AppColors.primary50,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color:
-                    isSelected ? Colors.white : AppColors.primary700,
-              ),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          child: Text(
+            label,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontSize: 13,
+              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+              color: isSelected ? AppColors.accent500 : context.textSecondary,
             ),
           ),
         );
@@ -745,29 +742,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     () => setState(() => _isFeaturedFilter = false)),
               ),
             const SizedBox(width: 8),
-            GestureDetector(
+            LiquidGlass(
+              borderRadius: 4,
+              blur: 16,
+              variant: LiquidGlassVariant.regular,
+              interactive: true,
               onTap: _clearAllFilters,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.primary50,
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: AppColors.primary200),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.close,
-                        size: 14, color: AppColors.primary600),
-                    const SizedBox(width: 4),
-                    Text(
-                      l10n.searchClearAll,
-                      style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary600),
-                    ),
-                  ],
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Row(
+                children: [
+                  const Icon(Icons.close,
+                      size: 14, color: AppColors.primary600),
+                  const SizedBox(width: 4),
+                  Text(
+                    l10n.searchClearAll,
+                    style: AppTextStyles.bodySmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary600),
+                  ),
+                ],
               ),
             ),
           ],
@@ -796,13 +789,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget _filterChip(String label, VoidCallback onRemove) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
-      child: Container(
+      child: LiquidGlass(
+        borderRadius: 4,
+        blur: 16,
+        variant: LiquidGlassVariant.regular,
+        tint: AppColors.accent500,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: AppColors.accent50,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: AppColors.accent200),
-        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
