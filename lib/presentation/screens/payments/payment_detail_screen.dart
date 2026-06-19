@@ -8,6 +8,7 @@ import '../../../../data/models/payment.dart';
 import '../../../../data/services/payment_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../../../core/constants/app_spacing.dart';
 
 class PaymentDetailScreen extends ConsumerStatefulWidget {
@@ -168,14 +169,11 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
   }
 
   Widget _buildDetailCard(Payment payment, AppLocalizations l10n) {
-    return Container(
-      width: double.infinity,
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 20,
+      variant: LiquidGlassVariant.regular,
       padding: AppSpacing.paddingLg,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.stone200),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -200,14 +198,11 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
   }
 
   Widget _buildTimestampCard(Payment payment, AppLocalizations l10n) {
-    return Container(
-      width: double.infinity,
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 20,
+      variant: LiquidGlassVariant.regular,
       padding: AppSpacing.paddingLg,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.stone200),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

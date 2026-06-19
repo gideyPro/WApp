@@ -10,6 +10,7 @@ import '../../../data/services/lead_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../listing/listing_detail_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 
@@ -367,16 +368,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
   Widget _buildSuggestionTile(
       BuildContext context, Lead suggestion, AppLocalizations l10n) {
-    return Container(
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 20,
+      variant: LiquidGlassVariant.regular,
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: context.isDarkMode
-            ? AppColors.primary800.withValues(alpha: 0.3)
-            : AppColors.primary50,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.primary200),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

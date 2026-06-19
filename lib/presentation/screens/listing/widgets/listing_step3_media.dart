@@ -10,6 +10,7 @@ import '../../../../data/services/listing_media_manager.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../../core/constants/app_spacing.dart';
+import '../../../widgets/common/wave_liquid_glass.dart';
 
 class ListingStep3Media extends StatefulWidget {
   final ListingFormData formData;
@@ -164,27 +165,22 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     String? subtitle,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
+    return LiquidGlass(
+      borderRadius: AppSpacing.borderRadiusMd,
+      blur: 20,
+      interactive: true,
       onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
-        decoration: BoxDecoration(
-          border: Border.all(color: context.theme.inputBorder, width: 1.5),
-          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
-          color: context.theme.inputBg,
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 36, color: context.theme.iconSecondary),
-            const SizedBox(height: 10),
-            Text(label, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
-            if (subtitle != null) ...[
-              const SizedBox(height: 4),
-              Text(subtitle, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
-            ],
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+      child: Column(
+        children: [
+          Icon(icon, size: 36, color: context.theme.iconSecondary),
+          const SizedBox(height: 10),
+          Text(label, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
+          if (subtitle != null) ...[
+            const SizedBox(height: 4),
+            Text(subtitle, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
           ],
-        ),
+        ],
       ),
     );
   }
@@ -197,14 +193,10 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     required VoidCallback onRemove,
     required VoidCallback onPreview,
   }) {
-    return Container(
-      width: double.infinity,
+    return LiquidGlass(
+      borderRadius: AppSpacing.borderRadiusMd,
+      blur: 20,
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: context.theme.border),
-        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
-        color: context.theme.cardBg,
-      ),
       child: Row(
         children: [
           if (thumbnail != null)
@@ -348,19 +340,16 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                               .copyWith(images: updated));
                         },
                       )),
-                  GestureDetector(
-                    onTap: () => _pickImages(false),
-                    child: Container(
-                      width: 100,
-                      height: 100,
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: LiquidGlass(
+                      borderRadius: AppSpacing.borderRadiusMd,
+                      blur: 20,
+                      interactive: true,
+                      onTap: () => _pickImages(false),
+                      padding: EdgeInsets.zero,
                       margin: const EdgeInsets.only(right: 8),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: context.theme.inputBorder, width: 1.5),
-                        borderRadius:
-                            BorderRadius.circular(AppSpacing.borderRadiusMd),
-                        color: context.theme.inputBg,
-                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -466,14 +455,11 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
       child: Column(
         children: [
           if (hasExisting) ...[
-            Container(
-              width: double.infinity,
+            LiquidGlass(
+              borderRadius: 8,
+              blur: 20,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               margin: const EdgeInsets.only(bottom: 12),
-              decoration: BoxDecoration(
-                color: context.theme.inputBg,
-                borderRadius: BorderRadius.circular(8),
-              ),
               child: Row(
                 children: [
                   Icon(Icons.description_outlined,
@@ -564,14 +550,10 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
     final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        width: double.infinity,
+      child: LiquidGlass(
+        borderRadius: AppSpacing.borderRadiusMd,
+        blur: 20,
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          border: Border.all(color: context.theme.border),
-          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
-          color: context.theme.cardBg,
-        ),
         child: Row(
           children: [
             Container(
@@ -622,14 +604,10 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   }
 
   Widget _videoPreviewCard(XFile file) {
-    return Container(
-      width: double.infinity,
+    return LiquidGlass(
+      borderRadius: AppSpacing.borderRadiusMd,
+      blur: 20,
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: context.theme.border),
-        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusMd),
-        color: context.theme.cardBg,
-      ),
       child: Column(
         children: [
           Row(
@@ -779,14 +757,13 @@ class _ImageThumb extends StatelessWidget {
         onTap: () => _showPreview(context),
         child: Stack(
           children: [
-            Container(
+            SizedBox(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(
-                border: Border.all(color: context.theme.border),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: ClipRRect(
+              child: LiquidGlass(
+                borderRadius: 10,
+                blur: 12,
+                child: ClipRRect(
                 borderRadius: BorderRadius.circular(9),
                 child: url != null
                     ? Image.network(url!,
@@ -794,6 +771,7 @@ class _ImageThumb extends StatelessWidget {
                     : Image.file(file!,
                         width: 100, height: 100, fit: BoxFit.cover),
               ),
+            ),
             ),
             Positioned(
               top: 4,

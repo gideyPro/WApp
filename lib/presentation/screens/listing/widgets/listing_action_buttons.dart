@@ -12,6 +12,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../data/services/lead_service.dart';
 import '../../../../data/services/listing_service.dart';
+import '../../../widgets/common/wave_liquid_glass.dart';
 import '../../auth/otp_login_screen.dart';
 import '../../subscriptions/subscription_plans_screen.dart';
 import '../edit_listing_screen.dart';
@@ -83,14 +84,11 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
             ),
             const SizedBox(height: 12),
             if (listing.isFeaturedActive)
-              Container(
-                width: double.infinity,
+              LiquidGlass(
+                borderRadius: 8,
+                blur: 20,
+                tint: AppColors.success,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.success.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.success.withValues(alpha: 0.25)),
-                ),
                 child: Row(
                   children: [
                     const Icon(Icons.check_circle, size: 18, color: AppColors.success),
@@ -144,14 +142,11 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     ),
             const SizedBox(height: 12),
             if (listing.isVipActive)
-              Container(
-                width: double.infinity,
+              LiquidGlass(
+                borderRadius: 8,
+                blur: 20,
+                tint: AppColors.vip,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.vip.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.vip.withValues(alpha: 0.25)),
-                ),
                 child: Row(
                   children: [
                     const Icon(Icons.check_circle, size: 18, color: AppColors.vip),
@@ -215,19 +210,13 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                   ),
                 ),
               if (!isOwner && hasInterest)
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 14, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: _getInterestStatusColor(listing.userInterestStatus)
-                          .withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color:
-                            _getInterestStatusColor(listing.userInterestStatus),
-                      ),
-                    ),
+              Expanded(
+                child: LiquidGlass(
+                  borderRadius: 8,
+                  blur: 20,
+                  tint: _getInterestStatusColor(listing.userInterestStatus),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 14, horizontal: 16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

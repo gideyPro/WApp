@@ -8,6 +8,7 @@ import '../../../providers/listing_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../widgets/common/wave_upgrade_card.dart';
+import '../../../widgets/common/wave_liquid_glass.dart';
 
 class ListingContactForm extends ConsumerStatefulWidget {
   final Listing listing;
@@ -52,13 +53,11 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
   }
 
   Widget _buildContactRevealSection(AppLocalizations l10n) {
-    return Container(
+    return LiquidGlass(
+      borderRadius: 8,
+      blur: 20,
+      tint: AppColors.accent500,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.accent500.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.accent500.withValues(alpha: 0.2)),
-      ),
       child: Column(
         children: [
           const Icon(Icons.lock_outline, size: 28, color: AppColors.accent600),
@@ -110,13 +109,11 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
     final displayContact = listing.revealedContact ?? _revealedContact;
     final contact = displayContact ?? '';
 
-    return Container(
+    return LiquidGlass(
+      borderRadius: 8,
+      blur: 20,
+      tint: AppColors.success,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.success.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.success.withValues(alpha: 0.2)),
-      ),
       child: Column(
         children: [
           const Icon(Icons.check_circle_outline, size: 28, color: AppColors.success),

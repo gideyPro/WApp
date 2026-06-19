@@ -9,6 +9,7 @@ import '../../../widgets/common/wave_card.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/utils/ethiopian_date_helper.dart';
 import '../../../widgets/common/wave_upgrade_card.dart';
+import '../../../widgets/common/wave_liquid_glass.dart';
 import '../../../widgets/video/video_player_widget.dart';
 import '../../../providers/app_providers.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -657,13 +658,12 @@ class ListingDetailSections extends ConsumerWidget {
   }
 
   Widget _buildProcessingIndicator(AppLocalizations l10n) {
-    return Container(
+    return SizedBox(
       height: 200,
-      decoration: BoxDecoration(
-        color: AppColors.zinc100,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Center(
+      child: LiquidGlass(
+        borderRadius: 4,
+        blur: 20,
+        child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -684,6 +684,7 @@ class ListingDetailSections extends ConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

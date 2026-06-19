@@ -12,6 +12,7 @@ import '../../widgets/common/wave_button.dart';
 import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 
 /// KYC Verification Screen
@@ -402,13 +403,12 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
             const SizedBox(height: 12),
             if (state.rejectionReason != null) ...[
-              Container(
+              LiquidGlass(
+                borderRadius: 4,
+                blur: 16,
+                variant: LiquidGlassVariant.regular,
+                tint: AppColors.error,
                 padding: AppSpacing.paddingLg,
-                decoration: BoxDecoration(
-                  color: AppColors.errorLight,
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: AppColors.errorLight),
-                ),
                 child: Text(
                   l10n.kycRejectedReason(state.rejectionReason!),
                   style: AppTextStyles.bodyMedium.copyWith(
@@ -452,13 +452,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Info banner
-          Container(
+          LiquidGlass(
+            borderRadius: 4,
+            blur: 20,
+            variant: LiquidGlassVariant.regular,
             padding: AppSpacing.paddingLg,
-            decoration: BoxDecoration(
-              color: AppColors.primary50,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: AppColors.primary200),
-            ),
             child: Row(
               children: [
                 const Icon(
@@ -567,65 +565,60 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     required VoidCallback onTap,
     required AppLocalizations l10n,
   }) {
-    return GestureDetector(
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 20,
+      variant: LiquidGlassVariant.regular,
+      interactive: true,
       onTap: onTap,
-      child: Container(
-        padding: AppSpacing.paddingLg,
-        decoration: BoxDecoration(
-          color: context.cardBg,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-            color: image != null ? AppColors.accent300 : AppColors.stone200,
-          ),
-        ),
-        child: Row(
-          children: [
-            if (image != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  image,
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                ),
-              )
-            else
-              Container(
+      padding: AppSpacing.paddingLg,
+      child: Row(
+        children: [
+          if (image != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                image,
                 width: 60,
                 height: 60,
-                decoration: BoxDecoration(
-                  color: AppColors.stone100,
-                  borderRadius: BorderRadius.circular(8),
+                fit: BoxFit.cover,
+              ),
+            )
+          else
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: AppColors.stone100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 28, color: ThemeColors(context).textMuted),
+            ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                child: Icon(icon, size: 28, color: ThemeColors(context).textMuted),
-              ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    image != null ? l10n.kycTapToChange : subtitle,
-                    style: AppTextStyles.caption,
-                  ),
-                ],
-              ),
+                const SizedBox(height: 4),
+                Text(
+                  image != null ? l10n.kycTapToChange : subtitle,
+                  style: AppTextStyles.caption,
+                ),
+              ],
             ),
-            Icon(
-              image != null ? Icons.check_circle : Icons.add_circle_outline,
-              color: image != null ? AppColors.accent600 : AppColors.stone400,
-              size: 24,
-            ),
-          ],
-        ),
+          ),
+          Icon(
+            image != null ? Icons.check_circle : Icons.add_circle_outline,
+            color: image != null ? AppColors.accent600 : AppColors.stone400,
+            size: 24,
+          ),
+        ],
       ),
     );
   }

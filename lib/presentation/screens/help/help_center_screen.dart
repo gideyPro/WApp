@@ -4,6 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 
@@ -178,12 +179,10 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           ],
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: AppColors.stone200),
-          ),
+        LiquidGlass(
+          borderRadius: 4,
+          blur: 20,
+          variant: LiquidGlassVariant.regular,
           child: Column(
             children: articles.asMap().entries.map((entry) {
               final index = entry.key;

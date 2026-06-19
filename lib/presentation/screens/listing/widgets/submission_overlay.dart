@@ -3,6 +3,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
+import '../../../widgets/common/wave_liquid_glass.dart';
 
 enum SubmissionPhase { validating, uploading, saving }
 
@@ -408,15 +409,11 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
+              LiquidGlass(
+                borderRadius: AppSpacing.borderRadiusSm,
+                blur: 20,
+                tint: AppColors.error,
                 padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: themeColors.isDark
-                      ? AppColors.error.withValues(alpha: 0.15)
-                      : AppColors.errorLight,
-                  borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
-                ),
                 child: Text(
                   state.message,
                   style: AppTextStyles.bodySmall.copyWith(

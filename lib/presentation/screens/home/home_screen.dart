@@ -14,6 +14,7 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../listing/listing_detail_screen.dart';
 import '../subscriptions/subscription_plans_screen.dart';
 
@@ -1139,22 +1140,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     child: Stack(
                       children: [
                         // Skeleton card with VIP chrome
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: context.cardBg,
-                            border: Border.all(
-                              color: AppColors.vip.withValues(alpha: 0.4),
-                              width: 1.5,
-                            ),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x14000000),
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
+                        LiquidGlass(
+                          borderRadius: 4,
+                          blur: 20,
+                          variant: LiquidGlassVariant.regular,
+                          tint: AppColors.vip,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

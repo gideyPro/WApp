@@ -13,6 +13,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../presentation/providers/app_providers.dart';
 import 'common/wave_card.dart';
 import 'common/wave_glass.dart';
+import 'common/wave_liquid_glass.dart';
 
 /// Property Listing Card Widget
 class PropertyListingCard extends ConsumerWidget {
@@ -93,14 +94,10 @@ class PropertyListingCard extends ConsumerWidget {
   }
 
   Widget _buildSkeleton(BuildContext context) {
-    return Container(
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 20,
       margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: context.cardBg,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: context.theme.border),
-        boxShadow: AppColors.shadowMd,
-      ),
       child: Shimmer.fromColors(
         baseColor: context.shimmerBase,
         highlightColor: context.shimmerHighlight,

@@ -18,6 +18,7 @@ import '../help/help_center_screen.dart';
 import '../messages/messages_screen.dart';
 import '../auth/otp_login_screen.dart';
 import '../../widgets/common/wave_glass.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../interests/my_interests_screen.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
@@ -282,15 +283,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: context.cardBg,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: context.divider,
-                      width: 1,
-                    ),
-                  ),
+                child: LiquidGlass(
+                  borderRadius: 16,
+                  blur: 20,
+                  variant: LiquidGlassVariant.regular,
                   child: Row(
                     children: [
                       _buildStatItem(

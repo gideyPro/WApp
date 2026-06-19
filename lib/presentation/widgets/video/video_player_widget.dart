@@ -6,6 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import 'minimal_video_controls.dart';
+import '../common/wave_liquid_glass.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
@@ -238,35 +239,35 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   Widget _buildErrorWidget() {
-    return Container(
+    return SizedBox(
       height: 200,
-      decoration: BoxDecoration(
-        color: AppColors.zinc100,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 48,
-              color: AppColors.error,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context).errorVideoLoad,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.primary600,
+      child: LiquidGlass(
+        borderRadius: 4,
+        blur: 20,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.error_outline,
+                size: 48,
+                color: AppColors.error,
               ),
-            ),
-            const SizedBox(height: 12),
-            TextButton.icon(
-              onPressed: _retry,
-              icon: const Icon(Icons.refresh, size: 18),
-              label: Text(AppLocalizations.of(context).commonRetry),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context).errorVideoLoad,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.primary600,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextButton.icon(
+                onPressed: _retry,
+                icon: const Icon(Icons.refresh, size: 18),
+                label: Text(AppLocalizations.of(context).commonRetry),
+              ),
+            ],
+          ),
         ),
       ),
     );

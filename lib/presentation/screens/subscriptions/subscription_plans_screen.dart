@@ -15,6 +15,7 @@ import '../../providers/transaction_tracker.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_webview_page.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Subscription Plans Screen
@@ -855,39 +856,30 @@ class _PlanCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
 
-    final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isFeatured
-        ? AppColors.accent500
-        : isCurrentPlan
-            ? AppColors.accent300
-            : isDark
-                ? const Color(0xFF334155)
-                : AppColors.primary200;
-    final borderWidth = isFeatured ? 2.0 : 1.0;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        color: surfaceColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor, width: borderWidth),
-        boxShadow: [
-          BoxShadow(
-            color: isFeatured
-                ? AppColors.accent500.withValues(alpha: 0.12)
-                : Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
-            blurRadius: isFeatured ? 24 : 12,
-            offset: Offset(0, isFeatured ? 8 : 4),
-          ),
-        ],
-      ),
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context, isDark, l10n),
-          _buildBody(context, isDark, l10n),
-        ],
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: LiquidGlass(
+        borderRadius: 16,
+        blur: 24,
+        variant: isFeatured || isCurrentPlan
+            ? LiquidGlassVariant.prominent
+            : LiquidGlassVariant.regular,
+        tint: isFeatured
+            ? AppColors.accent500
+            : isCurrentPlan
+                ? AppColors.accent300
+                : null,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context, isDark, l10n),
+            _buildBody(context, isDark, l10n),
+          ],
+        ),
       ),
     );
   }
