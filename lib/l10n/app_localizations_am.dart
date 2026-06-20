@@ -116,13 +116,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get homeDiscover => 'የሚፈልጉትን ንብረት እዚህ ያግኙ';
 
   @override
-  String get homeFeaturedPremium => 'ልዩ ዝርዝሮች';
-
-  @override
   String get homeLatestRecently => 'በቅርቡ የወጡ';
-
-  @override
-  String get homeVipEyebrow => 'VIP ዝርዝሮች';
 
   @override
   String get homeVipTitle => 'ፕሪሚየም VIP ዝርዝሮች';

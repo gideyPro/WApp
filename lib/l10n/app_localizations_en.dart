@@ -116,13 +116,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeDiscover => 'Discover your perfect property';
 
   @override
-  String get homeFeaturedPremium => 'Premium Listings';
-
-  @override
   String get homeLatestRecently => 'Recently added';
-
-  @override
-  String get homeVipEyebrow => 'VIP Listings';
 
   @override
   String get homeVipTitle => 'Premium VIP Properties';

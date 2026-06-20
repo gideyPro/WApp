@@ -310,23 +310,11 @@ abstract class AppLocalizations {
   /// **'Discover your perfect property'**
   String get homeDiscover;
 
-  /// No description provided for @homeFeaturedPremium.
-  ///
-  /// In en, this message translates to:
-  /// **'Premium Listings'**
-  String get homeFeaturedPremium;
-
   /// No description provided for @homeLatestRecently.
   ///
   /// In en, this message translates to:
   /// **'Recently added'**
   String get homeLatestRecently;
-
-  /// No description provided for @homeVipEyebrow.
-  ///
-  /// In en, this message translates to:
-  /// **'VIP Listings'**
-  String get homeVipEyebrow;
 
   /// No description provided for @homeVipTitle.
   ///

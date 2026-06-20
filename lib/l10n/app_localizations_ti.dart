@@ -116,13 +116,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get homeDiscover => 'ትደልይዎ ንብረትኩም ኣብዚ ርኸቡ';
 
   @override
-  String get homeFeaturedPremium => 'ፍሉያት ዝርዝራት';
-
-  @override
   String get homeLatestRecently => 'ኣብ ቀረባ ዝወፁ';
-
-  @override
-  String get homeVipEyebrow => 'VIP ዝርዝራት';
 
   @override
   String get homeVipTitle => 'ፕሪሚየም VIP ዝርዝራት';
