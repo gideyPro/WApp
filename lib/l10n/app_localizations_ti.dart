@@ -672,7 +672,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingSelectHouseType => 'ዓይነት ገዛ ይምረጡ';
 
   @override
-  String get listingAmenities => 'መገልገያታት';
+  String get listingAmenities => 'መሰረታዊ ግልጋሎት';
 
   @override
   String get listingElectricity => 'መብራት';
@@ -1299,7 +1299,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get authVerifyOtp => 'ኮድ ኣረጋግፅ';
 
   @override
-  String get authEnterOtp => 'ባለ 6 ኣሃዝ ኮድ ኣእትዉ';
+  String get authEnterOtp => 'በዓል 6 ኣሃዝ ኮድ ኣእትዉ';
 
   @override
   String get authResendOtp => 'ኮድ ደጊምካ ስደድ';

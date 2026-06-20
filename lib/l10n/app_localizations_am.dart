@@ -672,7 +672,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingSelectHouseType => 'የቤት አይነት ይምረጡ';
 
   @override
-  String get listingAmenities => 'መገልገያዎች';
+  String get listingAmenities => 'መሰረታዊ ኣገልግሎት';
 
   @override
   String get listingElectricity => 'መብራት';

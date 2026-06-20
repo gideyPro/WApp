@@ -103,7 +103,7 @@ class ListingDetailSections extends ConsumerWidget {
             listing.houseType != null &&
             listing.houseType!.isNotEmpty)
           _buildBadge(
-            listing.houseType!.replaceAll('_', ' ').toUpperCase(),
+            listing.getLocalizedHouseType(context).toUpperCase(),
             AppColors.stone700,
           ),
       ],

@@ -143,22 +143,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     children: [
                       const SizedBox(height: 24),
 
-                  // Back button — Liquid Glass
-                  LiquidGlass(
-                    borderRadius: 8,
-                    blur: 16,
-                    padding: const EdgeInsets.all(8),
-                    variant: LiquidGlassVariant.regular,
-                    interactive: true,
-                    onTap: _showCancelDialog,
-                    child: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
                   // Logo
                   const GlassLogoContainer(size: 72, logoSize: 52),
                   const SizedBox(height: 12),

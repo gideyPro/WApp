@@ -598,7 +598,7 @@ class Listing {
     if (acquisitionType == null) return '';
     final l10n = AppLocalizations.of(context);
     switch (acquisitionType) {
-      case 'Purchase':
+      case 'Purchased':
         return l10n.listingPurchased;
       case 'Inheritance':
         return l10n.listingInherited;
@@ -614,7 +614,7 @@ class Listing {
   String getLocalizedFacingDirection(BuildContext context) {
     if (facingDirection == null) return '';
     final l10n = AppLocalizations.of(context);
-    switch (facingDirection) {
+    switch (facingDirection!.toLowerCase()) {
       case 'north':
         return l10n.listingNorth;
       case 'south':
@@ -637,6 +637,25 @@ class Listing {
         return l10n.listingFacingAllDirections;
       default:
         return facingDirection!;
+    }
+  }
+
+  String getLocalizedHouseType(BuildContext context) {
+    if (houseType == null) return '';
+    final l10n = AppLocalizations.of(context);
+    switch (houseType) {
+      case 'villa':
+        return l10n.listingVilla;
+      case 'apartment':
+        return l10n.listingApartment;
+      case 'condominium':
+        return l10n.listingCondominium;
+      case 'townhouse':
+        return l10n.listingTownhouse;
+      case 'bungalow':
+        return l10n.listingBungalow;
+      default:
+        return houseType!.replaceAll('_', ' ');
     }
   }
 
