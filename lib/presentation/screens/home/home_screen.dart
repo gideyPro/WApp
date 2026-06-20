@@ -675,7 +675,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildSectionHeader(
-                            l10n.listingsFeatured, isFeatured: true),
+                            l10n.listingsFeatured, eyebrow: ''),
                         _buildFeaturedListings(featuredState),
                         _buildVipSectionHeader(),
                         _buildVipListingsOrTeaser(vipState),
@@ -909,13 +909,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            eyebrowText,
-            style: AppTextStyles.eyebrow.copyWith(
-              color: eyebrowColor,
+          if (eyebrowText.isNotEmpty) ...[
+            Text(
+              eyebrowText,
+              style: AppTextStyles.eyebrow.copyWith(
+                color: eyebrowColor,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
+            const SizedBox(height: 4),
+          ],
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -951,10 +953,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final l10n = AppLocalizations.of(context);
     return _buildSectionHeader(
       l10n.homeVipTitle,
-      eyebrow: l10n.homeVipEyebrow,
+      eyebrow: '',
       glyph: Icons.diamond,
       accentRuleColor: AppColors.vip,
-      eyebrowColor: AppColors.vip,
     );
   }
 
