@@ -223,7 +223,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpListInterestContent =>
-      'ለሻጩ በንብረቱ ላይ ፍላጎት እንዳለዎት ለማሳወቅ:\n\n1. የንብረቱን ዝርዝር ገፅ ይክፈቱ\n2. \"ከወኪል ጋር ይገናኙ\" የሚለውን ቁልፍ ይንኩ\n3. አማራጭ ለሻጩ መልእክት ያክሉ\n4. ጥያቄዎን ለመላክ \"ፍላጎት ላክ\" የሚለውን ይንኩ\n\nሻጩ ማሳወቂያ ይደርሰዋል እና ምላሽ መስጠት ይችላል። የፍላጎትዎን ሁኔታ ከመገለጫ > የኔ ፍላጎቶች መከታተል ይችላሉ። ሁኔታዎቹ: በመጠባበቅ ላይ (ምላሽ በመጠበቅ)፣ ተቀባይነት አግኝቷል፣ ወይም ውድቅ የተደረገ ይጠቀማሉ። አንዳንድ ዕቅዶች ሻጮችን ለማነጋገር ማሻሻል ያስፈልጋቸዋል።';
+      'ለሻጩ በንብረቱ ላይ ፍላጎት እንዳለዎት ለማሳወቅ:\n\n1. የንብረቱን ዝርዝር ገፅ ይክፈቱ\n2. \"ከወኪል ጋር ይገናኙ\" የሚለውን ቁልፍ ይንኩ\n3. ከፈለጉ ለሻጩ መልእክት ያክሉ\n4. ጥያቄዎን ለመላክ \"ፍላጎት ላክ\" የሚለውን ይንኩ\n\nሻጩ ማሳወቂያ ይደርሰዋል እና ምላሽ መስጠት ይችላል። የፍላጎትዎን ሁኔታ ከመገለጫ > የኔ ፍላጎቶች መከታተል ይችላሉ። ሁኔታዎቹ: በመጠባበቅ ላይ (ምላሽ በመጠበቅ)፣ ተቀባይነት አግኝቷል፣ ወይም ውድቅ የተደረገ ናቸው። አንዳንድ ዕቅዶች ሻጮችን ለማነጋገር ማሻሻል ያስፈልጋቸዋል።';
 
   @override
   String get helpListStatusTitle => 'የንብረቶች ሁኔታ መረዳት';
@@ -1182,13 +1182,13 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get ordersSuggestionsAcceptedMessage =>
-      'አስተያየት ተቀባይነት አግኝቷል። አስተዳዳሪ ይከታተልዎታል።';
+      'ጥቆማው ተቀባይነት አግኝቷል። አስተዳዳሪ ይከታተልዎታል።';
 
   @override
-  String get ordersSuggestionsDeclinedMessage => 'አስተያየት ውድቅ ተደርጓል።';
+  String get ordersSuggestionsDeclinedMessage => 'ጥቆማው ውድቅ ተደርጓል።';
 
   @override
-  String get ordersSuggestionsError => 'አስተያየትን ማስኬድ አልተሳካም።';
+  String get ordersSuggestionsError => 'ጥቆማውን ማስተናገድ አልተሳካም።';
 
   @override
   String get favoritesEmpty => 'ምንም ተወዳጅ የለም';
