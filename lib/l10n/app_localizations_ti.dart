@@ -1865,4 +1865,16 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get networkErrorMessage => 'በጃኹም ናይ ኢንተርነት ርክብኩም ኣረጋግፁ እሞ ደጊምኩም ፈትኑ።';
+
+  @override
+  String get statusFrozen => 'ቅዝሚ';
+
+  @override
+  String get statusRejected => 'ተነፂጉ';
+
+  @override
+  String get statusSold => 'ተሸይጡ';
+
+  @override
+  String get statusRented => 'ተኸራይቱ';
 }

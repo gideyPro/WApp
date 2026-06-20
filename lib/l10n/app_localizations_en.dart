@@ -1890,4 +1890,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get networkErrorMessage =>
       'Please check your internet connection and try again.';
+
+  @override
+  String get statusFrozen => 'Frozen';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get statusSold => 'Sold';
+
+  @override
+  String get statusRented => 'Rented';
 }

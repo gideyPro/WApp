@@ -592,5 +592,9 @@
   "commonTryAgain": "Try Again",
   "commonDismiss": "Dismiss",
   "networkErrorTitle": "No Internet Connection",
-  "networkErrorMessage": "Please check your internet connection and try again."
+  "networkErrorMessage": "Please check your internet connection and try again.",
+  "statusFrozen": "Frozen",
+  "statusRejected": "Rejected",
+  "statusSold": "Sold",
+  "statusRented": "Rented"
 }

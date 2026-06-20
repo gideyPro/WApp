@@ -3567,6 +3567,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please check your internet connection and try again.'**
   String get networkErrorMessage;
+
+  /// No description provided for @statusFrozen.
+  ///
+  /// In en, this message translates to:
+  /// **'Frozen'**
+  String get statusFrozen;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @statusSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get statusSold;
+
+  /// No description provided for @statusRented.
+  ///
+  /// In en, this message translates to:
+  /// **'Rented'**
+  String get statusRented;
 }
 
 class _AppLocalizationsDelegate

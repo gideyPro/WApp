@@ -592,5 +592,9 @@
   "commonTryAgain": "ደጊምካ ፈትን",
   "commonDismiss": "ዕፀው",
   "networkErrorTitle": "ናይ ኢንተርነት ርክብ የለን",
-  "networkErrorMessage": "በጃኹም ናይ ኢንተርነት ርክብኩም ኣረጋግፁ እሞ ደጊምኩም ፈትኑ።"
+  "networkErrorMessage": "በጃኹም ናይ ኢንተርነት ርክብኩም ኣረጋግፁ እሞ ደጊምኩም ፈትኑ።",
+  "statusFrozen": "ቅዝሚ",
+  "statusRejected": "ተነፂጉ",
+  "statusSold": "ተሸይጡ",
+  "statusRented": "ተኸራይቱ"
 }

@@ -1865,4 +1865,16 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get networkErrorMessage => 'እባክዎ የበይነመረብ ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።';
+
+  @override
+  String get statusFrozen => 'የቀዘቀዘ';
+
+  @override
+  String get statusRejected => 'ውድቅ የተደረገ';
+
+  @override
+  String get statusSold => 'የተሸጠ';
+
+  @override
+  String get statusRented => 'የተከራየ';
 }

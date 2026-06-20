@@ -592,5 +592,9 @@
   "commonTryAgain": "እንደገና ሞክር",
   "commonDismiss": "ዝጋ",
   "networkErrorTitle": "የበይነመረብ ግንኙነት የለም",
-  "networkErrorMessage": "እባክዎ የበይነመረብ ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።"
+  "networkErrorMessage": "እባክዎ የበይነመረብ ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።",
+  "statusFrozen": "የቀዘቀዘ",
+  "statusRejected": "ውድቅ የተደረገ",
+  "statusSold": "የተሸጠ",
+  "statusRented": "የተከራየ"
 }
