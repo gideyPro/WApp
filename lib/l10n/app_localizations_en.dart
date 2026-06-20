@@ -39,12 +39,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonRetry => 'Retry';
 
   @override
-  String get commonTryAgain => 'Try Again';
-
-  @override
-  String get commonDismiss => 'Dismiss';
-
-  @override
   String get commonError => 'Error';
 
   @override
@@ -176,21 +170,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpAccCreateContent =>
-      'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your phone number or email address\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n5. Complete your profile by adding your name and other details\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.';
+      'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your name phone number,email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.';
 
   @override
   String get helpAccFavTitle => 'Managing your favorites';
 
   @override
   String get helpAccFavContent =>
-      'To save a property for later:\n\n1. Tap the heart icon on any listing card or on the property detail page\n2. Access your saved items from Profile > Favorites\n3. Tap the heart icon again to remove a listing from your favorites\n\nFavorites are a great way to keep track of properties you are interested in without contacting the owner.';
+      'To save a property for later:\n\n1. Tap the heart icon on any listing card or on the property detail page\n2. Access your saved items from Account > Favorites\n3. Tap the heart icon again to remove a listing from your favorites\n';
 
   @override
   String get helpAccMsgTitle => 'Using in-app messaging';
 
   @override
   String get helpAccMsgContent =>
-      'WaveMart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created\n2. Go to the Messages tab to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.';
+      'WaveMart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created with the agent.\n2. Go to the Account > Messages to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.';
 
   @override
   String get helpListCreateTitle => 'How to post a property listing';
@@ -930,7 +924,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsTitle => 'Listings';
 
   @override
-  String get listingsCreate => 'List';
+  String get listingsCreate => 'Create new Listing';
 
   @override
   String get listingsFeatured => 'Featured';
@@ -1096,7 +1090,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersStatusFulfilled => 'Fulfilled';
 
   @override
-  String get ordersStatusCancelled => 'Cancelled';
+  String get ordersStatusCancelled => 'Canceled';
 
   @override
   String get ordersTypeHouse => 'House';
@@ -1154,7 +1148,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to cancel this order?';
 
   @override
-  String get ordersCancelled => 'Order cancelled';
+  String get ordersCancelled => 'Order canceled';
 
   @override
   String get ordersCreated => 'Order created successfully';
@@ -1487,7 +1481,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String subscriptionsPromoOff(Object percent) {
-    return 'Promo $percent% off';
+    return '$percent% off';
   }
 
   @override
@@ -1635,11 +1629,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionRequiredListingSubtitle =>
-      'You need an active subscription to post a listing.';
+      'You need an active subscription with posting a listing feature.';
 
   @override
   String get subscriptionRequiredDetailsSubtitle =>
-      'You need an active subscription to view property details and contact owners.';
+      'You need an active subscription with access to view property details and contact owners.';
 
   @override
   String get subscriptionRequiredOrderSubtitle =>
@@ -1703,7 +1697,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingErrorAddressRequired => 'Please select a complete address';
 
   @override
-  String get listingErrorMinPrice => 'Price must be at least 1,000 ETB';
+  String get listingErrorMinPrice => 'Price must be at least 50,000 ETB';
 
   @override
   String get listingErrorLeasedYearRequired => 'Leased year is required';
@@ -1805,7 +1799,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusExpired => 'Expired';
 
   @override
-  String get statusCancelled => 'Cancelled';
+  String get statusCancelled => 'Canceled';
 
   @override
   String get statusPending => 'Pending';
@@ -1829,13 +1823,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectivityOnline => 'Back Online';
 
   @override
-  String get networkErrorTitle => 'No Internet Connection';
-
-  @override
-  String get networkErrorMessage =>
-      'Please check your internet connection and try again.';
-
-  @override
   String get markAsVipTitle => 'Mark as VIP?';
 
   @override
@@ -1843,13 +1830,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markAsVipMessage =>
-      'Your listing will be highlighted with a VIP badge for extra visibility.';
+      'Your listing will be highlighted with a VIP badge hidden from regular users.';
 
   @override
   String get upgradeToContact => 'Upgrade to Contact';
 
   @override
-  String get listingsRevealContact => 'Reveal Contact';
+  String get listingsRevealContact => 'Reveal seller Contact';
 
   @override
   String get listingsRevealing => 'Revealing...';
@@ -1890,4 +1877,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subscriptionPlanNotSupportedOrderSubtitle =>
       'Please upgrade to a plan that supports order creation.';
+
+  @override
+  String get commonTryAgain => 'Try Again';
+
+  @override
+  String get commonDismiss => 'Dismiss';
+
+  @override
+  String get networkErrorTitle => 'No Internet Connection';
+
+  @override
+  String get networkErrorMessage =>
+      'Please check your internet connection and try again.';
 }

@@ -298,6 +298,94 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
     updatedJson['video_processing'] = vp.toJson();
     state = ListingDetailState.loaded(Listing.fromJson(updatedJson));
   }
+
+  /// Updates the listing state inline without triggering loading skeleton
+  void updateListingInline(Listing listing) {
+    state = ListingDetailState.loaded(listing);
+  }
+
+  /// Toggle VIP on — optimistic inline update, then silent refresh.
+  /// Returns the API response message for snackbar display.
+  Future<String?> vipListing(int id) async {
+    final current = state.listing;
+    if (current == null) return null;
+    final response = await _listingService.vipListing(id);
+    if (response.success) {
+      updateListingInline(current.copyWith(isVip: true));
+      refreshListing(id);
+    }
+    return response.message;
+  }
+
+  /// Toggle VIP off — optimistic inline update, then silent refresh.
+  /// Returns the API response message for snackbar display.
+  Future<String?> unvipListing(int id) async {
+    final current = state.listing;
+    if (current == null) return null;
+    final response = await _listingService.unvipListing(id);
+    if (response.success) {
+      updateListingInline(current.copyWith(isVip: false));
+      refreshListing(id);
+    }
+    return response.message;
+  }
+
+  /// Feature listing — optimistic inline update, then silent refresh.
+  /// Returns the API response message for snackbar display.
+  Future<String?> featureListing(int id) async {
+    final current = state.listing;
+    if (current == null) return null;
+    final response = await _listingService.featureListing(id);
+    if (response.success) {
+      final until = DateTime.now().add(const Duration(days: 30));
+      updateListingInline(current.copyWith(
+        isFeatured: true,
+        featuredUntil: until,
+      ));
+      refreshListing(id);
+    }
+    return response.message;
+  }
+
+  /// Unfeature listing — optimistic inline update, then silent refresh.
+  /// Returns the API response message for snackbar display.
+  Future<String?> unfeatureListing(int id) async {
+    final current = state.listing;
+    if (current == null) return null;
+    final response = await _listingService.unfeatureListing(id);
+    if (response.success) {
+      updateListingInline(current.copyWith(
+        isFeatured: false,
+        featuredUntil: null,
+      ));
+      refreshListing(id);
+    }
+    return response.message;
+  }
+
+  /// Reveal contact — optimistic inline update, then silent refresh.
+  /// Returns the revealed contact info + message for snackbar display.
+  Future<Map<String, dynamic>?> revealContact(int id) async {
+    final current = state.listing;
+    if (current == null) return null;
+    final response = await _listingService.revealContact(id);
+    if (response.success) {
+      updateListingInline(current.copyWith(
+        contactRevealed: true,
+        revealedName: response.name,
+        revealedContact: response.contact,
+        contactRemaining: current.contactRemaining - 1,
+      ));
+      refreshListing(id);
+    }
+    return {
+      'success': response.success,
+      'message': response.message,
+      'name': response.name,
+      'contact': response.contact,
+    };
+  }
+
 }
 
 class ListingsState {

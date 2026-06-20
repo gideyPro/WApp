@@ -6,7 +6,6 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
 import '../../../providers/listing_provider.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../data/services/listing_service.dart';
 import '../../../widgets/common/wave_upgrade_card.dart';
 import '../../../widgets/common/wave_liquid_glass.dart';
 
@@ -174,17 +173,15 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
   Future<void> _revealContact(int listingId) async {
     setState(() => _isRevealingContact = true);
     try {
-      final listingService = ListingService();
-      final response = await listingService.revealContact(listingId);
-      if (response.success && mounted) {
+      final result = await ref.read(listingDetailProvider.notifier).revealContact(listingId);
+      if (result != null && result['success'] == true && mounted) {
         setState(() {
-          _revealedContact = response.contact;
-          _revealedName = response.name;
+          _revealedContact = result['contact'] as String?;
+          _revealedName = result['name'] as String?;
         });
-        ref.read(listingDetailProvider.notifier).loadListing(listingId);
-      } else if (mounted) {
+      } else if (result != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message), backgroundColor: AppColors.error),
+          SnackBar(content: Text(result['message'] as String? ?? ''), backgroundColor: AppColors.error),
         );
       }
     } catch (e) {

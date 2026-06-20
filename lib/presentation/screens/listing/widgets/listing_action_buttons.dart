@@ -29,6 +29,10 @@ class ListingActionButtons extends ConsumerStatefulWidget {
 }
 
 class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
+  bool _isVipLoading = false;
+  bool _isFeatureLoading = false;
+  bool _isInterestLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final listing = widget.listing;
@@ -102,19 +106,21 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: () => _unfeatureListing(listing),
+                      onPressed: _isFeatureLoading ? null : () => _unfeatureListing(listing),
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         foregroundColor: AppColors.stone500,
                       ),
-                      child: Text(
-                        'Unfeature',
-                        style: AppTextStyles.labelSmall.copyWith(
-                          color: AppColors.stone500,
-                        ),
-                      ),
+                      child: _isFeatureLoading
+                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                          : Text(
+                              'Unfeature',
+                              style: AppTextStyles.labelSmall.copyWith(
+                                color: AppColors.stone500,
+                              ),
+                            ),
                     ),
                   ],
                 ),
@@ -124,9 +130,11 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                   ? SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: () => _featureListing(listing),
-                        icon: const Icon(Icons.workspace_premium_outlined, size: 20),
-                        label: Text(l10n.listingFeatureThis),
+                        onPressed: _isFeatureLoading ? null : () => _featureListing(listing),
+                        icon: _isFeatureLoading
+                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.workspace_premium_outlined, size: 20),
+                        label: Text(_isFeatureLoading ? '' : l10n.listingFeatureThis),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           side: const BorderSide(color: AppColors.accent500),
@@ -160,19 +168,21 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: () => _unvipListing(listing),
+                      onPressed: _isVipLoading ? null : () => _unvipListing(listing),
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         foregroundColor: AppColors.stone500,
                       ),
-                      child: Text(
-                        'Un-VIP',
-                        style: AppTextStyles.labelSmall.copyWith(
-                          color: AppColors.stone500,
-                        ),
-                      ),
+                      child: _isVipLoading
+                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                          : Text(
+                              'Un-VIP',
+                              style: AppTextStyles.labelSmall.copyWith(
+                                color: AppColors.stone500,
+                              ),
+                            ),
                     ),
                   ],
                 ),
@@ -181,9 +191,11 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: () => _vipListing(listing),
-                  icon: const Icon(Icons.diamond_outlined, size: 20),
-                  label: Text(l10n.markAsVip),
+                  onPressed: _isVipLoading ? null : () => _vipListing(listing),
+                  icon: _isVipLoading
+                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Icon(Icons.diamond_outlined, size: 20),
+                  label: Text(_isVipLoading ? '' : l10n.markAsVip),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: AppColors.vip),
@@ -197,11 +209,17 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
               if (!isOwner && !hasInterest)
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: listing.interestBlocked
-                      ? () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()))
-                      : () => _submitInterest(listing.id),
-                    icon: Icon(listing.interestBlocked ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
-                    label: Text(listing.interestBlocked ? l10n.upgradeToContact : l10n.listingsImInterested),
+                    onPressed: _isInterestLoading
+                      ? null
+                      : listing.interestBlocked
+                        ? () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()))
+                        : () => _submitInterest(listing.id),
+                    icon: _isInterestLoading
+                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                      : Icon(listing.interestBlocked ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
+                    label: Text(
+                      _isInterestLoading ? '' : (listing.interestBlocked ? l10n.upgradeToContact : l10n.listingsImInterested),
+                    ),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.accent500),
@@ -301,6 +319,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     }
 
     final l10n = AppLocalizations.of(context);
+    setState(() => _isInterestLoading = true);
 
     try {
       final service = LeadService();
@@ -311,19 +330,18 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
             : l10n.listingsDefaultInterestMessage,
       );
 
-      if (response.success) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.message), backgroundColor: AppColors.success),
-          );
-          ref.read(listingDetailProvider.notifier).loadListing(listingId);
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.message), backgroundColor: AppColors.error),
-          );
-        }
+      if (response.success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.message), backgroundColor: AppColors.success),
+        );
+        ref.read(listingDetailProvider.notifier).updateListingInline(
+          widget.listing.copyWith(userInterestStatus: 'new'),
+        );
+        ref.read(listingDetailProvider.notifier).refreshListing(listingId);
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.message), backgroundColor: AppColors.error),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -331,6 +349,8 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
           SnackBar(content: Text(l10n.commonError), backgroundColor: AppColors.error),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isInterestLoading = false);
     }
   }
 
@@ -339,7 +359,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
       MaterialPageRoute(builder: (_) => EditListingScreen(listing: listing)),
     );
     if (result == true && mounted) {
-      ref.read(listingDetailProvider.notifier).loadListing(listing.id);
+      ref.read(listingDetailProvider.notifier).refreshListing(listing.id);
     }
   }
 
@@ -398,17 +418,12 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     );
     if (confirmed != true) return;
 
+    setState(() => _isVipLoading = true);
     try {
-      final service = ListingService();
-      final result = await service.vipListing(listing.id);
-      if (result.success && mounted) {
+      final msg = await ref.read(listingDetailProvider.notifier).vipListing(listing.id);
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: AppColors.success),
-        );
-        ref.read(listingDetailProvider.notifier).loadListing(listing.id);
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: AppColors.error),
+          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
         );
       }
     } catch (e) {
@@ -417,6 +432,8 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
           SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isVipLoading = false);
     }
   }
 
@@ -441,17 +458,12 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     );
     if (confirmed != true) return;
 
+    setState(() => _isVipLoading = true);
     try {
-      final service = ListingService();
-      final result = await service.unvipListing(listing.id);
-      if (result.success && mounted) {
+      final msg = await ref.read(listingDetailProvider.notifier).unvipListing(listing.id);
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: AppColors.success),
-        );
-        ref.read(listingDetailProvider.notifier).loadListing(listing.id);
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: AppColors.error),
+          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
         );
       }
     } catch (e) {
@@ -460,6 +472,8 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
           SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isVipLoading = false);
     }
   }
 
@@ -494,17 +508,12 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     );
     if (confirmed != true) return;
 
+    setState(() => _isFeatureLoading = true);
     try {
-      final service = ListingService();
-      final result = await service.featureListing(listing.id);
-      if (result.success && mounted) {
+      final msg = await ref.read(listingDetailProvider.notifier).featureListing(listing.id);
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: AppColors.success),
-        );
-        ref.read(listingDetailProvider.notifier).loadListing(listing.id);
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: AppColors.error),
+          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
         );
       }
     } catch (e) {
@@ -513,6 +522,8 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
           SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isFeatureLoading = false);
     }
   }
 
@@ -537,17 +548,12 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     );
     if (confirmed != true) return;
 
+    setState(() => _isFeatureLoading = true);
     try {
-      final service = ListingService();
-      final result = await service.unfeatureListing(listing.id);
-      if (result.success && mounted) {
+      final msg = await ref.read(listingDetailProvider.notifier).unfeatureListing(listing.id);
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: AppColors.success),
-        );
-        ref.read(listingDetailProvider.notifier).loadListing(listing.id);
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: AppColors.error),
+          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
         );
       }
     } catch (e) {
@@ -556,6 +562,8 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
           SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isFeatureLoading = false);
     }
   }
 }

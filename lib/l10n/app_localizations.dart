@@ -160,18 +160,6 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get commonRetry;
 
-  /// No description provided for @commonTryAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Try Again'**
-  String get commonTryAgain;
-
-  /// No description provided for @commonDismiss.
-  ///
-  /// In en, this message translates to:
-  /// **'Dismiss'**
-  String get commonDismiss;
-
   /// No description provided for @commonError.
   ///
   /// In en, this message translates to:
@@ -427,7 +415,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your phone number or email address\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n5. Complete your profile by adding your name and other details\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
+  /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your name phone number,email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
   String get helpAccCreateContent;
 
   /// No description provided for @helpAccFavTitle.
@@ -439,7 +427,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccFavContent.
   ///
   /// In en, this message translates to:
-  /// **'To save a property for later:\n\n1. Tap the heart icon on any listing card or on the property detail page\n2. Access your saved items from Profile > Favorites\n3. Tap the heart icon again to remove a listing from your favorites\n\nFavorites are a great way to keep track of properties you are interested in without contacting the owner.'**
+  /// **'To save a property for later:\n\n1. Tap the heart icon on any listing card or on the property detail page\n2. Access your saved items from Account > Favorites\n3. Tap the heart icon again to remove a listing from your favorites\n'**
   String get helpAccFavContent;
 
   /// No description provided for @helpAccMsgTitle.
@@ -451,7 +439,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccMsgContent.
   ///
   /// In en, this message translates to:
-  /// **'WaveMart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created\n2. Go to the Messages tab to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.'**
+  /// **'WaveMart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created with the agent.\n2. Go to the Account > Messages to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.'**
   String get helpAccMsgContent;
 
   /// No description provided for @helpListCreateTitle.
@@ -1831,7 +1819,7 @@ abstract class AppLocalizations {
   /// No description provided for @listingsCreate.
   ///
   /// In en, this message translates to:
-  /// **'List'**
+  /// **'Create new Listing'**
   String get listingsCreate;
 
   /// No description provided for @listingsFeatured.
@@ -2125,7 +2113,7 @@ abstract class AppLocalizations {
   /// No description provided for @ordersStatusCancelled.
   ///
   /// In en, this message translates to:
-  /// **'Cancelled'**
+  /// **'Canceled'**
   String get ordersStatusCancelled;
 
   /// No description provided for @ordersTypeHouse.
@@ -2239,7 +2227,7 @@ abstract class AppLocalizations {
   /// No description provided for @ordersCancelled.
   ///
   /// In en, this message translates to:
-  /// **'Order cancelled'**
+  /// **'Order canceled'**
   String get ordersCancelled;
 
   /// No description provided for @ordersCreated.
@@ -2845,7 +2833,7 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionsPromoOff.
   ///
   /// In en, this message translates to:
-  /// **'Promo {percent}% off'**
+  /// **'{percent}% off'**
   String subscriptionsPromoOff(Object percent);
 
   /// No description provided for @subscriptionsPaymentPending.
@@ -3121,13 +3109,13 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionRequiredListingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'You need an active subscription to post a listing.'**
+  /// **'You need an active subscription with posting a listing feature.'**
   String get subscriptionRequiredListingSubtitle;
 
   /// No description provided for @subscriptionRequiredDetailsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'You need an active subscription to view property details and contact owners.'**
+  /// **'You need an active subscription with access to view property details and contact owners.'**
   String get subscriptionRequiredDetailsSubtitle;
 
   /// No description provided for @subscriptionRequiredOrderSubtitle.
@@ -3241,7 +3229,7 @@ abstract class AppLocalizations {
   /// No description provided for @listingErrorMinPrice.
   ///
   /// In en, this message translates to:
-  /// **'Price must be at least 1,000 ETB'**
+  /// **'Price must be at least 50,000 ETB'**
   String get listingErrorMinPrice;
 
   /// No description provided for @listingErrorLeasedYearRequired.
@@ -3415,7 +3403,7 @@ abstract class AppLocalizations {
   /// No description provided for @statusCancelled.
   ///
   /// In en, this message translates to:
-  /// **'Cancelled'**
+  /// **'Canceled'**
   String get statusCancelled;
 
   /// No description provided for @statusPending.
@@ -3460,18 +3448,6 @@ abstract class AppLocalizations {
   /// **'Back Online'**
   String get connectivityOnline;
 
-  /// No description provided for @networkErrorTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No Internet Connection'**
-  String get networkErrorTitle;
-
-  /// No description provided for @networkErrorMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Please check your internet connection and try again.'**
-  String get networkErrorMessage;
-
   /// No description provided for @markAsVipTitle.
   ///
   /// In en, this message translates to:
@@ -3487,7 +3463,7 @@ abstract class AppLocalizations {
   /// No description provided for @markAsVipMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your listing will be highlighted with a VIP badge for extra visibility.'**
+  /// **'Your listing will be highlighted with a VIP badge hidden from regular users.'**
   String get markAsVipMessage;
 
   /// No description provided for @upgradeToContact.
@@ -3499,7 +3475,7 @@ abstract class AppLocalizations {
   /// No description provided for @listingsRevealContact.
   ///
   /// In en, this message translates to:
-  /// **'Reveal Contact'**
+  /// **'Reveal seller Contact'**
   String get listingsRevealContact;
 
   /// No description provided for @listingsRevealing.
@@ -3567,6 +3543,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please upgrade to a plan that supports order creation.'**
   String get subscriptionPlanNotSupportedOrderSubtitle;
+
+  /// No description provided for @commonTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get commonTryAgain;
+
+  /// No description provided for @commonDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get commonDismiss;
+
+  /// No description provided for @networkErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Internet Connection'**
+  String get networkErrorTitle;
+
+  /// No description provided for @networkErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection and try again.'**
+  String get networkErrorMessage;
 }
 
 class _AppLocalizationsDelegate

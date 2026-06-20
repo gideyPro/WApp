@@ -39,12 +39,6 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonRetry => 'እንደገና ሞክር';
 
   @override
-  String get commonTryAgain => 'እንደገና ሞክር';
-
-  @override
-  String get commonDismiss => 'ዝጋ';
-
-  @override
   String get commonError => 'ስህተት';
 
   @override
@@ -93,7 +87,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get vipBadge => 'VIP';
 
   @override
-  String get profileMyListings => 'የእኔ ዝርዝሮች';
+  String get profileMyListings => 'የእኔ ንብረት';
 
   @override
   String get myListingsEmptySubtitle => 'የመጀመሪያዎን ንብረት ይጨምሩ';
@@ -146,7 +140,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get helpErrorPhone => 'የስልክ መተግበሪያን መክፈት አልተቻለም';
 
   @override
-  String get helpYoutubeSub => 'መማሪያዎችን፣ ምክሮችን እና የንብረት ጉብኝቶችን ይመልከቱ';
+  String get helpYoutubeSub => 'መማሪያዎችን፣ አዳዲስ መረጃዎችን እና የንብረት ጉብኝቶችን ይመልከቱ';
 
   @override
   String get helpYoutubeSubscribe => 'ሰብስክራይብ ያድርጉ';
@@ -174,21 +168,21 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpAccCreateContent =>
-      'በዌቭማርት ላይ አካውንት ለመክፈት:\n\n1. መተግበሪያውን ይክፈቱ እና \"ይመዝገቡ\" የሚለውን ይንኩ\n2. ስልክ ቁጥርዎን ወይም ኢሜይልዎን ያስገቡ\n3. ባለ 6 አሃዝ ኮድ (OTP) ይላክልዎታል\n4. አካውንትዎን ለማረጋገጥ ኮዱን ያስገቡ\n5. ስምዎን እና ሌሎች ዝርዝሮችን በማከል መገለጫዎን ያጠናቅቁ\n\nአንዴ ከተመዘገቡ በኋላ ንብረቶችን ማየት፣ የራስዎን ንብረቶች መመዝገብ እና ከባለቤቶች ወይም ወኪሎች (Agents) ጋር መገናኘት ይችላሉ።';
+      'በዌቭማርት ላይ አካውንት ለመክፈት:\n\n1. መተግበሪያውን ይክፈቱ እና \"ይመዝገቡ\" የሚለውን ይንኩ\n2.ስምዎን፣ስልክ ቁጥርዎን፣ ኢሜይልዎን እና ሌሎች ዝርዝሮችን በማከል ያስገቡ።\n3. ባለ 6 አሃዝ ኮድ (OTP) ይላክልዎታል\n4. አካውንትዎን ለማረጋገጥ ኮዱን ያስገቡ\n\nአንዴ ከተመዘገቡ በኋላ ንብረቶችን ማየት፣ የራስዎን ንብረቶች መመዝገብ እና ከባለቤቶች ወይም ወኪሎች (Agents) ጋር መገናኘት ይችላሉ።';
 
   @override
   String get helpAccFavTitle => 'የሚወዷቸውን ንብረቶች ማስተዳደር';
 
   @override
   String get helpAccFavContent =>
-      'ንብረት ለኋላ ለማስቀመጥ:\n\n1. በማንኛውም የንብረት ካርድ ላይ ወይም በንብረቱ ዝርዝር ገፅ ላይ ያለውን የልብ አዶ (Heart icon) ይንኩ\n2. የተቀመጡ ንብረቶችዎን ከመገለጫ > ተወዳጆች ያግኙ\n3. ንብረት ከተወዳጆች ለማስወገድ የልብ አዶውን እንደገና ይንኩ\n\nተወዳጆች ባለቤቱን ሳያነጋግሩ ፍላጎት ያላቸውን ንብረቶች ለመከታተል ጥሩ መንገድ ነው።';
+      'ንብረት ለኋላ ለማስቀመጥ:\n\n1. በማንኛውም የንብረት ካርድ ላይ ወይም በንብረቱ ዝርዝር ገፅ ላይ ያለውን የልብ ምልክት (Heart icon) ይንኩ\n2. የተቀመጡ ንብረቶችዎን ከአካውንት > ተወዳጆች ያግኙት\n3. ንብረት ከተወዳጆች ለማስወገድ የልብ ቅርፅ ምልክቱን እንደገና ይንኩ።';
 
   @override
   String get helpAccMsgTitle => 'በመተግበሪያው ውስጥ የመልእክት ልውውጥ';
 
   @override
   String get helpAccMsgContent =>
-      'ዌቭማርት ከንብረት ባለቤቶች እና ወኪሎች ጋር ለመገናኘት የራሱ የሆነ የመልእክት ስርዓት አለው:\n\n1. በንብረት ላይ ፍላጎት ሲገልፁ ውይይት በራስ-ሰር ይፈጠራል\n2. ሁሉንም ውይይቶችዎን ለማየት ወደ መልእክቶች ትር ይሂዱ\n3. መልእክቶችን ለማንበብ እና ለመላክ በውይይት ላይ ይንኩ\n4. መልእክቶች የመላክ ሁኔታን በቼክማርክ ያሳያሉ (አንድ ቼክ = ተልኳል፣ ሁለት ቼክ = ታይቷል)\n5. \"Switch Context\" ሜኑ በመጠቀም በተያያዙ ውይይቶች መካከል መቀያየር ይችላሉ\n\nለደህንነትዎ ሁሉንም ግንኙነት በመተግበሪያው ውስጥ ያቆዩ።';
+      'ዌቭማርት ከንብረት ባለቤቶች እና ወኪሎች ጋር ለመገናኘት የራሱ የሆነ የመልእክት ስርዓት አለው:\n\n1. በንብረት ላይ ፍላጎት ሲገልፁ ውይይት ከወኪል/ኤጀንት ጋር ይጀመራል።\n2. ሁሉንም ውይይቶችዎን ለማየት ወደ አካውንት > መልእክቶች ይሂዱ\n3. መልእክቶችን ለማንበብ እና ለመላክ ከቀረቡ ዝርዝሮች አንዱን ይንኩ\n4. መልእክቶች የመላክ ሁኔታን በቼክማርክ ያሳያሉ (አንድ ቼክ = ተልኳል፣ ሁለት ቼክ = ታይቷል)\n5. \"Switch Context\" ሜኑ በመጠቀም በተያያዙ ውይይቶች መካከል መቀያየር ይችላሉ\n\nለደህንነትዎ ሁሉንም ግንኙነት በመተግበሪያው ውስጥ ያቆዩ።';
 
   @override
   String get helpListCreateTitle => 'ንብረት እንዴት እንደሚመዘገብ';
@@ -458,7 +452,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get kycChooseGallery => 'ከጋለሪ ምረጥ';
 
   @override
-  String get kycConnectionErrorTitle => 'የግንኙነት ስህተት';
+  String get kycConnectionErrorTitle => 'የግንኙነት ችግር';
 
   @override
   String get kycConnectionErrorSubtitle =>
@@ -480,7 +474,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get searchPriceRange => 'የዋጋ ክልል';
 
   @override
-  String get searchSortBy => 'ደረጃ አሰጣጥ';
+  String get searchSortBy => 'ቅደም ተከተል';
 
   @override
   String get searchApplyFilters => 'ማጣሪያዎችን ተግብር';
@@ -788,7 +782,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingCommercial => 'ለንግድ';
 
   @override
-  String get listingMixed => 'ለተደባለቀ አገልግሎት';
+  String get listingMixed => 'ሁሉንም የሚያካትት';
 
   @override
   String get listingInvestment => 'ለኢንቨስትመንት';
@@ -869,7 +863,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingSummaryProperty => 'ንብረት';
 
   @override
-  String get listingFeatured => 'ተለይቷል';
+  String get listingFeatured => 'የተለየ';
 
   @override
   String get listingHouse => 'ቤት';
@@ -925,7 +919,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsTitle => 'ንብረቶች';
 
   @override
-  String get listingsCreate => 'አዲስ';
+  String get listingsCreate => 'አዲስ ንብረት ጨምር';
 
   @override
   String get listingsFeatured => 'ተለይተው የወጡ';
@@ -952,7 +946,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingsDefaultInterestMessage => 'ፍላጎት አለኝ!';
 
   @override
-  String get callIncoming => 'የሚመጣ ጥሪ...';
+  String get callIncoming => 'የስልክ ጥሪ...';
 
   @override
   String get callAccept => 'ተቀበል';
@@ -1078,10 +1072,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersEmpty => 'እስካሁን ምንም ትዕዛዝ የለም';
 
   @override
-  String get ordersEmptySubtitle => 'የንብረት ፍላጎቶችዎን ያስገቡ ለመጀመር';
+  String get ordersEmptySubtitle => 'ለመጀመር የንብረት ፍላጎቶችዎን ያስገቡ';
 
   @override
-  String get ordersCreate => 'ትዕዛዝ ፍጠር';
+  String get ordersCreate => 'ትዕዛዝ ጨምር';
 
   @override
   String get ordersStatusActive => 'ንቁ';
@@ -1182,7 +1176,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get ordersSuggestionsAcceptedMessage =>
-      'ጥቆማው ተቀባይነት አግኝቷል። አስተዳዳሪ ይከታተልዎታል።';
+      'ጥቆማው ተቀባይነት አግኝቷል። ወኪሎቻችን ያገኝዎታል።';
 
   @override
   String get ordersSuggestionsDeclinedMessage => 'ጥቆማው ውድቅ ተደርጓል።';
@@ -1227,7 +1221,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsSectionSupport => 'ድጋፍ';
 
   @override
-  String get settingsSubscriptionsSubtitle => 'ዕቅዶችዎን ይመልከቱ';
+  String get settingsSubscriptionsSubtitle => 'ፓኬጅዎትን ይመልከቱ';
 
   @override
   String get settingsPaymentsSubtitle => 'የክፍያ ታሪክ';
@@ -1383,7 +1377,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get authWelcomeBack => 'እንኳን ደህና መጡ';
 
   @override
-  String get authAlreadyHaveAccount => 'ቀድሞውኑ አካውንት አለዎት? ';
+  String get authAlreadyHaveAccount => 'አካውንት አለዎት? ';
 
   @override
   String get authCancelRegistration => 'ምዝገባውን መሰረዝ ይፈልጋሉ?';
@@ -1404,7 +1398,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get authNetworkError => 'የኔትወርክ ስህተት። እባክዎ እንደገና ይሞክሩ።';
 
   @override
-  String get subscriptionsTitle => 'የአባልነት ዕቅዶች';
+  String get subscriptionsTitle => 'የአባልነት ፓኬጆች';
 
   @override
   String get subscriptionsCurrentPlan => 'የአሁኑ ፓኬጅ';
@@ -1469,12 +1463,12 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String subscriptionsUpgradeOff(Object percent) {
-    return 'አሻሽል $percent% ቅናሽ';
+    return '$percent% ቅናሽ';
   }
 
   @override
   String subscriptionsPromoOff(Object percent) {
-    return 'ማስተዋወቂያ $percent% ቅናሽ';
+    return '$percent% ቅናሽ';
   }
 
   @override
@@ -1565,7 +1559,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingFeatureNow => 'አሁን ለይተው ያውጡ';
 
   @override
-  String get listingViewPlans => 'ዕቅዶችን ይመልከቱ';
+  String get listingViewPlans => 'ፓኬጆችን ይመልከቱ';
 
   @override
   String get listingFeatureThis => 'ይህንን ንብረት ለይተው ያውጡ';
@@ -1614,19 +1608,19 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String get subscriptionRequiredTitle => 'ምዝገባ ያስፈልጋል';
+  String get subscriptionRequiredTitle => 'ፓኬጅ ያስፈልጋል';
 
   @override
   String get subscriptionRequiredListingSubtitle =>
-      'ንብረት ለመመዝገብ ንቁ ምዝገባ ያስፈልግዎታል።';
+      'ንብረት ለመጨመር የሚያስችል ንቁ ፓኬጅ ያስፈልግዎታል።';
 
   @override
   String get subscriptionRequiredDetailsSubtitle =>
-      'የንብረት ዝርዝሮችን ለማየት እና ባለቤቶችን ለማነጋገር ንቁ ምዝገባ ያስፈልግዎታል።';
+      'የንብረት ዝርዝሮችን ለማየት እና ባለቤቶችን ለማነጋገር የሚያስችል ንቁ ፓኬጅ ያስፈልግዎታል።';
 
   @override
   String get subscriptionRequiredOrderSubtitle =>
-      'ትእዛዝ ለመፍጠር ንቁ ምዝገባ ያስፈልግዎታል።';
+      'ትእዛዝ ለመጨመር የሚያስችል ንቁ ፓኬጅ ያስፈልግዎታል።';
 
   @override
   String get subscriptionLimitReached =>
@@ -1679,13 +1673,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingErrorListingTypeRequired => 'የምዝገባ አይነት ያስፈልጋል';
 
   @override
-  String get listingErrorUseTypeRequired => 'የአጠቃቀም አይነት ያስፈልጋል';
+  String get listingErrorUseTypeRequired => 'የአገልግሎት አይነት ያስፈልጋል';
 
   @override
   String get listingErrorAddressRequired => 'እባክዎ ሙሉ አድራሻ ይምረጡ';
 
   @override
-  String get listingErrorMinPrice => 'ዋጋ ቢያንስ 1,000 ብር መሆን አለበት';
+  String get listingErrorMinPrice => 'ዋጋ ቢያንስ 50,000 ብር መሆን አለበት';
 
   @override
   String get listingErrorLeasedYearRequired => 'የሊዝ ዓመት ያስፈልጋል';
@@ -1748,7 +1742,7 @@ class AppLocalizationsAm extends AppLocalizations {
       'ይህንን ዝርዝር ለመለየት የተለዩ ዝርዝር መዳረሻ ያለው ንቁ ምዝገባ ያስፈልግዎታል።';
 
   @override
-  String get errorConnection => 'የግንኙነት ስህተት';
+  String get errorConnection => 'የግንኙነት ችግር';
 
   @override
   String get commonBrowseProperties => 'ንብረቶችን ይመልከቱ';
@@ -1806,25 +1800,19 @@ class AppLocalizationsAm extends AppLocalizations {
   String get connectivityOnline => 'መረብ ተመልሷል';
 
   @override
-  String get networkErrorTitle => 'የበይነመረብ ግንኙነት የለም';
-
-  @override
-  String get networkErrorMessage => 'እባክዎ የበይነመረብ ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።';
-
-  @override
-  String get markAsVipTitle => 'እንደ VIP ልምረጥ?';
+  String get markAsVipTitle => 'እንደ VIP ምረጥ?';
 
   @override
   String get markAsVip => 'እንደ VIP ምረጥ';
 
   @override
-  String get markAsVipMessage => 'ምዝገባዎ ተጨማሪ ታይታ እንዲያገኝ በ VIP ባጅ ይደምቃል።';
+  String get markAsVipMessage => 'ንብረትዎ ከተራ ተጠቃሚዎች ድብቅ ሆኖ በ VIP ባጅ ይደምቃል።';
 
   @override
   String get upgradeToContact => 'ለመገናኘት ያሻሽሉ';
 
   @override
-  String get listingsRevealContact => 'መረጃ አሳይ';
+  String get listingsRevealContact => 'የሻጭ መረጃ አሳይ';
 
   @override
   String get listingsRevealing => 'በማሳየት ላይ...';
@@ -1838,7 +1826,7 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String get ordersLimitTitle => 'የትዕዛዝ ገደብ ተደርሷል';
+  String get ordersLimitTitle => 'የትዕዛዝ ገደብዎን ጨርሰዋል';
 
   @override
   String get ordersLimitMessage =>
@@ -1848,15 +1836,15 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersUpgradePlan => 'ፓኬጅ ያሻሽሉ';
 
   @override
-  String get subscriptionVideoUpgrade => 'የንብረት ቪዲዮዎችን ለማየት ፓኬጅዎን ያሻሽሉ';
+  String get subscriptionVideoUpgrade => 'የቪዲዮ ቅኝት ለማየት ፓኬጅዎን ያሻሽሉ';
 
   @override
   String get subscriptionPlanNotSupportedListing =>
-      'የአሁኑ ፓኬጅዎ ምዝገባዎችን መፍጠር አይደግፍም።';
+      'የአሁኑ ፓኬጅዎ ንብረት መለጠፍን ኣይፈቅድም።';
 
   @override
   String get subscriptionPlanNotSupportedListingSubtitle =>
-      'እባክዎ ምዝገባዎችን መፍጠር ወደሚደግፍ ፓኬጅ ያሻሽሉ።';
+      'እባክዎ የንብረት ምዝገባዎችን መለጠፍ ወደሚደግፍ ፓኬጅ ያሻሽሉ።';
 
   @override
   String get subscriptionPlanNotSupportedOrder =>
@@ -1865,4 +1853,16 @@ class AppLocalizationsAm extends AppLocalizations {
   @override
   String get subscriptionPlanNotSupportedOrderSubtitle =>
       'እባክዎ ትዕዛዞችን መፍጠር ወደሚደግፍ ፓኬጅ ያሻሽሉ።';
+
+  @override
+  String get commonTryAgain => 'እንደገና ሞክር';
+
+  @override
+  String get commonDismiss => 'ዝጋ';
+
+  @override
+  String get networkErrorTitle => 'የበይነመረብ ግንኙነት የለም';
+
+  @override
+  String get networkErrorMessage => 'እባክዎ የበይነመረብ ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።';
 }
