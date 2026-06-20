@@ -674,12 +674,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildSectionHeader(
-                            l10n.listingsFeatured, eyebrow: ''),
+                        _buildSectionHeader(l10n.listingsFeatured),
                         _buildFeaturedListings(featuredState),
                         _buildVipSectionHeader(),
                         _buildVipListingsOrTeaser(vipState),
-                        _buildSectionHeader(l10n.listingsTitle),
+                        _buildSectionHeader(l10n.listingsTitle, eyebrow: l10n.homeLatestRecently.toUpperCase()),
                       ],
                     ),
                   ),
@@ -888,17 +887,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   Widget _buildSectionHeader(
     String title, {
-    bool isFeatured = false,
     String? eyebrow,
     IconData? glyph,
     Color? accentRuleColor,
     Color? eyebrowColor,
   }) {
-    final l10n = AppLocalizations.of(context);
-    final eyebrowText = eyebrow ??
-        (isFeatured
-            ? l10n.homeFeaturedPremium.toUpperCase()
-            : l10n.homeLatestRecently.toUpperCase());
     final titleStyle = AppTextStyles.title.copyWith(
       fontWeight: FontWeight.w700,
       letterSpacing: -0.5,
@@ -909,9 +902,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (eyebrowText.isNotEmpty) ...[
+          if (eyebrow != null) ...[
             Text(
-              eyebrowText,
+              eyebrow,
               style: AppTextStyles.eyebrow.copyWith(
                 color: eyebrowColor,
               ),
@@ -953,7 +946,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final l10n = AppLocalizations.of(context);
     return _buildSectionHeader(
       l10n.homeVipTitle,
-      eyebrow: '',
       glyph: Icons.diamond,
       accentRuleColor: AppColors.vip,
     );
