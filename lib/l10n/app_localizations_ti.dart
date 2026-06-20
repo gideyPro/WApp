@@ -9,9 +9,6 @@ class AppLocalizationsTi extends AppLocalizations {
   AppLocalizationsTi([String locale = 'ti']) : super(locale);
 
   @override
-  String get appTitle => 'ዌቭማርት';
-
-  @override
   String get commonUser => 'ተጠቃሚ';
 
   @override
@@ -19,9 +16,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get commonAppInitials => 'ዌማ';
-
-  @override
-  String get commonUnknown => 'ዘይፍለጥ';
 
   @override
   String get commonYou => 'ንስኹም';
@@ -36,9 +30,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonCancel => 'ሕደግ';
 
   @override
-  String get commonSave => 'ዓቅብ';
-
-  @override
   String get commonDelete => 'ኣጥፍእ';
 
   @override
@@ -48,19 +39,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonRetry => 'ደጊምካ ፈትን';
 
   @override
-  String get commonLoading => 'ይሰርሕ ኣሎ...';
+  String get commonTryAgain => 'ደጊምካ ፈትን';
+
+  @override
+  String get commonDismiss => 'ዕፀው';
 
   @override
   String get commonError => 'ጌጋ';
-
-  @override
-  String get commonSuccess => 'ተሳኪዑ';
-
-  @override
-  String get commonOn => 'ተወሊዑ';
-
-  @override
-  String get commonOff => 'ጠፊኡ';
 
   @override
   String get commonNo => 'ኣይ';
@@ -72,48 +57,22 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonContinue => 'ቀፅል';
 
   @override
-  String get commonNoData => 'ዝተረኽበ መረዳእታ የለን';
-
-  @override
-  String get commonRetryMessage => 'በይዝኦም ደጊሞም ይፈትኑ';
+  String get commonRetryMessage => 'በጃኹም ደጊምኩም ፈትኑ';
 
   @override
   String get commonPressBackAgain => 'ንምውፃእ ደጊምኩም ፅቐጡ';
 
   @override
-  String get commonComingSoon => 'ኣብ ቀረባ እዋን';
-
-  @override
   String get navHome => 'መበገሲ';
 
   @override
-  String get navListings => 'ንብረታት';
-
-  @override
-  String get navSearch => 'ድለይ';
-
-  @override
-  String get navFavorites => 'ዝተመረፁ';
-
-  @override
   String get navOrders => 'ትእዛዛት';
-
-  @override
-  String get navProfile => 'ፕሮፋይል';
 
   @override
   String get navMessages => 'መልእኽታት';
 
   @override
   String get navSettings => 'ቅጥዒታት';
-
-  @override
-  String homeGreeting(Object name) {
-    return 'ሰላም፡ $name';
-  }
-
-  @override
-  String get homeDiscover => 'ትደልይዎ ንብረትኩም ኣብዚ ርኸቡ';
 
   @override
   String get homeLatestRecently => 'ኣብ ቀረባ ዝወፁ';
@@ -134,9 +93,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get vipBadge => 'VIP';
 
   @override
-  String get profileTitle => 'መገለፂ';
-
-  @override
   String get profileMyListings => 'ናተይ ዝርዝራት';
 
   @override
@@ -149,9 +105,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get profileFavorites => 'ዝተመረፁ';
-
-  @override
-  String get profileMessages => 'መልእኽታት';
 
   @override
   String get profilePayments => 'ዝርዝር ክፍሊት';
@@ -249,7 +202,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpListManageContent =>
-      'ዘመዝገብኩምዎም ንብረታት ንምምሕዳር ወይ ንምሕዳስ:\n\n1. ናብ ናተይ ኣካውንት > ናተይ ንብረታት ኺዱ\n2. ኵነታት ንብረትኩም ርኣዩ (ንጡፍ፣ ይፅበ ዘሎ፣ ተነፂጉ ወይ ተሸይጡ)\n3. ዝርዝሩ ንምርኣይ ኣብ ሓደ ንብረት ጠውቑ\n4. ሓበሬታ ንምሕዳስ \"ኣዐሪ\" ወይ ንምስራዝ \"ሰርዝ\" ዝብል ተጠቐሙ\n\nመተሓሳሰቢ: ኣብ ንጡፍ ንብረት ዝግበሩ ዓበይቲ ለውጥታት እንደገና ብጉጅለና ንኽግምገም ክገብርዎ ይኽእሉ እዮም።';
+      'ዘመዝገብኩምዎም ንብረታት ንምምሕዳር ወይ ንምሕዳስ:\n\n1. ናብ ናተይ ኣካውንት > ናተይ ንብረታት ኺዱ\n2. ኵነታት ንብረትኩም ርኣዩ (ንጡፍ፣ ይፅበ ዘሎ፣ ተነፂጉ ወይ ተሸይጡ)\n3. ዝርዝሩ ንምርኣይ ኣብ ሓደ ንብረት ጠውቑ\n4. ሓበሬታ ንምሕዳስ \"ኣዐሪ\" ወይ ንምስራዝ \"ሰርዝ\" ዝብል ተጠቐሙ\n\nመተሓሳሰቢ: ኣብ ንጡፍ ንብረት ዝግበሩ ዓበይቲ ለውጥታት ደጊሙ ብጉጅለና ንኽግምገም ክገብርዎ ይኽእሉ እዮም።';
 
   @override
   String get helpListTipsTitle => 'ንዝበለፀ ምዝገባ ንብረት ዝሕግዙ ነጥብታት';
@@ -263,14 +216,14 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpListVideoContent =>
-      'ገሊኦም ናይ ንብረት ዝርዝራት ብሻጭ ዝተሰቕለ ናይ ቪዲዮ ዑደት የጠቓልሉ:\n\n1. ኣብ ገፅ ዝርዝር ንብረት \"ናይ ቪዲዮ ዑደት\" ዝብል ክፋል ድለዩ\n2. እቲ ቪዲዮ ገና እንተሓዲሩ ምልክት ምሕዳስ (Loading indicator) ክትርእዩ ኢኹም\n3. ድሉው ምስ ኮየ ንምጽዋዕ ነቲ ቪዲዮ ጠውቑ\n4. እንተደሊኹም ነቲ መበቆላዊ ቪዲዮ ክትርእዩ ትኽእሉ ኢኹም\n\nናይ ቪዲዮ ዑደታት ነቲ ንብረት ብኣካል ቅድሚ ምብፃሕኩም ዝሓሸ ግንዛቤ ንኽህልወኩም ይሕግዙ። ቪዲዮታት ንምርኣይ ንጡፍ ምዝገባ ክደሊ ይኽእል እዩ።';
+      'ገሊኦም ናይ ንብረት ዝርዝራት ብሸያጢ ዝተሰቕለ ናይ ቪዲዮ ዑደት የጠቓልሉ:\n\n1. ኣብ ገፅ ዝርዝር ንብረት \"ናይ ቪዲዮ ዑደት\" ዝብል ክፋል ድለዩ\n2. እቲ ቪዲዮ ገና እንተሓዲሩ ምልክት ምሕዳስ (Loading indicator) ክትርእዩ ኢኹም\n3. ድሉው ምስ ኮየ ንምጽዋዕ ነቲ ቪዲዮ ጠውቑ\n4. እንተደሊኹም ነቲ መበቆላዊ ቪዲዮ ክትርእዩ ትኽእሉ ኢኹም\n\nናይ ቪዲዮ ዑደታት ነቲ ንብረት ብኣካል ቅድሚ ምብፃሕኩም ዝሓሸ ግንዛቤ ንኽህልወኩም ይሕግዙ። ቪዲዮታት ንምርኣይ ንጡፍ ምዝገባ ክደሊ ይኽእል እዩ።';
 
   @override
   String get helpListInterestTitle => 'ኣብ ንብረት ፍላጎት ከመይ ከምዝግለፅ';
 
   @override
   String get helpListInterestContent =>
-      'ንሻጭ ኣብ ንብረቱ ፍላጎት ከምዘለኩም ንምፍላጥ:\n\n1. ገፅ ዝርዝር እቲ ንብረት ክፈቱ\n2. \"ምስ ወኪል ተራኸብ\" ዝብል ቁልፊ ጠውቑ\n3. ኣማራጭ ንሻጭ መልእኽቲ ወስኹ\n4. ሕቶኹም ንምስዳድ \"ድሌት ስደድ\" ዝብል ጠውቑ\n\nሻጭ መጠንቀቕታ ክበፅሖ እዩ እሞ ምላሽ ክህብ ይኽእል እዩ። ኵነታት ፍላጎትኩም ካብ መገለፂ > ድሌታተይ ክትከታተሉ ትኽእሉ ኢኹም። ኵነታት: ኣብ ምፅባይ (ምላሽ ይፅበ ኣሎ)፣ ተቐባልነት ረኺቡ፣ ወይ ተነፂጉ። ገሊኦም ትልምታት ምስ ሻጭቲ ንምርኻብ ምሕያሽ የድልዮም።';
+      'ንሸያጢ ኣብ ንብረቱ ፍላጎት ከምዘለኩም ንምፍላጥ:\n\n1. ገፅ ዝርዝር እቲ ንብረት ክፈቱ\n2. \"ምስ ወኪል ተራኸብ\" ዝብል ቁልፊ ጠውቑ\n3. ኣማራጭ ንሸያጢ መልእኽቲ ወስኹ\n4. ሕቶኹም ንምስዳድ \"ድሌት ስደድ\" ዝብል ጠውቑ\n\nሸያጢ መጠንቀቕታ ክበፅሖ እዩ እሞ ምላሽ ክህብ ይኽእል እዩ። ኵነታት ፍላጎትኩም ካብ መገለፂ > ድሌታተይ ክትከታተሉ ትኽእሉ ኢኹም። ኵነታት: ኣብ ምፅባይ (ምላሽ ይፅበ ኣሎ)፣ ተቐባልነት ረኺቡ፣ ወይ ተነፂጉ። ገሊኦም ትልምታት ምስ ሸየጥቲ ንምርኻብ ምሕያሽ የድልዮም።';
 
   @override
   String get helpListStatusTitle => 'ኵነታት ዝርዝር ንብረት ምርዳእ';
@@ -340,7 +293,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpKycRejectContent =>
-      'ምርግጋፅ መንነት ውድቅ ንምግባር ዝውተሩ ምኽንያታት:\n\n1. ንፁር ዘይኮነ ወይ ዘይንበብ ፎቶ ሰነድ\n2. ግዝኡ ዝሓለፎ ሰነድ\n3. እቲ ፎቶ (Selfie) ገፅኩምን ሰነድኩምን ብንፁር ዘይምርኣዩ\n4. ዝተመረፀ ዓይነት ሰነድን እቲ ፎቶን ዘይምመሳሰሎም\n5. ምሉእ ብምሉእ ዘይርአ ወይ ዝተቖረፀ ፎቶ ሰነድ\n\nእንደገና ንምስዳድ:\n- ናብ ምርግጋፅ መንነት ኺዱ\n- \"ሰነዳት እንደገና ስደድ\" ዝብል ጠውቑ\n- ኩሎም ፎቶታት ንፁር ምዃኖም ኣረጋግፁ';
+      'ምርግጋፅ መንነት ውድቅ ንምግባር ዝውተሩ ምኽንያታት:\n\n1. ንፁር ዘይኮነ ወይ ዘይንበብ ፎቶ ሰነድ\n2. ግዝኡ ዝሓለፎ ሰነድ\n3. እቲ ፎቶ (Selfie) ገፅኩምን ሰነድኩምን ብንፁር ዘይምርኣዩ\n4. ዝተመረፀ ዓይነት ሰነድን እቲ ፎቶን ዘይምመሳሰሎም\n5. ምሉእ ብምሉእ ዘይርአ ወይ ዝተቖረፀ ፎቶ ሰነድ\n\nደጊምኩም ንምስዳድ:\n- ናብ ምርግጋፅ መንነት ኺዱ\n- \"ሰነዳት ደጊምኩም ስደድ\" ዝብል ጠውቑ\n- ኩሎም ፎቶታት ንፁር ምዃኖም ኣረጋግፁ';
 
   @override
   String get helpSafeStayTitle => 'ኣብ ዌቭማርት ድሕንነትኩም ከመይ ከምትሕልዉ';
@@ -371,31 +324,16 @@ class AppLocalizationsTi extends AppLocalizations {
       'ዋናታት ንብረትን ወከልትን ብቐጥታ ብመተግበሪ ኣቢሎም ክድውሉልኩም ይኽእሉ እዮም:\n\n1. ዝመፅእ ጥሪ ምስ በፅሐ ሽም ደዋዩን ንብረቱን ዘርኢ ስክሪን ይርአ\n2. ነቲ ጥሪ ንምፅንባር \"ተቐበል\" ጠውቑ\n3. ነቲ ጥሪ ንምብራድ \"ኣይትቀበል\" ጠውቑ\n4. እቲ መተግበሪ ናይ ጥሪ ባህሪ ንምጥቃም ፍቓድ ማይክሮፎን ክሓትት እዩ\n\nናይ ድምፂ ጥሪታት ብምስጠራ ዝተሓለዉ እዮም። ጥሪ ንምቅባል ንጡፍ ናይ ኢንተርኔት ርክብ የድሊ።';
 
   @override
-  String get profileNotLoggedIn => 'ኣይኣተኹምን';
-
-  @override
-  String get profileLoginPrompt => 'በጃኹም መገለፂኹም ንምርኣይ እተዉ';
-
-  @override
-  String get profileVerificationPhone => 'ቴሌፎን';
-
-  @override
   String get profileVerificationKyc => 'KYC';
 
   @override
   String get profileStatsListings => 'ንብረታት';
 
   @override
-  String get profileStatsMessages => 'መልእኽታት';
-
-  @override
   String get profileStatsFavorites => 'ዝተመረፁ';
 
   @override
   String get profileMyInterests => 'ድሌታተይ';
-
-  @override
-  String get profileUpdated => 'መገለፂ ብትኽክል ተስተካኺሉ';
 
   @override
   String get profileMale => 'ተባዕታይ';
@@ -416,19 +354,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get profileGender => 'ፆታ';
 
   @override
-  String get profileFirstNameRequired => 'ሽም የድሊ እዩ';
-
-  @override
   String get profileEmailRequired => 'ኢሜይል የድሊ እዩ';
 
   @override
   String get profileEmailInvalid => 'በይዛኹም ትኽክለኛ ኢሜይል ኣእትዉ';
-
-  @override
-  String get profileSaveChanges => 'ለውጥታት ዓቅብ';
-
-  @override
-  String get profileUpdateError => 'መግለፂ ንምሕዳስ ኣይተኻእለን';
 
   @override
   String get kycTitle => 'መረጋገፂ መንነት (KYC)';
@@ -533,19 +462,10 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get kycConnectionErrorSubtitle =>
-      'ኵነታት KYC ንምፅዓን ኣይተኻእለን። በጃኹም ምትእስሳርኩም መርምሩ እንደገና ፈትኑ።';
+      'ኵነታት KYC ንምፅዓን ኣይተኻእለን። በጃኹም ምትእስሳርኩም መርምሩ ደጊምኩም ፈትኑ።';
 
   @override
   String get kycRetry => 'ደጊምካ ፈትን';
-
-  @override
-  String get profileKycStatusVerified => 'ተረጋጊፁ';
-
-  @override
-  String get profileKycStatusPending => 'ኣብ መስርሕ';
-
-  @override
-  String get profileKycStatusRequired => 'የድሊ';
 
   @override
   String get searchFilters => 'መፃረዪታት';
@@ -569,19 +489,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get searchReset => 'ኣሐድስ';
 
   @override
-  String get searchPlaceholder => 'ብቦታ ደለይ...';
+  String get searchPlaceholder => 'ብቦታ ድለዩ...';
 
   @override
   String get searchClearAll => 'ኹሉ ኣጥፍእ';
-
-  @override
-  String get searchFindProperty => 'ዝበለፀ ንብረትኩም ረኸቡ';
-
-  @override
-  String get searchWelcomeSubtitle => 'ንብረታት ብቦታ፣ ብዓይነትን ብኵነታትን ደለዩ';
-
-  @override
-  String get searchPopular => 'ተፈተውቲ ዳህሳሳት';
 
   @override
   String get searchUnder5M => 'ትሕቲ 5 ሚልዮን';
@@ -603,11 +514,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get searchNoResultsSubtitle => 'በጃኹም ዳህሳስኩም ወይ መፃረዪኹም ቀይርኩም ፈትኑ';
-
-  @override
-  String searchFoundCount(Object count) {
-    return '$count ንብረታት ተረኺቦም';
-  }
 
   @override
   String get searchSortNewest => 'ሓድሽ';
@@ -634,13 +540,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingSubmit => 'ኣእቱ';
 
   @override
-  String get listingSubmitListing => 'ንብረት ኣእቱ';
-
-  @override
   String get listingContinue => 'ቀፅል';
-
-  @override
-  String get listingBack => 'ተመለስ';
 
   @override
   String get listingYearBuilt => 'ዝተሃነፀሉ ዓመት';
@@ -664,12 +564,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingPropertyType => 'ዓይነት ንብረት';
 
   @override
-  String get listingTitle => 'ርእስ';
-
-  @override
-  String get listingArea => 'ቦታ';
-
-  @override
   String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
 
   @override
@@ -681,28 +575,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingListingType => 'ዓይነት ምዝገባ';
 
   @override
-  String get listingHoldingType => 'ዓይነት ዋናነት';
+  String get listingHoldingType => 'ዓይነት ይዞታ';
 
   @override
   String get listingTaxPaid => 'ታክስ ዝተኸፈለሉ';
-
-  @override
-  String get listingLeaseHolder => 'ባለ ዋና ሊዝ';
-
-  @override
-  String get listingLeaseOrganization => 'ድርጅን';
-
-  @override
-  String get listingLeaseExpiry => 'መወዳእታ ሊዝ';
 
   @override
   String get listingUseType => 'ዓይነት ኣገልግሎት';
 
   @override
   String get listingLocation => 'ቦታ';
-
-  @override
-  String get listingPrice => 'ዋጋ';
 
   @override
   String get listingPriceEtb => 'ዋጋ (ቅርሺ)';
@@ -714,7 +596,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingDebtAmount => 'መጠንን ዕዳ';
 
   @override
-  String get listingSelectHolding => 'ዓይነት ዋናነት ይምረጡ';
+  String get listingSelectHolding => 'ዓይነት ይዞታ ይምረጡ';
 
   @override
   String get listingSelectUse => 'ዓይነት ኣገልግሎት ይምረጡ';
@@ -766,9 +648,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingTotalRooms => 'ጠቅላላ ክፍልታት';
-
-  @override
-  String get listingPhotos => 'ፎቶታት';
 
   @override
   String listingPhotosCount(Object count) {
@@ -850,9 +729,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingOwnershipProof => 'መረጋገፂ ዋናነት';
 
   @override
-  String get listingLeaseContract => 'ውዕል ሊዝ';
-
-  @override
   String get listingIsTransferable => 'ከተላልፍ ይከኣል';
 
   @override
@@ -868,9 +744,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String listingImagesSelected(Object count) {
     return '$count ስእልታት ተመሪፆም';
   }
-
-  @override
-  String get listingBrowseFiles => 'ፋይላት ድለ';
 
   @override
   String get listingBrowseFile => 'ፋይል ድለ';
@@ -892,14 +765,6 @@ class AppLocalizationsTi extends AppLocalizations {
   @override
   String get listingTermsSubtitle =>
       'ንብረትኩም ብምእታውኩም ብውዕልናን ፖሊሲ ምስጢራውነትናን ትሰማምዑ ኣለኹም';
-
-  @override
-  String get listingSuccess => 'ንብረትኩም ብዝግባእ ተመዝጊቡ ኣሎ! ይፅበ ኣሎ።';
-
-  @override
-  String listingError(Object error) {
-    return 'ጌጋ: $error';
-  }
 
   @override
   String get listingNoOptions => 'ዝኾነ ኣማራፂ የለን';
@@ -977,7 +842,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingPurchased => 'ዝተዓደገ';
 
   @override
-  String get listingInherited => 'ዝወረሰ';
+  String get listingInherited => 'ብውርሻ ዝተረኽበ';
 
   @override
   String get listingGift => 'ብውህብቶ';
@@ -1011,12 +876,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingLand => 'መሬት';
-
-  @override
-  String get listingHouses => 'ገዛውቲ';
-
-  @override
-  String get listingLands => 'መሬታት';
 
   @override
   String get listingPriceOnRequest => 'ዋጋ ብሕቶ';
@@ -1075,25 +934,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsNoResults => 'ዝተረኽበ ንብረት የለን';
 
   @override
-  String get listingsDetails => 'ዝርዝር ንብረት';
-
-  @override
   String get listingsKeyFeatures => 'ቀንዲ መገለፂታት';
 
   @override
   String get listingsImInterested => 'ምስ ወኪል ተራኸብ';
-
-  @override
-  String get listingsInterestedHint => 'ድሌት ከምዘለኩም ንባዓል ንብረት ኣፍልጡ';
-
-  @override
-  String get listingsInterestedPlaceholder => 'ንባዓል ንብረት ዝኸውን መልእኽቲ (ኣማራጭ)';
-
-  @override
-  String get listingsSubmitInterest => 'ድሌት ስደድ';
-
-  @override
-  String get listingsInterestSubmitted => 'ድሌትኩም ብዝግባእ ተላኢኹ ኣሎ!';
 
   @override
   String get listingsInterestAccepted => 'ድሌት ተቐባልነት ረኺቡ';
@@ -1103,9 +947,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingsInterestRejected => 'ድሌት ተነፂጉ';
-
-  @override
-  String get listingsInterestCancelled => 'ድሌት ተሰሪዙ';
 
   @override
   String get listingsDefaultInterestMessage => 'ድሌት ኣለኒ!';
@@ -1121,15 +962,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get jitsiCallTitle => 'ናይ ድምፂ ጥሪ';
-
-  @override
-  String get jitsiOpening => 'ናይ ጂትሲ ስብሰባ ይኽፈት ኣሎ...';
-
-  @override
-  String get jitsiOpenedExternal => 'እቲ ስብሰባ እንተዘይተኸፊቱ ደጊምኩም ንምፍታን ኣብ ታሕቲ ጠውቑ';
-
-  @override
-  String get jitsiCloseToJoin => 'ኣብቲ መተግበሪ ንምፅንባር ነዚ ዕፀዉ';
 
   @override
   String get listingsDescription => 'መግለፂ';
@@ -1162,7 +994,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsUseType => 'ዓይነት ኣገልግሎት';
 
   @override
-  String get listingsHoldingType => 'ዓይነት ዋናነት';
+  String get listingsHoldingType => 'ዓይነት ይዞታ';
 
   @override
   String get listingsFacing => 'ኣንፈት';
@@ -1229,9 +1061,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsYes => 'እወ';
 
   @override
-  String get listingsNo => 'የለን';
-
-  @override
   String get favoritesTitle => 'ዝተመርፁ';
 
   @override
@@ -1249,13 +1078,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersEmpty => 'ገና ምንም ትእዛዛት የለን';
 
   @override
-  String get ordersEmptySubtitle => 'ንብረት መስፈርታትካ ኣቕርብ ንኽትጅምር';
+  String get ordersEmptySubtitle => 'ንብረት መስፈርታትኩም ኣቕርቡ ንኽትጅምሩ';
 
   @override
   String get ordersCreate => 'ትእዛዝ ፍጠር';
 
   @override
-  String get ordersStatusActive => 'ንቡር';
+  String get ordersStatusActive => 'ንጡፍ';
 
   @override
   String get ordersStatusFulfilled => 'ተፈፂሙ';
@@ -1282,13 +1111,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersRent => 'ምክራይ';
 
   @override
-  String get ordersHoldingType => 'ዓይነት ምትእስሳር';
+  String get ordersHoldingType => 'ዓይነት ይዞታ';
 
   @override
   String get ordersSelect => 'ምረፅ';
 
   @override
-  String get ordersFacing => 'መምርሒ ኣንፈት';
+  String get ordersFacing => 'ኣንፈት';
 
   @override
   String get ordersBudget => 'በጀት (ETB)';
@@ -1315,22 +1144,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersCancel => 'ትእዛዝ ሰርዝ';
 
   @override
-  String get ordersEdit => 'ኣርም';
-
-  @override
-  String get ordersSave => 'ለውጢ ዓቅብ';
-
-  @override
-  String get ordersCancelConfirm => 'ርግፀኛ ዲኻ ነዚ ትእዛዝ ክትስርዞ ትደሊ?';
+  String get ordersCancelConfirm => 'ርግፀኛ ዲኹም ነዚ ትእዛዝ ክትስርዙ ትደልዩ?';
 
   @override
   String get ordersCancelled => 'ትእዛዝ ተሰሪዙ';
 
   @override
   String get ordersCreated => 'ትእዛዝ ብትኽክል ተፈጢሩ';
-
-  @override
-  String get ordersUpdated => 'ትእዛዝ ብትኽክል ተለዊጡ';
 
   @override
   String get ordersLocation => 'ከባቢ';
@@ -1346,7 +1166,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersSuggestionsViewDetails => 'ዝርዝራት ርአ';
 
   @override
-  String get ordersSuggestionsSubtitle => 'ኣስተዳደሪ እዞም ንብረታት ንኣኻ ሓሲቡልካ።';
+  String get ordersSuggestionsSubtitle => 'ኣስተዳደሪ እዞም ንብረታት ንኣኻትኩም ሓሲቡልኩም።';
 
   @override
   String get ordersSuggestionsAccept => 'ተቐበል';
@@ -1361,10 +1181,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersSuggestionsDeclined => 'ተነፂጉ';
 
   @override
-  String get ordersSuggestionsPending => 'ኣብ ምፅባይ';
-
-  @override
-  String get ordersSuggestionsAcceptedMessage => 'ሓሳብ ተቐባሊኡ። ሓላፊ ክከታተለካ እዩ።';
+  String get ordersSuggestionsAcceptedMessage => 'ሓሳብ ተቐባሊኡ። ሓላፊ ክከታተለኩም እዩ።';
 
   @override
   String get ordersSuggestionsDeclinedMessage => 'ሓሳብ ተነፂጉ።';
@@ -1377,9 +1194,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get favoritesEmptySubtitle => 'ዝመረፅኩምዎም ንብረታት ኣብዚ ክትረኽብዎም ኢኹም';
-
-  @override
-  String get favoritesRemove => 'ካብ ዝተመርፁ ኣውፅእ';
 
   @override
   String get favoritesAdded => 'ናብ ዝተመርፁ ተወሲኹ';
@@ -1397,9 +1211,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get messagesTypeMessage => 'መልእኽቲ ፅሓፉ...';
 
   @override
-  String get messagesSend => 'ስደድ';
-
-  @override
   String get messagesUnread => 'ያልተነብሡ';
 
   @override
@@ -1409,28 +1220,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get messagesSwitchContext => 'ኣውድ ቀይር';
 
   @override
-  String get settingsTitle => 'ቅጥዒታት';
-
-  @override
   String get settingsSectionAccount => 'ናይ ኣካውንት ሓበሬታ';
 
   @override
   String get settingsSectionSupport => 'ሓገዝ';
 
   @override
-  String get settingsSectionAuth => 'ኣካውንት';
-
-  @override
-  String get settingsMyListingsSubtitle => 'ንብረትኩም ኣመሓድሩ';
-
-  @override
   String get settingsSubscriptionsSubtitle => 'ትልምታትኩም ርኣዩ';
 
   @override
   String get settingsPaymentsSubtitle => 'ታሪኽ ክፍሊት';
-
-  @override
-  String get settingsFavoritesSubtitle => 'ዝተዓቀብኩምዎ ንብረታት ርኣዩ';
 
   @override
   String get settingsKycVerified => 'ተረጋጊፁ';
@@ -1440,15 +1239,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get settingsKycRequired => 'የድሊ';
-
-  @override
-  String get settingsHelpSubtitle => 'ሕቶታትን መምርሒታትን';
-
-  @override
-  String get settingsContactSupport => 'ሓገዝ ረኸቡ';
-
-  @override
-  String get settingsContactSupportSubtitle => 'ተወከሱና';
 
   @override
   String get settingsPrivacyPolicy => 'ፖሊሲ ምስጢራውነት';
@@ -1468,37 +1258,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsLanguage => 'ቋንቋ';
 
   @override
-  String get settingsLanguageSubtitle => 'ናይ መተግበሪ ቋቋ ቀይሩ';
-
-  @override
-  String get settingsTheme => 'መልክዕ';
-
-  @override
-  String get settingsThemeSubtitle => 'ናይ መተግበሪ መልክዕ ይምረጡ';
-
-  @override
   String get settingsNotifications => 'መጠንቀቕታታት';
-
-  @override
-  String get settingsNotificationsSubtitle => 'መጠንቀቕታታት ኣመሓድሩ';
-
-  @override
-  String get settingsPrivacy => 'ምስጢራውነት';
-
-  @override
-  String get settingsPrivacySubtitle => 'ቅጥዒታት ምስጢራውነት';
-
-  @override
-  String get settingsAbout => 'ብዛዕባ ዌቭማርት';
-
-  @override
-  String get settingsAboutSubtitle => 'ሓበሬታ ብዛዕባ መተግበሪ';
-
-  @override
-  String get settingsLogout => 'ውፃእ';
-
-  @override
-  String get settingsLogoutSubtitle => 'ካብ ኣካውንትኹም ንምውፃእ';
 
   @override
   String get settingsDarkMode => 'ፀሊም መልክዕ';
@@ -1507,12 +1267,8 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingEditTitle => 'ንብረት ኣዐሪ';
 
   @override
-  String get listingEditWindowExpired =>
-      'እዋን ምትሕዝት ሐሊፉ ኣሎ። ንብረታት ኣብ ውሽጢ 7 መዓልቲ ጥራይ ክትሕዘዉ ይከኣል።';
-
-  @override
   String get listingEditCooldownActive =>
-      'ንብረታት ኣብ ውሽጢ 14 መዓልቲ ሓደ ጊዜ ጥራይ ክትሕዘዉ ይከኣል።';
+      'ንብረታት ኣብ ውሽጢ 14 መዓልታት ሓደ ጊዜ ጥራይ ክዕረዩ ይከኣል።';
 
   @override
   String get listingMediaLockedTitle => 'ሚድያ ተዓጊዱ';
@@ -1524,25 +1280,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingDeleteConfirmTitle => 'ንብረት ሰርዝ';
 
   @override
-  String get listingDeleteConfirmMessage => 'ነዚ ንብረት ክትሰርዞ ርግፀኛ ዲኻ?';
-
-  @override
-  String get listingDeletedSuccess => 'እቲ ንብረት ተሰሪዙ ኣሎ';
-
-  @override
-  String get listingUpdatedSuccess => 'እቲ ንብረት ተስተኻኺሉ ኣሎ';
-
-  @override
-  String get listingUpdate => 'ንብረት ኣሐድስ';
-
-  @override
-  String get listingReviewTitle => 'ለውጥታት ይገምገሙ';
-
-  @override
-  String get listingDiscardTitle => 'ለውጥታት ይገደፉ';
-
-  @override
-  String get listingDiscardMessage => 'ለውጥታት ንምግዳፍ ርግፀኛ ዲኻ?';
+  String get listingDeleteConfirmMessage => 'ነዚ ንብረት ክትሰርዙ ርግፀኛ ዲኹም?';
 
   @override
   String get languageTitle => 'ቋንቋ ይምረጡ';
@@ -1555,12 +1293,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get languageTigrinya => 'ትግርኛ';
-
-  @override
-  String get languageChanged => 'ቋንቋ ብዝግባእ ተቐይሩ';
-
-  @override
-  String get authPhoneNumber => 'ቁፅሪ ተሌፎን';
 
   @override
   String get authEnterPhone => 'ቁፅሪ ተሌፎንኩም ኣእትዉ';
@@ -1612,9 +1344,6 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get authSpamFolderHint => 'ነቲ ኢመይል እንተ ዘይርእይዎ፡ ናይ ስፓም ፎልደር ይረኣእዎ።';
-
-  @override
   String authResendCountdown(Object seconds) {
     return 'ኮድ ድሕሪ $seconds ሰከንድ ደጊምካ ስደድ';
   }
@@ -1629,13 +1358,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get authExitLogin => 'ካብ ምእታው ውፃእ';
 
   @override
-  String get authExitLoginConfirm => 'ናይ ምእታው መስርሕ ክትቋፅል ዶ ትደልዩ?';
+  String get authExitLoginConfirm => 'ናይ ምእታው መስርሕ ከተቋርፁ ዶ ትደልዩ?';
 
   @override
   String get authNoAccount => 'ኣካውንት የብልኩምን? ';
-
-  @override
-  String get authEmail => 'ኢሜይል';
 
   @override
   String get authCreateAccount => 'ኣካውንትኹም ፍጠሩ';
@@ -1680,19 +1406,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsTitle => 'ናይ ኣባልነት ትልምታት';
 
   @override
-  String get subscriptionsSubtitle => 'ንዓኹም ዝበቅዕ ፓኬጅ ይምረጡ';
-
-  @override
   String get subscriptionsCurrentPlan => 'ናይ ሕጂ ፓኬጅ';
-
-  @override
-  String get subscriptionsFree => 'ብናፃ';
-
-  @override
-  String get subscriptionsBasic => 'መሰረታዊ';
-
-  @override
-  String get subscriptionsPremium => 'ፕሪሚየም';
 
   @override
   String get subscriptionsSubscribe => 'ሕጂ ተመዝገብ';
@@ -1714,33 +1428,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsFeaturedListings => 'ፍሉያት ንብረታት';
 
   @override
-  String get subscriptionsNoFeaturedListings => 'ምንም ፍሉያት ንብረታት የለን';
-
-  @override
   String subscriptionsDaysLeft(Object count) {
     return '$count መዓልታት ተሪፎም';
   }
 
   @override
-  String get subscriptionsPopular => 'ተፈታዊ';
-
-  @override
-  String get subscriptionsCurrent => 'ናይ ሕጂ';
-
-  @override
-  String get subscriptionsPaymentBrowserMessage =>
-      'ክፍሊትኩም ኣብ ብራውዘርኩም ወድኡ። ድሕሪ ክፍሊት ናብዚ ተመለሱ።';
-
-  @override
   String get subscriptionsFreeSuccess => 'ነፃ ፓኬጅ ብትኽክል ተወሊዑ!';
-
-  @override
-  String get subscriptionsPaymentBrowserError => 'ብራውዘር ንክፍሊት ክኽፈት ኣይከኣለን';
-
-  @override
-  String subscriptionsPaymentError(Object error) {
-    return 'ጌጋ ክፍሊት: $error';
-  }
 
   @override
   String subscriptionsExpiresOn(Object date) {
@@ -1768,41 +1461,29 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsOrders => 'ትእዛዛት';
 
   @override
-  String get subscriptionsContactViews => 'ናይ ርክብ ራእይ';
+  String get subscriptionsContactViews => 'ናይ ርክብ ምርኣይ';
 
   @override
   String get subscriptionsManage => 'ኣመሓዳሪ';
 
   @override
-  String get subscriptionsUpgrade => 'ኣዕብይ';
-
-  @override
   String subscriptionsUpgradeOff(Object percent) {
-    return 'ኣዕብይ $percent% ቅናይ';
+    return 'ኣዕብዩ $percent% ቅናሽ';
   }
 
   @override
   String subscriptionsPromoOff(Object percent) {
-    return 'ምስራሽ $percent% ቅናይ';
+    return 'ፕሮሞሽን $percent% ቅናሽ';
   }
 
   @override
   String get subscriptionsPaymentPending => 'ክፍሊት ተላኢኹ። ምስተረጋገፀ ክንሕብረኩም ኢና።';
 
   @override
-  String get subscriptionsPoweredByChapa => 'ክፍሊታት ብቻፓ ብፅኑዕ ኣገባር ይካየዉ';
+  String get subscriptionsPoweredByChapa => 'ክፍሊታት ብቻፓ ብውሑስ ኣገባብ ይካየዱ';
 
   @override
   String get subscriptionsVipAccess => 'ናይ VIP ምብፃሕ';
-
-  @override
-  String get notificationsDeleteTitle => 'መጠንቀቕታ ሰርዝ';
-
-  @override
-  String get notificationsDeleteConfirm => 'ነዚ መጠንቀቕታ ክትሰርዙ ትደልዩ?';
-
-  @override
-  String get notificationsDelete => 'ሰርዝ';
 
   @override
   String get notificationsEmpty => 'ምንም መጠንቀቕታ የለን';
@@ -1815,24 +1496,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get paymentsEmpty => 'ምንም ታሪኽ ክፍሊት የለን';
-
-  @override
-  String get paymentsTransactionId => 'መለለዪ ትራንዛክሽን';
-
-  @override
-  String get paymentsAmount => 'መጠን';
-
-  @override
-  String get paymentsStatus => 'ኵነታት';
-
-  @override
-  String get paymentsDate => 'ዕለት';
-
-  @override
-  String get paymentsPlan => 'ፓኬጅ';
-
-  @override
-  String get paymentsMethod => 'መንገዲ ክፍሊት';
 
   @override
   String get paymentsRef => 'መለለዪ';
@@ -1856,16 +1519,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get messageRetry => 'ደጊምካ ፈትን';
 
   @override
-  String get messageGoBack => 'ተመለስ';
-
-  @override
   String get messageDismiss => 'ዕፀው';
 
   @override
   String get messageNetworkTitle => 'ናይ ኢንተርኔት ርክብ የለን';
 
   @override
-  String get messageNetworkSubtitle => 'ርክብካ ፈትሽ እንደገና ፈትን።';
+  String get messageNetworkSubtitle => 'በጃኹም ርክብኩም ኣረጋግፁ እሞ ደጊምኩም ፈትኑ።';
 
   @override
   String get messageEmptyTitle => 'ነገር የለን';
@@ -1877,13 +1537,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get messageErrorTitle => 'ገለ ፀገም ኣጋጢሙ';
 
   @override
-  String get messageErrorSubtitle => 'ንጥለትካ ክንውስኽ ኣይተኻእለናን።';
+  String get messageErrorSubtitle => 'ንጥለትኩም ክንውስኽ ኣይተኻእለናን።';
 
   @override
   String get messageSuccessTitle => 'ተሳኪሙ!';
 
   @override
-  String get messageSuccessSubtitle => 'ክዋኔካ ብትኽክል ተፈፂሙ።';
+  String get messageSuccessSubtitle => 'ክዋኔኩም ብትኽክል ተፈፂሙ።';
 
   @override
   String get messageInfoTitle => 'ሓበሬታ';
@@ -1922,9 +1582,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get errorLoadingListings => 'ንብረታት ክፅዕን ኣይከኣለን';
 
   @override
-  String get errorLoadingProfile => 'መገለፂ ክፅዕን ኣይከኣለን';
-
-  @override
   String get errorLoadingPayments => 'ክፍሊታት ክፅዕን ኣይከኣለን';
 
   @override
@@ -1943,15 +1600,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get errorSubscription => 'ናይ ምዝገባ ጌጋ';
 
   @override
-  String get errorSearch => 'ናይ ዳህሳስ ጌጋ';
-
-  @override
   String errorJoinCall(Object error) {
     return 'ነቲ ጥሪ ክትፅንበር ኣይተኻእለን: $error';
   }
-
-  @override
-  String get subscriptionPaymentNotVerified => 'ክፍሊትኩም ክረጋገፅ ኣይተኻእለን።';
 
   @override
   String get subscriptionPaymentSuccess => 'ክፍሊት ተሳኪዑ!';
@@ -2002,7 +1653,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get orderBudgetAreaSubtitle => 'በጀት፣ ስፍሓትን ዓይነት ትካልን';
 
   @override
-  String get orderHoldingFacingSubtitle => 'ዓይነት ዋናነትን ዝጥምቶ ኣንፈትን';
+  String get orderHoldingFacingSubtitle => 'ዓይነት ይዞታን ዝጥምቶ ኣንፈትን';
 
   @override
   String get orderDescriptionSubtitle => 'ዘድልየኩም ንብረት ብዝርዝር ግለፁ';
@@ -2019,7 +1670,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingErrorPropertyTypeRequired => 'ዓይነት ንብረት የድሊ';
 
   @override
-  String get listingErrorHoldingTypeRequired => 'ዓይነት ዋናነት የድሊ';
+  String get listingErrorHoldingTypeRequired => 'ዓይነት ይዞታ የድሊ';
 
   @override
   String get listingErrorListingTypeRequired => 'ዓይነት ምዝገባ የድሊ';
@@ -2068,9 +1719,6 @@ class AppLocalizationsTi extends AppLocalizations {
       'ንናይ ማሕበር ንብረታት መረጋገፂ ዋናነት የድሊ';
 
   @override
-  String get listingErrorLeaseContractRequired => 'ንናይ ሊዝ ንብረታት ውዕል ሊዝ የድሊ';
-
-  @override
   String get listingErrorTermsRequired => 'ውዕላትን ደንብታትን ክትቅበሉ ኣለኩም';
 
   @override
@@ -2087,44 +1735,17 @@ class AppLocalizationsTi extends AppLocalizations {
   String get notificationJustNow => 'ሕጂ';
 
   @override
-  String messageConversationId(Object id) {
-    return 'ውይይት #$id';
-  }
-
-  @override
-  String get messageDirectChat => 'ቀጥታ ውይይት';
-
-  @override
-  String get listingPriceUnder5M => 'ትሕቲ 5 ሚልዮን';
-
-  @override
-  String get listingUpgradeToFeature => 'ፈሊኻ ንምውፃእ ኣዕብዩ';
-
-  @override
-  String get listingUpgradeToFeatureSubtitle =>
-      'ናይ ሕጂ ትልምኹም ፍሉያት ንብረታት ኣየጠቓልልን። ንብረትኩም ፈሊኹም ንምውፃእ ዝድግፍ ፓኬጅ ምሕያሽ።';
+  String get listingUpgradeToFeature => 'ፈሊኹም ንምውፃእ ኣዕብዩ';
 
   @override
   String get listingUpgradeToVip => 'ንVIP ፓኬጅ ምሕያሽ';
-
-  @override
-  String get listingUpgradeToVipSubtitle =>
-      'ናይ ሕጂ ፓኬጅኩም ናይ VIP ዝርዝር ኣይሓዝን። ዝርዝርኩም ከም VIP ንምድላይ ዝድግፍ ፓኬጅ ምሕያሽ።';
 
   @override
   String get subscriptionRequiredFeatureSubtitle =>
       'እዚ ዝርዝር ንምድላይ ናይ ዝተመረጠ ዝርዝር መዳረሻ ዘለዎ ንጡፍ ምዝገባ የድሊ።';
 
   @override
-  String get subscriptionRequiredVipSubtitle =>
-      'እዚ ዝርዝር ከም VIP ንምድላይ ናይ VIP ዝርዝር መዳረሻ ዘለዎ ንጡፍ ምዝገባ የድሊ።';
-
-  @override
   String get errorConnection => 'ናይ ርክብ ጌጋ';
-
-  @override
-  String get errorCheckSubscription =>
-      'ኵነታት ምዝገባኩም ንምርግጋፅ ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።';
 
   @override
   String get commonBrowseProperties => 'ንብረታት ተዓዘብ';
@@ -2164,18 +1785,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get statusPending => 'ኣብ ምፅባይ';
 
   @override
-  String get statusFrozen => 'ዝተኣገደ';
-
-  @override
-  String get statusRejected => 'ውድቅ ዝተገብረ';
-
-  @override
-  String get statusSold => 'ዝተሸጠ';
-
-  @override
-  String get statusRented => 'ዝተከራየ';
-
-  @override
   String get statusSuccess => 'ተሳኪዑ';
 
   @override
@@ -2194,6 +1803,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get connectivityOnline => 'መረብ ተመሊሱ';
 
   @override
+  String get networkErrorTitle => 'ናይ ኢንተርነት ርክብ የለን';
+
+  @override
+  String get networkErrorMessage => 'በጃኹም ናይ ኢንተርነት ርክብኩም ኣረጋግፁ እሞ ደጊምኩም ፈትኑ።';
+
+  @override
   String get markAsVipTitle => 'ናይ VIP ምርጫ?';
 
   @override
@@ -2206,17 +1821,17 @@ class AppLocalizationsTi extends AppLocalizations {
   String get upgradeToContact => 'ንምርካብ ፓኬጅ ምሕያሽ';
 
   @override
-  String get listingsRevealContact => 'መረጃ ርኢ';
+  String get listingsRevealContact => 'ርክብ ኣርኢ';
 
   @override
-  String get listingsRevealing => 'የግህድ ኣሎ...';
+  String get listingsRevealing => 'ይግለጽ ኣሎ...';
 
   @override
-  String get listingsSeller => 'ሻጭ';
+  String get listingsSeller => 'ሸያጢ';
 
   @override
   String listingsContactViewsRemaining(int remaining, int max) {
-    return 'ኣብዚ እዋን $remaining ካብ $max ቁፅሪ ስልኪ ሻጭ ን ምርኣይ ተሪፉኩም ኣሎ።';
+    return 'ኣብዚ እዋን $remaining ካብ $max ቁፅሪ ስልኪ ሸያጢ ንምርኣይ ተሪፉኩም ኣሎ።';
   }
 
   @override

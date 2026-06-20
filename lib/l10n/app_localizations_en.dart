@@ -9,9 +9,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Wavemart';
-
-  @override
   String get commonUser => 'User';
 
   @override
@@ -19,9 +16,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonAppInitials => 'WM';
-
-  @override
-  String get commonUnknown => 'Unknown';
 
   @override
   String get commonYou => 'You';
@@ -36,9 +30,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonCancel => 'Cancel';
 
   @override
-  String get commonSave => 'Save';
-
-  @override
   String get commonDelete => 'Delete';
 
   @override
@@ -48,19 +39,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonRetry => 'Retry';
 
   @override
-  String get commonLoading => 'Loading...';
+  String get commonTryAgain => 'Try Again';
+
+  @override
+  String get commonDismiss => 'Dismiss';
 
   @override
   String get commonError => 'Error';
-
-  @override
-  String get commonSuccess => 'Success';
-
-  @override
-  String get commonOn => 'On';
-
-  @override
-  String get commonOff => 'Off';
 
   @override
   String get commonNo => 'No';
@@ -72,48 +57,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonContinue => 'Continue';
 
   @override
-  String get commonNoData => 'No data available';
-
-  @override
   String get commonRetryMessage => 'Please try again';
 
   @override
   String get commonPressBackAgain => 'Press back again to exit';
 
   @override
-  String get commonComingSoon => 'Coming soon';
-
-  @override
   String get navHome => 'Home';
 
   @override
-  String get navListings => 'Listings';
-
-  @override
-  String get navSearch => 'Search';
-
-  @override
-  String get navFavorites => 'Favorites';
-
-  @override
   String get navOrders => 'Orders';
-
-  @override
-  String get navProfile => 'Profile';
 
   @override
   String get navMessages => 'Messages';
 
   @override
   String get navSettings => 'My Account';
-
-  @override
-  String homeGreeting(Object name) {
-    return 'Hi, $name';
-  }
-
-  @override
-  String get homeDiscover => 'Discover your perfect property';
 
   @override
   String get homeLatestRecently => 'Recently added';
@@ -134,9 +93,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vipBadge => 'VIP';
 
   @override
-  String get profileTitle => 'Profile';
-
-  @override
   String get profileMyListings => 'My Listings';
 
   @override
@@ -150,9 +106,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileFavorites => 'Favorites';
-
-  @override
-  String get profileMessages => 'Messages';
 
   @override
   String get profilePayments => 'Payment History';
@@ -373,31 +326,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Property owners and agents can call you directly through the app for a real-time conversation:\n\n1. When you receive an incoming call, a screen will appear showing the caller\'s name and property\n2. Tap \"Accept\" to join the audio call\n3. Tap \"Decline\" to reject the call\n4. The app will request microphone permission to use the call feature\n\nAudio calls are encrypted and secure. You need an active internet connection to receive calls.';
 
   @override
-  String get profileNotLoggedIn => 'Not Logged In';
-
-  @override
-  String get profileLoginPrompt => 'Please log in to view your profile';
-
-  @override
-  String get profileVerificationPhone => 'Phone';
-
-  @override
   String get profileVerificationKyc => 'KYC';
 
   @override
   String get profileStatsListings => 'Listings';
 
   @override
-  String get profileStatsMessages => 'Messages';
-
-  @override
   String get profileStatsFavorites => 'Favorites';
 
   @override
   String get profileMyInterests => 'My Interests';
-
-  @override
-  String get profileUpdated => 'Profile updated successfully';
 
   @override
   String get profileMale => 'Male';
@@ -418,19 +356,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileGender => 'Gender';
 
   @override
-  String get profileFirstNameRequired => 'First name is required';
-
-  @override
   String get profileEmailRequired => 'Email is required';
 
   @override
   String get profileEmailInvalid => 'Please enter a valid email';
-
-  @override
-  String get profileSaveChanges => 'Save Changes';
-
-  @override
-  String get profileUpdateError => 'Failed to update profile';
 
   @override
   String get kycTitle => 'KYC Verification';
@@ -543,15 +472,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kycRetry => 'Retry';
 
   @override
-  String get profileKycStatusVerified => 'Verified';
-
-  @override
-  String get profileKycStatusPending => 'Pending';
-
-  @override
-  String get profileKycStatusRequired => 'Required';
-
-  @override
   String get searchFilters => 'Filters';
 
   @override
@@ -579,16 +499,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchClearAll => 'Clear All';
 
   @override
-  String get searchFindProperty => 'Find Your Perfect Property';
-
-  @override
-  String get searchWelcomeSubtitle =>
-      'Search by location, filter by type and status to discover amazing properties';
-
-  @override
-  String get searchPopular => 'Popular Searches';
-
-  @override
   String get searchUnder5M => 'Under 5M';
 
   @override
@@ -609,11 +519,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get searchNoResultsSubtitle =>
       'Try adjusting your search or filters to find more results';
-
-  @override
-  String searchFoundCount(Object count) {
-    return '$count properties found';
-  }
 
   @override
   String get searchSortNewest => 'Newest';
@@ -640,13 +545,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingSubmit => 'Submit';
 
   @override
-  String get listingSubmitListing => 'Submit Listing';
-
-  @override
   String get listingContinue => 'Continue';
-
-  @override
-  String get listingBack => 'Back';
 
   @override
   String get listingYearBuilt => 'Year Built';
@@ -670,12 +569,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingPropertyType => 'Property Type';
 
   @override
-  String get listingTitle => 'Title';
-
-  @override
-  String get listingArea => 'Area';
-
-  @override
   String get listingVideoMaxSize => 'Max 100MB';
 
   @override
@@ -693,22 +586,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingTaxPaid => 'Tax Paid Until';
 
   @override
-  String get listingLeaseHolder => 'Lease Holder';
-
-  @override
-  String get listingLeaseOrganization => 'Organization';
-
-  @override
-  String get listingLeaseExpiry => 'Lease Expiry';
-
-  @override
   String get listingUseType => 'Use Type';
 
   @override
   String get listingLocation => 'Location';
-
-  @override
-  String get listingPrice => 'Price';
 
   @override
   String get listingPriceEtb => 'Price (ETB)';
@@ -772,9 +653,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingTotalRooms => 'Total Rooms';
-
-  @override
-  String get listingPhotos => 'Photos';
 
   @override
   String listingPhotosCount(Object count) {
@@ -856,9 +734,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingOwnershipProof => 'Ownership Proof';
 
   @override
-  String get listingLeaseContract => 'Lease Contract';
-
-  @override
   String get listingIsTransferable => 'Transferable';
 
   @override
@@ -874,9 +749,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String listingImagesSelected(Object count) {
     return '$count image(s) selected';
   }
-
-  @override
-  String get listingBrowseFiles => 'Browse Files';
 
   @override
   String get listingBrowseFile => 'Browse File';
@@ -898,15 +770,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get listingTermsSubtitle =>
       'By submitting, you agree to our terms and privacy policy';
-
-  @override
-  String get listingSuccess =>
-      'Listing submitted successfully! Awaiting approval.';
-
-  @override
-  String listingError(Object error) {
-    return 'Error: $error';
-  }
 
   @override
   String get listingNoOptions => 'No options available';
@@ -1020,12 +883,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingLand => 'Land';
 
   @override
-  String get listingHouses => 'Houses';
-
-  @override
-  String get listingLands => 'Lands';
-
-  @override
   String get listingPriceOnRequest => 'Price on Request';
 
   @override
@@ -1082,27 +939,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsNoResults => 'No listings found';
 
   @override
-  String get listingsDetails => 'Property Details';
-
-  @override
   String get listingsKeyFeatures => 'Key Features';
 
   @override
   String get listingsImInterested => 'Contact with Agent';
-
-  @override
-  String get listingsInterestedHint =>
-      'Let the owner know you\'re interested in this property';
-
-  @override
-  String get listingsInterestedPlaceholder =>
-      'Your message to the owner (optional)';
-
-  @override
-  String get listingsSubmitInterest => 'Submit Interest';
-
-  @override
-  String get listingsInterestSubmitted => 'Interest submitted successfully!';
 
   @override
   String get listingsInterestAccepted => 'Interest Accepted';
@@ -1112,9 +952,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingsInterestRejected => 'Interest Rejected';
-
-  @override
-  String get listingsInterestCancelled => 'Interest cancelled';
 
   @override
   String get listingsDefaultInterestMessage => 'I am interested!';
@@ -1130,16 +967,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jitsiCallTitle => 'Audio Call';
-
-  @override
-  String get jitsiOpening => 'Opening Jitsi meeting...';
-
-  @override
-  String get jitsiOpenedExternal =>
-      'If the meeting didn\'t open, tap below to try again';
-
-  @override
-  String get jitsiCloseToJoin => 'Close this to join the meeting in the app';
 
   @override
   String get listingsDescription => 'Description';
@@ -1239,9 +1066,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingsYes => 'Yes';
 
   @override
-  String get listingsNo => 'No';
-
-  @override
   String get favoritesTitle => 'Favorites';
 
   @override
@@ -1326,12 +1150,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersCancel => 'Cancel Order';
 
   @override
-  String get ordersEdit => 'Edit';
-
-  @override
-  String get ordersSave => 'Save Changes';
-
-  @override
   String get ordersCancelConfirm =>
       'Are you sure you want to cancel this order?';
 
@@ -1340,9 +1158,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ordersCreated => 'Order created successfully';
-
-  @override
-  String get ordersUpdated => 'Order updated successfully';
 
   @override
   String get ordersLocation => 'Location';
@@ -1374,9 +1189,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersSuggestionsDeclined => 'Declined';
 
   @override
-  String get ordersSuggestionsPending => 'Pending';
-
-  @override
   String get ordersSuggestionsAcceptedMessage =>
       'Suggestion accepted. An admin will follow up with you.';
 
@@ -1394,9 +1206,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Start adding properties to your favorites';
 
   @override
-  String get favoritesRemove => 'Remove from favorites';
-
-  @override
   String get favoritesAdded => 'Added to favorites';
 
   @override
@@ -1412,9 +1221,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messagesTypeMessage => 'Type a message...';
 
   @override
-  String get messagesSend => 'Send';
-
-  @override
   String get messagesUnread => 'unread';
 
   @override
@@ -1424,28 +1230,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messagesSwitchContext => 'Switch Context';
 
   @override
-  String get settingsTitle => 'Settings';
-
-  @override
   String get settingsSectionAccount => 'My Account';
 
   @override
   String get settingsSectionSupport => 'Support';
 
   @override
-  String get settingsSectionAuth => 'Account';
-
-  @override
-  String get settingsMyListingsSubtitle => 'Manage your properties';
-
-  @override
   String get settingsSubscriptionsSubtitle => 'View your plans';
 
   @override
   String get settingsPaymentsSubtitle => 'Transaction history';
-
-  @override
-  String get settingsFavoritesSubtitle => 'View your saved listings';
 
   @override
   String get settingsKycVerified => 'Verified';
@@ -1455,15 +1249,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsKycRequired => 'Required';
-
-  @override
-  String get settingsHelpSubtitle => 'FAQs and guides';
-
-  @override
-  String get settingsContactSupport => 'Contact Support';
-
-  @override
-  String get settingsContactSupportSubtitle => 'Get in touch';
 
   @override
   String get settingsPrivacyPolicy => 'Privacy Policy';
@@ -1483,47 +1268,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguage => 'Language';
 
   @override
-  String get settingsLanguageSubtitle => 'Change app language';
-
-  @override
-  String get settingsTheme => 'Theme';
-
-  @override
-  String get settingsThemeSubtitle => 'Select app theme';
-
-  @override
   String get settingsNotifications => 'Notifications';
-
-  @override
-  String get settingsNotificationsSubtitle => 'Manage notifications';
-
-  @override
-  String get settingsPrivacy => 'Privacy';
-
-  @override
-  String get settingsPrivacySubtitle => 'Privacy settings';
-
-  @override
-  String get settingsAbout => 'About';
-
-  @override
-  String get settingsAboutSubtitle => 'About WaveMart';
-
-  @override
-  String get settingsLogout => 'Logout';
-
-  @override
-  String get settingsLogoutSubtitle => 'Sign out of your account';
 
   @override
   String get settingsDarkMode => 'Dark Mode';
 
   @override
   String get listingEditTitle => 'Edit Listing';
-
-  @override
-  String get listingEditWindowExpired =>
-      'The edit window has expired. Listings can only be edited within 7 days.';
 
   @override
   String get listingEditCooldownActive =>
@@ -1544,25 +1295,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this listing? This action cannot be undone.';
 
   @override
-  String get listingDeletedSuccess => 'Listing deleted successfully';
-
-  @override
-  String get listingUpdatedSuccess => 'Listing updated successfully';
-
-  @override
-  String get listingUpdate => 'Update Listing';
-
-  @override
-  String get listingReviewTitle => 'Review Your Changes';
-
-  @override
-  String get listingDiscardTitle => 'Discard Changes';
-
-  @override
-  String get listingDiscardMessage =>
-      'Are you sure you want to discard your changes?';
-
-  @override
   String get languageTitle => 'Select Language';
 
   @override
@@ -1573,12 +1305,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageTigrinya => 'ትግርኛ (Tigrinya)';
-
-  @override
-  String get languageChanged => 'Language changed successfully';
-
-  @override
-  String get authPhoneNumber => 'Phone Number';
 
   @override
   String get authEnterPhone => 'Enter your phone number';
@@ -1630,10 +1356,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get authSpamFolderHint =>
-      'If you don\'t see the email, check your spam folder.';
-
-  @override
   String authResendCountdown(Object seconds) {
     return 'Resend code in ${seconds}s';
   }
@@ -1654,9 +1376,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authNoAccount => 'Don\'t have an account? ';
-
-  @override
-  String get authEmail => 'Email';
 
   @override
   String get authCreateAccount => 'Create Your Account';
@@ -1701,19 +1420,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsTitle => 'Subscription Plans';
 
   @override
-  String get subscriptionsSubtitle => 'Select a plan that fits your needs';
-
-  @override
   String get subscriptionsCurrentPlan => 'Current Plan';
-
-  @override
-  String get subscriptionsFree => 'Free';
-
-  @override
-  String get subscriptionsBasic => 'Basic';
-
-  @override
-  String get subscriptionsPremium => 'Premium';
 
   @override
   String get subscriptionsSubscribe => 'Subscribe Now';
@@ -1735,34 +1442,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsFeaturedListings => 'Featured Listings';
 
   @override
-  String get subscriptionsNoFeaturedListings => 'No Featured Listings';
-
-  @override
   String subscriptionsDaysLeft(Object count) {
     return '$count days left';
   }
 
   @override
-  String get subscriptionsPopular => 'POPULAR';
-
-  @override
-  String get subscriptionsCurrent => 'CURRENT';
-
-  @override
-  String get subscriptionsPaymentBrowserMessage =>
-      'Complete payment in your browser. Return here after payment.';
-
-  @override
   String get subscriptionsFreeSuccess => 'Free plan activated successfully!';
-
-  @override
-  String get subscriptionsPaymentBrowserError =>
-      'Could not open browser for payment';
-
-  @override
-  String subscriptionsPaymentError(Object error) {
-    return 'Payment error: $error';
-  }
 
   @override
   String subscriptionsExpiresOn(Object date) {
@@ -1796,9 +1481,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsManage => 'Manage';
 
   @override
-  String get subscriptionsUpgrade => 'Upgrade';
-
-  @override
   String subscriptionsUpgradeOff(Object percent) {
     return 'Upgrade $percent% off';
   }
@@ -1820,15 +1502,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsVipAccess => 'VIP Access';
 
   @override
-  String get notificationsDeleteTitle => 'Delete Notification';
-
-  @override
-  String get notificationsDeleteConfirm => 'Remove this notification?';
-
-  @override
-  String get notificationsDelete => 'Delete';
-
-  @override
   String get notificationsEmpty => 'No notifications yet';
 
   @override
@@ -1840,24 +1513,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentsEmpty => 'No payment history yet';
-
-  @override
-  String get paymentsTransactionId => 'Transaction ID';
-
-  @override
-  String get paymentsAmount => 'Amount';
-
-  @override
-  String get paymentsStatus => 'Status';
-
-  @override
-  String get paymentsDate => 'Date';
-
-  @override
-  String get paymentsPlan => 'Plan';
-
-  @override
-  String get paymentsMethod => 'Method';
 
   @override
   String get paymentsRef => 'Ref';
@@ -1879,9 +1534,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get messageRetry => 'Try Again';
-
-  @override
-  String get messageGoBack => 'Go Back';
 
   @override
   String get messageDismiss => 'Dismiss';
@@ -1948,9 +1600,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorLoadingListings => 'Error Loading Listings';
 
   @override
-  String get errorLoadingProfile => 'Error Loading Profile';
-
-  @override
   String get errorLoadingPayments => 'Error Loading Payments';
 
   @override
@@ -1969,16 +1618,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorSubscription => 'Subscription Error';
 
   @override
-  String get errorSearch => 'Search Error';
-
-  @override
   String errorJoinCall(Object error) {
     return 'Failed to join call: $error';
   }
-
-  @override
-  String get subscriptionPaymentNotVerified =>
-      'Your payment could not be verified.';
 
   @override
   String get subscriptionPaymentSuccess => 'Payment successful!';
@@ -2095,16 +1737,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'At least one site plan is required';
 
   @override
-  String get listingErrorVideoRequired =>
-      'A video tour is required';
+  String get listingErrorVideoRequired => 'A video tour is required';
 
   @override
   String get listingErrorOwnershipProofRequired =>
       'Ownership proof is required for cooperative properties';
-
-  @override
-  String get listingErrorLeaseContractRequired =>
-      'Lease contract is required for lease hold properties';
 
   @override
   String get listingErrorTermsRequired =>
@@ -2124,44 +1761,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationJustNow => 'Just now';
 
   @override
-  String messageConversationId(Object id) {
-    return 'Conversation #$id';
-  }
-
-  @override
-  String get messageDirectChat => 'Direct Chat';
-
-  @override
-  String get listingPriceUnder5M => 'Under 5M';
-
-  @override
   String get listingUpgradeToFeature => 'Upgrade to Feature';
 
   @override
-  String get listingUpgradeToFeatureSubtitle =>
-      'Your current plan doesn\'t include featured listings. Upgrade to a supported plan to feature your listings.';
-
-  @override
   String get listingUpgradeToVip => 'Upgrade to VIP';
-
-  @override
-  String get listingUpgradeToVipSubtitle =>
-      'Your current plan doesn\'t include VIP listings. Upgrade to a supported plan to mark listings as VIP.';
 
   @override
   String get subscriptionRequiredFeatureSubtitle =>
       'You need an active subscription with featured listing access to feature this listing.';
 
   @override
-  String get subscriptionRequiredVipSubtitle =>
-      'You need an active subscription with VIP listing access to mark this listing as VIP.';
-
-  @override
   String get errorConnection => 'Connection Error';
-
-  @override
-  String get errorCheckSubscription =>
-      'Could not check your subscription status. Please try again.';
 
   @override
   String get commonBrowseProperties => 'Browse Properties';
@@ -2201,18 +1811,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusPending => 'Pending';
 
   @override
-  String get statusFrozen => 'Frozen';
-
-  @override
-  String get statusRejected => 'Rejected';
-
-  @override
-  String get statusSold => 'Sold';
-
-  @override
-  String get statusRented => 'Rented';
-
-  @override
   String get statusSuccess => 'Success';
 
   @override
@@ -2229,6 +1827,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectivityOnline => 'Back Online';
+
+  @override
+  String get networkErrorTitle => 'No Internet Connection';
+
+  @override
+  String get networkErrorMessage =>
+      'Please check your internet connection and try again.';
 
   @override
   String get markAsVipTitle => 'Mark as VIP?';

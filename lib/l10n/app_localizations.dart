@@ -100,12 +100,6 @@ abstract class AppLocalizations {
     Locale('ti')
   ];
 
-  /// No description provided for @appTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Wavemart'**
-  String get appTitle;
-
   /// No description provided for @commonUser.
   ///
   /// In en, this message translates to:
@@ -123,12 +117,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'WM'**
   String get commonAppInitials;
-
-  /// No description provided for @commonUnknown.
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown'**
-  String get commonUnknown;
 
   /// No description provided for @commonYou.
   ///
@@ -154,12 +142,6 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get commonCancel;
 
-  /// No description provided for @commonSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get commonSave;
-
   /// No description provided for @commonDelete.
   ///
   /// In en, this message translates to:
@@ -178,35 +160,23 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get commonRetry;
 
-  /// No description provided for @commonLoading.
+  /// No description provided for @commonTryAgain.
   ///
   /// In en, this message translates to:
-  /// **'Loading...'**
-  String get commonLoading;
+  /// **'Try Again'**
+  String get commonTryAgain;
+
+  /// No description provided for @commonDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get commonDismiss;
 
   /// No description provided for @commonError.
   ///
   /// In en, this message translates to:
   /// **'Error'**
   String get commonError;
-
-  /// No description provided for @commonSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Success'**
-  String get commonSuccess;
-
-  /// No description provided for @commonOn.
-  ///
-  /// In en, this message translates to:
-  /// **'On'**
-  String get commonOn;
-
-  /// No description provided for @commonOff.
-  ///
-  /// In en, this message translates to:
-  /// **'Off'**
-  String get commonOff;
 
   /// No description provided for @commonNo.
   ///
@@ -226,12 +196,6 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get commonContinue;
 
-  /// No description provided for @commonNoData.
-  ///
-  /// In en, this message translates to:
-  /// **'No data available'**
-  String get commonNoData;
-
   /// No description provided for @commonRetryMessage.
   ///
   /// In en, this message translates to:
@@ -244,47 +208,17 @@ abstract class AppLocalizations {
   /// **'Press back again to exit'**
   String get commonPressBackAgain;
 
-  /// No description provided for @commonComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Coming soon'**
-  String get commonComingSoon;
-
   /// No description provided for @navHome.
   ///
   /// In en, this message translates to:
   /// **'Home'**
   String get navHome;
 
-  /// No description provided for @navListings.
-  ///
-  /// In en, this message translates to:
-  /// **'Listings'**
-  String get navListings;
-
-  /// No description provided for @navSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search'**
-  String get navSearch;
-
-  /// No description provided for @navFavorites.
-  ///
-  /// In en, this message translates to:
-  /// **'Favorites'**
-  String get navFavorites;
-
   /// No description provided for @navOrders.
   ///
   /// In en, this message translates to:
   /// **'Orders'**
   String get navOrders;
-
-  /// No description provided for @navProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile'**
-  String get navProfile;
 
   /// No description provided for @navMessages.
   ///
@@ -297,18 +231,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My Account'**
   String get navSettings;
-
-  /// No description provided for @homeGreeting.
-  ///
-  /// In en, this message translates to:
-  /// **'Hi, {name}'**
-  String homeGreeting(Object name);
-
-  /// No description provided for @homeDiscover.
-  ///
-  /// In en, this message translates to:
-  /// **'Discover your perfect property'**
-  String get homeDiscover;
 
   /// No description provided for @homeLatestRecently.
   ///
@@ -346,12 +268,6 @@ abstract class AppLocalizations {
   /// **'VIP'**
   String get vipBadge;
 
-  /// No description provided for @profileTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile'**
-  String get profileTitle;
-
   /// No description provided for @profileMyListings.
   ///
   /// In en, this message translates to:
@@ -375,12 +291,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Favorites'**
   String get profileFavorites;
-
-  /// No description provided for @profileMessages.
-  ///
-  /// In en, this message translates to:
-  /// **'Messages'**
-  String get profileMessages;
 
   /// No description provided for @profilePayments.
   ///
@@ -772,24 +682,6 @@ abstract class AppLocalizations {
   /// **'Property owners and agents can call you directly through the app for a real-time conversation:\n\n1. When you receive an incoming call, a screen will appear showing the caller\'s name and property\n2. Tap \"Accept\" to join the audio call\n3. Tap \"Decline\" to reject the call\n4. The app will request microphone permission to use the call feature\n\nAudio calls are encrypted and secure. You need an active internet connection to receive calls.'**
   String get helpSafeCallContent;
 
-  /// No description provided for @profileNotLoggedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Not Logged In'**
-  String get profileNotLoggedIn;
-
-  /// No description provided for @profileLoginPrompt.
-  ///
-  /// In en, this message translates to:
-  /// **'Please log in to view your profile'**
-  String get profileLoginPrompt;
-
-  /// No description provided for @profileVerificationPhone.
-  ///
-  /// In en, this message translates to:
-  /// **'Phone'**
-  String get profileVerificationPhone;
-
   /// No description provided for @profileVerificationKyc.
   ///
   /// In en, this message translates to:
@@ -802,12 +694,6 @@ abstract class AppLocalizations {
   /// **'Listings'**
   String get profileStatsListings;
 
-  /// No description provided for @profileStatsMessages.
-  ///
-  /// In en, this message translates to:
-  /// **'Messages'**
-  String get profileStatsMessages;
-
   /// No description provided for @profileStatsFavorites.
   ///
   /// In en, this message translates to:
@@ -819,12 +705,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My Interests'**
   String get profileMyInterests;
-
-  /// No description provided for @profileUpdated.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile updated successfully'**
-  String get profileUpdated;
 
   /// No description provided for @profileMale.
   ///
@@ -862,12 +742,6 @@ abstract class AppLocalizations {
   /// **'Gender'**
   String get profileGender;
 
-  /// No description provided for @profileFirstNameRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'First name is required'**
-  String get profileFirstNameRequired;
-
   /// No description provided for @profileEmailRequired.
   ///
   /// In en, this message translates to:
@@ -879,18 +753,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter a valid email'**
   String get profileEmailInvalid;
-
-  /// No description provided for @profileSaveChanges.
-  ///
-  /// In en, this message translates to:
-  /// **'Save Changes'**
-  String get profileSaveChanges;
-
-  /// No description provided for @profileUpdateError.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to update profile'**
-  String get profileUpdateError;
 
   /// No description provided for @kycTitle.
   ///
@@ -1090,24 +952,6 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get kycRetry;
 
-  /// No description provided for @profileKycStatusVerified.
-  ///
-  /// In en, this message translates to:
-  /// **'Verified'**
-  String get profileKycStatusVerified;
-
-  /// No description provided for @profileKycStatusPending.
-  ///
-  /// In en, this message translates to:
-  /// **'Pending'**
-  String get profileKycStatusPending;
-
-  /// No description provided for @profileKycStatusRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Required'**
-  String get profileKycStatusRequired;
-
   /// No description provided for @searchFilters.
   ///
   /// In en, this message translates to:
@@ -1162,24 +1006,6 @@ abstract class AppLocalizations {
   /// **'Clear All'**
   String get searchClearAll;
 
-  /// No description provided for @searchFindProperty.
-  ///
-  /// In en, this message translates to:
-  /// **'Find Your Perfect Property'**
-  String get searchFindProperty;
-
-  /// No description provided for @searchWelcomeSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Search by location, filter by type and status to discover amazing properties'**
-  String get searchWelcomeSubtitle;
-
-  /// No description provided for @searchPopular.
-  ///
-  /// In en, this message translates to:
-  /// **'Popular Searches'**
-  String get searchPopular;
-
   /// No description provided for @searchUnder5M.
   ///
   /// In en, this message translates to:
@@ -1221,12 +1047,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try adjusting your search or filters to find more results'**
   String get searchNoResultsSubtitle;
-
-  /// No description provided for @searchFoundCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} properties found'**
-  String searchFoundCount(Object count);
 
   /// No description provided for @searchSortNewest.
   ///
@@ -1276,23 +1096,11 @@ abstract class AppLocalizations {
   /// **'Submit'**
   String get listingSubmit;
 
-  /// No description provided for @listingSubmitListing.
-  ///
-  /// In en, this message translates to:
-  /// **'Submit Listing'**
-  String get listingSubmitListing;
-
   /// No description provided for @listingContinue.
   ///
   /// In en, this message translates to:
   /// **'Continue'**
   String get listingContinue;
-
-  /// No description provided for @listingBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get listingBack;
 
   /// No description provided for @listingYearBuilt.
   ///
@@ -1336,18 +1144,6 @@ abstract class AppLocalizations {
   /// **'Property Type'**
   String get listingPropertyType;
 
-  /// No description provided for @listingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Title'**
-  String get listingTitle;
-
-  /// No description provided for @listingArea.
-  ///
-  /// In en, this message translates to:
-  /// **'Area'**
-  String get listingArea;
-
   /// No description provided for @listingVideoMaxSize.
   ///
   /// In en, this message translates to:
@@ -1378,24 +1174,6 @@ abstract class AppLocalizations {
   /// **'Tax Paid Until'**
   String get listingTaxPaid;
 
-  /// No description provided for @listingLeaseHolder.
-  ///
-  /// In en, this message translates to:
-  /// **'Lease Holder'**
-  String get listingLeaseHolder;
-
-  /// No description provided for @listingLeaseOrganization.
-  ///
-  /// In en, this message translates to:
-  /// **'Organization'**
-  String get listingLeaseOrganization;
-
-  /// No description provided for @listingLeaseExpiry.
-  ///
-  /// In en, this message translates to:
-  /// **'Lease Expiry'**
-  String get listingLeaseExpiry;
-
   /// No description provided for @listingUseType.
   ///
   /// In en, this message translates to:
@@ -1407,12 +1185,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Location'**
   String get listingLocation;
-
-  /// No description provided for @listingPrice.
-  ///
-  /// In en, this message translates to:
-  /// **'Price'**
-  String get listingPrice;
 
   /// No description provided for @listingPriceEtb.
   ///
@@ -1539,12 +1311,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Rooms'**
   String get listingTotalRooms;
-
-  /// No description provided for @listingPhotos.
-  ///
-  /// In en, this message translates to:
-  /// **'Photos'**
-  String get listingPhotos;
 
   /// No description provided for @listingPhotosCount.
   ///
@@ -1696,12 +1462,6 @@ abstract class AppLocalizations {
   /// **'Ownership Proof'**
   String get listingOwnershipProof;
 
-  /// No description provided for @listingLeaseContract.
-  ///
-  /// In en, this message translates to:
-  /// **'Lease Contract'**
-  String get listingLeaseContract;
-
   /// No description provided for @listingIsTransferable.
   ///
   /// In en, this message translates to:
@@ -1731,12 +1491,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} image(s) selected'**
   String listingImagesSelected(Object count);
-
-  /// No description provided for @listingBrowseFiles.
-  ///
-  /// In en, this message translates to:
-  /// **'Browse Files'**
-  String get listingBrowseFiles;
 
   /// No description provided for @listingBrowseFile.
   ///
@@ -1773,18 +1527,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'By submitting, you agree to our terms and privacy policy'**
   String get listingTermsSubtitle;
-
-  /// No description provided for @listingSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Listing submitted successfully! Awaiting approval.'**
-  String get listingSuccess;
-
-  /// No description provided for @listingError.
-  ///
-  /// In en, this message translates to:
-  /// **'Error: {error}'**
-  String listingError(Object error);
 
   /// No description provided for @listingNoOptions.
   ///
@@ -2008,18 +1750,6 @@ abstract class AppLocalizations {
   /// **'Land'**
   String get listingLand;
 
-  /// No description provided for @listingHouses.
-  ///
-  /// In en, this message translates to:
-  /// **'Houses'**
-  String get listingHouses;
-
-  /// No description provided for @listingLands.
-  ///
-  /// In en, this message translates to:
-  /// **'Lands'**
-  String get listingLands;
-
   /// No description provided for @listingPriceOnRequest.
   ///
   /// In en, this message translates to:
@@ -2116,12 +1846,6 @@ abstract class AppLocalizations {
   /// **'No listings found'**
   String get listingsNoResults;
 
-  /// No description provided for @listingsDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Property Details'**
-  String get listingsDetails;
-
   /// No description provided for @listingsKeyFeatures.
   ///
   /// In en, this message translates to:
@@ -2133,30 +1857,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contact with Agent'**
   String get listingsImInterested;
-
-  /// No description provided for @listingsInterestedHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Let the owner know you\'re interested in this property'**
-  String get listingsInterestedHint;
-
-  /// No description provided for @listingsInterestedPlaceholder.
-  ///
-  /// In en, this message translates to:
-  /// **'Your message to the owner (optional)'**
-  String get listingsInterestedPlaceholder;
-
-  /// No description provided for @listingsSubmitInterest.
-  ///
-  /// In en, this message translates to:
-  /// **'Submit Interest'**
-  String get listingsSubmitInterest;
-
-  /// No description provided for @listingsInterestSubmitted.
-  ///
-  /// In en, this message translates to:
-  /// **'Interest submitted successfully!'**
-  String get listingsInterestSubmitted;
 
   /// No description provided for @listingsInterestAccepted.
   ///
@@ -2175,12 +1875,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Interest Rejected'**
   String get listingsInterestRejected;
-
-  /// No description provided for @listingsInterestCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Interest cancelled'**
-  String get listingsInterestCancelled;
 
   /// No description provided for @listingsDefaultInterestMessage.
   ///
@@ -2211,24 +1905,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Audio Call'**
   String get jitsiCallTitle;
-
-  /// No description provided for @jitsiOpening.
-  ///
-  /// In en, this message translates to:
-  /// **'Opening Jitsi meeting...'**
-  String get jitsiOpening;
-
-  /// No description provided for @jitsiOpenedExternal.
-  ///
-  /// In en, this message translates to:
-  /// **'If the meeting didn\'t open, tap below to try again'**
-  String get jitsiOpenedExternal;
-
-  /// No description provided for @jitsiCloseToJoin.
-  ///
-  /// In en, this message translates to:
-  /// **'Close this to join the meeting in the app'**
-  String get jitsiCloseToJoin;
 
   /// No description provided for @listingsDescription.
   ///
@@ -2392,12 +2068,6 @@ abstract class AppLocalizations {
   /// **'Yes'**
   String get listingsYes;
 
-  /// No description provided for @listingsNo.
-  ///
-  /// In en, this message translates to:
-  /// **'No'**
-  String get listingsNo;
-
   /// No description provided for @favoritesTitle.
   ///
   /// In en, this message translates to:
@@ -2560,18 +2230,6 @@ abstract class AppLocalizations {
   /// **'Cancel Order'**
   String get ordersCancel;
 
-  /// No description provided for @ordersEdit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get ordersEdit;
-
-  /// No description provided for @ordersSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Save Changes'**
-  String get ordersSave;
-
   /// No description provided for @ordersCancelConfirm.
   ///
   /// In en, this message translates to:
@@ -2589,12 +2247,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order created successfully'**
   String get ordersCreated;
-
-  /// No description provided for @ordersUpdated.
-  ///
-  /// In en, this message translates to:
-  /// **'Order updated successfully'**
-  String get ordersUpdated;
 
   /// No description provided for @ordersLocation.
   ///
@@ -2650,12 +2302,6 @@ abstract class AppLocalizations {
   /// **'Declined'**
   String get ordersSuggestionsDeclined;
 
-  /// No description provided for @ordersSuggestionsPending.
-  ///
-  /// In en, this message translates to:
-  /// **'Pending'**
-  String get ordersSuggestionsPending;
-
   /// No description provided for @ordersSuggestionsAcceptedMessage.
   ///
   /// In en, this message translates to:
@@ -2685,12 +2331,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start adding properties to your favorites'**
   String get favoritesEmptySubtitle;
-
-  /// No description provided for @favoritesRemove.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove from favorites'**
-  String get favoritesRemove;
 
   /// No description provided for @favoritesAdded.
   ///
@@ -2722,12 +2362,6 @@ abstract class AppLocalizations {
   /// **'Type a message...'**
   String get messagesTypeMessage;
 
-  /// No description provided for @messagesSend.
-  ///
-  /// In en, this message translates to:
-  /// **'Send'**
-  String get messagesSend;
-
   /// No description provided for @messagesUnread.
   ///
   /// In en, this message translates to:
@@ -2746,12 +2380,6 @@ abstract class AppLocalizations {
   /// **'Switch Context'**
   String get messagesSwitchContext;
 
-  /// No description provided for @settingsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get settingsTitle;
-
   /// No description provided for @settingsSectionAccount.
   ///
   /// In en, this message translates to:
@@ -2764,18 +2392,6 @@ abstract class AppLocalizations {
   /// **'Support'**
   String get settingsSectionSupport;
 
-  /// No description provided for @settingsSectionAuth.
-  ///
-  /// In en, this message translates to:
-  /// **'Account'**
-  String get settingsSectionAuth;
-
-  /// No description provided for @settingsMyListingsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage your properties'**
-  String get settingsMyListingsSubtitle;
-
   /// No description provided for @settingsSubscriptionsSubtitle.
   ///
   /// In en, this message translates to:
@@ -2787,12 +2403,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Transaction history'**
   String get settingsPaymentsSubtitle;
-
-  /// No description provided for @settingsFavoritesSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'View your saved listings'**
-  String get settingsFavoritesSubtitle;
 
   /// No description provided for @settingsKycVerified.
   ///
@@ -2811,24 +2421,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Required'**
   String get settingsKycRequired;
-
-  /// No description provided for @settingsHelpSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'FAQs and guides'**
-  String get settingsHelpSubtitle;
-
-  /// No description provided for @settingsContactSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Contact Support'**
-  String get settingsContactSupport;
-
-  /// No description provided for @settingsContactSupportSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Get in touch'**
-  String get settingsContactSupportSubtitle;
 
   /// No description provided for @settingsPrivacyPolicy.
   ///
@@ -2860,71 +2452,11 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get settingsLanguage;
 
-  /// No description provided for @settingsLanguageSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Change app language'**
-  String get settingsLanguageSubtitle;
-
-  /// No description provided for @settingsTheme.
-  ///
-  /// In en, this message translates to:
-  /// **'Theme'**
-  String get settingsTheme;
-
-  /// No description provided for @settingsThemeSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Select app theme'**
-  String get settingsThemeSubtitle;
-
   /// No description provided for @settingsNotifications.
   ///
   /// In en, this message translates to:
   /// **'Notifications'**
   String get settingsNotifications;
-
-  /// No description provided for @settingsNotificationsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage notifications'**
-  String get settingsNotificationsSubtitle;
-
-  /// No description provided for @settingsPrivacy.
-  ///
-  /// In en, this message translates to:
-  /// **'Privacy'**
-  String get settingsPrivacy;
-
-  /// No description provided for @settingsPrivacySubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Privacy settings'**
-  String get settingsPrivacySubtitle;
-
-  /// No description provided for @settingsAbout.
-  ///
-  /// In en, this message translates to:
-  /// **'About'**
-  String get settingsAbout;
-
-  /// No description provided for @settingsAboutSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'About WaveMart'**
-  String get settingsAboutSubtitle;
-
-  /// No description provided for @settingsLogout.
-  ///
-  /// In en, this message translates to:
-  /// **'Logout'**
-  String get settingsLogout;
-
-  /// No description provided for @settingsLogoutSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign out of your account'**
-  String get settingsLogoutSubtitle;
 
   /// No description provided for @settingsDarkMode.
   ///
@@ -2937,12 +2469,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Listing'**
   String get listingEditTitle;
-
-  /// No description provided for @listingEditWindowExpired.
-  ///
-  /// In en, this message translates to:
-  /// **'The edit window has expired. Listings can only be edited within 7 days.'**
-  String get listingEditWindowExpired;
 
   /// No description provided for @listingEditCooldownActive.
   ///
@@ -2974,42 +2500,6 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this listing? This action cannot be undone.'**
   String get listingDeleteConfirmMessage;
 
-  /// No description provided for @listingDeletedSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Listing deleted successfully'**
-  String get listingDeletedSuccess;
-
-  /// No description provided for @listingUpdatedSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Listing updated successfully'**
-  String get listingUpdatedSuccess;
-
-  /// No description provided for @listingUpdate.
-  ///
-  /// In en, this message translates to:
-  /// **'Update Listing'**
-  String get listingUpdate;
-
-  /// No description provided for @listingReviewTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Review Your Changes'**
-  String get listingReviewTitle;
-
-  /// No description provided for @listingDiscardTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Discard Changes'**
-  String get listingDiscardTitle;
-
-  /// No description provided for @listingDiscardMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Are you sure you want to discard your changes?'**
-  String get listingDiscardMessage;
-
   /// No description provided for @languageTitle.
   ///
   /// In en, this message translates to:
@@ -3033,18 +2523,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ትግርኛ (Tigrinya)'**
   String get languageTigrinya;
-
-  /// No description provided for @languageChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'Language changed successfully'**
-  String get languageChanged;
-
-  /// No description provided for @authPhoneNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Phone Number'**
-  String get authPhoneNumber;
 
   /// No description provided for @authEnterPhone.
   ///
@@ -3136,12 +2614,6 @@ abstract class AppLocalizations {
   /// **'We sent a 6-digit code to {email}'**
   String authOtpSentEmailMessage(Object email);
 
-  /// No description provided for @authSpamFolderHint.
-  ///
-  /// In en, this message translates to:
-  /// **'If you don\'t see the email, check your spam folder.'**
-  String get authSpamFolderHint;
-
   /// No description provided for @authResendCountdown.
   ///
   /// In en, this message translates to:
@@ -3177,12 +2649,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t have an account? '**
   String get authNoAccount;
-
-  /// No description provided for @authEmail.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get authEmail;
 
   /// No description provided for @authCreateAccount.
   ///
@@ -3268,35 +2734,11 @@ abstract class AppLocalizations {
   /// **'Subscription Plans'**
   String get subscriptionsTitle;
 
-  /// No description provided for @subscriptionsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a plan that fits your needs'**
-  String get subscriptionsSubtitle;
-
   /// No description provided for @subscriptionsCurrentPlan.
   ///
   /// In en, this message translates to:
   /// **'Current Plan'**
   String get subscriptionsCurrentPlan;
-
-  /// No description provided for @subscriptionsFree.
-  ///
-  /// In en, this message translates to:
-  /// **'Free'**
-  String get subscriptionsFree;
-
-  /// No description provided for @subscriptionsBasic.
-  ///
-  /// In en, this message translates to:
-  /// **'Basic'**
-  String get subscriptionsBasic;
-
-  /// No description provided for @subscriptionsPremium.
-  ///
-  /// In en, this message translates to:
-  /// **'Premium'**
-  String get subscriptionsPremium;
 
   /// No description provided for @subscriptionsSubscribe.
   ///
@@ -3334,53 +2776,17 @@ abstract class AppLocalizations {
   /// **'Featured Listings'**
   String get subscriptionsFeaturedListings;
 
-  /// No description provided for @subscriptionsNoFeaturedListings.
-  ///
-  /// In en, this message translates to:
-  /// **'No Featured Listings'**
-  String get subscriptionsNoFeaturedListings;
-
   /// No description provided for @subscriptionsDaysLeft.
   ///
   /// In en, this message translates to:
   /// **'{count} days left'**
   String subscriptionsDaysLeft(Object count);
 
-  /// No description provided for @subscriptionsPopular.
-  ///
-  /// In en, this message translates to:
-  /// **'POPULAR'**
-  String get subscriptionsPopular;
-
-  /// No description provided for @subscriptionsCurrent.
-  ///
-  /// In en, this message translates to:
-  /// **'CURRENT'**
-  String get subscriptionsCurrent;
-
-  /// No description provided for @subscriptionsPaymentBrowserMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Complete payment in your browser. Return here after payment.'**
-  String get subscriptionsPaymentBrowserMessage;
-
   /// No description provided for @subscriptionsFreeSuccess.
   ///
   /// In en, this message translates to:
   /// **'Free plan activated successfully!'**
   String get subscriptionsFreeSuccess;
-
-  /// No description provided for @subscriptionsPaymentBrowserError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not open browser for payment'**
-  String get subscriptionsPaymentBrowserError;
-
-  /// No description provided for @subscriptionsPaymentError.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment error: {error}'**
-  String subscriptionsPaymentError(Object error);
 
   /// No description provided for @subscriptionsExpiresOn.
   ///
@@ -3430,12 +2836,6 @@ abstract class AppLocalizations {
   /// **'Manage'**
   String get subscriptionsManage;
 
-  /// No description provided for @subscriptionsUpgrade.
-  ///
-  /// In en, this message translates to:
-  /// **'Upgrade'**
-  String get subscriptionsUpgrade;
-
   /// No description provided for @subscriptionsUpgradeOff.
   ///
   /// In en, this message translates to:
@@ -3466,24 +2866,6 @@ abstract class AppLocalizations {
   /// **'VIP Access'**
   String get subscriptionsVipAccess;
 
-  /// No description provided for @notificationsDeleteTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete Notification'**
-  String get notificationsDeleteTitle;
-
-  /// No description provided for @notificationsDeleteConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove this notification?'**
-  String get notificationsDeleteConfirm;
-
-  /// No description provided for @notificationsDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete'**
-  String get notificationsDelete;
-
   /// No description provided for @notificationsEmpty.
   ///
   /// In en, this message translates to:
@@ -3507,42 +2889,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No payment history yet'**
   String get paymentsEmpty;
-
-  /// No description provided for @paymentsTransactionId.
-  ///
-  /// In en, this message translates to:
-  /// **'Transaction ID'**
-  String get paymentsTransactionId;
-
-  /// No description provided for @paymentsAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount'**
-  String get paymentsAmount;
-
-  /// No description provided for @paymentsStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'Status'**
-  String get paymentsStatus;
-
-  /// No description provided for @paymentsDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Date'**
-  String get paymentsDate;
-
-  /// No description provided for @paymentsPlan.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan'**
-  String get paymentsPlan;
-
-  /// No description provided for @paymentsMethod.
-  ///
-  /// In en, this message translates to:
-  /// **'Method'**
-  String get paymentsMethod;
 
   /// No description provided for @paymentsRef.
   ///
@@ -3585,12 +2931,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try Again'**
   String get messageRetry;
-
-  /// No description provided for @messageGoBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Go Back'**
-  String get messageGoBack;
 
   /// No description provided for @messageDismiss.
   ///
@@ -3718,12 +3058,6 @@ abstract class AppLocalizations {
   /// **'Error Loading Listings'**
   String get errorLoadingListings;
 
-  /// No description provided for @errorLoadingProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Error Loading Profile'**
-  String get errorLoadingProfile;
-
   /// No description provided for @errorLoadingPayments.
   ///
   /// In en, this message translates to:
@@ -3760,23 +3094,11 @@ abstract class AppLocalizations {
   /// **'Subscription Error'**
   String get errorSubscription;
 
-  /// No description provided for @errorSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search Error'**
-  String get errorSearch;
-
   /// No description provided for @errorJoinCall.
   ///
   /// In en, this message translates to:
   /// **'Failed to join call: {error}'**
   String errorJoinCall(Object error);
-
-  /// No description provided for @subscriptionPaymentNotVerified.
-  ///
-  /// In en, this message translates to:
-  /// **'Your payment could not be verified.'**
-  String get subscriptionPaymentNotVerified;
 
   /// No description provided for @subscriptionPaymentSuccess.
   ///
@@ -3988,12 +3310,6 @@ abstract class AppLocalizations {
   /// **'Ownership proof is required for cooperative properties'**
   String get listingErrorOwnershipProofRequired;
 
-  /// No description provided for @listingErrorLeaseContractRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Lease contract is required for lease hold properties'**
-  String get listingErrorLeaseContractRequired;
-
   /// No description provided for @listingErrorTermsRequired.
   ///
   /// In en, this message translates to:
@@ -4018,35 +3334,11 @@ abstract class AppLocalizations {
   /// **'Just now'**
   String get notificationJustNow;
 
-  /// No description provided for @messageConversationId.
-  ///
-  /// In en, this message translates to:
-  /// **'Conversation #{id}'**
-  String messageConversationId(Object id);
-
-  /// No description provided for @messageDirectChat.
-  ///
-  /// In en, this message translates to:
-  /// **'Direct Chat'**
-  String get messageDirectChat;
-
-  /// No description provided for @listingPriceUnder5M.
-  ///
-  /// In en, this message translates to:
-  /// **'Under 5M'**
-  String get listingPriceUnder5M;
-
   /// No description provided for @listingUpgradeToFeature.
   ///
   /// In en, this message translates to:
   /// **'Upgrade to Feature'**
   String get listingUpgradeToFeature;
-
-  /// No description provided for @listingUpgradeToFeatureSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Your current plan doesn\'t include featured listings. Upgrade to a supported plan to feature your listings.'**
-  String get listingUpgradeToFeatureSubtitle;
 
   /// No description provided for @listingUpgradeToVip.
   ///
@@ -4054,35 +3346,17 @@ abstract class AppLocalizations {
   /// **'Upgrade to VIP'**
   String get listingUpgradeToVip;
 
-  /// No description provided for @listingUpgradeToVipSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Your current plan doesn\'t include VIP listings. Upgrade to a supported plan to mark listings as VIP.'**
-  String get listingUpgradeToVipSubtitle;
-
   /// No description provided for @subscriptionRequiredFeatureSubtitle.
   ///
   /// In en, this message translates to:
   /// **'You need an active subscription with featured listing access to feature this listing.'**
   String get subscriptionRequiredFeatureSubtitle;
 
-  /// No description provided for @subscriptionRequiredVipSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'You need an active subscription with VIP listing access to mark this listing as VIP.'**
-  String get subscriptionRequiredVipSubtitle;
-
   /// No description provided for @errorConnection.
   ///
   /// In en, this message translates to:
   /// **'Connection Error'**
   String get errorConnection;
-
-  /// No description provided for @errorCheckSubscription.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not check your subscription status. Please try again.'**
-  String get errorCheckSubscription;
 
   /// No description provided for @commonBrowseProperties.
   ///
@@ -4150,30 +3424,6 @@ abstract class AppLocalizations {
   /// **'Pending'**
   String get statusPending;
 
-  /// No description provided for @statusFrozen.
-  ///
-  /// In en, this message translates to:
-  /// **'Frozen'**
-  String get statusFrozen;
-
-  /// No description provided for @statusRejected.
-  ///
-  /// In en, this message translates to:
-  /// **'Rejected'**
-  String get statusRejected;
-
-  /// No description provided for @statusSold.
-  ///
-  /// In en, this message translates to:
-  /// **'Sold'**
-  String get statusSold;
-
-  /// No description provided for @statusRented.
-  ///
-  /// In en, this message translates to:
-  /// **'Rented'**
-  String get statusRented;
-
   /// No description provided for @statusSuccess.
   ///
   /// In en, this message translates to:
@@ -4209,6 +3459,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back Online'**
   String get connectivityOnline;
+
+  /// No description provided for @networkErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Internet Connection'**
+  String get networkErrorTitle;
+
+  /// No description provided for @networkErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection and try again.'**
+  String get networkErrorMessage;
 
   /// No description provided for @markAsVipTitle.
   ///
