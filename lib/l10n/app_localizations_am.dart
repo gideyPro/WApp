@@ -66,7 +66,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get navMessages => 'መልእክቶች';
 
   @override
-  String get navSettings => 'ቅንብሮች';
+  String get navSettings => 'የኔ አካውንት';
 
   @override
   String get homeLatestRecently => 'በቅርቡ የወጡ';
@@ -732,7 +732,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingNotTransferable => 'ሊተላለፍ የማይችል';
 
   @override
-  String get listingTapToAdd => 'ለማከል ይንኩ';
+  String get listingTapToAdd => 'ለመጨመር ይንኩ';
 
   @override
   String listingImagesSelected(Object count) {

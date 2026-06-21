@@ -66,7 +66,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get navMessages => 'መልእኽታት';
 
   @override
-  String get navSettings => 'ቅንብራት';
+  String get navSettings => 'ናተይ ኣካውንት';
 
   @override
   String get homeLatestRecently => 'ኣብ ቀረባ ዝወፁ';
