@@ -24,6 +24,10 @@ class Conversation {
   final int? listingOwnerId;
   final bool isAssetChat;
 
+  // Group conversation support
+  final List<int> participantIds;
+  final bool isGroup;
+
   // Raw sender/receiver data for dynamic name computation
   final Map<String, dynamic>? _senderData;
   final Map<String, dynamic>? _receiverData;
@@ -49,6 +53,8 @@ class Conversation {
     this.listingDescription,
     this.listingOwnerId,
     this.isAssetChat = false,
+    this.participantIds = const [],
+    this.isGroup = false,
     Map<String, dynamic>? senderData,
     Map<String, dynamic>? receiverData,
     this.lastMessageSenderId,
@@ -99,6 +105,20 @@ class Conversation {
         ? Map<String, dynamic>.from(json['receiver'])
         : null;
 
+    // Parse participants list for group conversations
+    final List<int> participantIds = [];
+    bool isGroup = false;
+    if (json['participants'] is List) {
+      final parts = json['participants'] as List;
+      for (final p in parts) {
+        if (p is Map) {
+          final pid = _safeInt(p['id']);
+          if (pid != null) participantIds.add(pid);
+        }
+      }
+      isGroup = participantIds.isNotEmpty;
+    }
+
     // Determine other participant at parse time (if currentUserId is available)
     String? otherFirstName, otherLastName;
     int? otherId;
@@ -106,14 +126,16 @@ class Conversation {
       final sid = _safeInt(senderData?['id']);
       final rid = _safeInt(receiverData?['id']);
 
-      if (sid != null && sid != currentUserId && senderData != null) {
-        otherFirstName = senderData['first_name'];
-        otherLastName = senderData['last_name'];
-        otherId = sid;
-      } else if (rid != null && rid != currentUserId && receiverData != null) {
-        otherFirstName = receiverData['first_name'];
-        otherLastName = receiverData['last_name'];
-        otherId = rid;
+      if (!isGroup) {
+        if (sid != null && sid != currentUserId && senderData != null) {
+          otherFirstName = senderData['first_name'];
+          otherLastName = senderData['last_name'];
+          otherId = sid;
+        } else if (rid != null && rid != currentUserId && receiverData != null) {
+          otherFirstName = receiverData['first_name'];
+          otherLastName = receiverData['last_name'];
+          otherId = rid;
+        }
       }
     }
 
@@ -147,6 +169,8 @@ class Conversation {
       listingDescription: listingDescription,
       listingOwnerId: listingOwnerId,
       isAssetChat: isAssetChat,
+      participantIds: participantIds,
+      isGroup: isGroup,
       senderData: senderData,
       receiverData: receiverData,
       lastMessageSenderId: lastMsgSenderId,
@@ -164,6 +188,13 @@ class Conversation {
   }
 
   String getDisplayTitle(int currentUserId) {
+    // For group conversations, show listing title or subject
+    if (isGroup) {
+      if (subject != null && subject!.isNotEmpty) return subject!;
+      if (listingTitle != null && listingTitle!.isNotEmpty) return listingTitle!;
+      return 'Interest Group';
+    }
+
     // First try pre-computed name (if available from parse time)
     if (otherParticipantFirstName != null) {
       final full = [otherParticipantFirstName, otherParticipantLastName]
@@ -187,6 +218,9 @@ class Conversation {
   }
 
   String getInitials(int currentUserId) {
+    // Show generic initials for group conversations
+    if (isGroup) return 'GR';
+
     // First try pre-computed name
     if (otherParticipantFirstName != null &&
         otherParticipantFirstName!.isNotEmpty) {
@@ -215,7 +249,7 @@ class Conversation {
   }
 
   Map<String, dynamic>? _getOtherParticipantData(int currentUserId) {
-    if (currentUserId <= 0) return null;
+    if (currentUserId <= 0 || isGroup) return null;
     final sid = _safeInt(_senderData?['id']);
     final rid = _safeInt(_receiverData?['id']);
 
@@ -233,12 +267,14 @@ class Conversation {
   }
 
   int? getOtherParticipantId(int currentUserId) {
+    if (isGroup) return null;
     if (senderId == currentUserId) return receiverId;
     if (receiverId == currentUserId) return senderId;
     return null;
   }
 
   String get displayName {
+    if (isGroup) return listingTitle ?? 'Interest Group';
     if (listingTitle != null && listingTitle!.isNotEmpty) {
       return listingTitle!;
     }
@@ -250,6 +286,7 @@ class Conversation {
   }
 
   String get displayInitials {
+    if (isGroup) return 'GR';
     final first = otherParticipantFirstName ?? '';
     final last = otherParticipantLastName ?? '';
     if (first.isNotEmpty && last.isNotEmpty) {
@@ -276,7 +313,9 @@ class Conversation {
   }
 
   bool matchesParticipant(int userId) {
-    return senderId == userId || receiverId == userId;
+    if (senderId == userId || receiverId == userId) return true;
+    if (participantIds.contains(userId)) return true;
+    return false;
   }
 }
 
