@@ -590,10 +590,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingDebtAmount => 'መጠንን ዕዳ';
 
   @override
-  String get listingSelectHolding => 'ዓይነት ይዞታ ይምረጡ';
+  String get listingSelectHolding => 'ዓይነት ትሕዝቶ ይምረፁ';
 
   @override
-  String get listingSelectUse => 'ዓይነት ኣገልግሎት ይምረጡ';
+  String get listingSelectUse => 'ዓይነት ግልጋሎት ይምረፁ';
 
   @override
   String get listingRegion => 'ክልል';
@@ -669,7 +669,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingHouseType => 'ዓይነት ገዛ';
 
   @override
-  String get listingSelectHouseType => 'ዓይነት ገዛ ይምረጡ';
+  String get listingSelectHouseType => 'ዓይነት ገዛ ይምረፁ';
 
   @override
   String get listingAmenities => 'መሰረታዊ ግልጋሎት';
@@ -764,7 +764,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingNoOptions => 'ዝኾነ ኣማራፂ የለን';
 
   @override
-  String get listingSelect => 'ይምረጡ';
+  String get listingSelect => 'ይምረፁ';
 
   @override
   String get listingFreeHold => 'ነባር ትሕዝቶ';
@@ -1278,7 +1278,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingDeleteConfirmMessage => 'ነዚ ንብረት ክትሰርዙ ርግፀኛ ዲኹም?';
 
   @override
-  String get languageTitle => 'ቋንቋ ይምረጡ';
+  String get languageTitle => 'ቋንቋ ይምረፁ';
 
   @override
   String get languageEnglish => 'English (እንግሊዝኛ)';
@@ -1407,14 +1407,14 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsSubscribe => 'ሕጂ ተመዝገብ';
 
   @override
-  String get subscriptionsSelectPlan => 'ፓኬጅ ይምረጡ';
+  String get subscriptionsSelectPlan => 'ፓኬጅ ይምረፁ';
 
   @override
-  String get subscriptionsChoosePlan => 'ፓኬጅኹም ይምረጡ';
+  String get subscriptionsChoosePlan => 'ፓኬጅኹም ይምረፁ';
 
   @override
   String get subscriptionsSelectPlanSubtitle =>
-      'ንዓኹም ዝበቅዕ ፓኬጅ ይምረጡ። ኣብ ዝኾነ እዋን ከተዕብይዎ ትኽእሉ ኢኹም።';
+      'ንዓኹም ዝበቅዕ ፓኬጅ ይምረፁ። ኣብ ዝኾነ እዋን ከተዕብይዎ ትኽእሉ ኢኹም።';
 
   @override
   String get subscriptionsListings => 'ንብረታት';
@@ -1456,7 +1456,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsOrders => 'ትእዛዛት';
 
   @override
-  String get subscriptionsContactViews => 'ናይ ርክብ ምርኣይ';
+  String get subscriptionsContactViews => 'ናይ ሸያጢ ስልኪ ምርኣይ';
 
   @override
   String get subscriptionsManage => 'ኣመሓዳሪ';
@@ -1475,10 +1475,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsPaymentPending => 'ክፍሊት ተላኢኹ። ምስተረጋገፀ ክንሕብረኩም ኢና።';
 
   @override
-  String get subscriptionsPoweredByChapa => 'ክፍሊታት ብቻፓ ብውሑስ ኣገባብ ይካየዱ';
+  String get subscriptionsPoweredByChapa => 'ክፍሊታት ብቻፓ ብውሑስ ኣገምብፃሕባብ ይካየዱ';
 
   @override
-  String get subscriptionsVipAccess => 'ናይ VIP ምብፃሕ';
+  String get subscriptionsVipAccess => 'VIP ንብረት ምርኣይ';
 
   @override
   String get notificationsEmpty => 'ምንም መጠንቀቕታ የለን';
@@ -1559,7 +1559,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingFeatureNow => 'ሕጂ ፈሊኻ ኣውፅእ';
 
   @override
-  String get listingViewPlans => 'ፓኬጃት ርኣዩ';
+  String get listingViewPlans => 'ፓኬጅ ኣመሓይ';
 
   @override
   String get listingFeatureThis => 'ነዚ ንብረት ፈሊኻ ኣውፅእ';
@@ -1756,7 +1756,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get subscriptionTechnicalFailureSubtitle =>
-      'መክፈሊ መንገዲ ክርከብ ኣይተኻእለን። በጃኹም ርክብኩም ኣረጋግፁ።';
+      'መክፈሊ መንገዲምብፃሕ ክርከብ ኣይተኻእለን። በጃኹም ርክብኩም ኣረጋግፁ።';
 
   @override
   String messagesWith(Object name) {
