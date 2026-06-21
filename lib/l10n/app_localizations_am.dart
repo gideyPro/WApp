@@ -732,7 +732,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingNotTransferable => 'ሊተላለፍ የማይችል';
 
   @override
-  String get listingTapToAdd => 'ምስል ለመጨመር ይንኩ';
+  String get listingTapToAdd => 'ለማከል ይንኩ';
 
   @override
   String listingImagesSelected(Object count) {

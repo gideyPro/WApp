@@ -233,7 +233,7 @@
   "listingIsTransferable": "Transferable",
   "listingTransferable": "Transferable",
   "listingNotTransferable": "Not Transferable",
-  "listingTapToAdd": "Tap to add images",
+  "listingTapToAdd": "Tap to add",
   "listingImagesSelected": "{count} image(s) selected",
   "listingBrowseFile": "Browse File",
   "listingChangeFile": "Change: {name}",

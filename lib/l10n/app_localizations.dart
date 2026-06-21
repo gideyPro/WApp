@@ -1471,7 +1471,7 @@ abstract class AppLocalizations {
   /// No description provided for @listingTapToAdd.
   ///
   /// In en, this message translates to:
-  /// **'Tap to add images'**
+  /// **'Tap to add'**
   String get listingTapToAdd;
 
   /// No description provided for @listingImagesSelected.

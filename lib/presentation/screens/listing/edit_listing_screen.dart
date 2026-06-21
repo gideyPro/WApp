@@ -42,17 +42,20 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
     final localeCode = ref.read(localeProvider).locale?.languageCode ?? 'en';
     final useLocalized = localeCode != 'en';
 
-    final nextEditAllowed = (listing.updatedAt ?? listing.createdAt).add(const Duration(days: 14));
-    if (DateTime.now().isBefore(nextEditAllowed)) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.listingEditCooldownActive)),
-        );
-        Navigator.of(context).pop();
-      });
-      return;
+    // Skip cooldown if listing was rejected (user needs to fix and resubmit)
+    if (listing.status != ListingStatus.rejected) {
+      final nextEditAllowed = (listing.updatedAt ?? listing.createdAt).add(const Duration(days: 14));
+      if (DateTime.now().isBefore(nextEditAllowed)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final l10n = AppLocalizations.of(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.listingEditCooldownActive)),
+          );
+          Navigator.of(context).pop();
+        });
+        return;
+      }
     }
 
     _formData = ListingFormData(

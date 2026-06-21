@@ -737,7 +737,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingNotTransferable => 'Not Transferable';
 
   @override
-  String get listingTapToAdd => 'Tap to add images';
+  String get listingTapToAdd => 'Tap to add';
 
   @override
   String listingImagesSelected(Object count) {

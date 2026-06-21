@@ -732,7 +732,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingNotTransferable => 'ክመሓላለፍ ዘይኽእል';
 
   @override
-  String get listingTapToAdd => 'ስእሊ ንምውሳኽ ጠውቕ';
+  String get listingTapToAdd => 'ንምውሳኽ ጠውቕ';
 
   @override
   String listingImagesSelected(Object count) {
