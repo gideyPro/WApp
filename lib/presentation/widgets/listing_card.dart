@@ -8,7 +8,6 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../data/models/listing.dart';
-import '../../../data/models/subscription.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../presentation/providers/app_providers.dart';
 import 'common/wave_card.dart';
@@ -423,7 +422,7 @@ class PropertyListingCard extends ConsumerWidget {
     final cache = ref.watch(addressCacheProvider);
     
     final subState = ref.watch(subscriptionProvider);
-    final isRestricted = subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
+    final isRestricted = !subState.canSeeFullAddress;
 
     final location = listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
         listing?.address?.region ??
@@ -796,7 +795,7 @@ class FeaturedListingCard extends ConsumerWidget {
     final cache = ref.watch(addressCacheProvider);
     
     final subState = ref.watch(subscriptionProvider);
-    final isRestricted = subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
+    final isRestricted = !subState.canSeeFullAddress;
 
     return Row(
       children: [

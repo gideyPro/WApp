@@ -81,6 +81,7 @@ class SubscriptionServiceApi {
           hasPaidSubscription: data['has_paid_subscription'] ?? false,
           canSeeVideo: data['can_see_video'] ?? false,
           canSeeContact: data['can_see_contact'] ?? false,
+          canSeeFullAddress: data['can_see_full_address'] ?? false,
           contactViewsUsed: data['contact_views_used'] ?? 0,
           contactViewsRemaining: data['contact_views_remaining'] ?? 0,
         );
@@ -123,6 +124,7 @@ class SubscriptionServiceApi {
           hasPaidSubscription: data['has_paid_subscription'] ?? false,
           canSeeVideo: data['can_see_video'] ?? false,
           canSeeContact: data['can_see_contact'] ?? false,
+          canSeeFullAddress: data['can_see_full_address'] ?? false,
           contactViewsUsed: data['contact_views_used'] ?? 0,
           contactViewsRemaining: data['contact_views_remaining'] ?? 0,
         );
@@ -341,6 +343,7 @@ class FullSubscriptionData {
   final bool hasPaidSubscription;
   final bool canSeeVideo;
   final bool canSeeContact;
+  final bool canSeeFullAddress;
   final int contactViewsUsed;
   final int contactViewsRemaining;
 
@@ -356,6 +359,7 @@ class FullSubscriptionData {
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
     this.canSeeContact = false,
+    this.canSeeFullAddress = false,
     this.contactViewsUsed = 0,
     this.contactViewsRemaining = 0,
   });
@@ -384,6 +388,7 @@ class CurrentSubscriptionResponse {
   final bool hasPaidSubscription;
   final bool canSeeVideo;
   final bool canSeeContact;
+  final bool canSeeFullAddress;
   final int contactViewsUsed;
   final int contactViewsRemaining;
 
@@ -398,6 +403,7 @@ class CurrentSubscriptionResponse {
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
     this.canSeeContact = false,
+    this.canSeeFullAddress = false,
     this.contactViewsUsed = 0,
     this.contactViewsRemaining = 0,
   });

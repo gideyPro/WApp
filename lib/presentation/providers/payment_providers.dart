@@ -91,6 +91,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           hasPaidSubscription: data.hasPaidSubscription,
           canSeeVideo: data.canSeeVideo,
           canSeeContact: data.canSeeContact,
+          canSeeFullAddress: data.canSeeFullAddress,
           contactViewsUsed: data.contactViewsUsed,
           contactViewsRemaining: data.contactViewsRemaining,
         );
@@ -117,6 +118,7 @@ class SubscriptionState {
   final bool hasPaidSubscription;
   final bool canSeeVideo;
   final bool canSeeContact;
+  final bool canSeeFullAddress;
   final int contactViewsUsed;
   final int contactViewsRemaining;
   final String? errorMessage;
@@ -132,6 +134,7 @@ class SubscriptionState {
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
     this.canSeeContact = false,
+    this.canSeeFullAddress = false,
     this.contactViewsUsed = 0,
     this.contactViewsRemaining = 0,
     this.errorMessage,
@@ -148,6 +151,7 @@ class SubscriptionState {
         hasPaidSubscription = false,
         canSeeVideo = false,
         canSeeContact = false,
+        canSeeFullAddress = false,
         contactViewsUsed = 0,
         contactViewsRemaining = 0,
         errorMessage = null;
@@ -162,6 +166,7 @@ class SubscriptionState {
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
     this.canSeeContact = false,
+    this.canSeeFullAddress = false,
     this.contactViewsUsed = 0,
     this.contactViewsRemaining = 0,
   })  : isLoading = false,
@@ -178,6 +183,7 @@ class SubscriptionState {
     bool? hasPaidSubscription,
     bool? canSeeVideo,
     bool? canSeeContact,
+    bool? canSeeFullAddress,
     int? contactViewsUsed,
     int? contactViewsRemaining,
     String? errorMessage,
@@ -193,6 +199,7 @@ class SubscriptionState {
       hasPaidSubscription: hasPaidSubscription ?? this.hasPaidSubscription,
       canSeeVideo: canSeeVideo ?? this.canSeeVideo,
       canSeeContact: canSeeContact ?? this.canSeeContact,
+      canSeeFullAddress: canSeeFullAddress ?? this.canSeeFullAddress,
       contactViewsUsed: contactViewsUsed ?? this.contactViewsUsed,
       contactViewsRemaining: contactViewsRemaining ?? this.contactViewsRemaining,
       errorMessage: errorMessage ?? this.errorMessage,

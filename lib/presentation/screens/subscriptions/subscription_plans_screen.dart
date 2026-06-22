@@ -93,6 +93,36 @@ class _SubscriptionPlansScreenState
   @override
   Widget build(BuildContext context) {
     final subState = ref.watch(subscriptionProvider);
+    final settingsAsync = ref.watch(appSettingsProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
+
+    if (!subscriptionEnabled) {
+      return Scaffold(
+        appBar: WaveAppBar(
+          title: Text(AppLocalizations.of(context).subscriptionsTitle),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.info_outline, size: 64, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(height: 16),
+                Text(
+                  'Subscriptions are not required at this time.',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: WaveAppBar(

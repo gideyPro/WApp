@@ -4,7 +4,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing.dart';
-import '../../../../data/models/subscription.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/utils/ethiopian_date_helper.dart';
@@ -134,7 +133,7 @@ class ListingDetailSections extends ConsumerWidget {
     final cache = ref.watch(addressCacheProvider);
 
     final subState = ref.watch(subscriptionProvider);
-    final isRestricted = subState.subscription?.plan?.detailsAccess == DetailsAccess.discovery;
+    final isRestricted = !subState.canSeeFullAddress;
 
     final location = listing.address?.getLocalizedAddress(context, cache, isRestricted) ??
         l10n.listingUnknownLocation;

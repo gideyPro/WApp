@@ -472,7 +472,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     final settingsAsync = ref.watch(appSettingsProvider);
     final subscriptionEnabled = settingsAsync.maybeWhen(
       data: (data) => data['subscription_enabled'] == true,
-      orElse: () => true,
+      orElse: () => false,
     );
 
     // Loading state — wait for data before gating
