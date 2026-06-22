@@ -1459,7 +1459,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsContactViews => 'የእውቂያ እይታዎች';
 
   @override
-  String get subscriptionsManage => 'አስተዳድር';
+  String get subscriptionsManage => 'ቀይር';
 
   @override
   String subscriptionsUpgradeOff(Object percent) {

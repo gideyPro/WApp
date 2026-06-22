@@ -1475,7 +1475,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsPaymentPending => 'ክፍሊት ተላኢኹ። ምስተረጋገፀ ክንሕብረኩም ኢና።';
 
   @override
-  String get subscriptionsPoweredByChapa => 'ክፍሊታት ብቻፓ ብውሑስ ኣገምብፃሕባብ ይካየዱ';
+  String get subscriptionsPoweredByChapa => 'ክፍሊታት ብቻፓ ብውሑስ ኣገባብ ይካየዱ';
 
   @override
   String get subscriptionsVipAccess => 'VIP ንብረት ምርኣይ';

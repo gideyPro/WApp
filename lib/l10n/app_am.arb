@@ -458,7 +458,7 @@
   "subscriptionsNoPlansAvailable": "በአሁኑ ጊዜ ምንም ንቁ የምዝገባ ዕቅዶች አልተገኙም።",
   "subscriptionsOrders": "ትዕዛዞች",
   "subscriptionsContactViews": "የእውቂያ እይታዎች",
-  "subscriptionsManage": "አስተዳድር",
+  "subscriptionsManage": "ቀይር",
   "subscriptionsUpgradeOff": "{percent}% ቅናሽ",
   "subscriptionsPromoOff": "{percent}% ቅናሽ",
   "subscriptionsPaymentPending": "ክፍያው ተልኳል። ሲረጋገጥ እናሳውቅዎታለን።",
