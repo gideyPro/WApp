@@ -281,6 +281,11 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final settingsAsync = ref.watch(appSettingsProvider);
+    final rentalEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['rental_enabled'] == true,
+      orElse: () => false,
+    );
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
@@ -329,16 +334,18 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                           ? null
                           : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
                     ),
-                    const SizedBox(width: 12),
-                    _radioCard(
-                      label: l10n.listingForRent,
-                      icon: Icons.key_rounded,
-                      value: 'rental',
-                      groupValue: widget.formData.listingType,
-                      onChanged: widget.isEditMode
-                          ? null
-                          : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
-                    ),
+                    if (rentalEnabled) ...[
+                      const SizedBox(width: 12),
+                      _radioCard(
+                        label: l10n.listingForRent,
+                        icon: Icons.key_rounded,
+                        value: 'rental',
+                        groupValue: widget.formData.listingType,
+                        onChanged: widget.isEditMode
+                            ? null
+                            : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
+                      ),
+                    ],
                   ],
                 ),
                 if (widget.formData.listingType == 'rental') ...[
