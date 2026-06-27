@@ -646,11 +646,6 @@ List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
 
       // Safety
       _HelpArticle(
-        title: l10n.helpSafeStayTitle,
-        content: l10n.helpSafeStayContent,
-        category: l10n.helpCategorySafety,
-      ),
-      _HelpArticle(
         title: l10n.helpSafePrivacyTitle,
         content: l10n.helpSafePrivacyContent,
         category: l10n.helpCategorySafety,
@@ -658,11 +653,6 @@ List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
       _HelpArticle(
         title: l10n.helpSafeReportTitle,
         content: l10n.helpSafeReportContent,
-        category: l10n.helpCategorySafety,
-      ),
-      _HelpArticle(
-        title: l10n.helpSafeCallTitle,
-        content: l10n.helpSafeCallContent,
         category: l10n.helpCategorySafety,
       ),
     ];

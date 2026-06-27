@@ -293,10 +293,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get helpSafeStayTitle => 'ኣብ ዌቭማርት ድሕንነትኩም ከመይ ከምትሕልዉ';
 
   @override
-  String get helpSafeStayContent =>
-      'ንውሑስ ግብይታት ዝሕግዙ ነጥብታት:\n\n1. ንብረታት ንምርኣይ ኩሉ ግዘ ኣብ ህዝባዊ ቦታታት ተራኸቡ\n2. ናይ ባንኪ ሓበሬታኹም ንካልእ ሰብ ኣይትሃቡ\n3. ክፍሊት ቅድሚ ምፍፃምኩም ዋናነት እቲ ንብረት ኣረጋግፁ\n4. ንርክብ ኣብቲ መተግበሪያ ዘሎ መልእኽቲ ተጠቐሙ\n5. ዘጠራጥሩ ነገራት ንጉጅለ ሓገዝና ሓብሩ\n6. ነቲ ንብረት ከይረኣኹም ገንዘብ ኣይትስደዱ\n7. ንሽያጥ ንብረት ናይ ሕጊ ኪኢላ ምምካር ይምከር';
-
-  @override
   String get helpSafePrivacyTitle => 'ፖሊሲ ግላዊነት';
 
   @override
@@ -312,10 +308,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpSafeCallTitle => 'ምስ ዋናታትን ወከልትን ናይ ድምፂ ጥሪ';
-
-  @override
-  String get helpSafeCallContent =>
-      'ዋናታት ንብረትን ወከልትን ብቐጥታ ብመተግበሪ ኣቢሎም ክድውሉልኩም ይኽእሉ እዮም:\n\n1. ዝመፅእ ጥሪ ምስ በፅሐ ሽም ደዋይን ንብረቱን ዘርኢ ስክሪን ይርአ\n2. ነቲ ጥሪ ንምፅንባር \"ተቐበል\" ጠውቑ\n3. ነቲ ጥሪ ንምብራድ \"ኣይትቀበል\" ጠውቑ\n4. እቲ መተግበሪ ናይ ጥሪ ባህሪ ንምጥቃም ፍቓድ ማይክሮፎን ክሓትት እዩ\n\nናይ ድምፂ ጥሪታት ብምስጠራ ዝተሓለዉ እዮም። ጥሪ ንምቅባል ንጡፍ ናይ ኢንተርኔት ርክብ የድሊ።';
 
   @override
   String get profileVerificationKyc => 'KYC';

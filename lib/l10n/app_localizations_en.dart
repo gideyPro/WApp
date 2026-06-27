@@ -295,10 +295,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpSafeStayTitle => 'Staying safe on WaveMart';
 
   @override
-  String get helpSafeStayContent =>
-      'Tips for safe transactions:\n\n1. Always meet in public places for property viewings\n2. Never share personal financial information\n3. Verify property ownership before making payments\n4. Use the in-app messaging system for communication\n5. Report suspicious activity to our support team\n6. Do not send money without seeing the property\n7. Consider using a legal professional for property transactions';
-
-  @override
   String get helpSafePrivacyTitle => 'Privacy Policy';
 
   @override
@@ -314,10 +310,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpSafeCallTitle => 'Audio calls with owners and agents';
-
-  @override
-  String get helpSafeCallContent =>
-      'Property owners and agents can call you directly through the app for a real-time conversation:\n\n1. When you receive an incoming call, a screen will appear showing the caller\'s name and property\n2. Tap \"Accept\" to join the audio call\n3. Tap \"Decline\" to reject the call\n4. The app will request microphone permission to use the call feature\n\nAudio calls are encrypted and secure. You need an active internet connection to receive calls.';
 
   @override
   String get profileVerificationKyc => 'KYC';

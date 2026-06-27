@@ -293,10 +293,6 @@ class AppLocalizationsAm extends AppLocalizations {
   String get helpSafeStayTitle => 'በዌቭማርት ላይ ደህንነትዎን እንዴት እንደሚጠብቁ';
 
   @override
-  String get helpSafeStayContent =>
-      'ለደህንነቱ የተጠበቀ ግብይት ጠቃሚ ምክሮች:\n\n1. ንብረቶችን ለመጎብኘት ሁልጊዜ የሕዝብ ቦታዎች ላይ ይገናኙ\n2. የግል የባንክ መረጃዎን ለሌላ ሰው አይስጡ\n3. ክፍያ ከመፈፀምዎ በፊት የንብረቱን ባለቤትነት ያረጋግጡ\n4. ለመገናኛ በመተግበሪያው ውስጥ ያለውን የመልእክት ልውውጥ ይጠቀሙ\n5. አጠራጣሪ ነገሮችን ለእገዛ ቡድናችን ያሳውቁ\n6. ንብረቱን ሳያዩ ገንዘብ አይላኩ\n7. ለንብረት ሽያጭ የሕግ ባለሙያ ማማከር ይመከራል';
-
-  @override
   String get helpSafePrivacyTitle => 'የግላዊነት ፖሊሲ';
 
   @override
@@ -312,10 +308,6 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpSafeCallTitle => 'ከባለቤቶች እና ወኪሎች ጋር የድምፅ ጥሪ';
-
-  @override
-  String get helpSafeCallContent =>
-      'የንብረት ባለቤቶች እና ወኪሎች በቀጥታ በመተግበሪያው በኩል ሊደውሉልዎ ይችላሉ:\n\n1. የሚመጣ ጥሪ ሲደርስ የደዋዩን ስም እና ንብረት የሚያሳይ ስክሪን ይታያል\n2. ጥሪውን ለመቀላቀል \"ተቀበል\" ይንኩ\n3. ጥሪውን ውድቅ ለማድረግ \"አይቀበሉ\" ይንኩ\n4. መተግበሪያው የጥሪ ባህሪውን ለመጠቀም የማይክሮፎን ፈቃድ ይጠይቃል\n\nየድምፅ ጥሪዎች የተመሰጠሩ እና ደህንነታቸው የተጠበቀ ነው። ጥሪ ለመቀበል ንቁ የበይነመረብ ግንኙነት ያስፈልጋል።';
 
   @override
   String get profileVerificationKyc => 'KYC';
