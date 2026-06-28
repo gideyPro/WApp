@@ -240,14 +240,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpOrdManageContent =>
-      'When an administrator finds a property matching your request:\n\n1. You will receive a notification and a suggestion in your Order details\n2. Review the suggested property details and photos\n3. You can \"Accept\" the suggestion to express interest or \"Decline\" it\n4. Once accepted, you can proceed to contact the owner or agent\n\nYou can cancel your property request at any time once you have found what you need.';
+      'When an administrator finds a property matching your request:\n\n1. You will receive a notification and a suggestion in your Order details\n2. Review the suggested property details and photos\n3. You can \"Accept\" the suggestion to express interest or \"Decline\" it\n4. Once accepted, you can proceed to contact the owner or agent';
 
   @override
   String get helpPayPlansTitle => 'Membership & Subscription plans';
 
   @override
   String get helpPayPlansContent =>
-      'WaveMart offers tiered plans to suit different needs:\n\n- Free Plan: For casual users to browse and post limited listings\n- Basic Plan: For individuals with multiple properties or frequent searches\n- Premium Plan: For professional agents and developers, offering unlimited posts and Featured/VIP status for listings\n\nEach plan increases your visibility and the number of active listings you can maintain simultaneously.';
+      'Wavemart offers packages tailored to various needs:\nFor example, Starter – capable of showing about 60% of property information. This is ideal for beginners and conducting market research.\nBasic – includes all information along with features like viewing video walkthroughs, sending orders, and posting properties for sale.\nThe Professional package additionally includes options to connect with buyers through Wavemart facilitators, and offers sellers a \"Featured\" feature to boost their properties to the forefront.\n\nThe highest package is VIP, which includes full access to contact sellers directly without agents, as well as opportunities to view and buy exclusive VIP properties (properties hidden from regular users).';
 
   @override
   String get helpPayMakeTitle => 'How to pay for a subscription';
@@ -282,17 +282,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpKycHowContent =>
-      'To complete your identity verification:\n\n1. Go to Settings > KYC Verification\n2. Choose \"National ID\" or \"Passport\"\n3. Take a clear photo of the front and back of the document\n4. Take a clear selfie while holding the document next to your face\n5. Submit the documents\n\nOur team will review your submission within 48 hours. Ensure the text on your ID is perfectly readable in the photos.';
+      'To complete your identity verification:\n\n1. Go to Settings > KYC Verification\n2. Choose \"National ID\" or \"Passport\"\n3. Take a clear photo of the front and back of the document\n4. Take a clear selfie \n5. Submit the documents\n\nOur team will review your submission within 48 hours. Ensure the text on your ID is perfectly readable in the photos.';
 
   @override
   String get helpKycRejectTitle => 'Why was my KYC rejected?';
 
   @override
   String get helpKycRejectContent =>
-      'Common reasons for KYC rejection:\n\n1. Blurry or unreadable document photos\n2. Document is expired or invalid\n3. Selfie does not clearly show your face and document\n4. Document type does not match selection\n5. Cropped or incomplete document images\n\nTo resubmit:\n- Go to KYC Verification\n- Tap \"Resubmit Documents\"\n- Ensure all photos are clear and well-lit\n- Make sure the entire document is visible';
-
-  @override
-  String get helpSafeStayTitle => 'Staying safe on WaveMart';
+      'Common reasons for KYC rejection:\n\n1. Blurry or unreadable document photos\n2. Document is expired or invalid\n3. Selfie does not clearly show your face\n4. Document type does not match selection\n5. Cropped or incomplete document images\n\nTo resubmit:\n- Go to KYC Verification\n- Tap \"Resubmit Documents\"\n- Ensure all photos are clear and well-lit\n- Make sure the entire document is visible';
 
   @override
   String get helpSafePrivacyTitle => 'Privacy Policy';
@@ -307,9 +304,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get helpSafeReportContent =>
       'If you encounter any issues:\n\n1. Use the in-app Help Center to find solutions\n2. Contact support via email: support@wavemart.et\n3. Call our support line for urgent issues\n4. Report suspicious listings or users through the listing detail page\n\nWe aim to respond to all inquiries within 24 hours.';
-
-  @override
-  String get helpSafeCallTitle => 'Audio calls with owners and agents';
 
   @override
   String get profileVerificationKyc => 'KYC';
