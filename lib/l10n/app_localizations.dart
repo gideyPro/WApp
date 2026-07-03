@@ -2428,6 +2428,24 @@ abstract class AppLocalizations {
   /// **'Dark Mode'**
   String get settingsDarkMode;
 
+  /// No description provided for @settingsDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get settingsDeleteAccount;
+
+  /// No description provided for @settingsDeleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account? This action is permanent and cannot be undone. All your data, listings, and messages will be removed.'**
+  String get settingsDeleteAccountConfirm;
+
+  /// No description provided for @settingsDeleteAccountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted successfully'**
+  String get settingsDeleteAccountSuccess;
+
   /// No description provided for @listingEditTitle.
   ///
   /// In en, this message translates to:

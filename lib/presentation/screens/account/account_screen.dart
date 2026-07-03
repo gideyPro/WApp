@@ -463,6 +463,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                       title: '',
                       items: [
                         _MenuItemData(
+                          icon: Icons.delete_forever_outlined,
+                          title: l10n.settingsDeleteAccount,
+                          textColor: AppColors.error,
+                          onTap: () => _showDeleteAccountConfirmation(context, ref),
+                        ),
+                        _MenuItemData(
                           icon: Icons.logout,
                           title: l10n.authLogout,
                           textColor: AppColors.error,
@@ -663,6 +669,96 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         ),
                       ),
                       child: Text(l10n.authLogout),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showDeleteAccountConfirmation(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    showDialog(
+      context: context,
+      builder: (dialogContext) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.delete_forever_rounded, size: 32, color: AppColors.error),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.settingsDeleteAccount,
+                style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                l10n.settingsDeleteAccountConfirm,
+                style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        side: BorderSide(color: context.theme.divider),
+                        foregroundColor: context.theme.textPrimary,
+                      ),
+                      child: Text(l10n.commonCancel),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.pop(dialogContext);
+                        final response = await ref.read(profileServiceProvider).deleteAccount();
+                        if (response.success && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(l10n.settingsDeleteAccountSuccess)),
+                          );
+                          await ref.read(authStateProvider.notifier).logout();
+                          clearCachedProviders(ref);
+                          if (context.mounted) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
+                              (route) => false,
+                            );
+                          }
+                        } else if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(response.message.isNotEmpty ? response.message : l10n.commonError), backgroundColor: AppColors.error),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        backgroundColor: AppColors.error,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: Text(l10n.settingsDeleteAccount),
                     ),
                   ),
                 ],

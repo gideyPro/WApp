@@ -1254,6 +1254,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDarkMode => 'Dark Mode';
 
   @override
+  String get settingsDeleteAccount => 'Delete Account';
+
+  @override
+  String get settingsDeleteAccountConfirm =>
+      'Are you sure you want to delete your account? This action is permanent and cannot be undone. All your data, listings, and messages will be removed.';
+
+  @override
+  String get settingsDeleteAccountSuccess => 'Account deleted successfully';
+
+  @override
   String get listingEditTitle => 'Edit Listing';
 
   @override

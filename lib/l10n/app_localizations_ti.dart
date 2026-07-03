@@ -1245,6 +1245,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsDarkMode => 'ፀሊም ምስሊ';
 
   @override
+  String get settingsDeleteAccount => 'ኣካውንት ሰርዝ';
+
+  @override
+  String get settingsDeleteAccountConfirm =>
+      'ርግፀኛ ዲኹም ኣካውንትኩም ከተጥፍእዎ ትደልዩ? እዚ ምልሳስ ዘይብሉ ስጉምቲ እዩ። ኩሉ ሓበሬታኹም፣ ዝርዝራትኩምን መልእኽትታትኩምን ክወገድ እዩ።';
+
+  @override
+  String get settingsDeleteAccountSuccess => 'ኣካውንት ብትኽክል ተሰሪዙ';
+
+  @override
   String get listingEditTitle => 'ንብረት ኣዐሪ';
 
   @override

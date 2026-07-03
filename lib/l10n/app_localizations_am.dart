@@ -1245,6 +1245,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsDarkMode => 'ጨለማ ሁኔታ';
 
   @override
+  String get settingsDeleteAccount => 'አካውንት ሰርዝ';
+
+  @override
+  String get settingsDeleteAccountConfirm =>
+      'እርግጠኛ ነዎት አካውንትዎን መሰረዝ ይፈልጋሉ? ይህ እርምጃ ሊቀለበስ የማይችል ነው። ሁሉም ውሂብዎ፣ ዝርዝሮችዎ እና መልእክቶችዎ ይወገዳሉ።';
+
+  @override
+  String get settingsDeleteAccountSuccess => 'አካውንት በተሳካ ሁኔታ ተሰርዟል';
+
+  @override
   String get listingEditTitle => 'ንብረት ያስተካክሉ';
 
   @override
