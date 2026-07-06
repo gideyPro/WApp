@@ -39,7 +39,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Release APK
-        run: flutter build apk --release --target-platform android-arm64,android-arm --dart-define=GOOGLE_WEB_CLIENT_ID=573697335656-4rmtd6brd3t6jqkhphqbqmp1bs6ij5hg
+        run: flutter build apk --release --target-platform android-arm64,android-arm --dart-define=GOOGLE_WEB_CLIENT_ID=573697335656-4rmtd6brd3t6jqkhphqbqmp1bs6ij5hg.apps.googleusercontent.com
 
       - name: Upload APK to Artifacts
         uses: actions/upload-artifact@v4
