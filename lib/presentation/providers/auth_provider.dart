@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../data/services/auth_service.dart';
 import '../../data/services/fcm_service.dart';
 import '../../data/models/user.dart';
@@ -16,6 +17,11 @@ final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthService _authService;
   final Ref _ref;
+
+  static const String _googleWebClientId = String.fromEnvironment(
+    'GOOGLE_WEB_CLIENT_ID',
+    defaultValue: '',
+  );
 
   AuthNotifier(this._authService, this._ref) : super(AuthState.initial());
 
@@ -83,6 +89,40 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
     }
     return response;
+  }
+
+  Future<AuthResponse> loginWithGoogle() async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        serverClientId: _googleWebClientId,
+        scopes: ['email', 'profile'],
+      );
+
+      final GoogleSignInAccount? account = await googleSignIn.signIn();
+      if (account == null) {
+        state = state.copyWith(isLoading: false);
+        return const AuthResponse(success: false, message: 'Google Sign-In cancelled');
+      }
+
+      final GoogleSignInAuthentication auth = await account.authentication;
+      final String? idToken = auth.idToken;
+      if (idToken == null) {
+        state = state.copyWith(isLoading: false, errorMessage: 'Failed to get ID token');
+        return const AuthResponse(success: false, message: 'Failed to get ID token');
+      }
+
+      final response = await _authService.googleLogin(idToken: idToken);
+      if (response.success && response.user != null) {
+        state = AuthState.authenticated(response.user!);
+      } else {
+        state = state.copyWith(isLoading: false, errorMessage: response.message);
+      }
+      return response;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      return AuthResponse(success: false, message: e.toString());
+    }
   }
 
   /// Verify OTP

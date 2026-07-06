@@ -163,6 +163,58 @@ class AuthService {
     }
   }
 
+  Future<AuthResponse> googleLogin({required String idToken}) async {
+    try {
+      final response = await _apiClient.dio.post(
+        ApiConstants.googleLogin,
+        data: {'credential': idToken},
+      );
+
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data as Map;
+        final token = data['token'] ?? data['access_token'];
+
+        if (token == null &&
+            data['user'] == null &&
+            data['data'] == null) {
+          return AuthResponse(
+            success: false,
+            message: ApiEnvelope.extractMessage(data, 'Google Sign-In failed'),
+          );
+        }
+
+        if (token != null) {
+          await _apiClient.setAuthToken(token.toString());
+        }
+
+        User? user;
+        if (data['user'] != null) {
+          user = User.fromJson(data['user']);
+        } else if (data['data'] != null) {
+          user = User.fromJson(data['data']);
+        }
+
+        return AuthResponse(
+          success: true,
+          message: 'Login successful',
+          user: user,
+          token: token?.toString(),
+        );
+      }
+
+      return AuthResponse(
+        success: false,
+        message: ApiEnvelope.extractMessage(response.data, 'Google Sign-In failed'),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return AuthResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
   Future<void> logout() async {
     try {
       await _apiClient.dio.post(ApiConstants.logout);

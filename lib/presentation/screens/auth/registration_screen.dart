@@ -15,6 +15,7 @@ import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/otp_input_field.dart';
 import '../../widgets/common/auth_top_bar.dart';
 import '../../widgets/common/auth_background.dart';
+import '../../widgets/common/google_sign_in_button.dart';
 
 class RegistrationScreen extends ConsumerStatefulWidget {
   const RegistrationScreen({super.key});
@@ -207,6 +208,26 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           ),
                           const SizedBox(height: 16),
                           _buildLoginLink(),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Row(
+                              children: [
+                                Expanded(child: Divider()),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  child: Text(
+                                    'or',
+                                    style: TextStyle(
+                                      color: AppColors.stone400,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(child: Divider()),
+                              ],
+                            ),
+                          ),
+                          const GoogleSignInButton(),
                         ],
 
                         // Step 2: OTP Verification

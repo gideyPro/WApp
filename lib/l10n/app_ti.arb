@@ -559,9 +559,9 @@
   "statusSuccess": "ተዓዊቱ",
   "statusFailed": "ኣይተዓወተን",
   "statusRefunded": "ዝተመለሰ",
-  "connectivityOffline": "ናይ መረብ ርክብ የለን",
+  "connectivityOffline": "ናይ ኢንተርኔት ርክብ የለን",
   "connectivityConnecting": "ይራኸብ ኣሎ...",
-  "connectivityOnline": "መረብ ተመሊሱ",
+  "connectivityOnline": "ኢንተርኔት ተመሊሱ",
   "markAsVipTitle": "ከም VIP ምረፅ?",
   "markAsVip": "ከም VIP ምረፅ",
   "markAsVipMessage": "ንብረትኩም ካብ ተራ ተጠቀምቲ ክኽወልን ብ VIP ምልክት ክልለ እዩ።",
@@ -587,13 +587,13 @@
   "subscriptionPlanNotSupportedListing": "ናይ ሕጂ ፓኬጅኩም ንብረት ምልጣፍ ኣይፈቅድን።",
   "subscriptionPlanNotSupportedListingSubtitle": "በጃኹም ናብ ንብረት ዝርዝር ምፍጣር ዝድግፍ ፓኬጅ የመሓይሹ።",
   "subscriptionPlanNotSupportedOrder": "ናይ ሕጂ ፓኬጅኩም ትእዛዝ ምፍጣር ኣይድግፍን።",
-  "subscriptionPlanNotSupportedOrderSubtitle": "በጃኹም ትእዛዝ ምፍጣር ዝድግፍ ፓኬጅ የመሓይሹ።",
+  "subscriptionPlanNotSupportedOrderSubtitle": "በጃኹም ናብ ትእዛዝ ምፍጣር ዝድግፍ ፓኬጅ የመሓይሹ።",
   "commonTryAgain": "ደጊምካ ፈትን",
   "commonDismiss": "ዕፀው",
   "networkErrorTitle": "ናይ ኢንተርነት ርክብ የለን",
   "networkErrorMessage": "በጃኹም ናይ ኢንተርነት ርክብኩም ኣረጋግፁ እሞ ደጊምኩም ፈትኑ።",
   "statusFrozen": "ዝተኸልከለ",
   "statusRejected": "ተነፂጉ",
-  "statusSold": "ተሸይጡ",
-  "statusRented": "ተኸራይቱ"
+  "statusSold": "ዝተሸጠ",
+  "statusRented": "ዝተኻረየ"
 }
