@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
@@ -9,7 +10,6 @@ import '../home/home_screen.dart';
 import '../orders/orders_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../account/account_screen.dart';
-import '../listing/create_listing_screen.dart';
 import '../../../l10n/app_localizations.dart';
 
 class MainNavigationShell extends ConsumerStatefulWidget {
@@ -62,9 +62,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     setState(() => _isCreatingListing = true);
     try {
       if (mounted) {
-        await Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const CreateListingScreen()),
-        );
+        await context.push('/listings/create');
       }
     } finally {
       if (mounted) setState(() => _isCreatingListing = false);

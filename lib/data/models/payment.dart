@@ -1,4 +1,5 @@
 import 'user.dart';
+import '../../core/utils/type_utils.dart';
 import '../../l10n/app_localizations.dart';
 
 enum PaymentStatus { pending, success, failed, cancelled, refunded }
@@ -57,7 +58,7 @@ class Payment {
         orElse: () => PaymentType.subscription,
       ),
       relatedId: json['related_id'],
-      amount: _parseAmount(json['amount']),
+      amount: TypeUtils.safeDouble(json['amount']) ?? 0.0,
       currency: json['currency'] ?? 'ETB',
       status: _parseStatus(json['status']),
       paymentMethod: json['payment_method'],
@@ -92,15 +93,6 @@ class Payment {
       (e) => e.toString().split('.').last == s,
       orElse: () => PaymentStatus.pending,
     );
-  }
-
-  /// Parse amount from various types (String, num, double)
-  static double _parseAmount(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is double) return value;
-    if (value is num) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
   }
 
   Map<String, dynamic> toJson() {

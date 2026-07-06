@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:shimmer/shimmer.dart';
@@ -12,9 +13,7 @@ import '../../../../data/models/listing.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
-import '../auth/otp_login_screen.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../subscriptions/subscription_plans_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import 'widgets/listing_gallery.dart';
@@ -337,10 +336,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
               if (isSubscriptionGate)
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (_) => const SubscriptionPlansScreen()),
-                    );
+                    context.pushReplacement('/subscriptions');
                   },
                   icon: const Icon(Icons.star, size: 18),
                   label: Text(l10n.listingUpgradeNow),
@@ -466,9 +462,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     final authState = ref.read(authStateProvider);
     if (!authState.isAuthenticated) {
       if (mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
-        );
+        context.push('/login');
       }
       return;
     }
@@ -560,12 +554,7 @@ Shared from WaveMart - Your Trusted Property Marketplace
         : '';
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ListingDetailScreen(listingId: similar.id),
-          ),
-        );
+        context.pushReplacement('/listings/${similar.id}');
       },
       child: WaveCard(
         useLiquidGlass: true,

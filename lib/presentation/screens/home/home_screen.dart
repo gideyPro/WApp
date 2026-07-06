@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
@@ -12,11 +13,10 @@ import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/featured_listing_card.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
-import '../listing/listing_detail_screen.dart';
-import '../subscriptions/subscription_plans_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -98,9 +98,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           });
         }
       }
-    } catch (e) {
-      debugPrint('Error: $e');
-    }
+    } catch (_) {}
   }
 
   @override
@@ -575,7 +573,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   bool _isFavorite(int listingId) {
     final favState = ref.watch(favoritesProvider);
-    return favState.favorites.any((f) => f is Listing && f.id == listingId);
+    return favState.favorites.any((f) => f.id == listingId);
   }
 
   Future<void> _toggleFavorite(int listingId) async {
@@ -587,11 +585,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
 
   void _handleListingTap(Listing listing) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ListingDetailScreen(listingId: listing.id),
-      ),
-    );
+    context.push('/listings/${listing.id}');
   }
 
   @override
@@ -1255,11 +1249,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const SubscriptionPlansScreen(),
-                    ),
-                  );
+                  context.push('/subscriptions');
                 },
                 icon: const Icon(Icons.diamond, size: 18),
                 label: Text(l10n.vipTeaserCta),

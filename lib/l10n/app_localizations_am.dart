@@ -119,7 +119,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get helpNoResultsTitle => 'ምንም አልተገኘም';
 
   @override
-  String get helpNoResultsSubtitle => 'ሌላ ቃል ይሞክሩ ወይም ምድቦችን ይመልከቱ';
+  String get helpNoResultsSubtitle => 'ሌላ ቃል ይሞክሩ...';
 
   @override
   String get helpStillNeedHelp => 'ተጨማሪ እገዛ ይፈልጋሉ?';
@@ -155,7 +155,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get helpCategoryOrders => 'የንብረት ጥያቄዎች';
 
   @override
-  String get helpCategoryPayments => 'ክፍያዎች እና ምዝገባዎች';
+  String get helpCategoryPayments => 'ክፍያና ምዝገባዎች';
 
   @override
   String get helpCategoryKyc => 'የማንነት ማረጋገጫ (KYC)';
@@ -168,7 +168,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpAccCreateContent =>
-      'በዌቭማርት ላይ አካውንት ለመክፈት:\n\n1. መተግበሪያውን ይክፈቱ እና \"ይመዝገቡ\" የሚለውን ይንኩ\n2.ስምዎን፣ስልክ ቁጥርዎን፣ ኢሜይልዎን እና ሌሎች ዝርዝሮችን በማከል ያስገቡ።\n3. ባለ 6 አሃዝ ኮድ (OTP) ይላክልዎታል\n4. አካውንትዎን ለማረጋገጥ ኮዱን ያስገቡ\n\nአንዴ ከተመዘገቡ በኋላ ንብረቶችን ማየት፣ የራስዎን ንብረቶች መመዝገብ እና ከባለቤቶች ወይም ወኪሎች (Agents) ጋር መገናኘት ይችላሉ።';
+      'በዌቭማርት ላይ አካውንት ለመክፈት:\n\n1. መተግበሪያውን ይክፈቱ እና \"ተመዝገቡ\" የሚለውን ይንኩ\n2. ስምዎን፣ ስልክ ቁጥርዎን፣ ኢሜይልዎን እና ሌሎች ዝርዝሮችን በማከል ያስገቡ።\n3. ባለ 6 አሃዝ ኮድ (OTP) ይላክልዎታል\n4. አካውንትዎን ለማረጋገጥ ኮዱን ያስገቡ\n\nአንዴ ከተመዘገቡ በኋላ ንብረቶችን ማየት፣ የራስዎን ንብረቶች መመዝገብ እና ከባለቤቶች ወይም ወኪሎች (Agents) ጋር መገናኘት ይችላሉ።';
 
   @override
   String get helpAccFavTitle => 'የሚወዷቸውን ንብረቶች ማስተዳደር';
@@ -224,7 +224,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpListStatusContent =>
-      'እያንዳንዱ የንብረት ዝርዝር በርካታ ደረጃዎችን ያልፋል:\n\n- በመጠባበቅ ላይ: ዝርዝርዎ በግምገማ ቡድናችን እየተገመገመ ነው (ብዙውን ጊዜ በ24 ሰዓታት ውስጥ)\n- ንቁ: ዝርዝርዎ ለገዢዎች ይታያል\n- ውድቅ የተደረገ: ዝርዝሩ መመሪያችንን አላሟላም። ምክንያቱን ይመልከቱ እና እንደገና ያስገቡ\n- የተሸጠ/የተከራየ: ንብረቱ ተሽጧል ወይም ተከራይቷል\n- የቀዘቀዘ: ዝርዝሩ ለጊዜው ተደብቋል\n\nየዝርዝሮችዎን ሁኔታ ከአካውንት > የእኔ ንብረቶች ማየት ይችላሉ።';
+      'እያንዳንዱ የንብረት ዝርዝር በርካታ ደረጃዎችን ያልፋል:\n\n- በመጠባበቅ ላይ: ዝርዝርዎ በግምገማ ቡድናችን እየተገመገመ ነው (ብዙውን ጊዜ በ24 ሰዓታት ውስጥ)\n- ንቁ: ዝርዝርዎ ለገዢዎች ይታያል\n- ውድቅ የተደረገ: ዝርዝሩ መመሪያችንን አላሟላም። ምክንያቱን ይመልከቱ እና እንደገና ያስገቡ\n- የተሸጠ/የተከራየ: ንብረቱ ተሽጧል ወይም ተከራይቷል\n- የተከለከለ: ዝርዝሩ ለጊዜው ተደብቋል\n\nየዝርዝሮችዎን ሁኔታ ከአካውንት > የእኔ ንብረቶች ማየት ይችላሉ።';
 
   @override
   String get helpOrdCreateTitle => 'የንብረት ጥያቄዎች (ትዕዛዞች) ምንድን ናቸው?';
@@ -294,7 +294,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpSafePrivacyContent =>
-      'ዌቭማርት የእርስዎን ግላዊነት ያከብራል እንዲሁም መረጃዎን ይጠብቃል።\n\nእኛ የምንሰበስበው:\n- የአካውንት መረጃ (ስም፣ ስልክ፣ ኢሜይል)\n- እርስዎ የሚሰጡት የንብረት መረጃ\n- አገልግሎቱን ለማሻሻል የሚረዱ አጠቃቀሞች\n\nእኛ አናደርግም:\n- የእርስዎን መረጃ ለሌላ አንሸጥም\n- ያለ እርስዎ ፈቃድ መረጃዎን ለሶስተኛ ወገን አናጋራም\n- የክፍያ ዝርዝሮችዎን አናስቀምጥም\n\nለበለጠ መረጃ ድረ-ገፃችንን ይጎብኙ ወይም እኛን ያነጋግሩ።';
+      'ዌቭማርት የእርስዎን ግላዊነት ያከብራል እንዲሁም መረጃዎን ይጠብቃል።\n\nእኛ የምንሰበስበው:\n- የአካውንት መረጃ (ስም፣ ስልክ፣ ኢሜይል)\n- እርስዎ የሚሰጡት የንብረት መረጃ\n- አገልግሎቱን ለማሻሻል የሚረዱ አጠቃቀሞች\n\nእኛ ማናደርገው:\n- የእርስዎን መረጃ ለሌላ አንሸጥም\n- ያለ እርስዎ ፈቃድ መረጃዎን ለሶስተኛ ወገን አናጋራም\n- የክፍያ ዝርዝሮችዎን አናስቀምጥም\n\nለበለጠ መረጃ ድረ-ገፃችንን ይጎብኙ ወይም እኛን ያነጋግሩ።';
 
   @override
   String get helpSafeReportTitle => 'ችግርን ሪፖርት ማድረግ';
@@ -1207,7 +1207,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsSectionSupport => 'ድጋፍ';
 
   @override
-  String get settingsSubscriptionsSubtitle => 'ፓኬጅዎትን ይመልከቱ';
+  String get settingsSubscriptionsSubtitle => 'ፓኬጅዎን ይመልከቱ';
 
   @override
   String get settingsPaymentsSubtitle => 'የክፍያ ታሪክ';
@@ -1863,7 +1863,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get networkErrorMessage => 'እባክዎ የበይነመረብ ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።';
 
   @override
-  String get statusFrozen => 'የቀዘቀዘ';
+  String get statusFrozen => 'የተከለከለ';
 
   @override
   String get statusRejected => 'ውድቅ የተደረገ';

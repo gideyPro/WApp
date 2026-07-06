@@ -20,6 +20,9 @@ dependencies:
 
   # State Management
   flutter_riverpod: ^2.4.9
+  
+  # Navigation
+  go_router: ^14.8.0
 
   # Network
   dio: ^5.4.0

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
-import '../../screens/subscriptions/subscription_plans_screen.dart';
 
 class UpgradeCard extends StatelessWidget {
   final IconData icon;
@@ -110,11 +110,7 @@ class UpgradeCard extends StatelessWidget {
   void _defaultAction() {
     final context = navigatorKey.currentContext;
     if (context != null) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => const SubscriptionPlansScreen(),
-        ),
-      );
+      context.push('/subscriptions');
     }
   }
 }
@@ -194,11 +190,7 @@ class WaveFullPageUpgrade extends StatelessWidget {
   void _defaultAction() {
     final context = navigatorKey.currentContext;
     if (context != null) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => const SubscriptionPlansScreen(),
-        ),
-      );
+      context.push('/subscriptions');
     }
   }
 }

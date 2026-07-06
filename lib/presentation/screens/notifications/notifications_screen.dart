@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -9,11 +10,6 @@ import '../../../../data/models/notification.dart' as app;
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
-import '../listing/listing_detail_screen.dart';
-import '../orders/order_details_screen.dart';
-import '../payments/payment_detail_screen.dart';
-import '../payments/payment_history_screen.dart';
-import '../subscriptions/subscription_plans_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 
 /// Notifications Screen - Wired to notificationsProvider
@@ -152,9 +148,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         await ref
             .read(notificationsProvider.notifier)
             .markAsRead(notification.id);
-      } catch (e) {
-        debugPrint('Error: $e');
-      }
+      } catch (_) {}
     }
 
     if (!mounted) return;
@@ -177,12 +171,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 : null);
         if (orderId != null) {
           try {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) =>
-                    OrderDetailsScreen.fromNotification(orderId: orderId),
-              ),
-            );
+            context.push('/orders/$orderId');
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to open order: $e'), backgroundColor: AppColors.error));
           }
@@ -197,18 +186,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   ? (notification.data!['payment_id'] as num).toInt()
                   : null);
           if (paymentId != null) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) =>
-                    PaymentDetailScreen(paymentId: paymentId),
-              ),
-            );
+            context.push('/payments/$paymentId');
           } else {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const PaymentHistoryScreen(),
-              ),
-            );
+            context.push('/payments');
           }
         }
         break;
@@ -216,21 +196,13 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       case app.NotificationType.systemAnnouncement:
         break;
       case app.NotificationType.subscriptionExpired:
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const SubscriptionPlansScreen(),
-          ),
-        );
+        context.push('/subscriptions');
         break;
     }
   }
 
   void _navigateToListingDetail(int listingId) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ListingDetailScreen(listingId: listingId),
-      ),
-    );
+    context.push('/listings/$listingId');
   }
 
   Widget _buildSkeletonList() {

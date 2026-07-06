@@ -12,7 +12,6 @@ import 'presentation/providers/app_providers.dart';
 import 'presentation/providers/auth_provider.dart';
 import 'presentation/providers/theme_provider.dart';
 import 'presentation/providers/version_provider.dart';
-import 'presentation/screens/splash/splash_screen.dart';
 import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
 import 'core/constants/app_colors.dart';
@@ -23,6 +22,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart' as cache;
 import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'data/services/fcm_service.dart';
 import 'presentation/widgets/common/wave_connectivity_banner.dart';
+import 'core/router/app_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'firebase_options.dart';
@@ -152,13 +152,11 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
       });
     }
 
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      navigatorObservers: [routeObserver],
+    return MaterialApp.router(
       title: 'WaveMart',
       debugShowCheckedModeBanner: false,
       theme: getThemeData(themeMode),
-      home: const SplashScreen(),
+      routerConfig: goRouter,
       builder: (context, child) {
         if (child == null) {
           return const SizedBox.shrink();
@@ -195,9 +193,9 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        _TigrinyaMaterialLocalizationsDelegate(),
-        _TigrinyaWidgetsLocalizationsDelegate(),
-        _TigrinyaCupertinoLocalizationsDelegate(),
+        _TigrinyaFallbackDelegate<MaterialLocalizations>(GlobalMaterialLocalizations.delegate),
+        _TigrinyaFallbackDelegate<WidgetsLocalizations>(GlobalWidgetsLocalizations.delegate),
+        _TigrinyaFallbackDelegate<CupertinoLocalizations>(GlobalCupertinoLocalizations.delegate),
       ],
       supportedLocales: const [
         Locale('en'),
@@ -352,50 +350,16 @@ class _BlockingUpdateOverlay extends StatelessWidget {
   }
 }
 
-/// Fallback delegate to provide Amharic Material localizations for Tigrinya
-class _TigrinyaMaterialLocalizationsDelegate
-    extends LocalizationsDelegate<MaterialLocalizations> {
-  const _TigrinyaMaterialLocalizationsDelegate();
+class _TigrinyaFallbackDelegate<T> extends LocalizationsDelegate<T> {
+  final LocalizationsDelegate<T> source;
+  const _TigrinyaFallbackDelegate(this.source);
 
   @override
   bool isSupported(Locale locale) => locale.languageCode == 'ti';
 
   @override
-  Future<MaterialLocalizations> load(Locale locale) =>
-      GlobalMaterialLocalizations.delegate.load(const Locale('am'));
+  Future<T> load(Locale locale) => source.load(const Locale('am'));
 
   @override
-  bool shouldReload(_TigrinyaMaterialLocalizationsDelegate old) => false;
-}
-
-/// Fallback delegate to provide Amharic Widgets localizations for Tigrinya
-class _TigrinyaWidgetsLocalizationsDelegate
-    extends LocalizationsDelegate<WidgetsLocalizations> {
-  const _TigrinyaWidgetsLocalizationsDelegate();
-
-  @override
-  bool isSupported(Locale locale) => locale.languageCode == 'ti';
-
-  @override
-  Future<WidgetsLocalizations> load(Locale locale) =>
-      GlobalWidgetsLocalizations.delegate.load(const Locale('am'));
-
-  @override
-  bool shouldReload(_TigrinyaWidgetsLocalizationsDelegate old) => false;
-}
-
-/// Fallback delegate to provide Amharic Cupertino localizations for Tigrinya
-class _TigrinyaCupertinoLocalizationsDelegate
-    extends LocalizationsDelegate<CupertinoLocalizations> {
-  const _TigrinyaCupertinoLocalizationsDelegate();
-
-  @override
-  bool isSupported(Locale locale) => locale.languageCode == 'ti';
-
-  @override
-  Future<CupertinoLocalizations> load(Locale locale) =>
-      GlobalCupertinoLocalizations.delegate.load(const Locale('am'));
-
-  @override
-  bool shouldReload(_TigrinyaCupertinoLocalizationsDelegate old) => false;
+  bool shouldReload(_TigrinyaFallbackDelegate<T> old) => false;
 }

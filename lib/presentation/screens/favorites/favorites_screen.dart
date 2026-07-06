@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../listing/listing_detail_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 
@@ -44,11 +44,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
 
   void _handleListingTap(dynamic listing) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ListingDetailScreen(listingId: listing.id),
-      ),
-    );
+    context.push('/listings/${listing.id}');
   }
 
   @override

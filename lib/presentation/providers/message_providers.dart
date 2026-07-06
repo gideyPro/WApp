@@ -137,7 +137,7 @@ class ConversationsNotifier extends StateNotifier<ConversationsState> {
 
 class ConversationsState {
   final bool isLoading;
-  final List<dynamic> conversations;
+  final List<msg.Conversation> conversations;
   final int total;
   final String? errorMessage;
   const ConversationsState(
@@ -155,7 +155,7 @@ class ConversationsState {
         errorMessage = null;
   ConversationsState copyWith(
       {bool? isLoading,
-      List<dynamic>? conversations,
+      List<msg.Conversation>? conversations,
       int? total,
       String? errorMessage}) {
     return ConversationsState(
@@ -267,6 +267,16 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessagesState> {
       await loadMessages();
     }
     return response.success;
+  }
+
+  void pausePolling() {
+    _pollingTimer?.cancel();
+    _pollingTimer = null;
+  }
+
+  void resumePolling() {
+    _pollingTimer?.cancel();
+    _startPolling();
   }
 
   @override

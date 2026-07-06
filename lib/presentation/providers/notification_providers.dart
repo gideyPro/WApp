@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/notification.dart' as notif;
 import '../../data/services/notification_service.dart';
 import 'auth_provider.dart';
 
@@ -46,6 +47,16 @@ class UnreadNotifCountNotifier extends StateNotifier<int> {
     } catch (e) {
       // Handle error silently for background polling
     }
+  }
+
+  void pausePolling() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  void resumePolling() {
+    _timer?.cancel();
+    _startPolling();
   }
 
   @override
@@ -108,7 +119,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
 
 class NotificationState {
   final bool isLoading;
-  final List<dynamic> notifications;
+  final List<notif.Notification> notifications;
   final int total;
   final String? errorMessage;
   const NotificationState(
@@ -126,7 +137,7 @@ class NotificationState {
         errorMessage = null;
   NotificationState copyWith(
       {bool? isLoading,
-      List<dynamic>? notifications,
+      List<notif.Notification>? notifications,
       int? total,
       String? errorMessage}) {
     return NotificationState(

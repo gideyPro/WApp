@@ -16,9 +16,7 @@ final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
     if (response.statusCode == 200 && response.data is Map) {
       return ApiEnvelope.extractData(response.data);
     }
-  } catch (e) {
-    debugPrint('Error: $e');
-  }
+  } catch (_) {}
   return {'subscription_enabled': false};
 });
 
@@ -213,9 +211,7 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
         
         _ref.read(addressCacheProvider.notifier).state = cache;
       }
-    } catch (e) {
-      debugPrint('Error: $e');
-    }
+    } catch (_) {}
   }
 }
 

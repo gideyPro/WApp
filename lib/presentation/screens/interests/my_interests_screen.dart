@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -7,7 +8,6 @@ import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_card.dart';
-import '../listing/listing_detail_screen.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../data/models/listing.dart';
 import '../../widgets/listing_card.dart';
@@ -84,11 +84,7 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
 
   void _handleListingTap(int listingId) {
     if (listingId <= 0) return;
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ListingDetailScreen(listingId: listingId),
-      ),
-    );
+    context.push('/listings/$listingId');
   }
 
   @override
@@ -158,7 +154,7 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
         itemBuilder: (context, index) {
           final lead = state.interests[index];
           final listingJson = lead.listing;
-          final listing = listingJson != null ? Listing.fromJson(listingJson as Map<String, dynamic>) : null;
+          final listing = listingJson != null ? Listing.fromJson(listingJson) : null;
           final stage = lead.stage;
 
           return Padding(

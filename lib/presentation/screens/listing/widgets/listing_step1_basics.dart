@@ -169,7 +169,6 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         setState(() => _zones = zones);
       }
     } catch (e) {
-      debugPrint('Error: $e');
       if (mounted) setState(() => _zones = []);
     } finally {
       if (mounted) setState(() => _loadingZones = false);
@@ -205,7 +204,6 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         setState(() => _woredas = woredas);
       }
     } catch (e) {
-      debugPrint('Error: $e');
       if (mounted) setState(() => _woredas = []);
     } finally {
       if (mounted) setState(() => _loadingWoredas = false);
@@ -253,7 +251,6 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         setState(() => _kebeles = kebeles);
       }
     } catch (e) {
-      debugPrint('Error: $e');
       if (mounted) setState(() => _kebeles = []);
     } finally {
       if (mounted) setState(() => _loadingKebeles = false);

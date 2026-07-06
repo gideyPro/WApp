@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -12,7 +13,6 @@ import '../../../widgets/common/wave_liquid_glass.dart';
 import '../../../widgets/video/video_player_widget.dart';
 import '../../../providers/app_providers.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../video/full_screen_video_screen.dart';
 
 class ListingDetailSections extends ConsumerWidget {
   final Listing listing;
@@ -691,11 +691,7 @@ class ListingDetailSections extends ConsumerWidget {
   Widget _buildViewOriginalLink(BuildContext context, AppLocalizations l10n, String originalUrl) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => FullScreenVideoScreen(videoUrl: originalUrl),
-          ),
-        );
+        context.push('/video', extra: originalUrl);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),

@@ -44,6 +44,7 @@ class ConnectivityNotifier extends StateNotifier<ConnectivityStatus> {
   final Ref _ref;
   StreamSubscription? _subscription;
   bool _wasOffline = false;
+  Timer? _healTimer;
 
   ConnectivityNotifier(this._ref) : super(ConnectivityStatus.online) {
     _init();
@@ -65,21 +66,23 @@ class ConnectivityNotifier extends StateNotifier<ConnectivityStatus> {
   }
 
   void _triggerAutoHealing() {
-    // Standard industry practice: auto-refresh active data when connection returns
-    final authState = _ref.read(authStateProvider);
-    if (authState.isAuthenticated) {
-      // Silent refresh of core data
-      _ref.read(unreadCountProvider.notifier).refresh();
-      _ref.read(unreadMessagesCountProvider.notifier).refresh();
-      _ref.read(conversationsProvider.notifier).loadConversations();
-      _ref.read(notificationsProvider.notifier).loadNotifications();
-      _ref.read(kycStatusProvider.notifier).loadKycStatus();
-      _ref.read(subscriptionProvider.notifier).refresh();
-    }
+    _healTimer?.cancel();
+    _healTimer = Timer(const Duration(milliseconds: 500), () {
+      final authState = _ref.read(authStateProvider);
+      if (authState.isAuthenticated) {
+        _ref.read(unreadCountProvider.notifier).refresh();
+        _ref.read(unreadMessagesCountProvider.notifier).refresh();
+        _ref.read(conversationsProvider.notifier).loadConversations();
+        _ref.read(notificationsProvider.notifier).loadNotifications();
+        _ref.read(kycStatusProvider.notifier).loadKycStatus();
+        _ref.read(subscriptionProvider.notifier).refresh();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _healTimer?.cancel();
     _subscription?.cancel();
     super.dispose();
   }

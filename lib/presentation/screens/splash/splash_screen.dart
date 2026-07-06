@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
-import '../auth/otp_login_screen.dart';
-import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
 
@@ -72,22 +71,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     await minSplashTime;
     if (!mounted) return;
 
-    final Widget next = hasToken && ref.read(authStateProvider).isAuthenticated
-        ? const MainNavigationShell()
-        : const OtpLoginScreen();
+    final String nextRoute = hasToken && ref.read(authStateProvider).isAuthenticated
+        ? '/'
+        : '/login';
 
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => next,
-        transitionsBuilder: (_, animation, __, child) {
-          return FadeTransition(
-            opacity: CurvedAnimation(parent: animation, curve: Curves.easeInOut),
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 350),
-      ),
-    );
+    context.go(nextRoute);
   }
 
   @override

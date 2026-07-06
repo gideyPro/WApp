@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/constants/countries.dart';
@@ -13,8 +14,6 @@ import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
 import '../../widgets/common/otp_input_field.dart';
 import '../../widgets/common/auth_top_bar.dart';
-import 'registration_screen.dart';
-import '../navigation/main_navigation_shell.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class OtpLoginScreen extends ConsumerStatefulWidget {
@@ -349,11 +348,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const RegistrationScreen(),
-              ),
-            );
+            context.push('/register');
           },
           child: Text(
             l10n.authRegister,
@@ -567,9 +562,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         await ref.read(authStateProvider.notifier).login(_otpCode);
 
     if (mounted && response.success) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const MainNavigationShell()),
-      );
+      context.go('/');
     }
   }
 

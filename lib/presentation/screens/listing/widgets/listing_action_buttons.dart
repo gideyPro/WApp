@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -13,9 +14,6 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../data/services/lead_service.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../widgets/common/wave_liquid_glass.dart';
-import '../../auth/otp_login_screen.dart';
-import '../../subscriptions/subscription_plans_screen.dart';
-import '../edit_listing_screen.dart';
 import 'listing_contact_form.dart';
 
 class ListingActionButtons extends ConsumerStatefulWidget {
@@ -212,8 +210,8 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     onPressed: _isInterestLoading
                       ? null
                       : listing.interestBlocked
-                        ? () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()))
-                        : () => _submitInterest(listing.id),
+                    ? () => context.push('/subscriptions')
+                    : () => _submitInterest(listing.id),
                     icon: _isInterestLoading
                       ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                       : Icon(listing.interestBlocked ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
@@ -311,10 +309,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
   Future<void> _submitInterest(int listingId, [String? message]) async {
     final authState = ref.read(authStateProvider);
     if (!authState.isAuthenticated) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
-      );
+      context.push('/login');
       return;
     }
 
@@ -355,8 +350,9 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
   }
 
   Future<void> _editListing(Listing listing) async {
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => EditListingScreen(listing: listing)),
+    final result = await context.push<bool>(
+      '/listings/${listing.id}/edit',
+      extra: listing,
     );
     if (result == true && mounted) {
       ref.read(listingDetailProvider.notifier).refreshListing(listing.id);
@@ -481,9 +477,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     final subState = ref.read(subscriptionProvider);
     if (!subState.canFeatureListing) {
       if (mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-        );
+        context.push('/subscriptions');
       }
       return;
     }

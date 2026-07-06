@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/payment.dart';
 import '../../data/services/payment_service.dart';
 import '../../data/services/subscription_service.dart';
 import '../../data/models/subscription.dart';
@@ -30,7 +31,7 @@ class PaymentHistoryNotifier extends StateNotifier<PaymentHistoryState> {
 
 class PaymentHistoryState {
   final bool isLoading;
-  final List<dynamic> payments;
+  final List<Payment> payments;
   final int total;
   final String? errorMessage;
   const PaymentHistoryState(
@@ -48,7 +49,7 @@ class PaymentHistoryState {
         errorMessage = null;
   PaymentHistoryState copyWith(
       {bool? isLoading,
-      List<dynamic>? payments,
+      List<Payment>? payments,
       int? total,
       String? errorMessage}) {
     return PaymentHistoryState(

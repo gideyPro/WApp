@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,8 +10,6 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../widgets/status_helpers.dart';
 
-import 'create_order_screen.dart';
-import 'order_details_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
@@ -36,9 +35,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     setState(() => _isCreatingOrder = true);
     try {
       if (mounted) {
-        await Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const CreateOrderScreen()),
-        );
+        await context.push('/orders/create');
         if (mounted) ref.read(ordersProvider.notifier).loadOrders();
       }
     } finally {
@@ -120,11 +117,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             child: WaveGlass(
               child: InkWell(
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => OrderDetailsScreen(orderId: order.id),
-                    ),
-                  );
+                  context.push('/orders/${order.id}');
                 },
                 borderRadius: BorderRadius.circular(4),
                 child: Padding(

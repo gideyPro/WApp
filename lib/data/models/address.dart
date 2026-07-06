@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/utils/type_utils.dart';
 
 /// Address Model - Ethiopian hierarchical address system
 class Address {
@@ -32,7 +33,7 @@ class Address {
 
   factory Address.fromJson(Map<String, dynamic> json) {
     return Address(
-      id: _safeInt(json['id']),
+      id: TypeUtils.safeInt(json['id']),
       region: json['region'],
       zone: json['zone'],
       woreda: json['woreda'],
@@ -55,15 +56,6 @@ class Address {
           json['specific_location_amharic'] ??
           json['specific_location_tigrinya'],
     );
-  }
-
-  static int? _safeInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    if (value is bool) return value ? 1 : 0;
-    return null;
   }
 
   Map<String, dynamic> toJson() {

@@ -1,12 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/theme_provider.dart';
-import '../../screens/help/help_center_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'wave_liquid_glass.dart';
 
@@ -37,9 +37,7 @@ class AuthTopBar extends ConsumerWidget {
                 _showLanguageSelectionDialog(context, ref);
                 break;
               case 'help':
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
-                );
+                context.push('/help');
                 break;
               case 'theme':
                 ref.read(themeModeProvider.notifier).toggle();

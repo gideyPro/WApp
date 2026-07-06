@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../data/models/listing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/listing_card.dart';
-import '../listing/listing_detail_screen.dart';
-import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
-import '../subscriptions/subscription_plans_screen.dart';
-import 'edit_listing_screen.dart';
 
 class _TabState {
   List<Listing> listings = [];
@@ -174,10 +171,9 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error));
       return;
     }
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => EditListingScreen(listing: detail.listing!),
-      ),
+    final result = await context.push<bool>(
+      '/listings/${detail.listing!.id}/edit',
+      extra: detail.listing,
     );
     if (result == true && mounted) _loadTab(_currentTab);
   }
@@ -216,9 +212,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
   Future<void> _featureListing(Listing listing) async {
     final subState = ref.read(subscriptionProvider);
     if (!subState.canFeatureListing) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-      );
+      context.push('/subscriptions');
       return;
     }
 
@@ -269,10 +263,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () async {
-              final nav = Navigator.of(context);
-              final result = await nav.push(
-                MaterialPageRoute(builder: (_) => const CreateListingScreen()),
-              );
+              final result = await context.push<bool>('/listings/create');
               if (result == true && mounted) {
                 _loadTab(_currentTab);
               }
@@ -378,9 +369,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
                     isFullWidth: true,
                     onPressed: () async {
                       if (!mounted) return;
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const CreateListingScreen()),
-                      );
+                      context.push('/listings/create');
                     },
                   ),
                 ),
@@ -451,12 +440,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
                     ),
                   ),
               ],
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      ListingDetailScreen(listingId: listing.id),
-                ),
-              ),
+              onTap: () => context.push('/listings/${listing.id}'),
             ),
           );
         },

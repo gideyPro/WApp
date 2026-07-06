@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
@@ -11,16 +12,11 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
-import '../listing/listing_detail_screen.dart';
 import '../../../core/constants/app_spacing.dart';
 
 class OrderDetailsScreen extends ConsumerStatefulWidget {
   final int orderId;
   const OrderDetailsScreen({super.key, required this.orderId});
-
-  /// Named constructor for navigation from notification tap
-  static Widget fromNotification({required int orderId}) =>
-      OrderDetailsScreen(orderId: orderId);
 
   @override
   ConsumerState<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
@@ -412,12 +408,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               if (suggestion.isSuggestionPending)
                 OutlinedButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ListingDetailScreen(
-                            listingId: suggestion.listingId),
-                      ),
-                    );
+                    context.push('/listings/${suggestion.listingId}');
                   },
                   style: OutlinedButton.styleFrom(
                     padding:

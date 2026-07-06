@@ -1,36 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../core/utils/type_utils.dart';
+import '../../core/network/api_constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'address.dart';
 import 'image.dart';
-
-// Helper to safely parse doubles from strings or numbers
-double? _parseDouble(dynamic value) {
-  if (value == null) return null;
-  if (value is double) return value;
-  if (value is int) return value.toDouble();
-  if (value is String) return double.tryParse(value);
-  return null;
-}
-
-// Helper to safely parse ints from strings or numbers
-int? _safeInt(dynamic value, {int? defaultValue}) {
-  if (value == null) return defaultValue;
-  if (value is int) return value;
-  if (value is double) return value.toInt();
-  if (value is String) return int.tryParse(value) ?? defaultValue;
-  if (value is bool) return value ? 1 : 0;
-  return defaultValue;
-}
-
-// Helper to safely parse bools
-bool _safeBool(dynamic value, {bool defaultValue = false}) {
-  if (value == null) return defaultValue;
-  if (value is bool) return value;
-  if (value is int) return value != 0;
-  if (value is String) return value.toLowerCase() == 'true';
-  return defaultValue;
-}
 
 // Parse property type from backend (handles 'App\Models\House' or 'house')
 PropertyType _parsePropertyType(dynamic value) {
@@ -162,7 +136,7 @@ class Listing {
     if (link.startsWith('http')) return link;
     // Remove leading slash if present
     final cleanLink = link.startsWith('/') ? link.substring(1) : link;
-    return 'https://wavemart.et/storage/$cleanLink';
+    return '${ApiConstants.baseUrl}/storage/$cleanLink';
   }
 
   final String? sitePlanImageLink;
@@ -382,14 +356,14 @@ class Listing {
     }
 
     return Listing(
-      id: _safeInt(json['id'], defaultValue: 0)!,
-      userId: _safeInt(json['user_id']),
-      propertyId: _safeInt(json['property_id']),
+      id: TypeUtils.safeInt(json['id'], defaultValue: 0)!,
+      userId: TypeUtils.safeInt(json['user_id']),
+      propertyId: TypeUtils.safeInt(json['property_id']),
       propertyType: _parsePropertyType(json['property_type']),
       listingType: _parseListingType(json['listing_type']),
-      priceFixed: _parseDouble(json['price_fixed']),
-      priceMin: _parseDouble(json['price_min']),
-      priceMax: _parseDouble(json['price_max']),
+      priceFixed: TypeUtils.safeDouble(json['price_fixed']),
+      priceMin: TypeUtils.safeDouble(json['price_min']),
+      priceMax: TypeUtils.safeDouble(json['price_max']),
       rentalPeriodUnit: json['rental_period_unit'] != null
           ? RentalPeriod.values.firstWhere(
               (e) => e.toString().split('.').last == json['rental_period_unit'],
@@ -404,16 +378,16 @@ class Listing {
       featuredUntil: json['featured_until'] != null
           ? DateTime.parse(json['featured_until'])
           : null,
-      addressId: _safeInt(json['address_id']),
+      addressId: TypeUtils.safeInt(json['address_id']),
       specificLocation: json['specific_location'] ?? (property is Map ? property['specific_location'] : null),
       useType: json['use_type'] ?? (property is Map ? property['use_type'] : null),
       facingDirection: json['facing_direction'] ?? (property is Map ? property['facing_direction'] : null),
-      totalSquareMeters: _parseDouble(json['total_square_meters'] ?? json['area']) ??
-          (property is Map ? _parseDouble(property['total_square_meters'] ?? property['area']) : null),
-      frontAreaSqm: _parseDouble(json['front_area_sqm']) ?? (property is Map ? _parseDouble(property['front_area_sqm']) : null),
-      sideAreaSqm: _parseDouble(json['side_area_sqm']) ?? (property is Map ? _parseDouble(property['side_area_sqm']) : null),
-      hasDebtOrEncumbrance: _safeBool(json['has_debt_or_encumbrance']),
-      debtAmount: _parseDouble(json['debt_amount']),
+      totalSquareMeters: TypeUtils.safeDouble(json['total_square_meters'] ?? json['area']) ??
+          (property is Map ? TypeUtils.safeDouble(property['total_square_meters'] ?? property['area']) : null),
+      frontAreaSqm: TypeUtils.safeDouble(json['front_area_sqm']) ?? (property is Map ? TypeUtils.safeDouble(property['front_area_sqm']) : null),
+      sideAreaSqm: TypeUtils.safeDouble(json['side_area_sqm']) ?? (property is Map ? TypeUtils.safeDouble(property['side_area_sqm']) : null),
+      hasDebtOrEncumbrance: TypeUtils.safeBool(json['has_debt_or_encumbrance']),
+      debtAmount: TypeUtils.safeDouble(json['debt_amount']),
       debtEncumbranceFileLink: json['debt_encumbrance_file_link'] ?? (property is Map ? property['debt_encumbrance_file_link'] : null),
       priceRevisionPossible: json['price_revision_possible'] ?? false,
       videoLink: json['video_link'] ?? (property is Map ? property['video_link'] : null),
@@ -436,7 +410,7 @@ class Listing {
       holdingType: json['holding_type'] ?? (property is Map ? property['holding_type'] : null),
 
       // Holding Details from nested objects (API show method with relation)
-      taxPaidUntilYear: _safeInt(json['tax_paid_until_year'] ??
+      taxPaidUntilYear: TypeUtils.safeInt(json['tax_paid_until_year'] ??
           (json['private_holding_detail'] is Map
               ? json['private_holding_detail']['tax_paid_until_year']
               : null)),
@@ -446,14 +420,14 @@ class Listing {
               : null),
 
       // Lease Hold details
-      leasedYear: _safeInt(property is Map ? property['leased_year'] : null) ??
-          _safeInt(json['leased_year']) ??
-          _safeInt(json['lease_holding_detail'] is Map
+      leasedYear: TypeUtils.safeInt(property is Map ? property['leased_year'] : null) ??
+          TypeUtils.safeInt(json['leased_year']) ??
+          TypeUtils.safeInt(json['lease_holding_detail'] is Map
               ? json['lease_holding_detail']['leased_year']
               : null),
-      leasePricePerSqm: _parseDouble(property is Map ? (property['lease_price_per_sqm'] ?? property['price_per_sqm']) : null) ??
-          _parseDouble(json['lease_price_per_sqm'] ?? json['price_per_sqm']) ??
-          _parseDouble(json['lease_holding_detail'] is Map
+      leasePricePerSqm: TypeUtils.safeDouble(property is Map ? (property['lease_price_per_sqm'] ?? property['price_per_sqm']) : null) ??
+          TypeUtils.safeDouble(json['lease_price_per_sqm'] ?? json['price_per_sqm']) ??
+          TypeUtils.safeDouble(json['lease_holding_detail'] is Map
               ? (json['lease_holding_detail']['lease_price_per_sqm'] ?? json['lease_holding_detail']['price_per_sqm'])
               : null),
       buildType: (property is Map ? property['build_type'] : null) ??
@@ -461,12 +435,12 @@ class Listing {
           (json['lease_holding_detail'] is Map
               ? json['lease_holding_detail']['build_type']
               : null),
-      annualPayment: _parseDouble(property is Map ? property['annual_payment'] : null) ??
-          _parseDouble(json['annual_payment']) ??
-          _parseDouble(json['lease_holding_detail'] is Map
+      annualPayment: TypeUtils.safeDouble(property is Map ? property['annual_payment'] : null) ??
+          TypeUtils.safeDouble(json['annual_payment']) ??
+          TypeUtils.safeDouble(json['lease_holding_detail'] is Map
               ? json['lease_holding_detail']['annual_payment']
               : null),
-      isTransferable: _safeBool(property is Map ? property['is_transferable'] : json['is_transferable']),
+      isTransferable: TypeUtils.safeBool(property is Map ? property['is_transferable'] : json['is_transferable']),
 
       // Cooperative details
       cooperativeName: json['cooperative_name'] ??
@@ -486,29 +460,29 @@ class Listing {
               : null),
 
       // Additional property details
-      yearBuilt: _safeInt(property is Map ? property['year_built'] : json['year_built']),
+      yearBuilt: TypeUtils.safeInt(property is Map ? property['year_built'] : json['year_built']),
       houseType: property is Map ? property['house_type'] : json['house_type'],
-      electricity: _safeBool(property is Map ? property['electricity'] : json['electricity']),
-      water: _safeBool(property is Map ? property['water'] : json['water']),
-      parkingAvailable: _safeBool(property is Map ? property['parking_available'] : json['parking_available']),
+      electricity: TypeUtils.safeBool(property is Map ? property['electricity'] : json['electricity']),
+      water: TypeUtils.safeBool(property is Map ? property['water'] : json['water']),
+      parkingAvailable: TypeUtils.safeBool(property is Map ? property['parking_available'] : json['parking_available']),
 
       description: json['description'] ??
           (property is Map ? property['description'] : null),
       bedrooms:
-          _safeInt(property is Map ? property['bedrooms'] : json['bedrooms'], defaultValue: 0),
+          TypeUtils.safeInt(property is Map ? property['bedrooms'] : json['bedrooms'], defaultValue: 0),
       bathrooms:
-          _safeInt(property is Map ? property['bathrooms'] : json['bathrooms'], defaultValue: 0),
-      salons: _safeInt(property is Map ? property['salons'] : json['salons'], defaultValue: 0),
+          TypeUtils.safeInt(property is Map ? property['bathrooms'] : json['bathrooms'], defaultValue: 0),
+      salons: TypeUtils.safeInt(property is Map ? property['salons'] : json['salons'], defaultValue: 0),
       kitchens:
-          _safeInt(property is Map ? property['kitchens'] : json['kitchens'], defaultValue: 0),
-      imageCount: _safeInt(json['image_count']),
+          TypeUtils.safeInt(property is Map ? property['kitchens'] : json['kitchens'], defaultValue: 0),
+      imageCount: TypeUtils.safeInt(json['image_count']),
       images: images,
       address: json['address'] != null ? Address.fromJson(json['address']) : null,
       createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
       userInterestStatus: json['user_interest_status'],
-      userInterestId: _safeInt(json['user_interest_id']),
-      viewCount: _safeInt(json['view_count'], defaultValue: 0)!,
+      userInterestId: TypeUtils.safeInt(json['user_interest_id']),
+      viewCount: TypeUtils.safeInt(json['view_count'], defaultValue: 0)!,
     );
   }
 

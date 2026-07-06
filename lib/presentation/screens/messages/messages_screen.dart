@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -160,12 +161,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
             child: WaveGlass(
               child: InkWell(
                 onTap: () async {
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ChatScreen(
-                          conversationId: conversation.id,
-                          conversation: conversation),
-                    ),
+                  await context.push(
+                    '/chat/${conversation.id}',
+                    extra: conversation,
                   );
                   if (mounted) {
                     final authState = ref.read(authStateProvider);
@@ -552,15 +550,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         _closeContextDropdown();
         if (conv.id != widget.conversationId) {
           // Navigate to the selected conversation
-          Navigator.of(context).pushReplacement(
-            PageRouteBuilder(
-              pageBuilder: (_, __, ___) => ChatScreen(
-                conversationId: conv.id,
-                conversation: conv,
-              ),
-              transitionsBuilder: (_, __, ___, child) => child,
-              transitionDuration: Duration.zero,
-            ),
+          context.pushReplacement(
+            '/chat/${conv.id}',
+            extra: conv,
           );
         }
       },

@@ -1,3 +1,4 @@
+import '../../core/utils/type_utils.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Conversation Model
@@ -63,7 +64,7 @@ class Conversation {
     if (json['latest_message'] is Map) {
       final lm = json['latest_message'] as Map<String, dynamic>;
       lastMsg = lm['body'] ?? lm['message'];
-      lastMsgSenderId = _safeInt(lm['sender_id']);
+      lastMsgSenderId = TypeUtils.safeInt(lm['sender_id']);
     } else if (json['last_message'] != null) {
       lastMsg = json['last_message'];
     }
@@ -82,7 +83,7 @@ class Conversation {
       // Extract first image if available
       if (listing['property'] is Map) {
         final property = listing['property'] as Map<String, dynamic>;
-        listingOwnerId = _safeInt(property['owner_id']);
+        listingOwnerId = TypeUtils.safeInt(property['owner_id']);
         if (property['images'] is List &&
             (property['images'] as List).isNotEmpty) {
           final images = property['images'] as List;
@@ -103,8 +104,8 @@ class Conversation {
     String? otherFirstName, otherLastName;
     int? otherId;
     if (currentUserId != null) {
-      final sid = _safeInt(senderData?['id']);
-      final rid = _safeInt(receiverData?['id']);
+      final sid = TypeUtils.safeInt(senderData?['id']);
+      final rid = TypeUtils.safeInt(receiverData?['id']);
 
       if (sid != null && sid != currentUserId && senderData != null) {
         otherFirstName = senderData['first_name'];
@@ -119,13 +120,13 @@ class Conversation {
 
     // Handle both unread_count and total_unread_count field names
     int? unreadVal =
-        _safeInt(json['unread_count']) ?? _safeInt(json['total_unread_count']);
+        TypeUtils.safeInt(json['unread_count']) ?? TypeUtils.safeInt(json['total_unread_count']);
 
     return Conversation(
-      id: _safeInt(json['id']) ?? 0,
-      senderId: _safeInt(json['sender_id']) ?? 0,
-      receiverId: _safeInt(json['receiver_id']) ?? 0,
-      listingId: _safeInt(json['listing_id']),
+      id: TypeUtils.safeInt(json['id']) ?? 0,
+      senderId: TypeUtils.safeInt(json['sender_id']) ?? 0,
+      receiverId: TypeUtils.safeInt(json['receiver_id']) ?? 0,
+      listingId: TypeUtils.safeInt(json['listing_id']),
       type: json['type'],
       subject: listingTitle ?? json['subject'],
       lastMessage: lastMsg,
@@ -153,15 +154,6 @@ class Conversation {
     );
   }
 
-
-  static int? _safeInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    if (value is bool) return value ? 1 : 0;
-    return null;
-  }
 
   String getDisplayTitle(int currentUserId) {
     // First try pre-computed name (if available from parse time)
@@ -216,8 +208,8 @@ class Conversation {
 
   Map<String, dynamic>? _getOtherParticipantData(int currentUserId) {
     if (currentUserId <= 0) return null;
-    final sid = _safeInt(_senderData?['id']);
-    final rid = _safeInt(_receiverData?['id']);
+    final sid = TypeUtils.safeInt(_senderData?['id']);
+    final rid = TypeUtils.safeInt(_receiverData?['id']);
 
     if (sid != null && sid != currentUserId) return _senderData;
     if (rid != null && rid != currentUserId) return _receiverData;
@@ -317,9 +309,9 @@ class Message {
     }
 
     return Message(
-      id: _safeInt(json['id']) ?? 0,
-      conversationId: _safeInt(json['conversation_id']) ?? 0,
-      senderId: _safeInt(json['sender_id']) ?? 0,
+      id: TypeUtils.safeInt(json['id']) ?? 0,
+      conversationId: TypeUtils.safeInt(json['conversation_id']) ?? 0,
+      senderId: TypeUtils.safeInt(json['sender_id']) ?? 0,
       body: json['body'] ?? json['message'] ?? '',
       isRead: json['is_read'] ?? false,
       readAt: json['read_at'] != null ? DateTime.parse(json['read_at']) : null,
@@ -333,14 +325,6 @@ class Message {
     );
   }
 
-  static int? _safeInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    if (value is bool) return value ? 1 : 0;
-    return null;
-  }
 
   String getDisplayTime(AppLocalizations l10n) {
     final now = DateTime.now();

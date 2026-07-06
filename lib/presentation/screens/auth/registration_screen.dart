@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/constants/countries.dart';
@@ -13,9 +14,7 @@ import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/otp_input_field.dart';
 import '../../widgets/common/auth_top_bar.dart';
-import '../navigation/main_navigation_shell.dart';
 import '../../widgets/common/auth_background.dart';
-import 'otp_login_screen.dart';
 
 class RegistrationScreen extends ConsumerStatefulWidget {
   const RegistrationScreen({super.key});
@@ -639,11 +638,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const OtpLoginScreen(),
-              ),
-            );
+            context.push('/login');
           },
           child: Text(
             l10n.authLogin,
@@ -751,9 +746,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
       if (response.success && mounted) {
         setState(() => _isLoading = false);
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MainNavigationShell()),
-        );
+        context.go('/');
       } else if (mounted) {
         setState(() => _isLoading = false);
         _showErrorSnackBar(response.message);

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -286,11 +287,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   }
 
   void _playVideo(BuildContext context, String filePath) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => _VideoPlayerScreen(filePath: filePath),
-      ),
-    );
+    context.push('/video-preview', extra: filePath);
   }
 
   Widget _buildImagesSection() {
@@ -703,7 +700,6 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
       if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
       return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
     } catch (e) {
-      debugPrint('Error: $e');
       return '';
     }
   }
@@ -795,15 +791,15 @@ class _ImageThumb extends StatelessWidget {
   }
 }
 
-class _VideoPlayerScreen extends StatefulWidget {
+class VideoPlayerPreviewScreen extends StatefulWidget {
   final String filePath;
-  const _VideoPlayerScreen({required this.filePath});
+  const VideoPlayerPreviewScreen({super.key, required this.filePath});
 
   @override
-  State<_VideoPlayerScreen> createState() => _VideoPlayerScreenState();
+  State<VideoPlayerPreviewScreen> createState() => _VideoPlayerPreviewScreenState();
 }
 
-class _VideoPlayerScreenState extends State<_VideoPlayerScreen> {
+class _VideoPlayerPreviewScreenState extends State<VideoPlayerPreviewScreen> {
   VideoPlayerController? _controller;
   bool _initialized = false;
 

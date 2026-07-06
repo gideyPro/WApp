@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/listing.dart';
 import '../../data/services/favorite_service.dart';
 import '../../data/services/lead_service.dart';
 import 'auth_providers.dart';
@@ -42,7 +43,7 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
 
 class FavoritesState {
   final bool isLoading;
-  final List<dynamic> favorites;
+  final List<Listing> favorites;
   final int total;
   final String? errorMessage;
   const FavoritesState(
@@ -60,7 +61,7 @@ class FavoritesState {
         errorMessage = null;
   FavoritesState copyWith(
       {bool? isLoading,
-      List<dynamic>? favorites,
+      List<Listing>? favorites,
       int? total,
       String? errorMessage}) {
     return FavoritesState(
@@ -106,7 +107,7 @@ class MyInterestsNotifier extends StateNotifier<MyInterestsState> {
 
 class MyInterestsState {
   final bool isLoading;
-  final List<dynamic> interests;
+  final List<Lead> interests;
   final int total;
   final String? errorMessage;
   const MyInterestsState(
@@ -124,7 +125,7 @@ class MyInterestsState {
         errorMessage = null;
   MyInterestsState copyWith(
       {bool? isLoading,
-      List<dynamic>? interests,
+      List<Lead>? interests,
       int? total,
       String? errorMessage}) {
     return MyInterestsState(

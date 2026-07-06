@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -10,7 +11,6 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../../core/constants/app_spacing.dart';
-import 'payment_detail_screen.dart';
 
 /// Payment History Screen
 class PaymentHistoryScreen extends ConsumerStatefulWidget {
@@ -108,13 +108,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
             padding: const EdgeInsets.only(bottom: 12),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => PaymentDetailScreen(
-                      paymentId: payment.id,
-                    ),
-                  ),
-                );
+                context.push('/payments/${payment.id}');
               },
               child: WaveGlass(
                 child: _PaymentTile(payment: payment),

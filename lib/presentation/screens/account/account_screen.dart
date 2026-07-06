@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -9,17 +10,8 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/provider_utils.dart';
 import '../../providers/theme_provider.dart';
-import '../kyc/kyc_verification_screen.dart';
-import '../subscriptions/subscription_plans_screen.dart';
-import '../listing/my_listings_screen.dart';
-import '../favorites/favorites_screen.dart';
-import '../payments/payment_history_screen.dart';
-import '../help/help_center_screen.dart';
-import '../messages/messages_screen.dart';
-import '../auth/otp_login_screen.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
-import '../interests/my_interests_screen.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
@@ -295,10 +287,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         value: profileState.stats?.totalListings.toString() ?? '0',
                         label: l10n.profileStatsListings,
                         valueColor: context.textPrimary,
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => const MyListingsScreen()),
-                        ),
+                        onTap: () => context.push('/my-listings'),
                       ),
                       Container(
                         width: 1,
@@ -311,10 +300,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         value: profileState.stats?.totalFavorites.toString() ?? '0',
                         label: l10n.profileStatsFavorites,
                         valueColor: context.textPrimary,
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => const FavoritesScreen()),
-                        ),
+                        onTap: () => context.push('/favorites'),
                       ),
                       Container(
                         width: 1,
@@ -327,10 +313,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         value: kycLabel,
                         label: l10n.profileVerificationKyc,
                         valueColor: kycColor,
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => const KycVerificationScreen()),
-                        ),
+                        onTap: () => context.push('/kyc'),
                       ),
                     ],
                   ),
@@ -356,30 +339,22 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         _MenuItemData(
                           icon: Icons.chat_bubble_outline_rounded,
                           title: l10n.navMessages,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const MessagesScreen()),
-                          ),
+                          onTap: () => context.push('/messages'),
                         ),
                         _MenuItemData(
                           icon: Icons.interests_outlined,
                           title: l10n.profileMyInterests,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const MyInterestsScreen()),
-                          ),
+                          onTap: () => context.push('/my-interests'),
                         ),
                         _MenuItemData(
                           icon: Icons.home_work_outlined,
                           title: l10n.profileMyListings,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const MyListingsScreen()),
-                          ),
+                          onTap: () => context.push('/my-listings'),
                         ),
                         _MenuItemData(
                           icon: Icons.favorite_border_rounded,
                           title: l10n.profileFavorites,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const FavoritesScreen()),
-                          ),
+                          onTap: () => context.push('/favorites'),
                         ),
                         if (subscriptionEnabled) ...[
                           _MenuItemData(
@@ -387,9 +362,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                             title: l10n.profileSubscriptions,
                             subtitle: l10n.settingsSubscriptionsSubtitle,
                             onTap: () async {
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
-                              );
+                              await context.push('/subscriptions');
                               if (mounted) ref.read(subscriptionProvider.notifier).refresh();
                             },
                           ),
@@ -397,17 +370,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                             icon: Icons.receipt_long_outlined,
                             title: l10n.profilePayments,
                             subtitle: l10n.settingsPaymentsSubtitle,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const PaymentHistoryScreen()),
-                            ),
+                            onTap: () => context.push('/payments'),
                           ),
                         ],
                         _MenuItemData(
                           icon: Icons.verified_user_outlined,
                           title: l10n.profileKyc,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const KycVerificationScreen()),
-                          ),
+                          onTap: () => context.push('/kyc'),
                         ),
                       ],
                     ),
@@ -441,9 +410,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         _MenuItemData(
                           icon: Icons.help_outline,
                           title: l10n.profileHelp,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
-                          ),
+                          onTap: () => context.push('/help'),
                         ),
                         _MenuItemData(
                           icon: Icons.privacy_tip_outlined,
@@ -654,10 +621,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         await ref.read(authStateProvider.notifier).logout();
                         clearCachedProviders(ref);
                         if (context.mounted) {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
-                            (route) => false,
-                          );
+                          context.go('/login');
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -739,10 +703,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                           await ref.read(authStateProvider.notifier).logout();
                           clearCachedProviders(ref);
                           if (context.mounted) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (_) => const OtpLoginScreen()),
-                              (route) => false,
-                            );
+                            context.go('/login');
                           }
                         } else if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(

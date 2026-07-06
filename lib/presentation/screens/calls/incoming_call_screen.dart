@@ -2,13 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../../data/services/conference_service.dart';
-import 'webview_jitsi_screen.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {
   final int conferenceId;
@@ -128,14 +128,9 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
   }
 
   void _navigateToJitsi(ConferenceResponse response) {
-    navigatorKey.currentState?.push(
-      MaterialPageRoute(
-        builder: (context) => WebViewJitsiScreen(
-          jitsiUrl: response.jitsiRoomUrl,
-          jitsiToken: response.jitsiToken,
-          conferenceId: widget.conferenceId,
-        ),
-      ),
+    GoRouter.of(navigatorKey.currentContext!).push(
+      '/call/${widget.conferenceId}',
+      extra: {'url': response.jitsiRoomUrl, 'token': response.jitsiToken},
     );
   }
 

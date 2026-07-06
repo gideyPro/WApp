@@ -120,8 +120,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpNoResultsTitle => 'No Results Found';
 
   @override
-  String get helpNoResultsSubtitle =>
-      'Try different keywords or browse categories';
+  String get helpNoResultsSubtitle => 'Try different keywords...';
 
   @override
   String get helpStillNeedHelp => 'Still need help?';
@@ -170,7 +169,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpAccCreateContent =>
-      'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your name phone number,email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.';
+      'To create an account on WaveMart:\n\n1. Open the app and tap on \"Register\"\n2. Enter your name, phone number, email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.';
 
   @override
   String get helpAccFavTitle => 'Managing your favorites';

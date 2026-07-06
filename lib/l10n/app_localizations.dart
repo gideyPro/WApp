@@ -319,7 +319,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpNoResultsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Try different keywords or browse categories'**
+  /// **'Try different keywords...'**
   String get helpNoResultsSubtitle;
 
   /// No description provided for @helpStillNeedHelp.
@@ -415,7 +415,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Sign Up\"\n2. Enter your name phone number,email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
+  /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Register\"\n2. Enter your name, phone number, email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
   String get helpAccCreateContent;
 
   /// No description provided for @helpAccFavTitle.

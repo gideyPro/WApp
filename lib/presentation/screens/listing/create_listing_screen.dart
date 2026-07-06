@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
@@ -14,7 +15,6 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../../providers/app_providers.dart';
-import '../kyc/kyc_verification_screen.dart';
 import 'widgets/listing_form_steps.dart';
 import 'widgets/submission_overlay.dart';
 /// Create Listing Screen - 4-step wizard matching web version
@@ -515,11 +515,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         buttonLabel: kycState.isPending ? '' : l10n.kycVerifyNow,
         onButtonTap: kycState.isPending
             ? null
-            : () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const KycVerificationScreen(),
-                  ),
-                ),
+            : () => context.push('/kyc'),
       );
     }
 

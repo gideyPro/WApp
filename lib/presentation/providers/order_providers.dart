@@ -38,7 +38,7 @@ class OrdersNotifier extends StateNotifier<OrdersState> {
 
 class OrdersState {
   final bool isLoading;
-  final List<dynamic> orders;
+  final List<Order> orders;
   final int total;
   final String? errorMessage;
   const OrdersState(
@@ -56,7 +56,7 @@ class OrdersState {
         errorMessage = null;
   OrdersState copyWith(
       {bool? isLoading,
-      List<dynamic>? orders,
+      List<Order>? orders,
       int? total,
       String? errorMessage}) {
     return OrdersState(

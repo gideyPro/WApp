@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -9,7 +10,6 @@ import '../../../../data/services/kyc_service.dart';
 import '../../../../data/services/listing_media_manager.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_button.dart';
-import '../listing/create_listing_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
@@ -315,9 +315,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   Future<void> _onCreateListingFromKyc() async {
     if (mounted) {
       Navigator.of(context).popUntil((route) => route.isFirst);
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const CreateListingScreen()),
-      );
+      context.push('/listings/create');
     }
   }
 

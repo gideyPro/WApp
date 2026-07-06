@@ -114,9 +114,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
           });
         }
       }
-    } catch (e) {
-      debugPrint('Error: $e');
-    }
+    } catch (_) {}
   }
 
   Future<void> _onRegionSelected(String? region) async {
