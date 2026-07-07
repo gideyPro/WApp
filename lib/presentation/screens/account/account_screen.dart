@@ -431,16 +431,16 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                       title: '',
                       items: [
                         _MenuItemData(
-                          icon: Icons.delete_forever_outlined,
-                          title: l10n.settingsDeleteAccount,
-                          textColor: AppColors.error,
-                          onTap: () => _showDeleteAccountConfirmation(context, ref),
-                        ),
-                        _MenuItemData(
                           icon: Icons.logout,
                           title: l10n.authLogout,
                           textColor: AppColors.error,
                           onTap: () => _showLogoutConfirmation(context, ref),
+                        ),
+                        _MenuItemData(
+                          icon: Icons.delete_forever_outlined,
+                          title: l10n.settingsDeleteAccount,
+                          textColor: AppColors.error,
+                          onTap: () => _showDeleteAccountConfirmation(context, ref),
                         ),
                       ],
                     ),
