@@ -45,11 +45,11 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     _yearBuiltController = TextEditingController(
         text: widget.formData.yearBuilt?.toString() ?? '');
     _totalAreaController = TextEditingController(
-        text: widget.formData.totalSquareMeters?.toStringAsFixed(0) ?? '');
+        text: widget.formData.totalSquareMeters?.toString() ?? '');
     _frontAreaController = TextEditingController(
-        text: widget.formData.frontAreaSqm?.toStringAsFixed(0) ?? '');
+        text: widget.formData.frontAreaSqm?.toString() ?? '');
     _sideAreaController = TextEditingController(
-        text: widget.formData.sideAreaSqm?.toStringAsFixed(0) ?? '');
+        text: widget.formData.sideAreaSqm?.toString() ?? '');
   }
 
   @override
@@ -217,24 +217,24 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
                 _compactTextField(
                   label: l10n.listingTotalArea,
                   controller: _totalAreaController,
-                  keyboardType: TextInputType.number,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   readOnly: isAreaReadOnly,
                   onSubmitted: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n.toDouble()));
+                    final n = double.tryParse(v);
+                    if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n));
                   },
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Expanded(child: _compactTextField(label: l10n.listingFrontArea, controller: _frontAreaController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                      final n = int.tryParse(v);
-                      if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n.toDouble()));
+                    Expanded(child: _compactTextField(label: l10n.listingFrontArea, controller: _frontAreaController, keyboardType: const TextInputType.numberWithOptions(decimal: true), onSubmitted: (v) {
+                      final n = double.tryParse(v);
+                      if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n));
                     })),
                     const SizedBox(width: 8),
-                    Expanded(child: _compactTextField(label: l10n.listingSideArea, controller: _sideAreaController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                      final n = int.tryParse(v);
-                      if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n.toDouble()));
+                    Expanded(child: _compactTextField(label: l10n.listingSideArea, controller: _sideAreaController, keyboardType: const TextInputType.numberWithOptions(decimal: true), onSubmitted: (v) {
+                      final n = double.tryParse(v);
+                      if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n));
                     })),
                   ],
                 ),

@@ -1555,7 +1555,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingFeatureNow => 'ሕጂ ፈሊኻ ኣውፅእ';
 
   @override
-  String get listingViewPlans => 'ፓኬጅ ኣመሓይ';
+  String get listingViewPlans => 'ፓኬጅ ምረፅ';
 
   @override
   String get listingFeatureThis => 'ነዚ ንብረት ፈሊኻ ኣውፅእ';
