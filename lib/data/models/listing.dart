@@ -574,12 +574,14 @@ class Listing {
     switch (acquisitionType) {
       case 'Purchased':
         return l10n.listingPurchased;
-      case 'Inheritance':
+      case 'Inherited':
         return l10n.listingInherited;
       case 'Gift':
         return l10n.listingGift;
-      case 'Government Grant':
+      case 'Assignment':
         return l10n.listingAssignment;
+      case 'Other':
+        return l10n.listingOther;
       default:
         return acquisitionType!;
     }
