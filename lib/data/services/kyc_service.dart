@@ -144,6 +144,88 @@ class KycService {
       );
     }
   }
+
+  Future<KycOtpResponse> sendOtp({
+    required String phoneNumber,
+    required String countryCode,
+  }) async {
+    try {
+      final response = await _apiClient.dio.post(
+        ApiConstants.kycSendOtp,
+        data: {
+          'phone_number': phoneNumber,
+          'country_code': countryCode,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = ApiEnvelope.extractData(response.data);
+        return KycOtpResponse(
+          success: true,
+          message: ApiEnvelope.extractMessage(response.data, 'Code sent'),
+          destination: data['destination']?.toString(),
+        );
+      }
+
+      return KycOtpResponse(
+        success: false,
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to send code'),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return KycOtpResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  Future<KycOtpResponse> verifyOtp({
+    required String phoneNumber,
+    required String countryCode,
+    required String otpCode,
+  }) async {
+    try {
+      final response = await _apiClient.dio.post(
+        ApiConstants.kycVerifyOtp,
+        data: {
+          'phone_number': phoneNumber,
+          'country_code': countryCode,
+          'otp_code': otpCode,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return KycOtpResponse(
+          success: true,
+          message: ApiEnvelope.extractMessage(response.data, 'Phone verified'),
+        );
+      }
+
+      return KycOtpResponse(
+        success: false,
+        message: ApiEnvelope.extractMessage(response.data, 'Invalid code'),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return KycOtpResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+}
+
+class KycOtpResponse {
+  final bool success;
+  final String message;
+  final String? destination;
+
+  const KycOtpResponse({
+    required this.success,
+    this.message = '',
+    this.destination,
+  });
 }
 
 class KycStatusResponse {

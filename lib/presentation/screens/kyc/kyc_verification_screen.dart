@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+
+enum _KycStep { phone, otp, documents }
 
 /// KYC Verification Screen
 class KycVerificationScreen extends ConsumerStatefulWidget {
@@ -38,8 +41,19 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
   bool _showFormManually = false;
 
+  // Phone & OTP state
   final TextEditingController _phoneController = TextEditingController();
   CountryCode _selectedCountry = Countries.defaultCountry;
+  _KycStep _kycStep = _KycStep.phone;
+  bool _otpLoading = false;
+  bool _otpVerifyLoading = false;
+  String _otpError = '';
+  String _otpDestination = 'phone';
+  int _resendCooldown = 0;
+  Timer? _resendTimer;
+  final TextEditingController _otpController = TextEditingController();
+
+  String get _fullPhone => '${_selectedCountry.code}${_phoneController.text.trim()}';
 
   void _cleanPersistedFiles() {
     for (final path in _persistedPaths) {
@@ -55,6 +69,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   void dispose() {
     _cleanPersistedFiles();
     _phoneController.dispose();
+    _otpController.dispose();
+    _resendTimer?.cancel();
     super.dispose();
   }
 
@@ -100,13 +116,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   void _showImagePickerOptions(String type) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
-    // For selfies, always open camera directly
     if (type == 'selfie') {
       _pickImage(ImageSource.camera, type);
       return;
     }
 
-    // For document images, show picker options
     showModalBottomSheet(
       context: context,
       backgroundColor: theme.bottomSheet,
@@ -141,6 +155,92 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     );
   }
 
+  Future<void> _sendOtp() async {
+    final phone = _phoneController.text.trim();
+    if (phone.isEmpty) {
+      setState(() => _otpError = 'Please enter your phone number');
+      return;
+    }
+    if (phone.length < 7) {
+      setState(() => _otpError = 'Phone number must be at least 7 digits');
+      return;
+    }
+
+    setState(() {
+      _otpLoading = true;
+      _otpError = '';
+    });
+
+    final response = await _kycService.sendOtp(
+      phoneNumber: phone,
+      countryCode: _selectedCountry.code,
+    );
+
+    if (mounted) {
+      setState(() {
+        _otpLoading = false;
+        if (response.success) {
+          _kycStep = _KycStep.otp;
+          _otpDestination = response.destination ?? 'phone';
+          _startResendCooldown();
+        } else {
+          _otpError = response.message;
+        }
+      });
+    }
+  }
+
+  Future<void> _verifyOtp() async {
+    final otp = _otpController.text.trim();
+    if (otp.length != 6) return;
+
+    setState(() {
+      _otpVerifyLoading = true;
+      _otpError = '';
+    });
+
+    final response = await _kycService.verifyOtp(
+      phoneNumber: _phoneController.text.trim(),
+      countryCode: _selectedCountry.code,
+      otpCode: otp,
+    );
+
+    if (mounted) {
+      setState(() {
+        _otpVerifyLoading = false;
+        if (response.success) {
+          _kycStep = _KycStep.documents;
+          _resendTimer?.cancel();
+        } else {
+          _otpError = response.message;
+        }
+      });
+    }
+  }
+
+  void _startResendCooldown() {
+    _resendCooldown = 60;
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) { timer.cancel(); return; }
+      setState(() {
+        _resendCooldown--;
+        if (_resendCooldown <= 0) {
+          timer.cancel();
+          _resendTimer = null;
+        }
+      });
+    });
+  }
+
+  void _changeNumber() {
+    setState(() {
+      _kycStep = _KycStep.phone;
+      _otpError = '';
+      _otpController.clear();
+    });
+  }
+
   Future<void> _submitKyc() async {
     final l10n = AppLocalizations.of(context);
     if (_documentType == null) {
@@ -153,27 +253,6 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       return;
     }
 
-    final profile = ref.read(profileProvider);
-    final needsPhone = profile.user?.phoneNumber?.isEmpty ?? true;
-
-    if (needsPhone) {
-      final phone = _phoneController.text.trim();
-      if (phone.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Please enter your phone number'),
-          backgroundColor: AppColors.error,
-        ));
-        return;
-      }
-      if (phone.length < 7) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Phone number must be at least 7 digits'),
-          backgroundColor: AppColors.error,
-        ));
-        return;
-      }
-    }
-
     setState(() => _isSubmitting = true);
 
     final response = await _kycService.submitKyc(
@@ -181,8 +260,6 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       frontImage: _frontImage!,
       backImage: _backImage,
       selfieImage: _selfieImage,
-      phoneNumber: needsPhone ? _phoneController.text.trim() : null,
-      countryCode: needsPhone ? _selectedCountry.code : null,
     );
 
     setState(() => _isSubmitting = false);
@@ -220,28 +297,398 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   Widget _buildBody(KycStatusState state, AppLocalizations l10n) {
-    // Network error state
     if (state.hasError) {
       return _buildErrorState(state, l10n);
     }
 
-    // Verified state
     if (state.isVerified || state.isApproved) {
       return _buildVerifiedState(state, l10n);
     }
 
-    // Pending state
     if (state.isPending && !_showFormManually) {
       return _buildPendingState(state, l10n);
     }
 
-    // Rejected state
     if (state.isRejected && !_showFormManually) {
       return _buildRejectedState(state, l10n);
     }
 
-    // Not submitted state or manual form show - show form
-    return _buildKycForm(state, l10n);
+    final profile = ref.watch(profileProvider);
+    final needsPhone = profile.user?.phoneNumber?.isEmpty ?? true;
+
+    // If user already has a phone, skip to documents
+    if (!needsPhone && _kycStep != _KycStep.documents) {
+      _kycStep = _KycStep.documents;
+    }
+
+    return _buildMultiStepForm(state, l10n, needsPhone);
+  }
+
+  Widget _buildMultiStepForm(KycStatusState state, AppLocalizations l10n, bool needsPhone) {
+    return SingleChildScrollView(
+      padding: AppSpacing.paddingLg,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (needsPhone) ...[
+            _buildPhoneStep(l10n),
+            if (_kycStep == _KycStep.otp)
+              _buildOtpStep(l10n),
+            const SizedBox(height: 24),
+          ],
+
+          if (_kycStep == _KycStep.documents || !needsPhone)
+            _buildDocumentsStep(state, l10n),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPhoneStep(AppLocalizations l10n) {
+    if (_kycStep == _KycStep.otp || _kycStep == _KycStep.documents) return const SizedBox.shrink();
+
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 20,
+      variant: LiquidGlassVariant.regular,
+      padding: AppSpacing.paddingLg,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.phone_android_rounded, size: 18, color: AppColors.primary600),
+              const SizedBox(width: 8),
+              Text(
+                'Verify Your Phone',
+                style: AppTextStyles.labelLarge.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: context.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'We need to verify your phone number before proceeding',
+            style: AppTextStyles.caption.copyWith(color: context.textMuted),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: context.theme.isDark
+                  ? AppColors.primary900
+                  : AppColors.primary50.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: context.theme.isDark
+                    ? Colors.white.withValues(alpha: 0.12)
+                    : AppColors.primary200,
+              ),
+            ),
+            child: Row(
+              children: [
+                CountrySelectorDropdown(
+                  selectedCountry: _selectedCountry,
+                  onCountrySelected: (country) {
+                    setState(() => _selectedCountry = country);
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _phoneController,
+                    decoration: InputDecoration(
+                      hintText: _selectedCountry.example,
+                      hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                    ),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(15),
+                    ],
+                    style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary),
+                    onChanged: (_) {
+                      if (_otpError.isNotEmpty) setState(() => _otpError = '');
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_otpError.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              _otpError,
+              style: AppTextStyles.caption.copyWith(color: AppColors.error),
+            ),
+          ],
+          const SizedBox(height: 16),
+          WaveButton(
+            text: 'Send Verification Code',
+            icon: Icons.send_rounded,
+            isLoading: _otpLoading,
+            onPressed: _otpLoading ? null : _sendOtp,
+            isFullWidth: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOtpStep(AppLocalizations l10n) {
+    return LiquidGlass(
+      borderRadius: 4,
+      blur: 20,
+      variant: LiquidGlassVariant.regular,
+      padding: AppSpacing.paddingLg,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Sent info
+          Row(
+            children: [
+              Icon(
+                _otpDestination == 'phone' ? Icons.phone_android_rounded : Icons.email_rounded,
+                size: 16,
+                color: AppColors.primary600,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _otpDestination == 'phone'
+                          ? 'Code sent via SMS to'
+                          : 'Code sent to your email',
+                      style: AppTextStyles.caption.copyWith(color: context.textMuted),
+                    ),
+                    Text(
+                      _fullPhone,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: context.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // OTP Input
+          TextField(
+            controller: _otpController,
+            decoration: InputDecoration(
+              hintText: '000000',
+              hintStyle: AppTextStyles.headline2.copyWith(
+                color: context.textMuted,
+                letterSpacing: 8,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: BorderSide(
+                  color: context.theme.isDark
+                      ? Colors.white.withValues(alpha: 0.12)
+                      : AppColors.primary200,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: BorderSide(
+                  color: context.theme.isDark
+                      ? Colors.white.withValues(alpha: 0.12)
+                      : AppColors.primary200,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(color: AppColors.primary600),
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            textAlign: TextAlign.center,
+            style: AppTextStyles.headline2.copyWith(
+              color: context.textPrimary,
+              letterSpacing: 8,
+              fontFamily: 'monospace',
+            ),
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(6),
+            ],
+            autofillHints: const [AutofillHints.oneTimeCode],
+            onChanged: (val) {
+              if (_otpError.isNotEmpty) setState(() => _otpError = '');
+              if (val.length == 6) _verifyOtp();
+            },
+          ),
+
+          if (_otpError.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              _otpError,
+              style: AppTextStyles.caption.copyWith(color: AppColors.error),
+            ),
+          ],
+
+          const SizedBox(height: 16),
+          WaveButton(
+            text: 'Verify & Continue',
+            icon: Icons.verified_rounded,
+            isLoading: _otpVerifyLoading,
+            onPressed: _otpVerifyLoading ? null : _verifyOtp,
+            isFullWidth: true,
+            variant: ButtonVariant.success,
+          ),
+
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton.icon(
+                onPressed: _changeNumber,
+                icon: const Icon(Icons.edit, size: 16),
+                label: Text(
+                  'Change number',
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.primary600,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: _resendCooldown > 0 ? null : _sendOtp,
+                child: Text(
+                  _resendCooldown > 0
+                      ? 'Resend in ${_resendCooldown}s'
+                      : 'Resend code',
+                  style: AppTextStyles.caption.copyWith(
+                    color: _resendCooldown > 0
+                        ? context.textMuted
+                        : AppColors.primary600,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDocumentsStep(KycStatusState state, AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Info banner
+        LiquidGlass(
+          borderRadius: 4,
+          blur: 20,
+          variant: LiquidGlassVariant.regular,
+          padding: AppSpacing.paddingLg,
+          child: Row(
+            children: [
+              const Icon(
+                Icons.info_outline,
+                color: AppColors.primary600,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  l10n.kycInfoBanner,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.primary700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Document type selection
+        Text(
+          l10n.kycDocumentType,
+          style: AppTextStyles.labelLarge,
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _DocumentTypeChip(
+                icon: Icons.credit_card,
+                label: l10n.kycNationalId,
+                isSelected: _documentType == 'national_id',
+                onTap: () => setState(() => _documentType = 'national_id'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _DocumentTypeChip(
+                icon: Icons.badge,
+                label: l10n.kycPassport,
+                isSelected: _documentType == 'passport',
+                onTap: () => setState(() => _documentType = 'passport'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+
+        // Front image upload
+        _buildImageUploadCard(
+          icon: Icons.credit_card,
+          title: l10n.kycFrontOfDocument,
+          subtitle: l10n.kycFrontSubtitle,
+          image: _frontImage,
+          onTap: () => _showImagePickerOptions('front'),
+          l10n: l10n,
+        ),
+        const SizedBox(height: 16),
+
+        // Back image upload (only for National ID)
+        if (_documentType == 'national_id') ...[
+          _buildImageUploadCard(
+            icon: Icons.credit_card,
+            title: l10n.kycBackOfDocument,
+            subtitle: l10n.kycBackSubtitle,
+            image: _backImage,
+            onTap: () => _showImagePickerOptions('back'),
+            l10n: l10n,
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        // Selfie upload
+        _buildImageUploadCard(
+          icon: Icons.person,
+          title: l10n.kycSelfieWithDocument,
+          subtitle: l10n.kycSelfieSubtitle,
+          image: _selfieImage,
+          onTap: () => _showImagePickerOptions('selfie'),
+          l10n: l10n,
+        ),
+        const SizedBox(height: 32),
+
+        // Submit button
+        WaveButton(
+          text: l10n.kycSubmitForVerification,
+          icon: Icons.upload_file,
+          isLoading: _isSubmitting,
+          onPressed: _isSubmitting ? null : _submitKyc,
+          isFullWidth: true,
+          variant: ButtonVariant.success,
+        ),
+        const SizedBox(height: 32),
+      ],
+    );
   }
 
   Widget _buildErrorState(KycStatusState state, AppLocalizations l10n) {
@@ -469,192 +916,6 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildKycForm(KycStatusState state, AppLocalizations l10n) {
-    final profile = ref.watch(profileProvider);
-    final needsPhone = profile.user?.phoneNumber?.isEmpty ?? true;
-
-    return SingleChildScrollView(
-      padding: AppSpacing.paddingLg,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Phone number input (only for users without a phone)
-          if (needsPhone) ...[
-            LiquidGlass(
-              borderRadius: 4,
-              blur: 20,
-              variant: LiquidGlassVariant.regular,
-              padding: AppSpacing.paddingLg,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.phone_android_rounded, size: 18, color: AppColors.primary600),
-                      const SizedBox(width: 8),
-                      Text(
-                        l10n.authEnterPhone,
-                        style: AppTextStyles.labelMedium.copyWith(
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.theme.isDark
-                          ? AppColors.primary900
-                          : AppColors.primary50.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: context.theme.isDark
-                            ? Colors.white.withValues(alpha: 0.12)
-                            : AppColors.primary200,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        CountrySelectorDropdown(
-                          selectedCountry: _selectedCountry,
-                          onCountrySelected: (country) {
-                            setState(() => _selectedCountry = country);
-                          },
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: _phoneController,
-                            decoration: InputDecoration(
-                              hintText: _selectedCountry.example,
-                              hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
-                            ),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(15),
-                            ],
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: context.textPrimary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-
-          // Info banner
-          LiquidGlass(
-            borderRadius: 4,
-            blur: 20,
-            variant: LiquidGlassVariant.regular,
-            padding: AppSpacing.paddingLg,
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.info_outline,
-                  color: AppColors.primary600,
-                  size: 24,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    l10n.kycInfoBanner,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.primary700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Document type selection
-          Text(
-            l10n.kycDocumentType,
-            style: AppTextStyles.labelLarge,
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _DocumentTypeChip(
-                  icon: Icons.credit_card,
-                  label: l10n.kycNationalId,
-                  isSelected: _documentType == 'national_id',
-                  onTap: () => setState(() => _documentType = 'national_id'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _DocumentTypeChip(
-                  icon: Icons.badge,
-                  label: l10n.kycPassport,
-                  isSelected: _documentType == 'passport',
-                  onTap: () => setState(() => _documentType = 'passport'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Front image upload
-          _buildImageUploadCard(
-            icon: Icons.credit_card,
-            title: l10n.kycFrontOfDocument,
-            subtitle: l10n.kycFrontSubtitle,
-            image: _frontImage,
-            onTap: () => _showImagePickerOptions('front'),
-            l10n: l10n,
-          ),
-          const SizedBox(height: 16),
-
-          // Back image upload (only for National ID)
-          if (_documentType == 'national_id') ...[
-            _buildImageUploadCard(
-              icon: Icons.credit_card,
-              title: l10n.kycBackOfDocument,
-              subtitle: l10n.kycBackSubtitle,
-              image: _backImage,
-              onTap: () => _showImagePickerOptions('back'),
-              l10n: l10n,
-            ),
-            const SizedBox(height: 16),
-          ],
-
-          // Selfie upload
-          _buildImageUploadCard(
-            icon: Icons.person,
-            title: l10n.kycSelfieWithDocument,
-            subtitle: l10n.kycSelfieSubtitle,
-            image: _selfieImage,
-            onTap: () => _showImagePickerOptions('selfie'),
-            l10n: l10n,
-          ),
-          const SizedBox(height: 32),
-
-          // Submit button
-          WaveButton(
-            text: l10n.kycSubmitForVerification,
-            icon: Icons.upload_file,
-            isLoading: _isSubmitting,
-            onPressed: _isSubmitting ? null : _submitKyc,
-            isFullWidth: true,
-            variant: ButtonVariant.success,
-          ),
-          const SizedBox(height: 32),
-        ],
       ),
     );
   }

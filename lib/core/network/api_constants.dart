@@ -86,6 +86,8 @@ class ApiConstants {
   static const String kycStatus = '$apiBase/kyc/status';
   static const String kycSubmit = '$apiBase/kyc';
   static const String kycCreate = '$apiBase/kyc/create';
+  static const String kycSendOtp = '$apiBase/kyc/send-otp';
+  static const String kycVerifyOtp = '$apiBase/kyc/verify-otp';
 
   // ==========================================================================
   // 9. SUBSCRIPTIONS ENDPOINTS
