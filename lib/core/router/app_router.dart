@@ -111,7 +111,7 @@ final goRouter = GoRouter(
       path: '/listings/:id/edit',
       pageBuilder: (_, state) => _buildPageTransition(
         key: state.pageKey,
-        child: EditListingScreen(listing: state.extra),
+        child: EditListingScreen(listing: state.extra as dynamic),
       ),
     ),
     GoRoute(
