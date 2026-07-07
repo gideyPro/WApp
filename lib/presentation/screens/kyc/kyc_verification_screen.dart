@@ -153,10 +153,28 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       return;
     }
 
-    setState(() => _isSubmitting = true);
-
     final profile = ref.read(profileProvider);
     final needsPhone = profile.user?.phoneNumber?.isEmpty ?? true;
+
+    if (needsPhone) {
+      final phone = _phoneController.text.trim();
+      if (phone.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Please enter your phone number'),
+          backgroundColor: AppColors.error,
+        ));
+        return;
+      }
+      if (phone.length < 7) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Phone number must be at least 7 digits'),
+          backgroundColor: AppColors.error,
+        ));
+        return;
+      }
+    }
+
+    setState(() => _isSubmitting = true);
 
     final response = await _kycService.submitKyc(
       documentType: _documentType!,
