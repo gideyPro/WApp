@@ -174,22 +174,22 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                         ],
 
                         if (!authState.otpSent) ...[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
                             child: Row(
                               children: [
-                                Expanded(child: Divider()),
+                                const Expanded(child: Divider()),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
                                   child: Text(
                                     'or',
-                                    style: TextStyle(
-                                      color: AppColors.stone400,
-                                      fontSize: 13,
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: context.textMuted,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ),
-                                Expanded(child: Divider()),
+                                const Expanded(child: Divider()),
                               ],
                             ),
                           ),

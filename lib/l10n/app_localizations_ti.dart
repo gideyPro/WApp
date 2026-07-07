@@ -1787,13 +1787,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get statusRefunded => 'ዝተመለሰ';
 
   @override
-  String get connectivityOffline => 'ናይ መረብ ርክብ የለን';
+  String get connectivityOffline => 'ናይ ኢንተርኔት ርክብ የለን';
 
   @override
   String get connectivityConnecting => 'ይራኸብ ኣሎ...';
 
   @override
-  String get connectivityOnline => 'መረብ ተመሊሱ';
+  String get connectivityOnline => 'ኢንተርኔት ተመሊሱ';
 
   @override
   String get markAsVipTitle => 'ከም VIP ምረፅ?';
@@ -1848,7 +1848,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get subscriptionPlanNotSupportedOrderSubtitle =>
-      'በጃኹም ትእዛዝ ምፍጣር ዝድግፍ ፓኬጅ የመሓይሹ።';
+      'በጃኹም ናብ ትእዛዝ ምፍጣር ዝድግፍ ፓኬጅ የመሓይሹ።';
 
   @override
   String get commonTryAgain => 'ደጊምካ ፈትን';
@@ -1869,8 +1869,8 @@ class AppLocalizationsTi extends AppLocalizations {
   String get statusRejected => 'ተነፂጉ';
 
   @override
-  String get statusSold => 'ተሸይጡ';
+  String get statusSold => 'ዝተሸጠ';
 
   @override
-  String get statusRented => 'ተኸራይቱ';
+  String get statusRented => 'ዝተኻረየ';
 }

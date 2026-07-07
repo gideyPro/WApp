@@ -187,18 +187,36 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                       children: [
                         // Step 1: Registration Form
                         if (!_isOtpSent) ...[
-                          _buildSectionTitle(context, l10n.authPersonalInfo),
-                          const SizedBox(height: 20),
+                          const GoogleSignInButton(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              children: [
+                                const Expanded(child: Divider()),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  child: Text(
+                                    'or',
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: context.textMuted,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                const Expanded(child: Divider()),
+                              ],
+                            ),
+                          ),
                           _buildNameInputs(),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 14),
                           _buildPhoneInput(),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 14),
                           _buildEmailInput(),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 14),
                           _buildGenderSelection(),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 10),
                           _buildTermsCheckbox(),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 20),
                           WaveButton(
                             text: l10n.listingContinue,
                             icon: Icons.arrow_forward_rounded,
@@ -208,26 +226,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                           ),
                           const SizedBox(height: 16),
                           _buildLoginLink(),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Row(
-                              children: [
-                                Expanded(child: Divider()),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12),
-                                  child: Text(
-                                    'or',
-                                    style: TextStyle(
-                                      color: AppColors.stone400,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(child: Divider()),
-                              ],
-                            ),
-                          ),
-                          const GoogleSignInButton(),
                         ],
 
                         // Step 2: OTP Verification
@@ -284,7 +282,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        content: Text(l10n.authCancelRegistration, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
+        title: Text(l10n.authCancelRegistration, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),

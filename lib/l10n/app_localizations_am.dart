@@ -1787,13 +1787,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get statusRefunded => 'የተመለሰ';
 
   @override
-  String get connectivityOffline => 'የመረብ ግንኙነት የለም';
+  String get connectivityOffline => 'የኢንተርኔት ግንኙነት የለም';
 
   @override
   String get connectivityConnecting => 'በመገናኘት ላይ...';
 
   @override
-  String get connectivityOnline => 'መረብ ተመልሷል';
+  String get connectivityOnline => 'ኢንተርኔት ተመልሷል';
 
   @override
   String get markAsVipTitle => 'እንደ VIP ምረጥ?';
@@ -1844,11 +1844,11 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get subscriptionPlanNotSupportedOrder =>
-      'የአሁኑ ፓኬጅዎ ትዕዛዞችን መፍጠር አይደግፍም።';
+      'የአሁኑ ፓኬጅዎ ትዕዛዞችን መፍጠር አያስችልም።';
 
   @override
   String get subscriptionPlanNotSupportedOrderSubtitle =>
-      'እባክዎ ትዕዛዞችን መፍጠር ወደሚደግፍ ፓኬጅ ያሻሽሉ።';
+      'እባክዎ ትዕዛዞችን መፍጠር ወደ ሚያስችል ፓኬጅ ያሻሽሉ።';
 
   @override
   String get commonTryAgain => 'እንደገና ሞክር';
