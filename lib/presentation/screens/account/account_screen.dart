@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/network/api_constants.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -676,6 +677,29 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                 style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textSecondary),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.info.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.open_in_browser, size: 18, color: AppColors.info),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'You will be redirected to our website to complete the deletion process.',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.info,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -695,19 +719,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                     child: ElevatedButton(
                       onPressed: () async {
                         Navigator.pop(dialogContext);
-                        final response = await ref.read(profileServiceProvider).deleteAccount();
-                        if (response.success && context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(l10n.settingsDeleteAccountSuccess)),
-                          );
-                          await ref.read(authStateProvider.notifier).logout();
-                          clearCachedProviders(ref);
-                          if (context.mounted) {
-                            context.go('/login');
-                          }
+                        const url = '${ApiConstants.baseUrl}/account/deletion';
+                        final uri = Uri.parse(url);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri, mode: LaunchMode.externalApplication);
                         } else if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(response.message.isNotEmpty ? response.message : l10n.commonError), backgroundColor: AppColors.error),
+                            SnackBar(content: Text('Could not open browser. Please visit $url'), backgroundColor: AppColors.error),
                           );
                         }
                       },
