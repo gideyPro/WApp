@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/services/kyc_service.dart';
@@ -36,6 +38,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
   bool _showFormManually = false;
 
+  final TextEditingController _phoneController = TextEditingController();
+  CountryCode _selectedCountry = Countries.defaultCountry;
+
   void _cleanPersistedFiles() {
     for (final path in _persistedPaths) {
       final file = File(path);
@@ -49,6 +54,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   @override
   void dispose() {
     _cleanPersistedFiles();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -149,11 +155,16 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
     setState(() => _isSubmitting = true);
 
+    final profile = ref.read(profileProvider);
+    final needsPhone = profile.user?.phoneNumber?.isEmpty ?? true;
+
     final response = await _kycService.submitKyc(
       documentType: _documentType!,
       frontImage: _frontImage!,
       backImage: _backImage,
       selfieImage: _selfieImage,
+      phoneNumber: needsPhone ? _phoneController.text.trim() : null,
+      countryCode: needsPhone ? _selectedCountry.code : null,
     );
 
     setState(() => _isSubmitting = false);
@@ -163,6 +174,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
         _cleanPersistedFiles();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycSuccess), backgroundColor: AppColors.success));
         ref.read(kycStatusProvider.notifier).loadKycStatus();
+        ref.read(profileProvider.notifier).loadProfile();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
       }
@@ -444,11 +456,85 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   Widget _buildKycForm(KycStatusState state, AppLocalizations l10n) {
+    final profile = ref.watch(profileProvider);
+    final needsPhone = profile.user?.phoneNumber?.isEmpty ?? true;
+
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Phone number input (only for users without a phone)
+          if (needsPhone) ...[
+            LiquidGlass(
+              borderRadius: 4,
+              blur: 20,
+              variant: LiquidGlassVariant.regular,
+              padding: AppSpacing.paddingLg,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.phone_android_rounded, size: 18, color: AppColors.primary600),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.authEnterPhone,
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: context.theme.isDark
+                          ? AppColors.primary900
+                          : AppColors.primary50.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                        color: context.theme.isDark
+                            ? Colors.white.withValues(alpha: 0.12)
+                            : AppColors.primary200,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        CountrySelectorDropdown(
+                          selectedCountry: _selectedCountry,
+                          onCountrySelected: (country) {
+                            setState(() => _selectedCountry = country);
+                          },
+                        ),
+                        Expanded(
+                          child: TextField(
+                            controller: _phoneController,
+                            decoration: InputDecoration(
+                              hintText: _selectedCountry.example,
+                              hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                            ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(15),
+                            ],
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: context.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+
           // Info banner
           LiquidGlass(
             borderRadius: 4,

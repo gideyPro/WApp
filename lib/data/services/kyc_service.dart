@@ -62,10 +62,16 @@ class KycService {
     required File frontImage,
     File? backImage,
     File? selfieImage,
+    String? phoneNumber,
+    String? countryCode,
   }) async {
     try {
       final formData = FormData.fromMap({
         'document_type': documentType,
+        if (phoneNumber != null && phoneNumber.isNotEmpty && countryCode != null)
+          'phone_number': phoneNumber,
+        if (phoneNumber != null && phoneNumber.isNotEmpty && countryCode != null)
+          'country_code': countryCode,
         'front_image': await MultipartFile.fromFile(
           frontImage.path,
           filename: frontImage.path.split('/').last,
