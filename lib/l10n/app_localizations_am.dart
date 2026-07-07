@@ -813,7 +813,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingCondominium => 'ኮንዶሚኒየም';
 
   @override
-  String get listingTownhouse => 'ታውን ሃውስ';
+  String get listingTownhouse => 'የከተማ ቤት';
 
   @override
   String get listingBungalow => 'ባንጋሎው';
