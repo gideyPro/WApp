@@ -19,6 +19,7 @@ class Conversation {
   final int? otherParticipantId;
   final String? otherParticipantFirstName;
   final String? otherParticipantLastName;
+  final String? otherParticipantAvatar;
   final String? listingTitle;
   final String? listingImageUrl;
   final String? listingDescription;
@@ -45,6 +46,7 @@ class Conversation {
     this.otherParticipantId,
     this.otherParticipantFirstName,
     this.otherParticipantLastName,
+    this.otherParticipantAvatar,
     this.listingTitle,
     this.listingImageUrl,
     this.listingDescription,
@@ -101,7 +103,7 @@ class Conversation {
         : null;
 
     // Determine other participant at parse time (if currentUserId is available)
-    String? otherFirstName, otherLastName;
+    String? otherFirstName, otherLastName, otherAvatar;
     int? otherId;
     if (currentUserId != null) {
       final sid = TypeUtils.safeInt(senderData?['id']);
@@ -110,10 +112,12 @@ class Conversation {
       if (sid != null && sid != currentUserId && senderData != null) {
         otherFirstName = senderData['first_name'];
         otherLastName = senderData['last_name'];
+        otherAvatar = senderData['profile_photo_url'];
         otherId = sid;
       } else if (rid != null && rid != currentUserId && receiverData != null) {
         otherFirstName = receiverData['first_name'];
         otherLastName = receiverData['last_name'];
+        otherAvatar = receiverData['profile_photo_url'];
         otherId = rid;
       }
     }
@@ -143,6 +147,7 @@ class Conversation {
       otherParticipantId: otherId,
       otherParticipantFirstName: otherFirstName,
       otherParticipantLastName: otherLastName,
+      otherParticipantAvatar: otherAvatar,
       listingTitle: listingTitle,
       listingImageUrl: listingImageUrl,
       listingDescription: listingDescription,
@@ -253,10 +258,6 @@ class Conversation {
     return '??';
   }
 
-  String? get otherParticipantAvatar {
-    return null;
-  }
-
   String get contextDisplayTitle {
     if (listingDescription != null && listingDescription!.isNotEmpty) {
       return listingDescription!;
@@ -286,6 +287,7 @@ class Message {
   // Sender info for WhatsApp-like avatars
   final String? senderFirstName;
   final String? senderLastName;
+  final String? senderAvatar;
 
   Message({
     required this.id,
@@ -299,13 +301,15 @@ class Message {
     required this.createdAt,
     this.senderFirstName,
     this.senderLastName,
+    this.senderAvatar,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
-    String? firstName, lastName;
+    String? firstName, lastName, avatar;
     if (json['sender'] is Map) {
       firstName = json['sender']['first_name'];
       lastName = json['sender']['last_name'];
+      avatar = json['sender']['profile_photo_url'];
     }
 
     return Message(
@@ -322,6 +326,7 @@ class Message {
           : DateTime.now(),
       senderFirstName: firstName,
       senderLastName: lastName,
+      senderAvatar: avatar,
     );
   }
 

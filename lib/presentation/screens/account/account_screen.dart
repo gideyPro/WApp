@@ -67,6 +67,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     final initials = user?.initials.isNotEmpty == true
         ? user!.initials
         : l10n.commonAppInitials;
+    final avatarUrl = user?.googleAvatar;
     final fullName = (user?.fullName.isNotEmpty ?? false)
         ? user!.fullName
         : l10n.commonUser;
@@ -179,22 +180,32 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                                     height: 72,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      gradient: AppColors.gradientHero,
+                                      image: avatarUrl != null
+                                          ? DecorationImage(
+                                              image: NetworkImage(avatarUrl),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                      gradient: avatarUrl != null
+                                          ? null
+                                          : AppColors.gradientHero,
                                       border: Border.all(
                                         color: Colors.white.withValues(alpha: 0.2),
                                         width: 2,
                                       ),
                                     ),
-                                    child: Center(
-                                      child: Text(
-                                        initials,
-                                        style: AppTextStyles.headline3.copyWith(
-                                          color: Colors.white,
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                    ),
+                                    child: avatarUrl != null
+                                        ? null
+                                        : Center(
+                                            child: Text(
+                                              initials,
+                                              style: AppTextStyles.headline3.copyWith(
+                                                color: Colors.white,
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                          ),
                                   ),
                                   if (user?.isKycVerified == true ||
                                       kycState.isVerified ||

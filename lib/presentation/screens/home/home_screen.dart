@@ -1588,29 +1588,35 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
       ),
     );
   }  Widget _buildProfileAvatar(BuildContext context) {
+    final avatarUrl = user?.googleAvatar as String?;
     return Container(
       width: 44,
       height: 44,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: AppColors.gradientHero,
+        image: avatarUrl != null
+            ? DecorationImage(image: NetworkImage(avatarUrl), fit: BoxFit.cover)
+            : null,
+        gradient: avatarUrl != null ? null : AppColors.gradientHero,
         boxShadow: AppColors.shadowMd,
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.2),
           width: 2,
         ),
       ),
-      child: Center(
-        child: user != null
-            ? Text(
-                user.initials,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            : const Icon(Icons.person_rounded, color: Colors.white, size: 24),
-      ),
+      child: avatarUrl != null
+          ? null
+          : Center(
+              child: user != null
+                  ? Text(
+                      user.initials,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : const Icon(Icons.person_rounded, color: Colors.white, size: 24),
+            ),
     );
   }
 

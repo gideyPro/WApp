@@ -226,6 +226,7 @@ class _ConversationTile extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
 
     final initials = currentUserId != null ? conversation.getInitials(currentUserId) : '??';
+    final avatarUrl = conversation.otherParticipantAvatar;
     final displayName = currentUserId != null ? conversation.getDisplayTitle(currentUserId) : (conversation.subject ?? conversation.listingTitle ?? 'Conversation');
 
     final isAssetChat =
@@ -258,28 +259,35 @@ class _ConversationTile extends ConsumerWidget {
                 width: 50,
                 height: 50,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: hasUnread
-                        ? [AppColors.accent500, AppColors.accent600]
-                        : [
-                            context.isDarkMode ? AppColors.primary700 : AppColors.primary400,
-                            context.isDarkMode ? AppColors.primary800 : AppColors.primary600,
-                          ],
-                  ),
+                image: avatarUrl != null
+                    ? DecorationImage(image: NetworkImage(avatarUrl), fit: BoxFit.cover)
+                    : null,
+                gradient: avatarUrl != null
+                    ? null
+                    : LinearGradient(
+                        colors: hasUnread
+                            ? [AppColors.accent500, AppColors.accent600]
+                            : [
+                                context.isDarkMode ? AppColors.primary700 : AppColors.primary400,
+                                context.isDarkMode ? AppColors.primary800 : AppColors.primary600,
+                              ],
+                      ),
                   borderRadius: BorderRadius.circular(25),
                 ),
-                child: Center(
-                  child: Text(
-                    initials,
-                    style: AppTextStyles.titleSmall.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: context.isDarkMode
-                          ? AppColors.primary900
-                          : AppColors.surface,
-                    ),
-                  ),
-                ),
+                child: avatarUrl != null
+                    ? null
+                    : Center(
+                        child: Text(
+                          initials,
+                          style: AppTextStyles.titleSmall.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: context.isDarkMode
+                                ? AppColors.primary900
+                                : AppColors.surface,
+                          ),
+                        ),
+                      ),
               ),
               if (hasUnread)
                 Positioned(
@@ -982,6 +990,8 @@ class _MessageBubble extends ConsumerWidget {
     final isOwn = currentUserId != null && message.senderId == currentUserId;
     final isSeen = message.readAt != null;
     final initials = message.senderInitials;
+    final avatarUrl = message.senderAvatar;
+    final myAvatarUrl = authState.user?.googleAvatar;
     final l10n = AppLocalizations.of(context);
     final isListingOwner =
         listingOwnerId != null && message.senderId == listingOwnerId;
@@ -999,28 +1009,35 @@ class _MessageBubble extends ConsumerWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: isListingOwner
-                      ? [AppColors.accent400, AppColors.accent600]
-                      : [
-                          Theme.of(context).colorScheme.secondaryContainer,
-                          Theme.of(context).colorScheme.secondaryContainer
-                        ],
-                ),
+                image: avatarUrl != null
+                    ? DecorationImage(image: NetworkImage(avatarUrl), fit: BoxFit.cover)
+                    : null,
+                gradient: avatarUrl != null
+                    ? null
+                    : LinearGradient(
+                        colors: isListingOwner
+                            ? [AppColors.accent400, AppColors.accent600]
+                            : [
+                                Theme.of(context).colorScheme.secondaryContainer,
+                                Theme.of(context).colorScheme.secondaryContainer
+                              ],
+                      ),
                 shape: BoxShape.circle,
               ),
-              child: Center(
-                child: Text(
-                  initials,
-                  style: AppTextStyles.caption.copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: context.isDarkMode
-                        ? AppColors.primary900
-                        : AppColors.surface,
-                  ),
-                ),
-              ),
+              child: avatarUrl != null
+                  ? null
+                  : Center(
+                      child: Text(
+                        initials,
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: context.isDarkMode
+                              ? AppColors.primary900
+                              : AppColors.surface,
+                        ),
+                      ),
+                    ),
             ),
             const SizedBox(width: 8),
           ],
@@ -1110,24 +1127,31 @@ class _MessageBubble extends ConsumerWidget {
             Container(
               width: 32,
               height: 32,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppColors.accent400, AppColors.accent600],
-                ),
+              decoration: BoxDecoration(
+                image: myAvatarUrl != null
+                    ? DecorationImage(image: NetworkImage(myAvatarUrl), fit: BoxFit.cover)
+                    : null,
+                gradient: myAvatarUrl != null
+                    ? null
+                    : const LinearGradient(
+                        colors: [AppColors.accent400, AppColors.accent600],
+                      ),
                 shape: BoxShape.circle,
               ),
-              child: Center(
-                child: Text(
-                  initials,
-                  style: AppTextStyles.caption.copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: context.isDarkMode
-                        ? AppColors.primary900
-                        : AppColors.surface,
-                  ),
-                ),
-              ),
+              child: myAvatarUrl != null
+                  ? null
+                  : Center(
+                      child: Text(
+                        initials,
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: context.isDarkMode
+                              ? AppColors.primary900
+                              : AppColors.surface,
+                        ),
+                      ),
+                    ),
             ),
           ],
         ],

@@ -10,6 +10,7 @@ class User {
   final String? gender;
   final bool isPhoneVerified;
   final bool isKycVerified;
+  final String? googleAvatar;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -24,6 +25,7 @@ class User {
     this.gender,
     this.isPhoneVerified = false,
     this.isKycVerified = false,
+    this.googleAvatar,
     this.createdAt,
     this.updatedAt,
   });
@@ -40,6 +42,7 @@ class User {
       gender: json['gender'],
       isPhoneVerified: json['is_phone_verified'] ?? false,
       isKycVerified: json['is_kyc_verified'] ?? false,
+      googleAvatar: json['profile_photo_url'] ?? json['google_avatar'],
       createdAt: json['created_at'] != null 
           ? DateTime.parse(json['created_at']) 
           : null,
@@ -61,6 +64,7 @@ class User {
       'gender': gender,
       'is_phone_verified': isPhoneVerified,
       'is_kyc_verified': isKycVerified,
+      'profile_photo_url': googleAvatar,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };

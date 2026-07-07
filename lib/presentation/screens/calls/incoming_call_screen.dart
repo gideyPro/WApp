@@ -210,13 +210,17 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
 
   Widget _buildCallerAvatar() {
     final initials = widget.callerInitials ?? '??';
+    final avatarUrl = widget.callerAvatar;
 
     return Container(
       width: 140,
       height: 140,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.accent600,
+        image: avatarUrl != null
+            ? DecorationImage(image: NetworkImage(avatarUrl), fit: BoxFit.cover)
+            : null,
+        color: avatarUrl != null ? null : AppColors.accent600,
         boxShadow: [
           BoxShadow(
             color: AppColors.accent600.withValues(alpha: 0.4),
@@ -225,15 +229,17 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
           ),
         ],
       ),
-      child: Center(
-        child: Text(
-          initials,
-          style: AppTextStyles.headline1.copyWith(
-            color: Colors.white,
-            fontSize: 48,
-          ),
-        ),
-      ),
+      child: avatarUrl != null
+          ? null
+          : Center(
+              child: Text(
+                initials,
+                style: AppTextStyles.headline1.copyWith(
+                  color: Colors.white,
+                  fontSize: 48,
+                ),
+              ),
+            ),
     );
   }
 
