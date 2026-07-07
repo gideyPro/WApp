@@ -573,7 +573,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingHasDebt => 'ዕዳ ወይ እገዳ ኣለዎ';
 
   @override
-  String get listingDebtAmount => 'መጠንን ዕዳ';
+  String get listingDebtAmount => 'መጠን ዕዳ';
 
   @override
   String get listingSelectHolding => 'ዓይነት ትሕዝቶ ይምረፁ';
@@ -1249,7 +1249,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountConfirm =>
-      'ርግፀኛ ዲኹም ኣካውንትኩም ከተጥፍእዎ ትደልዩ? እዚ ምልሳስ ዘይብሉ ስጉምቲ እዩ። ኩሉ ሓበሬታኹም፣ ዝርዝራትኩምን መልእኽትታትኩምን ክወገድ እዩ።';
+      'ርግፀኛ ዲኹም ኣካውንትኩም ክተጥፍእዎ ትደልዩ? እዚ ምምላስ ዘይብሉ ስጉምቲ እዩ። ኩሉ ሓበሬታኹም፣ ዝርዝራትኩምን መልእኽትታትኩምን ክወገድ እዩ።';
 
   @override
   String get settingsDeleteAccountSuccess => 'ኣካውንት ብትኽክል ተሰሪዙ';
@@ -1477,7 +1477,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsVipAccess => 'VIP ንብረት ምርኣይ';
 
   @override
-  String get notificationsEmpty => 'ምንም መጠንቀቕታ የለን';
+  String get notificationsEmpty => 'ሓድሽ ምልክታ የለን';
 
   @override
   String get notificationsEmptySubtitle => 'ሓድሽ ነገር ምስ ዝህሉ ኣብዚ ክትርእዩ ኢኹም';
@@ -1576,7 +1576,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get errorLoadingPayments => 'ክፍሊታት ክፅዕን ኣይከኣለን';
 
   @override
-  String get errorLoadingNotifications => 'መጠንቀቕታታት ክፅዕን ኣይከኣለን';
+  String get errorLoadingNotifications => 'ምልክታታት ክፅዕን ኣይከኣለን';
 
   @override
   String get errorLoadingFavorites => 'ዝተመረፁ ክፅዕን ኣይከኣለን';

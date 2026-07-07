@@ -1249,7 +1249,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountConfirm =>
-      'እርግጠኛ ነዎት አካውንትዎን መሰረዝ ይፈልጋሉ? ይህ እርምጃ ሊቀለበስ የማይችል ነው። ሁሉም ውሂብዎ፣ ዝርዝሮችዎ እና መልእክቶችዎ ይወገዳሉ።';
+      'እርግጠኛ ነዎት አካውንትዎን መሰረዝ ይፈልጋሉ? ይህ እርምጃ ሊቀለበስ የማይችል ነው። ሁሉም መረጃዎ፣ ዝርዝሮችዎ እና መልእክቶችዎ ይወገዳሉ።';
 
   @override
   String get settingsDeleteAccountSuccess => 'አካውንት በተሳካ ሁኔታ ተሰርዟል';

@@ -394,7 +394,7 @@
   "settingsNotifications": "ማስታወቂያዎች",
   "settingsDarkMode": "ጨለማ ሁኔታ",
   "settingsDeleteAccount": "አካውንት ሰርዝ",
-  "settingsDeleteAccountConfirm": "እርግጠኛ ነዎት አካውንትዎን መሰረዝ ይፈልጋሉ? ይህ እርምጃ ሊቀለበስ የማይችል ነው። ሁሉም ውሂብዎ፣ ዝርዝሮችዎ እና መልእክቶችዎ ይወገዳሉ።",
+  "settingsDeleteAccountConfirm": "እርግጠኛ ነዎት አካውንትዎን መሰረዝ ይፈልጋሉ? ይህ እርምጃ ሊቀለበስ የማይችል ነው። ሁሉም መረጃዎ፣ ዝርዝሮችዎ እና መልእክቶችዎ ይወገዳሉ።",
   "settingsDeleteAccountSuccess": "አካውንት በተሳካ ሁኔታ ተሰርዟል",
   "listingEditTitle": "ንብረት ያስተካክሉ",
   "listingEditCooldownActive": "ንብረቶች በየ14 ቀናት አንድ ጊዜ ብቻ ማስተካከል ይቻላል።",
