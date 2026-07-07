@@ -701,7 +701,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'You will be redirected to our website to complete the deletion process.',
+                        AppLocalizations.of(context).settingsDeleteRedirect,
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.info,
                           fontWeight: FontWeight.w500,

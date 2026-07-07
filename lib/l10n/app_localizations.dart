@@ -3597,6 +3597,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rented'**
   String get statusRented;
+
+  /// No description provided for @splashSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Trusted Property Marketplace'**
+  String get splashSubtitle;
+
+  /// No description provided for @homeRefreshing.
+  ///
+  /// In en, this message translates to:
+  /// **'Refreshing...'**
+  String get homeRefreshing;
+
+  /// No description provided for @shareListingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared from WaveMart - Your Trusted Property Marketplace'**
+  String get shareListingTitle;
+
+  /// No description provided for @shareListingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out this property on WaveMart: '**
+  String get shareListingMessage;
+
+  /// No description provided for @authOrSeparator.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get authOrSeparator;
+
+  /// No description provided for @commonSigningIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in...'**
+  String get commonSigningIn;
+
+  /// No description provided for @commonSignInWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get commonSignInWithGoogle;
+
+  /// No description provided for @webviewDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get webviewDone;
+
+  /// No description provided for @webviewConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to payment gateway...'**
+  String get webviewConnecting;
+
+  /// No description provided for @webviewActivating.
+  ///
+  /// In en, this message translates to:
+  /// **'Activating your plan...'**
+  String get webviewActivating;
+
+  /// No description provided for @webviewPleaseWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait a moment'**
+  String get webviewPleaseWait;
+
+  /// No description provided for @webviewGatewayTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway Timeout'**
+  String get webviewGatewayTimeout;
+
+  /// No description provided for @webviewFailedToLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load payment URL'**
+  String get webviewFailedToLoad;
+
+  /// No description provided for @settingsDeleteRedirect.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be redirected to our website to complete the deletion process.'**
+  String get settingsDeleteRedirect;
+
+  /// No description provided for @commonFailedOpenOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to open order'**
+  String get commonFailedOpenOrder;
 }
 
 class _AppLocalizationsDelegate

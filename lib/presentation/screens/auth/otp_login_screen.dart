@@ -51,7 +51,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     if (!_phoneFocus.hasFocus) {
       final phone = _phoneController.text.trim();
       setState(() {
-        _phoneError = (phone.isEmpty || phone.length < 9) ? l10n.authPhoneRequired : null;
+        _phoneError =
+            (phone.isEmpty || phone.length < 9) ? l10n.authPhoneRequired : null;
       });
     }
   }
@@ -109,119 +110,160 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                     children: [
                       const SizedBox(height: 24),
 
-                  // Logo with glassmorphism
-                  const GlassLogoContainer(size: 72, logoSize: 52),
-                  const SizedBox(height: 12),
-                  Text.rich(
-                    TextSpan(
-                      text: 'Wave',
-                      style: AppTextStyles.headline2.copyWith(color: Colors.white),
-                      children: [
+                      // Logo with glassmorphism
+                      const GlassLogoContainer(size: 72, logoSize: 52),
+                      const SizedBox(height: 12),
+                      Text.rich(
                         TextSpan(
-                          text: 'Mart',
-                          style: AppTextStyles.headline2.copyWith(color: AppColors.accent400),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Title
-                  Text(
-                    l10n.authWelcomeTitle,
-                    style: AppTextStyles.headline3.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.authWelcomeSubtitle,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 40),
-
-                  // Card container — Liquid Glass
-                  LiquidGlass(
-                    borderRadius: 4,
-                    padding: const EdgeInsets.all(24),
-                    variant: LiquidGlassVariant.prominent,
-                    tint: AppColors.accent500,
-                    child: Column(
-                      children: [
-                        // Inline Error Message
-                        if (authState.errorMessage != null)
-                          _buildInlineError(authState.errorMessage!),
-
-                        if (authState.errorMessage != null)
-                          const SizedBox(height: 16),
-
-                        // Step 1: Phone Input
-                        if (!authState.otpSent) ...[
-                          _buildPhoneInput(),
-                          const SizedBox(height: 20),
-                          WaveButton(
-                            text: AppLocalizations.of(context).authSendOtp,
-                            icon: Icons.arrow_forward_rounded,
-                            isLoading: authState.isLoading,
-                            isFullWidth: true,
-                            onPressed: authState.isLoading ? null : _sendOtp,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildRegisterLink(),
-                        ],
-
-                        if (!authState.otpSent) ...[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: Row(
-                              children: [
-                                const Expanded(child: Divider()),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Text(
-                                    'or',
-                                    style: AppTextStyles.caption.copyWith(
-                                      color: context.textMuted,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                const Expanded(child: Divider()),
-                              ],
+                          text: 'Wave',
+                          style: AppTextStyles.headline2
+                              .copyWith(color: Colors.white),
+                          children: [
+                            TextSpan(
+                              text: 'Mart',
+                              style: AppTextStyles.headline2
+                                  .copyWith(color: AppColors.accent400),
                             ),
-                          ),
-                          const GoogleSignInButton(),
-                        ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
 
-                        // Step 2: OTP Input
-                        if (authState.otpSent) ...[
-                          _buildOtpInfoBanner(),
-                          const SizedBox(height: 16),
-                          _buildSectionTitle(context, l10n.authEnterOtp),
-                          const SizedBox(height: 16),
-                          _buildOtpInput(),
-                          const SizedBox(height: 20),
-                          WaveButton(
-                            text: AppLocalizations.of(context).authVerifyOtp,
-                            icon: Icons.check_circle_rounded,
-                            isLoading: authState.isLoading,
-                            isFullWidth: true,
-                            onPressed: authState.isLoading ? null : _verifyOtp,
-                          ),
-                          const SizedBox(height: 12),
-                          _buildChangeNumberButton(),
-                          const SizedBox(height: 8),
-                          _buildResendOtp(),
-                        ],
-                      ],
-                    ),
+                      // Title
+                      Text(
+                        l10n.authWelcomeTitle,
+                        style: AppTextStyles.headline3.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.authWelcomeSubtitle,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: Colors.white.withValues(alpha: 0.7),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 40),
+
+                      // Card container — Liquid Glass
+                      LiquidGlass(
+                        borderRadius: 4,
+                        padding: const EdgeInsets.all(24),
+                        variant: LiquidGlassVariant.prominent,
+                        tint: AppColors.accent500,
+                        child: Column(
+                          children: [
+                            // Inline Error Message
+                            if (authState.errorMessage != null)
+                              _buildInlineError(authState.errorMessage!),
+
+                            if (authState.errorMessage != null)
+                              const SizedBox(height: 16),
+
+                            // Step 1 ↔ Step 2 with animated transition
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              switchInCurve: Curves.easeOutCubic,
+                              switchOutCurve: Curves.easeInCubic,
+                              transitionBuilder: (child, animation) =>
+                                  FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(
+                                  scale: Tween<double>(
+                                    begin: 0.92,
+                                    end: 1.0,
+                                  ).animate(CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOutBack,
+                                  )),
+                                  child: child,
+                                ),
+                              ),
+                              child: authState.otpSent
+                                  ? KeyedSubtree(
+                                      key: const ValueKey('otp_step'),
+                                      child: Column(
+                                        children: [
+                                          _buildOtpInfoBanner(),
+                                          const SizedBox(height: 16),
+                                          _buildSectionTitle(
+                                              context, l10n.authEnterOtp),
+                                          const SizedBox(height: 16),
+                                          _buildOtpInput(),
+                                          const SizedBox(height: 20),
+                                          WaveButton(
+                                            text: AppLocalizations.of(context)
+                                                .authVerifyOtp,
+                                            icon: Icons.check_circle_rounded,
+                                            isLoading: authState.isLoading,
+                                            isFullWidth: true,
+                                            onPressed: authState.isLoading
+                                                ? null
+                                                : _verifyOtp,
+                                          ),
+                                          const SizedBox(height: 12),
+                                          _buildChangeNumberButton(),
+                                          const SizedBox(height: 8),
+                                          _buildResendOtp(),
+                                        ],
+                                      ),
+                                    )
+                                  : KeyedSubtree(
+                                      key: const ValueKey('phone_step'),
+                                      child: Column(
+                                        children: [
+                                          _buildPhoneInput(),
+                                          const SizedBox(height: 20),
+                                          WaveButton(
+                                            text: AppLocalizations.of(context)
+                                                .authSendOtp,
+                                            icon: Icons.arrow_forward_rounded,
+                                            isLoading: authState.isLoading,
+                                            isFullWidth: true,
+                                            onPressed: authState.isLoading
+                                                ? null
+                                                : _sendOtp,
+                                          ),
+                                          const SizedBox(height: 16),
+                                          _buildRegisterLink(),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 6),
+                                            child: Row(
+                                              children: [
+                                                const Expanded(
+                                                    child: Divider()),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12),
+                                                  child: Text(
+                                                    AppLocalizations.of(context)
+                                                        .authOrSeparator,
+                                                    style: AppTextStyles.caption
+                                                        .copyWith(
+                                                      color: context.textMuted,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Expanded(
+                                                    child: Divider()),
+                                              ],
+                                            ),
+                                          ),
+                                          const GoogleSignInButton(),
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                ],
-              ),
                 ),
                 const Positioned(
                   top: 8,
@@ -264,12 +306,16 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.primary900 : AppColors.primary50.withValues(alpha: 0.5),
+            color: isDark
+                ? AppColors.primary900
+                : AppColors.primary50.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
-                  : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
+                  : (isDark
+                      ? Colors.white.withValues(alpha: 0.12)
+                      : AppColors.primary200),
             ),
           ),
           child: Row(
@@ -286,9 +332,11 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
                   focusNode: _phoneFocus,
                   decoration: InputDecoration(
                     hintText: _selectedCountry.example,
-                    hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
+                    hintStyle: AppTextStyles.bodySmall
+                        .copyWith(color: context.textMuted),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   autofillHints: const [AutofillHints.telephoneNumber],
@@ -309,12 +357,14 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
             padding: const EdgeInsets.only(left: 4, top: 6),
             child: Row(
               children: [
-                const Icon(Icons.error_outline, size: 14, color: AppColors.error),
+                const Icon(Icons.error_outline,
+                    size: 14, color: AppColors.error),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     _phoneError!,
-                    style: AppTextStyles.caption.copyWith(color: AppColors.error),
+                    style:
+                        AppTextStyles.caption.copyWith(color: AppColors.error),
                   ),
                 ),
               ],
@@ -416,7 +466,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
             child: Row(
               children: [
                 Icon(
-                  isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
+                  isEthiopia
+                      ? Icons.phone_android_rounded
+                      : Icons.email_rounded,
                   size: 18,
                   color: accentColor,
                 ),
@@ -441,7 +493,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   Widget _buildChangeNumberButton() {
     return TextButton.icon(
       onPressed: () => _confirmChangeNumber(),
-      icon: const Icon(Icons.arrow_back_rounded, size: 16, color: AppColors.primary600),
+      icon: const Icon(Icons.arrow_back_rounded,
+          size: 16, color: AppColors.primary600),
       label: Text(
         l10n.authChangeNumber,
         style: AppTextStyles.bodyMedium.copyWith(
@@ -496,8 +549,11 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.authChangeNumber, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
-        content: Text(l10n.authChangeNumberConfirm, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
+        title: Text(l10n.authChangeNumber,
+            style: AppTextStyles.title.copyWith(color: context.textPrimary)),
+        content: Text(l10n.authChangeNumberConfirm,
+            style:
+                AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -528,8 +584,11 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.authExitLogin, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
-        content: Text(l10n.authExitLoginConfirm, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
+        title: Text(l10n.authExitLogin,
+            style: AppTextStyles.title.copyWith(color: context.textPrimary)),
+        content: Text(l10n.authExitLoginConfirm,
+            style:
+                AppTextStyles.bodyMedium.copyWith(color: context.textPrimary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -557,7 +616,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     if (phone.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.authEnterPhonePrompt), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(l10n.authEnterPhonePrompt),
+              backgroundColor: AppColors.error),
         );
       }
       return;
@@ -576,14 +637,15 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     if (_otpCode.length != 6) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.authEnterOtpPrompt), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(l10n.authEnterOtpPrompt),
+              backgroundColor: AppColors.error),
         );
       }
       return;
     }
 
-    final response =
-        await ref.read(authStateProvider.notifier).login(_otpCode);
+    final response = await ref.read(authStateProvider.notifier).login(_otpCode);
 
     if (mounted && response.success) {
       context.go('/');
@@ -599,11 +661,15 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
       if (response.success) {
         _startCountdown();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message), backgroundColor: AppColors.success),
+          SnackBar(
+              content: Text(response.message),
+              backgroundColor: AppColors.success),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(response.message),
+              backgroundColor: AppColors.error),
         );
       }
     }

@@ -53,7 +53,7 @@ class PropertyListingCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 16),
       borderRadius: 4,
       padding: EdgeInsets.zero,
-      useLiquidGlass: true,
+      useLiquidGlass: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -253,7 +253,7 @@ class PropertyListingCard extends ConsumerWidget {
           child: Row(
             children: [
               if (listing?.status == ListingStatus.frozen)
-                _buildBadge('Frozen', AppColors.error),
+                _buildBadge(l10n.statusFrozen, AppColors.error),
               if (listing?.isNew ?? false)
                 _buildBadge(l10n.listingNew, AppColors.primary600),
               if (listing?.isFeatured ?? false)

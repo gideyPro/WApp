@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/auth_provider.dart';
+import '../../../l10n/app_localizations.dart';
 
 class GoogleSignInButton extends ConsumerWidget {
   const GoogleSignInButton({super.key});
@@ -46,7 +47,7 @@ class GoogleSignInButton extends ConsumerWidget {
             const _GoogleGIcon(),
             const SizedBox(width: 12),
             Text(
-              isLoading ? 'Signing in...' : 'Sign in with Google',
+              isLoading ? AppLocalizations.of(context).commonSigningIn : AppLocalizations.of(context).commonSignInWithGoogle,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: isDark ? Colors.white : const Color(0xFF3C4043),
                 fontWeight: FontWeight.w500,

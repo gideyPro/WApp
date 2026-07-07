@@ -1879,4 +1879,49 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get statusRented => 'ዝተኻረየ';
+
+  @override
+  String get splashSubtitle => 'እሙን ናይ ንብረት ገበያ';
+
+  @override
+  String get homeRefreshing => 'ይሓድስ ኣሎ...';
+
+  @override
+  String get shareListingTitle => 'ካብ WaveMart ተካፊሉ - እሙን ናይ ንብረት ገበያ';
+
+  @override
+  String get shareListingMessage => 'ነዚ ንብረት ኣብ WaveMart ርአ: ';
+
+  @override
+  String get authOrSeparator => 'ወይ';
+
+  @override
+  String get commonSigningIn => 'ኣብ ምእታው ኣሎ...';
+
+  @override
+  String get commonSignInWithGoogle => 'ብGoogle እቶ';
+
+  @override
+  String get webviewDone => 'ተፈጺሙ';
+
+  @override
+  String get webviewConnecting => 'ምስ ክፍሊት መእተዊ ይረኽብ ኣሎ...';
+
+  @override
+  String get webviewActivating => 'ፕላንካ ይንቀሳቐስ ኣሎ...';
+
+  @override
+  String get webviewPleaseWait => 'በጃኹም ቑሩይ ምበእ';
+
+  @override
+  String get webviewGatewayTimeout => 'ናይ መእተዊ ግዜ ምውዳእ';
+
+  @override
+  String get webviewFailedToLoad => 'ናይ ክፍሊት URL ምጽዓን ኣይተኻእለን';
+
+  @override
+  String get settingsDeleteRedirect => 'ነቲ ሂደት ንምውዳእ ናብ ወብሳይትና ክትምህወሱ ኢኹም።';
+
+  @override
+  String get commonFailedOpenOrder => 'ትእዛዝ ምክፋት ኣይተኻእለን';
 }

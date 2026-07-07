@@ -597,5 +597,20 @@
   "statusFrozen": "ዝተኸልከለ",
   "statusRejected": "ተነፂጉ",
   "statusSold": "ዝተሸጠ",
-  "statusRented": "ዝተኻረየ"
+  "statusRented": "ዝተኻረየ",
+  "splashSubtitle": "እሙን ናይ ንብረት ገበያ",
+  "homeRefreshing": "ይሓድስ ኣሎ...",
+  "shareListingTitle": "ካብ WaveMart ተካፊሉ - እሙን ናይ ንብረት ገበያ",
+  "shareListingMessage": "ነዚ ንብረት ኣብ WaveMart ርአ: ",
+  "authOrSeparator": "ወይ",
+  "commonSigningIn": "ኣብ ምእታው ኣሎ...",
+  "commonSignInWithGoogle": "ብGoogle እቶ",
+  "webviewDone": "ተፈጺሙ",
+  "webviewConnecting": "ምስ ክፍሊት መእተዊ ይረኽብ ኣሎ...",
+  "webviewActivating": "ፕላንካ ይንቀሳቐስ ኣሎ...",
+  "webviewPleaseWait": "በጃኹም ቑሩይ ምበእ",
+  "webviewGatewayTimeout": "ናይ መእተዊ ግዜ ምውዳእ",
+  "webviewFailedToLoad": "ናይ ክፍሊት URL ምጽዓን ኣይተኻእለን",
+  "settingsDeleteRedirect": "ነቲ ሂደት ንምውዳእ ናብ ወብሳይትና ክትምህወሱ ኢኹም።",
+  "commonFailedOpenOrder": "ትእዛዝ ምክፋት ኣይተኻእለን"
 }

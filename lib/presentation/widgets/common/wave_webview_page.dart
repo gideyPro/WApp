@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// A reusable WebView page for handling external flows like Chapa payments.
 ///
@@ -90,7 +91,7 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
       }
     } catch (_) {
       if (mounted) {
-        _handleError('Failed to load payment URL');
+        _handleError(AppLocalizations.of(context).webviewFailedToLoad);
       }
     }
   }
@@ -99,7 +100,7 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
     _watchdogTimer?.cancel();
     _watchdogTimer = Timer(const Duration(minutes: 1), () {
       if (isLoading && mounted) {
-        _handleError('Gateway Timeout');
+        _handleError(AppLocalizations.of(context).webviewGatewayTimeout);
       }
     });
   }
@@ -149,7 +150,7 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
           TextButton(
             onPressed: _isActivating ? null : () => Navigator.of(context).pop('done'),
             child: Text(
-              'Done',
+              AppLocalizations.of(context).webviewDone,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: _isActivating ? Colors.white38 : Colors.white,
                 fontWeight: FontWeight.bold,
@@ -220,24 +221,24 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
               },
             ),
           if (_awaitingUrl || (isLoading && progress < 0.1))
-            const Center(
+            Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('Connecting to payment gateway...'),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(AppLocalizations.of(context).webviewConnecting),
                 ],
               ),
             ),
           if (_isActivating)
             Container(
               color: Colors.black54,
-              child: const Center(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 48,
                       height: 48,
                       child: CircularProgressIndicator(
@@ -245,19 +246,19 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
                         strokeWidth: 3,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Text(
-                      'Activating your plan...',
-                      style: TextStyle(
+                      AppLocalizations.of(context).webviewActivating,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
-                      'Please wait a moment',
-                      style: TextStyle(
+                      AppLocalizations.of(context).webviewPleaseWait,
+                      style: const TextStyle(
                         color: Colors.white60,
                         fontSize: 14,
                       ),

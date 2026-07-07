@@ -597,5 +597,20 @@
   "statusFrozen": "የተከለከለ",
   "statusRejected": "ውድቅ የተደረገ",
   "statusSold": "የተሸጠ",
-  "statusRented": "የተከራየ"
+  "statusRented": "የተከራየ",
+  "splashSubtitle": "የታመነ የንብረት ገበያ",
+  "homeRefreshing": "እየታደሰ ነው...",
+  "shareListingTitle": "ከWaveMart የተጋራ - የታመነ የንብረት ገበያ",
+  "shareListingMessage": "ይህን ንብረት በWaveMart ላይ ይመልከቱ: ",
+  "authOrSeparator": "ወይም",
+  "commonSigningIn": "በመግባት ላይ...",
+  "commonSignInWithGoogle": "በGoogle ይግቡ",
+  "webviewDone": "ተከናውኗል",
+  "webviewConnecting": "ከክፍያ መግቢያ ጋር በመገናኘት ላይ...",
+  "webviewActivating": "እቅድዎን በማግበር ላይ...",
+  "webviewPleaseWait": "እባክዎ ትንሽ ይጠብቁ",
+  "webviewGatewayTimeout": "የመግቢያ ማብቂያ ጊዜ",
+  "webviewFailedToLoad": "የክፍያ ዩአርኤልን መጫን አልተሳካም",
+  "settingsDeleteRedirect": "ሂደቱን ለማጠናቀቅ ወደ ድረ-ገፃችን ይደረጋሉ።",
+  "commonFailedOpenOrder": "ትእዛዝ መክፈት አልተሳካም"
 }

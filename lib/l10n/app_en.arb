@@ -597,5 +597,20 @@
   "statusFrozen": "Frozen",
   "statusRejected": "Rejected",
   "statusSold": "Sold",
-  "statusRented": "Rented"
+  "statusRented": "Rented",
+  "splashSubtitle": "Your Trusted Property Marketplace",
+  "homeRefreshing": "Refreshing...",
+  "shareListingTitle": "Shared from WaveMart - Your Trusted Property Marketplace",
+  "shareListingMessage": "Check out this property on WaveMart: ",
+  "authOrSeparator": "or",
+  "commonSigningIn": "Signing in...",
+  "commonSignInWithGoogle": "Sign in with Google",
+  "webviewDone": "Done",
+  "webviewConnecting": "Connecting to payment gateway...",
+  "webviewActivating": "Activating your plan...",
+  "webviewPleaseWait": "Please wait a moment",
+  "webviewGatewayTimeout": "Gateway Timeout",
+  "webviewFailedToLoad": "Failed to load payment URL",
+  "settingsDeleteRedirect": "You will be redirected to our website to complete the deletion process.",
+  "commonFailedOpenOrder": "Failed to open order"
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../presentation/providers/app_providers.dart';
+import '../constants/app_colors.dart';
 import '../../presentation/screens/splash/splash_screen.dart';
 import '../../presentation/screens/auth/otp_login_screen.dart';
 import '../../presentation/screens/auth/registration_screen.dart';
@@ -23,6 +24,36 @@ import '../../presentation/screens/calls/webview_jitsi_screen.dart';
 import '../../presentation/screens/video/full_screen_video_screen.dart';
 import '../../presentation/screens/listing/widgets/listing_step3_media.dart';
 
+Page<void> _buildPageTransition<T>({
+  required LocalKey key,
+  required Widget child,
+}) =>
+    CustomTransitionPage(
+      key: key,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 280),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0.35, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+        )),
+        child: FadeTransition(
+          opacity: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOut,
+            reverseCurve: Curves.easeIn,
+          ),
+          child: child,
+        ),
+      ),
+    );
+
 final goRouter = GoRouter(
   navigatorKey: navigatorKey,
   observers: [routeObserver],
@@ -34,122 +65,227 @@ final goRouter = GoRouter(
     ),
     GoRoute(
       path: '/login',
-      pageBuilder: (context, state) => CustomTransitionPage(
+      pageBuilder: (_, state) => _buildPageTransition(
         key: state.pageKey,
         child: const OtpLoginScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(opacity: animation, child: child),
       ),
     ),
     GoRoute(
       path: '/register',
-      builder: (_, __) => const RegistrationScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const RegistrationScreen(),
+      ),
     ),
     GoRoute(
       path: '/',
-      builder: (_, __) => const MainNavigationShell(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const MainNavigationShell(),
+      ),
     ),
     GoRoute(
       path: '/listings/create',
-      builder: (_, __) => const CreateListingScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const CreateListingScreen(),
+      ),
     ),
     GoRoute(
       path: '/listings/:id',
-      builder: (_, state) {
-        final id = int.parse(state.pathParameters['id']!);
-        return ListingDetailScreen(listingId: id);
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: ListingDetailScreen(listingId: id),
+        );
       },
     ),
     GoRoute(
       path: '/listings/:id/edit',
-      builder: (_, state) {
-        final listing = state.extra as dynamic;
-        return EditListingScreen(listing: listing);
-      },
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: EditListingScreen(listing: state.extra),
+      ),
     ),
     GoRoute(
       path: '/my-listings',
-      builder: (_, __) => const MyListingsScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const MyListingsScreen(),
+      ),
     ),
     GoRoute(
       path: '/my-interests',
-      builder: (_, __) => const MyInterestsScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const MyInterestsScreen(),
+      ),
     ),
     GoRoute(
       path: '/favorites',
-      builder: (_, __) => const FavoritesScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const FavoritesScreen(),
+      ),
     ),
     GoRoute(
       path: '/messages',
-      builder: (_, __) => const MessagesScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const MessagesScreen(),
+      ),
     ),
     GoRoute(
       path: '/chat/:id',
-      builder: (_, state) {
-        final id = int.parse(state.pathParameters['id']!);
-        final conv = state.extra as dynamic;
-        return ChatScreen(conversationId: id, conversation: conv);
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: ChatScreen(
+            conversationId: id,
+            conversation: state.extra as dynamic,
+          ),
+        );
       },
     ),
     GoRoute(
       path: '/orders/create',
-      builder: (_, __) => const CreateOrderScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const CreateOrderScreen(),
+      ),
     ),
     GoRoute(
       path: '/orders/:id',
-      builder: (_, state) {
-        final id = int.parse(state.pathParameters['id']!);
-        return OrderDetailsScreen(orderId: id);
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: OrderDetailsScreen(orderId: id),
+        );
       },
     ),
     GoRoute(
       path: '/payments',
-      builder: (_, __) => const PaymentHistoryScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const PaymentHistoryScreen(),
+      ),
     ),
     GoRoute(
       path: '/payments/:id',
-      builder: (_, state) {
-        final id = int.parse(state.pathParameters['id']!);
-        return PaymentDetailScreen(paymentId: id);
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: PaymentDetailScreen(paymentId: id),
+        );
       },
     ),
     GoRoute(
       path: '/subscriptions',
-      builder: (_, __) => const SubscriptionPlansScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const SubscriptionPlansScreen(),
+      ),
     ),
     GoRoute(
       path: '/kyc',
-      builder: (_, __) => const KycVerificationScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const KycVerificationScreen(),
+      ),
     ),
     GoRoute(
       path: '/help',
-      builder: (_, __) => const HelpCenterScreen(),
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const HelpCenterScreen(),
+      ),
     ),
     GoRoute(
       path: '/video',
-      builder: (_, state) {
-        final url = state.extra as String;
-        return FullScreenVideoScreen(videoUrl: url);
-      },
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: FullScreenVideoScreen(videoUrl: state.extra as String),
+      ),
     ),
     GoRoute(
       path: '/call/:id',
-      builder: (_, state) {
-        final id = int.parse(state.pathParameters['id']!);
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
         final extra = state.extra as Map<String, dynamic>?;
-        return WebViewJitsiScreen(
-          conferenceId: id,
-          jitsiUrl: extra?['url'] as String?,
-          jitsiToken: extra?['token'] as String?,
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: WebViewJitsiScreen(
+            conferenceId: id,
+            jitsiUrl: extra?['url'] as String?,
+            jitsiToken: extra?['token'] as String?,
+          ),
         );
       },
     ),
     GoRoute(
       path: '/video-preview',
-      builder: (_, state) {
-        final filePath = state.extra as String;
-        return VideoPlayerPreviewScreen(filePath: filePath);
-      },
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: VideoPlayerPreviewScreen(filePath: state.extra as String),
+      ),
     ),
   ],
 );
+
+class _InvalidRouteScreen extends StatelessWidget {
+  const _InvalidRouteScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.warning_amber_rounded,
+                size: 64, color: AppColors.stone400),
+            const SizedBox(height: 16),
+            Text(
+              'Invalid route',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

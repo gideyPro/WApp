@@ -62,10 +62,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _lastNameController.addListener(_markDataEntered);
     _phoneController.addListener(_markDataEntered);
     _emailController.addListener(_markDataEntered);
-    _firstNameFocus.addListener(() => _onFieldFocusLost(_firstNameFocus, _validateFirstName));
-    _lastNameFocus.addListener(() => _onFieldFocusLost(_lastNameFocus, _validateLastName));
-    _phoneFocus.addListener(() => _onFieldFocusLost(_phoneFocus, _validatePhone));
-    _emailFocus.addListener(() => _onFieldFocusLost(_emailFocus, _validateEmail));
+    _firstNameFocus.addListener(
+        () => _onFieldFocusLost(_firstNameFocus, _validateFirstName));
+    _lastNameFocus.addListener(
+        () => _onFieldFocusLost(_lastNameFocus, _validateLastName));
+    _phoneFocus
+        .addListener(() => _onFieldFocusLost(_phoneFocus, _validatePhone));
+    _emailFocus
+        .addListener(() => _onFieldFocusLost(_emailFocus, _validateEmail));
   }
 
   void _markDataEntered() {
@@ -143,121 +147,163 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     children: [
                       const SizedBox(height: 24),
 
-                  // Logo
-                  const GlassLogoContainer(size: 72, logoSize: 52),
-                  const SizedBox(height: 12),
-                  Text.rich(
-                    TextSpan(
-                      text: 'Wave',
-                      style: AppTextStyles.headline2.copyWith(color: Colors.white),
-                      children: [
+                      // Logo
+                      const GlassLogoContainer(size: 72, logoSize: 52),
+                      const SizedBox(height: 12),
+                      Text.rich(
                         TextSpan(
-                          text: 'Mart',
-                          style: AppTextStyles.headline2.copyWith(color: AppColors.accent400),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Title
-                  Text(
-                    AppLocalizations.of(context).authCreateAccount,
-                    style: AppTextStyles.headline3.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppLocalizations.of(context).authJoinMarketplace,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Card container — Liquid Glass
-                  LiquidGlass(
-                    borderRadius: 4,
-                    padding: const EdgeInsets.all(24),
-                    variant: LiquidGlassVariant.prominent,
-                    tint: AppColors.accent500,
-                    child: Column(
-                      children: [
-                        // Step 1: Registration Form
-                        if (!_isOtpSent) ...[
-                          const GoogleSignInButton(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Row(
-                              children: [
-                                const Expanded(child: Divider()),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Text(
-                                    'or',
-                                    style: AppTextStyles.caption.copyWith(
-                                      color: context.textMuted,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                const Expanded(child: Divider()),
-                              ],
+                          text: 'Wave',
+                          style: AppTextStyles.headline2
+                              .copyWith(color: Colors.white),
+                          children: [
+                            TextSpan(
+                              text: 'Mart',
+                              style: AppTextStyles.headline2
+                                  .copyWith(color: AppColors.accent400),
                             ),
-                          ),
-                          _buildNameInputs(),
-                          const SizedBox(height: 14),
-                          _buildPhoneInput(),
-                          const SizedBox(height: 14),
-                          _buildEmailInput(),
-                          const SizedBox(height: 14),
-                          _buildGenderSelection(),
-                          const SizedBox(height: 10),
-                          _buildTermsCheckbox(),
-                          const SizedBox(height: 20),
-                          WaveButton(
-                            text: l10n.listingContinue,
-                            icon: Icons.arrow_forward_rounded,
-                            isLoading: _isLoading,
-                            isFullWidth: true,
-                            onPressed: _isLoading ? null : _sendRegistrationOtp,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildLoginLink(),
-                        ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
 
-                        // Step 2: OTP Verification
-                        if (_isOtpSent) ...[
-                          _buildSectionTitle(context, l10n.authVerifyPhone),
-                          const SizedBox(height: 8),
-                          _buildOtpInfoBanner(),
-                          const SizedBox(height: 24),
-                          _buildOtpInput(),
-                          const SizedBox(height: 24),
-                          WaveButton(
-                            text: l10n.authVerifyAndCreate,
-                            icon: Icons.check_circle_rounded,
-                            isLoading: _isLoading,
-                            isFullWidth: true,
-                            onPressed: _isLoading ? null : _verifyAndRegister,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildResendOtp(),
-                        ],
+                      // Title
+                      Text(
+                        AppLocalizations.of(context).authCreateAccount,
+                        style: AppTextStyles.headline3.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        AppLocalizations.of(context).authJoinMarketplace,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: Colors.white.withValues(alpha: 0.7),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
 
-                        // Error Message
-                        if (authState.errorMessage != null) ...[
-                          const SizedBox(height: 16),
-                          _buildInlineError(authState.errorMessage!),
-                        ],
-                      ],
-                    ),
+                      // Card container — Liquid Glass
+                      LiquidGlass(
+                        borderRadius: 4,
+                        padding: const EdgeInsets.all(24),
+                        variant: LiquidGlassVariant.prominent,
+                        tint: AppColors.accent500,
+                        child: Column(
+                          children: [
+                            // Step 1 ↔ Step 2 with animated transition
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              switchInCurve: Curves.easeOutCubic,
+                              switchOutCurve: Curves.easeInCubic,
+                              transitionBuilder: (child, animation) =>
+                                  FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(
+                                  scale: Tween<double>(
+                                    begin: 0.92,
+                                    end: 1.0,
+                                  ).animate(CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOutBack,
+                                  )),
+                                  child: child,
+                                ),
+                              ),
+                              child: _isOtpSent
+                                  ? KeyedSubtree(
+                                      key: const ValueKey('otp_step'),
+                                      child: Column(
+                                        children: [
+                                          _buildSectionTitle(
+                                              context, l10n.authVerifyPhone),
+                                          const SizedBox(height: 8),
+                                          _buildOtpInfoBanner(),
+                                          const SizedBox(height: 24),
+                                          _buildOtpInput(),
+                                          const SizedBox(height: 24),
+                                          WaveButton(
+                                            text: l10n.authVerifyAndCreate,
+                                            icon: Icons.check_circle_rounded,
+                                            isLoading: _isLoading,
+                                            isFullWidth: true,
+                                            onPressed: _isLoading
+                                                ? null
+                                                : _verifyAndRegister,
+                                          ),
+                                          const SizedBox(height: 16),
+                                          _buildResendOtp(),
+                                        ],
+                                      ),
+                                    )
+                                  : KeyedSubtree(
+                                      key: const ValueKey('form_step'),
+                                      child: Column(
+                                        children: [
+                                          const GoogleSignInButton(),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: Row(
+                                              children: [
+                                                const Expanded(
+                                                    child: Divider()),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12),
+                                                  child: Text(
+                                                    AppLocalizations.of(context)
+                                                        .authOrSeparator,
+                                                    style: AppTextStyles.caption
+                                                        .copyWith(
+                                                      color: context.textMuted,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Expanded(
+                                                    child: Divider()),
+                                              ],
+                                            ),
+                                          ),
+                                          _buildNameInputs(),
+                                          const SizedBox(height: 14),
+                                          _buildPhoneInput(),
+                                          const SizedBox(height: 14),
+                                          _buildEmailInput(),
+                                          const SizedBox(height: 14),
+                                          _buildGenderSelection(),
+                                          const SizedBox(height: 10),
+                                          _buildTermsCheckbox(),
+                                          const SizedBox(height: 20),
+                                          WaveButton(
+                                            text: l10n.listingContinue,
+                                            icon: Icons.arrow_forward_rounded,
+                                            isLoading: _isLoading,
+                                            isFullWidth: true,
+                                            onPressed: _isLoading
+                                                ? null
+                                                : _sendRegistrationOtp,
+                                          ),
+                                          const SizedBox(height: 16),
+                                          _buildLoginLink(),
+                                        ],
+                                      ),
+                                    ),
+                            ),
+
+                            // Error Message
+                            if (authState.errorMessage != null) ...[
+                              const SizedBox(height: 16),
+                              _buildInlineError(authState.errorMessage!),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                ],
-              ),
                 ),
                 const Positioned(
                   top: 8,
@@ -282,7 +328,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.authCancelRegistration, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
+        title: Text(l10n.authCancelRegistration,
+            style:
+                AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -309,7 +357,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final accentColor = isEthiopia ? AppColors.emerald500 : AppColors.accent500;
 
     final message = isEthiopia
-        ? l10n.authOtpSentMessage(authState.phoneNumber ?? _phoneController.text)
+        ? l10n
+            .authOtpSentMessage(authState.phoneNumber ?? _phoneController.text)
         : l10n.authOtpSentEmailMessage(_emailController.text);
 
     return Row(
@@ -333,7 +382,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             child: Row(
               children: [
                 Icon(
-                  isEthiopia ? Icons.phone_android_rounded : Icons.email_rounded,
+                  isEthiopia
+                      ? Icons.phone_android_rounded
+                      : Icons.email_rounded,
                   size: 18,
                   color: accentColor,
                 ),
@@ -402,7 +453,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       controller: _emailController,
       focusNode: _emailFocus,
       errorText: _emailError,
-      label: isEthiopia ? l10n.profileEmail : '${l10n.profileEmail} (${l10n.orderRequired})',
+      label: isEthiopia
+          ? l10n.profileEmail
+          : '${l10n.profileEmail} (${l10n.orderRequired})',
       hint: 'name@example.com',
       icon: Icons.email_outlined,
       keyboardType: TextInputType.emailAddress,
@@ -428,12 +481,16 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.primary900 : AppColors.primary50.withValues(alpha: 0.5),
+            color: isDark
+                ? AppColors.primary900
+                : AppColors.primary50.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
-                  : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
+                  : (isDark
+                      ? Colors.white.withValues(alpha: 0.12)
+                      : AppColors.primary200),
             ),
           ),
           child: Row(
@@ -450,9 +507,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   focusNode: _phoneFocus,
                   decoration: InputDecoration(
                     hintText: _selectedCountry.example,
-                    hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
+                    hintStyle: AppTextStyles.bodySmall
+                        .copyWith(color: context.textMuted),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   autofillHints: const [AutofillHints.telephoneNumber],
@@ -486,7 +545,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }) {
     final hasError = errorText != null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -501,12 +560,16 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.primary900 : AppColors.primary50.withValues(alpha: 0.5),
+            color: isDark
+                ? AppColors.primary900
+                : AppColors.primary50.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
-                  : (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200),
+                  : (isDark
+                      ? Colors.white.withValues(alpha: 0.12)
+                      : AppColors.primary200),
             ),
           ),
           child: TextField(
@@ -514,8 +577,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             focusNode: focusNode,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
-              prefixIcon: Icon(icon, color: context.theme.iconSecondary, size: 18),
+              hintStyle:
+                  AppTextStyles.bodySmall.copyWith(color: context.textMuted),
+              prefixIcon:
+                  Icon(icon, color: context.theme.iconSecondary, size: 18),
               border: InputBorder.none,
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
@@ -552,7 +617,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildGenderSelection() {
     final l10n = AppLocalizations.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -571,7 +636,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildGenderOption('female', l10n.profileFemale, Icons.female),
+              child: _buildGenderOption(
+                  'female', l10n.profileFemale, Icons.female),
             ),
           ],
         ),
@@ -581,11 +647,13 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildGenderOption(String value, String label, IconData icon) {
     final isSelected = _selectedGender == value;
-    
+
     return LiquidGlass(
       borderRadius: 4,
       blur: isSelected ? 20 : 16,
-      variant: isSelected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
+      variant: isSelected
+          ? LiquidGlassVariant.prominent
+          : LiquidGlassVariant.regular,
       tint: isSelected ? AppColors.accent500 : null,
       interactive: true,
       onTap: () => setState(() => _selectedGender = value),
@@ -721,13 +789,16 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final fullPhone = '${_selectedCountry.code}${_phoneController.text.trim()}';
+      final fullPhone =
+          '${_selectedCountry.code}${_phoneController.text.trim()}';
       final response = await ref.read(authStateProvider.notifier).register(
             firstName: _firstNameController.text.trim(),
             lastName: _lastNameController.text.trim(),
             phoneNumber: fullPhone,
             gender: _selectedGender!,
-            email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
+            email: _emailController.text.trim().isEmpty
+                ? null
+                : _emailController.text.trim(),
           );
 
       if (response.success) {
@@ -757,9 +828,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       final response = await ref.read(authStateProvider.notifier).register(
             firstName: _firstNameController.text.trim(),
             lastName: _lastNameController.text.trim(),
-            phoneNumber: '${_selectedCountry.code}${_phoneController.text.trim()}',
+            phoneNumber:
+                '${_selectedCountry.code}${_phoneController.text.trim()}',
             gender: _selectedGender!,
-            email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
+            email: _emailController.text.trim().isEmpty
+                ? null
+                : _emailController.text.trim(),
             otpCode: _otpCode,
           );
 

@@ -88,8 +88,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   Future<void> _loadSettings() async {
     try {
-      final response =
-          await ref.read(apiClientProvider).dio.get('${ApiConstants.apiBase}/settings');
+      final response = await ref
+          .read(apiClientProvider)
+          .dio
+          .get('${ApiConstants.apiBase}/settings');
       if (response.statusCode == 200 && response.data is Map) {
         final data = ApiEnvelope.extractData(response.data);
         if (data.isNotEmpty && mounted) {
@@ -225,7 +227,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     setState(() => _hasSearched = true);
-    ref.read(searchResultsProvider.notifier).loadListings(filters: _activeFilters);
+    ref
+        .read(searchResultsProvider.notifier)
+        .loadListings(filters: _activeFilters);
   }
 
   void _clearSearch() {
@@ -524,7 +528,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         return LiquidGlass(
           borderRadius: 4,
           blur: isSelected ? 20 : 16,
-          variant: isSelected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
+          variant: isSelected
+              ? LiquidGlassVariant.prominent
+              : LiquidGlassVariant.regular,
           tint: isSelected ? AppColors.accent500 : null,
           interactive: true,
           onTap: () => onSelected(value),
@@ -633,54 +639,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             displacement: 80,
             color: AppColors.accent500,
             child: CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _SearchBarDelegate(
-                  user: ref.watch(profileProvider).user,
-                  searchController: _searchController,
-                  focusNode: _searchFocusNode,
-                  hasActiveFilters: _hasActiveFilters,
-                  searchQuery: _searchController.text,
-                  onSearchChanged: _onSearchChanged,
-                  onSubmitted: (_) => _performSearch(),
-                  onClear: _clearSearch,
-                  onFilterTap: _showFilterSheet,
-                ),
-              ),
-
-              SliverToBoxAdapter(
-                child: _buildRefreshPill(),
-              ),
-
-              if (_hasActiveFilters)
-                SliverToBoxAdapter(
-                  child: _buildActiveFilterChips(l10n),
-                ),
-
-              if (_hasSearched)
-                _buildSearchResults(searchState, l10n)
-              else ...[
-                SliverToBoxAdapter(
-                  child: FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildSectionHeader(l10n.listingsFeatured),
-                        _buildFeaturedListings(featuredState),
-                        _buildVipSectionHeader(),
-                        _buildVipListingsOrTeaser(vipState),
-                        _buildSectionHeader(l10n.listingsTitle, eyebrow: l10n.homeLatestRecently.toUpperCase()),
-                      ],
-                    ),
+              controller: _scrollController,
+              slivers: [
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _SearchBarDelegate(
+                    user: ref.watch(profileProvider).user,
+                    searchController: _searchController,
+                    focusNode: _searchFocusNode,
+                    hasActiveFilters: _hasActiveFilters,
+                    searchQuery: _searchController.text,
+                    onSearchChanged: _onSearchChanged,
+                    onSubmitted: (_) => _performSearch(),
+                    onClear: _clearSearch,
+                    onFilterTap: _showFilterSheet,
                   ),
                 ),
-                _buildLatestListings(listingsState),
+                SliverToBoxAdapter(
+                  child: _buildRefreshPill(),
+                ),
+                if (_hasActiveFilters)
+                  SliverToBoxAdapter(
+                    child: _buildActiveFilterChips(l10n),
+                  ),
+                if (_hasSearched)
+                  _buildSearchResults(searchState, l10n)
+                else ...[
+                  SliverToBoxAdapter(
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSectionHeader(l10n.listingsFeatured),
+                          _buildFeaturedListings(featuredState),
+                          _buildVipSectionHeader(),
+                          _buildVipListingsOrTeaser(vipState),
+                          _buildSectionHeader(l10n.listingsTitle,
+                              eyebrow: l10n.homeLatestRecently.toUpperCase()),
+                        ],
+                      ),
+                    ),
+                  ),
+                  _buildLatestListings(listingsState),
+                ],
               ],
-            ],
-          ),
+            ),
           ),
         ],
       ),
@@ -697,9 +701,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           children: [
             if (_selectedType != null)
               _filterChip(
-                _selectedType == 'house'
-                    ? l10n.listingHouse
-                    : l10n.listingLand,
+                _selectedType == 'house' ? l10n.listingHouse : l10n.listingLand,
                 () => _removeFilterAndCheck(
                     () => setState(() => _selectedType = null)),
               ),
@@ -799,8 +801,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             const SizedBox(width: 6),
             GestureDetector(
               onTap: onRemove,
-              child: const Icon(Icons.close,
-                  size: 14, color: AppColors.accent600),
+              child:
+                  const Icon(Icons.close, size: 14, color: AppColors.accent600),
             ),
           ],
         ),
@@ -855,8 +857,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             );
           },
-          childCount:
-              state.listings.length + (state.isLoadingMore ? 1 : 0),
+          childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
         ),
       ),
     );
@@ -970,8 +971,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             padding: EdgeInsets.only(right: 16),
             child: SizedBox(
               width: 280,
-              child:
-                  FeaturedListingCard(listing: null, isLoading: true),
+              child: FeaturedListingCard(listing: null, isLoading: true),
             ),
           ),
         ),
@@ -981,8 +981,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       return SizedBox(
         height: 80,
         child: Center(
-          child:
-              Text(l10n.listingsNoResults),
+          child: Text(l10n.listingsNoResults),
         ),
       );
     }
@@ -1042,8 +1041,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             padding: EdgeInsets.only(right: 16),
             child: SizedBox(
               width: 280,
-              child:
-                  FeaturedListingCard(listing: null, isLoading: true),
+              child: FeaturedListingCard(listing: null, isLoading: true),
             ),
           ),
         ),
@@ -1131,9 +1129,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                        const BorderRadius.vertical(
-                                            top: Radius.circular(4)),
+                                    borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(4)),
                                     gradient: LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
@@ -1160,10 +1157,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                       ),
                                       Center(
                                         child: Container(
-                                          padding: const EdgeInsets
-                                              .symmetric(
-                                              horizontal: 14,
-                                              vertical: 8),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 14, vertical: 8),
                                           decoration: BoxDecoration(
                                             color: AppColors.vip
                                                 .withValues(alpha: 0.95),
@@ -1178,11 +1173,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                             ],
                                           ),
                                           child: Row(
-                                            mainAxisSize:
-                                                MainAxisSize.min,
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              const Icon(
-                                                  Icons.diamond,
+                                              const Icon(Icons.diamond,
                                                   size: 14,
                                                   color: Colors.white),
                                               const SizedBox(width: 4),
@@ -1190,8 +1183,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                                 l10n.vipBadge,
                                                 style: const TextStyle(
                                                   color: Colors.white,
-                                                  fontWeight:
-                                                      FontWeight.w800,
+                                                  fontWeight: FontWeight.w800,
                                                   fontSize: 11,
                                                   letterSpacing: 1.0,
                                                 ),
@@ -1208,16 +1200,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
                                       width: 140,
                                       height: 12,
                                       decoration: BoxDecoration(
                                         color: context.shimmerBase,
-                                        borderRadius:
-                                            BorderRadius.circular(2),
+                                        borderRadius: BorderRadius.circular(2),
                                       ),
                                     ),
                                     const SizedBox(height: 6),
@@ -1226,8 +1216,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                       height: 12,
                                       decoration: BoxDecoration(
                                         color: context.shimmerBase,
-                                        borderRadius:
-                                            BorderRadius.circular(2),
+                                        borderRadius: BorderRadius.circular(2),
                                       ),
                                     ),
                                   ],
@@ -1275,6 +1264,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildRefreshPill() {
+    final l10n = AppLocalizations.of(context);
     return SizeTransition(
       sizeFactor: _refreshPillAnimation,
       axisAlignment: -1,
@@ -1290,10 +1280,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               color: AppColors.accent500.withValues(alpha: 0.3),
             ),
           ),
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 12,
                 height: 12,
                 child: CircularProgressIndicator(
@@ -1302,9 +1292,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       AlwaysStoppedAnimation<Color>(AppColors.accent500),
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
-                'Refreshing…',
+                l10n.homeRefreshing,
                 style: TextStyle(
                   color: AppColors.accent500,
                   fontSize: 12,
@@ -1343,8 +1333,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (state.listings.isEmpty) {
       return SliverFillRemaining(
         child: Center(
-          child:
-              Text(AppLocalizations.of(context).listingsNoResults),
+          child: Text(AppLocalizations.of(context).listingsNoResults),
         ),
       );
     }
@@ -1372,8 +1361,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             );
           },
-          childCount:
-              state.listings.length + (state.isLoadingMore ? 1 : 0),
+          childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
         ),
       ),
     );
@@ -1550,7 +1538,8 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                               ),
                               border: InputBorder.none,
                               isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 12),
                             ),
                           ),
                         ),
@@ -1587,7 +1576,9 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
         ),
       ),
     );
-  }  Widget _buildProfileAvatar(BuildContext context) {
+  }
+
+  Widget _buildProfileAvatar(BuildContext context) {
     final avatarUrl = user?.googleAvatar as String?;
     return Container(
       width: 44,
@@ -1615,7 +1606,8 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                         fontWeight: FontWeight.bold,
                       ),
                     )
-                  : const Icon(Icons.person_rounded, color: Colors.white, size: 24),
+                  : const Icon(Icons.person_rounded,
+                      color: Colors.white, size: 24),
             ),
     );
   }
@@ -1641,9 +1633,8 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
             Icon(
               Icons.tune_rounded,
               size: 24,
-              color: hasActiveFilters
-                  ? AppColors.accent500
-                  : AppColors.primary400,
+              color:
+                  hasActiveFilters ? AppColors.accent500 : AppColors.primary400,
             ),
             if (hasActiveFilters)
               Positioned(

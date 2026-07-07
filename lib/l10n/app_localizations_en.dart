@@ -1905,4 +1905,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusRented => 'Rented';
+
+  @override
+  String get splashSubtitle => 'Your Trusted Property Marketplace';
+
+  @override
+  String get homeRefreshing => 'Refreshing...';
+
+  @override
+  String get shareListingTitle =>
+      'Shared from WaveMart - Your Trusted Property Marketplace';
+
+  @override
+  String get shareListingMessage => 'Check out this property on WaveMart: ';
+
+  @override
+  String get authOrSeparator => 'or';
+
+  @override
+  String get commonSigningIn => 'Signing in...';
+
+  @override
+  String get commonSignInWithGoogle => 'Sign in with Google';
+
+  @override
+  String get webviewDone => 'Done';
+
+  @override
+  String get webviewConnecting => 'Connecting to payment gateway...';
+
+  @override
+  String get webviewActivating => 'Activating your plan...';
+
+  @override
+  String get webviewPleaseWait => 'Please wait a moment';
+
+  @override
+  String get webviewGatewayTimeout => 'Gateway Timeout';
+
+  @override
+  String get webviewFailedToLoad => 'Failed to load payment URL';
+
+  @override
+  String get settingsDeleteRedirect =>
+      'You will be redirected to our website to complete the deletion process.';
+
+  @override
+  String get commonFailedOpenOrder => 'Failed to open order';
 }

@@ -47,7 +47,7 @@ class FeaturedListingCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 20),
       borderRadius: 4,
       padding: EdgeInsets.zero,
-      useLiquidGlass: true,
+      useLiquidGlass: false,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -348,7 +348,7 @@ class FeaturedListingCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 20),
       borderRadius: 4,
       padding: EdgeInsets.zero,
-      useLiquidGlass: true,
+      useLiquidGlass: false,
       child: Shimmer.fromColors(
         baseColor: context.shimmerBase,
         highlightColor: context.shimmerHighlight,

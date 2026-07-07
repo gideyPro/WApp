@@ -8,6 +8,7 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
+import '../../../l10n/app_localizations.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -71,9 +72,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     await minSplashTime;
     if (!mounted) return;
 
-    final String nextRoute = hasToken && ref.read(authStateProvider).isAuthenticated
-        ? '/'
-        : '/login';
+    final String nextRoute =
+        hasToken && ref.read(authStateProvider).isAuthenticated
+            ? '/'
+            : '/login';
 
     context.go(nextRoute);
   }
@@ -131,7 +133,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Your Trusted Property Marketplace',
+                            AppLocalizations.of(context).splashSubtitle,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: Colors.white.withValues(alpha: 0.85),
                               letterSpacing: 0.5,

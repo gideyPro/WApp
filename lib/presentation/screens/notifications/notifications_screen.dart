@@ -173,7 +173,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           try {
             context.push('/orders/$orderId');
           } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to open order: $e'), backgroundColor: AppColors.error));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${AppLocalizations.of(context).commonFailedOpenOrder}: $e'), backgroundColor: AppColors.error));
           }
         }
         break;

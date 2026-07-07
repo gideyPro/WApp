@@ -491,13 +491,13 @@ ${listing.getLocalizedTitle(context)}
 ${listing.getLocalizedPrice(context)}
 ${listing.description?.isNotEmpty == true ? '\n${listing.description}' : ''}
 
-Shared from WaveMart - Your Trusted Property Marketplace
+${AppLocalizations.of(context).shareListingTitle}
 ''';
 
     await Share.share(
       shareText,
       subject:
-          'Check out this property on WaveMart: ${listing.getLocalizedTitle(context)}',
+          '${AppLocalizations.of(context).shareListingMessage}${listing.getLocalizedTitle(context)}',
     );
   }
 

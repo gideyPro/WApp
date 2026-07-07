@@ -1879,4 +1879,49 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get statusRented => 'የተከራየ';
+
+  @override
+  String get splashSubtitle => 'የታመነ የንብረት ገበያ';
+
+  @override
+  String get homeRefreshing => 'እየታደሰ ነው...';
+
+  @override
+  String get shareListingTitle => 'ከWaveMart የተጋራ - የታመነ የንብረት ገበያ';
+
+  @override
+  String get shareListingMessage => 'ይህን ንብረት በWaveMart ላይ ይመልከቱ: ';
+
+  @override
+  String get authOrSeparator => 'ወይም';
+
+  @override
+  String get commonSigningIn => 'በመግባት ላይ...';
+
+  @override
+  String get commonSignInWithGoogle => 'በGoogle ይግቡ';
+
+  @override
+  String get webviewDone => 'ተከናውኗል';
+
+  @override
+  String get webviewConnecting => 'ከክፍያ መግቢያ ጋር በመገናኘት ላይ...';
+
+  @override
+  String get webviewActivating => 'እቅድዎን በማግበር ላይ...';
+
+  @override
+  String get webviewPleaseWait => 'እባክዎ ትንሽ ይጠብቁ';
+
+  @override
+  String get webviewGatewayTimeout => 'የመግቢያ ማብቂያ ጊዜ';
+
+  @override
+  String get webviewFailedToLoad => 'የክፍያ ዩአርኤልን መጫን አልተሳካም';
+
+  @override
+  String get settingsDeleteRedirect => 'ሂደቱን ለማጠናቀቅ ወደ ድረ-ገፃችን ይደረጋሉ።';
+
+  @override
+  String get commonFailedOpenOrder => 'ትእዛዝ መክፈት አልተሳካም';
 }
