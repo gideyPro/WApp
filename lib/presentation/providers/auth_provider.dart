@@ -99,6 +99,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         scopes: ['email', 'profile'],
       );
 
+      await googleSignIn.signOut();
       final GoogleSignInAccount? account = await googleSignIn.signIn();
       if (account == null) {
         state = state.copyWith(isLoading: false);
