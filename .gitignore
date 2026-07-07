@@ -15,6 +15,10 @@ target/
 *.apk
 .dart_tool/
 
+# Flutter auto-generated (do not commit)
+.flutter-plugins
+.flutter-plugins-dependencies
+
 # Dependencies
 node_modules/
 venv/
