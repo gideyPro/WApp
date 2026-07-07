@@ -156,13 +156,14 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   Future<void> _sendOtp() async {
+    final l10n = AppLocalizations.of(context);
     final phone = _phoneController.text.trim();
     if (phone.isEmpty) {
-      setState(() => _otpError = 'Please enter your phone number');
+      setState(() => _otpError = l10n.authEnterPhonePrompt);
       return;
     }
     if (phone.length < 7) {
-      setState(() => _otpError = 'Phone number must be at least 7 digits');
+      setState(() => _otpError = l10n.kycPhoneNumberMinDigits);
       return;
     }
 
@@ -360,7 +361,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               Icon(Icons.phone_android_rounded, size: 18, color: AppColors.primary600),
               const SizedBox(width: 8),
               Text(
-                'Verify Your Phone',
+                l10n.authVerifyPhone,
                 style: AppTextStyles.labelLarge.copyWith(
                   fontWeight: FontWeight.w700,
                   color: context.textPrimary,
@@ -370,7 +371,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           ),
           const SizedBox(height: 4),
           Text(
-            'We need to verify your phone number before proceeding',
+            l10n.kycVerifyPhoneSubtitle,
             style: AppTextStyles.caption.copyWith(color: context.textMuted),
           ),
           const SizedBox(height: 16),
@@ -426,7 +427,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           ],
           const SizedBox(height: 16),
           WaveButton(
-            text: 'Send Verification Code',
+            text: l10n.authSendOtp,
             icon: Icons.send_rounded,
             isLoading: _otpLoading,
             onPressed: _otpLoading ? null : _sendOtp,
@@ -460,17 +461,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _otpDestination == 'phone'
-                          ? 'Code sent via SMS to'
-                          : 'Code sent to your email',
+                      l10n.authOtpSentMessage(_fullPhone),
                       style: AppTextStyles.caption.copyWith(color: context.textMuted),
-                    ),
-                    Text(
-                      _fullPhone,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: context.textPrimary,
-                        fontWeight: FontWeight.w700,
-                      ),
                     ),
                   ],
                 ),
@@ -538,7 +530,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
           const SizedBox(height: 16),
           WaveButton(
-            text: 'Verify & Continue',
+            text: l10n.authVerifyOtp,
             icon: Icons.verified_rounded,
             isLoading: _otpVerifyLoading,
             onPressed: _otpVerifyLoading ? null : _verifyOtp,
@@ -554,7 +546,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 onPressed: _changeNumber,
                 icon: const Icon(Icons.edit, size: 16),
                 label: Text(
-                  'Change number',
+                  l10n.authChangeNumber,
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.primary600,
                     fontWeight: FontWeight.w700,
@@ -565,8 +557,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 onPressed: _resendCooldown > 0 ? null : _sendOtp,
                 child: Text(
                   _resendCooldown > 0
-                      ? 'Resend in ${_resendCooldown}s'
-                      : 'Resend code',
+                      ? l10n.authResendCountdown(_resendCooldown)
+                      : l10n.authResendOtp,
                   style: AppTextStyles.caption.copyWith(
                     color: _resendCooldown > 0
                         ? context.textMuted

@@ -916,6 +916,18 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get kycRetry;
 
+  /// No description provided for @kycVerifyPhoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We need to verify your phone number before proceeding'**
+  String get kycVerifyPhoneSubtitle;
+
+  /// No description provided for @kycPhoneNumberMinDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must be at least 7 digits'**
+  String get kycPhoneNumberMinDigits;
+
   /// No description provided for @searchFilters.
   ///
   /// In en, this message translates to:

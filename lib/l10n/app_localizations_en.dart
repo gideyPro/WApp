@@ -451,6 +451,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kycRetry => 'Retry';
 
   @override
+  String get kycVerifyPhoneSubtitle =>
+      'We need to verify your phone number before proceeding';
+
+  @override
+  String get kycPhoneNumberMinDigits =>
+      'Phone number must be at least 7 digits';
+
+  @override
   String get searchFilters => 'Filters';
 
   @override

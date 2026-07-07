@@ -448,6 +448,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get kycRetry => 'ደጊምካ ፈትን';
 
   @override
+  String get kycVerifyPhoneSubtitle => 'ቅድሚ ምቕጣልኩም ቁፅሪ ተሌፎንኩም ከተረጋግፁ የድሊ';
+
+  @override
+  String get kycPhoneNumberMinDigits => 'ቁፅሪ ተሌፎን ብውሑዱ 7 ኣሃዛት ክኸውን ኣለዎ';
+
+  @override
   String get searchFilters => 'መፃረዪታት';
 
   @override

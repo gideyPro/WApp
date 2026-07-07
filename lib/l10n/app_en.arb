@@ -141,6 +141,8 @@
   "kycConnectionErrorTitle": "Connection Error",
   "kycConnectionErrorSubtitle": "Unable to load your KYC status. Please check your connection and try again.",
   "kycRetry": "Retry",
+  "kycVerifyPhoneSubtitle": "We need to verify your phone number before proceeding",
+  "kycPhoneNumberMinDigits": "Phone number must be at least 7 digits",
   "searchFilters": "Filters",
   "searchPropertyType": "Property Type",
   "searchListingStatus": "Listing Status",

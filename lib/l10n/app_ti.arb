@@ -141,6 +141,8 @@
   "kycConnectionErrorTitle": "ፀገም ርክብ ተፈጢሩ",
   "kycConnectionErrorSubtitle": "ኵነታት KYC ንምፅዓን ኣይተኻእለን። በጃኹም ኢንተርኔት ርክብኩም መርምሩ ደጊምኩም ፈትኑ።",
   "kycRetry": "ደጊምካ ፈትን",
+  "kycVerifyPhoneSubtitle": "ቅድሚ ምቕጣልኩም ቁፅሪ ተሌፎንኩም ከተረጋግፁ የድሊ",
+  "kycPhoneNumberMinDigits": "ቁፅሪ ተሌፎን ብውሑዱ 7 ኣሃዛት ክኸውን ኣለዎ",
   "searchFilters": "መፃረዪታት",
   "searchPropertyType": "ዓይነት ንብረት",
   "searchListingStatus": "ኵነታት መሸጣ/ክራይ",

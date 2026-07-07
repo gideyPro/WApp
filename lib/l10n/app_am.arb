@@ -141,6 +141,8 @@
   "kycConnectionErrorTitle": "የግንኙነት ችግር",
   "kycConnectionErrorSubtitle": "የ KYC ሁኔታዎን መጫን አልተቻለም። እባክዎን ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።",
   "kycRetry": "እንደገና ሞክር",
+  "kycVerifyPhoneSubtitle": "ከመቀጠልዎ በፊት ስልክ ቁጥርዎን ማረጋገጥ ያስፈልጋል",
+  "kycPhoneNumberMinDigits": "ስልክ ቁጥሩ ቢያንስ 7 አሃዞች መሆን አለበት",
   "searchFilters": "ማጣሪያዎች",
   "searchPropertyType": "የንብረት አይነት",
   "searchListingStatus": "የሽያጭ/ኪራይ ሁኔታ",

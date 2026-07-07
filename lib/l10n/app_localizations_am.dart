@@ -448,6 +448,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get kycRetry => 'እንደገና ሞክር';
 
   @override
+  String get kycVerifyPhoneSubtitle => 'ከመቀጠልዎ በፊት ስልክ ቁጥርዎን ማረጋገጥ ያስፈልጋል';
+
+  @override
+  String get kycPhoneNumberMinDigits => 'ስልክ ቁጥሩ ቢያንስ 7 አሃዞች መሆን አለበት';
+
+  @override
   String get searchFilters => 'ማጣሪያዎች';
 
   @override
