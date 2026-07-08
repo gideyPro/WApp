@@ -33,6 +33,19 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     _scrollController.addListener(_onScroll);
   }
 
+  /// Refresh notifications when tab becomes visible (IndexedStack keeps
+  /// the widget alive but we detect tab-switch via [selectedTabProvider]).
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ref.listenManual(selectedTabProvider, (prev, next) {
+      if (prev != next && next == 3 && mounted) {
+        ref.read(notificationsProvider.notifier).loadNotifications();
+        ref.read(unreadCountProvider.notifier).refresh();
+      }
+    });
+  }
+
   void _onScroll() {
     final state = ref.read(notificationsProvider);
     if (_scrollController.position.pixels >=
@@ -142,7 +155,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }
 
   Future<void> _handleNotificationTap(app.Notification notification) async {
-    // Mark as read
     if (!notification.isRead) {
       try {
         await ref
@@ -153,38 +165,32 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
     if (!mounted) return;
 
-    // Navigate based on notification type
+    // Prefer actionUrl if provided (deep link from backend)
+    if (notification.actionUrl != null && notification.actionUrl!.isNotEmpty) {
+      _navigateByUrl(notification.actionUrl!);
+      return;
+    }
+
+    // Navigate based on notification type + relatedType
     switch (notification.type) {
       case app.NotificationType.listingApproved:
       case app.NotificationType.listingRejected:
       case app.NotificationType.featuredListingExpired:
+        _navigateRelated(notification, '/listings/');
+        break;
+
       case app.NotificationType.newInterest:
-        if (notification.relatedId != null) {
-          _navigateToListingDetail(notification.relatedId!);
-        }
+        _navigateRelated(notification, '/listings/');
         break;
+
       case app.NotificationType.suggestion:
-        final orderId = notification.relatedId ??
-            (notification.data?['order_id'] as int?) ??
-            (notification.data?['order_id'] is num
-                ? (notification.data!['order_id'] as num).toInt()
-                : null);
-        if (orderId != null) {
-          try {
-            context.push('/orders/$orderId');
-          } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${AppLocalizations.of(context).commonFailedOpenOrder}: $e'), backgroundColor: AppColors.error));
-          }
-        }
+        _navigateRelated(notification, '/orders/');
         break;
+
       case app.NotificationType.paymentSuccess:
       case app.NotificationType.paymentFailed:
         {
-          final paymentId = notification.relatedId ??
-              (notification.data?['payment_id'] as int?) ??
-              (notification.data?['payment_id'] is num
-                  ? (notification.data!['payment_id'] as num).toInt()
-                  : null);
+          final paymentId = _extractId(notification, 'payment_id');
           if (paymentId != null) {
             context.push('/payments/$paymentId');
           } else {
@@ -192,17 +198,90 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           }
         }
         break;
+
       case app.NotificationType.subscriptionActivated:
-      case app.NotificationType.systemAnnouncement:
+        {
+          final paymentId = _extractId(notification, 'payment_id');
+          if (paymentId != null) {
+            context.push('/payments/$paymentId');
+          } else {
+            context.push('/subscriptions');
+          }
+        }
         break;
+
       case app.NotificationType.subscriptionExpired:
         context.push('/subscriptions');
+        break;
+
+      case app.NotificationType.systemAnnouncement:
         break;
     }
   }
 
-  void _navigateToListingDetail(int listingId) {
-    context.push('/listings/$listingId');
+  int? _extractId(app.Notification notification, String key) {
+    return notification.relatedId ??
+        (notification.data?[key] as int?) ??
+        (notification.data?[key] is num
+            ? (notification.data![key] as num).toInt()
+            : null);
+  }
+
+  void _navigateRelated(app.Notification notification, String basePath) {
+    final id = notification.relatedId;
+    if (id != null) {
+      context.push('$basePath$id');
+      return;
+    }
+
+    // Fallback: use relatedType to determine destination
+    final rt = notification.relatedType;
+    if (rt == 'order' || rt == 'orders') {
+      final orderId = _extractId(notification, 'order_id');
+      if (orderId != null) {
+        context.push('/orders/$orderId');
+        return;
+      }
+    }
+    if (rt == 'listing' || rt == 'listings') {
+      final listingId = _extractId(notification, 'listing_id');
+      if (listingId != null) {
+        context.push('/listings/$listingId');
+        return;
+      }
+    }
+    if (rt == 'payment' || rt == 'payments') {
+      final paymentId = _extractId(notification, 'payment_id');
+      if (paymentId != null) {
+        context.push('/payments/$paymentId');
+        return;
+      }
+    }
+    if (rt == 'subscription') {
+      context.push('/subscriptions');
+      return;
+    }
+    if (rt == 'kyc') {
+      context.push('/kyc');
+      return;
+    }
+    if (rt == 'message' || rt == 'conversation') {
+      final convoId = _extractId(notification, 'conversation_id') ??
+          _extractId(notification, 'chat_id');
+      if (convoId != null) {
+        context.push('/chat/$convoId');
+        return;
+      }
+      context.push('/messages');
+    }
+  }
+
+  void _navigateByUrl(String url) {
+    // actionUrl from backend can be a relative path like /orders/42
+    // or an absolute URL — treat as path
+    if (url.startsWith('/')) {
+      context.push(url);
+    }
   }
 
   Widget _buildSkeletonList() {
@@ -239,7 +318,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                           width: double.infinity,
                           color: context.shimmerBase),
                       const SizedBox(height: 4),
-                      Container(height: 12, width: 80, color: context.shimmerBase),
+                      Container(
+                          height: 12, width: 80, color: context.shimmerBase),
                     ],
                   ),
                 ),
