@@ -641,5 +641,20 @@
   "updateLater": "በኋላ",
   "updateNow": "አሁን አዘምን",
   "updateWhatsNew": "ምን አዲስ ነገር አለ?",
-  "routerInvalidRoute": "Invalid route"
+  "routerInvalidRoute": "Invalid route",
+  "reportListing": "ይህን ዝርዝር ሪፖርት ያድርጉ",
+  "reportReason": "ምክንያት",
+  "reportSelectReason": "ምክንያት ይምረጡ...",
+  "reportSpam": "አይፈለጌ መልእክት",
+  "reportFake": "የሐሰት ዝርዝር",
+  "reportWrongCategory": "የተሳሳተ ምድብ",
+  "reportDuplicate": "ተደጋጋሚ ዝርዝር",
+  "reportInappropriate": "ተገቢ ያልሆነ ይዘት",
+  "reportOther": "ሌላ",
+  "reportDescription": "መግለጫ (አማራጭ)",
+  "reportDescriptionHint": "ተጨማሪ ዝርዝሮችን ያስገቡ...",
+  "reportSubmit": "ሪፖርቱን ያስገቡ",
+  "reportSubmitting": "በማስገባት ላይ...",
+  "reportSuccess": "ሪፖርቱ ቀርቧል። እናመሰግናለን።",
+  "reportErrorGeneric": "ሪፖርቱን ማስገባት አልተሳካም። እባክዎ እንደገና ይሞክሩ።"
 }

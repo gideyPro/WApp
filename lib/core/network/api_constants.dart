@@ -160,7 +160,12 @@ class ApiConstants {
   static const String rateTicket = '$apiBase/help/tickets'; // + /{number}/rate
 
   // ==========================================================================
-  // 15. FCM ENDPOINTS
+  // 15. REPORTS ENDPOINTS
+  // ==========================================================================
+  static const String reports = '$apiBase/reports';
+
+  // ==========================================================================
+  // 16. FCM ENDPOINTS
   // ==========================================================================
   static const String registerFcmToken = '$apiBase/fcm/register';
 

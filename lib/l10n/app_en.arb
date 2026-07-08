@@ -641,5 +641,20 @@
   "updateLater": "Later",
   "updateNow": "Update Now",
   "updateWhatsNew": "What's New",
-  "routerInvalidRoute": "Invalid route"
+  "routerInvalidRoute": "Invalid route",
+  "reportListing": "Report this listing",
+  "reportReason": "Reason",
+  "reportSelectReason": "Select a reason...",
+  "reportSpam": "Spam",
+  "reportFake": "Fake listing",
+  "reportWrongCategory": "Wrong category",
+  "reportDuplicate": "Duplicate listing",
+  "reportInappropriate": "Inappropriate content",
+  "reportOther": "Other",
+  "reportDescription": "Description (optional)",
+  "reportDescriptionHint": "Provide additional details...",
+  "reportSubmit": "Submit Report",
+  "reportSubmitting": "Submitting...",
+  "reportSuccess": "Report submitted. Thank you.",
+  "reportErrorGeneric": "Failed to submit report. Please try again."
 }

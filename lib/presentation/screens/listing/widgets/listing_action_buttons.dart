@@ -15,6 +15,7 @@ import '../../../../data/services/lead_service.dart';
 import '../../../../data/services/listing_service.dart';
 import '../../../widgets/common/wave_liquid_glass.dart';
 import 'listing_contact_form.dart';
+import 'listing_report_sheet.dart';
 
 class ListingActionButtons extends ConsumerStatefulWidget {
   final Listing listing;
@@ -262,6 +263,22 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
             listing: listing,
             isOwner: isOwner,
           ),
+          if (!isOwner) ...[
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: () => _showReportSheet(listing),
+                icon: const Icon(Icons.flag_outlined, size: 16),
+                label: Text(l10n.reportListing),
+                style: TextButton.styleFrom(
+                  foregroundColor: context.textSecondary,
+                  visualDensity: VisualDensity.compact,
+                  textStyle: AppTextStyles.labelSmall,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -519,6 +536,15 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     } finally {
       if (mounted) setState(() => _isFeatureLoading = false);
     }
+  }
+
+  void _showReportSheet(Listing listing) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => ListingReportSheet(listingId: listing.id),
+    );
   }
 
   Future<void> _unfeatureListing(Listing listing) async {

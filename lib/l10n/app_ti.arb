@@ -641,5 +641,20 @@
   "updateLater": "ድሕሪ ግዜ",
   "updateNow": "ሕጂ ኣሐድስ",
   "updateWhatsNew": "እንታይ ሓድሽ?",
-  "routerInvalidRoute": "Invalid route"
+  "routerInvalidRoute": "Invalid route",
+  "reportListing": "ነዚ ዝርዝር ሪፖርት ግበር",
+  "reportReason": "ምኽንያት",
+  "reportSelectReason": "ምኽንያት ምረጽ...",
+  "reportSpam": "ስፓም",
+  "reportFake": "ሓሶት ዝርዝር",
+  "reportWrongCategory": "ጌጋ ምድብ",
+  "reportDuplicate": "ተመሳሳሊ ዝርዝር",
+  "reportInappropriate": "ተገባዊ ዘይኮነ ይዘት",
+  "reportOther": "ካልእ",
+  "reportDescription": "መግለፂ (ኣማራጺ)",
+  "reportDescriptionHint": "ተወሳኺ ዝርዝራት ኣስግቡ...",
+  "reportSubmit": "ሪፖርት ኣስግብ",
+  "reportSubmitting": "ይኣትው ኣሎ...",
+  "reportSuccess": "ሪፖርት ቀሪቡ። የቀንየልና።",
+  "reportErrorGeneric": "ሪፖርት ምእታው ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።"
 }
