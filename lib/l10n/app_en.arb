@@ -463,6 +463,7 @@
   "subscriptionsUpgradeOff": "Upgrade {percent}% off",
   "subscriptionsPromoOff": "{percent}% off",
   "subscriptionsPaymentPending": "Payment submitted. We'll notify you when it confirms.",
+  "subscriptionPaymentCancelled": "Payment cancelled. You can try again anytime.",
   "subscriptionsPoweredByChapa": "Payments are processed securely by Chapa",
   "subscriptionsVipAccess": "VIP Access",
   "notificationsEmpty": "No notifications yet",
@@ -612,5 +613,33 @@
   "webviewGatewayTimeout": "Gateway Timeout",
   "webviewFailedToLoad": "Failed to load payment URL",
   "settingsDeleteRedirect": "You will be redirected to our website to complete the deletion process.",
-  "commonFailedOpenOrder": "Failed to open order"
+  "commonFailedOpenOrder": "Failed to open order",
+  "jitsiSettingUpCall": "Setting up call...",
+  "submissionFailed": "Submission Failed",
+  "submissionSaveDraft": "Save Draft & Exit",
+  "submissionGoBack": "Go Back",
+  "authFailedIdToken": "Failed to get ID token",
+  "helpErrorYoutube": "Could not open YouTube",
+  "settingsBrowserErrorMessage": "Could not open browser. Please visit {url}",
+  "@settingsBrowserErrorMessage": {
+    "placeholders": {
+      "url": {}
+    }
+  },
+  "interestsEmpty": "No interests yet",
+  "interestsEmptySubtitle": "Properties you express interest in will appear here",
+  "updateRequired": "Update Required",
+  "updateAvailable": "Update Available",
+  "updateBlockingMessage": "This version of the app is no longer supported. Please update to continue using WaveMart.",
+  "updateAvailableMessage": "A new version{versionSuffix} is available.",
+  "@updateAvailableMessage": {
+    "placeholders": {
+      "versionSuffix": {}
+    }
+  },
+  "updateVersionLabel": "Version: ",
+  "updateLater": "Later",
+  "updateNow": "Update Now",
+  "updateWhatsNew": "What's New",
+  "routerInvalidRoute": "Invalid route"
 }

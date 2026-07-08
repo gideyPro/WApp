@@ -124,6 +124,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       return WaveMessageScreen.error(
         title: l10n.commonError,
         subtitle: _orderError!,
+        onRetry: () {
+          setState(() {
+            _isLoadingOrder = true;
+            _orderError = null;
+            _order = null;
+          });
+          _loadOrder();
+        },
         isEmbedded: true,
       );
     }

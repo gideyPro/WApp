@@ -8,6 +8,7 @@ import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/network/api_constants.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 import '../../providers/app_providers.dart';
 
 /// WebView-based Jitsi call screen that properly handles authentication
@@ -245,7 +246,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            'Setting up call...',
+            AppLocalizations.of(context).jitsiSettingUpCall,
             style: AppTextStyles.bodyLarge.copyWith(
               color: isDark ? Colors.white : AppColors.primary900,
             ),
@@ -256,31 +257,10 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
   }
 
   Widget _buildErrorView() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
-            const SizedBox(height: 16),
-            Text(
-              _errorMessage ?? AppLocalizations.of(context).commonError,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyLarge.copyWith(
-                color: isDark ? Colors.white : AppColors.primary900,
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _retryConnection,
-              icon: const Icon(Icons.refresh),
-              label: Text(AppLocalizations.of(context).commonRetry),
-            ),
-          ],
-        ),
-      ),
+    return WaveMessageScreen.error(
+      subtitle: _errorMessage,
+      onRetry: _retryConnection,
+      isEmbedded: true,
     );
   }
 

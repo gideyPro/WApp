@@ -130,10 +130,10 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
           children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.7,
-              child: WaveEmptyState(
+              child:               WaveEmptyState(
                 icon: Icons.interests_outlined,
-                title: 'No interests yet',
-                subtitle: 'Properties you express interest in will appear here',
+                title: l10n.interestsEmpty,
+                subtitle: l10n.interestsEmptySubtitle,
                 actionLabel: l10n.commonBrowseProperties,
                 onAction: () {
                   ref.read(selectedTabProvider.notifier).state = 0;

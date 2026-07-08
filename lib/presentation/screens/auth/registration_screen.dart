@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/constants/countries.dart';
@@ -896,26 +897,49 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       data: Theme.of(context).copyWith(
         unselectedWidgetColor: context.theme.divider,
       ),
-      child: CheckboxListTile(
-        value: _agreedToTerms,
-        onChanged: (val) => setState(() => _agreedToTerms = val ?? false),
-        title: Text(
-          l10n.listingAcceptTerms,
-          style: AppTextStyles.bodySmall.copyWith(
-            color: context.textPrimary,
-            fontWeight: FontWeight.w600,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CheckboxListTile(
+            value: _agreedToTerms,
+            onChanged: (val) => setState(() => _agreedToTerms = val ?? false),
+            title: Text(
+              l10n.listingAcceptTerms,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: context.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            subtitle: Text(
+              l10n.listingTermsSubtitle,
+              style: AppTextStyles.caption.copyWith(
+                color: context.textSecondary,
+              ),
+            ),
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
+            activeColor: AppColors.accent600,
+            dense: true,
           ),
-        ),
-        subtitle: Text(
-          l10n.listingTermsSubtitle,
-          style: AppTextStyles.caption.copyWith(
-            color: context.textSecondary,
+          Padding(
+            padding: const EdgeInsets.only(left: 40, top: 2),
+            child: GestureDetector(
+              onTap: () => launchUrl(
+                Uri.parse('https://wavemart.et/privacy'),
+                mode: LaunchMode.externalApplication,
+              ),
+              child: Text(
+                l10n.settingsPrivacyPolicy,
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.accent600,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.accent600.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
           ),
-        ),
-        controlAffinity: ListTileControlAffinity.leading,
-        contentPadding: EdgeInsets.zero,
-        activeColor: AppColors.accent600,
-        dense: true,
+        ],
       ),
     );
   }

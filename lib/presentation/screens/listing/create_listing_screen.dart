@@ -480,23 +480,21 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       return _buildSkeleton();
     }
 
-    // KYC network error — retry before any gate
+    // KYC network error — full screen with retry
     if (kycState.hasError) {
       return WaveMessageScreen.error(
         title: l10n.kycConnectionErrorTitle,
         subtitle: kycState.errorMessage ?? l10n.kycConnectionErrorSubtitle,
         onRetry: () => ref.read(kycStatusProvider.notifier).loadKycStatus(),
-        isEmbedded: true,
       );
     }
 
-    // Subscription network error — retry before any gate
+    // Subscription network error — full screen with retry
     if (subState.hasError) {
       return WaveMessageScreen.error(
         title: l10n.errorSubscription,
         subtitle: subState.errorMessage!,
         onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
-        isEmbedded: true,
       );
     }
 
@@ -507,7 +505,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         icon: Icons.verified_outlined,
         iconColor: AppColors.accent500,
         title: kycState.isPending
-            ? l10n.kycPendingSubtitleReview
+            ? l10n.kycPendingTitle
             : l10n.kycRequiredTitle,
         subtitle: kycState.isPending
             ? l10n.kycPendingSubtitleReview

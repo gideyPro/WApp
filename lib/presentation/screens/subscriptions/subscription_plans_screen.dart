@@ -827,8 +827,8 @@ class _SubscriptionPlansScreenState
         ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.subscriptionsPaymentPending),
-            backgroundColor: AppColors.primary800,
+            content: Text(l10n.subscriptionPaymentCancelled),
+            backgroundColor: AppColors.stone600,
             duration: const Duration(seconds: 4),
           ),
         );

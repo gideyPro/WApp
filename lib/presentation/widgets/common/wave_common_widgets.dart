@@ -475,29 +475,12 @@ class WaveMessageScreen extends StatelessWidget {
     final callback = hasRetry ? onRetry! : onAction!;
     final label = actionLabel ?? (hasRetry ? l10n.messageRetry : l10n.commonContinue);
 
-    return GestureDetector(
-      onTap: callback,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.refresh_rounded,
-            size: 18,
-            color: AppColors.accent600,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.accent600,
-              fontWeight: FontWeight.w600,
-              decoration: TextDecoration.underline,
-              decorationColor: AppColors.accent600.withValues(alpha: 0.5),
-            ),
-          ),
-        ],
-      ),
+    return WaveButton(
+      text: label,
+      onPressed: callback,
+      icon: hasRetry ? Icons.refresh_rounded : null,
+      variant: ButtonVariant.primary,
+      isFullWidth: true,
     );
   }
 

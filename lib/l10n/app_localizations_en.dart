@@ -1492,6 +1492,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Payment submitted. We\'ll notify you when it confirms.';
 
   @override
+  String get subscriptionPaymentCancelled =>
+      'Payment cancelled. You can try again anytime.';
+
+  @override
   String get subscriptionsPoweredByChapa =>
       'Payments are processed securely by Chapa';
 
@@ -1952,4 +1956,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonFailedOpenOrder => 'Failed to open order';
+
+  @override
+  String get jitsiSettingUpCall => 'Setting up call...';
+
+  @override
+  String get submissionFailed => 'Submission Failed';
+
+  @override
+  String get submissionSaveDraft => 'Save Draft & Exit';
+
+  @override
+  String get submissionGoBack => 'Go Back';
+
+  @override
+  String get authFailedIdToken => 'Failed to get ID token';
+
+  @override
+  String get helpErrorYoutube => 'Could not open YouTube';
+
+  @override
+  String settingsBrowserErrorMessage(Object url) {
+    return 'Could not open browser. Please visit $url';
+  }
+
+  @override
+  String get interestsEmpty => 'No interests yet';
+
+  @override
+  String get interestsEmptySubtitle =>
+      'Properties you express interest in will appear here';
+
+  @override
+  String get updateRequired => 'Update Required';
+
+  @override
+  String get updateAvailable => 'Update Available';
+
+  @override
+  String get updateBlockingMessage =>
+      'This version of the app is no longer supported. Please update to continue using WaveMart.';
+
+  @override
+  String updateAvailableMessage(Object versionSuffix) {
+    return 'A new version$versionSuffix is available.';
+  }
+
+  @override
+  String get updateVersionLabel => 'Version: ';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String get updateNow => 'Update Now';
+
+  @override
+  String get updateWhatsNew => 'What\'s New';
+
+  @override
+  String get routerInvalidRoute => 'Invalid route';
 }

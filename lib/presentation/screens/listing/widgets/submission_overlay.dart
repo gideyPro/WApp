@@ -3,6 +3,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_liquid_glass.dart';
 
 enum SubmissionPhase { validating, uploading, saving }
@@ -402,7 +403,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
               ),
               const SizedBox(height: 32),
               Text(
-                'Submission Failed',
+                AppLocalizations.of(context).submissionFailed,
                 style: AppTextStyles.headline3.copyWith(
                   color: themeColors.textPrimary,
                 ),
@@ -439,7 +440,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                     ),
                     onPressed: state.onRetry,
                     child: Text(
-                      'Retry',
+                      AppLocalizations.of(context).commonRetry,
                       style: AppTextStyles.buttonMedium,
                     ),
                   ),
@@ -460,7 +461,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                     ),
                     onPressed: state.onSaveDraft,
                     child: Text(
-                      'Save Draft & Exit',
+                      AppLocalizations.of(context).submissionSaveDraft,
                       style: AppTextStyles.buttonMedium,
                     ),
                   ),
@@ -470,7 +471,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
               TextButton(
                 onPressed: () => widget.onDismiss?.call(null),
                 child: Text(
-                  'Go Back',
+                  AppLocalizations.of(context).submissionGoBack,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: themeColors.textTertiary,
                   ),

@@ -2848,6 +2848,12 @@ abstract class AppLocalizations {
   /// **'Payment submitted. We\'ll notify you when it confirms.'**
   String get subscriptionsPaymentPending;
 
+  /// No description provided for @subscriptionPaymentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment cancelled. You can try again anytime.'**
+  String get subscriptionPaymentCancelled;
+
   /// No description provided for @subscriptionsPoweredByChapa.
   ///
   /// In en, this message translates to:
@@ -3687,6 +3693,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to open order'**
   String get commonFailedOpenOrder;
+
+  /// No description provided for @jitsiSettingUpCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting up call...'**
+  String get jitsiSettingUpCall;
+
+  /// No description provided for @submissionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Submission Failed'**
+  String get submissionFailed;
+
+  /// No description provided for @submissionSaveDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Draft & Exit'**
+  String get submissionSaveDraft;
+
+  /// No description provided for @submissionGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get submissionGoBack;
+
+  /// No description provided for @authFailedIdToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to get ID token'**
+  String get authFailedIdToken;
+
+  /// No description provided for @helpErrorYoutube.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open YouTube'**
+  String get helpErrorYoutube;
+
+  /// No description provided for @settingsBrowserErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open browser. Please visit {url}'**
+  String settingsBrowserErrorMessage(Object url);
+
+  /// No description provided for @interestsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No interests yet'**
+  String get interestsEmpty;
+
+  /// No description provided for @interestsEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties you express interest in will appear here'**
+  String get interestsEmptySubtitle;
+
+  /// No description provided for @updateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Required'**
+  String get updateRequired;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get updateAvailable;
+
+  /// No description provided for @updateBlockingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This version of the app is no longer supported. Please update to continue using WaveMart.'**
+  String get updateBlockingMessage;
+
+  /// No description provided for @updateAvailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version{versionSuffix} is available.'**
+  String updateAvailableMessage(Object versionSuffix);
+
+  /// No description provided for @updateVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version: '**
+  String get updateVersionLabel;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateLater;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get updateNow;
+
+  /// No description provided for @updateWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s New'**
+  String get updateWhatsNew;
+
+  /// No description provided for @routerInvalidRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid route'**
+  String get routerInvalidRoute;
 }
 
 class _AppLocalizationsDelegate

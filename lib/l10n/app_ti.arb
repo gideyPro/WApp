@@ -463,6 +463,7 @@
   "subscriptionsUpgradeOff": "{percent}% ቅናሽ",
   "subscriptionsPromoOff": "{percent}% ቅናሽ",
   "subscriptionsPaymentPending": "ክፍሊት ተላኢኹ። ምስተረጋገፀ ክንሕብረኩም ኢና።",
+  "subscriptionPaymentCancelled": "ክፍሊት ተሰሪዙ። ኣብ ዝኾነ ግዜ ደጊምኩም ክትፍትኑ ትኽእሉ ኢኹም።",
   "subscriptionsPoweredByChapa": "ክፍሊታት ብቻፓ ብውሑስ ኣገባብ ይካየዱ",
   "subscriptionsVipAccess": "VIP ንብረት ምርኣይ",
   "notificationsEmpty": "ሓድሽ ምልክታ የለን",
@@ -612,5 +613,33 @@
   "webviewGatewayTimeout": "ናይ መእተዊ ግዜ ምውዳእ",
   "webviewFailedToLoad": "ናይ ክፍሊት URL ምጽዓን ኣይተኻእለን",
   "settingsDeleteRedirect": "ነቲ ሂደት ንምውዳእ ናብ ወብሳይትና ክትምህወሱ ኢኹም።",
-  "commonFailedOpenOrder": "ትእዛዝ ምክፋት ኣይተኻእለን"
+  "commonFailedOpenOrder": "ትእዛዝ ምክፋት ኣይተኻእለን",
+  "jitsiSettingUpCall": "ፃውዒት ይዳሎ ኣሎ...",
+  "submissionFailed": "ምእታው ኣይተዓወተን",
+  "submissionSaveDraft": "ረቂቕ ዓቂብካ ውፃእ",
+  "submissionGoBack": "ተመለስ",
+  "authFailedIdToken": "ID ቶከን ምርካብ ኣይተኻእለን",
+  "helpErrorYoutube": "ዩቲዩብ ክኽፈት ኣይተኻእለን",
+  "settingsBrowserErrorMessage": "ብራውዘር ክኽፈት ኣይተኻእለን። በጃኹም {url} በፅሑ",
+  "@settingsBrowserErrorMessage": {
+    "placeholders": {
+      "url": {}
+    }
+  },
+  "interestsEmpty": "ድሌታት የለን",
+  "interestsEmptySubtitle": "ኣብ ንብረታት ዝገለፅኩምዎ ድሌት ኣብዚ ክርአ እዩ",
+  "updateRequired": "ምሕዳስ የድሊ",
+  "updateAvailable": "ሓድሽ ኣፕዴት ኣሎ",
+  "updateBlockingMessage": "እዚ ናይ መተግበሪ  ሕትም ካብ ሎሚ ካብ ጥቕሚ ወፃኢ ኣዩ። በጃኹም ዌቭማርት ንምጥቃም ኣሐድሱ(UPDATE!)።",
+  "updateAvailableMessage": "ሓድሽ ሕትም{versionSuffix} ይርከብ።",
+  "@updateAvailableMessage": {
+    "placeholders": {
+      "versionSuffix": {}
+    }
+  },
+  "updateVersionLabel": "ሕትም(Version): ",
+  "updateLater": "ድሕሪ ግዜ",
+  "updateNow": "ሕጂ ኣሐድስ",
+  "updateWhatsNew": "እንታይ ሓድሽ?",
+  "routerInvalidRoute": "Invalid route"
 }

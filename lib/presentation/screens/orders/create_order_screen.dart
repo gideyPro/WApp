@@ -345,13 +345,12 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       return _buildSkeleton();
     }
 
-    // Subscription network error — retry before any gate
+    // Subscription network error — full screen with retry
     if (subState.hasError) {
       return WaveMessageScreen.error(
         title: l10n.errorSubscription,
         subtitle: subState.errorMessage!,
         onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
-        isEmbedded: true,
       );
     }
 

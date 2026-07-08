@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wavemart/l10n/app_localizations.dart';
 import '../../presentation/providers/app_providers.dart';
 import '../constants/app_colors.dart';
 import '../../presentation/screens/splash/splash_screen.dart';
@@ -58,6 +59,26 @@ final goRouter = GoRouter(
   navigatorKey: navigatorKey,
   observers: [routeObserver],
   initialLocation: '/splash',
+  errorBuilder: (context, state) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.link_off_rounded, size: 64, color: AppColors.stone400),
+              const SizedBox(height: 16),
+              Text(
+                AppLocalizations.of(context).routerInvalidRoute,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  },
   routes: [
     GoRoute(
       path: '/splash',
@@ -271,6 +292,7 @@ class _InvalidRouteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: Center(
         child: Column(
@@ -280,7 +302,7 @@ class _InvalidRouteScreen extends StatelessWidget {
                 size: 64, color: AppColors.stone400),
             const SizedBox(height: 16),
             Text(
-              'Invalid route',
+              l10n.routerInvalidRoute,
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ],

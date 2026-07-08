@@ -529,7 +529,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not open YouTube'), backgroundColor: AppColors.error));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).helpErrorYoutube), backgroundColor: AppColors.error));
       }
     }
   }

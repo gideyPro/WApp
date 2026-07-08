@@ -207,6 +207,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
 
   void _showUpdateDialog(BuildContext context, VersionState state) {
     final isBlocking = state.updateType == UpdateType.blocking;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       barrierDismissible: !isBlocking,
@@ -219,7 +220,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
               Icon(isBlocking ? Icons.warning_amber_rounded : Icons.system_update,
                    color: AppColors.amber, size: 28),
               const SizedBox(width: 8),
-              Text(isBlocking ? 'Update Required' : 'Update Available'),
+              Text(isBlocking ? l10n.updateRequired : l10n.updateAvailable),
             ],
           ),
           content: Column(
@@ -228,12 +229,14 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
             children: [
               Text(
                 isBlocking
-                    ? 'This version of the app is no longer supported. Please update to continue using WaveMart.'
-                    : 'A new version${state.latestVersion.isNotEmpty ? ' (${state.latestVersion})' : ''} is available.',
+                    ? l10n.updateBlockingMessage
+                    : l10n.updateAvailableMessage(
+                        state.latestVersion.isNotEmpty ? ' (${state.latestVersion})' : '',
+                      ),
               ),
               if (state.whatsNew.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                const Text("What's New", style: TextStyle(fontWeight: FontWeight.w700)),
+                Text(l10n.updateWhatsNew, style: const TextStyle(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 4),
                 Text(state.whatsNew, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700])),
               ],
@@ -242,7 +245,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
                   padding: const EdgeInsets.only(top: 12),
                   child: Row(
                     children: [
-                      const Text('Version: ', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Text(l10n.updateVersionLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
                       Text(state.latestVersion),
                     ],
                   ),
@@ -253,7 +256,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
             if (!isBlocking)
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Later'),
+                child: Text(l10n.updateLater),
               ),
             ElevatedButton(
               onPressed: () => _openUpdateUrl(state.updateUrl, ctx),
@@ -263,7 +266,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
               ),
-              child: const Text('Update Now'),
+              child: Text(l10n.updateNow),
             ),
           ],
         ),

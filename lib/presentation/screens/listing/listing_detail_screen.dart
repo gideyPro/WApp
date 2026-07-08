@@ -293,112 +293,33 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   }) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      appBar: WaveAppBar(
-        title: Text(
-          isSubscriptionGate
-              ? l10n.subscriptionRequiredTitle
-              : l10n.listingsTitle,
-        ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                isSubscriptionGate
-                    ? Icons.workspace_premium_rounded
-                    : Icons.signal_wifi_off_rounded,
-                size: 64,
-                color: isSubscriptionGate
-                    ? AppColors.accent500
-                    : ThemeColors(context).textMuted,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                isSubscriptionGate
-                    ? l10n.subscriptionRequiredTitle
-                    : l10n.listingsLoadError,
-                style: AppTextStyles.title,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                isSubscriptionGate
-                    ? l10n.subscriptionRequiredDetailsSubtitle
-                    : message,
-                style: AppTextStyles.bodyMedium
-                    .copyWith(color: context.theme.textSecondary),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              if (isSubscriptionGate)
-                ElevatedButton.icon(
-                  onPressed: () {
-                    context.pushReplacement('/subscriptions');
-                  },
-                  icon: const Icon(Icons.star, size: 18),
-                  label: Text(l10n.listingUpgradeNow),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accent500,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 14),
-                  ),
-                )
-              else
-                ElevatedButton.icon(
-                  onPressed: () {
-                    ref
-                        .read(listingDetailProvider.notifier)
-                        .loadListing(widget.listingId);
-                  },
-                  icon: const Icon(Icons.refresh, size: 18),
-                  label: Text(l10n.commonRetry),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary950,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 14),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
+    if (isSubscriptionGate) {
+      return WaveMessageScreen(
+        type: WaveMessageType.warning,
+        title: l10n.subscriptionRequiredTitle,
+        subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+        actionLabel: l10n.listingUpgradeNow,
+        onAction: () => context.pushReplacement('/subscriptions'),
+      );
+    }
+
+    return WaveMessageScreen.error(
+      title: l10n.listingsLoadError,
+      subtitle: message,
+      onRetry: () {
+        ref
+            .read(listingDetailProvider.notifier)
+            .loadListing(widget.listingId);
+      },
     );
   }
 
   Widget _buildNotFound() {
     final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: WaveAppBar(title: Text(l10n.listingsTitle)),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.home_outlined, size: 64, color: ThemeColors(context).iconSecondary),
-              const SizedBox(height: 16),
-              Text(l10n.listingsNotFound, style: AppTextStyles.title),
-              const SizedBox(height: 8),
-              Text(
-                l10n.listingsNotFoundSubtitle,
-                style: AppTextStyles.bodyMedium
-                    .copyWith(color: context.theme.textSecondary),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(l10n.commonOk),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return WaveMessageScreen.empty(
+      title: l10n.listingsNotFound,
+      subtitle: l10n.listingsNotFoundSubtitle,
+      onAction: () => Navigator.of(context).pop(),
     );
   }
 

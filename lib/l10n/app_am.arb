@@ -463,6 +463,7 @@
   "subscriptionsUpgradeOff": "{percent}% ቅናሽ",
   "subscriptionsPromoOff": "{percent}% ቅናሽ",
   "subscriptionsPaymentPending": "ክፍያው ተልኳል። ሲረጋገጥ እናሳውቅዎታለን።",
+  "subscriptionPaymentCancelled": "ክፍያ ተሰርዟል። በማንኛውም ጊዜ እንደገና መሞከር ይችላሉ።",
   "subscriptionsPoweredByChapa": "ክፍያዎች በቻፓ በአስተማማኝ ሁኔታ ይከናወናሉ",
   "subscriptionsVipAccess": "የ VIP መዳረሻ",
   "notificationsEmpty": "ምንም ማስታወቂያ የለም",
@@ -612,5 +613,33 @@
   "webviewGatewayTimeout": "የመግቢያ ማብቂያ ጊዜ",
   "webviewFailedToLoad": "የክፍያ ዩአርኤልን መጫን አልተሳካም",
   "settingsDeleteRedirect": "ሂደቱን ለማጠናቀቅ ወደ ድረ-ገፃችን ይደረጋሉ።",
-  "commonFailedOpenOrder": "ትእዛዝ መክፈት አልተሳካም"
+  "commonFailedOpenOrder": "ትእዛዝ መክፈት አልተሳካም",
+  "jitsiSettingUpCall": "ጥሪ በመዘጋጀት ላይ...",
+  "submissionFailed": "ማስገባት አልተሳካም",
+  "submissionSaveDraft": "ረቂቅ አስቀምጥ እና ውጣ",
+  "submissionGoBack": "ተመለስ",
+  "authFailedIdToken": "የ ID ቶከን ማግኘት አልተሳካም",
+  "helpErrorYoutube": "ዩቲዩብ መክፈት አልተቻለም",
+  "settingsBrowserErrorMessage": "ብራውዘር መክፈት አልተቻለም። እባክዎ {url} ይጎብኙ",
+  "@settingsBrowserErrorMessage": {
+    "placeholders": {
+      "url": {}
+    }
+  },
+  "interestsEmpty": "ፍላጎቶች የሉም",
+  "interestsEmptySubtitle": "በሚፈልጉት ንብረት ላይ የሚገልጹት ፍላጎት እዚህ ይታያል",
+  "updateRequired": "ማዘመን ያስፈልጋል",
+  "updateAvailable": "አዲስ አፕዴት አለ",
+  "updateBlockingMessage": "ይህ የመተግበሪያ እትም ከእንግዲህ ጥቅም አይሰጥም። እባክዎ ዌቭማርት መጠቀም ለመቀጠል ያዘምኑ(UPDATE!)።",
+  "updateAvailableMessage": "አዲስ እትም{versionSuffix} አለ።",
+  "@updateAvailableMessage": {
+    "placeholders": {
+      "versionSuffix": {}
+    }
+  },
+  "updateVersionLabel": "እትም(Version): ",
+  "updateLater": "በኋላ",
+  "updateNow": "አሁን አዘምን",
+  "updateWhatsNew": "ምን አዲስ ነገር አለ?",
+  "routerInvalidRoute": "Invalid route"
 }

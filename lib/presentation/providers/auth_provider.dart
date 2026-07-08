@@ -109,8 +109,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final GoogleSignInAuthentication auth = await account.authentication;
       final String? idToken = auth.idToken;
       if (idToken == null) {
-        state = state.copyWith(isLoading: false, errorMessage: 'Failed to get ID token');
-        return const AuthResponse(success: false, message: 'Failed to get ID token');
+        const msg = 'Failed to get ID token';
+        state = state.copyWith(isLoading: false, errorMessage: msg);
+        return const AuthResponse(success: false, message: msg);
       }
 
       final response = await _authService.googleLogin(idToken: idToken);

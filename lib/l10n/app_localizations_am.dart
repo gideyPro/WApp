@@ -1477,6 +1477,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsPaymentPending => 'ክፍያው ተልኳል። ሲረጋገጥ እናሳውቅዎታለን።';
 
   @override
+  String get subscriptionPaymentCancelled =>
+      'ክፍያ ተሰርዟል። በማንኛውም ጊዜ እንደገና መሞከር ይችላሉ።';
+
+  @override
   String get subscriptionsPoweredByChapa => 'ክፍያዎች በቻፓ በአስተማማኝ ሁኔታ ይከናወናሉ';
 
   @override
@@ -1924,4 +1928,63 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get commonFailedOpenOrder => 'ትእዛዝ መክፈት አልተሳካም';
+
+  @override
+  String get jitsiSettingUpCall => 'ጥሪ በመዘጋጀት ላይ...';
+
+  @override
+  String get submissionFailed => 'ማስገባት አልተሳካም';
+
+  @override
+  String get submissionSaveDraft => 'ረቂቅ አስቀምጥ እና ውጣ';
+
+  @override
+  String get submissionGoBack => 'ተመለስ';
+
+  @override
+  String get authFailedIdToken => 'የ ID ቶከን ማግኘት አልተሳካም';
+
+  @override
+  String get helpErrorYoutube => 'ዩቲዩብ መክፈት አልተቻለም';
+
+  @override
+  String settingsBrowserErrorMessage(Object url) {
+    return 'ብራውዘር መክፈት አልተቻለም። እባክዎ $url ይጎብኙ';
+  }
+
+  @override
+  String get interestsEmpty => 'ፍላጎቶች የሉም';
+
+  @override
+  String get interestsEmptySubtitle => 'በሚፈልጉት ንብረት ላይ የሚገልጹት ፍላጎት እዚህ ይታያል';
+
+  @override
+  String get updateRequired => 'ማዘመን ያስፈልጋል';
+
+  @override
+  String get updateAvailable => 'አዲስ አፕዴት አለ';
+
+  @override
+  String get updateBlockingMessage =>
+      'ይህ የመተግበሪያ እትም ከእንግዲህ ጥቅም አይሰጥም። እባክዎ ዌቭማርት መጠቀም ለመቀጠል ያዘምኑ(UPDATE!)።';
+
+  @override
+  String updateAvailableMessage(Object versionSuffix) {
+    return 'አዲስ እትም$versionSuffix አለ።';
+  }
+
+  @override
+  String get updateVersionLabel => 'እትም(Version): ';
+
+  @override
+  String get updateLater => 'በኋላ';
+
+  @override
+  String get updateNow => 'አሁን አዘምን';
+
+  @override
+  String get updateWhatsNew => 'ምን አዲስ ነገር አለ?';
+
+  @override
+  String get routerInvalidRoute => 'Invalid route';
 }

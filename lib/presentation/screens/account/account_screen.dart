@@ -736,7 +736,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                           await launchUrl(uri, mode: LaunchMode.externalApplication);
                         } else if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Could not open browser. Please visit $url'), backgroundColor: AppColors.error),
+                            SnackBar(content: Text(AppLocalizations.of(context).settingsBrowserErrorMessage( url)), backgroundColor: AppColors.error),
                           );
                         }
                       },

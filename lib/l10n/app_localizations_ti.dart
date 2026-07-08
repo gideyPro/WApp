@@ -1477,6 +1477,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsPaymentPending => 'ክፍሊት ተላኢኹ። ምስተረጋገፀ ክንሕብረኩም ኢና።';
 
   @override
+  String get subscriptionPaymentCancelled =>
+      'ክፍሊት ተሰሪዙ። ኣብ ዝኾነ ግዜ ደጊምኩም ክትፍትኑ ትኽእሉ ኢኹም።';
+
+  @override
   String get subscriptionsPoweredByChapa => 'ክፍሊታት ብቻፓ ብውሑስ ኣገባብ ይካየዱ';
 
   @override
@@ -1924,4 +1928,63 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get commonFailedOpenOrder => 'ትእዛዝ ምክፋት ኣይተኻእለን';
+
+  @override
+  String get jitsiSettingUpCall => 'ፃውዒት ይዳሎ ኣሎ...';
+
+  @override
+  String get submissionFailed => 'ምእታው ኣይተዓወተን';
+
+  @override
+  String get submissionSaveDraft => 'ረቂቕ ዓቂብካ ውፃእ';
+
+  @override
+  String get submissionGoBack => 'ተመለስ';
+
+  @override
+  String get authFailedIdToken => 'ID ቶከን ምርካብ ኣይተኻእለን';
+
+  @override
+  String get helpErrorYoutube => 'ዩቲዩብ ክኽፈት ኣይተኻእለን';
+
+  @override
+  String settingsBrowserErrorMessage(Object url) {
+    return 'ብራውዘር ክኽፈት ኣይተኻእለን። በጃኹም $url በፅሑ';
+  }
+
+  @override
+  String get interestsEmpty => 'ድሌታት የለን';
+
+  @override
+  String get interestsEmptySubtitle => 'ኣብ ንብረታት ዝገለፅኩምዎ ድሌት ኣብዚ ክርአ እዩ';
+
+  @override
+  String get updateRequired => 'ምሕዳስ የድሊ';
+
+  @override
+  String get updateAvailable => 'ሓድሽ ኣፕዴት ኣሎ';
+
+  @override
+  String get updateBlockingMessage =>
+      'እዚ ናይ መተግበሪ  ሕትም ካብ ሎሚ ካብ ጥቕሚ ወፃኢ ኣዩ። በጃኹም ዌቭማርት ንምጥቃም ኣሐድሱ(UPDATE!)።';
+
+  @override
+  String updateAvailableMessage(Object versionSuffix) {
+    return 'ሓድሽ ሕትም$versionSuffix ይርከብ።';
+  }
+
+  @override
+  String get updateVersionLabel => 'ሕትም(Version): ';
+
+  @override
+  String get updateLater => 'ድሕሪ ግዜ';
+
+  @override
+  String get updateNow => 'ሕጂ ኣሐድስ';
+
+  @override
+  String get updateWhatsNew => 'እንታይ ሓድሽ?';
+
+  @override
+  String get routerInvalidRoute => 'Invalid route';
 }

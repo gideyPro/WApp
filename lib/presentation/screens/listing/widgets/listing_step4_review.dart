@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -125,7 +126,25 @@ class ListingStep4Review extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 32),
+          Padding(
+            padding: const EdgeInsets.only(left: 32, top: 6),
+            child: GestureDetector(
+              onTap: () => launchUrl(
+                Uri.parse('https://wavemart.et/privacy'),
+                mode: LaunchMode.externalApplication,
+              ),
+              child: Text(
+                l10n.settingsPrivacyPolicy,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.accent600,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.accent600.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );

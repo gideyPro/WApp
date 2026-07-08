@@ -72,6 +72,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
     return Scaffold(
       appBar: WaveAppBar(
+        automaticallyImplyLeading: false,
         title: Text(l10n.settingsNotifications),
         actions: [
           // Mark all as read
