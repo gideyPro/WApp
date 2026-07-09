@@ -266,7 +266,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpPayVipContent =>
-      'ዌቭማርት ንንብረትኩም ዝለዓለ ምርኣይ ኣማራፂታት የቕርብ:\n\n- ፍሉይ (Featured): ዝርዝርኩም ኣብ መበገሲ ገፅ \"ፍሉይ ንብረታት\" ክፋል ይርአ ን30 መዓልቲ ኣብ ዳህሳስ ውጺኢታት ጎሊሁ ይርአ\n- VIP: ዝርዝርኩም ፍሉይ ናይ VIP ባጅ ይረክብ እሞ \"ፕሪሚየም VIP ንብረታት\" ክፋል ይርአ\n\nንብረት ፍሉይ ወይ VIP ንምግባር:\n1. ናብ ኣካውንት > ናተይ ንብረታት ኪዱ\n2. ንጡፍ ዝርዝርኩም ክፈቱ\n3. \"ነዚ ንብረት ፈሊኹም ኣውፅኡ\" ወይ \"ከም VIP ምረፅ\" ዝብል ጠውቑ\n4. ምርጫኹም ኣረጋግፁ\n\nእዚኣቶም ባህርያት ዝድግፍ ንጡፍ ናይ ምዝገባ ፓኬጅ የድልዮም። ኣድላዪ እንተኾይኑ ፓኬጅኹም ኣመሓይሹ።';
+      'ዌቭማርት ንንብረትኩም ዝለዓለ ምርኣይ ኣማራፂታት የቕርብ:\n\n- ፍሉይ (Featured): ዝርዝርኩም ኣብ መበገሲ ገፅ \"ፍሉይ ንብረታት\" ክፋል ይርአ ን30 መዓልቲ ኣብ ዳህሳስ ውፂኢታት ጎሊሁ ይርአ\n- VIP: ዝርዝርኩም ፍሉይ ናይ VIP ባጅ ይረክብ እሞ \"ፕሪሚየም VIP ንብረታት\" ክፋል ይርአ\n\nንብረት ፍሉይ ወይ VIP ንምግባር:\n1. ናብ ኣካውንት > ናተይ ንብረታት ኪዱ\n2. ንጡፍ ዝርዝርኩም ክፈቱ\n3. \"ነዚ ንብረት ፈሊኹም ኣውፅኡ\" ወይ \"ከም VIP ምረፅ\" ዝብል ጠውቑ\n4. ምርጫኹም ኣረጋግፁ\n\nእዚኣቶም ባህርያት ዝድግፍ ንጡፍ ናይ ምዝገባ ፓኬጅ የድልዮም። ኣድላዪ እንተኾይኑ ፓኬጅኹም ኣመሓይሹ።';
 
   @override
   String get helpKycWhyTitle => 'KYC እንታይ እዩ? ስለምንታይከ የድሊ?';
@@ -1821,7 +1821,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsRevealContact => 'ናይ ሸያጢ ሓበሬታ ርአ';
 
   @override
-  String get listingsRevealing => 'ይግለጽ ኣሎ...';
+  String get listingsRevealing => 'ይግለፅ ኣሎ...';
 
   @override
   String get listingsSeller => 'ሸያጢ';
@@ -1885,13 +1885,14 @@ class AppLocalizationsTi extends AppLocalizations {
   String get statusRented => 'ዝተኻረየ';
 
   @override
-  String get splashSubtitle => 'እሙን ናይ ንብረት ገበያ';
+  String get splashSubtitle => 'እቲ እትኣምንዎ ናይ ንብረት ዕዳጋ';
 
   @override
   String get homeRefreshing => 'ይሓድስ ኣሎ...';
 
   @override
-  String get shareListingTitle => 'ካብ Wavemart ተካፊሉ - እሙን ናይ ንብረት ገበያ';
+  String get shareListingTitle =>
+      'Shared from Wavemart - Your Trusted Property Marketplace';
 
   @override
   String get shareListingMessage => 'ነዚ ንብረት ኣብ Wavemart ርአ: ';
@@ -1906,7 +1907,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonSignInWithGoogle => 'ብGoogle እቶ';
 
   @override
-  String get webviewDone => 'ተፈጺሙ';
+  String get webviewDone => 'ተፈፂሙ';
 
   @override
   String get webviewConnecting => 'ምስ ክፍሊት መእተዊ ይረኽብ ኣሎ...';
@@ -1915,16 +1916,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get webviewActivating => 'ፕላንካ ይንቀሳቐስ ኣሎ...';
 
   @override
-  String get webviewPleaseWait => 'በጃኹም ቑሩይ ምበእ';
+  String get webviewPleaseWait => 'በጃኹም ቁሩብ ተፀበዩ';
 
   @override
   String get webviewGatewayTimeout => 'ናይ መእተዊ ግዜ ምውዳእ';
 
   @override
-  String get webviewFailedToLoad => 'ናይ ክፍሊት URL ምጽዓን ኣይተኻእለን';
+  String get webviewFailedToLoad => 'ናይ ክፍሊት URL ምፅዓን ኣይተኻእለን';
 
   @override
-  String get settingsDeleteRedirect => 'ነቲ ሂደት ንምውዳእ ናብ ወብሳይትና ክትምህወሱ ኢኹም።';
+  String get settingsDeleteRedirect => 'ነቲ ሂደት ንምውዳእ ናብ ወብሳይትና ክትምረሑ ኢኹም።';
 
   @override
   String get commonFailedOpenOrder => 'ትእዛዝ ምክፋት ኣይተኻእለን';
@@ -1986,7 +1987,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get updateWhatsNew => 'እንታይ ሓድሽ?';
 
   @override
-  String get routerInvalidRoute => 'Invalid route';
+  String get routerInvalidRoute => 'ግጉይ መስመር';
 
   @override
   String get reportListing => 'ነዚ ዝርዝር ሪፖርት ግበር';
@@ -1995,7 +1996,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get reportReason => 'ምኽንያት';
 
   @override
-  String get reportSelectReason => 'ምኽንያት ምረጽ...';
+  String get reportSelectReason => 'ምኽንያት ምረፅ...';
 
   @override
   String get reportSpam => 'ስፓም';
@@ -2016,7 +2017,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get reportOther => 'ካልእ';
 
   @override
-  String get reportDescription => 'መግለፂ (ኣማራጺ)';
+  String get reportDescription => 'መግለፂ (ኣማራፂ)';
 
   @override
   String get reportDescriptionHint => 'ተወሳኺ ዝርዝራት ኣስግቡ...';

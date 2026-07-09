@@ -1885,13 +1885,14 @@ class AppLocalizationsAm extends AppLocalizations {
   String get statusRented => 'የተከራየ';
 
   @override
-  String get splashSubtitle => 'የታመነ የንብረት ገበያ';
+  String get splashSubtitle => 'የምትተማመኑት የንብረት ገበያ';
 
   @override
   String get homeRefreshing => 'እየታደሰ ነው...';
 
   @override
-  String get shareListingTitle => 'ከWavemart የተጋራ - የታመነ የንብረት ገበያ';
+  String get shareListingTitle =>
+      'Shared from Wavemart - Your Trusted Property Marketplace';
 
   @override
   String get shareListingMessage => 'ይህን ንብረት በWavemart ላይ ይመልከቱ: ';
@@ -1924,7 +1925,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get webviewFailedToLoad => 'የክፍያ ዩአርኤልን መጫን አልተሳካም';
 
   @override
-  String get settingsDeleteRedirect => 'ሂደቱን ለማጠናቀቅ ወደ ድረ-ገፃችን ይደረጋሉ።';
+  String get settingsDeleteRedirect => 'ሂደቱን ለማጠናቀቅ ወደ ድረ-ገፃችን ይመራሉ።';
 
   @override
   String get commonFailedOpenOrder => 'ትእዛዝ መክፈት አልተሳካም';
@@ -1956,7 +1957,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get interestsEmpty => 'ፍላጎቶች የሉም';
 
   @override
-  String get interestsEmptySubtitle => 'በሚፈልጉት ንብረት ላይ የሚገልጹት ፍላጎት እዚህ ይታያል';
+  String get interestsEmptySubtitle => 'በሚፈልጉት ንብረት ላይ የሚገልፁት ፍላጎት እዚህ ይታያል';
 
   @override
   String get updateRequired => 'ማዘመን ያስፈልጋል';
@@ -1986,7 +1987,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get updateWhatsNew => 'ምን አዲስ ነገር አለ?';
 
   @override
-  String get routerInvalidRoute => 'Invalid route';
+  String get routerInvalidRoute => 'የተሳሳተ መንገድ';
 
   @override
   String get reportListing => 'ይህን ዝርዝር ሪፖርት ያድርጉ';
