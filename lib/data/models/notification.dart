@@ -5,13 +5,17 @@ enum NotificationType {
   listingApproved,
   listingRejected,
   newInterest,
+  favorite,
   paymentSuccess,
   paymentFailed,
   subscriptionActivated,
-  systemAnnouncement,
-  featuredListingExpired,
-  suggestion,
   subscriptionExpired,
+  kycUpdate,
+  conferenceInvite,
+  conferenceUpdate,
+  incomingCall,
+  suggestion,
+  systemAnnouncement,
 }
 
 /// Notification Model
@@ -99,16 +103,29 @@ class Notification {
     switch (type) {
       case 'listing_update':
       case 'listing_approved':
+      case 'listing_featured':
+      case 'listing_published':
         return NotificationType.listingApproved;
       case 'listing_rejected':
       case 'listing_rejection':
         return NotificationType.listingRejected;
       case 'inquiry':
         return NotificationType.newInterest;
+      case 'favorite':
+        return NotificationType.favorite;
       case 'payment_success':
         return NotificationType.paymentSuccess;
       case 'payment_failed':
         return NotificationType.paymentFailed;
+      case 'kyc_submitted':
+      case 'kyc_update':
+        return NotificationType.kycUpdate;
+      case 'conference_invite':
+        return NotificationType.conferenceInvite;
+      case 'conference_update':
+        return NotificationType.conferenceUpdate;
+      case 'incoming_call':
+        return NotificationType.incomingCall;
       case 'suggestion':
         return NotificationType.suggestion;
       case 'subscription_activated':
@@ -140,20 +157,28 @@ class Notification {
         return Icons.cancel_outlined;
       case NotificationType.newInterest:
         return Icons.interests_outlined;
+      case NotificationType.favorite:
+        return Icons.favorite_border;
       case NotificationType.paymentSuccess:
         return Icons.payment_outlined;
       case NotificationType.paymentFailed:
         return Icons.error_outline;
       case NotificationType.subscriptionActivated:
         return Icons.star_outline;
-      case NotificationType.systemAnnouncement:
-        return Icons.campaign_outlined;
-      case NotificationType.featuredListingExpired:
-        return Icons.timer_outlined;
-      case NotificationType.suggestion:
-        return Icons.auto_awesome;
       case NotificationType.subscriptionExpired:
         return Icons.timer_off_outlined;
+      case NotificationType.kycUpdate:
+        return Icons.verified_outlined;
+      case NotificationType.conferenceInvite:
+        return Icons.videocam_outlined;
+      case NotificationType.conferenceUpdate:
+        return Icons.info_outline;
+      case NotificationType.incomingCall:
+        return Icons.phone_in_talk_outlined;
+      case NotificationType.suggestion:
+        return Icons.auto_awesome;
+      case NotificationType.systemAnnouncement:
+        return Icons.campaign_outlined;
     }
   }
 }

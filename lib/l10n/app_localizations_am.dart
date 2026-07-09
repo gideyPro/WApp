@@ -1987,4 +1987,49 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get routerInvalidRoute => 'Invalid route';
+
+  @override
+  String get reportListing => 'ይህን ዝርዝር ሪፖርት ያድርጉ';
+
+  @override
+  String get reportReason => 'ምክንያት';
+
+  @override
+  String get reportSelectReason => 'ምክንያት ይምረጡ...';
+
+  @override
+  String get reportSpam => 'አይፈለጌ መልእክት';
+
+  @override
+  String get reportFake => 'የሐሰት ዝርዝር';
+
+  @override
+  String get reportWrongCategory => 'የተሳሳተ ምድብ';
+
+  @override
+  String get reportDuplicate => 'ተደጋጋሚ ዝርዝር';
+
+  @override
+  String get reportInappropriate => 'ተገቢ ያልሆነ ይዘት';
+
+  @override
+  String get reportOther => 'ሌላ';
+
+  @override
+  String get reportDescription => 'መግለጫ (አማራጭ)';
+
+  @override
+  String get reportDescriptionHint => 'ተጨማሪ ዝርዝሮችን ያስገቡ...';
+
+  @override
+  String get reportSubmit => 'ሪፖርቱን ያስገቡ';
+
+  @override
+  String get reportSubmitting => 'በማስገባት ላይ...';
+
+  @override
+  String get reportSuccess => 'ሪፖርቱ ቀርቧል። እናመሰግናለን።';
+
+  @override
+  String get reportErrorGeneric => 'ሪፖርቱን ማስገባት አልተሳካም። እባክዎ እንደገና ይሞክሩ።';
 }

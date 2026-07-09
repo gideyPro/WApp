@@ -217,14 +217,14 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpListInterestContent =>
-      'ንሸያጢ ኣብ ንብረቱ ድሌት ከምዘለኩም ንምፍላጥ:\n\n1. ገፅ ዝርዝር እቲ ንብረት ክፈቱ\n2. \"ምስ ወኪል ተራኸብ\" ዝብል ቁልፊ ጠውቑ\n3. እንተደሊኹም ንሸያጢ መልእኽቲ ወስኹ\n4. ሕቶኹም ንምስዳድ \"ድሌት ስደድ\" ዝብል ጠውቑ\n\nሸያጢ ሓበሬታ ክበፅሖ እዩ እሞ ምላሽ ክህብ ይኽእል እዩ። ኵነታት ድሌትኩም ካብ መገለፂ > ድሌታተይ ክትከታተሉ ትኽእሉ ኢኹም። ኵነታት: ኣብ ምፅባይ (ምላሽ ይፅበ ኣሎ)፣ ተቐባልነት ረኺቡ፣ ወይ ተነፂጉ። ገሊኦም ፓኬጃት ምስ ሸየጥቲ ንምርኻብ ምሕያሽ የድልዮም።';
+      'ንሸያጢ ኣብ ንብረቱ ድሌት ከምዘለኩም ንምፍላጥ:\n\n1. ገፅ ዝርዝር እቲ ንብረት ክፈቱ\n2. \"ምስ ወኪል ተራኸብ\" ዝብል ቁልፊ ጠውቑ\n3. እንተደሊኹም ንሸያጢ መልእኽቲ ወስኹ\n4. ሕቶኹም ንምስዳድ \"ድሌት ስደድ\" ዝብል ጠውቑ\n\nሸያጢ ሓበሬታ ክበፅሖ እዩ እሞ ምላሽ ክህብ ይኽእል እዩ። ኵነታት ድሌትኩም ካብ መገለፂ > ድሌታተይ ክትከታተሉ ትኽእሉ ኢኹም። ኵነታት: ኣብ ከይዲ (ምላሽ ይፅበ ኣሎ)፣ ተቐባልነት ረኺቡ፣ ወይ ተነፂጉ። ገሊኦም ፓኬጃት ምስ ሸየጥቲ ንምርኻብ ምሕያሽ የድልዮም።';
 
   @override
   String get helpListStatusTitle => 'ኵነታት ዝርዝር ንብረት ምርዳእ';
 
   @override
   String get helpListStatusContent =>
-      'ነፍሲ ወከፍ ዝርዝር ንብረት ብዙሕ ኵነታት ይከታተል:\n\n- ኣብ ምፅባይ (Pending): ዝርዝርኩም ብጉጅለና ክምርመር ይፅበ ኣሎ\n- ንጡፍ (Active): ዝርዝርኩም ተቐባልነት ረኺቡ ንህዝቢ ይርአ ኣሎ\n- ተነፂጉ (Rejected): ዝርዝርኩም ነቲ መመዘንታታት ስለዘየማልዖ ተነፂጉ\n- ተሸይጡ/ተኸራይቱ (Sold/Rented): እቲ ንብረት ተሸይጡ ወይ ተኸራይቱ እዩ\n- ዝተኸልከለ (Frozen): ዝርዝርኩም ግዝያዊ ተቖሪፁ እዩ\n\nኵነታት ዝርዝርኩም ካብ ኣካውንት > ናተይ ንብረታት ክትርእዩ ትኽእሉ ኢኹም።';
+      'ነፍሲ ወከፍ ዝርዝር ንብረት ብዙሕ ኵነታት ይከታተል:\n\n- ኣብ ከይዲ (Pending): ዝርዝርኩም ብጉጅለና ክምርመር ይፅበ ኣሎ\n- ንጡፍ (Active): ዝርዝርኩም ተቐባልነት ረኺቡ ንህዝቢ ይርአ ኣሎ\n- ተነፂጉ (Rejected): ዝርዝርኩም ነቲ መመዘንታታት ስለዘየማልዖ ተነፂጉ\n- ተሸይጡ/ተኸራይቱ (Sold/Rented): እቲ ንብረት ተሸይጡ ወይ ተኸራይቱ እዩ\n- ዝተኸልከለ (Frozen): ዝርዝርኩም ግዝያዊ ተቖሪፁ እዩ\n\nኵነታት ዝርዝርኩም ካብ ኣካውንት > ናተይ ንብረታት ክትርእዩ ትኽእሉ ኢኹም።';
 
   @override
   String get helpOrdCreateTitle => 'ሕቶታት ንብረት (ትእዛዛት) እንታይ እዮም?';
@@ -1785,7 +1785,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get statusCancelled => 'ዝተሰረዘ';
 
   @override
-  String get statusPending => 'ኣብ ምፅባይ';
+  String get statusPending => 'ኣብ ከይዲ';
 
   @override
   String get statusSuccess => 'ተዓዊቱ';
@@ -1987,4 +1987,49 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get routerInvalidRoute => 'Invalid route';
+
+  @override
+  String get reportListing => 'ነዚ ዝርዝር ሪፖርት ግበር';
+
+  @override
+  String get reportReason => 'ምኽንያት';
+
+  @override
+  String get reportSelectReason => 'ምኽንያት ምረጽ...';
+
+  @override
+  String get reportSpam => 'ስፓም';
+
+  @override
+  String get reportFake => 'ሓሶት ዝርዝር';
+
+  @override
+  String get reportWrongCategory => 'ጌጋ ምድብ';
+
+  @override
+  String get reportDuplicate => 'ተመሳሳሊ ዝርዝር';
+
+  @override
+  String get reportInappropriate => 'ተገባዊ ዘይኮነ ይዘት';
+
+  @override
+  String get reportOther => 'ካልእ';
+
+  @override
+  String get reportDescription => 'መግለፂ (ኣማራጺ)';
+
+  @override
+  String get reportDescriptionHint => 'ተወሳኺ ዝርዝራት ኣስግቡ...';
+
+  @override
+  String get reportSubmit => 'ሪፖርት ኣስግብ';
+
+  @override
+  String get reportSubmitting => 'ይኣትው ኣሎ...';
+
+  @override
+  String get reportSuccess => 'ሪፖርት ቀሪቡ። የቀንየልና።';
+
+  @override
+  String get reportErrorGeneric => 'ሪፖርት ምእታው ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።';
 }

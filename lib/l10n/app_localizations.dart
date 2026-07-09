@@ -3801,6 +3801,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid route'**
   String get routerInvalidRoute;
+
+  /// No description provided for @reportListing.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this listing'**
+  String get reportListing;
+
+  /// No description provided for @reportReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get reportReason;
+
+  /// No description provided for @reportSelectReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a reason...'**
+  String get reportSelectReason;
+
+  /// No description provided for @reportSpam.
+  ///
+  /// In en, this message translates to:
+  /// **'Spam'**
+  String get reportSpam;
+
+  /// No description provided for @reportFake.
+  ///
+  /// In en, this message translates to:
+  /// **'Fake listing'**
+  String get reportFake;
+
+  /// No description provided for @reportWrongCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong category'**
+  String get reportWrongCategory;
+
+  /// No description provided for @reportDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate listing'**
+  String get reportDuplicate;
+
+  /// No description provided for @reportInappropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'Inappropriate content'**
+  String get reportInappropriate;
+
+  /// No description provided for @reportOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get reportOther;
+
+  /// No description provided for @reportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get reportDescription;
+
+  /// No description provided for @reportDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide additional details...'**
+  String get reportDescriptionHint;
+
+  /// No description provided for @reportSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Report'**
+  String get reportSubmit;
+
+  /// No description provided for @reportSubmitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting...'**
+  String get reportSubmitting;
+
+  /// No description provided for @reportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted. Thank you.'**
+  String get reportSuccess;
+
+  /// No description provided for @reportErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit report. Please try again.'**
+  String get reportErrorGeneric;
 }
 
 class _AppLocalizationsDelegate

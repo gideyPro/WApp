@@ -73,7 +73,39 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   final SubscriptionServiceApi _subscriptionService;
   SubscriptionNotifier(this._subscriptionService)
       : super(const SubscriptionState.initial()) {
-    refresh();
+    _initialRefresh();
+  }
+
+  /// Deferred initial fetch so the auth token can be resolved first.
+  Future<void> _initialRefresh() async {
+    state = const SubscriptionState.initial();
+    for (int attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) {
+        await Future.delayed(Duration(seconds: attempt));
+      }
+      try {
+        final data = await _subscriptionService.getFullData();
+        if (data.success) {
+          state = SubscriptionState.loaded(
+            plans: data.plans,
+            subscription: data.subscription,
+            canCreateListing: data.canCreateListing,
+            canFeatureListing: data.canFeatureListing,
+            canViewVip: data.canViewVip,
+            canCreateOrder: data.canCreateOrder,
+            hasPaidSubscription: data.hasPaidSubscription,
+            canSeeVideo: data.canSeeVideo,
+            canSeeContact: data.canSeeContact,
+            canSeeFullAddress: data.canSeeFullAddress,
+            contactViewsUsed: data.contactViewsUsed,
+            contactViewsRemaining: data.contactViewsRemaining,
+          );
+          return;
+        }
+      } catch (_) {}
+    }
+    // All retries exhausted — go to idle so UI doesn't hang forever.
+    state = state.copyWith(isLoading: false);
   }
 
   Future<void> refresh({String currency = 'ETB'}) async {

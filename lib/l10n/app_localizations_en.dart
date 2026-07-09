@@ -2016,4 +2016,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routerInvalidRoute => 'Invalid route';
+
+  @override
+  String get reportListing => 'Report this listing';
+
+  @override
+  String get reportReason => 'Reason';
+
+  @override
+  String get reportSelectReason => 'Select a reason...';
+
+  @override
+  String get reportSpam => 'Spam';
+
+  @override
+  String get reportFake => 'Fake listing';
+
+  @override
+  String get reportWrongCategory => 'Wrong category';
+
+  @override
+  String get reportDuplicate => 'Duplicate listing';
+
+  @override
+  String get reportInappropriate => 'Inappropriate content';
+
+  @override
+  String get reportOther => 'Other';
+
+  @override
+  String get reportDescription => 'Description (optional)';
+
+  @override
+  String get reportDescriptionHint => 'Provide additional details...';
+
+  @override
+  String get reportSubmit => 'Submit Report';
+
+  @override
+  String get reportSubmitting => 'Submitting...';
+
+  @override
+  String get reportSuccess => 'Report submitted. Thank you.';
+
+  @override
+  String get reportErrorGeneric => 'Failed to submit report. Please try again.';
 }

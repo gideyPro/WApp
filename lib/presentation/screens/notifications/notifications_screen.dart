@@ -176,11 +176,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     switch (notification.type) {
       case app.NotificationType.listingApproved:
       case app.NotificationType.listingRejected:
-      case app.NotificationType.featuredListingExpired:
-        _navigateRelated(notification, '/listings/');
-        break;
-
       case app.NotificationType.newInterest:
+      case app.NotificationType.favorite:
         _navigateRelated(notification, '/listings/');
         break;
 
@@ -213,6 +210,21 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
       case app.NotificationType.subscriptionExpired:
         context.push('/subscriptions');
+        break;
+
+      case app.NotificationType.kycUpdate:
+        context.push('/kyc');
+        break;
+
+      case app.NotificationType.conferenceInvite:
+      case app.NotificationType.conferenceUpdate:
+      case app.NotificationType.incomingCall:
+        {
+          final confId = _extractId(notification, 'conference_id');
+          if (confId != null) {
+            context.push('/call/$confId');
+          }
+        }
         break;
 
       case app.NotificationType.systemAnnouncement:
