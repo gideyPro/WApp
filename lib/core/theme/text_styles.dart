@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
-/// WaveMart Text Styles — Cinzel for headings, system font for body.
+/// Wavemart Text Styles — Cinzel for headings, system font for body.
 class AppTextStyles {
   AppTextStyles._();
 

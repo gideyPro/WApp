@@ -124,7 +124,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       child: Column(
                         children: [
                           Text(
-                            'WaveMart',
+                            'Wavemart',
                             style: AppTextStyles.headline3.copyWith(
                               fontSize: 32,
                               color: Colors.white,

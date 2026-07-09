@@ -1891,10 +1891,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get homeRefreshing => 'እየታደሰ ነው...';
 
   @override
-  String get shareListingTitle => 'ከWaveMart የተጋራ - የታመነ የንብረት ገበያ';
+  String get shareListingTitle => 'ከWavemart የተጋራ - የታመነ የንብረት ገበያ';
 
   @override
-  String get shareListingMessage => 'ይህን ንብረት በWaveMart ላይ ይመልከቱ: ';
+  String get shareListingMessage => 'ይህን ንብረት በWavemart ላይ ይመልከቱ: ';
 
   @override
   String get authOrSeparator => 'ወይም';

@@ -169,7 +169,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpAccCreateContent =>
-      'To create an account on WaveMart:\n\n1. Open the app and tap on \"Register\"\n2. Enter your name, phone number, email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.';
+      'To create an account on Wavemart:\n\n1. Open the app and tap on \"Register\"\n2. Enter your name, phone number, email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.';
 
   @override
   String get helpAccFavTitle => 'Managing your favorites';
@@ -183,7 +183,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpAccMsgContent =>
-      'WaveMart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created with the agent.\n2. Go to the Account > Messages to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.';
+      'Wavemart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created with the agent.\n2. Go to the Account > Messages to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.';
 
   @override
   String get helpListCreateTitle => 'How to post a property listing';
@@ -253,21 +253,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpPayMakeContent =>
-      'WaveMart uses Chapa, Ethiopia\'s leading payment gateway, for secure transactions:\n\n1. Select your desired plan from the Subscriptions page\n2. Tap \"Subscribe Now\" or \"Upgrade\"\n3. You will be redirected to the secure Chapa payment page\n4. Pay using Telebirr, CBEBirr, M-Pesa, or any supported bank card\n5. After successful payment, your account features will be updated instantly\n\nAlways ensure you are on the official Chapa payment page before entering any details.';
+      'Wavemart uses Chapa, Ethiopia\'s leading payment gateway, for secure transactions:\n\n1. Select your desired plan from the Subscriptions page\n2. Tap \"Subscribe Now\" or \"Upgrade\"\n3. You will be redirected to the secure Chapa payment page\n4. Pay using Telebirr, CBEBirr, M-Pesa, or any supported bank card\n5. After successful payment, your account features will be updated instantly\n\nAlways ensure you are on the official Chapa payment page before entering any details.';
 
   @override
   String get helpPaySecurityTitle => 'Payment security';
 
   @override
   String get helpPaySecurityContent =>
-      'All payments on WaveMart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted.\n\nIf you encounter any payment-related issues, please contact our support team immediately.';
+      'All payments on Wavemart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted.\n\nIf you encounter any payment-related issues, please contact our support team immediately.';
 
   @override
   String get helpPayVipTitle => 'VIP & Featured listings';
 
   @override
   String get helpPayVipContent =>
-      'WaveMart offers premium visibility options for your listings:\n\n- Featured: Your listing appears in the \"Premium Listings\" section on the home page and stands out in search results for 30 days\n- VIP: Your listing gets a special VIP badge and appears in the \"Premium VIP Properties\" section\n\nTo feature or mark a listing as VIP:\n1. Go to My Account > My Listings\n2. Open your active listing\n3. Tap \"Feature this Listing\" or \"Mark as VIP\"\n4. Confirm your choice\n\nThese features require an active subscription plan that supports them. Upgrade your plan if needed.';
+      'Wavemart offers premium visibility options for your listings:\n\n- Featured: Your listing appears in the \"Premium Listings\" section on the home page and stands out in search results for 30 days\n- VIP: Your listing gets a special VIP badge and appears in the \"Premium VIP Properties\" section\n\nTo feature or mark a listing as VIP:\n1. Go to My Account > My Listings\n2. Open your active listing\n3. Tap \"Feature this Listing\" or \"Mark as VIP\"\n4. Confirm your choice\n\nThese features require an active subscription plan that supports them. Upgrade your plan if needed.';
 
   @override
   String get helpKycWhyTitle => 'Why is KYC verification necessary?';
@@ -295,7 +295,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpSafePrivacyContent =>
-      'WaveMart respects your privacy and protects your personal data.\n\nWe collect:\n- Account information (name, phone, email)\n- Listing data you provide\n- Usage analytics to improve the app\n\nWe do not:\n- Sell your personal data\n- Share your information with third parties (except for necessary services like payment processing)\n- Store your payment details\n\nFor full details, visit our website or contact support.';
+      'Wavemart respects your privacy and protects your personal data.\n\nWe collect:\n- Account information (name, phone, email)\n- Listing data you provide\n- Usage analytics to improve the app\n\nWe do not:\n- Sell your personal data\n- Share your information with third parties (except for necessary services like payment processing)\n- Store your payment details\n\nFor full details, visit our website or contact support.';
 
   @override
   String get helpSafeReportTitle => 'Reporting a problem';
@@ -1337,7 +1337,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authEnterOtpPrompt => 'Please enter the complete 6-digit OTP';
 
   @override
-  String get authWelcomeTitle => 'Welcome to WaveMart';
+  String get authWelcomeTitle => 'Welcome to Wavemart';
 
   @override
   String get authWelcomeSubtitle => 'Your Trusted Property Marketplace';
@@ -1918,10 +1918,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareListingTitle =>
-      'Shared from WaveMart - Your Trusted Property Marketplace';
+      'Shared from Wavemart - Your Trusted Property Marketplace';
 
   @override
-  String get shareListingMessage => 'Check out this property on WaveMart: ';
+  String get shareListingMessage => 'Check out this property on Wavemart: ';
 
   @override
   String get authOrSeparator => 'or';
@@ -1995,7 +1995,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateBlockingMessage =>
-      'This version of the app is no longer supported. Please update to continue using WaveMart.';
+      'This version of the app is no longer supported. Please update to continue using Wavemart.';
 
   @override
   String updateAvailableMessage(Object versionSuffix) {

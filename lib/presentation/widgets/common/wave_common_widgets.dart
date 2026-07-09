@@ -5,7 +5,7 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'wave_button.dart';
 
-/// WaveMart AppBar — tight leading defaults to fix font-metric spacing with Cinzel
+/// Wavemart AppBar — tight leading defaults to fix font-metric spacing with Cinzel
 class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? title;
   final List<Widget>? actions;

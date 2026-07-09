@@ -39,7 +39,7 @@
 ## Video Player
 -keep class io.flutter.plugins.videoplayer.VideoPlayerPlugin { *; }
 
-## WaveMart App - Keep models and core classes
+## Wavemart App - Keep models and core classes
 -keep class et.wavemart.app.** { *; }
 -keep class **.*_** { *; }
 

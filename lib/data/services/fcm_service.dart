@@ -83,7 +83,7 @@ class FcmService {
 
         LocalNotificationService.showNotification(
           id: message.hashCode,
-          title: notification.title ?? 'WaveMart',
+          title: notification.title ?? 'Wavemart',
           body: notification.body ?? '',
           payload: type == 'message' ? message.data['conversation_id']?.toString() : null,
         );

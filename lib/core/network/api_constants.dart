@@ -1,4 +1,4 @@
-/// API Constants - All endpoint paths for the WaveMart mobile app
+/// API Constants - All endpoint paths for the Wavemart mobile app
 ///
 /// Base URL changes based on environment:
 /// - Development: http://10.0.2.2:8000/api (Android emulator)

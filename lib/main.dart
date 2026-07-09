@@ -77,14 +77,14 @@ void main() async {
 
   // Global error handler for crash logging
   FlutterError.onError = (details) {
-    log('Flutter Error: ${details.exceptionAsString()}', name: 'WaveMart');
+    log('Flutter Error: ${details.exceptionAsString()}', name: 'Wavemart');
     if (kReleaseMode) {
       FlutterError.presentError(details);
     }
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
-    log('Platform Error: $error\nStack: $stack', name: 'WaveMart');
+    log('Platform Error: $error\nStack: $stack', name: 'Wavemart');
     return true;
   };
 
@@ -107,19 +107,19 @@ void main() async {
   // Wrap with ProviderScope for Riverpod
   runApp(
     const ProviderScope(
-      child: WaveMartApp(),
+      child: WavemartApp(),
     ),
   );
 }
 
-class WaveMartApp extends ConsumerStatefulWidget {
-  const WaveMartApp({super.key});
+class WavemartApp extends ConsumerStatefulWidget {
+  const WavemartApp({super.key});
 
   @override
-  ConsumerState<WaveMartApp> createState() => _WaveMartAppState();
+  ConsumerState<WavemartApp> createState() => _WavemartAppState();
 }
 
-class _WaveMartAppState extends ConsumerState<WaveMartApp> {
+class _WavemartAppState extends ConsumerState<WavemartApp> {
   bool _fcmStarted = false;
   bool _nonBlockingDialogShown = false;
 
@@ -153,7 +153,7 @@ class _WaveMartAppState extends ConsumerState<WaveMartApp> {
     }
 
     return MaterialApp.router(
-      title: 'WaveMart',
+      title: 'Wavemart',
       debugShowCheckedModeBanner: false,
       theme: getThemeData(themeMode),
       routerConfig: goRouter,
@@ -306,7 +306,7 @@ class _BlockingUpdateOverlay extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'This version of the app is no longer supported. Please update to continue using WaveMart.',
+                  'This version of the app is no longer supported. Please update to continue using Wavemart.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                 ),

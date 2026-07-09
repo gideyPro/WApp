@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import 'text_styles.dart';
 
-/// WaveMart App Theme
+/// Wavemart App Theme
 /// Comprehensive theme configuration matching the web design system
 class AppTheme {
   AppTheme._();

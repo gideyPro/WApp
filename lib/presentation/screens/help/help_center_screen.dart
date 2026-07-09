@@ -388,7 +388,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'WaveMart on YouTube',
+                    'Wavemart on YouTube',
                     style: AppTextStyles.bodyLargePlus.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -524,7 +524,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   }
 
   Future<void> _launchYoutube() async {
-    final uri = Uri.parse('https://www.youtube.com/@WaveMart_et');
+    final uri = Uri.parse('https://www.youtube.com/@Wavemart_et');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {

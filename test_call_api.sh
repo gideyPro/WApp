@@ -1,5 +1,5 @@
 #!/bin/bash
-# WaveMart API - Direct Call Simulation with cURL
+# Wavemart API - Direct Call Simulation with cURL
 # Base URL: https://wavemart.et/api
 
 BASE_URL="https://wavemart.et/api"
@@ -8,7 +8,7 @@ OTP_CODE="123456"
 CONVERSATION_ID=1  # Change this to a valid conversation ID
 
 echo "=========================================="
-echo "WaveMart API - Direct Call Flow Simulation"
+echo "Wavemart API - Direct Call Flow Simulation"
 echo "=========================================="
 echo ""
 

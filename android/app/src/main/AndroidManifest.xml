@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
-        android:label="WaveMart"
+        android:label="Wavemart"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         >

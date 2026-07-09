@@ -1891,10 +1891,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get homeRefreshing => 'ይሓድስ ኣሎ...';
 
   @override
-  String get shareListingTitle => 'ካብ WaveMart ተካፊሉ - እሙን ናይ ንብረት ገበያ';
+  String get shareListingTitle => 'ካብ Wavemart ተካፊሉ - እሙን ናይ ንብረት ገበያ';
 
   @override
-  String get shareListingMessage => 'ነዚ ንብረት ኣብ WaveMart ርአ: ';
+  String get shareListingMessage => 'ነዚ ንብረት ኣብ Wavemart ርአ: ';
 
   @override
   String get authOrSeparator => 'ወይ';

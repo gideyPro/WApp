@@ -93,7 +93,7 @@ class ApiClient {
           responseBody: true,
           error: true,
           logPrint: (obj) {
-            log('[API] $obj', name: 'WaveMart');
+            log('[API] $obj', name: 'Wavemart');
           },
         ),
       );

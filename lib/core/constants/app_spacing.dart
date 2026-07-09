@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Consistent spacing and sizing constants for WaveMart
+/// Consistent spacing and sizing constants for Wavemart
 abstract class AppSpacing {
   AppSpacing._();
 

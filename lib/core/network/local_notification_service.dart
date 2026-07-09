@@ -28,8 +28,8 @@ class LocalNotificationService {
 
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'wavemart_notifications',
-      'WaveMart Notifications',
-      description: 'General notifications for WaveMart',
+      'Wavemart Notifications',
+      description: 'General notifications for Wavemart',
       importance: Importance.max,
     );
 
@@ -51,8 +51,8 @@ class LocalNotificationService {
   }) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'wavemart_notifications',
-      'WaveMart Notifications',
-      channelDescription: 'General notifications for WaveMart',
+      'Wavemart Notifications',
+      channelDescription: 'General notifications for Wavemart',
       importance: Importance.max,
       priority: Priority.high,
     );

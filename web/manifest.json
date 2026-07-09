@@ -1,11 +1,11 @@
 {
-    "name": "WaveMart",
-    "short_name": "WaveMart",
+    "name": "Wavemart",
+    "short_name": "Wavemart",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0A416B",
     "theme_color": "#0A416B",
-    "description": "WaveMart - Your Trusted Property Marketplace",
+    "description": "Wavemart - Your Trusted Property Marketplace",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

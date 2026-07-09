@@ -415,7 +415,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'To create an account on WaveMart:\n\n1. Open the app and tap on \"Register\"\n2. Enter your name, phone number, email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
+  /// **'To create an account on Wavemart:\n\n1. Open the app and tap on \"Register\"\n2. Enter your name, phone number, email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
   String get helpAccCreateContent;
 
   /// No description provided for @helpAccFavTitle.
@@ -439,7 +439,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccMsgContent.
   ///
   /// In en, this message translates to:
-  /// **'WaveMart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created with the agent.\n2. Go to the Account > Messages to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.'**
+  /// **'Wavemart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created with the agent.\n2. Go to the Account > Messages to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.'**
   String get helpAccMsgContent;
 
   /// No description provided for @helpListCreateTitle.
@@ -559,7 +559,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpPayMakeContent.
   ///
   /// In en, this message translates to:
-  /// **'WaveMart uses Chapa, Ethiopia\'s leading payment gateway, for secure transactions:\n\n1. Select your desired plan from the Subscriptions page\n2. Tap \"Subscribe Now\" or \"Upgrade\"\n3. You will be redirected to the secure Chapa payment page\n4. Pay using Telebirr, CBEBirr, M-Pesa, or any supported bank card\n5. After successful payment, your account features will be updated instantly\n\nAlways ensure you are on the official Chapa payment page before entering any details.'**
+  /// **'Wavemart uses Chapa, Ethiopia\'s leading payment gateway, for secure transactions:\n\n1. Select your desired plan from the Subscriptions page\n2. Tap \"Subscribe Now\" or \"Upgrade\"\n3. You will be redirected to the secure Chapa payment page\n4. Pay using Telebirr, CBEBirr, M-Pesa, or any supported bank card\n5. After successful payment, your account features will be updated instantly\n\nAlways ensure you are on the official Chapa payment page before entering any details.'**
   String get helpPayMakeContent;
 
   /// No description provided for @helpPaySecurityTitle.
@@ -571,7 +571,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpPaySecurityContent.
   ///
   /// In en, this message translates to:
-  /// **'All payments on WaveMart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted.\n\nIf you encounter any payment-related issues, please contact our support team immediately.'**
+  /// **'All payments on Wavemart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted.\n\nIf you encounter any payment-related issues, please contact our support team immediately.'**
   String get helpPaySecurityContent;
 
   /// No description provided for @helpPayVipTitle.
@@ -583,7 +583,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpPayVipContent.
   ///
   /// In en, this message translates to:
-  /// **'WaveMart offers premium visibility options for your listings:\n\n- Featured: Your listing appears in the \"Premium Listings\" section on the home page and stands out in search results for 30 days\n- VIP: Your listing gets a special VIP badge and appears in the \"Premium VIP Properties\" section\n\nTo feature or mark a listing as VIP:\n1. Go to My Account > My Listings\n2. Open your active listing\n3. Tap \"Feature this Listing\" or \"Mark as VIP\"\n4. Confirm your choice\n\nThese features require an active subscription plan that supports them. Upgrade your plan if needed.'**
+  /// **'Wavemart offers premium visibility options for your listings:\n\n- Featured: Your listing appears in the \"Premium Listings\" section on the home page and stands out in search results for 30 days\n- VIP: Your listing gets a special VIP badge and appears in the \"Premium VIP Properties\" section\n\nTo feature or mark a listing as VIP:\n1. Go to My Account > My Listings\n2. Open your active listing\n3. Tap \"Feature this Listing\" or \"Mark as VIP\"\n4. Confirm your choice\n\nThese features require an active subscription plan that supports them. Upgrade your plan if needed.'**
   String get helpPayVipContent;
 
   /// No description provided for @helpKycWhyTitle.
@@ -631,7 +631,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpSafePrivacyContent.
   ///
   /// In en, this message translates to:
-  /// **'WaveMart respects your privacy and protects your personal data.\n\nWe collect:\n- Account information (name, phone, email)\n- Listing data you provide\n- Usage analytics to improve the app\n\nWe do not:\n- Sell your personal data\n- Share your information with third parties (except for necessary services like payment processing)\n- Store your payment details\n\nFor full details, visit our website or contact support.'**
+  /// **'Wavemart respects your privacy and protects your personal data.\n\nWe collect:\n- Account information (name, phone, email)\n- Listing data you provide\n- Usage analytics to improve the app\n\nWe do not:\n- Sell your personal data\n- Share your information with third parties (except for necessary services like payment processing)\n- Store your payment details\n\nFor full details, visit our website or contact support.'**
   String get helpSafePrivacyContent;
 
   /// No description provided for @helpSafeReportTitle.
@@ -2587,7 +2587,7 @@ abstract class AppLocalizations {
   /// No description provided for @authWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to WaveMart'**
+  /// **'Welcome to Wavemart'**
   String get authWelcomeTitle;
 
   /// No description provided for @authWelcomeSubtitle.
@@ -3619,13 +3619,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareListingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Shared from WaveMart - Your Trusted Property Marketplace'**
+  /// **'Shared from Wavemart - Your Trusted Property Marketplace'**
   String get shareListingTitle;
 
   /// No description provided for @shareListingMessage.
   ///
   /// In en, this message translates to:
-  /// **'Check out this property on WaveMart: '**
+  /// **'Check out this property on Wavemart: '**
   String get shareListingMessage;
 
   /// No description provided for @authOrSeparator.
@@ -3763,7 +3763,7 @@ abstract class AppLocalizations {
   /// No description provided for @updateBlockingMessage.
   ///
   /// In en, this message translates to:
-  /// **'This version of the app is no longer supported. Please update to continue using WaveMart.'**
+  /// **'This version of the app is no longer supported. Please update to continue using Wavemart.'**
   String get updateBlockingMessage;
 
   /// No description provided for @updateAvailableMessage.

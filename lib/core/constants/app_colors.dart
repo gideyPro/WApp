@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// WaveMart Brand Colors
+/// Wavemart Brand Colors
 /// Logo-Matched Palette: Navy (#0A416B) & Emerald (#16B364)
 class AppColors {
   AppColors._();

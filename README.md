@@ -1,10 +1,10 @@
-# WaveMart
+# Wavemart
 
 Your trusted property marketplace mobile application.
 
 ## Overview
 
-WaveMart is a Flutter-powered property listing platform enabling users to buy, sell, and rent properties in Ethiopia. It connects property seekers with sellers and landlords through a comprehensive feature set including listings, messaging, video calls, and secure payments.
+Wavemart is a Flutter-powered property listing platform enabling users to buy, sell, and rent properties in Ethiopia. It connects property seekers with sellers and landlords through a comprehensive feature set including listings, messaging, video calls, and secure payments.
 
 ## Features
 

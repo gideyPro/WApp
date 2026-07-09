@@ -1,4 +1,4 @@
-# WaveMart FCM (Push Notification) Implementation Guide
+# Wavemart FCM (Push Notification) Implementation Guide
 
 This document outlines the setup and architecture for the Firebase Cloud Messaging (FCM) integration which replaces the previous battery-intensive polling system.
 

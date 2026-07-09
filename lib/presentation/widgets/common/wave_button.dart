@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 
-/// WaveMart Primary Button
+/// Wavemart Primary Button
 /// Gradient accent button with shadow effects
 class WaveButton extends StatefulWidget {
   final String text;

@@ -1,4 +1,4 @@
-# WaveMart API - cURL Reference
+# Wavemart API - cURL Reference
 
 Quick reference for direct call flows using cURL. Tokens below are valid as of 2026-04-24.
 
