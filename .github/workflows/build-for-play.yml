@@ -39,7 +39,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Release AAB
-        run: flutter build appbundle --release --target-platform android-arm64,android-arm --dart-define=GOOGLE_WEB_CLIENT_ID=573697335656-4rmtd6brd3t6jqkhphqbqmp1bs6ij5hg.apps.googleusercontent.com
+        run: flutter build appbundle --release --dart-define=GOOGLE_WEB_CLIENT_ID=573697335656-4rmtd6brd3t6jqkhphqbqmp1bs6ij5hg.apps.googleusercontent.com
 
       - name: Upload AAB to Artifacts
         uses: actions/upload-artifact@v4
