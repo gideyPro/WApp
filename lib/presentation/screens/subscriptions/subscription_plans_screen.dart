@@ -622,9 +622,9 @@ class _SubscriptionPlansScreenState
       ),
       child: Row(
         children: [
-          Icon(Icons.currency_exchange, size: 20, color: AppColors.primary600),
+          const Icon(Icons.currency_exchange, size: 20, color: AppColors.primary600),
           const SizedBox(width: 10),
-          Text(
+          const Text(
             'Show prices in:',
             style: TextStyle(
               fontSize: 14,
