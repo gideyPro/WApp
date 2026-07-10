@@ -42,7 +42,7 @@ class _SubscriptionPlansScreenState
     super.initState();
     final authState = ref.read(authStateProvider);
     final phone = authState.user?.phoneNumber ?? authState.phoneNumber ?? '';
-    _selectedCurrency = phone.startsWith('+251') ? 'ETB' : 'USD';
+    _selectedCurrency = (phone.isEmpty || phone.startsWith('+251')) ? 'ETB' : 'USD';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
     });
@@ -194,45 +194,19 @@ class _SubscriptionPlansScreenState
 
           // Plans header
           if (activePlans.isNotEmpty) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.subscriptionsChoosePlan,
-                        style: AppTextStyles.headline4,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        l10n.subscriptionsSelectPlanSubtitle,
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.primary600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Currency toggle
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary50,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.primary200),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildCurrencyTab('ETB'),
-                      _buildCurrencyTab('USD'),
-                    ],
-                  ),
-                ),
-              ],
+            Text(
+              l10n.subscriptionsChoosePlan,
+              style: AppTextStyles.headline4,
             ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.subscriptionsSelectPlanSubtitle,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.primary600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildCurrencySelector(),
             const SizedBox(height: 24),
 
             // Plans list
@@ -635,6 +609,47 @@ class _SubscriptionPlansScreenState
   String _formatDate(DateTime date) {
     final locale = Localizations.localeOf(context).languageCode;
     return EthiopianDateHelper.formatDual(date, locale);
+  }
+
+  Widget _buildCurrencySelector() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.primary50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.primary200),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.currency_exchange, size: 20, color: AppColors.primary600),
+          const SizedBox(width: 10),
+          Text(
+            'Show prices in:',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary700,
+            ),
+          ),
+          const Spacer(),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.primary300),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildCurrencyTab('ETB'),
+                _buildCurrencyTab('USD'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildCurrencyTab(String currency) {
