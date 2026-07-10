@@ -27,11 +27,33 @@ class ListingStep3Media extends StatefulWidget {
 class _ListingStep3MediaState extends State<ListingStep3Media> {
   final _picker = ImagePicker();
 
+  static const int _maxImageBytes = 10 * 1024 * 1024;
+  static const int _maxVideoBytes = 100 * 1024 * 1024;
+
+  Future<bool> _isFileValid(XFile file, {bool isVideo = false}) async {
+    final size = await file.length();
+    final limit = isVideo ? _maxVideoBytes : _maxImageBytes;
+    if (size > limit) {
+      final label = isVideo ? 'video' : 'image';
+      final limitMb = isVideo ? '100MB' : '10MB';
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$label exceeds $limitMb limit. Please choose a smaller file.'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+      return false;
+    }
+    return true;
+  }
+
   Future<void> _pickImages(bool isSitePlan) async {
     if (isSitePlan) {
       final file = await _picker.pickImage(
           imageQuality: 85, maxWidth: 1920, source: ImageSource.gallery);
-      if (file != null) {
+      if (file != null && await _isFileValid(file)) {
         final persisted = await ListingMediaManager.persistFile(file);
         widget.onUpdate(widget.formData.copyWith(sitePlan: persisted));
       }
@@ -39,16 +61,23 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
       final files =
           await _picker.pickMultiImage(imageQuality: 85, maxWidth: 1920);
       if (files.isNotEmpty) {
-        final persisted = await ListingMediaManager.persistFiles(files);
-        widget.onUpdate(widget.formData
-            .copyWith(images: [...widget.formData.images, ...persisted]));
+        final valid = <XFile>[];
+        for (final f in files) {
+          if (await _isFileValid(f)) valid.add(f);
+        }
+        if (valid.isNotEmpty) {
+          final persisted = await ListingMediaManager.persistFiles(valid);
+          widget.onUpdate(widget.formData
+              .copyWith(images: [...widget.formData.images, ...persisted]));
+        }
       }
     }
   }
 
   Future<void> _pickSingleFile(String type) async {
     final XFile? file;
-    if (type == 'video') {
+    final bool isVideo = type == 'video';
+    if (isVideo) {
       file = await _picker.pickVideo(
           source: ImageSource.gallery, maxDuration: const Duration(minutes: 5));
     } else {
@@ -56,7 +85,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
           imageQuality: 85, maxWidth: 1920, source: ImageSource.gallery);
     }
 
-    if (file != null) {
+    if (file != null && await _isFileValid(file, isVideo: isVideo)) {
       final persisted = await ListingMediaManager.persistFile(file);
       switch (type) {
         case 'sitePlan':
