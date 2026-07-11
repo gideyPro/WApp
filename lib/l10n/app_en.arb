@@ -591,6 +591,7 @@
   "subscriptionPlanNotSupportedListingSubtitle": "Please upgrade to a plan that supports listing creation.",
   "subscriptionPlanNotSupportedOrder": "Your current plan does not support creating orders.",
   "subscriptionPlanNotSupportedOrderSubtitle": "Please upgrade to a plan that supports order creation.",
+  "subscriptionsShowPricesIn": "Show prices in:",
   "commonTryAgain": "Try Again",
   "commonDismiss": "Dismiss",
   "networkErrorTitle": "No Internet Connection",

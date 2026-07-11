@@ -1886,6 +1886,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please upgrade to a plan that supports order creation.';
 
   @override
+  String get subscriptionsShowPricesIn => 'Show prices in:';
+
+  @override
   String get commonTryAgain => 'Try Again';
 
   @override

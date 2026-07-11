@@ -3556,6 +3556,12 @@ abstract class AppLocalizations {
   /// **'Please upgrade to a plan that supports order creation.'**
   String get subscriptionPlanNotSupportedOrderSubtitle;
 
+  /// No description provided for @subscriptionsShowPricesIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Show prices in:'**
+  String get subscriptionsShowPricesIn;
+
   /// No description provided for @commonTryAgain.
   ///
   /// In en, this message translates to:

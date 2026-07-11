@@ -626,7 +626,7 @@ class _SubscriptionPlansScreenState
           Icon(Icons.currency_exchange, size: 20, color: colors.icon),
           const SizedBox(width: 10),
           Text(
-            'Show prices in:',
+            l10n.subscriptionsShowPricesIn,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
