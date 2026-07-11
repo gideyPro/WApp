@@ -1861,7 +1861,7 @@ class AppLocalizationsTi extends AppLocalizations {
       'በጃኹም ናብ ትእዛዝ ምፍጣር ዝድግፍ ፓኬጅ የመሓይሹ።';
 
   @override
-  String get subscriptionsShowPricesIn => 'ዋጋታት በዚህ ኣርእይ፦';
+  String get subscriptionsShowPricesIn => ' ዓይነት ገንዘብ(Currency)፦';
 
   @override
   String get commonTryAgain => 'ደጊምካ ፈትን';

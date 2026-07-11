@@ -1861,7 +1861,7 @@ class AppLocalizationsAm extends AppLocalizations {
       'እባክዎ ትዕዛዞችን መፍጠር ወደ ሚያስችል ፓኬጅ ያሻሽሉ።';
 
   @override
-  String get subscriptionsShowPricesIn => 'ዋጋዎችን በሚከተለው አሳይ፦';
+  String get subscriptionsShowPricesIn => 'የገንዘብ ዓይነት(Currency)፦';
 
   @override
   String get commonTryAgain => 'እንደገና ሞክር';
