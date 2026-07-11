@@ -7,7 +7,6 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
 import '../../../../data/services/message_service.dart';
 import '../../../providers/app_providers.dart';
-import '../../../providers/listing_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_upgrade_card.dart';
 import '../../../widgets/common/wave_liquid_glass.dart';
