@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -122,6 +123,7 @@ class WavemartApp extends ConsumerStatefulWidget {
 class _WavemartAppState extends ConsumerState<WavemartApp> {
   bool _fcmStarted = false;
   bool _nonBlockingDialogShown = false;
+  Timer? _incomingCallTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +144,17 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
       });
     } else if (!authState.isAuthenticated) {
       _fcmStarted = false;
+    }
+
+    // Poll for incoming calls when authenticated (backup for delayed FCM)
+    if (authState.isAuthenticated) {
+      _incomingCallTimer ??= Timer.periodic(
+        const Duration(seconds: 15),
+        (_) => _checkIncomingCalls(),
+      );
+    } else {
+      _incomingCallTimer?.cancel();
+      _incomingCallTimer = null;
     }
 
     // Show non-blocking update dialog once per app lifecycle
@@ -203,6 +216,30 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
         Locale('ti'),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _incomingCallTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _checkIncomingCalls() async {
+    if (ref.read(incomingCallProvider) != null) return;
+
+    try {
+      final result = await ref.read(conferenceServiceProvider).checkIncomingCall();
+      if (result.hasIncoming && result.callData != null) {
+        final data = result.callData!;
+        ref.read(incomingCallProvider.notifier).setIncomingCall(IncomingCall(
+          conferenceId: data['conference_id'] as int,
+          callerName: data['caller_name'] as String? ?? 'Unknown',
+          callerAvatar: data['caller_avatar']?.toString(),
+          callerInitials: data['caller_initials']?.toString(),
+          listingTitle: data['listing_title']?.toString(),
+        ));
+      }
+    } catch (_) {}
   }
 
   void _showUpdateDialog(BuildContext context, VersionState state) {
