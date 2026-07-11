@@ -1295,7 +1295,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               const SizedBox(width: 8),
               Text(
                 l10n.homeRefreshing,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.accent500,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,

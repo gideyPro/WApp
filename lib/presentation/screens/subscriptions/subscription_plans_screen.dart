@@ -612,32 +612,33 @@ class _SubscriptionPlansScreenState
   }
 
   Widget _buildCurrencySelector() {
+    final colors = context.theme;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.primary50,
+        color: colors.card,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary200),
+        border: Border.all(color: colors.border),
       ),
       child: Row(
         children: [
-          const Icon(Icons.currency_exchange, size: 20, color: AppColors.primary600),
+          Icon(Icons.currency_exchange, size: 20, color: colors.icon),
           const SizedBox(width: 10),
-          const Text(
+          Text(
             'Show prices in:',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppColors.primary700,
+              color: colors.textSecondary,
             ),
           ),
           const Spacer(),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colors.cardBgElevated,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppColors.primary300),
+              border: Border.all(color: colors.border),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -654,6 +655,7 @@ class _SubscriptionPlansScreenState
 
   Widget _buildCurrencyTab(String currency) {
     final isSelected = _selectedCurrency == currency;
+    final colors = context.theme;
     return GestureDetector(
       onTap: () {
         if (isSelected) return;
@@ -663,7 +665,7 @@ class _SubscriptionPlansScreenState
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
+          color: isSelected ? colors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
         ),
         child: Text(
@@ -671,7 +673,7 @@ class _SubscriptionPlansScreenState
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w700,
-            color: isSelected ? AppColors.primary900 : AppColors.primary400,
+            color: isSelected ? colors.primaryText : colors.textMuted,
           ),
         ),
       ),

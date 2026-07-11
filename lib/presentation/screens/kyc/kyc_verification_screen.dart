@@ -358,7 +358,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.phone_android_rounded, size: 18, color: AppColors.primary600),
+              const Icon(Icons.phone_android_rounded, size: 18, color: AppColors.primary600),
               const SizedBox(width: 8),
               Text(
                 l10n.authVerifyPhone,
