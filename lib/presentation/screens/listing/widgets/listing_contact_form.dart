@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
+import '../../../../data/services/message_service.dart';
+import '../../../providers/app_providers.dart';
 import '../../../providers/listing_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_upgrade_card.dart';
@@ -26,6 +29,7 @@ class ListingContactForm extends ConsumerStatefulWidget {
 
 class _ListingContactFormState extends ConsumerState<ListingContactForm> {
   bool _isRevealingContact = false;
+  bool _isActionLoading = false;
   String? _revealedContact;
   String? _revealedName;
 
@@ -157,10 +161,108 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            const Divider(height: 1),
+            const SizedBox(height: 12),
+            Text('WaveMart options', style: AppTextStyles.caption.copyWith(color: AppColors.stone500)),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _ContactActionButton(
+                  icon: _isActionLoading ? Icons.hourglass_empty : Icons.message_outlined,
+                  color: AppColors.accent500,
+                  onTap: () {
+                    if (!_isActionLoading) _startChat();
+                  },
+                ),
+                const SizedBox(width: 16),
+                _ContactActionButton(
+                  icon: _isActionLoading ? Icons.hourglass_empty : Icons.call,
+                  color: AppColors.accent500,
+                  onTap: () {
+                    if (!_isActionLoading) _startCall(isVideo: false);
+                  },
+                ),
+                const SizedBox(width: 16),
+                _ContactActionButton(
+                  icon: _isActionLoading ? Icons.hourglass_empty : Icons.videocam,
+                  color: AppColors.accent500,
+                  onTap: () {
+                    if (!_isActionLoading) _startCall(isVideo: true);
+                  },
+                ),
+              ],
+            ),
           ],
         ],
       ),
     );
+  }
+
+  Future<void> _startChat() async {
+    setState(() => _isActionLoading = true);
+    try {
+      final l10n = AppLocalizations.of(context);
+      final service = MessageService();
+      final result = await service.startConversationFromListing(
+        listingId: widget.listing.id,
+      );
+      if (result.success && result.conversation != null && mounted) {
+        context.push('/chat/${result.conversation!.id}', extra: result.conversation);
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message.isNotEmpty ? result.message : l10n.commonError), backgroundColor: AppColors.error),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isActionLoading = false);
+    }
+  }
+
+  Future<void> _startCall({required bool isVideo}) async {
+    setState(() => _isActionLoading = true);
+    try {
+      final l10n = AppLocalizations.of(context);
+      final messageService = MessageService();
+      final convResult = await messageService.startConversationFromListing(
+        listingId: widget.listing.id,
+      );
+      if (!convResult.success || convResult.conversation == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(convResult.message.isNotEmpty ? convResult.message : l10n.commonError), backgroundColor: AppColors.error),
+          );
+        }
+        return;
+      }
+      final conferenceService = ref.read(conferenceServiceProvider);
+      final callResult = await conferenceService.startDirectCall(
+        conversationId: convResult.conversation!.id,
+        isVideo: isVideo,
+      );
+      if (callResult.success && callResult.conference != null && mounted) {
+        context.push('/call/${callResult.conference!.id}', extra: {'is_video': isVideo});
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(callResult.message.isNotEmpty ? callResult.message : l10n.commonError), backgroundColor: AppColors.error),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isActionLoading = false);
+    }
   }
 
   void _launchUrl(String url) async {

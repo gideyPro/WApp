@@ -811,16 +811,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.call, size: 22),
-            tooltip: 'Audio Call',
-            onPressed: () => _startCall(isVideo: false),
-          ),
-          IconButton(
-            icon: const Icon(Icons.videocam, size: 22),
-            tooltip: 'Video Call',
-            onPressed: () => _startCall(isVideo: true),
-          ),
+          if (widget.conversation.isAssetChat && widget.conversation.contactRevealed) ...[
+            IconButton(
+              icon: const Icon(Icons.call, size: 22),
+              tooltip: 'Audio Call',
+              onPressed: () => _startCall(isVideo: false),
+            ),
+            IconButton(
+              icon: const Icon(Icons.videocam, size: 22),
+              tooltip: 'Video Call',
+              onPressed: () => _startCall(isVideo: true),
+            ),
+          ],
         ],
       ),
       body: Stack(

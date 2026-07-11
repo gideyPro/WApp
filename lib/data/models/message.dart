@@ -25,6 +25,8 @@ class Conversation {
   final String? listingDescription;
   final int? listingOwnerId;
   final bool isAssetChat;
+  final bool contactRevealed;
+  final String? revealedContact;
 
   // Raw sender/receiver data for dynamic name computation
   final Map<String, dynamic>? _senderData;
@@ -52,6 +54,8 @@ class Conversation {
     this.listingDescription,
     this.listingOwnerId,
     this.isAssetChat = false,
+    this.contactRevealed = false,
+    this.revealedContact,
     Map<String, dynamic>? senderData,
     Map<String, dynamic>? receiverData,
     this.lastMessageSenderId,
@@ -77,10 +81,14 @@ class Conversation {
     String? listingDescription;
     int? listingOwnerId;
     bool isAssetChat = false;
+    bool contactRevealed = false;
+    String? revealedContact;
     if (json['listing'] is Map) {
       final listing = json['listing'] as Map<String, dynamic>;
       listingTitle = listing['title'];
       listingDescription = listing['description'];
+      contactRevealed = listing['contact_revealed'] == true;
+      revealedContact = listing['revealed_contact']?.toString();
       isAssetChat = json['listing_id'] != null;
       // Extract first image if available
       if (listing['property'] is Map) {
@@ -153,6 +161,8 @@ class Conversation {
       listingDescription: listingDescription,
       listingOwnerId: listingOwnerId,
       isAssetChat: isAssetChat,
+      contactRevealed: contactRevealed,
+      revealedContact: revealedContact,
       senderData: senderData,
       receiverData: receiverData,
       lastMessageSenderId: lastMsgSenderId,
