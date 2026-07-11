@@ -429,6 +429,30 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
+  Future<void> _startCall({required bool isVideo}) async {
+    final l10n = AppLocalizations.of(context);
+    final result = await ref.read(conferenceServiceProvider).startDirectCall(
+      conversationId: widget.conversationId,
+      isVideo: isVideo,
+    );
+    if (result.success && result.conference != null) {
+      if (mounted) {
+        context.push('/call/${result.conference!.id}', extra: {
+          'is_video': isVideo,
+        });
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message.isNotEmpty ? result.message : l10n.commonError),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _sendMessage() async {
     final text = _messageController.text.trim();
     if (text.isEmpty || _isSending) return;
@@ -788,10 +812,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () {
-              // Additional actions (call, profile, etc.)
-            },
+            icon: const Icon(Icons.call, size: 22),
+            tooltip: 'Audio Call',
+            onPressed: () => _startCall(isVideo: false),
+          ),
+          IconButton(
+            icon: const Icon(Icons.videocam, size: 22),
+            tooltip: 'Video Call',
+            onPressed: () => _startCall(isVideo: true),
           ),
         ],
       ),

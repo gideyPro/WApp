@@ -124,14 +124,13 @@ class FcmService {
   }
 
   void _handleIncomingCall(Map<String, dynamic> data) {
-    // This manually updates the incomingCallProvider
-    // which triggers the overlay in main.dart
     _ref.read(incomingCallProvider.notifier).setIncomingCall(IncomingCall(
       conferenceId: int.tryParse(data['conference_id'].toString()) ?? 0,
       callerName: data['caller_name'] ?? 'Unknown',
       callerAvatar: data['caller_avatar'],
       callerInitials: data['caller_initials'],
       listingTitle: data['listing_title'],
+      isVideo: data['is_video'] == '1',
     ));
   }
 

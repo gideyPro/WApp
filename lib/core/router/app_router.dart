@@ -273,6 +273,7 @@ final goRouter = GoRouter(
             conferenceId: id,
             jitsiUrl: extra?['url'] as String?,
             jitsiToken: extra?['token'] as String?,
+            isVideo: extra?['is_video'] == true,
           ),
         );
       },

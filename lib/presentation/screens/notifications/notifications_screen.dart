@@ -222,7 +222,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         {
           final confId = _extractId(notification, 'conference_id');
           if (confId != null) {
-            context.push('/call/$confId');
+            final isVideo = notification.data?['is_video'] == '1';
+            context.push('/call/$confId', extra: {'is_video': isVideo});
           }
         }
         break;

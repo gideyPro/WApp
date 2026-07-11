@@ -100,6 +100,7 @@ class IncomingCall {
   final String? callerAvatar;
   final String? callerInitials;
   final String? listingTitle;
+  final bool isVideo;
 
   const IncomingCall({
     required this.conferenceId,
@@ -107,6 +108,7 @@ class IncomingCall {
     this.callerAvatar,
     this.callerInitials,
     this.listingTitle,
+    this.isVideo = false,
   });
 }
 

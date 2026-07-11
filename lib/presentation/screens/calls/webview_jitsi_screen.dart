@@ -17,12 +17,14 @@ class WebViewJitsiScreen extends ConsumerStatefulWidget {
   final String? jitsiUrl;
   final String? jitsiToken;
   final int conferenceId;
+  final bool isVideo;
 
   const WebViewJitsiScreen({
     super.key,
     this.jitsiUrl,
     this.jitsiToken,
     required this.conferenceId,
+    this.isVideo = false,
   });
 
   @override
@@ -210,7 +212,14 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
       backgroundColor: isDark ? AppColors.primary950 : Colors.white,
       appBar: AppBar(
         backgroundColor: isDark ? AppColors.primary900 : Colors.white,
-        title: Text(AppLocalizations.of(context).jitsiCallTitle),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(widget.isVideo ? Icons.videocam : Icons.phone, size: 20),
+            const SizedBox(width: 8),
+            Text(widget.isVideo ? 'Video Call' : AppLocalizations.of(context).jitsiCallTitle),
+          ],
+        ),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: _leaveCall,

@@ -16,6 +16,7 @@ class IncomingCallScreen extends ConsumerStatefulWidget {
   final String? callerAvatar;
   final String? callerInitials;
   final String? listingTitle;
+  final bool isVideo;
 
   const IncomingCallScreen({
     super.key,
@@ -24,6 +25,7 @@ class IncomingCallScreen extends ConsumerStatefulWidget {
     this.callerAvatar,
     this.callerInitials,
     this.listingTitle,
+    this.isVideo = false,
   });
 
   @override
@@ -192,11 +194,22 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
                 ),
               ],
               const SizedBox(height: 8),
-              Text(
-                l10n.callIncoming,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.accent400,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    widget.isVideo ? Icons.videocam : Icons.phone,
+                    size: 18,
+                    color: AppColors.accent400,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    widget.isVideo ? 'Video Call' : l10n.callIncoming,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.accent400,
+                    ),
+                  ),
+                ],
               ),
               const Spacer(),
               _buildActionButtons(l10n),

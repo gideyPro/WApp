@@ -189,6 +189,7 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
                     callerAvatar: incomingCall.callerAvatar,
                     callerInitials: incomingCall.callerInitials,
                     listingTitle: incomingCall.listingTitle,
+                    isVideo: incomingCall.isVideo,
                   ),
                 ),
               ),
@@ -237,6 +238,7 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
           callerAvatar: data['caller_avatar']?.toString(),
           callerInitials: data['caller_initials']?.toString(),
           listingTitle: data['listing_title']?.toString(),
+          isVideo: data['is_video'] == true,
         ));
       }
     } catch (_) {}

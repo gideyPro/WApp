@@ -111,10 +111,12 @@ class ConferenceService {
 
   Future<ConferenceResponse> startDirectCall({
     required int conversationId,
+    bool isVideo = false,
   }) async {
     try {
       final response = await _apiClient.dio.post(
         '${ApiConstants.startDirectCall}/$conversationId',
+        data: {'is_video': isVideo},
       );
 
       if (response.statusCode == 200) {
