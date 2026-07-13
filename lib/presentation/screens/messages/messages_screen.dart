@@ -777,13 +777,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        title,
-                        style: AppTextStyles.titleSmall.copyWith(
-                          fontWeight: FontWeight.w800,
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: AppTextStyles.titleSmall.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       if (relatedConversations.isNotEmpty) ...[
                         const SizedBox(width: 4),
