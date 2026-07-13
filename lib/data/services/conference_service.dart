@@ -120,15 +120,17 @@ class ConferenceService {
       );
 
       if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
+        final body = ApiEnvelope.extractData(response.data);
 
-        final conference = data.isNotEmpty ? Conference.fromJson(data) : null;
+        final conference = body.isNotEmpty && body['conference'] is Map<String, dynamic>
+            ? Conference.fromJson(body['conference'] as Map<String, dynamic>)
+            : null;
 
         return ConferenceResponse(
           success: true,
           conference: conference,
-          jitsiRoomUrl: data['jitsi_url']?.toString(),
-          jitsiToken: data['jitsi_token']?.toString(),
+          jitsiRoomUrl: body['jitsi_url']?.toString(),
+          jitsiToken: body['jitsi_token']?.toString(),
         );
       }
 
