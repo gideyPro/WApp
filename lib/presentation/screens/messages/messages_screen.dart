@@ -767,47 +767,41 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         title: GestureDetector(
           onTap:
               relatedConversations.isNotEmpty ? _toggleContextDropdown : null,
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              Row(
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          title,
-                          style: AppTextStyles.titleSmall.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: AppTextStyles.titleSmall.copyWith(
+                        fontWeight: FontWeight.w800,
                       ),
-                      if (relatedConversations.isNotEmpty) ...[
-                        const SizedBox(width: 4),
-                        Icon(
-                          _contextDropdownOpen
-                              ? Icons.keyboard_arrow_up
-                              : Icons.keyboard_arrow_down,
-                          size: 20,
-                          color: context.theme.iconSecondary,
-                        ),
-                      ],
-                    ],
-                  ),
-                  Text(
-                    l10n.messagesWith(otherUserName),
-                    style: AppTextStyles.caption.copyWith(
-                      fontSize: 11,
-                      color: context.theme.textMuted,
-                      fontWeight: FontWeight.w500,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  if (relatedConversations.isNotEmpty) ...[
+                    const SizedBox(width: 4),
+                    Icon(
+                      _contextDropdownOpen
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      size: 20,
+                      color: context.theme.iconSecondary,
+                    ),
+                  ],
                 ],
+              ),
+              Text(
+                l10n.messagesWith(otherUserName),
+                style: AppTextStyles.caption.copyWith(
+                  fontSize: 11,
+                  color: context.theme.textMuted,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
