@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -142,21 +143,21 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _ContactActionButton(
-                  icon: Icons.chat_outlined,
+                  icon: Icons.phone_outlined,
+                  color: const Color(0xFF4CAF50),
+                  onTap: () => _launchUrl('tel:$contact'),
+                ),
+                const SizedBox(width: 16),
+                _ContactActionButton.svg(
+                  assetPath: 'assets/icons/whatsapp.svg',
                   color: const Color(0xFF25D366),
                   onTap: () => _launchUrl('https://wa.me/${contact.replaceAll('+', '').replaceAll(' ', '')}'),
                 ),
                 const SizedBox(width: 16),
-                _ContactActionButton(
-                  icon: Icons.send_outlined,
+                _ContactActionButton.svg(
+                  assetPath: 'assets/icons/telegram.svg',
                   color: const Color(0xFF0088CC),
                   onTap: () => _launchUrl('https://t.me/+${contact.replaceAll('+', '').replaceAll(' ', '')}'),
-                ),
-                const SizedBox(width: 16),
-                _ContactActionButton(
-                  icon: Icons.phone_outlined,
-                  color: const Color(0xFF4CAF50),
-                  onTap: () => _launchUrl('tel:$contact'),
                 ),
               ],
             ),
@@ -298,7 +299,8 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
 }
 
 class _ContactActionButton extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? assetPath;
   final Color color;
   final VoidCallback onTap;
 
@@ -306,10 +308,25 @@ class _ContactActionButton extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.onTap,
-  });
+  }) : assetPath = null;
+
+  const _ContactActionButton.svg({
+    required this.assetPath,
+    required this.color,
+    required this.onTap,
+  }) : icon = null;
 
   @override
   Widget build(BuildContext context) {
+    final child = assetPath != null
+        ? SvgPicture.asset(
+            assetPath!,
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          )
+        : Icon(icon, size: 24, color: color);
+
     return Material(
       color: color.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(12),
@@ -318,11 +335,7 @@ class _ContactActionButton extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Icon(
-            icon,
-            size: 24,
-            color: color,
-          ),
+          child: child,
         ),
       ),
     );

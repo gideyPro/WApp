@@ -17,6 +17,7 @@ dependencies:
   cached_network_image: ^3.3.1
   shimmer: ^3.0.0
   lottie: ^3.0.0
+  flutter_svg: ^2.0.17
 
   # State Management
   flutter_riverpod: ^2.4.9
@@ -75,6 +76,7 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
+    - assets/icons/
 
   fonts:
     - family: Cinzel
