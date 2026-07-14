@@ -348,7 +348,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
             ''');
           },
           onReceivedError: (controller, request, error) {
-            if (!_hasLeft) {
+            if (!_hasLeft && request.isForMainFrame == true) {
               setState(() {
                 _hasError = true;
                 _errorMessage = 'Failed to load: ${error.description}';
