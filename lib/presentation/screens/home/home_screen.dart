@@ -350,9 +350,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         (l10n.searchFilterAll, null, _selectedType == null),
                         (l10n.listingHouse, 'house', _selectedType == 'house'),
                         (l10n.listingLand, 'land', _selectedType == 'land'),
+                        (l10n.listingCar, 'car', _selectedType == 'car'),
                       ],
-                      onSelected: (v) =>
-                          setModalState(() => _selectedType = v as String?),
+                      onSelected: (v) {
+                        if (v == 'car') {
+                          Navigator.pop(ctx);
+                          context.push('/cars');
+                          return;
+                        }
+                        setModalState(() => _selectedType = v as String?);
+                      },
                     ),
                     const SizedBox(height: 16),
 
@@ -701,7 +708,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           children: [
             if (_selectedType != null)
               _filterChip(
-                _selectedType == 'house' ? l10n.listingHouse : l10n.listingLand,
+                _selectedType == 'house'
+                    ? l10n.listingHouse
+                    : _selectedType == 'land'
+                        ? l10n.listingLand
+                        : l10n.listingCar,
                 () => _removeFilterAndCheck(
                     () => setState(() => _selectedType = null)),
               ),

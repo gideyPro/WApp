@@ -24,6 +24,11 @@ import '../../presentation/screens/help/help_center_screen.dart';
 import '../../presentation/screens/calls/webview_jitsi_screen.dart';
 import '../../presentation/screens/video/full_screen_video_screen.dart';
 import '../../presentation/screens/listing/widgets/listing_step3_media.dart';
+import '../../presentation/screens/cars/car_list_screen.dart';
+import '../../presentation/screens/cars/car_detail_screen.dart';
+import '../../presentation/screens/cars/create_car_screen.dart';
+import '../../presentation/screens/cars/edit_car_screen.dart';
+import '../../presentation/screens/cars/my_cars_screen.dart';
 
 Page<void> _buildPageTransition<T>({
   required LocalKey key,
@@ -283,6 +288,52 @@ final goRouter = GoRouter(
       pageBuilder: (_, state) => _buildPageTransition(
         key: state.pageKey,
         child: VideoPlayerPreviewScreen(filePath: state.extra as String),
+      ),
+    ),
+
+    // Car routes
+    GoRoute(
+      path: '/cars',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const CarListScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/cars/create',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const CreateCarScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/cars/:id',
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: CarDetailScreen(listingId: id),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/cars/:id/edit',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: EditCarScreen(listing: state.extra as dynamic),
+      ),
+    ),
+    GoRoute(
+      path: '/my-cars',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const MyCarsScreen(),
       ),
     ),
   ],

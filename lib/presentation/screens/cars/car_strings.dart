@@ -1,0 +1,53 @@
+/// Car-specific strings (placeholder until ARB keys are added)
+class CarStrings {
+  CarStrings._();
+
+  static const navCars = 'Cars';
+  static const listingCar = 'Car';
+  static const listingMake = 'Make';
+  static const listingModel = 'Model';
+  static const listingYear = 'Year';
+  static const listingMileage = 'Mileage';
+  static const listingTransmission = 'Transmission';
+  static const listingBodyType = 'Body Type';
+  static const listingFuelType = 'Fuel Type';
+  static const listingEngineSize = 'Engine Size';
+  static const listingColor = 'Color';
+  static const listingCondition = 'Condition';
+  static const listingDoors = 'Doors';
+  static const listingSeats = 'Seats';
+  static const listingFeatures = 'Features';
+  static const listingSpecifications = 'Specifications';
+  static const listingDetail = 'Details';
+  static const listingPricing = 'Pricing';
+  static const listingDescription = 'Description';
+  static const listingOptions = 'Options';
+  static const listingCreated = 'Car listing created';
+  static const listingUpdated = 'Car listing updated';
+  static const listingDeleted = 'Car listing deleted';
+  static const myCars = 'My Cars';
+  static const addPhotos = 'Add Photos';
+  static const existingPhotos = 'Existing Photos';
+  static const customFeatures = 'Custom features (comma separated)';
+  static const noListings = 'No car listings yet';
+  static const addNewListing = 'Add New Listing';
+  static const confirmDelete = 'Delete Car Listing';
+  static const deleteConfirmation = 'Are you sure you want to delete this car listing?';
+  static const createListing = 'Add Car';
+  static const editListing = 'Edit Car';
+  static const submitListing = 'Submit Listing';
+  static const updateListing = 'Update Listing';
+  static const vipOption = 'Mark as VIP';
+  static const termsAccept = 'I accept the terms and conditions';
+  static const price = 'Price';
+  static const photos = 'Photos';
+  static const selectTransmission = 'Select Transmission';
+  static const selectBodyType = 'Select Body Type';
+  static const selectFuelType = 'Select Fuel Type';
+  static const selectCondition = 'Select Condition';
+  static const listingType = 'Listing Type';
+  static const forSale = 'For Sale';
+  static const forRent = 'For Rent';
+  static const monthlyRent = 'Monthly Rent (ETB)';
+  static const rentalPeriodUnit = 'Rental Period';
+}

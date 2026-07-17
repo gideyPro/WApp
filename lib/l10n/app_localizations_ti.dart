@@ -2036,4 +2036,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get reportErrorGeneric => 'ሪፖርት ምእታው ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።';
+
+  @override
+  String get listingCar => 'Car';
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../core/utils/type_utils.dart';
@@ -5,6 +6,8 @@ import '../../core/network/api_constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'address.dart';
 import 'image.dart';
+
+const _jsonDecoder = JsonDecoder();
 
 // Parse property type from backend (handles 'App\Models\House' or 'house')
 PropertyType _parsePropertyType(dynamic value) {
@@ -16,6 +19,7 @@ PropertyType _parsePropertyType(dynamic value) {
       : str.toLowerCase();
   if (className == 'house') return PropertyType.house;
   if (className == 'land') return PropertyType.land;
+  if (className == 'car') return PropertyType.car;
   return PropertyType.house;
 }
 
@@ -28,7 +32,7 @@ ListingType _parseListingType(dynamic value) {
   return ListingType.sale;
 }
 
-enum PropertyType { house, land }
+enum PropertyType { house, land, car }
 
 enum ListingType { sale, rental }
 
@@ -182,6 +186,22 @@ class Listing {
   final int? userInterestId;
   final int viewCount;
 
+  // Car-specific fields
+  final String? carMake;
+  final String? carModel;
+  final int? carYear;
+  final double? carMileageKm;
+  final String? carTransmission;
+  final String? carBodyType;
+  final String? carFuelType;
+  final double? carEngineSize;
+  final String? carColor;
+  final String? carCondition;
+  final String? carVin;
+  final int? carDoors;
+  final int? carSeats;
+  final List<String>? carFeatures;
+
   int get totalRooms =>
       (bedrooms ?? 0) + (bathrooms ?? 0) + (salons ?? 0) + (kitchens ?? 0);
 
@@ -253,6 +273,20 @@ class Listing {
     this.userInterestStatus,
     this.userInterestId,
     this.viewCount = 0,
+    this.carMake,
+    this.carModel,
+    this.carYear,
+    this.carMileageKm,
+    this.carTransmission,
+    this.carBodyType,
+    this.carFuelType,
+    this.carEngineSize,
+    this.carColor,
+    this.carCondition,
+    this.carVin,
+    this.carDoors,
+    this.carSeats,
+    this.carFeatures,
   });
 
   Listing copyWith({
@@ -334,6 +368,20 @@ class Listing {
       userInterestStatus: userInterestStatus ?? this.userInterestStatus,
       userInterestId: userInterestId ?? this.userInterestId,
       viewCount: viewCount,
+      carMake: carMake,
+      carModel: carModel,
+      carYear: carYear,
+      carMileageKm: carMileageKm,
+      carTransmission: carTransmission,
+      carBodyType: carBodyType,
+      carFuelType: carFuelType,
+      carEngineSize: carEngineSize,
+      carColor: carColor,
+      carCondition: carCondition,
+      carVin: carVin,
+      carDoors: carDoors,
+      carSeats: carSeats,
+      carFeatures: carFeatures,
     );
   }
 
@@ -483,7 +531,45 @@ class Listing {
       userInterestStatus: json['user_interest_status'],
       userInterestId: TypeUtils.safeInt(json['user_interest_id']),
       viewCount: TypeUtils.safeInt(json['view_count'], defaultValue: 0)!,
+
+      // Car-specific fields
+      carMake: property is Map ? property['make'] : json['make'],
+      carModel: property is Map ? property['model'] : json['model'],
+      carYear: TypeUtils.safeInt(property is Map ? property['year'] : json['year']),
+      carMileageKm: TypeUtils.safeDouble(property is Map ? property['mileage_km'] : json['mileage_km']),
+      carTransmission: property is Map ? property['transmission'] : json['transmission'],
+      carBodyType: property is Map ? property['body_type'] : json['body_type'],
+      carFuelType: property is Map ? property['fuel_type'] : json['fuel_type'],
+      carEngineSize: TypeUtils.safeDouble(property is Map ? property['engine_size'] : json['engine_size']),
+      carColor: property is Map ? property['color'] : json['color'],
+      carCondition: property is Map ? property['condition'] : json['condition'],
+      carVin: property is Map ? property['vin'] : json['vin'],
+      carDoors: TypeUtils.safeInt(property is Map ? property['doors'] : json['doors']),
+      carSeats: TypeUtils.safeInt(property is Map ? property['seats'] : json['seats']),
+      carFeatures: _parseCarFeatures(property is Map ? property['features'] : json['features']),
     );
+  }
+
+  static List<String>? _parseCarFeatures(dynamic value) {
+    if (value == null) return null;
+    if (value is List) return value.cast<String>();
+    if (value is String) {
+      try {
+        final parsed = _safeDecodeJson(value);
+        if (parsed is List) return parsed.cast<String>();
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  static dynamic _safeDecodeJson(String source) {
+    // Simple JSON array parser for string-encoded arrays
+    if (source.startsWith('[')) {
+      try {
+        return _jsonDecoder.convert(source);
+      } catch (_) {}
+    }
+    return source;
   }
 
   Map<String, dynamic> toJson() {
@@ -524,6 +610,20 @@ class Listing {
       'image_count': imageCount,
       'images': images.map((e) => e.toJson()).toList(),
       'address': address?.toJson(),
+      'make': carMake,
+      'model': carModel,
+      'year': carYear,
+      'mileage_km': carMileageKm,
+      'transmission': carTransmission,
+      'body_type': carBodyType,
+      'fuel_type': carFuelType,
+      'engine_size': carEngineSize,
+      'color': carColor,
+      'condition': carCondition,
+      'vin': carVin,
+      'doors': carDoors,
+      'seats': carSeats,
+      'features': carFeatures,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'view_count': viewCount,
@@ -638,9 +738,18 @@ class Listing {
   String getLocalizedTitle(BuildContext context, [Map<String, String>? cache]) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).languageCode;
-    final type = propertyType == PropertyType.house
-        ? l10n.listingHouse
-        : l10n.listingLand;
+    String type;
+    switch (propertyType) {
+      case PropertyType.house:
+        type = l10n.listingHouse;
+        break;
+      case PropertyType.land:
+        type = l10n.listingLand;
+        break;
+      case PropertyType.car:
+        type = 'Car';
+        break;
+    }
     final action = listingType == ListingType.sale
         ? l10n.listingForSale
         : l10n.listingForRent;
@@ -673,6 +782,15 @@ class Listing {
     }
 
     return l10n.listingPriceOnRequest;
+  }
+
+  String get carTitle {
+    if (carYear != null && carMake != null && carModel != null) {
+      return '$carYear $carMake $carModel';
+    }
+    if (carMake != null && carModel != null) return '$carMake $carModel';
+    if (carMake != null) return carMake!;
+    return 'Car';
   }
 
   String get mainImageUrl {

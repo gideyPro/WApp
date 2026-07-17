@@ -3897,6 +3897,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to submit report. Please try again.'**
   String get reportErrorGeneric;
+
+  /// No description provided for @listingCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get listingCar;
 }
 
 class _AppLocalizationsDelegate

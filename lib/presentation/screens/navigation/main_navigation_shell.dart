@@ -8,9 +8,10 @@ import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../home/home_screen.dart';
 import '../orders/orders_screen.dart';
-import '../notifications/notifications_screen.dart';
+import '../cars/car_list_screen.dart';
 import '../account/account_screen.dart';
 import '../../../l10n/app_localizations.dart';
+import '../cars/car_strings.dart';
 
 class MainNavigationShell extends ConsumerStatefulWidget {
   const MainNavigationShell({super.key});
@@ -21,11 +22,11 @@ class MainNavigationShell extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
-  bool _isCreatingListing = false;
+  final bool _isCreatingListing = false;
   DateTime? _lastBackPressTime;
 
   void _onItemTapped(int index) {
-    if (index == 2) return; // FAB button
+    if (index == 3) return; // FAB button
     ref.read(selectedTabProvider.notifier).state = index;
     if (index == 4) {
       ref.read(profileProvider.notifier).loadProfile();
@@ -57,31 +58,54 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     }
   }
 
-  /// Navigate to Create Listing — inline gates handled inside the screen
-  Future<void> _onCreateListingTap() async {
-    setState(() => _isCreatingListing = true);
-    try {
-      if (mounted) {
-        await context.push('/listings/create');
-      }
-    } finally {
-      if (mounted) setState(() => _isCreatingListing = false);
-    }
+  void _showCreateListingSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.home_outlined),
+              title: const Text('House'),
+              onTap: () {
+                Navigator.pop(ctx);
+                context.push('/listings/create');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.terrain_outlined),
+              title: const Text('Land'),
+              onTap: () {
+                Navigator.pop(ctx);
+                context.push('/listings/create');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.directions_car_outlined),
+              title: const Text('Car'),
+              onTap: () {
+                Navigator.pop(ctx);
+                context.push('/cars/create');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  /// Shows a styled access-gate dialog.
   @override
   Widget build(BuildContext context) {
     final selectedIndex = ref.watch(selectedTabProvider);
     final screens = [
       const HomeScreen(),
+      const CarListScreen(),
       const OrdersScreen(),
       const Center(child: Text('')), // Placeholder for FAB
-      const NotificationsScreen(),
       const AccountScreen(),
     ];
 
-    // Watch unread notifications count
     final unreadNotifCount = ref.watch(unreadCountProvider);
 
     return PopScope(
@@ -94,12 +118,19 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
         backgroundColor: context.isDarkMode ? AppColors.primary900 : AppColors.primary50,
         extendBody: true,
         resizeToAvoidBottomInset: false,
-        body: IndexedStack(
-          index: selectedIndex,
-          children: screens,
+        body: Column(
+          children: [
+            _buildNotificationHeader(unreadNotifCount),
+            Expanded(
+              child: IndexedStack(
+                index: selectedIndex,
+                children: screens,
+              ),
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _onCreateListingTap,
+          onPressed: _showCreateListingSheet,
           backgroundColor: AppColors.emerald600,
           elevation: 12,
           shape: const CircleBorder(),
@@ -124,17 +155,53 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(
-                    Icons.home_rounded, AppLocalizations.of(context).navHome, 0),
-                _buildNavItem(Icons.receipt_long_outlined,
-                    AppLocalizations.of(context).navOrders, 1),
+                _buildNavItem(Icons.home_rounded, AppLocalizations.of(context).navHome, 0),
+                _buildNavItem(Icons.directions_car_outlined, CarStrings.navCars, 1),
+                _buildNavItem(Icons.receipt_long_outlined, AppLocalizations.of(context).navOrders, 2),
                 const SizedBox(width: 48), // Space for FAB notch
-                _buildNotificationsNavItem(unreadNotifCount),
-                _buildNavItem(Icons.person_outline,
-                    AppLocalizations.of(context).navSettings, 4),
+                _buildNavItem(Icons.person_outline, AppLocalizations.of(context).navSettings, 4),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationHeader(int unreadCount) {
+    if (unreadCount == 0) return const SizedBox(height: 0);
+    return GestureDetector(
+      onTap: () => context.push('/notifications'),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).padding.top + 4,
+          bottom: 4,
+          left: 16,
+          right: 16,
+        ),
+        color: AppColors.accent600,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Badge(
+              label: Text(
+                unreadCount > 99 ? '99+' : '$unreadCount',
+                style: AppTextStyles.labelSmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: unreadCount > 99 ? 8 : 10,
+                ),
+              ),
+              backgroundColor: Colors.white,
+              textColor: AppColors.accent600,
+              child: const Icon(Icons.notifications, color: Colors.white, size: 20),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              AppLocalizations.of(context).settingsNotifications,
+              style: AppTextStyles.labelSmall.copyWith(color: Colors.white),
+            ),
+          ],
         ),
       ),
     );
@@ -159,57 +226,6 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             const SizedBox(height: 4),
             Text(
               label,
-              style: AppTextStyles.labelSmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.primary900 : (isDark ? AppColors.primary600 : AppColors.primary300),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNotificationsNavItem(int unreadCount) {
-    final selectedIndex = ref.watch(selectedTabProvider);
-    final isSelected = selectedIndex == 3;
-    final displayCount = unreadCount > 99 ? '99+' : '$unreadCount';
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Expanded(
-      child: InkWell(
-        onTap: () => _onItemTapped(3),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (unreadCount > 0)
-              Badge(
-                label: Text(
-                  displayCount,
-                  style: AppTextStyles.labelSmall.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: unreadCount > 99 ? 8 : 10,
-                  ),
-                ),
-                backgroundColor: AppColors.accent600,
-                textColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Icon(
-                  Icons.notifications_outlined,
-                  color: isSelected ? AppColors.accent600 : (isDark ? AppColors.primary600 : AppColors.primary300),
-                  size: 26,
-                ),
-              )
-            else
-              Icon(
-                Icons.notifications_outlined,
-                color: isSelected ? AppColors.accent600 : (isDark ? AppColors.primary600 : AppColors.primary300),
-                size: 26,
-              ),
-            const SizedBox(height: 4),
-            Text(
-              AppLocalizations.of(context).settingsNotifications,
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected ? AppColors.primary900 : (isDark ? AppColors.primary600 : AppColors.primary300),
