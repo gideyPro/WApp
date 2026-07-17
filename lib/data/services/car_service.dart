@@ -164,12 +164,17 @@ class CarService {
           listing: listing,
         );
       }
-      final msg = ApiEnvelope.extractMessage(response.data, 'Failed to load car details');
-      return ListingDetailResponse(success: false, message: msg);
-    } catch (e) {
+      final gate = ApiEnvelope.extractSubscriptionGate(response.data);
       return ListingDetailResponse(
         success: false,
-        message: ApiErrorHandler.handle(e).toString(),
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to load car details'),
+        subscriptionGate: gate.required ? gate : null,
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return ListingDetailResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }

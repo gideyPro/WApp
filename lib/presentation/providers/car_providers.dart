@@ -77,6 +77,7 @@ class CarDetailNotifier extends StateNotifier<ListingDetailState> {
       state = state.copyWith(
         isLoading: false,
         errorMessage: response.message,
+        requiresSubscription: response.subscriptionGate?.required ?? false,
       );
     }
   }

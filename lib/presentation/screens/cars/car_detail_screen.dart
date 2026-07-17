@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/listing.dart';
 import '../../../data/models/address.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/car_providers.dart';
-import '../../widgets/common/wave_liquid_glass.dart';
+import '../../widgets/common/wave_card.dart';
+import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_upgrade_card.dart';
 import 'car_strings.dart';
 
 class CarDetailScreen extends ConsumerStatefulWidget {
@@ -32,138 +38,226 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(carDetailProvider);
-    final l10n = AppLocalizations.of(context);
 
+    if (state.isLoading) {
+      return _buildSkeletonLoader();
+    }
+
+    if (state.errorMessage != null) {
+      return _buildErrorView(state.errorMessage!, isSubscriptionGate: state.requiresSubscription);
+    }
+
+    if (state.listing == null) {
+      return _buildNotFound();
+    }
+
+    return _buildContent(state.listing!);
+  }
+
+  Widget _buildSkeletonLoader() {
     return Scaffold(
-      backgroundColor: AppColors.primary50,
-      appBar: AppBar(
-        title: const Text(CarStrings.listingDetail),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () => context.push('/notifications'),
+      backgroundColor: context.scaffoldBg,
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Shimmer.fromColors(
+              baseColor: context.shimmerBase,
+              highlightColor: context.shimmerHighlight,
+              child: Column(
+                children: [
+                  Container(height: 56, color: context.shimmerHighlight),
+                  AspectRatio(
+                    aspectRatio: 4 / 3,
+                    child: Container(color: context.shimmerHighlight),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(20),
+            sliver: SliverToBoxAdapter(
+              child: Shimmer.fromColors(
+                baseColor: context.shimmerBase,
+                highlightColor: context.shimmerHighlight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(height: 28, width: 200, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(6))),
+                    const SizedBox(height: 12),
+                    Container(height: 28, width: 140, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(6))),
+                    const SizedBox(height: 16),
+                    Container(height: 18, width: double.infinity, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(4))),
+                    const SizedBox(height: 8),
+                    Container(height: 14, width: 180, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(4))),
+                    const SizedBox(height: 24),
+                    Container(height: 16, width: 120, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(4))),
+                    const SizedBox(height: 12),
+                    ...List.generate(5, (_) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Container(height: 14, width: double.infinity, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(4))),
+                    )),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      body: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : state.errorMessage != null
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(state.errorMessage!, style: const TextStyle(color: AppColors.stone500)),
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        onPressed: () => ref.read(carDetailProvider.notifier).loadListing(widget.listingId),
-                        child: Text(l10n.commonRetry),
-                      ),
-                    ],
-                  ),
-                )
-              : state.listing == null
-                  ? const SizedBox()
-                  : _buildContent(context, state.listing!, l10n),
     );
   }
 
-  Widget _buildContent(BuildContext context, Listing listing, AppLocalizations l10n) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildImageGallery(listing),
-          const SizedBox(height: 12),
-          LiquidGlass(
-            borderRadius: 12,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  listing.carTitle,
-                  style: AppTextStyles.title,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(Icons.local_offer, size: 16, color: AppColors.accent600),
-                    const SizedBox(width: 4),
-                    Text(
-                      listing.getLocalizedPrice(context),
-                      style: AppTextStyles.titleSmall.copyWith(color: AppColors.accent600),
-                    ),
-                  ],
-                ),
-                if (listing.address != null) ...[
+  Widget _buildErrorView(String message, {bool isSubscriptionGate = false}) {
+    final l10n = AppLocalizations.of(context);
+
+    if (isSubscriptionGate) {
+      return Scaffold(
+        backgroundColor: context.scaffoldBg,
+        appBar: AppBar(title: const Text(CarStrings.listingDetail)),
+        body: WaveMessageScreen(
+          type: WaveMessageType.warning,
+          title: l10n.subscriptionRequiredTitle,
+          subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+          actionLabel: l10n.listingUpgradeNow,
+          onAction: () => context.pushReplacement('/subscriptions'),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: context.scaffoldBg,
+      appBar: AppBar(title: const Text(CarStrings.listingDetail)),
+      body: WaveMessageScreen.error(
+        title: l10n.listingsLoadError,
+        subtitle: message,
+        onRetry: () => ref.read(carDetailProvider.notifier).loadListing(widget.listingId),
+      ),
+    );
+  }
+
+  Widget _buildNotFound() {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: context.scaffoldBg,
+      appBar: AppBar(title: const Text(CarStrings.listingDetail)),
+      body: WaveMessageScreen.empty(
+        title: l10n.listingsNotFound,
+        subtitle: l10n.listingsNotFoundSubtitle,
+        onAction: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
+  Widget _buildContent(Listing listing) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: context.scaffoldBg,
+      appBar: AppBar(
+        title: Text(CarStrings.listingDetail),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.white),
+            onPressed: () => _shareListing(listing),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildImageGallery(listing),
+            const SizedBox(height: 12),
+            WaveCard(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(listing.carTitle, style: AppTextStyles.title),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_outlined, size: 16, color: AppColors.stone500),
+                      const Icon(Icons.local_offer, size: 16, color: AppColors.accent600),
                       const SizedBox(width: 4),
-                      Expanded(child: Text(_formatAddress(listing.address!), style: AppTextStyles.bodySmall)),
+                      Text(listing.getLocalizedPrice(context), style: AppTextStyles.titleSmall.copyWith(color: AppColors.accent600)),
+                    ],
+                  ),
+                  if (listing.address != null) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_outlined, size: 16, color: AppColors.stone500),
+                        const SizedBox(width: 4),
+                        Expanded(child: Text(_formatAddress(listing.address!), style: AppTextStyles.bodySmall)),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.calendar_today, size: 14, color: AppColors.stone400),
+                      const SizedBox(width: 4),
+                      Text(DateFormat('MMM d, yyyy').format(listing.createdAt), style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone400)),
+                      const Spacer(),
+                      Text('${listing.viewCount} views', style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone400)),
                     ],
                   ),
                 ],
-                const SizedBox(height: 4),
-                Row(
+              ),
+            ),
+            if (listing.vipBlocked) ...[
+              const SizedBox(height: 12),
+              UpgradeCard(
+                icon: Icons.diamond_outlined,
+                iconColor: AppColors.vip,
+                title: l10n.listingUpgradeToVip,
+                subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+                buttonLabel: l10n.ordersUpgradePlan,
+              ),
+            ],
+            const SizedBox(height: 12),
+            _buildSpecsSection(listing),
+            if (listing.description != null && listing.description!.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              WaveCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.calendar_today, size: 14, color: AppColors.stone400),
-                    const SizedBox(width: 4),
-                    Text(
-                      DateFormat('MMM d, yyyy').format(listing.createdAt),
-                      style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone400),
-                    ),
-                    const Spacer(),
-                    Text('${listing.viewCount} views', style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone400)),
+                    Text(CarStrings.listingDescription, style: AppTextStyles.titleSmall),
+                    const SizedBox(height: 8),
+                    Text(listing.description!, style: AppTextStyles.bodySmall),
                   ],
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildSpecsSection(listing),
-          if (listing.description != null && listing.description!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            LiquidGlass(
-              borderRadius: 12,
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(CarStrings.listingDescription, style: AppTextStyles.titleSmall),
-                  const SizedBox(height: 8),
-                  Text(listing.description!, style: AppTextStyles.bodySmall),
-                ],
               ),
-            ),
-          ],
-          if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            LiquidGlass(
-              borderRadius: 12,
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(CarStrings.listingFeatures, style: AppTextStyles.titleSmall),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    children: listing.carFeatures!.map((f) => Chip(
-                      label: Text(f, style: AppTextStyles.labelSmall),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
-                    )).toList(),
-                  ),
-                ],
+            ],
+            if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              WaveCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(CarStrings.listingFeatures, style: AppTextStyles.titleSmall),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: listing.carFeatures!.map((f) => Chip(
+                        label: Text(f, style: AppTextStyles.labelSmall),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      )).toList(),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
+            const SizedBox(height: 24),
+            _buildSimilarListings(listing),
+            const SizedBox(height: 80),
           ],
-          const SizedBox(height: 80),
-        ],
+        ),
       ),
     );
   }
@@ -227,8 +321,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
     if (specs.isEmpty) return const SizedBox();
 
-    return LiquidGlass(
-      borderRadius: 12,
+    return WaveCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,6 +345,111 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     );
   }
 
+  Widget _buildSimilarListings(Listing listing) {
+    final similarAsync = ref.watch(similarCarsProvider(listing.id));
+
+    return similarAsync.when(
+      data: (response) {
+        final listings = response.listings;
+        if (listings.isEmpty) return const SizedBox.shrink();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Divider(height: 1),
+            const SizedBox(height: 24),
+            Text('Similar Cars', style: AppTextStyles.title),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 220,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: listings.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final similar = listings[index];
+                  return SizedBox(
+                    width: 200,
+                    child: _buildSimilarCard(similar),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildSimilarCard(Listing similar) {
+    final imageUrl = similar.images.isNotEmpty
+        ? similar.images.first.imageUrl
+        : '';
+    return GestureDetector(
+      onTap: () {
+        context.pushReplacement('/cars/${similar.id}');
+      },
+      child: WaveCard(
+        padding: EdgeInsets.zero,
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: imageUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorWidget: (_, __, ___) => Container(
+                        color: AppColors.primary100,
+                        child: const Icon(Icons.image_not_supported),
+                      ),
+                    )
+                  : Container(
+                      color: AppColors.primary100,
+                      child: const Icon(Icons.image_not_supported),
+                    ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      similar.carTitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      similar.getLocalizedPrice(context),
+                      style: AppTextStyles.labelMedium.copyWith(
+                        color: AppColors.emerald600,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (similar.carYear != null || similar.carMileageKm != null)
+                      Text(
+                        '${similar.carYear ?? ''}${similar.carYear != null && similar.carMileageKm != null ? ' · ' : ''}${similar.carMileageKm != null ? '${similar.carMileageKm!.toInt()} km' : ''}',
+                        style: AppTextStyles.caption.copyWith(color: context.textSecondary),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   String _formatAddress(Address address) {
     final parts = <String>[];
     if (address.region != null) parts.add(address.region!);
@@ -259,5 +457,21 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     if (address.woreda != null) parts.add(address.woreda!);
     if (address.kebele != null) parts.add(address.kebele!);
     return parts.join(', ');
+  }
+
+  Future<void> _shareListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final shareText = '''
+${listing.carTitle}
+${listing.getLocalizedPrice(context)}
+${listing.description?.isNotEmpty == true ? '\n${listing.description}' : ''}
+
+${l10n.shareListingTitle}
+''';
+
+    await Share.share(
+      shareText,
+      subject: '${l10n.shareListingMessage}${listing.carTitle}',
+    );
   }
 }

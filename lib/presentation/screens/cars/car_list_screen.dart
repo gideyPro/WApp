@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/car_providers.dart';
-import '../../widgets/listing_card.dart';
+import '../../widgets/car_listing_card.dart';
 import 'car_strings.dart';
 
 class CarListScreen extends ConsumerStatefulWidget {
@@ -90,7 +90,7 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
                         );
                       }
                       final listing = state.listings[index];
-                      return PropertyListingCard(
+                      return CarListingCard(
                         listing: listing,
                         onTap: () => context.push('/cars/${listing.id}'),
                       );
