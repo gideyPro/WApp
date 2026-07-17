@@ -51,12 +51,6 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
       backgroundColor: AppColors.primary50,
       appBar: AppBar(
         title: const Text(CarStrings.navCars),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () => context.push('/notifications'),
-          ),
-        ],
       ),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())

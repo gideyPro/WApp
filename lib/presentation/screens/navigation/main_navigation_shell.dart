@@ -26,7 +26,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   DateTime? _lastBackPressTime;
 
   void _onItemTapped(int index) {
-    if (index == 3) return; // FAB button
+    if (index == 2) return; // FAB button
     ref.read(selectedTabProvider.notifier).state = index;
     if (index == 4) {
       ref.read(profileProvider.notifier).loadProfile();
@@ -61,29 +61,30 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   void _showCreateListingSheet() {
     showModalBottomSheet(
       context: context,
+      backgroundColor: context.sheetBg,
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.home_outlined),
-              title: const Text('House'),
+              leading: Icon(Icons.home_outlined, color: context.theme.textSecondary),
+              title: Text('House', style: TextStyle(color: context.theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 context.push('/listings/create');
               },
             ),
             ListTile(
-              leading: const Icon(Icons.terrain_outlined),
-              title: const Text('Land'),
+              leading: Icon(Icons.terrain_outlined, color: context.theme.textSecondary),
+              title: Text('Land', style: TextStyle(color: context.theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 context.push('/listings/create');
               },
             ),
             ListTile(
-              leading: const Icon(Icons.directions_car_outlined),
-              title: const Text('Car'),
+              leading: Icon(Icons.directions_car_outlined, color: context.theme.textSecondary),
+              title: Text('Car', style: TextStyle(color: context.theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 context.push('/cars/create');
@@ -101,8 +102,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     final screens = [
       const HomeScreen(),
       const CarListScreen(),
-      const OrdersScreen(),
       const Center(child: Text('')), // Placeholder for FAB
+      const OrdersScreen(),
       const AccountScreen(),
     ];
 
@@ -157,8 +158,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               children: [
                 _buildNavItem(Icons.home_rounded, AppLocalizations.of(context).navHome, 0),
                 _buildNavItem(Icons.directions_car_outlined, CarStrings.navCars, 1),
-                _buildNavItem(Icons.receipt_long_outlined, AppLocalizations.of(context).navOrders, 2),
                 const SizedBox(width: 48), // Space for FAB notch
+                _buildNavItem(Icons.receipt_long_outlined, AppLocalizations.of(context).navOrders, 3),
                 _buildNavItem(Icons.person_outline, AppLocalizations.of(context).navSettings, 4),
               ],
             ),

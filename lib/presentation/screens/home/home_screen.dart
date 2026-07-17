@@ -656,6 +656,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     focusNode: _searchFocusNode,
                     hasActiveFilters: _hasActiveFilters,
                     searchQuery: _searchController.text,
+                    unreadCount: ref.watch(unreadCountProvider),
                     onSearchChanged: _onSearchChanged,
                     onSubmitted: (_) => _performSearch(),
                     onClear: _clearSearch,
@@ -1401,6 +1402,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   final FocusNode focusNode;
   final bool hasActiveFilters;
   final String searchQuery;
+  final int unreadCount;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<String> onSubmitted;
   final VoidCallback onClear;
@@ -1412,6 +1414,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     required this.focusNode,
     required this.hasActiveFilters,
     required this.searchQuery,
+    this.unreadCount = 0,
     required this.onSearchChanged,
     required this.onSubmitted,
     required this.onClear,
@@ -1487,7 +1490,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                           ),
                         ],
                       ),
-                      _buildProfileAvatar(context),
+                      _buildNotificationBell(context),
                     ],
                   ),
                 ),
@@ -1589,37 +1592,40 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
-  Widget _buildProfileAvatar(BuildContext context) {
-    final avatarUrl = user?.googleAvatar as String?;
-    return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        image: avatarUrl != null
-            ? DecorationImage(image: NetworkImage(avatarUrl), fit: BoxFit.cover)
-            : null,
-        gradient: avatarUrl != null ? null : AppColors.gradientHero,
-        boxShadow: AppColors.shadowMd,
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
-          width: 2,
+  Widget _buildNotificationBell(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push('/notifications'),
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: AppColors.gradientHero,
+          boxShadow: AppColors.shadowMd,
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 2,
+          ),
+        ),
+        child: Center(
+          child: unreadCount > 0
+              ? Badge(
+                  label: Text(
+                    unreadCount > 99 ? '99+' : '$unreadCount',
+                    style: AppTextStyles.labelSmall.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: unreadCount > 99 ? 8 : 10,
+                    ),
+                  ),
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  child: const Icon(Icons.notifications_outlined,
+                      color: Colors.white, size: 22),
+                )
+              : const Icon(Icons.notifications_outlined,
+                  color: Colors.white, size: 22),
         ),
       ),
-      child: avatarUrl != null
-          ? null
-          : Center(
-              child: user != null
-                  ? Text(
-                      user.initials,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  : const Icon(Icons.person_rounded,
-                      color: Colors.white, size: 24),
-            ),
     );
   }
 

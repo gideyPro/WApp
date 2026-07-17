@@ -29,6 +29,7 @@ import '../../presentation/screens/cars/car_detail_screen.dart';
 import '../../presentation/screens/cars/create_car_screen.dart';
 import '../../presentation/screens/cars/edit_car_screen.dart';
 import '../../presentation/screens/cars/my_cars_screen.dart';
+import '../../presentation/screens/notifications/notifications_screen.dart';
 
 Page<void> _buildPageTransition<T>({
   required LocalKey key,
@@ -238,6 +239,13 @@ final goRouter = GoRouter(
       pageBuilder: (_, state) => _buildPageTransition(
         key: state.pageKey,
         child: const SubscriptionPlansScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/notifications',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const NotificationsScreen(),
       ),
     ),
     GoRoute(
