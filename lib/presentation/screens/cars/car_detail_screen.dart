@@ -13,9 +13,11 @@ import '../../../data/models/listing.dart';
 import '../../../data/models/address.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/car_providers.dart';
+import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
+
 import 'car_strings.dart';
 
 class CarDetailScreen extends ConsumerStatefulWidget {
@@ -163,15 +165,31 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12),
+        padding: AppSpacing.paddingLg,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildImageGallery(listing),
-            const SizedBox(height: 12),
-            _buildTitleCard(listing),
+            const SizedBox(height: 24),
+            _buildPriceAndTitle(listing),
+            const Divider(height: 32),
+            _buildSpecsSection(listing),
+            if (listing.description != null && listing.description!.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              _buildSection(
+                title: CarStrings.listingDescription,
+                child: Text(listing.description!, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textTertiary, height: 1.6)),
+              ),
+            ],
+            if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              _buildSection(
+                title: CarStrings.listingFeatures,
+                child: _buildFeatureChips(listing.carFeatures!),
+              ),
+            ],
             if (listing.vipBlocked) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: 24),
               UpgradeCard(
                 icon: Icons.diamond_outlined,
                 iconColor: AppColors.vip,
@@ -180,37 +198,11 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                 buttonLabel: l10n.ordersUpgradePlan,
               ),
             ],
-            const SizedBox(height: 12),
-            _buildSpecsSection(listing),
-            if (listing.description != null && listing.description!.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              _buildSection(
-                title: CarStrings.listingDescription,
-                child: Text(listing.description!, style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary, height: 1.5)),
-              ),
-            ],
-            if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              _buildSection(
-                title: CarStrings.listingFeatures,
-                child: Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  children: listing.carFeatures!.map((f) => Chip(
-                    label: Text(f, style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary)),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: context.theme.cardBg,
-                    side: BorderSide.none,
-                  )).toList(),
-                ),
-              ),
-            ],
             if (listing.sellerPhone != null && listing.sellerPhone!.isNotEmpty) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               _buildContactSection(listing),
             ],
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             _buildSimilarListings(listing),
             const SizedBox(height: 80),
           ],
@@ -219,60 +211,59 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     );
   }
 
-  Widget _buildTitleCard(Listing listing) {
-    return WaveCard(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(listing.carTitle, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              const Icon(Icons.local_offer, size: 16, color: AppColors.accent600),
-              const SizedBox(width: 4),
-              Text(listing.getLocalizedPrice(context), style: AppTextStyles.titleSmall.copyWith(color: AppColors.accent600, fontWeight: FontWeight.w700)),
-            ],
+  Widget _buildPriceAndTitle(Listing listing) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          listing.getLocalizedPrice(context),
+          style: AppTextStyles.headline2.copyWith(
+            color: AppColors.emerald600,
           ),
-          if (listing.address != null) ...[
-            const SizedBox(height: 8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.location_on_outlined, size: 16, color: context.textSecondary),
-                const SizedBox(width: 4),
-                Expanded(child: Text(_formatAddress(listing.address!), style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary))),
-              ],
-            ),
-          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          listing.carTitle,
+          style: AppTextStyles.headline4,
+        ),
+        if (listing.address != null) ...[
           const SizedBox(height: 8),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.calendar_today, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
+              Icon(Icons.location_on_outlined, size: 16, color: context.textSecondary),
               const SizedBox(width: 4),
-              Text(DateFormat('MMM d, yyyy').format(listing.createdAt), style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7))),
-              const Spacer(),
-              Icon(Icons.visibility_outlined, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
-              const SizedBox(width: 4),
-              Text('${listing.viewCount}', style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7))),
+              Expanded(child: Text(
+                _formatAddress(listing.address!),
+                style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary),
+              )),
             ],
           ),
         ],
-      ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Icon(Icons.calendar_today, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
+            const SizedBox(width: 4),
+            Text(DateFormat('MMM d, yyyy').format(listing.createdAt), style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7))),
+            const Spacer(),
+            Icon(Icons.visibility_outlined, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
+            const SizedBox(width: 4),
+            Text('${listing.viewCount}', style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7))),
+          ],
+        ),
+      ],
     );
   }
 
   Widget _buildSection({required String title, required Widget child}) {
-    return WaveCard(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
-          const SizedBox(height: 12),
-          child,
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: AppTextStyles.title),
+        const SizedBox(height: 12),
+        child,
+      ],
     );
   }
 
@@ -288,6 +279,9 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           child: Text(CarStrings.contactSeller, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
         ),
         WaveCard(
+          useLiquidGlass: true,
+          isGlass: true,
+          showBorder: false,
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,6 +387,35 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     );
   }
 
+  Widget _buildFeatureChips(List<String> features) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: features.map((f) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: context.cardBg,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: context.divider.withValues(alpha: 0.5)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.check_circle_outline, size: 16, color: AppColors.accent500),
+            const SizedBox(width: 6),
+            Text(
+              f,
+              style: AppTextStyles.labelMedium.copyWith(
+                color: context.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      )).toList(),
+    );
+  }
+
   Widget _buildSpecsSection(Listing listing) {
     final specs = <MapEntry<String, String>>[];
     void add(String label, String? value) {
@@ -414,23 +437,49 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
     if (specs.isEmpty) return const SizedBox();
 
-    return _buildSection(
-      title: CarStrings.listingSpecifications,
-      child: Column(
-        children: specs.map((spec) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 120,
-                child: Text(spec.key, style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary)),
-              ),
-              Expanded(child: Text(spec.value, style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary))),
-            ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(CarStrings.listingSpecifications, style: AppTextStyles.title),
+        const SizedBox(height: 12),
+        WaveCard(
+          useLiquidGlass: true,
+          isGlass: true,
+          showBorder: false,
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: specs.asMap().entries.map((entry) {
+              final index = entry.key;
+              final spec = entry.value;
+              return Column(
+                children: [
+                  Padding(
+                    padding: AppSpacing.paddingLg,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          spec.key,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.primary500,
+                          ),
+                        ),
+                        Text(
+                          spec.value,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (index < specs.length - 1) const Divider(height: 1),
+                ],
+              );
+            }).toList(),
           ),
-        )).toList(),
-      ),
+        ),
+      ],
     );
   }
 
@@ -480,6 +529,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
         context.pushReplacement('/cars/${similar.id}');
       },
       child: WaveCard(
+        useLiquidGlass: true,
         padding: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
         child: Column(
