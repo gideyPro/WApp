@@ -186,7 +186,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
               const SizedBox(height: 12),
               _buildSection(
                 title: CarStrings.listingDescription,
-                child: Text(listing.description!, style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary, height: 1.5)),
+                child: Text(listing.description!, style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary, height: 1.5)),
               ),
             ],
             if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
