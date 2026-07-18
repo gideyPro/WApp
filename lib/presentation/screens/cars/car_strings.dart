@@ -22,6 +22,14 @@ class CarStrings {
   static const listingPricing = 'Pricing';
   static const listingDescription = 'Description';
   static const listingOptions = 'Options';
+  static const contactSeller = 'Contact Seller';
+  static const call = 'Call';
+  static const whatsapp = 'WhatsApp';
+  static const telegram = 'Telegram';
+  static const callHint = 'Tap to call the seller';
+  static const whatsappHint = 'Chat on WhatsApp';
+  static const telegramHint = 'Chat on Telegram';
+  static const noContactInfo = 'No contact information available';
   static const listingCreated = 'Car listing created';
   static const listingUpdated = 'Car listing updated';
   static const listingDeleted = 'Car listing deleted';

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
@@ -153,7 +154,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        title: Text(CarStrings.listingDetail),
+        title: const Text(CarStrings.listingDetail),
         actions: [
           IconButton(
             icon: const Icon(Icons.share, color: Colors.white),
@@ -168,43 +169,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           children: [
             _buildImageGallery(listing),
             const SizedBox(height: 12),
-            WaveCard(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(listing.carTitle, style: AppTextStyles.title),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.local_offer, size: 16, color: AppColors.accent600),
-                      const SizedBox(width: 4),
-                      Text(listing.getLocalizedPrice(context), style: AppTextStyles.titleSmall.copyWith(color: AppColors.accent600)),
-                    ],
-                  ),
-                  if (listing.address != null) ...[
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on_outlined, size: 16, color: AppColors.stone500),
-                        const SizedBox(width: 4),
-                        Expanded(child: Text(_formatAddress(listing.address!), style: AppTextStyles.bodySmall)),
-                      ],
-                    ),
-                  ],
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_today, size: 14, color: AppColors.stone400),
-                      const SizedBox(width: 4),
-                      Text(DateFormat('MMM d, yyyy').format(listing.createdAt), style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone400)),
-                      const Spacer(),
-                      Text('${listing.viewCount} views', style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone400)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            _buildTitleCard(listing),
             if (listing.vipBlocked) ...[
               const SizedBox(height: 12),
               UpgradeCard(
@@ -219,39 +184,31 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
             _buildSpecsSection(listing),
             if (listing.description != null && listing.description!.isNotEmpty) ...[
               const SizedBox(height: 12),
-              WaveCard(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(CarStrings.listingDescription, style: AppTextStyles.titleSmall),
-                    const SizedBox(height: 8),
-                    Text(listing.description!, style: AppTextStyles.bodySmall),
-                  ],
-                ),
+              _buildSection(
+                title: CarStrings.listingDescription,
+                child: Text(listing.description!, style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary, height: 1.5)),
               ),
             ],
             if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
               const SizedBox(height: 12),
-              WaveCard(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(CarStrings.listingFeatures, style: AppTextStyles.titleSmall),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: listing.carFeatures!.map((f) => Chip(
-                        label: Text(f, style: AppTextStyles.labelSmall),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.compact,
-                      )).toList(),
-                    ),
-                  ],
+              _buildSection(
+                title: CarStrings.listingFeatures,
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: listing.carFeatures!.map((f) => Chip(
+                    label: Text(f, style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary)),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor: context.theme.cardBg,
+                    side: BorderSide.none,
+                  )).toList(),
                 ),
               ),
+            ],
+            if (listing.sellerPhone != null && listing.sellerPhone!.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              _buildContactSection(listing),
             ],
             const SizedBox(height: 24),
             _buildSimilarListings(listing),
@@ -262,15 +219,151 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     );
   }
 
+  Widget _buildTitleCard(Listing listing) {
+    return WaveCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(listing.carTitle, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Icon(Icons.local_offer, size: 16, color: AppColors.accent600),
+              const SizedBox(width: 4),
+              Text(listing.getLocalizedPrice(context), style: AppTextStyles.titleSmall.copyWith(color: AppColors.accent600, fontWeight: FontWeight.w700)),
+            ],
+          ),
+          if (listing.address != null) ...[
+            const SizedBox(height: 8),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.location_on_outlined, size: 16, color: context.textSecondary),
+                const SizedBox(width: 4),
+                Expanded(child: Text(_formatAddress(listing.address!), style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary))),
+              ],
+            ),
+          ],
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(Icons.calendar_today, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
+              const SizedBox(width: 4),
+              Text(DateFormat('MMM d, yyyy').format(listing.createdAt), style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7))),
+              const Spacer(),
+              Icon(Icons.visibility_outlined, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
+              const SizedBox(width: 4),
+              Text('${listing.viewCount}', style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7))),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection({required String title, required Widget child}) {
+    return WaveCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
+          const SizedBox(height: 12),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContactSection(Listing listing) {
+    final phone = listing.sellerPhone!;
+    final name = listing.sellerName ?? 'Seller';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(CarStrings.contactSeller, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
+        ),
+        WaveCard(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: context.theme.cardBg,
+                    child: Text(
+                      name.isNotEmpty ? name[0].toUpperCase() : 'S',
+                      style: AppTextStyles.titleSmall.copyWith(color: AppColors.accent600, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name, style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary, fontWeight: FontWeight.w600)),
+                        Text(phone, style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: _ContactButton(
+                      icon: Icons.phone,
+                      label: CarStrings.call,
+                      hint: CarStrings.callHint,
+                      color: const Color(0xFF4CAF50),
+                      onTap: () => _launchUrl('tel:$phone'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _ContactButton(
+                      icon: Icons.chat_bubble_outline,
+                      label: CarStrings.whatsapp,
+                      hint: CarStrings.whatsappHint,
+                      color: const Color(0xFF25D366),
+                      onTap: () => _launchUrl('https://wa.me/${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _ContactButton(
+                      icon: Icons.send,
+                      label: CarStrings.telegram,
+                      hint: CarStrings.telegramHint,
+                      color: const Color(0xFF0088CC),
+                      onTap: () => _launchUrl('https://t.me/+${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildImageGallery(Listing listing) {
     if (listing.images.isEmpty) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Container(
           height: 240,
-          color: AppColors.stone200,
-          child: const Center(
-            child: Icon(Icons.directions_car, size: 64, color: AppColors.stone400),
+          color: context.theme.card,
+          child: Center(
+            child: Icon(Icons.directions_car, size: 64, color: context.textSecondary.withValues(alpha: 0.4)),
           ),
         ),
       );
@@ -290,8 +383,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
                 width: MediaQuery.of(context).size.width - 24,
-                color: AppColors.stone200,
-                child: const Icon(Icons.broken_image, color: AppColors.stone400),
+                color: context.theme.card,
+                child: Icon(Icons.broken_image, color: context.textSecondary.withValues(alpha: 0.4)),
               ),
             ),
           );
@@ -321,26 +414,22 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
     if (specs.isEmpty) return const SizedBox();
 
-    return WaveCard(
-      padding: const EdgeInsets.all(16),
+    return _buildSection(
+      title: CarStrings.listingSpecifications,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(CarStrings.listingSpecifications, style: AppTextStyles.titleSmall),
-          const SizedBox(height: 12),
-          ...specs.map((spec) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: Text(spec.key, style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone500)),
-                ),
-                Expanded(child: Text(spec.value, style: AppTextStyles.bodySmall)),
-              ],
-            ),
-          )),
-        ],
+        children: specs.map((spec) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 120,
+                child: Text(spec.key, style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary)),
+              ),
+              Expanded(child: Text(spec.value, style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary))),
+            ],
+          ),
+        )).toList(),
       ),
     );
   }
@@ -357,7 +446,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           children: [
             const Divider(height: 1),
             const SizedBox(height: 24),
-            Text('Similar Cars', style: AppTextStyles.title),
+            Text('Similar Cars', style: AppTextStyles.title.copyWith(color: context.textPrimary)),
             const SizedBox(height: 12),
             SizedBox(
               height: 220,
@@ -424,7 +513,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                       similar.carTitle,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w600),
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w600, color: context.textPrimary),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -472,6 +561,64 @@ ${l10n.shareListingTitle}
     await Share.share(
       shareText,
       subject: '${l10n.shareListingMessage}${listing.carTitle}',
+    );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open: $url'), backgroundColor: AppColors.error),
+        );
+      }
+    }
+  }
+}
+
+class _ContactButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String hint;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ContactButton({
+    required this.icon,
+    required this.label,
+    required this.hint,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: hint,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: color.withValues(alpha: 0.2)),
+            ),
+            child: Column(
+              children: [
+                Icon(icon, color: color, size: 24),
+                const SizedBox(height: 4),
+                Text(label, style: AppTextStyles.labelSmall.copyWith(color: color, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

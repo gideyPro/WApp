@@ -116,6 +116,8 @@ class Listing {
   final bool contactModerated;
   final String? revealedName;
   final String? revealedContact;
+  final String? sellerName;
+  final String? sellerPhone;
 
   String? get videoUrl => _formatUrl(videoLink);
 
@@ -242,6 +244,8 @@ class Listing {
     this.contactModerated = false,
     this.revealedName,
     this.revealedContact,
+    this.sellerName,
+    this.sellerPhone,
     this.sitePlanImageLink,
     this.ownershipProofLink,
     this.holdingType,
@@ -296,6 +300,8 @@ class Listing {
     bool? contactRevealed,
     String? revealedName,
     String? revealedContact,
+    String? sellerName,
+    String? sellerPhone,
     int? contactRemaining,
     String? userInterestStatus,
     int? userInterestId,
@@ -337,6 +343,8 @@ class Listing {
       contactModerated: contactModerated,
       revealedName: revealedName ?? this.revealedName,
       revealedContact: revealedContact ?? this.revealedContact,
+      sellerName: sellerName ?? this.sellerName,
+      sellerPhone: sellerPhone ?? this.sellerPhone,
       sitePlanImageLink: sitePlanImageLink,
       ownershipProofLink: ownershipProofLink,
       holdingType: holdingType,
@@ -450,6 +458,8 @@ class Listing {
       contactModerated: json['contact_moderated'] ?? false,
       revealedName: json['revealed_name']?.toString(),
       revealedContact: json['revealed_contact']?.toString(),
+      sellerName: json['seller_name']?.toString(),
+      sellerPhone: json['seller_phone']?.toString(),
       sitePlanImageLink: json['site_plan_image_link'] ?? 
           (property is Map ? property['site_plan_image_link'] : null),
       ownershipProofLink: json['ownership_proof_link'] ?? 
