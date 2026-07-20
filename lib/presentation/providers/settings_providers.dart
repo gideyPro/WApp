@@ -17,7 +17,7 @@ final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
       return ApiEnvelope.extractData(response.data);
     }
   } catch (_) {}
-  return {'subscription_enabled': false};
+  return {'subscription_enabled': true};
 });
 
 /// KYC Provider

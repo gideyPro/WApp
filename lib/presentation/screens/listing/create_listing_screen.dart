@@ -476,7 +476,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     );
 
     // Loading state — wait for data before gating
-    if (subState.isLoading || kycState.isLoading) {
+    if (subState.isLoading || kycState.isLoading || settingsAsync.isLoading) {
       return _buildSkeleton();
     }
 
