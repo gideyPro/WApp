@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,7 +17,6 @@ import '../../widgets/featured_listing_card.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/vehicle_listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_liquid_glass.dart';
 import '../cars/car_filter_sheet.dart';
 
 enum HomeCategory { property, vehicles }
@@ -67,6 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _rentalEnabled = false;
   bool _isAutoRefreshing = false;
   HomeCategory _selectedCategory = HomeCategory.property;
+  String? _selectedCarBodyType;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
@@ -274,6 +273,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       eyebrow: 'LATEST',
     );
 
+    final displayList = _selectedCarBodyType == null
+        ? state.listings
+        : state.listings
+            .where((l) => l.carBodyType?.toLowerCase() == _selectedCarBodyType)
+            .toList();
+
     if (state.isLoading && state.listings.isEmpty) {
       return SliverPadding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
@@ -298,19 +303,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       );
     }
 
-    if (state.listings.isEmpty) {
-      return SliverFillRemaining(
-        child: Column(
-          children: [
+    if (displayList.isEmpty) {
+      return SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+        sliver: SliverList(
+          delegate: SliverChildListDelegate([
             header,
-            Expanded(
-              child: WaveEmptyState(
-                icon: Icons.directions_car_outlined,
-                title: l10n.listingsNoResults,
-                subtitle: 'No vehicle listings available',
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 40),
+              child: Center(
+                child: Text(
+                  _selectedCarBodyType == null
+                      ? 'No vehicle listings available'
+                      : 'No ${_selectedCarBodyType!.toUpperCase()} listings',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: context.textSecondary,
+                  ),
+                ),
               ),
             ),
-          ],
+          ]),
         ),
       );
     }
@@ -322,13 +334,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           (context, index) {
             if (index == 0) return header;
             final i = index - 1;
-            if (i == state.listings.length) {
+            if (i == displayList.length) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator()),
               );
             }
-            final listing = state.listings[i];
+            final listing = displayList[i];
             final fav = _isFavorite(listing.id);
             return VehicleListingCard(
               listing: listing,
@@ -338,7 +350,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               onTap: () => context.push('/cars/${listing.id}'),
             );
           },
-          childCount: state.listings.length + 2, // +1 for header, +1 for loading indicator
+          childCount: displayList.length + 2,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVehicleTypeChips() {
+    const types = <String?>[
+      null, 'sedan', 'suv', 'truck', 'hatchback', 'coupe',
+    ];
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: types.map((type) {
+            final isSelected = _selectedCarBodyType == type;
+            final label = type == null ? 'All' : type[0].toUpperCase() + type.substring(1);
+            return Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() => _selectedCarBodyType = type);
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.cta500
+                        : context.cardBg.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : context.divider.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Text(
+                    label,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      fontSize: 11,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                      color: isSelected ? Colors.white : context.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
@@ -721,22 +782,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       runSpacing: 8,
       children: options.map((chip) {
         final (label, value, isSelected) = chip;
-        return LiquidGlass(
-          borderRadius: 4,
-          blur: isSelected ? 20 : 16,
-          variant: isSelected
-              ? LiquidGlassVariant.prominent
-              : LiquidGlassVariant.regular,
-          tint: isSelected ? AppColors.accent500 : null,
-          interactive: true,
+        return GestureDetector(
           onTap: () => onSelected(value),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          child: Text(
-            label,
-            style: AppTextStyles.bodySmall.copyWith(
-              fontSize: 13,
-              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-              color: isSelected ? AppColors.accent500 : context.textSecondary,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? AppColors.accent500.withValues(alpha: 0.12)
+                  : context.cardBg,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.accent500.withValues(alpha: 0.4)
+                    : context.divider.withValues(alpha: 0.5),
+              ),
+            ),
+            child: Text(
+              label,
+              style: AppTextStyles.bodySmall.copyWith(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? AppColors.accent500 : context.textSecondary,
+              ),
             ),
           ),
         );
@@ -799,12 +866,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final l10n = AppLocalizations.of(context);
     ref.watch(favoritesProvider);
 
-    ref.listen(subscriptionProvider, (prev, next) {
-      if (prev?.canViewVip != true && next.canViewVip == true) {
-        ref.read(vipListingsProvider.notifier).loadVipListings();
-      }
-    });
-
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -865,8 +926,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ),
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
-                else if (_selectedCategory == HomeCategory.vehicles)
-                  _buildCarListings()
+                else if (_selectedCategory == HomeCategory.vehicles) ...[
+                  SliverToBoxAdapter(child: _buildVehicleTypeChips()),
+                  _buildCarListings(),
+                ]
                 else ...[
                   SliverToBoxAdapter(
                     child: FadeTransition(
@@ -875,9 +938,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildSectionHeader(l10n.listingsFeatured),
-                          _buildFeaturedListings(featuredState),
-                          _buildVipSectionHeader(),
-                          _buildVipListingsOrTeaser(vipState),
+                          _buildFeaturedListings(featuredState, vipState),
                           _buildSectionHeader(l10n.listingsTitle,
                               eyebrow: l10n.homeLatestRecently.toUpperCase()),
                         ],
@@ -944,14 +1005,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     () => setState(() => _isFeaturedFilter = false)),
               ),
             const SizedBox(width: 8),
-            LiquidGlass(
-              borderRadius: 4,
-              blur: 16,
-              variant: LiquidGlassVariant.regular,
-              interactive: true,
+            GestureDetector(
               onTap: _clearAllFilters,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              child: Row(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: context.cardBg,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: AppColors.primary400.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Row(
                 children: [
                   const Icon(Icons.close,
                       size: 14, color: AppColors.primary600),
@@ -965,6 +1030,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ],
               ),
             ),
+          ),
           ],
         ),
       ),
@@ -991,12 +1057,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget _filterChip(String label, VoidCallback onRemove) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
-      child: LiquidGlass(
-        borderRadius: 4,
-        blur: 16,
-        variant: LiquidGlassVariant.regular,
-        tint: AppColors.accent500,
+      child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: AppColors.accent500.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: AppColors.accent500.withValues(alpha: 0.3),
+          ),
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1090,15 +1159,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget _buildSectionHeader(
     String title, {
     String? eyebrow,
-    IconData? glyph,
-    Color? accentRuleColor,
     Color? eyebrowColor,
   }) {
-    final titleStyle = AppTextStyles.title.copyWith(
-      fontWeight: FontWeight.w700,
-      letterSpacing: -0.5,
-      color: context.textPrimary,
-    );
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
       child: Column(
@@ -1113,61 +1175,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
             const SizedBox(height: 4),
           ],
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (glyph != null) ...[
-                Icon(glyph, size: 18, color: accentRuleColor ?? AppColors.vip),
-                const SizedBox(width: 6),
-              ],
-              Expanded(
-                child: Text(
-                  title,
-                  style: titleStyle,
-                ),
-              ),
-            ],
-          ),
-          if (accentRuleColor != null) ...[
-            const SizedBox(height: 6),
-            Container(
-              width: 32,
-              height: 2,
-              decoration: BoxDecoration(
-                color: accentRuleColor,
-                borderRadius: BorderRadius.circular(1),
-              ),
+          Text(
+            title,
+            style: AppTextStyles.title.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
+              color: context.textPrimary,
             ),
-          ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildVipSectionHeader() {
+  Widget _buildFeaturedListings(
+    ListingsState featuredState,
+    ListingsState vipState,
+  ) {
     final l10n = AppLocalizations.of(context);
-    return _buildSectionHeader(
-      l10n.homeVipTitle,
-      glyph: Icons.diamond,
-      accentRuleColor: AppColors.vip,
-    );
-  }
+    final subState = ref.watch(subscriptionProvider);
+    final canViewVip = subState.canViewVip;
 
-  Widget _buildFeaturedListings(ListingsState state) {
-    final l10n = AppLocalizations.of(context);
-    // For VIP-capable users, suppress VIP listings in Featured
-    // (they're already in the dedicated VIP carousel — VIP supersedes).
-    final canViewVip = ref.watch(subscriptionProvider).canViewVip;
-    final displayList = canViewVip
-        ? state.listings.where((l) => !l.isVip).toList()
-        : state.listings;
-    if (state.errorMessage != null && displayList.isEmpty) {
+    // Merge featured + VIP listings, deduplicated by ID
+    final merged = <Listing>[
+      ...featuredState.listings,
+      if (canViewVip)
+        ...vipState.listings.where(
+          (v) => !featuredState.listings.any((f) => f.id == v.id),
+        ),
+    ];
+
+    if (featuredState.errorMessage != null && merged.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: _buildPullToRefreshHint(),
       );
     }
-    if (state.isLoading) {
+    if (featuredState.isLoading && merged.isEmpty) {
       return SizedBox(
         height: 180,
         child: ListView.builder(
@@ -1184,7 +1228,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       );
     }
-    if (displayList.isEmpty) {
+    if (merged.isEmpty) {
       return SizedBox(
         height: 80,
         child: Center(
@@ -1192,280 +1236,75 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       );
     }
+
     return SizedBox(
       height: 180,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: displayList.length,
-        itemBuilder: (context, index) {
-          final listing = displayList[index];
-          final fav = _isFavorite(listing.id);
-          return Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: SizedBox(
-              width: 280,
-              child: FeaturedListingCard(
-                listing: listing,
-                isFavorite: fav,
-                isTogglingFavorite: _isToggling(listing.id),
-                onFavorite: () => _toggleFavorite(listing.id),
-                onTap: () => _handleListingTap(listing),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildVipListingsOrTeaser(ListingsState vipState) {
-    final subState = ref.watch(subscriptionProvider);
-    if (subState.isLoading || subState.errorMessage != null) {
-      return const SizedBox.shrink();
-    }
-    if (subState.canViewVip) {
-      return _buildVipListings(vipState);
-    }
-    return _buildVipTeaserSection();
-  }
-
-  Widget _buildVipListings(ListingsState state) {
-    if (state.errorMessage != null && state.listings.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: _buildPullToRefreshHint(),
-      );
-    }
-    if (state.isLoading) {
-      return SizedBox(
-        height: 180,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: 3,
-          itemBuilder: (context, index) => const Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: SizedBox(
-              width: 280,
-              child: FeaturedListingCard(listing: null, isLoading: true),
-            ),
-          ),
-        ),
-      );
-    }
-    if (state.listings.isEmpty) {
-      final l10n = AppLocalizations.of(context);
-      return SizedBox(
-        height: 120,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.diamond_outlined,
-                  size: 28, color: AppColors.vip),
-              const SizedBox(height: 8),
-              Text(
-                l10n.vipNoListings,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: context.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    return SizedBox(
-      height: 180,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: state.listings.length,
-        itemBuilder: (context, index) {
-          final listing = state.listings[index];
-          final fav = _isFavorite(listing.id);
-          return Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: SizedBox(
-              width: 280,
-              child: FeaturedListingCard(
-                listing: listing,
-                isFavorite: fav,
-                isTogglingFavorite: _isToggling(listing.id),
-                onFavorite: () => _toggleFavorite(listing.id),
-                onTap: () => _handleListingTap(listing),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildVipTeaserSection() {
-    final l10n = AppLocalizations.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 180,
-            child: ListView(
+          Expanded(
+            child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: List.generate(2, (_) {
+              itemCount: merged.length,
+              itemBuilder: (context, index) {
+                final listing = merged[index];
+                final fav = _isFavorite(listing.id);
                 return Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: SizedBox(
                     width: 280,
-                    child: Stack(
-                      children: [
-                        // Skeleton card with VIP chrome
-                        LiquidGlass(
-                          borderRadius: 4,
-                          blur: 20,
-                          variant: LiquidGlassVariant.regular,
-                          tint: AppColors.vip,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Locked image area
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(4)),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppColors.vip.withValues(alpha: 0.18),
-                                        AppColors.vip.withValues(alpha: 0.06),
-                                      ],
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      const Center(
-                                        child: Icon(
-                                          Icons.home_outlined,
-                                          size: 48,
-                                          color: AppColors.stone400,
-                                        ),
-                                      ),
-                                      Positioned.fill(
-                                        child: Container(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.25),
-                                        ),
-                                      ),
-                                      Center(
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 14, vertical: 8),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.vip
-                                                .withValues(alpha: 0.95),
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Color(0x33000000),
-                                                blurRadius: 8,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(Icons.diamond,
-                                                  size: 14,
-                                                  color: Colors.white),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                l10n.vipBadge,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w800,
-                                                  fontSize: 11,
-                                                  letterSpacing: 1.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              // Body hint
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: 140,
-                                      height: 12,
-                                      decoration: BoxDecoration(
-                                        color: context.shimmerBase,
-                                        borderRadius: BorderRadius.circular(2),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Container(
-                                      width: 90,
-                                      height: 12,
-                                      decoration: BoxDecoration(
-                                        color: context.shimmerBase,
-                                        borderRadius: BorderRadius.circular(2),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    child: FeaturedListingCard(
+                      listing: listing,
+                      isFavorite: fav,
+                      isTogglingFavorite: _isToggling(listing.id),
+                      onFavorite: () => _toggleFavorite(listing.id),
+                      onTap: () => _handleListingTap(listing),
                     ),
                   ),
                 );
-              }),
+              },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  context.push('/subscriptions');
-                },
-                icon: const Icon(Icons.diamond, size: 18),
-                label: Text(l10n.vipTeaserCta),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.vip,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  textStyle: const TextStyle(
+          // Inline VIP teaser for non-subscribers
+          if (!canViewVip && !subState.isLoading && subState.errorMessage == null)
+            _buildVipTeaser(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVipTeaser() {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: GestureDetector(
+        onTap: () => context.push('/subscriptions'),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: AppColors.vip.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: AppColors.vip.withValues(alpha: 0.2),
+            ),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.diamond, size: 16, color: AppColors.vip),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.vipTeaserCta,
+                  style: AppTextStyles.bodySmall.copyWith(
                     fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                    letterSpacing: 0.3,
+                    color: AppColors.vip,
                   ),
                 ),
               ),
-            ),
+              const Icon(Icons.chevron_right, size: 16, color: AppColors.vip),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -1699,15 +1538,12 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                 16,
                 12,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
+              child: Container(
                     height: 56,
                     decoration: BoxDecoration(
                       color: (isDark ? AppColors.primary800 : Colors.white)
-                          .withValues(alpha: isDark ? 0.6 : 0.9),
+                          .withValues(alpha: isDark ? 0.85 : 0.95),
+                      borderRadius: BorderRadius.circular(4),
                       border: Border.all(
                         color: (isDark ? Colors.white : AppColors.primary900)
                             .withValues(alpha: 0.08),
@@ -1778,8 +1614,6 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                       ],
                     ),
                   ),
-                ),
-              ),
             ),
           ],
         ),
