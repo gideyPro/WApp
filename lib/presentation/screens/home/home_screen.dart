@@ -24,8 +24,8 @@ enum HomeCategory { property, vehicles }
 extension HomeCategoryX on HomeCategory {
   String label(AppLocalizations l10n) {
     switch (this) {
-      case HomeCategory.property: return 'Property';
-      case HomeCategory.vehicles: return 'Vehicles';
+      case HomeCategory.property: return l10n.listingSummaryProperty;
+      case HomeCategory.vehicles: return l10n.listingCarPlural;
     }
   }
 
@@ -265,7 +265,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final l10n = AppLocalizations.of(context);
     final header = _buildSectionHeader(
       l10n.listingCarPlural,
-      eyebrow: 'LATEST',
+      eyebrow: l10n.homeLatestRecently.toUpperCase(),
     );
 
     if (state.isLoading && state.listings.isEmpty) {

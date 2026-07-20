@@ -501,7 +501,7 @@
   "errorLoadingPayments": "ክፍሊታት ክፅዕን ኣይከኣለን",
   "errorLoadingNotifications": "ምልክታታት ክፅዕን ኣይከኣለን",
   "errorLoadingFavorites": "ዝተመረፁ ክፅዕን ኣይከኣለን",
-  "errorLoadingConversations": "ውይይታት ክፅዕን ኣይከኣለን",
+  "errorLoadingConversations": "ዝርርባት ክፅዕን ኣይከኣለን",
   "errorLoadingMessages": "መልእኽታት ክፅዕን ኣይከኣለን",
   "errorSubscription": "ናይ ምዝገባ ጌጋ",
   "errorJoinCall": "ናብ ርክብ ክፅንበር ኣይተኻእለን: {error}",
