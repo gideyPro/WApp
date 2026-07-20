@@ -1592,7 +1592,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get errorLoadingFavorites => 'ዝተመረፁ ክፅዕን ኣይከኣለን';
 
   @override
-  String get errorLoadingConversations => 'ውይይታት ክፅዕን ኣይከኣለን';
+  String get errorLoadingConversations => 'ዝርርባት ክፅዕን ኣይከኣለን';
 
   @override
   String get errorLoadingMessages => 'መልእኽታት ክፅዕን ኣይከኣለን';
@@ -2038,8 +2038,8 @@ class AppLocalizationsTi extends AppLocalizations {
   String get reportErrorGeneric => 'ሪፖርት ምእታው ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።';
 
   @override
-  String get listingCar => 'ተኽእለ ተጓዕዝ';
+  String get listingCar => 'ተሽከርካሪ';
 
   @override
-  String get listingCarPlural => 'ተኽእለ ተጓዕዛት';
+  String get listingCarPlural => 'ተሽከርከርቲ';
 }
