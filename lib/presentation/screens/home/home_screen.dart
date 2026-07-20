@@ -21,24 +21,20 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 import '../cars/car_filter_sheet.dart';
 
-enum HomeCategory { all, houses, land, cars }
+enum HomeCategory { property, vehicles }
 
 extension HomeCategoryX on HomeCategory {
   String label(AppLocalizations l10n) {
     switch (this) {
-      case HomeCategory.all: return 'All';
-      case HomeCategory.houses: return l10n.listingHouse;
-      case HomeCategory.land: return l10n.listingLand;
-      case HomeCategory.cars: return l10n.listingCar;
+      case HomeCategory.property: return 'Property';
+      case HomeCategory.vehicles: return 'Vehicles';
     }
   }
 
   IconData get icon {
     switch (this) {
-      case HomeCategory.all: return Icons.explore_rounded;
-      case HomeCategory.houses: return Icons.home_rounded;
-      case HomeCategory.land: return Icons.terrain_rounded;
-      case HomeCategory.cars: return Icons.directions_car_rounded;
+      case HomeCategory.property: return Icons.home_rounded;
+      case HomeCategory.vehicles: return Icons.directions_car_rounded;
     }
   }
 }
@@ -70,7 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _hasSearched = false;
   bool _rentalEnabled = false;
   bool _isAutoRefreshing = false;
-  HomeCategory _selectedCategory = HomeCategory.all;
+  HomeCategory _selectedCategory = HomeCategory.property;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
@@ -184,13 +180,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void _onCategoryChanged(HomeCategory category) {
     if (category == _selectedCategory) return;
     setState(() => _selectedCategory = category);
-    if (category == HomeCategory.cars) {
+    if (category == HomeCategory.vehicles) {
       ref.read(carListingsProvider.notifier).loadListings();
     }
   }
 
   void _handleFilterTap() {
-    if (_selectedCategory == HomeCategory.cars) {
+    if (_selectedCategory == HomeCategory.vehicles) {
       showModalBottomSheet<CarFilterValues>(
         context: context,
         backgroundColor: context.sheetBg,
@@ -869,7 +865,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ),
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
-                else if (_selectedCategory == HomeCategory.cars)
+                else if (_selectedCategory == HomeCategory.vehicles)
                   _buildCarListings()
                 else ...[
                   SliverToBoxAdapter(
