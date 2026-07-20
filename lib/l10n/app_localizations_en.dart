@@ -2066,5 +2066,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportErrorGeneric => 'Failed to submit report. Please try again.';
 
   @override
-  String get listingCar => 'Car';
+  String get listingCar => 'Vehicle';
 }

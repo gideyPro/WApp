@@ -2,8 +2,8 @@
 class CarStrings {
   CarStrings._();
 
-  static const navCars = 'Cars';
-  static const listingCar = 'Car';
+  static const navCars = 'Vehicles';
+  static const listingCar = 'Vehicle';
   static const listingMake = 'Make';
   static const listingModel = 'Model';
   static const listingYear = 'Year';
@@ -30,19 +30,19 @@ class CarStrings {
   static const whatsappHint = 'Chat on WhatsApp';
   static const telegramHint = 'Chat on Telegram';
   static const noContactInfo = 'No contact information available';
-  static const listingCreated = 'Car listing created';
-  static const listingUpdated = 'Car listing updated';
-  static const listingDeleted = 'Car listing deleted';
-  static const myCars = 'My Cars';
+  static const listingCreated = 'Vehicle listing created';
+  static const listingUpdated = 'Vehicle listing updated';
+  static const listingDeleted = 'Vehicle listing deleted';
+  static const myCars = 'My Vehicles';
   static const addPhotos = 'Add Photos';
   static const existingPhotos = 'Existing Photos';
   static const customFeatures = 'Custom features (comma separated)';
-  static const noListings = 'No car listings yet';
+  static const noListings = 'No vehicle listings yet';
   static const addNewListing = 'Add New Listing';
-  static const confirmDelete = 'Delete Car Listing';
-  static const deleteConfirmation = 'Are you sure you want to delete this car listing?';
-  static const createListing = 'Add Car';
-  static const editListing = 'Edit Car';
+  static const confirmDelete = 'Delete Vehicle Listing';
+  static const deleteConfirmation = 'Are you sure you want to delete this vehicle listing?';
+  static const createListing = 'Add Vehicle';
+  static const editListing = 'Edit Vehicle';
   static const submitListing = 'Submit Listing';
   static const updateListing = 'Update Listing';
   static const vipOption = 'Mark as VIP';
@@ -58,7 +58,7 @@ class CarStrings {
   static const forRent = 'For Rent';
   static const monthlyRent = 'Monthly Rent (ETB)';
   static const rentalPeriodUnit = 'Rental Period';
-  static const searchCars = 'Search cars';
+  static const searchCars = 'Search vehicles';
   static const searchLocation = 'Search location';
   static const filter = 'Filter';
   static const filters = 'Filters';

@@ -350,7 +350,7 @@ class CarListingCard extends ConsumerWidget {
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  'Car',
+                  'Vehicle',
                   style: AppTextStyles.badge.copyWith(
                     color: context.textPrimary,
                   ),

@@ -757,7 +757,7 @@ class Listing {
         type = l10n.listingLand;
         break;
       case PropertyType.car:
-        type = 'Car';
+        type = 'Vehicle';
         break;
     }
     final action = listingType == ListingType.sale
@@ -800,7 +800,7 @@ class Listing {
     }
     if (carMake != null && carModel != null) return '$carMake $carModel';
     if (carMake != null) return carMake!;
-    return 'Car';
+    return 'Vehicle';
   }
 
   String get mainImageUrl {

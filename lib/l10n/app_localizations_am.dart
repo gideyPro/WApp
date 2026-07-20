@@ -2038,5 +2038,5 @@ class AppLocalizationsAm extends AppLocalizations {
   String get reportErrorGeneric => 'ሪፖርቱን ማስገባት አልተሳካም። እባክዎ እንደገና ይሞክሩ።';
 
   @override
-  String get listingCar => 'Car';
+  String get listingCar => 'Vehicle';
 }

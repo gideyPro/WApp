@@ -294,7 +294,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               child: WaveEmptyState(
                 icon: Icons.directions_car_outlined,
                 title: l10n.listingsNoResults,
-                subtitle: 'No car listings available',
+                subtitle: 'No vehicle listings available',
               ),
             ),
           ],

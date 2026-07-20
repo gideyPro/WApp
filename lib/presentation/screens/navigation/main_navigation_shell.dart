@@ -83,7 +83,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
             ),
             ListTile(
               leading: Icon(Icons.directions_car_outlined, color: context.theme.textSecondary),
-              title: Text('Car', style: TextStyle(color: context.theme.textPrimary)),
+              title: Text('Vehicle', style: TextStyle(color: context.theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 context.push('/cars/create');
