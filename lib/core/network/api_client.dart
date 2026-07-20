@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -129,5 +130,29 @@ class ApiClient {
   Future<bool> isAuthenticated() async {
     final token = await getAuthToken();
     return token != null && token.isNotEmpty;
+  }
+
+  /// Cache current user data for offline access
+  Future<void> cacheUserData(Map<String, dynamic> userData) async {
+    await _secureStorage.write(
+      key: 'cached_user',
+      value: json.encode(userData),
+    );
+  }
+
+  /// Retrieve cached user data (null if absent or corrupted)
+  Future<Map<String, dynamic>?> getCachedUserData() async {
+    try {
+      final raw = await _secureStorage.read(key: 'cached_user');
+      if (raw == null) return null;
+      return json.decode(raw) as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Clear cached user data
+  Future<void> clearCachedUser() async {
+    await _secureStorage.delete(key: 'cached_user');
   }
 }

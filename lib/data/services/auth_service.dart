@@ -80,6 +80,10 @@ class AuthService {
           user = User.fromJson(data['data']);
         }
 
+        if (user != null) {
+          await _apiClient.cacheUserData(user.toJson());
+        }
+
         return AuthResponse(
           success: true,
           message: 'Login successful',
@@ -194,6 +198,10 @@ class AuthService {
           user = User.fromJson(data['data']);
         }
 
+        if (user != null) {
+          await _apiClient.cacheUserData(user.toJson());
+        }
+
         return AuthResponse(
           success: true,
           message: 'Login successful',
@@ -222,6 +230,7 @@ class AuthService {
       // Even if API fails, clear local token
     } finally {
       await _apiClient.clearAuthToken();
+      await _apiClient.clearCachedUser();
     }
   }
 
@@ -291,6 +300,10 @@ class AuthService {
             user = User.fromJson(data['data']);
           }
 
+          if (user != null) {
+            await _apiClient.cacheUserData(user.toJson());
+          }
+
           return AuthResponse(
             success: true,
             message: 'Registration successful',
@@ -318,13 +331,22 @@ class AuthService {
       final response = await _apiClient.dio.get(ApiConstants.currentUser);
 
       if (response.statusCode == 200 && response.data is Map) {
-        return User.fromJson(response.data);
+        final user = User.fromJson(response.data);
+        // Update cache with fresh data
+        await _apiClient.cacheUserData(user.toJson());
+        return user;
       }
-
-      return null;
-    } catch (e) {
-      return null;
+    } catch (_) {
+      // Network error — fall through to cached data
     }
+
+    // Fall back to cached user data when API fails
+    final cached = await _apiClient.getCachedUserData();
+    if (cached != null) {
+      return User.fromJson(cached);
+    }
+
+    return null;
   }
 
   Future<bool> isAuthenticated() async {
