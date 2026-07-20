@@ -19,6 +19,7 @@ import '../../widgets/listing_card.dart';
 import '../../widgets/car_listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
+import '../cars/car_filter_sheet.dart';
 
 enum HomeCategory { all, houses, land, cars }
 
@@ -185,6 +186,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     setState(() => _selectedCategory = category);
     if (category == HomeCategory.cars) {
       ref.read(carListingsProvider.notifier).loadListings();
+    }
+  }
+
+  void _handleFilterTap() {
+    if (_selectedCategory == HomeCategory.cars) {
+      showModalBottomSheet<CarFilterValues>(
+        context: context,
+        backgroundColor: context.sheetBg,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+        ),
+        isScrollControlled: true,
+        builder: (_) => const CarFilterSheet(initialValues: CarFilterValues()),
+      );
+    } else {
+      _showFilterSheet();
     }
   }
 
@@ -836,7 +853,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     onSearchChanged: _onSearchChanged,
                     onSubmitted: (_) => _performSearch(),
                     onClear: _clearSearch,
-                    onFilterTap: _showFilterSheet,
+                    onFilterTap: _handleFilterTap,
                   ),
                 ),
                 SliverToBoxAdapter(
