@@ -8,10 +8,9 @@ import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../home/home_screen.dart';
 import '../orders/orders_screen.dart';
-import '../cars/car_list_screen.dart';
+import '../messages/messages_screen.dart';
 import '../account/account_screen.dart';
 import '../../../l10n/app_localizations.dart';
-import '../cars/car_strings.dart';
 
 class MainNavigationShell extends ConsumerStatefulWidget {
   const MainNavigationShell({super.key});
@@ -101,9 +100,9 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     final selectedIndex = ref.watch(selectedTabProvider);
     final screens = [
       const HomeScreen(),
-      const CarListScreen(),
-      const Center(child: Text('')), // Placeholder for FAB
       const OrdersScreen(),
+      const Center(child: Text('')), // Placeholder for FAB
+      const MessagesScreen(),
       const AccountScreen(),
     ];
 
@@ -157,9 +156,9 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(Icons.home_rounded, AppLocalizations.of(context).navHome, 0),
-                _buildNavItem(Icons.directions_car_outlined, CarStrings.navCars, 1),
+                _buildNavItem(Icons.receipt_long_outlined, AppLocalizations.of(context).navOrders, 1),
                 const SizedBox(width: 48), // Space for FAB notch
-                _buildNavItem(Icons.receipt_long_outlined, AppLocalizations.of(context).navOrders, 3),
+                _buildNavItem(Icons.chat_bubble_outline_rounded, AppLocalizations.of(context).navMessages, 3),
                 _buildNavItem(Icons.person_outline, AppLocalizations.of(context).navSettings, 4),
               ],
             ),

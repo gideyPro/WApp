@@ -13,10 +13,34 @@ import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/car_providers.dart';
 import '../../widgets/featured_listing_card.dart';
 import '../../widgets/listing_card.dart';
+import '../../widgets/car_listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
+
+enum HomeCategory { all, houses, land, cars }
+
+extension HomeCategoryX on HomeCategory {
+  String label(AppLocalizations l10n) {
+    switch (this) {
+      case HomeCategory.all: return 'All';
+      case HomeCategory.houses: return l10n.listingHouse;
+      case HomeCategory.land: return l10n.listingLand;
+      case HomeCategory.cars: return l10n.listingCar;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case HomeCategory.all: return Icons.explore_rounded;
+      case HomeCategory.houses: return Icons.home_rounded;
+      case HomeCategory.land: return Icons.terrain_rounded;
+      case HomeCategory.cars: return Icons.directions_car_rounded;
+    }
+  }
+}
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -45,6 +69,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _hasSearched = false;
   bool _rentalEnabled = false;
   bool _isAutoRefreshing = false;
+  HomeCategory _selectedCategory = HomeCategory.all;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
@@ -153,6 +178,157 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       futures.add(ref.read(vipListingsProvider.notifier).loadVipListings());
     }
     await Future.wait(futures);
+  }
+
+  void _onCategoryChanged(HomeCategory category) {
+    if (category == _selectedCategory) return;
+    setState(() => _selectedCategory = category);
+    if (category == HomeCategory.cars) {
+      ref.read(carListingsProvider.notifier).loadListings();
+    }
+  }
+
+  Widget _buildCategoryPills(AppLocalizations l10n) {
+    const categories = HomeCategory.values;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: categories.map((cat) {
+            final isSelected = cat == _selectedCategory;
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: GestureDetector(
+                onTap: () => _onCategoryChanged(cat),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutCubic,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    gradient: isSelected
+                        ? AppColors.gradientAccent
+                        : null,
+                    color: isSelected ? null : context.cardBg.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : context.divider.withValues(alpha: 0.5),
+                    ),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: AppColors.accent500.withValues(alpha: 0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        cat.icon,
+                        size: 18,
+                        color: isSelected ? Colors.white : context.textSecondary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        cat.label(l10n),
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                          color: isSelected ? Colors.white : context.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCarListings() {
+    final state = ref.watch(carListingsProvider);
+    final l10n = AppLocalizations.of(context);
+    final header = _buildSectionHeader(
+      l10n.listingCar,
+      eyebrow: 'LATEST',
+    );
+
+    if (state.isLoading && state.listings.isEmpty) {
+      return SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+        sliver: SliverList(
+          delegate: SliverChildListDelegate([
+            header,
+            for (int i = 0; i < 3; i++)
+              const CarListingCard(isLoading: true),
+          ]),
+        ),
+      );
+    }
+
+    if (state.errorMessage != null && state.listings.isEmpty) {
+      return SliverFillRemaining(
+        child: Column(
+          children: [
+            header,
+            Expanded(child: Center(child: _buildPullToRefreshHint())),
+          ],
+        ),
+      );
+    }
+
+    if (state.listings.isEmpty) {
+      return SliverFillRemaining(
+        child: Column(
+          children: [
+            header,
+            Expanded(
+              child: WaveEmptyState(
+                icon: Icons.directions_car_outlined,
+                title: l10n.listingsNoResults,
+                subtitle: 'No car listings available',
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            if (index == 0) return header;
+            final i = index - 1;
+            if (i == state.listings.length) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            final listing = state.listings[i];
+            final fav = _isFavorite(listing.id);
+            return CarListingCard(
+              listing: listing,
+              isFavorite: fav,
+              isTogglingFavorite: _isToggling(listing.id),
+              onFavorite: () => _toggleFavorite(listing.id),
+              onTap: () => context.push('/cars/${listing.id}'),
+            );
+          },
+          childCount: state.listings.length + 2, // +1 for header, +1 for loading indicator
+        ),
+      ),
+    );
   }
 
   void _onScroll() {
@@ -670,8 +846,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   SliverToBoxAdapter(
                     child: _buildActiveFilterChips(l10n),
                   ),
+                if (!_hasSearched)
+                  SliverToBoxAdapter(
+                    child: _buildCategoryPills(l10n),
+                  ),
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
+                else if (_selectedCategory == HomeCategory.cars)
+                  _buildCarListings()
                 else ...[
                   SliverToBoxAdapter(
                     child: FadeTransition(
