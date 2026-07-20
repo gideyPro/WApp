@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
@@ -15,6 +16,7 @@ import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
+import '../../widgets/common/wave_upgrade_card.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/app_providers.dart';
 import 'car_strings.dart';
@@ -278,10 +280,66 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final settingsAsync = ref.watch(appSettingsProvider);
+    final subState = ref.watch(subscriptionProvider);
+    final kycState = ref.watch(kycStatusProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
     final rentalEnabled = settingsAsync.maybeWhen(
       data: (data) => data['rental_enabled'] == true,
       orElse: () => false,
     );
+
+    if (subState.isLoading || kycState.isLoading || settingsAsync.isLoading) {
+      return _buildSkeleton();
+    }
+
+    if (kycState.hasError) {
+      return WaveMessageScreen.error(
+        title: l10n.kycConnectionErrorTitle,
+        subtitle: kycState.errorMessage ?? l10n.kycConnectionErrorSubtitle,
+        onRetry: () => ref.read(kycStatusProvider.notifier).loadKycStatus(),
+      );
+    }
+
+    if (subState.hasError) {
+      return WaveMessageScreen.error(
+        title: l10n.errorSubscription,
+        subtitle: subState.errorMessage!,
+        onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
+      );
+    }
+
+    if (!kycState.isVerified && !kycState.isApproved) {
+      return WaveFullPageUpgrade(
+        appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
+        icon: Icons.verified_outlined,
+        iconColor: AppColors.accent500,
+        title: kycState.isPending
+            ? l10n.kycPendingTitle
+            : l10n.kycRequiredTitle,
+        subtitle: kycState.isPending
+            ? l10n.kycPendingSubtitleReview
+            : l10n.kycRequiredSubtitlePost,
+        buttonLabel: kycState.isPending ? '' : l10n.kycVerifyNow,
+        onButtonTap: kycState.isPending
+            ? null
+            : () => context.push('/kyc'),
+      );
+    }
+
+    if (subscriptionEnabled && !subState.canCreateListing) {
+      final (:title, :subtitle) = _listingGateMessage(subState, l10n);
+      return WaveFullPageUpgrade(
+        appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
+        icon: Icons.add_home_work_outlined,
+        iconColor: AppColors.accent500,
+        title: title,
+        subtitle: subtitle,
+      );
+    }
+
     final stepLabels = [CarStrings.listingDetail, CarStrings.listingPricing, CarStrings.listingDescription];
     return PopScope(
       canPop: true,
@@ -910,6 +968,100 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
             ],
           ),
         )).toList(),
+      ),
+    );
+  }
+
+  ({String title, String subtitle}) _listingGateMessage(
+      SubscriptionState subState, AppLocalizations l10n) {
+    if (!subState.hasPaidSubscription) {
+      return (
+        title: l10n.subscriptionRequiredTitle,
+        subtitle: l10n.subscriptionRequiredListingSubtitle,
+      );
+    }
+    final plan = subState.subscription?.plan;
+    if (plan == null || plan.maxListings == 0) {
+      return (
+        title: l10n.subscriptionPlanNotSupportedListing,
+        subtitle: l10n.subscriptionPlanNotSupportedListingSubtitle,
+      );
+    }
+    return (
+      title: l10n.subscriptionLimitReachedTitle,
+      subtitle: l10n.subscriptionLimitReached,
+    );
+  }
+
+  Widget _buildSkeleton() {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: context.scaffoldBg,
+      appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
+      body: Shimmer.fromColors(
+        baseColor: context.shimmerBase,
+        highlightColor: context.shimmerHighlight,
+        child: Padding(
+          padding: AppSpacing.paddingLg,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (int i = 0; i < 3; i++) ...[
+                Container(
+                  height: 14,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: context.shimmerHighlight,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 44,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: context.shimmerHighlight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              const SizedBox(height: 12),
+              Container(
+                height: 14,
+                width: 140,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: context.shimmerHighlight,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: context.shimmerHighlight,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

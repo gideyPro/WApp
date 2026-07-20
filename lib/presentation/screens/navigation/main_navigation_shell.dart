@@ -66,16 +66,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: Icon(Icons.home_outlined, color: context.theme.textSecondary),
-              title: Text('House', style: TextStyle(color: context.theme.textPrimary)),
-              onTap: () {
-                Navigator.pop(ctx);
-                context.push('/listings/create');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.terrain_outlined, color: context.theme.textSecondary),
-              title: Text('Land', style: TextStyle(color: context.theme.textPrimary)),
+              leading: Icon(Icons.home_work_outlined, color: context.theme.textSecondary),
+              title: Text('Property', style: TextStyle(color: context.theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 context.push('/listings/create');
