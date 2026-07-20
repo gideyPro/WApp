@@ -8,6 +8,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/car_form_data.dart';
+import '../../../data/car_data.dart';
 import '../../../data/services/address_service.dart';
 import '../../../data/services/listing_media_manager.dart';
 import '../../../l10n/app_localizations.dart';
@@ -35,40 +36,10 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   bool _isSubmitting = false;
   final Map<int, List<String>> _stepErrors = {};
 
-  static const _transmissions = ['manual', 'automatic', 'semi-automatic'];
-  static const _bodyTypes = ['sedan', 'SUV', 'hatchback', 'pickup', 'coupe', 'convertible', 'van', 'minibus', 'truck', 'bus', 'other'];
-  static const _fuelTypes = ['gasoline', 'diesel', 'electric', 'hybrid', 'CNG', 'other'];
-  static const _conditions = ['new', 'used'];
-  static const _rentalPeriods = ['day', 'month', 'year'];
-  static const _featureOptions = ['AC', 'Power Steering', 'Central Locking', 'Power Windows', 'ABS', 'Airbag', 'Sunroof', 'Bluetooth', 'Backup Camera', 'Navigation', 'Cruise Control', 'Leather Seats', 'Alloy Wheels', 'Fog Lights', 'Roof Rack', 'Tow Bar'];
-
-  static const _modelsByMake = {
-    'Toyota': ['Corolla', 'Camry', 'Yaris', 'Hilux', 'Land Cruiser', 'RAV4', 'Vitz', 'Premio', 'Noah', 'Hiace', 'Prado', 'Fortuner'],
-    'Honda': ['Civic', 'Accord', 'CR-V', 'Fit', 'City', 'Odyssey', 'Stepwgn'],
-    'Nissan': ['Sunny', 'Altima', 'Patrol', 'X-Trail', 'Pathfinder', 'Navara', 'Juke'],
-    'Mitsubishi': ['Pajero', 'Lancer', 'Montero', 'Outlander', 'Delica', 'Mirage'],
-    'Suzuki': ['Swift', 'Alto', 'Vitara', 'Jimny', 'S-Cross', 'Celerio', 'Ertiga'],
-    'Hyundai': ['Elantra', 'Tucson', 'Sonata', 'Santa Fe', 'i10', 'i20', 'Grand i10'],
-    'Kia': ['Sportage', 'Sorento', 'Rio', 'Optima', 'Cerato', 'Picanto'],
-    'Volkswagen': ['Golf', 'Passat', 'Tiguan', 'Polo', 'Beetle', 'Jetta'],
-    'Mercedes-Benz': ['C-Class', 'E-Class', 'S-Class', 'GLC', 'GLE', 'A-Class', 'G-Class'],
-    'BMW': ['3 Series', '5 Series', 'X3', 'X5', '7 Series', 'X1', 'X6'],
-    'Ford': ['Escape', 'Explorer', 'Focus', 'Ranger', 'Mustang', 'F-150'],
-    'Chevrolet': ['Cruze', 'Malibu', 'Tahoe', 'Trailblazer', 'Camaro'],
-    'Isuzu': ['D-Max', 'MU-X', 'Forward', 'Elf'],
-    'Mazda': ['CX-5', 'Mazda3', 'Mazda6', 'BT-50', 'CX-9'],
-    'Subaru': ['Forester', 'Outback', 'Impreza', 'Legacy', 'XV'],
-    'Lexus': ['RX', 'ES', 'NX', 'LX', 'GX'],
-    'Land Rover': ['Range Rover', 'Discovery', 'Defender', 'Evoque', 'Velar'],
-    'Peugeot': ['205', '206', '307', '308', 'Partner', '3008'],
-    'Renault': ['Clio', 'Megane', 'Logan', 'Duster', 'Sandero', 'Fluence'],
-    'Fiat': ['500', 'Punto', 'Doblo', 'Panda', 'Uno'],
-  };
-
   bool _isCustomMake = false;
   bool _isCustomModel = false;
 
-  List<String> get _availableModels => _modelsByMake[_formData.make] ?? [];
+  List<String> get _availableModels => carModelsByMake[_formData.make] ?? [];
 
   AddressService get _addressService => ref.read(addressServiceProvider);
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
@@ -121,7 +92,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
         if (_formData.year.isEmpty) errors.add('Year is required');
         break;
       case 1:
-        if (_formData.priceFixed.isEmpty) errors.add('Price is required');
+        if (!_formData.isForRent && _formData.priceFixed.isEmpty) errors.add('Price is required');
         if (_formData.addressId == null) errors.add('Please select a location (Kebele)');
         break;
       case 2:
@@ -286,11 +257,6 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       data: (data) => data['subscription_enabled'] == true,
       orElse: () => false,
     );
-    final rentalEnabled = settingsAsync.maybeWhen(
-      data: (data) => data['rental_enabled'] == true,
-      orElse: () => false,
-    );
-
     if (subState.isLoading || kycState.isLoading || settingsAsync.isLoading) {
       return _buildSkeleton();
     }
@@ -372,7 +338,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _buildStep1Details(l10n),
-                  _buildStep2Pricing(l10n, rentalEnabled),
+                  _buildStep2Pricing(l10n),
                   _buildStep3Publish(l10n),
                 ],
               ),
@@ -438,14 +404,14 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   }
 
   Widget _buildMakeDropdown() {
-    final makes = _modelsByMake.keys.toList()..sort();
+    final makes = carMakes.toList()..sort();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('${CarStrings.listingMake} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
-          initialValue: _isCustomMake ? null : (_modelsByMake.containsKey(_formData.make) ? _formData.make : null),
+          initialValue: _isCustomMake ? null : (carModelsByMake.containsKey(_formData.make) ? _formData.make : null),
           style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
           decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6)),
           dropdownColor: context.sheetBg,
@@ -548,11 +514,11 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                 const SizedBox(height: 12),
                 _buildCompactField(label: '${CarStrings.listingYear} *', value: _formData.year, onChanged: (v) => _formData = _formData.copyWith(year: v), keyboardType: TextInputType.number),
                 const SizedBox(height: 12),
-                _buildCompactDropdown(label: CarStrings.listingTransmission, value: _formData.transmission, options: _transmissions, onChanged: (v) => _formData = _formData.copyWith(transmission: v)),
-                const SizedBox(height: 12),
-                _buildCompactDropdown(label: CarStrings.listingBodyType, value: _formData.bodyType, options: _bodyTypes, onChanged: (v) => _formData = _formData.copyWith(bodyType: v)),
-                const SizedBox(height: 12),
-                _buildCompactDropdown(label: CarStrings.listingFuelType, value: _formData.fuelType, options: _fuelTypes, onChanged: (v) => _formData = _formData.copyWith(fuelType: v)),
+                _buildCompactDropdown(label: CarStrings.listingTransmission, value: _formData.transmission, options: carTransmissions, onChanged: (v) => _formData = _formData.copyWith(transmission: v)),
+                const SizedBox(height: 8),
+                _buildCompactDropdown(label: CarStrings.listingBodyType, value: _formData.bodyType, options: carBodyTypes, onChanged: (v) => _formData = _formData.copyWith(bodyType: v)),
+                const SizedBox(height: 8),
+                _buildCompactDropdown(label: CarStrings.listingFuelType, value: _formData.fuelType, options: carFuelTypes, onChanged: (v) => _formData = _formData.copyWith(fuelType: v)),
                 const SizedBox(height: 12),
                 _buildCompactField(label: '${CarStrings.listingMileage} (km)', value: _formData.mileageKm, onChanged: (v) => _formData = _formData.copyWith(mileageKm: v), keyboardType: TextInputType.number),
                 const SizedBox(height: 12),
@@ -560,7 +526,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                 const SizedBox(height: 12),
                 _buildCompactField(label: CarStrings.listingColor, value: _formData.color, onChanged: (v) => _formData = _formData.copyWith(color: v)),
                 const SizedBox(height: 12),
-                _buildCompactDropdown(label: CarStrings.listingCondition, value: _formData.condition, options: _conditions, onChanged: (v) => _formData = _formData.copyWith(condition: v)),
+                _buildCompactDropdown(label: CarStrings.listingCondition, value: _formData.condition, options: carConditions, onChanged: (v) => _formData = _formData.copyWith(condition: v)),
                 const SizedBox(height: 12),
                 _buildCompactField(label: 'VIN', value: _formData.vin, onChanged: (v) => _formData = _formData.copyWith(vin: v)),
                 const SizedBox(height: 12),
@@ -585,34 +551,38 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     );
   }
 
-  Widget _buildStep2Pricing(AppLocalizations l10n, bool rentalEnabled) {
+  Widget _buildStep2Pricing(AppLocalizations l10n) {
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
         children: [
-          if (rentalEnabled)
-            _sectionCard(
-              title: CarStrings.listingType,
-              child: Row(
-                children: [
-                  _typeChoiceChip(selected: !_formData.isForRent, label: CarStrings.forSale, icon: Icons.sell_outlined, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: false))),
-                  const SizedBox(width: 12),
-                  _typeChoiceChip(selected: _formData.isForRent, label: CarStrings.forRent, icon: Icons.key, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: true))),
-                ],
-              ),
-            ),
-          if (rentalEnabled) const SizedBox(height: 16),
           _sectionCard(
-            title: CarStrings.listingPricing,
-            child: Column(
+            title: CarStrings.listingType,
+            child: Row(
               children: [
-                _buildCompactField(label: _formData.isForRent ? '${CarStrings.monthlyRent} *' : '${CarStrings.price} (ETB) *', value: _formData.priceFixed, onChanged: (v) => _formData = _formData.copyWith(priceFixed: v), keyboardType: TextInputType.number),
-                if (_formData.isForRent) ...[
-                  const SizedBox(height: 12),
-                  _buildCompactDropdown(label: CarStrings.rentalPeriodUnit, value: _formData.rentalPeriodUnit, options: _rentalPeriods, onChanged: (v) => _formData = _formData.copyWith(rentalPeriodUnit: v)),
-                ],
+                _typeChoiceChip(selected: !_formData.isForRent, label: CarStrings.forSale, icon: Icons.sell_outlined, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: false))),
+                const SizedBox(width: 12),
+                _typeChoiceChip(selected: _formData.isForRent, label: CarStrings.forRent, icon: Icons.key, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: true))),
               ],
             ),
+          ),
+          const SizedBox(height: 16),
+          _sectionCard(
+            title: CarStrings.listingPricing,
+            child: _formData.isForRent
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline, size: 18, color: context.theme.textMuted),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(l10n.carRentalPriceNegotiable, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                        ),
+                      ],
+                    ),
+                  )
+                : _buildCompactField(label: '${CarStrings.price} (ETB) *', value: _formData.priceFixed, onChanged: (v) => _formData = _formData.copyWith(priceFixed: v), keyboardType: TextInputType.number),
           ),
           const SizedBox(height: 16),
           _sectionCard(
@@ -661,7 +631,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
               children: [
                 Wrap(
                   spacing: 8, runSpacing: 4,
-                  children: _featureOptions.map((f) => FilterChip(
+                  children: carFeatureOptions.map((f) => FilterChip(
                     label: Text(f, style: AppTextStyles.labelSmall),
                     selected: _formData.features.contains(f),
                     onSelected: (selected) {

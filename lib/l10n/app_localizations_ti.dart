@@ -2042,4 +2042,61 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingCarPlural => 'ተሽከርከርቲ';
+
+  @override
+  String get listingMake => 'ፈጣሪ';
+
+  @override
+  String get listingModel => 'ሞዴል';
+
+  @override
+  String get listingYear => 'ዓመት';
+
+  @override
+  String get listingTransmission => 'ምህላው ሓይሊ';
+
+  @override
+  String get listingFuelType => 'ዓይነት ውሓዝ';
+
+  @override
+  String get listingBodyType => 'ዓይነት ኣካል';
+
+  @override
+  String get listingMileage => 'ማይልጅ';
+
+  @override
+  String get listingMileageMax => 'ከፍተኛ ማይልጅ (ኪሜ)';
+
+  @override
+  String get listingCondition => 'ኩነታት';
+
+  @override
+  String get listingEngineSize => 'መጠን ሞተር';
+
+  @override
+  String get listingColor => 'ሕብሪ';
+
+  @override
+  String get searchSortYearDesc => 'ዓመት ↓';
+
+  @override
+  String get searchSortYearAsc => 'ዓመት ↑';
+
+  @override
+  String get searchSortMileageLow => 'ማይልጅ ↓';
+
+  @override
+  String get searchSortMileageHigh => 'ማይልጅ ↑';
+
+  @override
+  String get searchLocation => 'ቦታ';
+
+  @override
+  String get searchAnyMake => 'ዝኾነ ፈጣሪ';
+
+  @override
+  String get searchAnyModel => 'ዝኾነ ሞዴል';
+
+  @override
+  String get carRentalPriceNegotiable => 'ብስምምዕነት';
 }

@@ -3909,6 +3909,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Vehicles'**
   String get listingCarPlural;
+
+  /// No description provided for @listingMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make'**
+  String get listingMake;
+
+  /// No description provided for @listingModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get listingModel;
+
+  /// No description provided for @listingYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get listingYear;
+
+  /// No description provided for @listingTransmission.
+  ///
+  /// In en, this message translates to:
+  /// **'Transmission'**
+  String get listingTransmission;
+
+  /// No description provided for @listingFuelType.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Type'**
+  String get listingFuelType;
+
+  /// No description provided for @listingBodyType.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Type'**
+  String get listingBodyType;
+
+  /// No description provided for @listingMileage.
+  ///
+  /// In en, this message translates to:
+  /// **'Mileage'**
+  String get listingMileage;
+
+  /// No description provided for @listingMileageMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Mileage (km)'**
+  String get listingMileageMax;
+
+  /// No description provided for @listingCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Condition'**
+  String get listingCondition;
+
+  /// No description provided for @listingEngineSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Engine Size'**
+  String get listingEngineSize;
+
+  /// No description provided for @listingColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get listingColor;
+
+  /// No description provided for @searchSortYearDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Year ↓'**
+  String get searchSortYearDesc;
+
+  /// No description provided for @searchSortYearAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Year ↑'**
+  String get searchSortYearAsc;
+
+  /// No description provided for @searchSortMileageLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Mileage ↓'**
+  String get searchSortMileageLow;
+
+  /// No description provided for @searchSortMileageHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Mileage ↑'**
+  String get searchSortMileageHigh;
+
+  /// No description provided for @searchLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get searchLocation;
+
+  /// No description provided for @searchAnyMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Any Make'**
+  String get searchAnyMake;
+
+  /// No description provided for @searchAnyModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Any Model'**
+  String get searchAnyModel;
+
+  /// No description provided for @carRentalPriceNegotiable.
+  ///
+  /// In en, this message translates to:
+  /// **'By Negotiation'**
+  String get carRentalPriceNegotiable;
 }
 
 class _AppLocalizationsDelegate

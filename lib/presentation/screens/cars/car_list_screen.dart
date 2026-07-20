@@ -5,11 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/listing_providers.dart';
 import '../../widgets/vehicle_listing_card.dart';
-import 'car_strings.dart';
 import 'car_filter_sheet.dart';
+import 'car_strings.dart';
 
 class CarListScreen extends ConsumerStatefulWidget {
   const CarListScreen({super.key});
@@ -128,13 +129,14 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(carListingsProvider);
     ref.watch(favoritesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.primary50,
       appBar: AppBar(
-        title: const Text(CarStrings.navCars),
+        title: Text(l10n.listingCarPlural),
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list, color: _filterValues.hasAnyFilter ? AppColors.accent500 : null),
@@ -144,8 +146,8 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
       ),
       body: Column(
         children: [
-          _buildSearchBar(),
-          if (_hasActiveFilters) _buildActiveFilterChips(),
+          _buildSearchBar(l10n),
+          if (_hasActiveFilters) _buildActiveFilterChips(l10n),
           Expanded(
             child: state.isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -158,7 +160,7 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
                             const SizedBox(height: 12),
                             ElevatedButton(
                               onPressed: () => ref.read(carListingsProvider.notifier).loadListings(),
-                              child: const Text('Retry'),
+                              child: Text(l10n.commonRetry),
                             ),
                           ],
                         ),
@@ -197,7 +199,7 @@ return VehicleListingCard(
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(AppLocalizations l10n) {
     return Container(
       color: context.cardBg,
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -227,7 +229,7 @@ return VehicleListingCard(
     );
   }
 
-  Widget _buildActiveFilterChips() {
+  Widget _buildActiveFilterChips(AppLocalizations l10n) {
     return Container(
       color: context.cardBg,
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
@@ -236,11 +238,11 @@ return VehicleListingCard(
         child: Row(
           children: [
             if (_filterValues.make != null)
-              _filterChip('${CarStrings.listingMake}: ${_filterValues.make}', () => _removeFilter('make')),
+              _filterChip('${l10n.listingMake}: ${_filterValues.make}', () => _removeFilter('make')),
             if (_filterValues.model != null)
-              _filterChip('${CarStrings.listingModel}: ${_filterValues.model}', () => _removeFilter('model')),
+              _filterChip('${l10n.listingModel}: ${_filterValues.model}', () => _removeFilter('model')),
             if (_filterValues.yearMin != null)
-              _filterChip('${CarStrings.listingYear}: ${_filterValues.yearMin}-${_filterValues.yearMax ?? ''}', () => _removeFilter('year_min')),
+              _filterChip('${l10n.listingYear}: ${_filterValues.yearMin}-${_filterValues.yearMax ?? ''}', () => _removeFilter('year_min')),
             if (_filterValues.transmission != null)
               _filterChip(_filterValues.transmission!, () => _removeFilter('transmission')),
             if (_filterValues.fuelType != null)
@@ -248,7 +250,7 @@ return VehicleListingCard(
             if (_filterValues.bodyType != null)
               _filterChip(_filterValues.bodyType!, () => _removeFilter('body_type')),
             if (_filterValues.mileageMax != null)
-              _filterChip('Max ${_filterValues.mileageMax} km', () => _removeFilter('mileage_max')),
+              _filterChip('${l10n.listingMileageMax}: ${_filterValues.mileageMax}', () => _removeFilter('mileage_max')),
             if (_filterValues.priceMin != null || _filterValues.priceMax != null)
               _filterChip(
                 '${_filterValues.priceMin != null ? 'ETB ${_filterValues.priceMin}' : ''} - ${_filterValues.priceMax != null ? 'ETB ${_filterValues.priceMax}' : ''}',

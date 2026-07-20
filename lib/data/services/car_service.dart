@@ -229,7 +229,7 @@ class CarService {
       if (formData.features.isNotEmpty) MapEntry('features', formData.features.join(',')),
       MapEntry('listing_type', formData.isForRent ? 'rental' : 'sale'),
       if (formData.isForRent && formData.rentalPeriodUnit.isNotEmpty) MapEntry('rental_period_unit', formData.rentalPeriodUnit),
-      MapEntry('price_fixed', formData.priceFixed),
+      if (!formData.isForRent && formData.priceFixed.isNotEmpty) MapEntry('price_fixed', formData.priceFixed),
       if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),
       if (formData.specificLocation.isNotEmpty) MapEntry('specific_location', formData.specificLocation),
       if (formData.description.isNotEmpty) MapEntry('description', formData.description),

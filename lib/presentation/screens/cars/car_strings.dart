@@ -58,6 +58,7 @@ class CarStrings {
   static const forRent = 'For Rent';
   static const monthlyRent = 'Monthly Rent (ETB)';
   static const rentalPeriodUnit = 'Rental Period';
+
   static const searchCars = 'Search vehicles';
   static const searchLocation = 'Search location';
   static const filter = 'Filter';

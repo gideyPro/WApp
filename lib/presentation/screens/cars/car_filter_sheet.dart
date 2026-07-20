@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
-import 'car_strings.dart';
+import '../../../data/car_data.dart';
+import '../../../l10n/app_localizations.dart';
 
 class CarFilterValues {
   final String? make;
@@ -15,7 +16,6 @@ class CarFilterValues {
   final String? bodyType;
   final int? priceMin;
   final int? priceMax;
-  final String? location;
   final String sort;
 
   const CarFilterValues({
@@ -29,7 +29,6 @@ class CarFilterValues {
     this.bodyType,
     this.priceMin,
     this.priceMax,
-    this.location,
     this.sort = 'newest',
   });
 
@@ -45,7 +44,6 @@ class CarFilterValues {
       bodyType: key == 'body_type' ? null : bodyType,
       priceMin: key == 'price_min' ? null : priceMin,
       priceMax: key == 'price_max' ? null : priceMax,
-      location: key == 'location' ? null : location,
       sort: sort,
     );
   }
@@ -60,8 +58,7 @@ class CarFilterValues {
       fuelType != null ||
       bodyType != null ||
       priceMin != null ||
-      priceMax != null ||
-      (location != null && location!.isNotEmpty);
+      priceMax != null;
 
   Map<String, dynamic> toQueryParams() {
     final params = <String, dynamic>{};
@@ -75,7 +72,6 @@ class CarFilterValues {
     if (bodyType != null) params['body_type'] = bodyType;
     if (priceMin != null) params['price_min'] = priceMin;
     if (priceMax != null) params['price_max'] = priceMax;
-    if (location != null && location!.isNotEmpty) params['location'] = location;
     if (sort == 'price_low' || sort == 'price_high') {
       params['sort'] = sort;
     } else if (sort == 'year_desc' || sort == 'year_asc') {
@@ -91,31 +87,23 @@ class CarFilterValues {
   }
 }
 
-const _makes = [
-  'Toyota', 'Nissan', 'Honda', 'Mitsubishi', 'Hyundai',
-  'Suzuki', 'Kia', 'Mazda', 'Isuzu', 'Mercedes-Benz',
-  'BMW', 'Volkswagen', 'Ford', 'Chevrolet', 'Land Rover',
-  'Jeep', 'Lexus', 'Audi', 'Volvo', 'Range Rover',
-  'Daihatsu', 'Subaru', 'Fiat', 'Peugeot', 'Renault',
-  'Maruti', 'Tata', 'Mahindra',
-];
-
-const _transmissions = ['Automatic', 'Manual'];
-const _fuelTypes = ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
-const _bodyTypes = [
-  'Sedan', 'SUV', 'Hatchback', 'Pickup', 'Minivan',
-  'Coupe', 'Convertible', 'Wagon', 'Van', 'Truck',
-];
+const _priceRanges = <String, (int?, int?)>{
+  'Under 5M': (0, 5000000),
+  '5M-10M': (5000000, 10000000),
+  '10M-50M': (10000000, 50000000),
+  '50M-100M': (50000000, 100000000),
+  '100M+': (100000000, null),
+};
 
 const _sortOptions = [
-  ('Newest', 'newest'),
-  ('Oldest', 'oldest'),
-  ('Price: Low to High', 'price_low'),
-  ('Price: High to Low', 'price_high'),
-  ('Year: Newest', 'year_desc'),
-  ('Year: Oldest', 'year_asc'),
-  ('Mileage: Low', 'mileage_low'),
-  ('Mileage: High', 'mileage_high'),
+  ('newest', 'newest'),
+  ('oldest', 'oldest'),
+  ('price_low', 'price_low'),
+  ('price_high', 'price_high'),
+  ('year_desc', 'year_desc'),
+  ('year_asc', 'year_asc'),
+  ('mileage_low', 'mileage_low'),
+  ('mileage_high', 'mileage_high'),
 ];
 
 class CarFilterSheet extends StatefulWidget {
@@ -138,14 +126,11 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
   late String? _bodyType;
   late int? _priceMin;
   late int? _priceMax;
-  late String? _location;
   late String _sort;
+  late String? _priceLabel;
 
-  final _locationController = TextEditingController();
   final _modelController = TextEditingController();
   final _mileageController = TextEditingController();
-  final _priceMinController = TextEditingController();
-  final _priceMaxController = TextEditingController();
 
   @override
   void initState() {
@@ -160,23 +145,24 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
     _bodyType = widget.initialValues.bodyType;
     _priceMin = widget.initialValues.priceMin;
     _priceMax = widget.initialValues.priceMax;
-    _location = widget.initialValues.location;
     _sort = widget.initialValues.sort;
+    _priceLabel = _labelForPrice(_priceMin, _priceMax);
 
-    _locationController.text = _location ?? '';
     _modelController.text = _model ?? '';
     _mileageController.text = _mileageMax?.toString() ?? '';
-    _priceMinController.text = _priceMin?.toString() ?? '';
-    _priceMaxController.text = _priceMax?.toString() ?? '';
+  }
+
+  String? _labelForPrice(int? min, int? max) {
+    for (final entry in _priceRanges.entries) {
+      if (entry.value.$1 == min && entry.value.$2 == max) return entry.key;
+    }
+    return null;
   }
 
   @override
   void dispose() {
-    _locationController.dispose();
     _modelController.dispose();
     _mileageController.dispose();
-    _priceMinController.dispose();
-    _priceMaxController.dispose();
     super.dispose();
   }
 
@@ -192,22 +178,16 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
       _bodyType = null;
       _priceMin = null;
       _priceMax = null;
-      _location = null;
+      _priceLabel = null;
       _sort = 'newest';
-      _locationController.clear();
       _modelController.clear();
       _mileageController.clear();
-      _priceMinController.clear();
-      _priceMaxController.clear();
     });
   }
 
   void _apply() {
-    _location = _locationController.text.isNotEmpty ? _locationController.text : null;
     _model = _modelController.text.isNotEmpty ? _modelController.text : null;
     _mileageMax = int.tryParse(_mileageController.text);
-    _priceMin = int.tryParse(_priceMinController.text);
-    _priceMax = int.tryParse(_priceMaxController.text);
 
     Navigator.pop(context, CarFilterValues(
       make: _make,
@@ -220,13 +200,17 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
       bodyType: _bodyType,
       priceMin: _priceMin,
       priceMax: _priceMax,
-      location: _location,
       sort: _sort,
     ));
   }
 
+  List<String> get _availableModels =>
+      _make != null ? (carModelsByMake[_make] ?? []) : [];
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.85,
@@ -252,71 +236,117 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(CarStrings.filters, style: AppTextStyles.title.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text(l10n.searchFilters, style: AppTextStyles.title.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
                   TextButton(
                     onPressed: _reset,
-                    child: Text(CarStrings.reset, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500)),
+                    child: Text(l10n.searchReset, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500)),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
 
-              // Location
-              _sectionHeader(CarStrings.searchLocation),
-              TextField(
-                controller: _locationController,
-                decoration: _inputDecoration(CarStrings.searchLocation),
-                style: AppTextStyles.bodyMedium,
-              ),
-              const SizedBox(height: 16),
-
               // Make
-              _sectionHeader(CarStrings.listingMake),
-              const SizedBox(height: 8),
-              _chipSelector(_makes, _make, (v) => setState(() => _make = v)),
+              Text(l10n.listingMake, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 10),
+              _modalChipRow(
+                options: [
+                  (l10n.searchFilterAny, null, _make == null),
+                  ...carMakes.map((m) => (m, m, _make == m)),
+                ],
+                onSelected: (v) => setState(() {
+                  _make = v as String?;
+                  if (_make == null) {
+                    _model = null;
+                    _modelController.clear();
+                  } else {
+                    final models = _availableModels;
+                    if (models.isNotEmpty && (_model == null || !models.contains(_model))) {
+                      _model = null;
+                      _modelController.clear();
+                    }
+                  }
+                }),
+              ),
               const SizedBox(height: 16),
 
               // Model
-              _sectionHeader(CarStrings.listingModel),
-              TextField(
-                controller: _modelController,
-                decoration: _inputDecoration(CarStrings.listingModel),
-                style: AppTextStyles.bodyMedium,
-              ),
-              const SizedBox(height: 16),
+              if (_make != null && _availableModels.isNotEmpty) ...[
+                Text(l10n.listingModel, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+                const SizedBox(height: 10),
+                _modalChipRow(
+                  options: [
+                    (l10n.searchFilterAny, null, _model == null),
+                    ..._availableModels.map((m) => (m, m, _model == m)),
+                  ],
+                  onSelected: (v) => setState(() => _model = v as String?),
+                ),
+                const SizedBox(height: 16),
+              ],
 
               // Year
-              _sectionHeader(CarStrings.listingYear),
-              const SizedBox(height: 8),
+              Text(l10n.listingYear, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 10),
               Row(
                 children: [
-                  Expanded(child: _yearDropdown(CarStrings.yearFrom, _yearMin, (v) => setState(() => _yearMin = v))),
+                  Expanded(child: _yearDropdown(l10n.searchFilterAny, _yearMin, (v) => setState(() => _yearMin = v))),
                   const SizedBox(width: 12),
-                  Expanded(child: _yearDropdown(CarStrings.yearTo, _yearMax, (v) => setState(() => _yearMax = v))),
+                  Expanded(child: _yearDropdown(l10n.searchFilterAny, _yearMax, (v) => setState(() => _yearMax = v))),
                 ],
               ),
               const SizedBox(height: 16),
 
               // Transmission
-              _sectionHeader(CarStrings.listingTransmission),
-              const SizedBox(height: 8),
-              _chipSelector(_transmissions, _transmission, (v) => setState(() => _transmission = v)),
+              Text(l10n.listingTransmission, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 10),
+              _modalChipRow(
+                options: [
+                  (l10n.searchFilterAny, null, _transmission == null),
+                  ('Automatic', 'Automatic', _transmission == 'Automatic'),
+                  ('Manual', 'Manual', _transmission == 'Manual'),
+                ],
+                onSelected: (v) => setState(() => _transmission = v as String?),
+              ),
               const SizedBox(height: 16),
 
               // Fuel Type
-              _sectionHeader(CarStrings.listingFuelType),
-              const SizedBox(height: 8),
-              _chipSelector(_fuelTypes, _fuelType, (v) => setState(() => _fuelType = v)),
+              Text(l10n.listingFuelType, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 10),
+              _modalChipRow(
+                options: [
+                  (l10n.searchFilterAny, null, _fuelType == null),
+                  ('Petrol', 'Petrol', _fuelType == 'Petrol'),
+                  ('Diesel', 'Diesel', _fuelType == 'Diesel'),
+                  ('Electric', 'Electric', _fuelType == 'Electric'),
+                  ('Hybrid', 'Hybrid', _fuelType == 'Hybrid'),
+                ],
+                onSelected: (v) => setState(() => _fuelType = v as String?),
+              ),
               const SizedBox(height: 16),
 
               // Body Type
-              _sectionHeader(CarStrings.listingBodyType),
-              const SizedBox(height: 8),
-              _chipSelector(_bodyTypes, _bodyType, (v) => setState(() => _bodyType = v)),
+              Text(l10n.listingBodyType, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 10),
+              _modalChipRow(
+                options: [
+                  (l10n.searchFilterAny, null, _bodyType == null),
+                  ('Sedan', 'Sedan', _bodyType == 'Sedan'),
+                  ('SUV', 'SUV', _bodyType == 'SUV'),
+                  ('Hatchback', 'Hatchback', _bodyType == 'Hatchback'),
+                  ('Pickup', 'Pickup', _bodyType == 'Pickup'),
+                  ('Minivan', 'Minivan', _bodyType == 'Minivan'),
+                  ('Coupe', 'Coupe', _bodyType == 'Coupe'),
+                  ('Convertible', 'Convertible', _bodyType == 'Convertible'),
+                  ('Wagon', 'Wagon', _bodyType == 'Wagon'),
+                  ('Van', 'Van', _bodyType == 'Van'),
+                  ('Truck', 'Truck', _bodyType == 'Truck'),
+                ],
+                onSelected: (v) => setState(() => _bodyType = v as String?),
+              ),
               const SizedBox(height: 16),
 
               // Mileage
-              _sectionHeader(CarStrings.mileageMax),
+              Text(l10n.listingMileageMax, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 10),
               TextField(
                 controller: _mileageController,
                 decoration: _inputDecoration('e.g. 100000'),
@@ -325,39 +355,56 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
               ),
               const SizedBox(height: 16),
 
-              // Price
-              _sectionHeader(CarStrings.price),
-              Row(
-                children: [
-                  Expanded(child: TextField(
-                    controller: _priceMinController,
-                    decoration: _inputDecoration(CarStrings.minimum),
-                    keyboardType: TextInputType.number,
-                    style: AppTextStyles.bodyMedium,
-                  )),
-                  const SizedBox(width: 12),
-                  Expanded(child: TextField(
-                    controller: _priceMaxController,
-                    decoration: _inputDecoration(CarStrings.maximum),
-                    keyboardType: TextInputType.number,
-                    style: AppTextStyles.bodyMedium,
-                  )),
+              // Price Range
+              Text(l10n.searchPriceRange, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 10),
+              _modalChipRow(
+                options: [
+                  (l10n.searchFilterAny, null, _priceLabel == null),
+                  (l10n.searchUnder5M, 'Under 5M', _priceLabel == 'Under 5M'),
+                  (l10n.search5M10M, '5M-10M', _priceLabel == '5M-10M'),
+                  (l10n.search10M50M, '10M-50M', _priceLabel == '10M-50M'),
+                  (l10n.search50M100M, '50M-100M', _priceLabel == '50M-100M'),
+                  (l10n.search100MPlus, '100M+', _priceLabel == '100M+'),
                 ],
+                onSelected: (v) {
+                  final label = v as String?;
+                  setState(() {
+                    _priceLabel = label;
+                    if (label == null) {
+                      _priceMin = null;
+                      _priceMax = null;
+                    } else {
+                      final range = _priceRanges[label]!;
+                      _priceMin = range.$1;
+                      _priceMax = range.$2;
+                    }
+                  });
+                },
               ),
               const SizedBox(height: 16),
 
               // Sort
-              _sectionHeader(CarStrings.sortBy),
-              const SizedBox(height: 8),
-              _chipSelector(
-                _sortOptions.map((e) => e.$1).toList(),
-                _sortOptions.firstWhere((e) => e.$2 == _sort, orElse: () => _sortOptions[0]).$1,
-                (v) {
-                  final idx = _sortOptions.indexWhere((e) => e.$1 == v);
-                  if (idx >= 0) setState(() => _sort = _sortOptions[idx].$2);
-                },
-                valueToString: (v) => v,
-                toString: (v) => v,
+              Text(l10n.searchSortBy, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 10),
+              _modalChipRow(
+                options: _sortOptions.map((opt) {
+                  final (key, _) = opt;
+                  String label;
+                  switch (key) {
+                    case 'newest': label = l10n.searchSortNewest;
+                    case 'oldest': label = l10n.searchSortOldest;
+                    case 'price_low': label = l10n.searchSortPriceLow;
+                    case 'price_high': label = l10n.searchSortPriceHigh;
+                    case 'year_desc': label = l10n.searchSortYearDesc;
+                    case 'year_asc': label = l10n.searchSortYearAsc;
+                    case 'mileage_low': label = l10n.searchSortMileageLow;
+                    case 'mileage_high': label = l10n.searchSortMileageHigh;
+                    default: label = key;
+                  }
+                  return (label, key, _sort == key);
+                }).toList(),
+                onSelected: (v) => setState(() => _sort = v as String),
               ),
               const SizedBox(height: 24),
 
@@ -371,7 +418,7 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                   ),
-                  child: Text(CarStrings.apply, style: AppTextStyles.bodyLargePlus.copyWith(fontWeight: FontWeight.w600)),
+                  child: Text(l10n.searchApplyFilters, style: AppTextStyles.bodyLargePlus.copyWith(fontWeight: FontWeight.w600)),
                 ),
               ),
               const SizedBox(height: 8),
@@ -382,8 +429,38 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
     );
   }
 
-  Widget _sectionHeader(String title) {
-    return Text(title, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600));
+  Widget _modalChipRow({
+    required List<(String, dynamic, bool)> options,
+    required void Function(dynamic) onSelected,
+  }) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: options.map((chip) {
+        final (label, value, isSelected) = chip;
+        return GestureDetector(
+          onTap: () => onSelected(value),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.accent500.withValues(alpha: 0.12) : context.cardBg,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: isSelected ? AppColors.accent500.withValues(alpha: 0.4) : context.divider.withValues(alpha: 0.5),
+              ),
+            ),
+            child: Text(
+              label,
+              style: AppTextStyles.bodySmall.copyWith(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? AppColors.accent500 : context.textSecondary,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
   }
 
   InputDecoration _inputDecoration(String hint) {
@@ -408,40 +485,7 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
     );
   }
 
-  Widget _chipSelector<T>(List<T> options, T? selected, void Function(T) onSelected, {String Function(T)? valueToString, String Function(T)? toString}) {
-    final display = toString ?? ((T v) => v.toString());
-    final toValue = valueToString ?? ((T v) => v.toString());
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: options.map((opt) {
-        final isSelected = selected != null && (toValue(opt) == (selected is String ? selected : toValue(selected)));
-        return GestureDetector(
-          onTap: () => onSelected(opt),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.accent500.withValues(alpha: 0.15) : context.cardBg,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: isSelected ? AppColors.accent500 : context.divider.withValues(alpha: 0.5),
-              ),
-            ),
-            child: Text(
-              display(opt),
-              style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.accent500 : context.textSecondary,
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _yearDropdown(String label, int? value, void Function(int?) onChanged) {
+  Widget _yearDropdown(String hint, int? value, void Function(int?) onChanged) {
     final years = List.generate(26, (i) => 2025 - i);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -454,7 +498,7 @@ class _CarFilterSheetState extends State<CarFilterSheet> {
         child: DropdownButton<int>(
           isExpanded: true,
           value: value,
-          hint: Text(label, style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary.withValues(alpha: 0.5))),
+          hint: Text(hint, style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary.withValues(alpha: 0.5))),
           items: years.map((y) => DropdownMenuItem(value: y, child: Text(y.toString(), style: AppTextStyles.bodyMedium))).toList(),
           onChanged: onChanged,
         ),

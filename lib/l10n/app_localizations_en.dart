@@ -2070,4 +2070,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingCarPlural => 'Vehicles';
+
+  @override
+  String get listingMake => 'Make';
+
+  @override
+  String get listingModel => 'Model';
+
+  @override
+  String get listingYear => 'Year';
+
+  @override
+  String get listingTransmission => 'Transmission';
+
+  @override
+  String get listingFuelType => 'Fuel Type';
+
+  @override
+  String get listingBodyType => 'Body Type';
+
+  @override
+  String get listingMileage => 'Mileage';
+
+  @override
+  String get listingMileageMax => 'Max Mileage (km)';
+
+  @override
+  String get listingCondition => 'Condition';
+
+  @override
+  String get listingEngineSize => 'Engine Size';
+
+  @override
+  String get listingColor => 'Color';
+
+  @override
+  String get searchSortYearDesc => 'Year ↓';
+
+  @override
+  String get searchSortYearAsc => 'Year ↑';
+
+  @override
+  String get searchSortMileageLow => 'Mileage ↓';
+
+  @override
+  String get searchSortMileageHigh => 'Mileage ↑';
+
+  @override
+  String get searchLocation => 'Location';
+
+  @override
+  String get searchAnyMake => 'Any Make';
+
+  @override
+  String get searchAnyModel => 'Any Model';
+
+  @override
+  String get carRentalPriceNegotiable => 'By Negotiation';
 }
