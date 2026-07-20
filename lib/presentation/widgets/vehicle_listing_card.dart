@@ -12,7 +12,7 @@ import '../../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 import 'common/wave_card.dart';
 
-class FeaturedVehicleCard extends ConsumerWidget {
+class VehicleListingCard extends ConsumerWidget {
   final Listing? listing;
   final VoidCallback? onTap;
   final bool isFavorite;
@@ -20,7 +20,7 @@ class FeaturedVehicleCard extends ConsumerWidget {
   final bool isTogglingFavorite;
   final bool isLoading;
 
-  const FeaturedVehicleCard({
+  const VehicleListingCard({
     super.key,
     this.listing,
     this.onTap,

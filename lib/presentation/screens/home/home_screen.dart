@@ -16,7 +16,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/car_providers.dart';
 import '../../widgets/featured_listing_card.dart';
 import '../../widgets/listing_card.dart';
-import '../../widgets/featured_vehicle_card.dart';
+import '../../widgets/vehicle_listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 import '../cars/car_filter_sheet.dart';
@@ -281,7 +281,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           delegate: SliverChildListDelegate([
             header,
             for (int i = 0; i < 3; i++)
-              const FeaturedVehicleCard(isLoading: true),
+              const VehicleListingCard(isLoading: true),
           ]),
         ),
       );
@@ -330,7 +330,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             }
             final listing = state.listings[i];
             final fav = _isFavorite(listing.id);
-            return FeaturedVehicleCard(
+            return VehicleListingCard(
               listing: listing,
               isFavorite: fav,
               isTogglingFavorite: _isToggling(listing.id),

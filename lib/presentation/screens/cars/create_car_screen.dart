@@ -296,7 +296,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                   constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
                 )
               : null,
-          title: Text(CarStrings.createListing),
+          title: const Text(CarStrings.createListing),
           actions: [
             TextButton(
               onPressed: _isSubmitting ? null : _nextStep,
@@ -916,11 +916,10 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
 }
 
 class _ImageThumb extends StatelessWidget {
-  final String? url;
-  final File? file;
+  final File file;
   final VoidCallback onRemove;
 
-  const _ImageThumb({this.url, this.file, required this.onRemove});
+  const _ImageThumb({required this.file, required this.onRemove});
 
   void _showPreview(BuildContext context) {
     showDialog(
@@ -929,7 +928,7 @@ class _ImageThumb extends StatelessWidget {
       builder: (ctx) => Stack(
         children: [
           Center(child: InteractiveViewer(
-            child: url != null ? Image.network(url!, fit: BoxFit.contain) : Image.file(file!, fit: BoxFit.contain),
+            child: Image.file(file, fit: BoxFit.contain),
           )),
           Positioned(
             top: 40, right: 16,
@@ -961,9 +960,7 @@ class _ImageThumb extends StatelessWidget {
                 borderRadius: 10, blur: 12,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(9),
-                  child: url != null
-                      ? Image.network(url!, width: 100, height: 100, fit: BoxFit.cover)
-                      : Image.file(file!, width: 100, height: 100, fit: BoxFit.cover),
+                  child: Image.file(file, width: 100, height: 100, fit: BoxFit.cover),
                 ),
               ),
             ),

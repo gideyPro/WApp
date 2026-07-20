@@ -7,7 +7,7 @@ import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/listing_providers.dart';
-import '../../widgets/car_listing_card.dart';
+import '../../widgets/vehicle_listing_card.dart';
 import 'car_strings.dart';
 import 'car_filter_sheet.dart';
 
@@ -181,13 +181,13 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
                               );
                             }
                             final listing = state.listings[index];
-                            return CarListingCard(
-                              listing: listing,
-                              isFavorite: _isFavorite(listing.id),
-                              onFavorite: () => _toggleFavorite(listing.id),
-                              isTogglingFavorite: _isToggling(listing.id),
-                              onTap: () => context.push('/cars/${listing.id}'),
-                            );
+return VehicleListingCard(
+              listing: listing,
+              isFavorite: _isFavorite(listing.id),
+              onFavorite: () => _toggleFavorite(listing.id),
+              isTogglingFavorite: _isToggling(listing.id),
+              onTap: () => context.push('/cars/${listing.id}'),
+            );
                           },
                         ),
                       ),

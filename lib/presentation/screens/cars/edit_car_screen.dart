@@ -383,7 +383,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                   constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
                 )
               : null,
-          title: Text(CarStrings.editListing),
+          title: const Text(CarStrings.editListing),
           actions: [
             TextButton(
               onPressed: _isSubmitting ? null : _nextStep,
