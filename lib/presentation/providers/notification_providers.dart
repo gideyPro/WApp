@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/notification.dart' as notif;
 import '../../data/services/notification_service.dart';
+import '../../data/services/fcm_service.dart';
 import 'auth_provider.dart';
 
 /// Notification Provider
@@ -102,6 +103,9 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
             .map((n) => n.id == id ? n.copyWith(isRead: true) : n)
             .toList());
     
+    // Dismiss from notification shade
+    FcmService.dismissShadeNotification(id);
+    
     // Refresh unread count
     _ref.read(unreadCountProvider.notifier).refresh();
   }
@@ -111,6 +115,9 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     state = state.copyWith(
         notifications:
             state.notifications.map((n) => n.copyWith(isRead: true)).toList());
+    
+    // Dismiss all from notification shade
+    FcmService.dismissAllShadeNotifications();
     
     // Refresh unread count
     _ref.read(unreadCountProvider.notifier).refresh();

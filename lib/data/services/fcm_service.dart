@@ -8,6 +8,8 @@ import '../../core/network/local_notification_service.dart';
 final fcmApiServiceProvider = Provider<FcmApiService>((ref) => FcmApiService());
 
 class FcmService {
+  static final Map<int, int> _notificationIdMap = {};
+
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final Ref _ref;
 
@@ -81,12 +83,21 @@ class FcmService {
           return;
         }
 
+        final localId = message.hashCode;
         LocalNotificationService.showNotification(
-          id: message.hashCode,
+          id: localId,
           title: notification.title ?? 'Wavemart',
           body: notification.body ?? '',
           payload: type == 'message' ? message.data['conversation_id']?.toString() : null,
         );
+
+        final notifIdStr = message.data['notification_id'];
+        if (notifIdStr != null) {
+          final backendId = int.tryParse(notifIdStr.toString());
+          if (backendId != null) {
+            _notificationIdMap[backendId] = localId;
+          }
+        }
       }
     });
 
@@ -142,6 +153,18 @@ class FcmService {
     } catch (e) {
       log('Error deleting FCM token: $e');
     }
+  }
+
+  static void dismissShadeNotification(int backendId) {
+    final localId = _notificationIdMap.remove(backendId);
+    if (localId != null) {
+      LocalNotificationService.cancel(localId);
+    }
+  }
+
+  static void dismissAllShadeNotifications() {
+    LocalNotificationService.cancelAll();
+    _notificationIdMap.clear();
   }
 }
 

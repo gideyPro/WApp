@@ -70,4 +70,12 @@ class LocalNotificationService {
       payload: payload,
     );
   }
+
+  static Future<void> cancel(int id) async {
+    await _notificationsPlugin.cancel(id: id);
+  }
+
+  static Future<void> cancelAll() async {
+    await _notificationsPlugin.cancelAll();
+  }
 }
