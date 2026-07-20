@@ -172,6 +172,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (ref.read(subscriptionProvider).canViewVip) {
       futures.add(ref.read(vipListingsProvider.notifier).loadVipListings());
     }
+    if (_selectedCategory == HomeCategory.vehicles) {
+      futures.add(ref.read(carListingsProvider.notifier).loadListings());
+    }
     await Future.wait(futures);
   }
 
@@ -179,7 +182,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (category == _selectedCategory) return;
     setState(() => _selectedCategory = category);
     if (category == HomeCategory.vehicles) {
-      ref.read(carListingsProvider.notifier).loadListings();
+      final notifier = ref.read(carListingsProvider.notifier);
+      notifier.reset();
+      notifier.loadListings();
     }
   }
 
@@ -281,7 +286,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         child: Column(
           children: [
             header,
-            Expanded(child: Center(child: _buildPullToRefreshHint())),
+            Expanded(
+              child: Center(
+                child: TextButton.icon(
+                  onPressed: () => ref.read(carListingsProvider.notifier).loadListings(),
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: Text(l10n.commonRetryMessage),
+                ),
+              ),
+            ),
           ],
         ),
       );
