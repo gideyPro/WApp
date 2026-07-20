@@ -2038,5 +2038,8 @@ class AppLocalizationsTi extends AppLocalizations {
   String get reportErrorGeneric => 'ሪፖርት ምእታው ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።';
 
   @override
-  String get listingCar => 'Vehicle';
+  String get listingCar => 'ተኽእለ ተጓዕዝ';
+
+  @override
+  String get listingCarPlural => 'ተኽእለ ተጓዕዛት';
 }

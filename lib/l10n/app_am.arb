@@ -657,5 +657,7 @@
   "reportSubmit": "ሪፖርቱን ያስገቡ",
   "reportSubmitting": "በማስገባት ላይ...",
   "reportSuccess": "ሪፖርቱ ቀርቧል። እናመሰግናለን።",
-  "reportErrorGeneric": "ሪፖርቱን ማስገባት አልተሳካም። እባክዎ እንደገና ይሞክሩ።"
+  "reportErrorGeneric": "ሪፖርቱን ማስገባት አልተሳካም። እባክዎ እንደገና ይሞክሩ።",
+  "listingCar": "ተሽከርካሪ",
+  "listingCarPlural": "ተሽከርካሪዎች"
 }

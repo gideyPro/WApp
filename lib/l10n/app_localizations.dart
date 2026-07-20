@@ -3901,8 +3901,14 @@ abstract class AppLocalizations {
   /// No description provided for @listingCar.
   ///
   /// In en, this message translates to:
-  /// **'Car'**
+  /// **'Vehicle'**
   String get listingCar;
+
+  /// No description provided for @listingCarPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles'**
+  String get listingCarPlural;
 }
 
 class _AppLocalizationsDelegate

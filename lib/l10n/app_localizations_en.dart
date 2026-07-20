@@ -2067,4 +2067,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingCar => 'Vehicle';
+
+  @override
+  String get listingCarPlural => 'Vehicles';
 }

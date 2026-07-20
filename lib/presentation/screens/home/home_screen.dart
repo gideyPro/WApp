@@ -65,7 +65,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _rentalEnabled = false;
   bool _isAutoRefreshing = false;
   HomeCategory _selectedCategory = HomeCategory.property;
-  String? _selectedCarBodyType;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
@@ -203,54 +202,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget _buildCategoryPills(AppLocalizations l10n) {
     const categories = HomeCategory.values;
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: categories.map((cat) {
             final isSelected = cat == _selectedCategory;
             return Padding(
-              padding: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.only(right: 6),
               child: GestureDetector(
                 onTap: () => _onCategoryChanged(cat),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutCubic,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                   decoration: BoxDecoration(
                     gradient: isSelected
                         ? AppColors.gradientAccent
                         : null,
                     color: isSelected ? null : context.cardBg.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isSelected
                           ? Colors.transparent
                           : context.divider.withValues(alpha: 0.5),
                     ),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: AppColors.accent500.withValues(alpha: 0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                        : null,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         cat.icon,
-                        size: 18,
+                        size: 15,
                         color: isSelected ? Colors.white : context.textSecondary,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Text(
                         cat.label(l10n),
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                           color: isSelected ? Colors.white : context.textPrimary,
                         ),
                       ),
@@ -269,15 +259,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final state = ref.watch(carListingsProvider);
     final l10n = AppLocalizations.of(context);
     final header = _buildSectionHeader(
-      l10n.listingCar,
+      l10n.listingCarPlural,
       eyebrow: 'LATEST',
     );
-
-    final displayList = _selectedCarBodyType == null
-        ? state.listings
-        : state.listings
-            .where((l) => l.carBodyType?.toLowerCase() == _selectedCarBodyType)
-            .toList();
 
     if (state.isLoading && state.listings.isEmpty) {
       return SliverPadding(
@@ -303,26 +287,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       );
     }
 
-    if (displayList.isEmpty) {
-      return SliverPadding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
-        sliver: SliverList(
-          delegate: SliverChildListDelegate([
+    if (state.listings.isEmpty) {
+      return SliverFillRemaining(
+        child: Column(
+          children: [
             header,
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40),
-              child: Center(
-                child: Text(
-                  _selectedCarBodyType == null
-                      ? 'No vehicle listings available'
-                      : 'No ${_selectedCarBodyType!.toUpperCase()} listings',
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: context.textSecondary,
-                  ),
-                ),
+            Expanded(
+              child: WaveEmptyState(
+                icon: Icons.directions_car_outlined,
+                title: l10n.listingsNoResults,
+                subtitle: 'No vehicle listings available',
               ),
             ),
-          ]),
+          ],
         ),
       );
     }
@@ -334,13 +311,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           (context, index) {
             if (index == 0) return header;
             final i = index - 1;
-            if (i == displayList.length) {
+            if (i == state.listings.length) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator()),
               );
             }
-            final listing = displayList[i];
+            final listing = state.listings[i];
             final fav = _isFavorite(listing.id);
             return VehicleListingCard(
               listing: listing,
@@ -350,56 +327,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               onTap: () => context.push('/cars/${listing.id}'),
             );
           },
-          childCount: displayList.length + 2,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildVehicleTypeChips() {
-    const types = <String?>[
-      null, 'sedan', 'suv', 'truck', 'hatchback', 'coupe',
-    ];
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: types.map((type) {
-            final isSelected = _selectedCarBodyType == type;
-            final label = type == null ? 'All' : type[0].toUpperCase() + type.substring(1);
-            return Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() => _selectedCarBodyType = type);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.cta500
-                        : context.cardBg.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : context.divider.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Text(
-                    label,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      fontSize: 11,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                      color: isSelected ? Colors.white : context.textPrimary,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
+          childCount: state.listings.length + 2,
         ),
       ),
     );
@@ -926,10 +854,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ),
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
-                else if (_selectedCategory == HomeCategory.vehicles) ...[
-                  SliverToBoxAdapter(child: _buildVehicleTypeChips()),
-                  _buildCarListings(),
-                ]
+                else if (_selectedCategory == HomeCategory.vehicles)
+                  _buildCarListings()
                 else ...[
                   SliverToBoxAdapter(
                     child: FadeTransition(

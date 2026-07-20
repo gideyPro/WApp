@@ -657,5 +657,7 @@
   "reportSubmit": "ሪፖርት ኣስግብ",
   "reportSubmitting": "ይኣትው ኣሎ...",
   "reportSuccess": "ሪፖርት ቀሪቡ። የቀንየልና።",
-  "reportErrorGeneric": "ሪፖርት ምእታው ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።"
+  "reportErrorGeneric": "ሪፖርት ምእታው ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።",
+  "listingCar": "ተኽእለ ተጓዕዝ",
+  "listingCarPlural": "ተኽእለ ተጓዕዛት"
 }
