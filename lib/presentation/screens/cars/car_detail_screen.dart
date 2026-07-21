@@ -17,6 +17,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
+import '../listing/widgets/listing_gallery.dart';
 
 import 'car_strings.dart';
 
@@ -350,39 +351,11 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   }
 
   Widget _buildImageGallery(Listing listing) {
-    if (listing.images.isEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          height: 240,
-          color: context.theme.card,
-          child: Center(
-            child: Icon(Icons.directions_car, size: 64, color: context.textSecondary.withValues(alpha: 0.4)),
-          ),
-        ),
-      );
-    }
-    return SizedBox(
-      height: 240,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: listing.images.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              listing.images[index].imageUrl,
-              width: MediaQuery.of(context).size.width - 24,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                width: MediaQuery.of(context).size.width - 24,
-                color: context.theme.card,
-                child: Icon(Icons.broken_image, color: context.textSecondary.withValues(alpha: 0.4)),
-              ),
-            ),
-          );
-        },
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        height: 280,
+        child: ListingGallery(listing: listing),
       ),
     );
   }
