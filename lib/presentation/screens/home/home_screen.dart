@@ -564,7 +564,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
                 else if (canBrowseAll)
-                  _buildAllListings(featuredState, vipState, listingsState, carState, l10n)
+                  ..._buildAllBrowseSlivers(featuredState, vipState, listingsState, carState, l10n)
                 else if (_selectedCategory == HomeCategory.vehicles)
                   _buildCarListings()
                 else ...[
@@ -575,7 +575,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildSectionHeader(l10n.listingsFeatured),
-                          _buildFeaturedListings(featuredState, vipState),
+                          _buildFeaturedListings(featuredState),
+                          _buildVipSection(vipState),
                           _buildSectionHeader(l10n.listingsTitle,
                               eyebrow: l10n.homeLatestRecently.toUpperCase()),
                         ],
@@ -905,30 +906,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildFeaturedListings(
-    ListingsState featuredState,
-    ListingsState vipState,
-  ) {
-    final l10n = AppLocalizations.of(context);
-    final subState = ref.watch(subscriptionProvider);
-    final canViewVip = subState.canViewVip;
-
-    // Merge featured + VIP listings, deduplicated by ID
-    final merged = <Listing>[
-      ...featuredState.listings,
-      if (canViewVip)
-        ...vipState.listings.where(
-          (v) => !featuredState.listings.any((f) => f.id == v.id),
-        ),
-    ];
-
-    if (featuredState.errorMessage != null && merged.isEmpty) {
+  Widget _buildFeaturedListings(ListingsState featuredState) {
+    if (featuredState.errorMessage != null && featuredState.listings.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: _buildPullToRefreshHint(),
       );
     }
-    if (featuredState.isLoading && merged.isEmpty) {
+    if (featuredState.isLoading && featuredState.listings.isEmpty) {
       return SizedBox(
         height: 180,
         child: ListView.builder(
@@ -945,28 +930,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       );
     }
-    if (merged.isEmpty) {
-      return SizedBox(
-        height: 80,
-        child: Center(
-          child: Text(l10n.listingsNoResults),
-        ),
-      );
+    if (featuredState.listings.isEmpty) {
+      return const SizedBox.shrink();
     }
 
-    final teaserVisible = !canViewVip && !subState.isLoading && subState.errorMessage == null;
-
     return SizedBox(
-      height: teaserVisible ? 228 : 180,
-      child: Column(
+      height: 180,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: featuredState.listings.length,
+        itemBuilder: (context, index) {
+          final listing = featuredState.listings[index];
+          final fav = _isFavorite(listing.id);
+          return Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: SizedBox(
+              width: 280,
+              child: FeaturedListingCard(
+                listing: listing,
+                isFavorite: fav,
+                isTogglingFavorite: _isToggling(listing.id),
+                onFavorite: () => _toggleFavorite(listing.id),
+                onTap: () => _handleListingTap(listing),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildVipSection(ListingsState vipState) {
+    final l10n = AppLocalizations.of(context);
+    final subState = ref.watch(subscriptionProvider);
+    final canViewVip = subState.canViewVip;
+
+    if (canViewVip) {
+      if (vipState.listings.isEmpty) return const SizedBox.shrink();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
+          _buildSectionHeader(l10n.vipBadge, eyebrow: 'Premium'),
+          SizedBox(
+            height: 180,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: merged.length,
+              itemCount: vipState.listings.length,
               itemBuilder: (context, index) {
-                final listing = merged[index];
+                final listing = vipState.listings[index];
                 final fav = _isFavorite(listing.id);
                 return Padding(
                   padding: const EdgeInsets.only(right: 16),
@@ -984,44 +997,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               },
             ),
           ),
-          // Inline VIP teaser for non-subscribers
-          if (teaserVisible) _buildVipTeaser(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildAllListings(
-    ListingsState featuredState,
-    ListingsState vipState,
-    ListingsState propState,
-    ListingsState carState,
-    AppLocalizations l10n,
-  ) {
-    final isLoading = (propState.isLoading || carState.isLoading) &&
-        propState.listings.isEmpty && carState.listings.isEmpty;
-
-    if (isLoading) {
-      return SliverPadding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
-        sliver: SliverList(
-          delegate: SliverChildListDelegate([
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: _buildSectionHeader(l10n.listingsTitle,
-                  eyebrow: l10n.homeLatestRecently.toUpperCase()),
-            ),
-            for (int i = 0; i < 3; i++)
-              const PropertyListingCard(isLoading: true),
-          ]),
-        ),
       );
     }
 
-    final errorState = !propState.isLoading && propState.errorMessage != null && propState.listings.isEmpty
-        || !carState.isLoading && carState.errorMessage != null && carState.listings.isEmpty;
-    if (errorState) {
-      return SliverFillRemaining(child: Center(child: _buildPullToRefreshHint()));
+    if (subState.isLoading || subState.errorMessage != null) return const SizedBox.shrink();
+    return _buildVipTeaser();
+  }
+
+  Widget _buildMergedFeed(
+    ListingsState propState,
+    ListingsState carState,
+  ) {
+    if (propState.listings.isEmpty && carState.listings.isEmpty) {
+      if (propState.isLoading || carState.isLoading) {
+        return SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              for (int i = 0; i < 3; i++)
+                const PropertyListingCard(isLoading: true),
+            ]),
+          ),
+        );
+      }
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
 
     // Merge and sort by createdAt descending
@@ -1030,40 +1030,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ...carState.listings,
     ]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    if (allListings.isEmpty) {
-      return SliverFillRemaining(
-        child: WaveEmptyState(
-          icon: Icons.search_off_rounded,
-          title: l10n.listingsNoResults,
-          subtitle: l10n.searchNoResultsSubtitle,
-        ),
-      );
-    }
-
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            if (index == 0) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSectionHeader(l10n.listingsFeatured),
-                  _buildFeaturedListings(featuredState, vipState),
-                  _buildSectionHeader(l10n.listingsTitle,
-                      eyebrow: l10n.homeLatestRecently.toUpperCase()),
-                ],
-              );
-            }
-            final i = index - 1;
-            if (i >= allListings.length) {
+            if (index >= allListings.length) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator()),
               );
             }
-            final listing = allListings[i];
+            final listing = allListings[index];
             final fav = _isFavorite(listing.id);
             final isVehicle = listing.propertyType == PropertyType.car;
             return Padding(
@@ -1085,10 +1063,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
             );
           },
-          childCount: 1 + allListings.length + (propState.isLoadingMore || carState.isLoadingMore ? 1 : 0),
+          childCount: allListings.length + (propState.isLoadingMore || carState.isLoadingMore ? 1 : 0),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildAllBrowseSlivers(
+    ListingsState featuredState,
+    ListingsState vipState,
+    ListingsState propState,
+    ListingsState carState,
+    AppLocalizations l10n,
+  ) {
+    return [
+      SliverToBoxAdapter(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader(l10n.listingsFeatured),
+            _buildFeaturedListings(featuredState),
+            _buildVipSection(vipState),
+            _buildSectionHeader(l10n.listingsTitle,
+                eyebrow: l10n.homeLatestRecently.toUpperCase()),
+          ],
+        ),
+      ),
+      _buildMergedFeed(propState, carState),
+    ];
   }
 
   Widget _buildVipTeaser() {
