@@ -6,8 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
-import '../../../core/network/api_constants.dart';
-import '../../../core/network/api_envelope.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
@@ -17,7 +15,7 @@ import '../../widgets/featured_listing_card.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/vehicle_listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../cars/car_filter_sheet.dart';
+import 'filter_sheet.dart';
 
 enum HomeCategory { property, vehicles }
 
@@ -53,16 +51,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Timer? _debounceTimer;
   DateTime? _lastLoadTime;
 
-  String? _selectedType;
-  String? _selectedListingType;
-  String _selectedSort = 'newest';
-  int? _selectedPriceMin;
-  int? _selectedPriceMax;
-  String? _selectedPriceLabel;
-  bool _isFeaturedFilter = false;
-  Map<String, dynamic> _activeFilters = {};
+  UnifiedFilterValues _filterValues = const UnifiedFilterValues();
   bool _hasSearched = false;
-  bool _rentalEnabled = false;
   bool _isAutoRefreshing = false;
   HomeCategory _selectedCategory = HomeCategory.property;
 
@@ -101,26 +91,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ref.read(favoritesProvider.notifier).loadFavorites();
       _lastLoadTime = DateTime.now();
       _headerAnimationController.forward();
-      _loadSettings();
     });
     _scrollController.addListener(_onScroll);
-  }
-
-  Future<void> _loadSettings() async {
-    try {
-      final response = await ref
-          .read(apiClientProvider)
-          .dio
-          .get('${ApiConstants.apiBase}/settings');
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = ApiEnvelope.extractData(response.data);
-        if (data.isNotEmpty && mounted) {
-          setState(() {
-            _rentalEnabled = data['rental_enabled'] == true;
-          });
-        }
-      }
-    } catch (_) {}
   }
 
   @override
@@ -180,7 +152,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _onCategoryChanged(HomeCategory category) {
     if (category == _selectedCategory) return;
-    setState(() => _selectedCategory = category);
+    _searchController.clear();
+    setState(() {
+      _selectedCategory = category;
+      _hasSearched = false;
+      _filterValues = UnifiedFilterValues(category: category);
+    });
+    ref.invalidate(searchResultsProvider);
     if (category == HomeCategory.vehicles) {
       final notifier = ref.read(carListingsProvider.notifier);
       notifier.reset();
@@ -188,19 +166,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
   }
 
-  void _handleFilterTap() {
-    if (_selectedCategory == HomeCategory.vehicles) {
-      showModalBottomSheet<CarFilterValues>(
-        context: context,
-        backgroundColor: context.sheetBg,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
-        ),
-        isScrollControlled: true,
-        builder: (_) => const CarFilterSheet(initialValues: CarFilterValues()),
-      );
-    } else {
-      _showFilterSheet();
+  void _handleFilterTap() async {
+    final result = await showModalBottomSheet<UnifiedFilterValues>(
+      context: context,
+      backgroundColor: context.sheetBg,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+      ),
+      isScrollControlled: true,
+      builder: (_) => FilterSheet(
+        initialValues: _filterValues,
+        showCategoryToggle: true,
+      ),
+    );
+    if (result != null) {
+      setState(() => _filterValues = result);
+      _performSearch();
     }
   }
 
@@ -347,27 +328,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _onScroll() {
+    if (_scrollController.position.pixels <
+        _scrollController.position.maxScrollExtent - 200) {
+      return;
+    }
+
     if (_hasSearched) {
-      final state = ref.read(searchResultsProvider);
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
-          !state.isLoadingMore &&
-          state.hasMore) {
-        ref.read(searchResultsProvider.notifier).loadListings(
-              page: state.currentPage + 1,
-              filters: _activeFilters,
-            );
+      if (_selectedCategory == HomeCategory.vehicles) {
+        final state = ref.read(carListingsProvider);
+        if (!state.isLoadingMore && state.hasMore) {
+          ref.read(carListingsProvider.notifier).loadListings(
+            page: state.currentPage + 1,
+            filters: _filterValues.toQueryParams(),
+          );
+        }
+      } else {
+        final state = ref.read(searchResultsProvider);
+        if (!state.isLoadingMore && state.hasMore) {
+          ref.read(searchResultsProvider.notifier).loadListings(
+            page: state.currentPage + 1,
+            filters: _filterValues.toQueryParams(),
+          );
+        }
       }
     } else {
-      final state = ref.read(listingsProvider);
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
-          !state.isLoading &&
-          !state.isLoadingMore &&
-          state.hasMore) {
-        ref
-            .read(listingsProvider.notifier)
-            .loadListings(page: state.currentPage + 1);
+      if (_selectedCategory == HomeCategory.vehicles) {
+        final state = ref.read(carListingsProvider);
+        if (!state.isLoading && !state.isLoadingMore && state.hasMore) {
+          ref.read(carListingsProvider.notifier).loadListings(
+            page: state.currentPage + 1,
+          );
+        }
+      } else {
+        final state = ref.read(listingsProvider);
+        if (!state.isLoading && !state.isLoadingMore && state.hasMore) {
+          ref.read(listingsProvider.notifier).loadListings(
+            page: state.currentPage + 1,
+          );
+        }
       }
     }
   }
@@ -387,10 +385,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _onSearchChanged(String query) {
     _debounceTimer?.cancel();
-    if (query.trim().isEmpty && !_hasSearched) {
-      setState(() {
-        _hasSearched = false;
-      });
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) {
+      if (_hasSearched) {
+        if (_filterValues.hasAnyFilter) {
+          _performSearch();
+        } else {
+          setState(() => _hasSearched = false);
+          if (_selectedCategory == HomeCategory.vehicles) {
+            ref.read(carListingsProvider.notifier).loadListings();
+          } else {
+            ref.invalidate(searchResultsProvider);
+          }
+        }
+      } else {
+        setState(() => _hasSearched = false);
+      }
       return;
     }
     _debounceTimer = Timer(const Duration(milliseconds: 400), () {
@@ -400,386 +410,67 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _performSearch() {
     final query = _searchController.text.trim();
-    _activeFilters = {};
-    if (_isFeaturedFilter) {
-      _activeFilters['is_featured'] = true;
-    }
-    if (query.isNotEmpty) _activeFilters['location'] = query;
-    if (_selectedType != null) _activeFilters['type'] = _selectedType;
-    if (_selectedListingType != null) {
-      _activeFilters['listing_type'] = _selectedListingType;
-    }
-    _activeFilters['sort'] = _selectedSort;
-    if (_selectedPriceMin != null) {
-      _activeFilters['price_min'] = _selectedPriceMin;
-    }
-    if (_selectedPriceMax != null) {
-      _activeFilters['price_max'] = _selectedPriceMax;
-    }
+    final filters = _filterValues.toQueryParams();
+    if (query.isNotEmpty) filters['location'] = query;
 
     setState(() => _hasSearched = true);
-    ref
-        .read(searchResultsProvider.notifier)
-        .loadListings(filters: _activeFilters);
+
+    if (_selectedCategory == HomeCategory.vehicles) {
+      ref.read(carListingsProvider.notifier).loadListings(
+        filters: filters.isNotEmpty ? filters : null,
+      );
+    } else {
+      ref.read(searchResultsProvider.notifier).loadListings(
+        filters: filters.isNotEmpty ? filters : null,
+      );
+    }
   }
 
   void _clearSearch() {
     _searchController.clear();
     setState(() {
       _hasSearched = false;
+      _filterValues = UnifiedFilterValues(category: _selectedCategory);
     });
-    ref.invalidate(searchResultsProvider);
-  }
-
-  void _clearAllFilters() {
-    setState(() {
-      _selectedType = null;
-      _selectedListingType = null;
-      _selectedSort = 'newest';
-      _selectedPriceMin = null;
-      _selectedPriceMax = null;
-      _selectedPriceLabel = null;
-      _isFeaturedFilter = false;
-      _activeFilters = {};
-      _hasSearched = false;
-      _searchController.clear();
-    });
-    ref.invalidate(searchResultsProvider);
-  }
-
-  void _removeFilterAndCheck(VoidCallback onRemove) {
-    onRemove();
-    if (_hasActiveFilters) {
-      _performSearch();
-    } else if (_hasSearched) {
-      setState(() => _hasSearched = false);
+    if (_selectedCategory == HomeCategory.vehicles) {
+      ref.read(carListingsProvider.notifier).loadListings();
+    } else {
       ref.invalidate(searchResultsProvider);
     }
   }
 
-  bool get _hasActiveFilters =>
-      _selectedType != null ||
-      _selectedListingType != null ||
-      _selectedSort != 'newest' ||
-      _selectedPriceLabel != null ||
-      _isFeaturedFilter ||
-      _searchController.text.isNotEmpty;
-
-  void _showFilterSheet() {
-    final l10n = AppLocalizations.of(context);
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: context.sheetBg,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
-      ),
-      isScrollControlled: true,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setModalState) {
-          return DraggableScrollableSheet(
-            expand: false,
-            initialChildSize: 0.7,
-            minChildSize: 0.5,
-            maxChildSize: 0.9,
-            builder: (context, scrollController) {
-              return SingleChildScrollView(
-                controller: scrollController,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: context.divider,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          l10n.searchFilters,
-                          style: AppTextStyles.title.copyWith(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setModalState(() {
-                              _selectedType = null;
-                              _selectedListingType = null;
-                              _selectedSort = 'newest';
-                              _selectedPriceLabel = null;
-                              _selectedPriceMin = null;
-                              _selectedPriceMax = null;
-                              _isFeaturedFilter = false;
-                            });
-                          },
-                          child: Text(
-                            l10n.searchReset,
-                            style: AppTextStyles.bodyMedium
-                                .copyWith(color: AppColors.primary500),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Property Type
-                    Text(
-                      l10n.searchPropertyType,
-                      style: AppTextStyles.bodyLarge
-                          .copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 10),
-                    _modalChipRow(
-                      options: [
-                        (l10n.searchFilterAll, null, _selectedType == null),
-                        (l10n.listingHouse, 'house', _selectedType == 'house'),
-                        (l10n.listingLand, 'land', _selectedType == 'land'),
-                        (l10n.listingCar, 'car', _selectedType == 'car'),
-                      ],
-                      onSelected: (v) {
-                        if (v == 'car') {
-                          Navigator.pop(ctx);
-                          context.push('/cars');
-                          return;
-                        }
-                        setModalState(() => _selectedType = v as String?);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Listing Status
-                    if (_rentalEnabled) ...[
-                      Text(
-                        l10n.searchListingStatus,
-                        style: AppTextStyles.bodyLarge
-                            .copyWith(fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 10),
-                      _modalChipRow(
-                        options: [
-                          (
-                            l10n.searchFilterAll,
-                            null,
-                            _selectedListingType == null
-                          ),
-                          (
-                            l10n.listingForSale,
-                            'sale',
-                            _selectedListingType == 'sale'
-                          ),
-                          (
-                            l10n.listingForRent,
-                            'rental',
-                            _selectedListingType == 'rental'
-                          ),
-                        ],
-                        onSelected: (v) => setModalState(
-                            () => _selectedListingType = v as String?),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-
-                    // Featured filter
-                    Text(
-                      l10n.listingsFeatured,
-                      style: AppTextStyles.bodyLarge
-                          .copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 10),
-                    _modalChipRow(
-                      options: [
-                        (l10n.searchFilterAll, null, !_isFeaturedFilter),
-                        (l10n.listingsFeatured, true, _isFeaturedFilter),
-                      ],
-                      onSelected: (v) =>
-                          setModalState(() => _isFeaturedFilter = v == true),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Price Range
-                    Text(
-                      l10n.searchPriceRange,
-                      style: AppTextStyles.bodyLarge
-                          .copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 10),
-                    _modalChipRow(
-                      options: [
-                        (
-                          l10n.searchFilterAny,
-                          null,
-                          _selectedPriceLabel == null
-                        ),
-                        (
-                          l10n.searchUnder5M,
-                          'Under 5M',
-                          _selectedPriceLabel == 'Under 5M'
-                        ),
-                        (
-                          l10n.search5M10M,
-                          '5M-10M',
-                          _selectedPriceLabel == '5M-10M'
-                        ),
-                        (
-                          l10n.search10M50M,
-                          '10M-50M',
-                          _selectedPriceLabel == '10M-50M'
-                        ),
-                        (
-                          l10n.search50M100M,
-                          '50M-100M',
-                          _selectedPriceLabel == '50M-100M'
-                        ),
-                        (
-                          l10n.search100MPlus,
-                          '100M+',
-                          _selectedPriceLabel == '100M+'
-                        ),
-                      ],
-                      onSelected: (v) =>
-                          setModalState(() => _setPriceFilter(v as String?)),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Sort By
-                    Text(
-                      l10n.searchSortBy,
-                      style: AppTextStyles.bodyLarge
-                          .copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 10),
-                    _modalChipRow(
-                      options: [
-                        (
-                          l10n.searchSortNewest,
-                          'newest',
-                          _selectedSort == 'newest'
-                        ),
-                        (
-                          l10n.searchSortOldest,
-                          'oldest',
-                          _selectedSort == 'oldest'
-                        ),
-                        (
-                          l10n.searchSortPriceLow,
-                          'price_low',
-                          _selectedSort == 'price_low'
-                        ),
-                        (
-                          l10n.searchSortPriceHigh,
-                          'price_high',
-                          _selectedSort == 'price_high'
-                        ),
-                      ],
-                      onSelected: (v) =>
-                          setModalState(() => _selectedSort = v as String),
-                    ),
-                    const SizedBox(height: 24),
-
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          _performSearch();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent500,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4)),
-                        ),
-                        child: Text(
-                          l10n.searchApplyFilters,
-                          style: AppTextStyles.bodyLargePlus
-                              .copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _modalChipRow({
-    required List<(String, dynamic, bool)> options,
-    required void Function(dynamic) onSelected,
-  }) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: options.map((chip) {
-        final (label, value, isSelected) = chip;
-        return GestureDetector(
-          onTap: () => onSelected(value),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.accent500.withValues(alpha: 0.12)
-                  : context.cardBg,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: isSelected
-                    ? AppColors.accent500.withValues(alpha: 0.4)
-                    : context.divider.withValues(alpha: 0.5),
-              ),
-            ),
-            child: Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? AppColors.accent500 : context.textSecondary,
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  void _setPriceFilter(String? label) {
-    _selectedPriceLabel = label;
-    switch (label) {
-      case 'Under 5M':
-        _selectedPriceMin = 0;
-        _selectedPriceMax = 5000000;
-        break;
-      case '5M-10M':
-        _selectedPriceMin = 5000000;
-        _selectedPriceMax = 10000000;
-        break;
-      case '10M-50M':
-        _selectedPriceMin = 10000000;
-        _selectedPriceMax = 50000000;
-        break;
-      case '50M-100M':
-        _selectedPriceMin = 50000000;
-        _selectedPriceMax = 100000000;
-        break;
-      case '100M+':
-        _selectedPriceMin = 100000000;
-        _selectedPriceMax = null;
-        break;
-      default:
-        _selectedPriceMin = null;
-        _selectedPriceMax = null;
+  void _clearAllFilters() {
+    _searchController.clear();
+    setState(() {
+      _filterValues = UnifiedFilterValues(category: _selectedCategory);
+      _hasSearched = false;
+    });
+    if (_selectedCategory == HomeCategory.vehicles) {
+      ref.read(carListingsProvider.notifier).loadListings();
+    } else {
+      ref.invalidate(searchResultsProvider);
     }
   }
+
+  void _removeFilterAndCheck(VoidCallback onRemove) {
+    onRemove();
+    if (_filterValues.hasAnyFilter) {
+      _performSearch();
+    } else if (_hasSearched) {
+      setState(() => _hasSearched = false);
+      if (_selectedCategory == HomeCategory.vehicles) {
+        ref.read(carListingsProvider.notifier).loadListings();
+      } else {
+        ref.invalidate(searchResultsProvider);
+      }
+    }
+  }
+
+  bool get _hasActiveFilters =>
+      _filterValues.hasAnyFilter ||
+      _searchController.text.isNotEmpty;
+
+
 
   bool _isFavorite(int listingId) {
     final favState = ref.watch(favoritesProvider);
@@ -803,11 +494,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final featuredState = ref.watch(featuredListingsProvider);
     final vipState = ref.watch(vipListingsProvider);
     final listingsState = ref.watch(listingsProvider);
-    final searchState = ref.watch(searchResultsProvider);
     final l10n = AppLocalizations.of(context);
     ref.watch(favoritesProvider);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final searchState = _selectedCategory == HomeCategory.vehicles && _hasSearched
+        ? ref.watch(carListingsProvider)
+        : ref.watch(searchResultsProvider);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
@@ -895,6 +588,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildActiveFilterChips(AppLocalizations l10n) {
+    final v = _filterValues;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: context.cardBg,
@@ -902,46 +596,129 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            if (_selectedType != null)
+            if (_selectedCategory == HomeCategory.property) ...[
+              if (v.propertyType != null)
+                _filterChip(
+                  v.propertyType == 'house' ? l10n.listingHouse : l10n.listingLand,
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = UnifiedFilterValues(
+                      category: _selectedCategory,
+                      priceMin: v.priceMin,
+                      priceMax: v.priceMax,
+                      sort: v.sort,
+                      location: v.location,
+                      listingType: v.listingType,
+                      isFeatured: v.isFeatured,
+                    );
+                  })),
+                ),
+              if (v.listingType != null)
+                _filterChip(
+                  v.listingType == 'sale' ? l10n.listingForSale : l10n.listingForRent,
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = UnifiedFilterValues(
+                      category: _selectedCategory,
+                      priceMin: v.priceMin,
+                      priceMax: v.priceMax,
+                      sort: v.sort,
+                      location: v.location,
+                      propertyType: v.propertyType,
+                      isFeatured: v.isFeatured,
+                    );
+                  })),
+                ),
+              if (v.isFeatured)
+                _filterChip(
+                  l10n.listingsFeatured,
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = UnifiedFilterValues(
+                      category: _selectedCategory,
+                      priceMin: v.priceMin,
+                      priceMax: v.priceMax,
+                      sort: v.sort,
+                      location: v.location,
+                      propertyType: v.propertyType,
+                      listingType: v.listingType,
+                    );
+                  })),
+                ),
+            ] else ...[
+              if (v.make != null)
+                _filterChip('${l10n.listingMake}: ${v.make}',
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = v.clearField('make');
+                  })),
+                ),
+              if (v.model != null)
+                _filterChip('${l10n.listingModel}: ${v.model}',
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = v.clearField('model');
+                  })),
+                ),
+              if (v.yearMin != null || v.yearMax != null)
+                _filterChip('${l10n.listingYear}: ${v.yearMin ?? ''}-${v.yearMax ?? ''}',
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = v.clearField('year_min');
+                  })),
+                ),
+              if (v.transmission != null)
+                _filterChip(v.transmission!,
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = v.clearField('transmission');
+                  })),
+                ),
+              if (v.fuelType != null)
+                _filterChip(v.fuelType!,
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = v.clearField('fuel_type');
+                  })),
+                ),
+              if (v.bodyType != null)
+                _filterChip(v.bodyType!,
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = v.clearField('body_type');
+                  })),
+                ),
+              if (v.mileageMax != null)
+                _filterChip('${l10n.listingMileageMax}: ${v.mileageMax}',
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = v.clearField('mileage_max');
+                  })),
+                ),
+            ],
+            if (v.priceMin != null || v.priceMax != null)
               _filterChip(
-                _selectedType == 'house'
-                    ? l10n.listingHouse
-                    : _selectedType == 'land'
-                        ? l10n.listingLand
-                        : l10n.listingCar,
-                () => _removeFilterAndCheck(
-                    () => setState(() => _selectedType = null)),
-              ),
-            if (_selectedListingType != null)
-              _filterChip(
-                _selectedListingType == 'sale'
-                    ? l10n.listingForSale
-                    : l10n.listingForRent,
-                () => _removeFilterAndCheck(
-                    () => setState(() => _selectedListingType = null)),
-              ),
-            if (_selectedPriceLabel != null)
-              _filterChip(
-                _getLocalizedPriceLabel(_selectedPriceLabel!, l10n),
+                v.priceMin != null && v.priceMax != null
+                    ? 'ETB ${v.priceMin} - ETB ${v.priceMax}'
+                    : v.priceMin != null
+                        ? 'ETB ${v.priceMin}+'
+                        : 'Up to ETB ${v.priceMax}',
                 () => _removeFilterAndCheck(() => setState(() {
-                      _selectedPriceLabel = null;
-                      _selectedPriceMin = null;
-                      _selectedPriceMax = null;
-                    })),
+                  _filterValues = UnifiedFilterValues(
+                    category: _selectedCategory,
+                    sort: v.sort,
+                    location: v.location,
+                    propertyType: v.propertyType,
+                    listingType: v.listingType,
+                    isFeatured: v.isFeatured,
+                    make: v.make,
+                    model: v.model,
+                    yearMin: v.yearMin,
+                    yearMax: v.yearMax,
+                    mileageMax: v.mileageMax,
+                    transmission: v.transmission,
+                    fuelType: v.fuelType,
+                    bodyType: v.bodyType,
+                  );
+                })),
               ),
             if (_searchController.text.isNotEmpty)
               _filterChip(
-                '${l10n.searchPlaceholder.split('...').first}: ${_searchController.text}',
+                _searchController.text,
                 () {
                   _searchController.clear();
                   _removeFilterAndCheck(() {});
                 },
-              ),
-            if (_isFeaturedFilter)
-              _filterChip(
-                l10n.listingsFeatured,
-                () => _removeFilterAndCheck(
-                    () => setState(() => _isFeaturedFilter = false)),
               ),
             const SizedBox(width: 8),
             GestureDetector(
@@ -974,23 +751,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       ),
     );
-  }
-
-  String _getLocalizedPriceLabel(String label, AppLocalizations l10n) {
-    switch (label) {
-      case 'Under 5M':
-        return l10n.searchUnder5M;
-      case '5M-10M':
-        return l10n.search5M10M;
-      case '10M-50M':
-        return l10n.search10M50M;
-      case '50M-100M':
-        return l10n.search50M100M;
-      case '100M+':
-        return l10n.search100MPlus;
-      default:
-        return label;
-    }
   }
 
   Widget _filterChip(String label, VoidCallback onRemove) {
@@ -1048,6 +808,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       );
     }
 
+    final isVehicle = _selectedCategory == HomeCategory.vehicles;
+
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
       sliver: SliverList(
@@ -1063,13 +825,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             final fav = _isFavorite(listing.id);
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: PropertyListingCard(
-                listing: listing,
-                isFavorite: fav,
-                isTogglingFavorite: _isToggling(listing.id),
-                onFavorite: () => _toggleFavorite(listing.id),
-                onTap: () => _handleListingTap(listing),
-              ),
+              child: isVehicle
+                  ? VehicleListingCard(
+                      listing: listing,
+                      isFavorite: fav,
+                      isTogglingFavorite: _isToggling(listing.id),
+                      onFavorite: () => _toggleFavorite(listing.id),
+                      onTap: () => context.push('/cars/${listing.id}'),
+                    )
+                  : PropertyListingCard(
+                      listing: listing,
+                      isFavorite: fav,
+                      isTogglingFavorite: _isToggling(listing.id),
+                      onFavorite: () => _toggleFavorite(listing.id),
+                      onTap: () => _handleListingTap(listing),
+                    ),
             );
           },
           childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
@@ -1079,14 +849,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildSkeletonResults(int count) {
+    final isVehicle = _selectedCategory == HomeCategory.vehicles;
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            return const Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: PropertyListingCard(isLoading: true),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: isVehicle
+                  ? const VehicleListingCard(isLoading: true)
+                  : const PropertyListingCard(isLoading: true),
             );
           },
           childCount: count,

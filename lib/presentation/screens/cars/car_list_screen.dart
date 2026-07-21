@@ -6,10 +6,11 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../l10n/app_localizations.dart';
+import '../home/home_screen.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/listing_providers.dart';
 import '../../widgets/vehicle_listing_card.dart';
-import 'car_filter_sheet.dart';
+import '../home/filter_sheet.dart';
 import 'car_strings.dart';
 
 class CarListScreen extends ConsumerStatefulWidget {
@@ -23,7 +24,7 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
-  CarFilterValues _filterValues = const CarFilterValues();
+  UnifiedFilterValues _filterValues = const UnifiedFilterValues(category: HomeCategory.vehicles);
   Map<String, dynamic> _activeFilters = {};
   final Set<int> _togglingFavorites = {};
 
@@ -70,14 +71,17 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
   }
 
   void _showFilterSheet() async {
-    final result = await showModalBottomSheet<CarFilterValues>(
+    final result = await showModalBottomSheet<UnifiedFilterValues>(
       context: context,
       backgroundColor: context.sheetBg,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
       ),
       isScrollControlled: true,
-      builder: (_) => CarFilterSheet(initialValues: _filterValues),
+      builder: (_) => FilterSheet(
+        initialValues: _filterValues,
+        showCategoryToggle: false,
+      ),
     );
     if (result != null) {
       setState(() => _filterValues = result);
@@ -98,7 +102,7 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
   void _clearAllFilters() {
     _searchController.clear();
     setState(() {
-      _filterValues = const CarFilterValues();
+      _filterValues = const UnifiedFilterValues(category: HomeCategory.vehicles);
       _activeFilters = {};
     });
     ref.read(carListingsProvider.notifier).loadListings();
