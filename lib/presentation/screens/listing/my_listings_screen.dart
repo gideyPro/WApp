@@ -416,6 +416,45 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
                 ? VehicleListingCard(
                     listing: listing,
                     onTap: () => context.push('/cars/${listing.id}'),
+                    imageOverlayActions: [
+                      if (isEditing)
+                        const Padding(
+                          padding: EdgeInsets.all(6),
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        _buildOwnerActionIcon(
+                          icon: Icons.edit_outlined,
+                          tooltip: AppLocalizations.of(context).commonEdit,
+                          onTap: () => _editListing(listing),
+                        ),
+                      const SizedBox(width: 4),
+                      _buildOwnerActionIcon(
+                        icon: Icons.delete_outline,
+                        tooltip: AppLocalizations.of(context).commonDelete,
+                        color: AppColors.error,
+                        onTap: isEditing ? null : () => _deleteListing(listing),
+                      ),
+                      if (!listing.isFeaturedActive)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: _buildOwnerActionIcon(
+                            icon: canFeature ? Icons.workspace_premium_outlined : Icons.lock_outline,
+                            tooltip: canFeature ? 'Feature' : 'Upgrade to Feature',
+                            color: canFeature ? AppColors.accent500 : AppColors.stone400,
+                            onTap: isEditing ? null : () => _featureListing(listing),
+                          ),
+                        ),
+                    ],
                   )
                 : PropertyListingCard(
                     listing: listing,

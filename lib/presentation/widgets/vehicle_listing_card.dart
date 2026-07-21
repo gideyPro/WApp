@@ -19,6 +19,7 @@ class VehicleListingCard extends ConsumerWidget {
   final VoidCallback? onFavorite;
   final bool isTogglingFavorite;
   final bool isLoading;
+  final List<Widget>? imageOverlayActions;
 
   const VehicleListingCard({
     super.key,
@@ -28,6 +29,7 @@ class VehicleListingCard extends ConsumerWidget {
     this.onFavorite,
     this.isTogglingFavorite = false,
     this.isLoading = false,
+    this.imageOverlayActions,
   });
 
   void _handleTap() {
@@ -135,14 +137,24 @@ class VehicleListingCard extends ConsumerWidget {
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
-                      : Icon(
-                          isFavorite ? Icons.favorite : Icons.favorite_border,
-                          size: 14,
-                          color: Colors.white,
-                        ),
+                        : Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            size: 14,
+                            color: Colors.white,
+                          ),
+                  ),
                 ),
               ),
+        // Owner Actions overlay
+        if (imageOverlayActions != null)
+          Positioned(
+            bottom: 8,
+            right: 8,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: imageOverlayActions!,
             ),
+          ),
           ],
         ),
       ),

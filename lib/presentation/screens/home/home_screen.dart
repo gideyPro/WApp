@@ -967,8 +967,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       );
     }
 
+    final teaserVisible = !canViewVip && !subState.isLoading && subState.errorMessage == null;
+
     return SizedBox(
-      height: 180,
+      height: teaserVisible ? 228 : 180,
       child: Column(
         children: [
           Expanded(
@@ -996,8 +998,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
           ),
           // Inline VIP teaser for non-subscribers
-          if (!canViewVip && !subState.isLoading && subState.errorMessage == null)
-            _buildVipTeaser(),
+          if (teaserVisible) _buildVipTeaser(),
         ],
       ),
     );
