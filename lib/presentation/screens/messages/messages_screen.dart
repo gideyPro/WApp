@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/theme/theme_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -260,7 +261,7 @@ class _ConversationTile extends ConsumerWidget {
                 height: 50,
               decoration: BoxDecoration(
                 image: avatarUrl != null
-                    ? DecorationImage(image: NetworkImage(avatarUrl), fit: BoxFit.cover)
+                    ? DecorationImage(image: CachedNetworkImageProvider(avatarUrl), fit: BoxFit.cover)
                     : null,
                 gradient: avatarUrl != null
                     ? null
@@ -1036,7 +1037,7 @@ class _MessageBubble extends ConsumerWidget {
               height: 32,
               decoration: BoxDecoration(
                 image: avatarUrl != null
-                    ? DecorationImage(image: NetworkImage(avatarUrl), fit: BoxFit.cover)
+                    ? DecorationImage(image: CachedNetworkImageProvider(avatarUrl), fit: BoxFit.cover)
                     : null,
                 gradient: avatarUrl != null
                     ? null
@@ -1155,7 +1156,7 @@ class _MessageBubble extends ConsumerWidget {
               height: 32,
               decoration: BoxDecoration(
                 image: myAvatarUrl != null
-                    ? DecorationImage(image: NetworkImage(myAvatarUrl), fit: BoxFit.cover)
+                    ? DecorationImage(image: CachedNetworkImageProvider(myAvatarUrl), fit: BoxFit.cover)
                     : null,
                 gradient: myAvatarUrl != null
                     ? null

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -182,7 +183,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                                       shape: BoxShape.circle,
                                       image: avatarUrl != null
                                           ? DecorationImage(
-                                              image: NetworkImage(avatarUrl),
+                                              image: CachedNetworkImageProvider(avatarUrl),
                                               fit: BoxFit.cover,
                                             )
                                           : null,

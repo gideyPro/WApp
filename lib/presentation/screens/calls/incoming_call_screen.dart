@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
@@ -231,7 +232,7 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         image: avatarUrl != null
-            ? DecorationImage(image: NetworkImage(avatarUrl), fit: BoxFit.cover)
+            ? DecorationImage(image: CachedNetworkImageProvider(avatarUrl), fit: BoxFit.cover)
             : null,
         color: avatarUrl != null ? null : AppColors.accent600,
         boxShadow: [
