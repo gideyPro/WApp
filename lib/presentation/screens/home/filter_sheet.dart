@@ -46,6 +46,11 @@ class UnifiedFilterValues {
   });
 
   bool get hasAnyFilter {
+    if (category == HomeCategory.all) {
+      return priceMin != null ||
+          priceMax != null ||
+          (location != null && location!.isNotEmpty);
+    }
     if (category == HomeCategory.vehicles) {
       return make != null ||
           model != null ||
@@ -68,6 +73,15 @@ class UnifiedFilterValues {
   }
 
   UnifiedFilterValues clearField(String key) {
+    if (category == HomeCategory.all) {
+      return UnifiedFilterValues(
+        category: category,
+        priceMin: key == 'price_min' ? null : priceMin,
+        priceMax: key == 'price_max' ? null : priceMax,
+        sort: sort,
+        location: key == 'location' ? null : location,
+      );
+    }
     if (category == HomeCategory.vehicles) {
       return UnifiedFilterValues(
         category: category,
@@ -127,7 +141,7 @@ class UnifiedFilterValues {
       if (transmission != null) params['transmission'] = transmission;
       if (fuelType != null) params['fuel_type'] = fuelType;
       if (bodyType != null) params['body_type'] = bodyType;
-    } else {
+    } else if (category == HomeCategory.property) {
       if (propertyType != null) params['type'] = propertyType;
       if (listingType != null) params['listing_type'] = listingType;
       if (isFeatured) params['is_featured'] = true;
@@ -318,9 +332,23 @@ class _FilterSheetState extends State<FilterSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(l10n.searchFilters, style: AppTextStyles.title.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
-                  TextButton(
-                    onPressed: _reset,
-                    child: Text(l10n.searchReset, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500)),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: _reset,
+                        child: Text(l10n.searchReset, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary500)),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: _apply,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.accent500,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        ),
+                        child: Text(l10n.searchApplyFilters, style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w700)),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -338,22 +366,12 @@ class _FilterSheetState extends State<FilterSheet> {
               ),
               const SizedBox(height: 16),
 
-              if (_category == HomeCategory.property) ..._buildPropertySections(l10n)
+              if (_category == HomeCategory.all) ...[
+                _buildPriceSection(l10n),
+                _buildSortSection(l10n, isVehicle: false),
+              ] else if (_category == HomeCategory.property) ..._buildPropertySections(l10n)
               else ..._buildVehicleSections(l10n),
 
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _apply,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accent500,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
-                  child: Text(l10n.searchApplyFilters, style: AppTextStyles.bodyLargePlus.copyWith(fontWeight: FontWeight.w600)),
-                ),
-              ),
               const SizedBox(height: 8),
             ],
           ),
@@ -367,6 +385,7 @@ class _FilterSheetState extends State<FilterSheet> {
       children: [
         SegmentedButton<HomeCategory>(
           segments: const [
+            ButtonSegment(value: HomeCategory.all, label: Text('All'), icon: Icon(Icons.apps_rounded, size: 16)),
             ButtonSegment(value: HomeCategory.property, label: Text('Property'), icon: Icon(Icons.home_rounded, size: 16)),
             ButtonSegment(value: HomeCategory.vehicles, label: Text('Vehicles'), icon: Icon(Icons.directions_car_rounded, size: 16)),
           ],

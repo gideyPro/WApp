@@ -17,11 +17,12 @@ import '../../widgets/vehicle_listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import 'filter_sheet.dart';
 
-enum HomeCategory { property, vehicles }
+enum HomeCategory { all, property, vehicles }
 
 extension HomeCategoryX on HomeCategory {
   String label(AppLocalizations l10n) {
     switch (this) {
+      case HomeCategory.all: return l10n.searchFilterAll;
       case HomeCategory.property: return l10n.listingSummaryProperty;
       case HomeCategory.vehicles: return l10n.listingCarPlural;
     }
@@ -29,6 +30,7 @@ extension HomeCategoryX on HomeCategory {
 
   IconData get icon {
     switch (this) {
+      case HomeCategory.all: return Icons.apps_rounded;
       case HomeCategory.property: return Icons.home_rounded;
       case HomeCategory.vehicles: return Icons.directions_car_rounded;
     }
@@ -144,7 +146,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (ref.read(subscriptionProvider).canViewVip) {
       futures.add(ref.read(vipListingsProvider.notifier).loadVipListings());
     }
-    if (_selectedCategory == HomeCategory.vehicles) {
+    if (_selectedCategory == HomeCategory.vehicles || _selectedCategory == HomeCategory.all) {
       futures.add(ref.read(carListingsProvider.notifier).loadListings());
     }
     await Future.wait(futures);
@@ -159,10 +161,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       _filterValues = UnifiedFilterValues(category: category);
     });
     ref.invalidate(searchResultsProvider);
-    if (category == HomeCategory.vehicles) {
-      final notifier = ref.read(carListingsProvider.notifier);
-      notifier.reset();
-      notifier.loadListings();
+    if (category == HomeCategory.vehicles || category == HomeCategory.all) {
+      ref.read(carListingsProvider.notifier).loadListings();
     }
   }
 
@@ -241,7 +241,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildCarListings() {
+  Widget _buildCarListings({bool multiSection = false}) {
     final state = ref.watch(carListingsProvider);
     final l10n = AppLocalizations.of(context);
     final header = _buildSectionHeader(
@@ -263,6 +263,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     if (state.errorMessage != null && state.listings.isEmpty) {
+      if (multiSection) return const SliverToBoxAdapter(child: SizedBox.shrink());
       return SliverFillRemaining(
         child: Column(
           children: [
@@ -282,6 +283,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     if (state.listings.isEmpty) {
+      if (multiSection) return const SliverToBoxAdapter(child: SizedBox.shrink());
       return SliverFillRemaining(
         child: Column(
           children: [
@@ -352,18 +354,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         }
       }
     } else {
-      if (_selectedCategory == HomeCategory.vehicles) {
-        final state = ref.read(carListingsProvider);
-        if (!state.isLoading && !state.isLoadingMore && state.hasMore) {
+      if (_selectedCategory == HomeCategory.vehicles || _selectedCategory == HomeCategory.all) {
+        final carState = ref.read(carListingsProvider);
+        if (!carState.isLoading && !carState.isLoadingMore && carState.hasMore) {
           ref.read(carListingsProvider.notifier).loadListings(
-            page: state.currentPage + 1,
+            page: carState.currentPage + 1,
           );
         }
-      } else {
-        final state = ref.read(listingsProvider);
-        if (!state.isLoading && !state.isLoadingMore && state.hasMore) {
+      }
+      if (_selectedCategory != HomeCategory.vehicles) {
+        final propState = ref.read(listingsProvider);
+        if (!propState.isLoading && !propState.isLoadingMore && propState.hasMore) {
           ref.read(listingsProvider.notifier).loadListings(
-            page: state.currentPage + 1,
+            page: propState.currentPage + 1,
           );
         }
       }
@@ -501,6 +504,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final searchState = _selectedCategory == HomeCategory.vehicles && _hasSearched
         ? ref.watch(carListingsProvider)
         : ref.watch(searchResultsProvider);
+    final canBrowseAll = _selectedCategory == HomeCategory.all && !_hasSearched;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
@@ -560,7 +564,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ),
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
-                else if (_selectedCategory == HomeCategory.vehicles)
+                else if (canBrowseAll) ...[
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSectionHeader(l10n.listingsFeatured),
+                        _buildFeaturedListings(featuredState, vipState),
+                        _buildSectionHeader(l10n.listingsTitle,
+                            eyebrow: l10n.homeLatestRecently.toUpperCase()),
+                      ],
+                    ),
+                  ),
+                  _buildLatestListings(listingsState),
+                  _buildCarListings(multiSection: true),
+                ] else if (_selectedCategory == HomeCategory.vehicles)
                   _buildCarListings()
                 else ...[
                   SliverToBoxAdapter(
@@ -596,7 +614,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            if (_selectedCategory == HomeCategory.property) ...[
+            if (_selectedCategory == HomeCategory.property || _selectedCategory == HomeCategory.all) ...[
               if (v.propertyType != null)
                 _filterChip(
                   v.propertyType == 'house' ? l10n.listingHouse : l10n.listingLand,
@@ -642,7 +660,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     );
                   })),
                 ),
-            ] else ...[
+            ],
+            if (_selectedCategory == HomeCategory.vehicles || _selectedCategory == HomeCategory.all) ...[
               if (v.make != null)
                 _filterChip('${l10n.listingMake}: ${v.make}',
                   () => _removeFilterAndCheck(() => setState(() {
@@ -808,8 +827,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       );
     }
 
-    final isVehicle = _selectedCategory == HomeCategory.vehicles;
-
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
       sliver: SliverList(
@@ -823,6 +840,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             }
             final listing = state.listings[index];
             final fav = _isFavorite(listing.id);
+            final isVehicle = listing.propertyType == PropertyType.car;
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: isVehicle
