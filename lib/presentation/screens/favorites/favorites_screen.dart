@@ -5,7 +5,9 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../providers/app_providers.dart';
+import '../../../data/models/listing.dart';
 import '../../widgets/listing_card.dart';
+import '../../widgets/vehicle_listing_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -44,7 +46,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
 
   void _handleListingTap(dynamic listing) {
-    context.push('/listings/${listing.id}');
+    if (listing.propertyType == PropertyType.car) {
+      context.push('/cars/${listing.id}');
+    } else {
+      context.push('/listings/${listing.id}');
+    }
   }
 
   @override
@@ -126,11 +132,16 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           padding: const EdgeInsets.only(bottom: 16),
           child: Stack(
             children: [
-              PropertyListingCard(
-                listing: listing,
-                hideFavoriteButton: true,
-                onTap: () => _handleListingTap(listing),
-              ),
+              listing.propertyType == PropertyType.car
+                  ? VehicleListingCard(
+                      listing: listing,
+                      onTap: () => _handleListingTap(listing),
+                    )
+                  : PropertyListingCard(
+                      listing: listing,
+                      hideFavoriteButton: true,
+                      onTap: () => _handleListingTap(listing),
+                    ),
               // X remove button on top-right of card
               Positioned(
                 top: 12,
