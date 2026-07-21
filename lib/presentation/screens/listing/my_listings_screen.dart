@@ -11,6 +11,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/car_providers.dart';
 
 class _TabState {
   List<Listing> listings = [];
@@ -165,7 +166,12 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
 
   Future<void> _editListing(Listing listing) async {
     setState(() => _editingListingId = listing.id);
-    final detail = await ref.read(listingServiceProvider).getListingDetail(listing.id);
+    final isCar = listing.propertyType == PropertyType.car;
+
+    final detail = isCar
+        ? await ref.read(carServiceProvider).getListingDetail(listing.id)
+        : await ref.read(listingServiceProvider).getListingDetail(listing.id);
+
     if (!mounted) return;
     setState(() => _editingListingId = null);
     if (!detail.success || detail.listing == null) {
@@ -173,7 +179,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
       return;
     }
     final result = await context.push<bool>(
-      '/listings/${detail.listing!.id}/edit',
+      isCar ? '/cars/${detail.listing!.id}/edit' : '/listings/${detail.listing!.id}/edit',
       extra: detail.listing,
     );
     if (result == true && mounted) _loadTab(_currentTab);
@@ -201,7 +207,10 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     );
     if (confirmed != true) return;
     try {
-      final result = await ref.read(listingServiceProvider).deleteListing(listing.id);
+      final dynamic svc = listing.propertyType == PropertyType.car
+          ? ref.read(carServiceProvider)
+          : ref.read(listingServiceProvider);
+      final result = await svc.deleteListing(listing.id);
       if (result.success && mounted) _loadTab(_currentTab);
     } catch (e) {
       if (mounted) {
@@ -237,7 +246,10 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     );
     if (confirmed != true) return;
     try {
-      final result = await ref.read(listingServiceProvider).featureListing(listing.id);
+      final dynamic svc = listing.propertyType == PropertyType.car
+          ? ref.read(carServiceProvider)
+          : ref.read(listingServiceProvider);
+      final result = await svc.featureListing(listing.id);
       if (result.success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.message), backgroundColor: AppColors.success));
         _loadTab(_currentTab);
