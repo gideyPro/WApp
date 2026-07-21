@@ -56,7 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   UnifiedFilterValues _filterValues = const UnifiedFilterValues();
   bool _hasSearched = false;
   bool _isAutoRefreshing = false;
-  HomeCategory _selectedCategory = HomeCategory.property;
+  HomeCategory _selectedCategory = HomeCategory.all;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
