@@ -47,31 +47,33 @@ class VehicleListingCard extends ConsumerWidget {
       borderRadius: 4,
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(flex: 2, child: _buildImageSection(context)),
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: AppSpacing.paddingLg,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildBadgesRow(context),
-                  const SizedBox(height: 10),
-                  _buildPrice(context),
-                  const SizedBox(height: 4),
-                  _buildTitle(context),
-                  const SizedBox(height: 8),
-                  _buildVehicleSpecs(context),
-                  const SizedBox(height: 6),
-                  _buildLocation(context, ref),
-                ],
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(flex: 2, child: _buildImageSection(context)),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: AppSpacing.paddingLg,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildBadgesRow(context),
+                    const SizedBox(height: 10),
+                    _buildPrice(context),
+                    const SizedBox(height: 4),
+                    _buildTitle(context),
+                    const SizedBox(height: 8),
+                    _buildVehicleSpecs(context),
+                    const SizedBox(height: 6),
+                    _buildLocation(context, ref),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -319,56 +321,58 @@ class VehicleListingCard extends ConsumerWidget {
       child: Shimmer.fromColors(
         baseColor: context.shimmerBase,
         highlightColor: context.shimmerHighlight,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              flex: 2,
-              child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.horizontal(left: Radius.circular(4)),
-                child: SizedBox(
-                  width: 130,
-                  height: 180,
-                    child: Container(
-                      color: context.shimmerBase,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 2,
+                child: ClipRRect(
+                  borderRadius:
+                      const BorderRadius.horizontal(left: Radius.circular(4)),
+                  child: SizedBox(
+                    width: 130,
+                    height: 180,
+                      child: Container(
+                        color: context.shimmerBase,
+                      ),
                     ),
-                  ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: AppSpacing.paddingLg,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        _skeletonBlock(context, 60, 18),
-                        const SizedBox(width: 6),
-                        _skeletonBlock(context, 50, 18),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    _skeletonBlock(context, 100, 18),
-                    const SizedBox(height: 4),
-                    _skeletonBlock(context, 120, 12),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        _skeletonBlock(context, 55, 16),
-                        const SizedBox(width: 6),
-                        _skeletonBlock(context, 50, 16),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    _skeletonBlock(context, 100, 12),
-                  ],
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: AppSpacing.paddingLg,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          _skeletonBlock(context, 60, 18),
+                          const SizedBox(width: 6),
+                          _skeletonBlock(context, 50, 18),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      _skeletonBlock(context, 100, 18),
+                      const SizedBox(height: 4),
+                      _skeletonBlock(context, 120, 12),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          _skeletonBlock(context, 55, 16),
+                          const SizedBox(width: 6),
+                          _skeletonBlock(context, 50, 16),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      _skeletonBlock(context, 100, 12),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
