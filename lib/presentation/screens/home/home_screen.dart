@@ -241,7 +241,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildCarListings({bool multiSection = false}) {
+  Widget _buildCarListings() {
     final state = ref.watch(carListingsProvider);
     final l10n = AppLocalizations.of(context);
     final header = _buildSectionHeader(
@@ -263,7 +263,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     if (state.errorMessage != null && state.listings.isEmpty) {
-      if (multiSection) return const SliverToBoxAdapter(child: SizedBox.shrink());
       return SliverFillRemaining(
         child: Column(
           children: [
@@ -283,7 +282,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     if (state.listings.isEmpty) {
-      if (multiSection) return const SliverToBoxAdapter(child: SizedBox.shrink());
       return SliverFillRemaining(
         child: Column(
           children: [
@@ -501,8 +499,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ref.watch(favoritesProvider);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final carState = ref.watch(carListingsProvider);
     final searchState = _selectedCategory == HomeCategory.vehicles && _hasSearched
-        ? ref.watch(carListingsProvider)
+        ? carState
         : ref.watch(searchResultsProvider);
     final canBrowseAll = _selectedCategory == HomeCategory.all && !_hasSearched;
 
@@ -564,21 +563,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ),
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
-                else if (canBrowseAll) ...[
-                  SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildSectionHeader(l10n.listingsFeatured),
-                        _buildFeaturedListings(featuredState, vipState),
-                        _buildSectionHeader(l10n.listingsTitle,
-                            eyebrow: l10n.homeLatestRecently.toUpperCase()),
-                      ],
-                    ),
-                  ),
-                  _buildLatestListings(listingsState),
-                  _buildCarListings(multiSection: true),
-                ] else if (_selectedCategory == HomeCategory.vehicles)
+                else if (canBrowseAll)
+                  _buildAllListings(featuredState, vipState, listingsState, carState, l10n)
+                else if (_selectedCategory == HomeCategory.vehicles)
                   _buildCarListings()
                 else ...[
                   SliverToBoxAdapter(
@@ -1000,6 +987,106 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           // Inline VIP teaser for non-subscribers
           if (teaserVisible) _buildVipTeaser(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAllListings(
+    ListingsState featuredState,
+    ListingsState vipState,
+    ListingsState propState,
+    ListingsState carState,
+    AppLocalizations l10n,
+  ) {
+    final isLoading = (propState.isLoading || carState.isLoading) &&
+        propState.listings.isEmpty && carState.listings.isEmpty;
+
+    if (isLoading) {
+      return SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+        sliver: SliverList(
+          delegate: SliverChildListDelegate([
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: _buildSectionHeader(l10n.listingsTitle,
+                  eyebrow: l10n.homeLatestRecently.toUpperCase()),
+            ),
+            for (int i = 0; i < 3; i++)
+              const PropertyListingCard(isLoading: true),
+          ]),
+        ),
+      );
+    }
+
+    final errorState = !propState.isLoading && propState.errorMessage != null && propState.listings.isEmpty
+        || !carState.isLoading && carState.errorMessage != null && carState.listings.isEmpty;
+    if (errorState) {
+      return SliverFillRemaining(child: Center(child: _buildPullToRefreshHint()));
+    }
+
+    // Merge and sort by createdAt descending
+    final allListings = <Listing>[
+      ...propState.listings,
+      ...carState.listings,
+    ]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    if (allListings.isEmpty) {
+      return SliverFillRemaining(
+        child: WaveEmptyState(
+          icon: Icons.search_off_rounded,
+          title: l10n.listingsNoResults,
+          subtitle: l10n.searchNoResultsSubtitle,
+        ),
+      );
+    }
+
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            if (index == 0) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionHeader(l10n.listingsFeatured),
+                  _buildFeaturedListings(featuredState, vipState),
+                  _buildSectionHeader(l10n.listingsTitle,
+                      eyebrow: l10n.homeLatestRecently.toUpperCase()),
+                ],
+              );
+            }
+            final i = index - 1;
+            if (i >= allListings.length) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            final listing = allListings[i];
+            final fav = _isFavorite(listing.id);
+            final isVehicle = listing.propertyType == PropertyType.car;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: isVehicle
+                  ? VehicleListingCard(
+                      listing: listing,
+                      isFavorite: fav,
+                      isTogglingFavorite: _isToggling(listing.id),
+                      onFavorite: () => _toggleFavorite(listing.id),
+                      onTap: () => context.push('/cars/${listing.id}'),
+                    )
+                  : PropertyListingCard(
+                      listing: listing,
+                      isFavorite: fav,
+                      isTogglingFavorite: _isToggling(listing.id),
+                      onFavorite: () => _toggleFavorite(listing.id),
+                      onTap: () => _handleListingTap(listing),
+                    ),
+            );
+          },
+          childCount: 1 + allListings.length + (propState.isLoadingMore || carState.isLoadingMore ? 1 : 0),
+        ),
       ),
     );
   }
