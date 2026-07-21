@@ -20,7 +20,7 @@ import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/app_providers.dart';
-import 'car_strings.dart';
+
 
 class CreateCarScreen extends ConsumerStatefulWidget {
   const CreateCarScreen({super.key});
@@ -35,6 +35,8 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   int _currentStep = 0;
   bool _isSubmitting = false;
   final Map<int, List<String>> _stepErrors = {};
+
+  AppLocalizations get l10n => AppLocalizations.of(context);
 
   bool _isCustomMake = false;
   bool _isCustomModel = false;
@@ -87,16 +89,16 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     final errors = <String>[];
     switch (_currentStep) {
       case 0:
-        if (_formData.make.isEmpty) errors.add('Make is required');
-        if (_formData.model.isEmpty) errors.add('Model is required');
-        if (_formData.year.isEmpty) errors.add('Year is required');
+        if (_formData.make.isEmpty) errors.add('${l10n.listingMake} ${l10n.commonIsRequired}');
+        if (_formData.model.isEmpty) errors.add('${l10n.listingModel} ${l10n.commonIsRequired}');
+        if (_formData.year.isEmpty) errors.add('${l10n.listingYear} ${l10n.commonIsRequired}');
         break;
       case 1:
-        if (!_formData.isForRent && _formData.priceFixed.isEmpty) errors.add('Price is required');
-        if (_formData.addressId == null) errors.add('Please select a location (Kebele)');
+        if (!_formData.isForRent && _formData.priceFixed.isEmpty) errors.add('${l10n.listingPriceEtb} ${l10n.commonIsRequired}');
+        if (_formData.addressId == null) errors.add(l10n.carLocationRequired);
         break;
       case 2:
-        if (!_formData.termsAccepted) errors.add('You must accept the terms');
+        if (!_formData.termsAccepted) errors.add(l10n.carTermsRequired);
         break;
     }
     return errors;
@@ -211,7 +213,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       if (await f.length() > 10 * 1024 * 1024) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('${f.name} exceeds 10MB limit'),
+            content: Text(l10n.carFileTooLarge(f.name)),
             backgroundColor: AppColors.error,
           ));
         }
@@ -239,7 +241,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     if (response.success && mounted) {
       await _cleanupImages();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(CarStrings.listingCreated)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.listingCreated)));
         context.pop();
       }
     } else if (mounted) {
@@ -306,7 +308,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       );
     }
 
-    final stepLabels = [CarStrings.listingDetail, CarStrings.listingPricing, CarStrings.listingDescription];
+    final stepLabels = [l10n.listingStepDetails, l10n.listingPricing, l10n.listingDescriptionLabel];
     return PopScope(
       canPop: true,
       child: Scaffold(
@@ -320,11 +322,11 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                   constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
                 )
               : null,
-          title: const Text(CarStrings.createListing),
+          title: Text(l10n.listingsCreate),
           actions: [
             TextButton(
               onPressed: _isSubmitting ? null : _nextStep,
-              child: Text(_currentStep == 2 ? 'Submit' : 'Next'),
+              child: Text(_currentStep == 2 ? l10n.listingSubmit : l10n.listingNext),
             ),
           ],
         ),
@@ -408,7 +410,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${CarStrings.listingMake} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+        Text('${l10n.listingMake} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
           initialValue: _isCustomMake ? null : (carModelsByMake.containsKey(_formData.make) ? _formData.make : null),
@@ -417,7 +419,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           dropdownColor: context.sheetBg,
           items: [
             ...makes.map((m) => DropdownMenuItem(value: m, child: Text(m))),
-            const DropdownMenuItem(value: '__other__', child: Text('Other')),
+            DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
           ],
           onChanged: (v) {
             if (v == '__other__') {
@@ -441,9 +443,9 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           TextFormField(
             autofocus: true,
             style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-            decoration: const InputDecoration(
-              hintText: 'Enter make name',
-              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: InputDecoration(
+              hintText: l10n.carEnterMakeName,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             ),
             onChanged: (v) => _formData = _formData.copyWith(make: v),
           ),
@@ -456,7 +458,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${CarStrings.listingModel} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+        Text('${l10n.listingModel} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
           initialValue: _isCustomModel ? null : (_availableModels.contains(_formData.model) ? _formData.model : null),
@@ -466,7 +468,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           items: [
             ..._availableModels.map((m) => DropdownMenuItem(value: m, child: Text(m))),
             if (_formData.make.isNotEmpty && !_isCustomMake)
-              const DropdownMenuItem(value: '__other__', child: Text('Other')),
+              DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
           ],
           onChanged: (v) {
             if (v == '__other__') {
@@ -488,9 +490,9 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           TextFormField(
             autofocus: true,
             style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-            decoration: const InputDecoration(
-              hintText: 'Enter model name',
-              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: InputDecoration(
+              hintText: l10n.carEnterModelName,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             ),
             onChanged: (v) => _formData = _formData.copyWith(model: v),
           ),
@@ -505,34 +507,34 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       child: Column(
         children: [
           _sectionCard(
-            title: CarStrings.listingDetail,
+            title: l10n.listingStepDetails,
             child: Column(
               children: [
                 _buildMakeDropdown(),
                 const SizedBox(height: 12),
                 _buildModelDropdown(),
                 const SizedBox(height: 12),
-                _buildCompactField(label: '${CarStrings.listingYear} *', value: _formData.year, onChanged: (v) => _formData = _formData.copyWith(year: v), keyboardType: TextInputType.number),
+                _buildCompactField(label: '${l10n.listingYear} *', value: _formData.year, onChanged: (v) => _formData = _formData.copyWith(year: v), keyboardType: TextInputType.number),
                 const SizedBox(height: 12),
-                _buildCompactDropdown(label: CarStrings.listingTransmission, value: _formData.transmission, options: carTransmissions, onChanged: (v) => _formData = _formData.copyWith(transmission: v)),
+                _buildCompactDropdown(label: l10n.listingTransmission, value: _formData.transmission, options: carTransmissions, onChanged: (v) => _formData = _formData.copyWith(transmission: v)),
                 const SizedBox(height: 8),
-                _buildCompactDropdown(label: CarStrings.listingBodyType, value: _formData.bodyType, options: carBodyTypes, onChanged: (v) => _formData = _formData.copyWith(bodyType: v)),
+                _buildCompactDropdown(label: l10n.listingBodyType, value: _formData.bodyType, options: carBodyTypes, onChanged: (v) => _formData = _formData.copyWith(bodyType: v)),
                 const SizedBox(height: 8),
-                _buildCompactDropdown(label: CarStrings.listingFuelType, value: _formData.fuelType, options: carFuelTypes, onChanged: (v) => _formData = _formData.copyWith(fuelType: v)),
+                _buildCompactDropdown(label: l10n.listingFuelType, value: _formData.fuelType, options: carFuelTypes, onChanged: (v) => _formData = _formData.copyWith(fuelType: v)),
                 const SizedBox(height: 12),
-                _buildCompactField(label: '${CarStrings.listingMileage} (km)', value: _formData.mileageKm, onChanged: (v) => _formData = _formData.copyWith(mileageKm: v), keyboardType: TextInputType.number),
+                _buildCompactField(label: '${l10n.listingMileage} (km)', value: _formData.mileageKm, onChanged: (v) => _formData = _formData.copyWith(mileageKm: v), keyboardType: TextInputType.number),
                 const SizedBox(height: 12),
-                _buildCompactField(label: '${CarStrings.listingEngineSize} (L)', value: _formData.engineSize, onChanged: (v) => _formData = _formData.copyWith(engineSize: v), keyboardType: TextInputType.number),
+                _buildCompactField(label: '${l10n.listingEngineSize} (L)', value: _formData.engineSize, onChanged: (v) => _formData = _formData.copyWith(engineSize: v), keyboardType: TextInputType.number),
                 const SizedBox(height: 12),
-                _buildCompactField(label: CarStrings.listingColor, value: _formData.color, onChanged: (v) => _formData = _formData.copyWith(color: v)),
+                _buildCompactField(label: l10n.listingColor, value: _formData.color, onChanged: (v) => _formData = _formData.copyWith(color: v)),
                 const SizedBox(height: 12),
-                _buildCompactDropdown(label: CarStrings.listingCondition, value: _formData.condition, options: carConditions, onChanged: (v) => _formData = _formData.copyWith(condition: v)),
+                _buildCompactDropdown(label: l10n.listingCondition, value: _formData.condition, options: carConditions, onChanged: (v) => _formData = _formData.copyWith(condition: v)),
                 const SizedBox(height: 12),
-                _buildCompactField(label: 'VIN', value: _formData.vin, onChanged: (v) => _formData = _formData.copyWith(vin: v)),
+                _buildCompactField(label: l10n.listingVin, value: _formData.vin, onChanged: (v) => _formData = _formData.copyWith(vin: v)),
                 const SizedBox(height: 12),
-                _buildCompactField(label: CarStrings.listingDoors, value: _formData.doors, onChanged: (v) => _formData = _formData.copyWith(doors: v), keyboardType: TextInputType.number),
+                _buildCompactField(label: l10n.listingDoors, value: _formData.doors, onChanged: (v) => _formData = _formData.copyWith(doors: v), keyboardType: TextInputType.number),
                 const SizedBox(height: 12),
-                _buildCompactField(label: CarStrings.listingSeats, value: _formData.seats, onChanged: (v) => _formData = _formData.copyWith(seats: v), keyboardType: TextInputType.number),
+                _buildCompactField(label: l10n.listingSeats, value: _formData.seats, onChanged: (v) => _formData = _formData.copyWith(seats: v), keyboardType: TextInputType.number),
               ],
             ),
           ),
@@ -540,7 +542,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           SizedBox(
             width: double.infinity,
             child: WaveButton(
-              text: 'Next', icon: Icons.arrow_forward,
+              text: l10n.listingNext, icon: Icons.arrow_forward,
               variant: ButtonVariant.primary,
               onPressed: _nextStep, isFullWidth: true,
             ),
@@ -557,18 +559,18 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       child: Column(
         children: [
           _sectionCard(
-            title: CarStrings.listingType,
+            title: l10n.listingListingType,
             child: Row(
               children: [
-                _typeChoiceChip(selected: !_formData.isForRent, label: CarStrings.forSale, icon: Icons.sell_outlined, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: false))),
+                _typeChoiceChip(selected: !_formData.isForRent, label: l10n.listingForSale, icon: Icons.sell_outlined, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: false))),
                 const SizedBox(width: 12),
-                _typeChoiceChip(selected: _formData.isForRent, label: CarStrings.forRent, icon: Icons.key, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: true))),
+                _typeChoiceChip(selected: _formData.isForRent, label: l10n.listingForRent, icon: Icons.key, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: true))),
               ],
             ),
           ),
           const SizedBox(height: 16),
           _sectionCard(
-            title: CarStrings.listingPricing,
+            title: l10n.listingPricing,
             child: _formData.isForRent
                 ? Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -582,7 +584,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                       ],
                     ),
                   )
-                : _buildCompactField(label: '${CarStrings.price} (ETB) *', value: _formData.priceFixed, onChanged: (v) => _formData = _formData.copyWith(priceFixed: v), keyboardType: TextInputType.number),
+                : _buildCompactField(label: '${l10n.listingPriceEtb} (ETB) *', value: _formData.priceFixed, onChanged: (v) => _formData = _formData.copyWith(priceFixed: v), keyboardType: TextInputType.number),
           ),
           const SizedBox(height: 16),
           _sectionCard(
@@ -594,7 +596,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           SizedBox(
             width: double.infinity,
             child: WaveButton(
-              text: 'Next', icon: Icons.arrow_forward,
+              text: l10n.listingNext, icon: Icons.arrow_forward,
               variant: ButtonVariant.primary,
               onPressed: _nextStep, isFullWidth: true,
             ),
@@ -611,13 +613,13 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       child: Column(
         children: [
           _sectionCard(
-            title: CarStrings.listingDescription,
+            title: l10n.listingDescriptionLabel,
             child: TextFormField(
               initialValue: _formData.description,
               style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-              decoration: const InputDecoration(
-                hintText: CarStrings.listingDescription,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: InputDecoration(
+                hintText: l10n.listingDescriptionLabel,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               ),
               maxLines: 4,
               onChanged: (v) => _formData = _formData.copyWith(description: v),
@@ -625,7 +627,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           ),
           const SizedBox(height: 16),
           _sectionCard(
-            title: CarStrings.listingFeatures,
+            title: l10n.listingsKeyFeatures,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -647,9 +649,9 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                 TextFormField(
                   initialValue: _formData.customFeatures,
                   style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                  decoration: const InputDecoration(
-                    hintText: CarStrings.customFeatures,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: InputDecoration(
+                    hintText: l10n.carCustomFeatures,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   ),
                   onChanged: (v) => _formData = _formData.copyWith(customFeatures: v),
                 ),
@@ -658,12 +660,12 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           ),
           const SizedBox(height: 16),
           _sectionCard(
-            title: CarStrings.photos,
+            title: l10n.photos,
             child: _buildImageUploader(),
           ),
           const SizedBox(height: 16),
           _sectionCard(
-            title: CarStrings.listingOptions,
+            title: l10n.listingOptions,
             child: Row(
               children: [
                 SizedBox(
@@ -685,11 +687,11 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                           children: [
                             const Icon(Icons.diamond, size: 16, color: AppColors.vip),
                             const SizedBox(width: 4),
-                            Text('Mark as VIP', style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: AppColors.vip, letterSpacing: 0.3)),
+                            Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: AppColors.vip, letterSpacing: 0.3)),
                           ],
                         ),
                         const SizedBox(height: 2),
-                        Text('Get a VIP badge for premium visibility', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                        Text(l10n.carVipSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
                       ],
                     ),
                   ),
@@ -712,14 +714,14 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
               Expanded(
                 child: GestureDetector(
                   onTap: () => setState(() => _formData = _formData.copyWith(termsAccepted: !_formData.termsAccepted)),
-                  child: Text(CarStrings.termsAccept, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                  child: Text(l10n.listingAcceptTerms, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
           WaveButton(
-            text: CarStrings.submitListing,
+            text: l10n.listingSubmit,
             icon: Icons.add,
             variant: ButtonVariant.success,
             onPressed: _isSubmitting ? null : _submit,
@@ -747,9 +749,9 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
               children: [
                 Icon(Icons.add_photo_alternate_outlined, size: 36, color: context.theme.iconSecondary),
                 const SizedBox(height: 10),
-                Text(CarStrings.addPhotos, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
+                Text(l10n.carAddPhoto, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
                 const SizedBox(height: 4),
-                Text('JPEG, PNG, WebP — Max 10MB each', style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+                Text(l10n.carPhotoFormatHint, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
               ],
             ),
           ),
@@ -781,7 +783,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                       children: [
                         Icon(Icons.add, size: 28, color: context.theme.iconSecondary),
                         const SizedBox(height: 4),
-                        Text('Add', style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+                        Text(l10n.carAddPhoto, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
                       ],
                     ),
                   ),
@@ -791,7 +793,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6),
-            child: Text('${images.length} image(s) selected', style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+            child: Text(l10n.listingImagesSelected(images.length), style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
           ),
         ],
       ],

@@ -4018,11 +4018,311 @@ abstract class AppLocalizations {
   /// **'Any Model'**
   String get searchAnyModel;
 
+  /// No description provided for @commonIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'is required'**
+  String get commonIsRequired;
+
+  /// No description provided for @carLocationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a location (Kebele)'**
+  String get carLocationRequired;
+
+  /// No description provided for @carTermsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You must accept the terms'**
+  String get carTermsRequired;
+
   /// No description provided for @carRentalPriceNegotiable.
   ///
   /// In en, this message translates to:
   /// **'By Negotiation'**
   String get carRentalPriceNegotiable;
+
+  /// No description provided for @listingPricing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing'**
+  String get listingPricing;
+
+  /// No description provided for @listingOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get listingOptions;
+
+  /// No description provided for @listingDoors.
+  ///
+  /// In en, this message translates to:
+  /// **'Doors'**
+  String get listingDoors;
+
+  /// No description provided for @listingSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Seats'**
+  String get listingSeats;
+
+  /// No description provided for @listingVin.
+  ///
+  /// In en, this message translates to:
+  /// **'VIN'**
+  String get listingVin;
+
+  /// No description provided for @listingCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle listing created'**
+  String get listingCreated;
+
+  /// No description provided for @listingUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle listing updated'**
+  String get listingUpdated;
+
+  /// No description provided for @updateListing.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Listing'**
+  String get updateListing;
+
+  /// No description provided for @carAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Photo'**
+  String get carAddPhoto;
+
+  /// No description provided for @carPhotoFormatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'JPEG, PNG, WebP — Max 10MB each'**
+  String get carPhotoFormatHint;
+
+  /// No description provided for @carEnterMakeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter make name'**
+  String get carEnterMakeName;
+
+  /// No description provided for @carEnterModelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter model name'**
+  String get carEnterModelName;
+
+  /// No description provided for @carFileTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} exceeds 10MB limit'**
+  String carFileTooLarge(Object name);
+
+  /// No description provided for @photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get photos;
+
+  /// No description provided for @mediaTapToPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to preview'**
+  String get mediaTapToPreview;
+
+  /// No description provided for @mediaImageFormatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'JPEG, PNG, WebP'**
+  String get mediaImageFormatHint;
+
+  /// No description provided for @mediaSitePlanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Site plan image'**
+  String get mediaSitePlanSubtitle;
+
+  /// No description provided for @mediaExistingSitePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing site plan'**
+  String get mediaExistingSitePlan;
+
+  /// No description provided for @mediaOwnershipSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ownership document'**
+  String get mediaOwnershipSubtitle;
+
+  /// No description provided for @mediaVideoFormatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'MP4, max 5 minutes'**
+  String get mediaVideoFormatHint;
+
+  /// No description provided for @mediaExistingVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing video'**
+  String get mediaExistingVideo;
+
+  /// No description provided for @mediaPlayPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Play Preview'**
+  String get mediaPlayPreview;
+
+  /// No description provided for @mediaPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture'**
+  String get mediaPicture;
+
+  /// No description provided for @mediaPictures.
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures'**
+  String get mediaPictures;
+
+  /// No description provided for @mediaSitePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Site Plan'**
+  String get mediaSitePlan;
+
+  /// No description provided for @mediaOwnershipProof.
+  ///
+  /// In en, this message translates to:
+  /// **'Ownership Proof'**
+  String get mediaOwnershipProof;
+
+  /// No description provided for @mediaVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get mediaVideo;
+
+  /// No description provided for @mediaFileSizeError.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} exceeds {limit} limit. Please choose a smaller file.'**
+  String mediaFileSizeError(Object label, Object limit);
+
+  /// No description provided for @carVipSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a VIP badge for premium visibility'**
+  String get carVipSubtitle;
+
+  /// No description provided for @carCustomFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom features'**
+  String get carCustomFeatures;
+
+  /// No description provided for @submissionStepValidating.
+  ///
+  /// In en, this message translates to:
+  /// **'Validating data'**
+  String get submissionStepValidating;
+
+  /// No description provided for @submissionStepUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading files'**
+  String get submissionStepUploading;
+
+  /// No description provided for @submissionStepSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving listing'**
+  String get submissionStepSaving;
+
+  /// No description provided for @submissionValidating.
+  ///
+  /// In en, this message translates to:
+  /// **'Validating data...'**
+  String get submissionValidating;
+
+  /// No description provided for @submissionUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading files...'**
+  String get submissionUploading;
+
+  /// No description provided for @submissionSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving listing...'**
+  String get submissionSaving;
+
+  /// No description provided for @submissionSavingChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving changes...'**
+  String get submissionSavingChanges;
+
+  /// No description provided for @submissionSubmittingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting Your Listing'**
+  String get submissionSubmittingTitle;
+
+  /// No description provided for @submissionSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing Submitted!'**
+  String get submissionSuccessTitle;
+
+  /// No description provided for @submissionPendingApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Your listing is pending approval. We\'ll notify you once it\'s live.'**
+  String get submissionPendingApproval;
+
+  /// No description provided for @submissionViewListings.
+  ///
+  /// In en, this message translates to:
+  /// **'View My Listings'**
+  String get submissionViewListings;
+
+  /// No description provided for @submissionCreateAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Another'**
+  String get submissionCreateAnother;
+
+  /// No description provided for @submissionCreatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your listing has been submitted.'**
+  String get submissionCreatedMessage;
+
+  /// No description provided for @submissionUpdatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing updated successfully.'**
+  String get submissionUpdatedMessage;
+
+  /// No description provided for @submissionConnectionLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection lost. Your data has been saved.'**
+  String get submissionConnectionLost;
+
+  /// No description provided for @submissionRequestTimedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Request timed out. Your data has been saved.'**
+  String get submissionRequestTimedOut;
+
+  /// No description provided for @submissionErrorDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get submissionErrorDefault;
 }
 
 class _AppLocalizationsDelegate

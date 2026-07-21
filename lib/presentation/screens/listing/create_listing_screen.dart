@@ -145,7 +145,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     _submissionDismissed = dismissed;
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
-      label: 'Validating data...',
+      label: l10n.submissionValidating,
       progress: 0.2,
     );
 
@@ -155,7 +155,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.uploading,
-        label: 'Uploading files...',
+        label: l10n.submissionUploading,
       );
 
       _startUploadProgressSimulation();
@@ -168,7 +168,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
           _stopUploadProgressSimulation();
           _submissionNotifier!.value = SubmissionState.submitting(
             phase: SubmissionPhase.uploading,
-            label: 'Uploading files...',
+            label: l10n.submissionUploading,
             progress: 0.2 + progress * 0.7,
           );
         },
@@ -179,14 +179,14 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.saving,
-        label: 'Saving listing...',
+        label: l10n.submissionSaving,
         progress: 0.9,
       );
       await Future.delayed(const Duration(milliseconds: 300));
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.saving,
-        label: 'Saving listing...',
+        label: l10n.submissionSaving,
         progress: 1.0,
       );
 
@@ -197,7 +197,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         await ListingMediaManager.cleanFormDataFiles(_formData);
         if (!mounted) return;
         _submissionNotifier!.value = SubmissionState.success(
-          message: 'Your listing has been submitted.',
+          message: l10n.submissionCreatedMessage,
         );
         final result = await dismissed;
         if (mounted && result == true) Navigator.of(context).pop(true);
@@ -205,7 +205,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         _submissionNotifier!.value = SubmissionState.error(
           message: response.message.isNotEmpty
               ? response.message
-              : 'Something went wrong. Please try again.',
+              : l10n.submissionErrorDefault,
           onRetry: _retrySubmission,
           onSaveDraft: _saveDraftAndExit,
         );
@@ -237,7 +237,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         }
         _submissionNotifier?.value = SubmissionState.submitting(
           phase: SubmissionPhase.uploading,
-          label: 'Uploading files...',
+          label: l10n.submissionUploading,
           progress: simulatedProgress,
         );
       },
@@ -262,7 +262,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         await ListingMediaManager.cleanFormDataFiles(_formData);
         if (!mounted) return;
         _submissionNotifier!.value = SubmissionState.success(
-          message: 'Your listing was submitted successfully.',
+          message: l10n.submissionCreatedMessage,
         );
         final result = await _submissionDismissed;
         if (mounted && result == true) Navigator.of(context).pop(true);
@@ -273,7 +273,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     // Normal retry — re-submit
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
-      label: 'Validating data...',
+      label: l10n.submissionValidating,
       progress: 0.2,
     );
 
@@ -283,7 +283,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.uploading,
-        label: 'Uploading files...',
+        label: l10n.submissionUploading,
       );
 
       _startUploadProgressSimulation();
@@ -296,7 +296,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
           _stopUploadProgressSimulation();
           _submissionNotifier!.value = SubmissionState.submitting(
             phase: SubmissionPhase.uploading,
-            label: 'Uploading files...',
+            label: l10n.submissionUploading,
             progress: 0.2 + progress * 0.7,
           );
         },
@@ -307,14 +307,14 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.saving,
-        label: 'Saving listing...',
+        label: l10n.submissionSaving,
         progress: 0.9,
       );
       await Future.delayed(const Duration(milliseconds: 300));
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.saving,
-        label: 'Saving listing...',
+        label: l10n.submissionSaving,
         progress: 1.0,
       );
 
@@ -325,7 +325,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         await ListingMediaManager.cleanFormDataFiles(_formData);
         if (!mounted) return;
         _submissionNotifier!.value = SubmissionState.success(
-          message: 'Your listing has been submitted.',
+          message: l10n.submissionCreatedMessage,
         );
         final result = await _submissionDismissed;
         if (mounted && result == true) Navigator.of(context).pop(true);
@@ -333,7 +333,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         _submissionNotifier!.value = SubmissionState.error(
           message: response.message.isNotEmpty
               ? response.message
-              : 'Something went wrong. Please try again.',
+              : l10n.submissionErrorDefault,
           onRetry: _retrySubmission,
           onSaveDraft: _saveDraftAndExit,
         );
@@ -349,12 +349,13 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   }
 
   String _friendlyErrorMessage(Object error) {
+    final l10n = AppLocalizations.of(context);
     final msg = error.toString();
     if (msg.contains('Connection refused') || msg.contains('SocketException')) {
-      return 'Connection lost. Your data has been saved.';
+      return l10n.submissionConnectionLost;
     }
     if (msg.contains('timeout')) {
-      return 'Request timed out. Your data has been saved.';
+      return l10n.submissionRequestTimedOut;
     }
     return msg.replaceAll(RegExp(r'^Exception:\s*'), '');
   }

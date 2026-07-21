@@ -550,7 +550,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingPropertyType => 'ዓይነት ንብረት';
 
   @override
-  String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
+  String get listingVideoMaxSize => 'ዝለዓለ 100MB';
 
   @override
   String listingExistingFile(Object name) {
@@ -2014,7 +2014,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get reportDuplicate => 'ተመሳሳሊ ዝርዝር';
 
   @override
-  String get reportInappropriate => 'ተገባዊ ዘይኮነ ይዘት';
+  String get reportInappropriate => 'ግቡእ ዘይኮነ ትሕዝቶ';
 
   @override
   String get reportOther => 'ካልእ';
@@ -2023,19 +2023,19 @@ class AppLocalizationsTi extends AppLocalizations {
   String get reportDescription => 'መግለፂ (ኣማራፂ)';
 
   @override
-  String get reportDescriptionHint => 'ተወሳኺ ዝርዝራት ኣስግቡ...';
+  String get reportDescriptionHint => 'ተወሳኺ ዝርዝራት ኣእትዉ...';
 
   @override
-  String get reportSubmit => 'ሪፖርት ኣስግብ';
+  String get reportSubmit => 'ሪፖርት ለኣኽ';
 
   @override
-  String get reportSubmitting => 'ይኣትው ኣሎ...';
+  String get reportSubmitting => 'ይልእኽ ኣሎ...';
 
   @override
-  String get reportSuccess => 'ሪፖርት ቀሪቡ። የቀንየልና።';
+  String get reportSuccess => 'ሪፖርት ተላኢኹ። የቀንየልና።';
 
   @override
-  String get reportErrorGeneric => 'ሪፖርት ምእታው ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።';
+  String get reportErrorGeneric => 'ሪፖርት ምልኣኽ ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።';
 
   @override
   String get listingCar => 'ተሽከርካሪ';
@@ -2044,7 +2044,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingCarPlural => 'ተሽከርከርቲ';
 
   @override
-  String get listingMake => 'ፈጣሪ';
+  String get listingMake => 'መምረቲ';
 
   @override
   String get listingModel => 'ሞዴል';
@@ -2062,10 +2062,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingBodyType => 'ዓይነት ኣካል';
 
   @override
-  String get listingMileage => 'ማይልጅ';
+  String get listingMileage => 'ዝኸዶ ርሕቐት';
 
   @override
-  String get listingMileageMax => 'ከፍተኛ ማይልጅ (ኪሜ)';
+  String get listingMileageMax => 'ዝለዓለ ዝኸዶ ርሕቐት (ኪሜ)';
 
   @override
   String get listingCondition => 'ኩነታት';
@@ -2083,20 +2083,175 @@ class AppLocalizationsTi extends AppLocalizations {
   String get searchSortYearAsc => 'ዓመት ↑';
 
   @override
-  String get searchSortMileageLow => 'ማይልጅ ↓';
+  String get searchSortMileageLow => 'ዝኸዶ ርሕቐት ↓';
 
   @override
-  String get searchSortMileageHigh => 'ማይልጅ ↑';
+  String get searchSortMileageHigh => 'ዝኸዶ ርሕቐት ↑';
 
   @override
   String get searchLocation => 'ቦታ';
 
   @override
-  String get searchAnyMake => 'ዝኾነ ፈጣሪ';
+  String get searchAnyMake => 'ዝኾነ መምረቲ';
 
   @override
   String get searchAnyModel => 'ዝኾነ ሞዴል';
 
   @override
+  String get commonIsRequired => 'የድሊ እዩ';
+
+  @override
+  String get carLocationRequired => 'በጃኹም ቦታ ምረፁ (ቀበሌ)';
+
+  @override
+  String get carTermsRequired => 'ነቲ ውዕላት ክትቅበሉ ኣለኩም';
+
+  @override
   String get carRentalPriceNegotiable => 'ብስምምዕነት';
+
+  @override
+  String get listingPricing => 'ዋጋ ምውሳን';
+
+  @override
+  String get listingOptions => 'ኣማራፂታት';
+
+  @override
+  String get listingDoors => 'ማዕጾታት';
+
+  @override
+  String get listingSeats => 'መንበራት';
+
+  @override
+  String get listingVin => 'VIN';
+
+  @override
+  String get listingCreated => 'ተሽከርካሪ ተመዝጊቡ';
+
+  @override
+  String get listingUpdated => 'ተሽከርካሪ ተሓዲሱ';
+
+  @override
+  String get updateListing => 'ምዝገባ ሓድስ';
+
+  @override
+  String get carAddPhoto => 'ፎቶ ወስኽ';
+
+  @override
+  String get carPhotoFormatHint => 'JPEG, PNG, WebP — ነፍሲ ወከፍ ዝለዓለ 10MB';
+
+  @override
+  String get carEnterMakeName => 'ስም ፈጣሪ ኣእትዉ';
+
+  @override
+  String get carEnterModelName => 'ስም ሞዴል ኣእትዉ';
+
+  @override
+  String carFileTooLarge(Object name) {
+    return '$name ካብ 10MB ገደብ ሓሊፉ';
+  }
+
+  @override
+  String get photos => 'ፎቶታት';
+
+  @override
+  String get mediaTapToPreview => 'ንምርኣይ ጠውቑ';
+
+  @override
+  String get mediaImageFormatHint => 'JPEG, PNG, WebP';
+
+  @override
+  String get mediaSitePlanSubtitle => 'ምስሊ ሳይት ፕላን';
+
+  @override
+  String get mediaExistingSitePlan => 'ዘሎ ሳይት ፕላን';
+
+  @override
+  String get mediaOwnershipSubtitle => 'ሰነድ ዋንነት';
+
+  @override
+  String get mediaVideoFormatHint => 'MP4, ከፍተኛ 5 ደቂቕ';
+
+  @override
+  String get mediaExistingVideo => 'ዘሎ ቪዲዮ';
+
+  @override
+  String get mediaPlayPreview => 'ምስሊ ረአይ';
+
+  @override
+  String get mediaPicture => 'ምስሊ';
+
+  @override
+  String get mediaPictures => 'ምስልታት';
+
+  @override
+  String get mediaSitePlan => 'ሳይት ፕላን';
+
+  @override
+  String get mediaOwnershipProof => 'መረጋገፂ ዋንነት';
+
+  @override
+  String get mediaVideo => 'ቪዲዮ';
+
+  @override
+  String mediaFileSizeError(Object label, Object limit) {
+    return '$label ካብ $limit ገደብ ሓሊፉ። በጃኹም ንእሽቶ ፋይል ምረፁ።';
+  }
+
+  @override
+  String get carVipSubtitle => 'ንፍሉይ ምርኣይ ናይ VIP ባጅ ረኽቡ';
+
+  @override
+  String get carCustomFeatures => 'ባህርያት ራስካ';
+
+  @override
+  String get submissionStepValidating => 'ዳታ ይረጋገጽ ኣሎ';
+
+  @override
+  String get submissionStepUploading => 'ፋይላት ይፀዕዓኑ ኣለዉ';
+
+  @override
+  String get submissionStepSaving => 'ምዝገባ ይቕመጥ ኣሎ';
+
+  @override
+  String get submissionValidating => 'ዳታ ይረጋገጽ ኣሎ...';
+
+  @override
+  String get submissionUploading => 'ፋይላት ይፀዕዓኑ ኣለዉ';
+
+  @override
+  String get submissionSaving => 'ምዝገባ ይቕመጥ ኣሎ...';
+
+  @override
+  String get submissionSavingChanges => 'ለውጥታት ይቕመጡ ኣለዉ...';
+
+  @override
+  String get submissionSubmittingTitle => 'ምዝገባኻ ይላእ ኣሎ';
+
+  @override
+  String get submissionSuccessTitle => 'ምዝገባ ተላኢኹ!';
+
+  @override
+  String get submissionPendingApproval =>
+      'ምዝገባኻ ክሳብ ምምጽዳቕ ኣብ መጠበብ ላይ እዩ። ምስ ተቐበለ ክንነግረካ ኢና።';
+
+  @override
+  String get submissionViewListings => 'ምዝገባታተይ ርአ';
+
+  @override
+  String get submissionCreateAnother => 'ካልእ ፍጠር';
+
+  @override
+  String get submissionCreatedMessage => 'ምዝገባኻ ተላኢኹ።';
+
+  @override
+  String get submissionUpdatedMessage => 'ምዝገባ ብዓወት ተሓዲሱ።';
+
+  @override
+  String get submissionConnectionLost => 'መስመር ተቋሪጹ። ዳታኻ ተቀሚጡ።';
+
+  @override
+  String get submissionRequestTimedOut => 'ሕቶ እዋኑ ሓሊፉዎ። ዳታኻ ተቀሚጡ።';
+
+  @override
+  String get submissionErrorDefault => 'ገለ ጉድለት ተፈጢሩ። በጃኻ ደጊምካ ፈትን።';
 }

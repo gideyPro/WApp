@@ -550,7 +550,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingPropertyType => 'የንብረት አይነት';
 
   @override
-  String get listingVideoMaxSize => 'ከፍተኛ 100ሜባ';
+  String get listingVideoMaxSize => 'ከፍተኛ 100MB';
 
   @override
   String listingExistingFile(Object name) {
@@ -2044,7 +2044,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingCarPlural => 'ተሽከርካሪዎች';
 
   @override
-  String get listingMake => 'ሰሪ';
+  String get listingMake => 'አምራች';
 
   @override
   String get listingModel => 'ሞዴል';
@@ -2062,10 +2062,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingBodyType => 'የአካል አይነት';
 
   @override
-  String get listingMileage => 'ማይልጅ';
+  String get listingMileage => 'የሄደው ርቀት';
 
   @override
-  String get listingMileageMax => 'ከፍተኛ ማይልጅ (ኪሜ)';
+  String get listingMileageMax => 'ከፍተኛ የሄደው ርቀት (ኪሜ)';
 
   @override
   String get listingCondition => 'ሁኔታ';
@@ -2083,20 +2083,175 @@ class AppLocalizationsAm extends AppLocalizations {
   String get searchSortYearAsc => 'ዓመት ↑';
 
   @override
-  String get searchSortMileageLow => 'ማይልጅ ↓';
+  String get searchSortMileageLow => 'የሄደው ርቀት ↓';
 
   @override
-  String get searchSortMileageHigh => 'ማይልጅ ↑';
+  String get searchSortMileageHigh => 'የሄደው ርቀት ↑';
 
   @override
   String get searchLocation => 'ቦታ';
 
   @override
-  String get searchAnyMake => 'ማንኛውም ሰሪ';
+  String get searchAnyMake => 'ማንኛውም ማምረቻ';
 
   @override
   String get searchAnyModel => 'ማንኛውም ሞዴል';
 
   @override
+  String get commonIsRequired => 'ያስፈልጋል';
+
+  @override
+  String get carLocationRequired => 'እባክዎ ቦታ ይምረጡ (ቀበሌ)';
+
+  @override
+  String get carTermsRequired => 'ውሎቹን መቀበል አለብዎት';
+
+  @override
   String get carRentalPriceNegotiable => 'በስምምነት';
+
+  @override
+  String get listingPricing => 'ዋጋ አወጣጥ';
+
+  @override
+  String get listingOptions => 'አማራጮች';
+
+  @override
+  String get listingDoors => 'በሮች';
+
+  @override
+  String get listingSeats => 'መቀመጫዎች';
+
+  @override
+  String get listingVin => 'VIN';
+
+  @override
+  String get listingCreated => 'ተሽከርካሪ ተመዝግቧል';
+
+  @override
+  String get listingUpdated => 'ተሽከርካሪ ተሻሽሏል';
+
+  @override
+  String get updateListing => 'ምዝገባ አዘምን';
+
+  @override
+  String get carAddPhoto => 'ፎቶ ያክሉ';
+
+  @override
+  String get carPhotoFormatHint => 'JPEG, PNG, WebP — እያንዳንዱ ከፍተኛ 10MB';
+
+  @override
+  String get carEnterMakeName => 'የሰሪ ስም ያስገቡ';
+
+  @override
+  String get carEnterModelName => 'የሞዴል ስም ያስገቡ';
+
+  @override
+  String carFileTooLarge(Object name) {
+    return '$name ከ10MB ገደብ አልፏል';
+  }
+
+  @override
+  String get photos => 'ፎቶዎች';
+
+  @override
+  String get mediaTapToPreview => 'ለማየት ይንኩ';
+
+  @override
+  String get mediaImageFormatHint => 'JPEG, PNG, WebP';
+
+  @override
+  String get mediaSitePlanSubtitle => 'የሳይት ፕላን ምስል';
+
+  @override
+  String get mediaExistingSitePlan => 'ያለው የሳይት ፕላን';
+
+  @override
+  String get mediaOwnershipSubtitle => 'የባለቤትነት ሰነድ';
+
+  @override
+  String get mediaVideoFormatHint => 'MP4, ከፍተኛ 5 ደቂቃ';
+
+  @override
+  String get mediaExistingVideo => 'ያለው ቪዲዮ';
+
+  @override
+  String get mediaPlayPreview => 'ያጫውቱ';
+
+  @override
+  String get mediaPicture => 'ስእል';
+
+  @override
+  String get mediaPictures => 'ስእሎች';
+
+  @override
+  String get mediaSitePlan => 'የሳይት ፕላን';
+
+  @override
+  String get mediaOwnershipProof => 'የባለቤትነት ማረጋገጫ';
+
+  @override
+  String get mediaVideo => 'ቪዲዮ';
+
+  @override
+  String mediaFileSizeError(Object label, Object limit) {
+    return '$label ከ$limit ገደብ አልፏል። እባክዎ ትንሽ ፋይል ይምረጡ።';
+  }
+
+  @override
+  String get carVipSubtitle => 'ለፕሪሚየም ታይነት የVIP ባጅ ያግኙ';
+
+  @override
+  String get carCustomFeatures => 'የራስዎ ባህሪዎች';
+
+  @override
+  String get submissionStepValidating => 'ውሂብ እየተረጋገጠ ነው';
+
+  @override
+  String get submissionStepUploading => 'ፋይሎች እየተጫኑ ነው';
+
+  @override
+  String get submissionStepSaving => 'ምዝገባ እየተቀመጠ ነው';
+
+  @override
+  String get submissionValidating => 'ውሂብ እየተረጋገጠ ነው...';
+
+  @override
+  String get submissionUploading => 'ፋይሎች እየተጫኑ ነው...';
+
+  @override
+  String get submissionSaving => 'ምዝገባ እየተቀመጠ ነው...';
+
+  @override
+  String get submissionSavingChanges => 'ለውጦች እየተቀመጡ ነው...';
+
+  @override
+  String get submissionSubmittingTitle => 'ምዝገባዎ እየተላከ ነው';
+
+  @override
+  String get submissionSuccessTitle => 'ምዝገባ ተልኳል!';
+
+  @override
+  String get submissionPendingApproval =>
+      'ምዝገባዎ እስኪጸድቅ ድረስ በመጠባበቅ ላይ ነው። ሲፀድቅ እናሳውቅዎታለን።';
+
+  @override
+  String get submissionViewListings => 'ምዝገባዎቼን ይመልከቱ';
+
+  @override
+  String get submissionCreateAnother => 'ሌላ ይፍጠሩ';
+
+  @override
+  String get submissionCreatedMessage => 'ምዝገባዎ ተልኳል።';
+
+  @override
+  String get submissionUpdatedMessage => 'ምዝገባ በተሳካ ሁኔታ ተሻሽሏል።';
+
+  @override
+  String get submissionConnectionLost => 'ግንኙነት ተቋርጧል። ውሂብዎ ተቀምጧል።';
+
+  @override
+  String get submissionRequestTimedOut => 'ጥያቄው ጊዜ አልፎበታል። ውሂብዎ ተቀምጧል።';
+
+  @override
+  String get submissionErrorDefault => 'የሆነ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።';
 }

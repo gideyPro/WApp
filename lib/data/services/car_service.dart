@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
@@ -226,7 +227,8 @@ class CarService {
       if (formData.vin.isNotEmpty) MapEntry('vin', formData.vin),
       if (formData.doors.isNotEmpty) MapEntry('doors', formData.doors),
       if (formData.seats.isNotEmpty) MapEntry('seats', formData.seats),
-      if (formData.features.isNotEmpty) MapEntry('features', formData.features.join(',')),
+      if (formData.features.isNotEmpty) MapEntry('features', jsonEncode(formData.features)),
+if (formData.customFeatures.isNotEmpty) MapEntry('custom_features', formData.customFeatures),
       MapEntry('listing_type', formData.isForRent ? 'rental' : 'sale'),
       if (formData.isForRent && formData.rentalPeriodUnit.isNotEmpty) MapEntry('rental_period_unit', formData.rentalPeriodUnit),
       if (!formData.isForRent && formData.priceFixed.isNotEmpty) MapEntry('price_fixed', formData.priceFixed),

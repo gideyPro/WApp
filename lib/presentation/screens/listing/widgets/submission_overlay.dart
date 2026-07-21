@@ -75,10 +75,11 @@ class SubmissionOverlay extends StatefulWidget {
   });
 
   static ({ValueNotifier<SubmissionState> notifier, Future<bool?> dismissed}) show(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final notifier = ValueNotifier<SubmissionState>(
       SubmissionState.submitting(
         phase: SubmissionPhase.validating,
-        label: 'Validating data...',
+        label: l10n.submissionValidating,
       ),
     );
 
@@ -86,7 +87,7 @@ class SubmissionOverlay extends StatefulWidget {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black54,
-      barrierLabel: 'Submission overlay',
+      barrierLabel: AppLocalizations.of(context).submissionSubmittingTitle,
       pageBuilder: (ctx, anim1, anim2) {
         return PopScope(
           canPop: false,
@@ -146,6 +147,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
   }
 
   Widget _buildSubmitting(BuildContext context, ThemeColors themeColors) {
+    final l10n = AppLocalizations.of(context);
     final state = widget.state;
     final isUploading = state.phase == SubmissionPhase.uploading;
 
@@ -191,7 +193,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
               ),
               const SizedBox(height: 32),
               Text(
-                'Submitting Your Listing',
+                l10n.submissionSubmittingTitle,
                 style: AppTextStyles.headline3.copyWith(
                   color: themeColors.textPrimary,
                 ),
@@ -203,19 +205,19 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
               _StepIndicator(
                 phase: SubmissionPhase.validating,
                 currentPhase: state.phase,
-                label: 'Validating data',
+                label: l10n.submissionStepValidating,
               ),
               const SizedBox(height: 12),
               _StepIndicator(
                 phase: SubmissionPhase.uploading,
                 currentPhase: state.phase,
-                label: 'Uploading files',
+                label: l10n.submissionStepUploading,
               ),
               const SizedBox(height: 12),
               _StepIndicator(
                 phase: SubmissionPhase.saving,
                 currentPhase: state.phase,
-                label: 'Saving listing',
+                label: l10n.submissionStepSaving,
               ),
               const SizedBox(height: 28),
 
@@ -258,6 +260,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
   }
 
   Widget _buildSuccess(BuildContext context, ThemeColors themeColors) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: themeColors.scaffold,
       body: Center(
@@ -296,7 +299,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
               ),
               const SizedBox(height: 32),
               Text(
-                'Listing Submitted!',
+                l10n.submissionSuccessTitle,
                 style: AppTextStyles.headline3.copyWith(
                   color: themeColors.textPrimary,
                 ),
@@ -312,7 +315,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
               ),
               const SizedBox(height: 8),
               Text(
-                'Your listing is pending approval. We\'ll notify you once it\'s live.',
+                l10n.submissionPendingApproval,
                 style: AppTextStyles.caption.copyWith(
                   color: themeColors.textTertiary,
                 ),
@@ -332,7 +335,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                   ),
                   onPressed: () => widget.onDismiss?.call(true),
                   child: Text(
-                    'View My Listings',
+                    l10n.submissionViewListings,
                     style: AppTextStyles.buttonMedium,
                   ),
                 ),
@@ -352,7 +355,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                     ),
                     onPressed: () => widget.onDismiss?.call(false),
                     child: Text(
-                      'Create Another',
+                      l10n.submissionCreateAnother,
                       style: AppTextStyles.buttonMedium,
                     ),
                   ),

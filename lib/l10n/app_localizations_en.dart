@@ -2126,5 +2126,163 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchAnyModel => 'Any Model';
 
   @override
+  String get commonIsRequired => 'is required';
+
+  @override
+  String get carLocationRequired => 'Please select a location (Kebele)';
+
+  @override
+  String get carTermsRequired => 'You must accept the terms';
+
+  @override
   String get carRentalPriceNegotiable => 'By Negotiation';
+
+  @override
+  String get listingPricing => 'Pricing';
+
+  @override
+  String get listingOptions => 'Options';
+
+  @override
+  String get listingDoors => 'Doors';
+
+  @override
+  String get listingSeats => 'Seats';
+
+  @override
+  String get listingVin => 'VIN';
+
+  @override
+  String get listingCreated => 'Vehicle listing created';
+
+  @override
+  String get listingUpdated => 'Vehicle listing updated';
+
+  @override
+  String get updateListing => 'Update Listing';
+
+  @override
+  String get carAddPhoto => 'Add Photo';
+
+  @override
+  String get carPhotoFormatHint => 'JPEG, PNG, WebP — Max 10MB each';
+
+  @override
+  String get carEnterMakeName => 'Enter make name';
+
+  @override
+  String get carEnterModelName => 'Enter model name';
+
+  @override
+  String carFileTooLarge(Object name) {
+    return '$name exceeds 10MB limit';
+  }
+
+  @override
+  String get photos => 'Photos';
+
+  @override
+  String get mediaTapToPreview => 'Tap to preview';
+
+  @override
+  String get mediaImageFormatHint => 'JPEG, PNG, WebP';
+
+  @override
+  String get mediaSitePlanSubtitle => 'Site plan image';
+
+  @override
+  String get mediaExistingSitePlan => 'Existing site plan';
+
+  @override
+  String get mediaOwnershipSubtitle => 'Ownership document';
+
+  @override
+  String get mediaVideoFormatHint => 'MP4, max 5 minutes';
+
+  @override
+  String get mediaExistingVideo => 'Existing video';
+
+  @override
+  String get mediaPlayPreview => 'Play Preview';
+
+  @override
+  String get mediaPicture => 'Picture';
+
+  @override
+  String get mediaPictures => 'Pictures';
+
+  @override
+  String get mediaSitePlan => 'Site Plan';
+
+  @override
+  String get mediaOwnershipProof => 'Ownership Proof';
+
+  @override
+  String get mediaVideo => 'Video';
+
+  @override
+  String mediaFileSizeError(Object label, Object limit) {
+    return '$label exceeds $limit limit. Please choose a smaller file.';
+  }
+
+  @override
+  String get carVipSubtitle => 'Get a VIP badge for premium visibility';
+
+  @override
+  String get carCustomFeatures => 'Custom features';
+
+  @override
+  String get submissionStepValidating => 'Validating data';
+
+  @override
+  String get submissionStepUploading => 'Uploading files';
+
+  @override
+  String get submissionStepSaving => 'Saving listing';
+
+  @override
+  String get submissionValidating => 'Validating data...';
+
+  @override
+  String get submissionUploading => 'Uploading files...';
+
+  @override
+  String get submissionSaving => 'Saving listing...';
+
+  @override
+  String get submissionSavingChanges => 'Saving changes...';
+
+  @override
+  String get submissionSubmittingTitle => 'Submitting Your Listing';
+
+  @override
+  String get submissionSuccessTitle => 'Listing Submitted!';
+
+  @override
+  String get submissionPendingApproval =>
+      'Your listing is pending approval. We\'ll notify you once it\'s live.';
+
+  @override
+  String get submissionViewListings => 'View My Listings';
+
+  @override
+  String get submissionCreateAnother => 'Create Another';
+
+  @override
+  String get submissionCreatedMessage => 'Your listing has been submitted.';
+
+  @override
+  String get submissionUpdatedMessage => 'Listing updated successfully.';
+
+  @override
+  String get submissionConnectionLost =>
+      'Connection lost. Your data has been saved.';
+
+  @override
+  String get submissionRequestTimedOut =>
+      'Request timed out. Your data has been saved.';
+
+  @override
+  String get submissionErrorDefault =>
+      'Something went wrong. Please try again.';
 }

@@ -45,7 +45,7 @@ class ListingStep4Review extends StatelessWidget {
                       icon: Icons.account_balance_wallet_rounded)),
                   const SizedBox(width: 8),
                   Expanded(child: _summaryCard(context, l10n.listingStepMedia,
-                      _buildMediaSummary(formData),
+                      _buildMediaSummary(formData, l10n),
                       icon: Icons.photo_library_rounded)),
                 ],
               ),
@@ -83,7 +83,7 @@ class ListingStep4Review extends StatelessWidget {
                         children: [
                           const Icon(Icons.diamond, size: 16, color: AppColors.vip),
                           const SizedBox(width: 4),
-                          Text('Mark as VIP', style: AppTextStyles.labelMedium.copyWith(
+                          Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(
                             fontWeight: FontWeight.w700,
                             color: AppColors.vip,
                             letterSpacing: 0.3,
@@ -91,7 +91,7 @@ class ListingStep4Review extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 2),
-                      Text('Get a VIP badge for premium visibility', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                      Text(l10n.carVipSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
                     ],
                   ),
                 ),
@@ -192,16 +192,16 @@ class ListingStep4Review extends StatelessWidget {
     );
   }
 
-  String _buildMediaSummary(ListingFormData data) {
+  String _buildMediaSummary(ListingFormData data, AppLocalizations l10n) {
     final imageCount = data.images.length + data.existingImages.length - data.removedImageIds.length;
     final hasSitePlan = data.sitePlan != null || (data.existingSitePlanUrl != null && !data.removeExistingSitePlan);
     final hasOwnership = data.ownershipProof != null || data.existingOwnershipProofUrl != null;
     final hasVideo = data.videoFile != null || (data.existingVideoUrl != null && !data.deleteVideo);
     final lines = <String>[
-      '$imageCount ${imageCount == 1 ? 'Picture' : 'Pictures'}',
-      if (hasSitePlan) '1 Site Plan',
-      if (hasOwnership) '1 Ownership Proof',
-      if (hasVideo) '1 Video',
+      '$imageCount ${imageCount == 1 ? l10n.mediaPicture : l10n.mediaPictures}',
+      if (hasSitePlan) '1 ${l10n.mediaSitePlan}',
+      if (hasOwnership) '1 ${l10n.mediaOwnershipProof}',
+      if (hasVideo) '1 ${l10n.mediaVideo}',
     ];
     return lines.join('\n');
   }

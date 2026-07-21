@@ -30,16 +30,19 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
   static const int _maxImageBytes = 10 * 1024 * 1024;
   static const int _maxVideoBytes = 100 * 1024 * 1024;
 
+  AppLocalizations get l10n => AppLocalizations.of(context);
+
   Future<bool> _isFileValid(XFile file, {bool isVideo = false}) async {
+    final l10n = AppLocalizations.of(context);
     final size = await file.length();
     final limit = isVideo ? _maxVideoBytes : _maxImageBytes;
     if (size > limit) {
-      final label = isVideo ? 'video' : 'image';
+      final label = isVideo ? l10n.mediaVideo : l10n.mediaPicture;
       final limitMb = isVideo ? '100MB' : '10MB';
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('$label exceeds $limitMb limit. Please choose a smaller file.'),
+            content: Text(l10n.mediaFileSizeError(label, limitMb)),
             backgroundColor: AppColors.error,
           ),
         );
@@ -261,7 +264,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                 const SizedBox(height: 4),
                 GestureDetector(
                   onTap: onPreview,
-                  child: Text('Tap to preview', style: AppTextStyles.caption.copyWith(color: context.theme.primary, decoration: TextDecoration.underline)),
+                  child: Text(l10n.mediaTapToPreview, style: AppTextStyles.caption.copyWith(color: context.theme.primary, decoration: TextDecoration.underline)),
                 ),
               ],
             ),
@@ -334,7 +337,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
           _uploadZone(
             icon: Icons.add_photo_alternate_outlined,
             label: l10n.listingTapToAdd,
-            subtitle: 'JPEG, PNG, WebP',
+            subtitle: l10n.mediaImageFormatHint,
             onTap: () => _pickImages(false),
           ),
           if (totalCount > 0) ...[
@@ -382,7 +385,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                           Icon(Icons.add,
                               size: 28, color: context.theme.iconSecondary),
                           const SizedBox(height: 4),
-                          Text('Add',
+                          Text(l10n.carAddPhoto,
                               style: AppTextStyles.caption
                                   .copyWith(color: context.theme.textMuted)),
                         ],
@@ -440,7 +443,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             _uploadZone(
               icon: Icons.map_outlined,
               label: l10n.listingTapToAdd,
-              subtitle: 'Site plan image',
+              subtitle: l10n.mediaSitePlanSubtitle,
               onTap: () => _pickSingleFile('sitePlan'),
             )
           else
@@ -455,7 +458,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
       padding: const EdgeInsets.only(bottom: 12),
       child: _filePreviewCard(
         fileName: widget.formData.existingSitePlanUrl!.split('/').last,
-        subtitle: 'Existing site plan',
+        subtitle: l10n.mediaExistingSitePlan,
         icon: Icons.image,
         thumbnail: ClipRRect(
           borderRadius: BorderRadius.circular(4),
@@ -526,7 +529,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             _uploadZone(
               icon: Icons.verified_outlined,
               label: l10n.listingTapToAdd,
-              subtitle: 'Ownership document',
+              subtitle: l10n.mediaOwnershipSubtitle,
               onTap: () => _pickSingleFile('ownership'),
             )
           else
@@ -548,7 +551,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${l10n.listingVideoMaxSize} — Required',
+          Text('${l10n.listingVideoMaxSize} — ${l10n.orderRequired}',
               style: AppTextStyles.caption
                   .copyWith(color: context.theme.textMuted)),
           const SizedBox(height: 8),
@@ -562,7 +565,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             _uploadZone(
               icon: Icons.videocam_outlined,
               label: l10n.listingTapToAdd,
-              subtitle: 'MP4, max 5 minutes',
+              subtitle: l10n.mediaVideoFormatHint,
               onTap: () => _pickSingleFile('video'),
             )
           else
@@ -604,7 +607,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
-                  Text('Existing video',
+                  Text(l10n.mediaExistingVideo,
                       style: AppTextStyles.caption
                           .copyWith(color: context.theme.textMuted)),
                 ],
@@ -684,7 +687,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
             child: OutlinedButton.icon(
               onPressed: () => _playVideo(context, file.path),
               icon: const Icon(Icons.play_arrow, size: 18),
-              label: const Text('Play Preview'),
+              label: Text(l10n.mediaPlayPreview),
               style: OutlinedButton.styleFrom(
                 foregroundColor: context.theme.primary,
                 side: BorderSide(color: context.theme.primary),
