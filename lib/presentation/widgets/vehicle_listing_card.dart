@@ -48,7 +48,7 @@ class VehicleListingCard extends ConsumerWidget {
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(flex: 2, child: _buildImageSection(context)),
           Expanded(
@@ -81,7 +81,7 @@ class VehicleListingCard extends ConsumerWidget {
       borderRadius: const BorderRadius.horizontal(left: Radius.circular(4)),
       child: SizedBox(
         width: 130,
-        height: double.infinity,
+        height: 180,
         child: Stack(
           children: [
             Positioned.fill(
@@ -320,7 +320,7 @@ class VehicleListingCard extends ConsumerWidget {
         baseColor: context.shimmerBase,
         highlightColor: context.shimmerHighlight,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
               flex: 2,
@@ -329,11 +329,11 @@ class VehicleListingCard extends ConsumerWidget {
                     const BorderRadius.horizontal(left: Radius.circular(4)),
                 child: SizedBox(
                   width: 130,
-                  height: double.infinity,
-                  child: Container(
-                    color: context.shimmerBase,
+                  height: 180,
+                    child: Container(
+                      color: context.shimmerBase,
+                    ),
                   ),
-                ),
               ),
             ),
             Expanded(
