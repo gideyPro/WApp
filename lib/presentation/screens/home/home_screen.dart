@@ -321,7 +321,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               onTap: () => context.push('/cars/${listing.id}'),
             );
           },
-          childCount: state.listings.length + 2,
+          childCount: 1 + state.listings.length + (state.isLoadingMore ? 1 : 0),
         ),
       ),
     );
