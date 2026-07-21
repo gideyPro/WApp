@@ -1458,7 +1458,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsOrders => 'ትእዛዛት';
 
   @override
-  String get subscriptionsContactViews => 'ናይ ሸያጢ ስልኪ ምርኣይ';
+  String get subscriptionsContactViews => 'ሸያጢ ብቐጥታ ምርካብ';
 
   @override
   String get subscriptionsManage => 'ቀይር';
