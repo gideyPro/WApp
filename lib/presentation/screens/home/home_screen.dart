@@ -90,6 +90,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ref.read(vipListingsProvider.notifier).loadVipListings();
       }
       ref.read(listingsProvider.notifier).loadListings();
+      ref.read(carListingsProvider.notifier).loadListings();
       ref.read(authStateProvider.notifier).loadUser();
       ref.read(favoritesProvider.notifier).loadFavorites();
       _lastLoadTime = DateTime.now();

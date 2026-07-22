@@ -538,15 +538,6 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: WaveButton(
-              text: l10n.listingNext, icon: Icons.arrow_forward,
-              variant: ButtonVariant.primary,
-              onPressed: _nextStep, isFullWidth: true,
-            ),
-          ),
           const SizedBox(height: 40),
         ],
       ),
@@ -591,15 +582,6 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
             title: l10n.listingLocation,
             subtitle: '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
             child: _buildAddressDropdowns(),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: WaveButton(
-              text: l10n.listingNext, icon: Icons.arrow_forward,
-              variant: ButtonVariant.primary,
-              onPressed: _nextStep, isFullWidth: true,
-            ),
           ),
           const SizedBox(height: 40),
         ],
