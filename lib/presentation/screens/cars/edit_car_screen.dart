@@ -439,6 +439,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         Text('${l10n.listingMake} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
+          key: ValueKey('make_dropdown_${_formData.vehicleCategory}'),
           initialValue: _isCustomMake ? null : (vehicleModelsByCategoryMake[_formData.vehicleCategory]?.containsKey(_formData.make) == true ? _formData.make : null),
           style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
           decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6)),
@@ -488,6 +489,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         Text('${l10n.listingModel} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
+          key: ValueKey('model_dropdown_${_formData.vehicleCategory}_${_formData.make}'),
           initialValue: _isCustomModel ? null : (_availableModels.contains(_formData.model) ? _formData.model : null),
           style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
           decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6)),
@@ -822,6 +824,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
   Widget _buildCompactField({required String label, required String value, required ValueChanged<String> onChanged, TextInputType? keyboardType}) {
     return TextFormField(
+      key: ValueKey('compact_field_${label}_$value'),
       initialValue: value,
       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
       decoration: InputDecoration(
@@ -836,6 +839,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
   Widget _buildCompactDropdown({required String label, required String value, required List<String> options, required ValueChanged<String> onChanged, String Function(String)? displayBuilder}) {
     return DropdownButtonFormField<String>(
+      key: ValueKey('compact_dropdown_${label}_$value'),
       initialValue: value.isEmpty ? null : value,
       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
       decoration: InputDecoration(
@@ -845,7 +849,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       ),
       dropdownColor: context.sheetBg,
       items: options.map((o) => DropdownMenuItem(value: o, child: Text(displayBuilder != null ? displayBuilder(o) : o, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))).toList(),
-      onChanged: (v) { if (v != null) onChanged(v); },
+      onChanged: (v) { if (v != null) setState(() => onChanged(v)); },
       isExpanded: true,
     );
   }
