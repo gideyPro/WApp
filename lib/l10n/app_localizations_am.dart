@@ -2254,4 +2254,31 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get submissionErrorDefault => 'የሆነ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።';
+
+  @override
+  String get listingDetail => 'ዝርዝሮች';
+
+  @override
+  String get listingSpecifications => 'ዝርዝር መግለጫዎች';
+
+  @override
+  String get carContactSeller => 'ሻጭን ያግኙ';
+
+  @override
+  String get carCall => 'ይደውሉ';
+
+  @override
+  String get carCallHint => 'ሻጭን ለመጥራት ይንኩ';
+
+  @override
+  String get carWhatsapp => 'WhatsApp';
+
+  @override
+  String get carWhatsappHint => 'በWhatsApp ያውሩ';
+
+  @override
+  String get carTelegram => 'ቴሌግራም';
+
+  @override
+  String get carTelegramHint => 'በቴሌግራም ያውሩ';
 }

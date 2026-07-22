@@ -728,5 +728,14 @@
   "submissionUpdatedMessage": "ምዝገባ በተሳካ ሁኔታ ተሻሽሏል።",
   "submissionConnectionLost": "ግንኙነት ተቋርጧል። ውሂብዎ ተቀምጧል።",
   "submissionRequestTimedOut": "ጥያቄው ጊዜ አልፎበታል። ውሂብዎ ተቀምጧል።",
-  "submissionErrorDefault": "የሆነ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።"
+  "submissionErrorDefault": "የሆነ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።",
+  "listingDetail": "ዝርዝሮች",
+  "listingSpecifications": "ዝርዝር መግለጫዎች",
+  "carContactSeller": "ከባለ ንብረት ጋር ይገናኙ",
+  "carCall": "ይደውሉ",
+  "carCallHint": "ወደ ባለንብረት ለመደወል ይንኩ",
+  "carWhatsapp": "WhatsApp",
+  "carWhatsappHint": "በWhatsApp ያውሩ",
+  "carTelegram": "ቴሌግራም",
+  "carTelegramHint": "በቴሌግራም ያውሩ"
 }

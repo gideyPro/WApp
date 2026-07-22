@@ -2285,4 +2285,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get submissionErrorDefault =>
       'Something went wrong. Please try again.';
+
+  @override
+  String get listingDetail => 'Details';
+
+  @override
+  String get listingSpecifications => 'Specifications';
+
+  @override
+  String get carContactSeller => 'Contact Seller';
+
+  @override
+  String get carCall => 'Call';
+
+  @override
+  String get carCallHint => 'Tap to call the seller';
+
+  @override
+  String get carWhatsapp => 'WhatsApp';
+
+  @override
+  String get carWhatsappHint => 'Chat on WhatsApp';
+
+  @override
+  String get carTelegram => 'Telegram';
+
+  @override
+  String get carTelegramHint => 'Chat on Telegram';
 }

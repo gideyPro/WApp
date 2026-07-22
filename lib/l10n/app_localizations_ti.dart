@@ -2225,7 +2225,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get submissionSavingChanges => 'ለውጥታት ይቕመጡ ኣለዉ...';
 
   @override
-  String get submissionSubmittingTitle => 'ምዝገባኻ ይላእ ኣሎ';
+  String get submissionSubmittingTitle => 'ምዝገባኻ ይላእኽ ኣሎ';
 
   @override
   String get submissionSuccessTitle => 'ምዝገባ ተላኢኹ!';
@@ -2254,4 +2254,31 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get submissionErrorDefault => 'ገለ ጉድለት ተፈጢሩ። በጃኻ ደጊምካ ፈትን።';
+
+  @override
+  String get listingDetail => 'ዝርዝራት';
+
+  @override
+  String get listingSpecifications => 'ዝርዝር መግለጻት';
+
+  @override
+  String get carContactSeller => 'ሻጺ ረኸብ';
+
+  @override
+  String get carCall => 'ደውል';
+
+  @override
+  String get carCallHint => 'ንሻጺ ንምጽዋዕ ጠውቕ';
+
+  @override
+  String get carWhatsapp => 'WhatsApp';
+
+  @override
+  String get carWhatsappHint => 'ብWhatsApp ተዘራረብ';
+
+  @override
+  String get carTelegram => 'ቴሌግራም';
+
+  @override
+  String get carTelegramHint => 'ብቴሌግራም ተዘራረብ';
 }

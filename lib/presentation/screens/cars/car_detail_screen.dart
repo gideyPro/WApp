@@ -19,7 +19,7 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../listing/widgets/listing_gallery.dart';
 
-import 'car_strings.dart';
+
 
 class CarDetailScreen extends ConsumerStatefulWidget {
   final int listingId;
@@ -117,20 +117,20 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     if (isSubscriptionGate) {
       return Scaffold(
         backgroundColor: context.scaffoldBg,
-        appBar: AppBar(title: const Text(CarStrings.listingDetail)),
-        body: WaveMessageScreen(
-          type: WaveMessageType.warning,
-          title: l10n.subscriptionRequiredTitle,
-          subtitle: l10n.subscriptionRequiredDetailsSubtitle,
-          actionLabel: l10n.listingUpgradeNow,
-          onAction: () => context.pushReplacement('/subscriptions'),
-        ),
-      );
-    }
+        appBar: AppBar(title: Text(l10n.listingDetail)),
+      body: WaveMessageScreen(
+        type: WaveMessageType.warning,
+        title: l10n.subscriptionRequiredTitle,
+        subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+        actionLabel: l10n.listingUpgradeNow,
+        onAction: () => context.pushReplacement('/subscriptions'),
+      ),
+    );
+  }
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(title: const Text(CarStrings.listingDetail)),
+      appBar: AppBar(title: Text(l10n.listingDetail)),
       body: WaveMessageScreen.error(
         title: l10n.listingsLoadError,
         subtitle: message,
@@ -143,7 +143,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(title: const Text(CarStrings.listingDetail)),
+      appBar: AppBar(title: Text(l10n.listingDetail)),
       body: WaveMessageScreen.empty(
         title: l10n.listingsNotFound,
         subtitle: l10n.listingsNotFoundSubtitle,
@@ -157,7 +157,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        title: const Text(CarStrings.listingDetail),
+        title: Text(l10n.listingDetail),
         actions: [
           IconButton(
             icon: const Icon(Icons.share, color: Colors.white),
@@ -178,14 +178,14 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
             if (listing.description != null && listing.description!.isNotEmpty) ...[
               const SizedBox(height: 24),
               _buildSection(
-                title: CarStrings.listingDescription,
+                title: l10n.listingDescriptionLabel,
                 child: Text(listing.description!, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textTertiary, height: 1.6)),
               ),
             ],
             if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
               const SizedBox(height: 24),
               _buildSection(
-                title: CarStrings.listingFeatures,
+                title: l10n.listingsKeyFeatures,
                 child: _buildFeatureChips(listing.carFeatures!),
               ),
             ],
@@ -269,6 +269,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   }
 
   Widget _buildContactSection(Listing listing) {
+    final l10n = AppLocalizations.of(context);
     final phone = listing.sellerPhone!;
     final name = listing.sellerName ?? 'Seller';
 
@@ -277,7 +278,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(CarStrings.contactSeller, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
+          child: Text(l10n.carContactSeller, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
         ),
         WaveCard(
           useLiquidGlass: true,
@@ -315,8 +316,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                   Expanded(
                     child: _ContactButton(
                       icon: Icons.phone,
-                      label: CarStrings.call,
-                      hint: CarStrings.callHint,
+                      label: l10n.carCall,
+                      hint: l10n.carCallHint,
                       color: const Color(0xFF4CAF50),
                       onTap: () => _launchUrl('tel:$phone'),
                     ),
@@ -325,8 +326,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                   Expanded(
                     child: _ContactButton(
                       icon: Icons.chat_bubble_outline,
-                      label: CarStrings.whatsapp,
-                      hint: CarStrings.whatsappHint,
+                      label: l10n.carWhatsapp,
+                      hint: l10n.carWhatsappHint,
                       color: const Color(0xFF25D366),
                       onTap: () => _launchUrl('https://wa.me/${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                     ),
@@ -335,8 +336,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                   Expanded(
                     child: _ContactButton(
                       icon: Icons.send,
-                      label: CarStrings.telegram,
-                      hint: CarStrings.telegramHint,
+                      label: l10n.carTelegram,
+                      hint: l10n.carTelegramHint,
                       color: const Color(0xFF0088CC),
                       onTap: () => _launchUrl('https://t.me/+${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                     ),
@@ -390,30 +391,31 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   }
 
   Widget _buildSpecsSection(Listing listing) {
+    final l10n = AppLocalizations.of(context);
     final specs = <MapEntry<String, String>>[];
     void add(String label, String? value) {
       if (value != null && value.isNotEmpty) specs.add(MapEntry(label, value));
     }
-    add(CarStrings.listingMake, listing.carMake);
-    add(CarStrings.listingModel, listing.carModel);
-    add(CarStrings.listingYear, listing.carYear?.toString());
-    add('${CarStrings.listingMileage} (km)', listing.carMileageKm != null ? NumberFormat("#,###").format(listing.carMileageKm!.toInt()) : null);
-    add(CarStrings.listingTransmission, listing.carTransmission);
-    add(CarStrings.listingBodyType, listing.carBodyType);
-    add(CarStrings.listingFuelType, listing.carFuelType);
-    add('${CarStrings.listingEngineSize} (L)', listing.carEngineSize != null ? '${listing.carEngineSize}L' : null);
-    add(CarStrings.listingColor, listing.carColor);
-    add(CarStrings.listingCondition, listing.carCondition);
-    add('VIN', listing.carVin);
-    add(CarStrings.listingDoors, listing.carDoors?.toString());
-    add(CarStrings.listingSeats, listing.carSeats?.toString());
+    add(l10n.listingMake, listing.carMake);
+    add(l10n.listingModel, listing.carModel);
+    add(l10n.listingYear, listing.carYear?.toString());
+    add('${l10n.listingMileage} (km)', listing.carMileageKm != null ? NumberFormat("#,###").format(listing.carMileageKm!.toInt()) : null);
+    add(l10n.listingTransmission, listing.carTransmission);
+    add(l10n.listingBodyType, listing.carBodyType);
+    add(l10n.listingFuelType, listing.carFuelType);
+    add('${l10n.listingEngineSize} (L)', listing.carEngineSize != null ? '${listing.carEngineSize}L' : null);
+    add(l10n.listingColor, listing.carColor);
+    add(l10n.listingCondition, listing.carCondition);
+    add(l10n.listingVin, listing.carVin);
+    add(l10n.listingDoors, listing.carDoors?.toString());
+    add(l10n.listingSeats, listing.carSeats?.toString());
 
     if (specs.isEmpty) return const SizedBox();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(CarStrings.listingSpecifications, style: AppTextStyles.title),
+        Text(l10n.listingSpecifications, style: AppTextStyles.title),
         const SizedBox(height: 12),
         WaveCard(
           useLiquidGlass: true,
@@ -457,6 +459,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   }
 
   Widget _buildSimilarListings(Listing listing) {
+    final l10n = AppLocalizations.of(context);
     final similarAsync = ref.watch(similarCarsProvider(listing.id));
 
     return similarAsync.when(
@@ -468,7 +471,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           children: [
             const Divider(height: 1),
             const SizedBox(height: 24),
-            Text('Similar Cars', style: AppTextStyles.title.copyWith(color: context.textPrimary)),
+            Text(l10n.listingsSimilarListings, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
             const SizedBox(height: 12),
             SizedBox(
               height: 220,

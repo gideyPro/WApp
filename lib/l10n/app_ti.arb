@@ -728,5 +728,14 @@
   "submissionUpdatedMessage": "ምዝገባ ብዓወት ተሓዲሱ።",
   "submissionConnectionLost": "መስመር ተቋሪጹ። ዳታኻ ተቀሚጡ።",
   "submissionRequestTimedOut": "ሕቶ እዋኑ ሓሊፉዎ። ዳታኻ ተቀሚጡ።",
-  "submissionErrorDefault": "ገለ ጉድለት ተፈጢሩ። በጃኻ ደጊምካ ፈትን።"
+  "submissionErrorDefault": "ገለ ጉድለት ተፈጢሩ። በጃኻ ደጊምካ ፈትን።",
+  "listingDetail": "ዝርዝራት",
+  "listingSpecifications": "ዝርዝር መግለጻት",
+  "carContactSeller": "ርክብ ምስ በዓል ንብረት",
+  "carCall": "ደውል",
+  "carCallHint": "ናብ በዓል ንብረት ንምድዋል  ጠውቕ",
+  "carWhatsapp": "WhatsApp",
+  "carWhatsappHint": "ብWhatsApp ተዘራረብ",
+  "carTelegram": "ቴሌግራም",
+  "carTelegramHint": "ብቴሌግራም ተዘራረብ"
 }

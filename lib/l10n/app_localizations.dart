@@ -4323,6 +4323,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get submissionErrorDefault;
+
+  /// No description provided for @listingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get listingDetail;
+
+  /// No description provided for @listingSpecifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Specifications'**
+  String get listingSpecifications;
+
+  /// No description provided for @carContactSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Seller'**
+  String get carContactSeller;
+
+  /// No description provided for @carCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get carCall;
+
+  /// No description provided for @carCallHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to call the seller'**
+  String get carCallHint;
+
+  /// No description provided for @carWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get carWhatsapp;
+
+  /// No description provided for @carWhatsappHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat on WhatsApp'**
+  String get carWhatsappHint;
+
+  /// No description provided for @carTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram'**
+  String get carTelegram;
+
+  /// No description provided for @carTelegramHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat on Telegram'**
+  String get carTelegramHint;
 }
 
 class _AppLocalizationsDelegate

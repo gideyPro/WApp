@@ -728,5 +728,14 @@
   "submissionUpdatedMessage": "Listing updated successfully.",
   "submissionConnectionLost": "Connection lost. Your data has been saved.",
   "submissionRequestTimedOut": "Request timed out. Your data has been saved.",
-  "submissionErrorDefault": "Something went wrong. Please try again."
+  "submissionErrorDefault": "Something went wrong. Please try again.",
+  "listingDetail": "Details",
+  "listingSpecifications": "Specifications",
+  "carContactSeller": "Contact Seller",
+  "carCall": "Call",
+  "carCallHint": "Tap to call the seller",
+  "carWhatsapp": "WhatsApp",
+  "carWhatsappHint": "Chat on WhatsApp",
+  "carTelegram": "Telegram",
+  "carTelegramHint": "Chat on Telegram"
 }
