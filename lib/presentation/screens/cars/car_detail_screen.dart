@@ -21,9 +21,7 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../listing/widgets/listing_gallery.dart';
-import '../listing/widgets/listing_contact_form.dart';
 import '../listing/widgets/listing_report_sheet.dart';
-import '../../../data/services/lead_service.dart';
 import '../../../data/services/listing_service.dart';
 
 
@@ -40,7 +38,6 @@ class CarDetailScreen extends ConsumerStatefulWidget {
 class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   bool _isVipLoading = false;
   bool _isFeatureLoading = false;
-  bool _isInterestLoading = false;
 
   @override
   void initState() {
@@ -284,9 +281,6 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     final currentUserId = authState.user?.id;
     final isOwner = currentUserId != null && listing.userId == currentUserId;
 
-    final interestStatus = listing.userInterestStatus;
-    final hasInterest = interestStatus != null;
-
     return WaveCard(
       useLiquidGlass: true,
       margin: const EdgeInsets.symmetric(horizontal: 0),
@@ -442,60 +436,6 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           if (!isOwner && listing.sellerPhone != null && listing.sellerPhone!.isNotEmpty) ...[
             _buildSellerContact(listing),
           ],
-          Row(
-            children: [
-              if (!isOwner && !hasInterest)
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _isInterestLoading
-                        ? null
-                        : listing.interestBlocked
-                        ? () => context.push('/subscriptions')
-                        : () => _submitInterest(listing.id),
-                    icon: _isInterestLoading
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                        : Icon(listing.interestBlocked ? Icons.lock_outline : Icons.handyman_outlined, size: 20),
-                    label: Text(
-                      _isInterestLoading ? '' : (listing.interestBlocked ? l10n.upgradeToContact : l10n.listingsImInterested),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: const BorderSide(color: AppColors.accent500),
-                      foregroundColor: AppColors.accent600,
-                    ),
-                  ),
-                ),
-              if (!isOwner && hasInterest)
-                Expanded(
-                  child: LiquidGlass(
-                    borderRadius: 8,
-                    blur: 20,
-                    tint: _getInterestStatusColor(listing.userInterestStatus),
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          _getInterestStatusIcon(listing.userInterestStatus),
-                          size: 20,
-                          color: _getInterestStatusColor(listing.userInterestStatus),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          _getInterestStatusText(listing.userInterestStatus, l10n),
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: _getInterestStatusColor(listing.userInterestStatus),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          if (!isOwner)
-            ListingContactForm(listing: listing, isOwner: isOwner),
           if (!isOwner) ...[
             const SizedBox(height: 12),
             Align(
@@ -599,83 +539,6 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
         ),
       ],
     );
-  }
-
-  Color _getInterestStatusColor(String? status) {
-    switch (status) {
-      case 'new':
-        return AppColors.warning;
-      case 'won':
-        return AppColors.emerald600;
-      case 'lost':
-        return AppColors.error;
-      default:
-        return const Color(0xFF64748B);
-    }
-  }
-
-  IconData _getInterestStatusIcon(String? status) {
-    switch (status) {
-      case 'new':
-        return Icons.hourglass_empty;
-      case 'won':
-        return Icons.check_circle;
-      case 'lost':
-        return Icons.cancel;
-      default:
-        return Icons.trending_up;
-    }
-  }
-
-  String _getInterestStatusText(String? status, AppLocalizations l10n) {
-    switch (status) {
-      case 'new':
-        return l10n.listingsInterestPending;
-      case 'won':
-        return l10n.listingsInterestAccepted;
-      case 'lost':
-        return l10n.listingsInterestRejected;
-      default:
-        return status ?? '';
-    }
-  }
-
-  Future<void> _submitInterest(int listingId) async {
-    final authState = ref.read(authStateProvider);
-    if (!authState.isAuthenticated) {
-      context.push('/login');
-      return;
-    }
-
-    final l10n = AppLocalizations.of(context);
-    setState(() => _isInterestLoading = true);
-
-    try {
-      final service = LeadService();
-      final response = await service.expressInterest(
-        listingId: listingId,
-        message: l10n.listingsDefaultInterestMessage,
-      );
-
-      if (response.success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message), backgroundColor: AppColors.success),
-        );
-        ref.read(carDetailProvider.notifier).refreshListing(listingId);
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message), backgroundColor: AppColors.error),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isInterestLoading = false);
-    }
   }
 
   Future<void> _editListing(Listing listing) async {
