@@ -189,19 +189,15 @@ class Listing {
   final int viewCount;
 
   // Car-specific fields
+  final String? carVehicleCategory;
   final String? carMake;
   final String? carModel;
   final int? carYear;
   final double? carMileageKm;
-  final String? carTransmission;
   final String? carBodyType;
-  final String? carFuelType;
-  final double? carEngineSize;
   final String? carColor;
   final String? carCondition;
   final String? carVin;
-  final int? carDoors;
-  final int? carSeats;
   final List<String>? carFeatures;
 
   int get totalRooms =>
@@ -277,19 +273,15 @@ class Listing {
     this.userInterestStatus,
     this.userInterestId,
     this.viewCount = 0,
+    this.carVehicleCategory,
     this.carMake,
     this.carModel,
     this.carYear,
     this.carMileageKm,
-    this.carTransmission,
     this.carBodyType,
-    this.carFuelType,
-    this.carEngineSize,
     this.carColor,
     this.carCondition,
     this.carVin,
-    this.carDoors,
-    this.carSeats,
     this.carFeatures,
   });
 
@@ -376,19 +368,15 @@ class Listing {
       userInterestStatus: userInterestStatus ?? this.userInterestStatus,
       userInterestId: userInterestId ?? this.userInterestId,
       viewCount: viewCount,
+      carVehicleCategory: carVehicleCategory,
       carMake: carMake,
       carModel: carModel,
       carYear: carYear,
       carMileageKm: carMileageKm,
-      carTransmission: carTransmission,
       carBodyType: carBodyType,
-      carFuelType: carFuelType,
-      carEngineSize: carEngineSize,
       carColor: carColor,
       carCondition: carCondition,
       carVin: carVin,
-      carDoors: carDoors,
-      carSeats: carSeats,
       carFeatures: carFeatures,
     );
   }
@@ -543,19 +531,15 @@ class Listing {
       viewCount: TypeUtils.safeInt(json['view_count'], defaultValue: 0)!,
 
       // Car-specific fields
+      carVehicleCategory: property is Map ? property['vehicle_category'] : json['vehicle_category'],
       carMake: property is Map ? property['make'] : json['make'],
       carModel: property is Map ? property['model'] : json['model'],
       carYear: TypeUtils.safeInt(property is Map ? property['year'] : json['year']),
       carMileageKm: TypeUtils.safeDouble(property is Map ? property['mileage_km'] : json['mileage_km']),
-      carTransmission: property is Map ? property['transmission'] : json['transmission'],
       carBodyType: property is Map ? property['body_type'] : json['body_type'],
-      carFuelType: property is Map ? property['fuel_type'] : json['fuel_type'],
-      carEngineSize: TypeUtils.safeDouble(property is Map ? property['engine_size'] : json['engine_size']),
       carColor: property is Map ? property['color'] : json['color'],
       carCondition: property is Map ? property['condition'] : json['condition'],
       carVin: property is Map ? property['vin'] : json['vin'],
-      carDoors: TypeUtils.safeInt(property is Map ? property['doors'] : json['doors']),
-      carSeats: TypeUtils.safeInt(property is Map ? property['seats'] : json['seats']),
       carFeatures: _parseCarFeatures(property is Map ? property['features'] : json['features']),
     );
   }
@@ -620,19 +604,15 @@ class Listing {
       'image_count': imageCount,
       'images': images.map((e) => e.toJson()).toList(),
       'address': address?.toJson(),
+      'vehicle_category': carVehicleCategory,
       'make': carMake,
       'model': carModel,
       'year': carYear,
       'mileage_km': carMileageKm,
-      'transmission': carTransmission,
       'body_type': carBodyType,
-      'fuel_type': carFuelType,
-      'engine_size': carEngineSize,
       'color': carColor,
       'condition': carCondition,
       'vin': carVin,
-      'doors': carDoors,
-      'seats': carSeats,
       'features': carFeatures,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
@@ -800,7 +780,9 @@ class Listing {
     }
     if (carMake != null && carModel != null) return '$carMake $carModel';
     if (carMake != null) return carMake!;
-    return 'Vehicle';
+    return carVehicleCategory != null && carVehicleCategory != 'car'
+        ? carVehicleCategory!.replaceAll('_', ' ')
+        : 'Vehicle';
   }
 
   String get mainImageUrl {

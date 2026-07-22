@@ -2072,6 +2072,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingCarPlural => 'Vehicles';
 
   @override
+  String get listingVehicleCategory => 'Vehicle Category';
+
+  @override
   String get listingMake => 'Make';
 
   @override
@@ -2124,6 +2127,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchAnyModel => 'Any Model';
+
+  @override
+  String get searchCars => 'Search vehicles';
 
   @override
   String get commonIsRequired => 'is required';

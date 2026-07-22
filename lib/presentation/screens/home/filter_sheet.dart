@@ -22,8 +22,7 @@ class UnifiedFilterValues {
   final int? yearMin;
   final int? yearMax;
   final int? mileageMax;
-  final String? transmission;
-  final String? fuelType;
+  final String? vehicleCategory;
   final String? bodyType;
 
   const UnifiedFilterValues({
@@ -40,8 +39,7 @@ class UnifiedFilterValues {
     this.yearMin,
     this.yearMax,
     this.mileageMax,
-    this.transmission,
-    this.fuelType,
+    this.vehicleCategory,
     this.bodyType,
   });
 
@@ -57,8 +55,7 @@ class UnifiedFilterValues {
           yearMin != null ||
           yearMax != null ||
           mileageMax != null ||
-          transmission != null ||
-          fuelType != null ||
+          vehicleCategory != null ||
           bodyType != null ||
           priceMin != null ||
           priceMax != null ||
@@ -94,8 +91,7 @@ class UnifiedFilterValues {
         yearMin: key == 'year_min' ? null : yearMin,
         yearMax: key == 'year_max' ? null : yearMax,
         mileageMax: key == 'mileage_max' ? null : mileageMax,
-        transmission: key == 'transmission' ? null : transmission,
-        fuelType: key == 'fuel_type' ? null : fuelType,
+        vehicleCategory: key == 'vehicle_category' ? null : vehicleCategory,
         bodyType: key == 'body_type' ? null : bodyType,
       );
     }
@@ -138,8 +134,7 @@ class UnifiedFilterValues {
       if (yearMin != null) params['year_min'] = yearMin;
       if (yearMax != null) params['year_max'] = yearMax;
       if (mileageMax != null) params['mileage_max'] = mileageMax;
-      if (transmission != null) params['transmission'] = transmission;
-      if (fuelType != null) params['fuel_type'] = fuelType;
+      if (vehicleCategory != null) params['vehicle_category'] = vehicleCategory;
       if (bodyType != null) params['body_type'] = bodyType;
     } else if (category == HomeCategory.property) {
       if (propertyType != null) params['type'] = propertyType;
@@ -201,8 +196,7 @@ class _FilterSheetState extends State<FilterSheet> {
   late int? _yearMin;
   late int? _yearMax;
   late int? _mileageMax;
-  late String? _transmission;
-  late String? _fuelType;
+  late String? _vehicleCategory;
   late String? _bodyType;
 
   final _modelController = TextEditingController();
@@ -227,8 +221,7 @@ class _FilterSheetState extends State<FilterSheet> {
     _yearMin = v.yearMin;
     _yearMax = v.yearMax;
     _mileageMax = v.mileageMax;
-    _transmission = v.transmission;
-    _fuelType = v.fuelType;
+    _vehicleCategory = v.vehicleCategory;
     _bodyType = v.bodyType;
     _modelController.text = _model ?? '';
     _mileageController.text = _mileageMax?.toString() ?? '';
@@ -265,8 +258,7 @@ class _FilterSheetState extends State<FilterSheet> {
       _yearMin = null;
       _yearMax = null;
       _mileageMax = null;
-      _transmission = null;
-      _fuelType = null;
+      _vehicleCategory = null;
       _bodyType = null;
       _modelController.clear();
       _mileageController.clear();
@@ -293,8 +285,7 @@ class _FilterSheetState extends State<FilterSheet> {
       yearMin: _category == HomeCategory.vehicles ? _yearMin : null,
       yearMax: _category == HomeCategory.vehicles ? _yearMax : null,
       mileageMax: _category == HomeCategory.vehicles ? _mileageMax : null,
-      transmission: _category == HomeCategory.vehicles ? _transmission : null,
-      fuelType: _category == HomeCategory.vehicles ? _fuelType : null,
+      vehicleCategory: _category == HomeCategory.vehicles ? _vehicleCategory : null,
       bodyType: _category == HomeCategory.vehicles ? _bodyType : null,
     ));
   }
@@ -502,29 +493,14 @@ class _FilterSheetState extends State<FilterSheet> {
       ),
       const SizedBox(height: 16),
 
-      Text(l10n.listingTransmission, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+      Text(l10n.listingVehicleCategory, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
       const SizedBox(height: 10),
       _modalChipRow(
         options: [
-          (l10n.searchFilterAny, null, _transmission == null),
-          ('Automatic', 'Automatic', _transmission == 'Automatic'),
-          ('Manual', 'Manual', _transmission == 'Manual'),
+          (l10n.searchFilterAny, null, _vehicleCategory == null),
+          ...vehicleCategories.map((c) => (c, c, _vehicleCategory == c)),
         ],
-        onSelected: (v) => setState(() => _transmission = v as String?),
-      ),
-      const SizedBox(height: 16),
-
-      Text(l10n.listingFuelType, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
-      const SizedBox(height: 10),
-      _modalChipRow(
-        options: [
-          (l10n.searchFilterAny, null, _fuelType == null),
-          ('Petrol', 'Petrol', _fuelType == 'Petrol'),
-          ('Diesel', 'Diesel', _fuelType == 'Diesel'),
-          ('Electric', 'Electric', _fuelType == 'Electric'),
-          ('Hybrid', 'Hybrid', _fuelType == 'Hybrid'),
-        ],
-        onSelected: (v) => setState(() => _fuelType = v as String?),
+        onSelected: (v) => setState(() => _vehicleCategory = v as String?),
       ),
       const SizedBox(height: 16),
 

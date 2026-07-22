@@ -11,7 +11,6 @@ import '../../providers/car_providers.dart';
 import '../../providers/listing_providers.dart';
 import '../../widgets/vehicle_listing_card.dart';
 import '../home/filter_sheet.dart';
-import 'car_strings.dart';
 
 class CarListScreen extends ConsumerStatefulWidget {
   const CarListScreen({super.key});
@@ -211,7 +210,7 @@ return VehicleListingCard(
         controller: _searchController,
         onChanged: _onSearchChanged,
         decoration: InputDecoration(
-          hintText: CarStrings.searchCars,
+          hintText: l10n.searchCars,
           hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textSecondary.withValues(alpha: 0.5)),
           prefixIcon: Icon(Icons.search, size: 20, color: context.textSecondary.withValues(alpha: 0.5)),
           suffixIcon: _searchController.text.isNotEmpty
@@ -247,10 +246,8 @@ return VehicleListingCard(
               _filterChip('${l10n.listingModel}: ${_filterValues.model}', () => _removeFilter('model')),
             if (_filterValues.yearMin != null)
               _filterChip('${l10n.listingYear}: ${_filterValues.yearMin}-${_filterValues.yearMax ?? ''}', () => _removeFilter('year_min')),
-            if (_filterValues.transmission != null)
-              _filterChip(_filterValues.transmission!, () => _removeFilter('transmission')),
-            if (_filterValues.fuelType != null)
-              _filterChip(_filterValues.fuelType!, () => _removeFilter('fuel_type')),
+            if (_filterValues.vehicleCategory != null)
+              _filterChip(_filterValues.vehicleCategory!, () => _removeFilter('vehicle_category')),
             if (_filterValues.bodyType != null)
               _filterChip(_filterValues.bodyType!, () => _removeFilter('body_type')),
             if (_filterValues.mileageMax != null)

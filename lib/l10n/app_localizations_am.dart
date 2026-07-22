@@ -1493,7 +1493,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get notificationsEmptySubtitle => 'አዲስ ነገር ሲኖር እዚህ ያዩታል';
 
   @override
-  String get notificationsMarkAllRead => 'ሁሉንም እንደተነበበ አድርግ';
+  String get notificationsMarkAllRead => 'ሁሉንም የተነበበ አድርግ';
 
   @override
   String get paymentsEmpty => 'ምንም የክፍያ ታሪክ የለም';
@@ -2044,6 +2044,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingCarPlural => 'ተሽከርካሪዎች';
 
   @override
+  String get listingVehicleCategory => 'የተሽከርካሪ ምድብ';
+
+  @override
   String get listingMake => 'አምራች';
 
   @override
@@ -2096,6 +2099,9 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get searchAnyModel => 'ማንኛውም ሞዴል';
+
+  @override
+  String get searchCars => 'ተሽከርካሪዎችን ይፈልጉ';
 
   @override
   String get commonIsRequired => 'ያስፈልጋል';
@@ -2262,13 +2268,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingSpecifications => 'ዝርዝር መግለጫዎች';
 
   @override
-  String get carContactSeller => 'ሻጭን ያግኙ';
+  String get carContactSeller => 'ከባለ ንብረት ጋር ይገናኙ';
 
   @override
   String get carCall => 'ይደውሉ';
 
   @override
-  String get carCallHint => 'ሻጭን ለመጥራት ይንኩ';
+  String get carCallHint => 'ወደ ባለንብረት ለመደወል ይንኩ';
 
   @override
   String get carWhatsapp => 'WhatsApp';

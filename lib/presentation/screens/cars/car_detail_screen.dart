@@ -805,19 +805,16 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     void add(String label, String? value) {
       if (value != null && value.isNotEmpty) specs.add(MapEntry(label, value));
     }
+    add(l10n.listingVehicleCategory, listing.carVehicleCategory);
     add(l10n.listingMake, listing.carMake);
     add(l10n.listingModel, listing.carModel);
     add(l10n.listingYear, listing.carYear?.toString());
-    add('${l10n.listingMileage} (km)', listing.carMileageKm != null ? NumberFormat("#,###").format(listing.carMileageKm!.toInt()) : null);
-    add(l10n.listingTransmission, listing.carTransmission);
+    final unit = listing.carVehicleCategory == 'construction_equipment' ? 'Hours' : 'km';
+    add('${l10n.listingMileage} ($unit)', listing.carMileageKm != null ? NumberFormat("#,###").format(listing.carMileageKm!.toInt()) : null);
     add(l10n.listingBodyType, listing.carBodyType);
-    add(l10n.listingFuelType, listing.carFuelType);
-    add('${l10n.listingEngineSize} (L)', listing.carEngineSize != null ? '${listing.carEngineSize}L' : null);
     add(l10n.listingColor, listing.carColor);
     add(l10n.listingCondition, listing.carCondition);
     add(l10n.listingVin, listing.carVin);
-    add(l10n.listingDoors, listing.carDoors?.toString());
-    add(l10n.listingSeats, listing.carSeats?.toString());
 
     if (specs.isEmpty) return const SizedBox();
 

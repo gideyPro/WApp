@@ -329,43 +329,13 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
   Widget _buildVehicleSpecs(BuildContext context) {
     final children = <Widget>[];
     if (widget.listing?.carMileageKm != null) {
+      final unit = widget.listing?.carVehicleCategory == 'construction_equipment' ? ' hrs' : ' km';
       children.add(_specChip(
         Icons.speed_rounded,
-        '${widget.listing!.carMileageKm!.toStringAsFixed(0)} km',
-      ));
-    }
-    if (widget.listing?.carMileageKm != null &&
-        widget.listing?.carTransmission != null) {
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        child: Container(
-          width: 3,
-          height: 3,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.primary400,
-            ),
-        ),
-      ));
-    }
-    if (widget.listing?.carTransmission != null) {
-      children.add(_specChip(
-        Icons.settings_rounded,
-        _transmissionLabel(widget.listing!.carTransmission!),
+        '${widget.listing!.carMileageKm!.toStringAsFixed(0)}$unit',
       ));
     }
     return Row(children: children);
-  }
-
-  String _transmissionLabel(String transmission) {
-    switch (transmission.toLowerCase()) {
-      case 'automatic':
-        return 'Auto';
-      case 'manual':
-        return 'Manual';
-      default:
-        return transmission;
-    }
   }
 
   Widget _specChip(IconData icon, String label) {

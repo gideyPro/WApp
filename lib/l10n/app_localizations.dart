@@ -3910,6 +3910,12 @@ abstract class AppLocalizations {
   /// **'Vehicles'**
   String get listingCarPlural;
 
+  /// No description provided for @listingVehicleCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Category'**
+  String get listingVehicleCategory;
+
   /// No description provided for @listingMake.
   ///
   /// In en, this message translates to:
@@ -4017,6 +4023,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Any Model'**
   String get searchAnyModel;
+
+  /// No description provided for @searchCars.
+  ///
+  /// In en, this message translates to:
+  /// **'Search vehicles'**
+  String get searchCars;
 
   /// No description provided for @commonIsRequired.
   ///

@@ -1245,7 +1245,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get settingsLanguage => 'ቋንቋ';
 
   @override
-  String get settingsNotifications => 'ምልክታታት';
+  String get settingsNotifications => 'ሓበሬታ';
 
   @override
   String get settingsDarkMode => 'ፀሊም ምስሊ';
@@ -1487,13 +1487,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsVipAccess => 'VIP ንብረት ምርኣይ';
 
   @override
-  String get notificationsEmpty => 'ሓድሽ ምልክታ የለን';
+  String get notificationsEmpty => 'ሓድሽ ሓበሬታ የለን';
 
   @override
   String get notificationsEmptySubtitle => 'ሓድሽ ነገር ምስ ዝህሉ ኣብዚ ክትርእዩ ኢኹም';
 
   @override
-  String get notificationsMarkAllRead => 'ኹሉ ተነቢቡ ግበሮ';
+  String get notificationsMarkAllRead => 'ኹሉ ርኡይ ግበሮ';
 
   @override
   String get paymentsEmpty => 'ምንም ታሪኽ ክፍሊት የለን';
@@ -1586,7 +1586,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get errorLoadingPayments => 'ክፍሊታት ክፅዕን ኣይከኣለን';
 
   @override
-  String get errorLoadingNotifications => 'ምልክታታት ክፅዕን ኣይከኣለን';
+  String get errorLoadingNotifications => 'ሓበሬታ ክፅዕን ኣይከኣለን';
 
   @override
   String get errorLoadingFavorites => 'ዝተመረፁ ክፅዕን ኣይከኣለን';
@@ -1735,7 +1735,7 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get notificationJustNow => 'ሕጂ';
+  String get notificationJustNow => 'ሕዚ';
 
   @override
   String get listingUpgradeToFeature => 'ፈሊኹም ንምውፃእ ኣዕብዩ';
@@ -2044,6 +2044,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingCarPlural => 'ተሽከርከርቲ';
 
   @override
+  String get listingVehicleCategory => 'ምድብ ተሽከርካሪ';
+
+  @override
   String get listingMake => 'መምረቲ';
 
   @override
@@ -2096,6 +2099,9 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get searchAnyModel => 'ዝኾነ ሞዴል';
+
+  @override
+  String get searchCars => 'ተሽከርከርቲ ድለዩ';
 
   @override
   String get commonIsRequired => 'የድሊ እዩ';
@@ -2262,13 +2268,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingSpecifications => 'ዝርዝር መግለጻት';
 
   @override
-  String get carContactSeller => 'ሻጺ ረኸብ';
+  String get carContactSeller => 'ርክብ ምስ በዓል ንብረት';
 
   @override
   String get carCall => 'ደውል';
 
   @override
-  String get carCallHint => 'ንሻጺ ንምጽዋዕ ጠውቕ';
+  String get carCallHint => 'ናብ በዓል ንብረት ንምድዋል  ጠውቕ';
 
   @override
   String get carWhatsapp => 'WhatsApp';

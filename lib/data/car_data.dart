@@ -33,9 +33,22 @@ const carModelsByMake = <String, List<String>>{
 String? getFirstModelForMake(String make) =>
     carModelsByMake[make]?.isNotEmpty == true ? carModelsByMake[make]!.first : null;
 
-const carTransmissions = ['manual', 'automatic', 'semi-automatic'];
-const carBodyTypes = ['sedan', 'SUV', 'hatchback', 'pickup', 'coupe', 'convertible', 'van', 'minibus', 'truck', 'bus', 'other'];
-const carFuelTypes = ['gasoline', 'diesel', 'electric', 'hybrid', 'CNG', 'other'];
+const vehicleCategories = ['car', 'motorcycle', 'bicycle', 'construction_equipment'];
+
+const bodyTypesByCategory = <String, List<String>>{
+  'car': ['sedan', 'SUV', 'hatchback', 'pickup', 'truck', 'van', 'minibus', 'coupe', 'convertible', 'station_wagon', 'other'],
+  'motorcycle': ['standard', 'cruiser', 'sport', 'touring', 'dual_sport', 'scooter', 'moped', 'other'],
+  'bicycle': ['mountain', 'road', 'hybrid', 'city', 'electric', 'folding', 'other'],
+  'construction_equipment': ['excavator', 'bulldozer', 'loader', 'crane', 'forklift', 'roller', 'dumper', 'generator', 'compressor', 'other'],
+};
+
+const mileageUnitByCategory = <String, String>{
+  'car': 'km',
+  'motorcycle': 'km',
+  'bicycle': 'km',
+  'construction_equipment': 'Hours',
+};
+
 const carConditions = ['new', 'used'];
 const carRentalPeriods = ['day', 'month', 'year'];
 const carFeatureOptions = ['AC', 'Power Steering', 'Central Locking', 'Power Windows', 'ABS', 'Airbag', 'Sunroof', 'Bluetooth', 'Backup Camera', 'Navigation', 'Cruise Control', 'Leather Seats', 'Alloy Wheels', 'Fog Lights', 'Roof Rack', 'Tow Bar'];

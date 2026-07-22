@@ -648,16 +648,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     _filterValues = v.clearField('year_min');
                   })),
                 ),
-              if (v.transmission != null)
-                _filterChip(v.transmission!,
+              if (v.vehicleCategory != null)
+                _filterChip(v.vehicleCategory!,
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('transmission');
-                  })),
-                ),
-              if (v.fuelType != null)
-                _filterChip(v.fuelType!,
-                  () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('fuel_type');
+                    _filterValues = v.clearField('vehicle_category');
                   })),
                 ),
               if (v.bodyType != null)
@@ -693,8 +687,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     yearMin: v.yearMin,
                     yearMax: v.yearMax,
                     mileageMax: v.mileageMax,
-                    transmission: v.transmission,
-                    fuelType: v.fuelType,
+                    vehicleCategory: v.vehicleCategory,
                     bodyType: v.bodyType,
                   );
                 })),
