@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../data/car_data.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
@@ -649,7 +650,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   })),
                 ),
               if (v.vehicleCategory != null)
-                _filterChip(v.vehicleCategory!,
+                _filterChip(vehicleCategoryLabel(v.vehicleCategory!, l10n),
                   () => _removeFilterAndCheck(() => setState(() {
                     _filterValues = v.clearField('vehicle_category');
                   })),

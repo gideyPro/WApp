@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../data/car_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../home/home_screen.dart';
 import '../../providers/car_providers.dart';
@@ -247,7 +248,7 @@ return VehicleListingCard(
             if (_filterValues.yearMin != null)
               _filterChip('${l10n.listingYear}: ${_filterValues.yearMin}-${_filterValues.yearMax ?? ''}', () => _removeFilter('year_min')),
             if (_filterValues.vehicleCategory != null)
-              _filterChip(_filterValues.vehicleCategory!, () => _removeFilter('vehicle_category')),
+              _filterChip(vehicleCategoryLabel(_filterValues.vehicleCategory!, l10n), () => _removeFilter('vehicle_category')),
             if (_filterValues.bodyType != null)
               _filterChip(_filterValues.bodyType!, () => _removeFilter('body_type')),
             if (_filterValues.mileageMax != null)

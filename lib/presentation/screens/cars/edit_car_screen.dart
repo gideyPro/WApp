@@ -538,7 +538,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             title: l10n.listingStepDetails,
             child: Column(
               children: [
-                _buildCompactDropdown(label: l10n.listingVehicleCategory, value: _formData.vehicleCategory, options: vehicleCategories, onChanged: (v) => _formData = _formData.copyWith(vehicleCategory: v, bodyType: '')),
+                _buildCompactDropdown(label: l10n.listingVehicleCategory, value: _formData.vehicleCategory, options: vehicleCategories, onChanged: (v) => _formData = _formData.copyWith(vehicleCategory: v, bodyType: ''), displayBuilder: (c) => vehicleCategoryLabel(c, l10n)),
                 const SizedBox(height: 12),
                 _buildMakeDropdown(),
                 const SizedBox(height: 12),
@@ -558,7 +558,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                 const SizedBox(height: 12),
                 _buildCompactField(label: l10n.listingColor, value: _formData.color, onChanged: (v) => _formData = _formData.copyWith(color: v)),
                 const SizedBox(height: 12),
-                _buildCompactDropdown(label: l10n.listingCondition, value: _formData.condition, options: carConditions, onChanged: (v) => _formData = _formData.copyWith(condition: v)),
+                _buildCompactDropdown(label: l10n.listingCondition, value: _formData.condition, options: carConditions, onChanged: (v) => _formData = _formData.copyWith(condition: v), displayBuilder: (c) => conditionLabel(c, l10n)),
                 if (_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') ...[
                   const SizedBox(height: 12),
                   _buildCompactField(label: l10n.listingVin, value: _formData.vin, onChanged: (v) => _formData = _formData.copyWith(vin: v)),
@@ -834,7 +834,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     );
   }
 
-  Widget _buildCompactDropdown({required String label, required String value, required List<String> options, required ValueChanged<String> onChanged}) {
+  Widget _buildCompactDropdown({required String label, required String value, required List<String> options, required ValueChanged<String> onChanged, String Function(String)? displayBuilder}) {
     return DropdownButtonFormField<String>(
       initialValue: value.isEmpty ? null : value,
       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
@@ -844,7 +844,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
       dropdownColor: context.sheetBg,
-      items: options.map((o) => DropdownMenuItem(value: o, child: Text(o, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))).toList(),
+      items: options.map((o) => DropdownMenuItem(value: o, child: Text(displayBuilder != null ? displayBuilder(o) : o, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))).toList(),
       onChanged: (v) { if (v != null) onChanged(v); },
       isExpanded: true,
     );

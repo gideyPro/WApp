@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../data/car_data.dart';
 import '../../../data/models/listing.dart';
 import '../../../data/models/address.dart';
 import '../../../l10n/app_localizations.dart';
@@ -806,7 +807,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
       if (value != null && value.isNotEmpty) specs.add(MapEntry(label, value));
     }
     final cat = listing.carVehicleCategory;
-    add(l10n.listingVehicleCategory, cat);
+    add(l10n.listingVehicleCategory, cat != null ? vehicleCategoryLabel(cat, l10n) : null);
     add(l10n.listingMake, listing.carMake);
     add(l10n.listingModel, listing.carModel);
     if (cat != 'bicycle') {
@@ -820,7 +821,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
       add(l10n.listingBodyType, listing.carBodyType);
     }
     add(l10n.listingColor, listing.carColor);
-    add(l10n.listingCondition, listing.carCondition);
+    add(l10n.listingCondition, listing.carCondition != null ? conditionLabel(listing.carCondition!, l10n) : null);
     if (cat == 'car' || cat == 'construction_equipment') {
       add(l10n.listingVin, listing.carVin);
     }

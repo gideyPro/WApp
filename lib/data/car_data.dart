@@ -1,3 +1,5 @@
+import '../l10n/app_localizations.dart';
+
 const vehicleMakesByCategory = <String, List<String>>{
   'car': [
     'Toyota', 'Nissan', 'Honda', 'Mitsubishi', 'Hyundai',
@@ -128,5 +130,23 @@ const mileageUnitByCategory = <String, String>{
 };
 
 const carConditions = ['new', 'used'];
+
+String vehicleCategoryLabel(String category, AppLocalizations l10n) {
+  switch (category) {
+    case 'car': return l10n.categoryCar;
+    case 'motorcycle': return l10n.categoryMotorcycle;
+    case 'bicycle': return l10n.categoryBicycle;
+    case 'construction_equipment': return l10n.categoryConstructionEquipment;
+    default: return category;
+  }
+}
+
+String conditionLabel(String condition, AppLocalizations l10n) {
+  switch (condition) {
+    case 'new': return l10n.conditionNew;
+    case 'used': return l10n.conditionUsed;
+    default: return condition;
+  }
+}
 const carRentalPeriods = ['day', 'month', 'year'];
 const carFeatureOptions = ['AC', 'Power Steering', 'Central Locking', 'Power Windows', 'ABS', 'Airbag', 'Sunroof', 'Bluetooth', 'Backup Camera', 'Navigation', 'Cruise Control', 'Leather Seats', 'Alloy Wheels', 'Fog Lights', 'Roof Rack', 'Tow Bar'];

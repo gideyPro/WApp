@@ -2318,4 +2318,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get carTelegramHint => 'Chat on Telegram';
+
+  @override
+  String get conditionNew => 'New';
+
+  @override
+  String get conditionUsed => 'Used';
+
+  @override
+  String get categoryCar => 'Car';
+
+  @override
+  String get categoryMotorcycle => 'Motorcycle';
+
+  @override
+  String get categoryBicycle => 'Bicycle';
+
+  @override
+  String get categoryConstructionEquipment => 'Construction Equipment';
 }

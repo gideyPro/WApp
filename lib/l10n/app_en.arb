@@ -739,5 +739,11 @@
   "carWhatsapp": "WhatsApp",
   "carWhatsappHint": "Chat on WhatsApp",
   "carTelegram": "Telegram",
-  "carTelegramHint": "Chat on Telegram"
+  "carTelegramHint": "Chat on Telegram",
+  "conditionNew": "New",
+  "conditionUsed": "Used",
+  "categoryCar": "Car",
+  "categoryMotorcycle": "Motorcycle",
+  "categoryBicycle": "Bicycle",
+  "categoryConstructionEquipment": "Construction Equipment"
 }

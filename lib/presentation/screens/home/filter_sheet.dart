@@ -513,7 +513,7 @@ class _FilterSheetState extends State<FilterSheet> {
       _modalChipRow(
         options: [
           (l10n.searchFilterAny, null, _vehicleCategory == null),
-          ...vehicleCategories.map((c) => (c, c, _vehicleCategory == c)),
+          ...vehicleCategories.map((c) => (vehicleCategoryLabel(c, l10n), c, _vehicleCategory == c)),
         ],
         onSelected: (v) => setState(() {
           _vehicleCategory = v as String?;

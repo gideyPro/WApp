@@ -4389,6 +4389,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chat on Telegram'**
   String get carTelegramHint;
+
+  /// No description provided for @conditionNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get conditionNew;
+
+  /// No description provided for @conditionUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get conditionUsed;
+
+  /// No description provided for @categoryCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get categoryCar;
+
+  /// No description provided for @categoryMotorcycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Motorcycle'**
+  String get categoryMotorcycle;
+
+  /// No description provided for @categoryBicycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bicycle'**
+  String get categoryBicycle;
+
+  /// No description provided for @categoryConstructionEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Construction Equipment'**
+  String get categoryConstructionEquipment;
 }
 
 class _AppLocalizationsDelegate

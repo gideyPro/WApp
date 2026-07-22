@@ -739,5 +739,11 @@
   "carWhatsapp": "WhatsApp",
   "carWhatsappHint": "ብWhatsApp ተዘራረብ",
   "carTelegram": "ቴሌግራም",
-  "carTelegramHint": "ብቴሌግራም ተዘራረብ"
+  "carTelegramHint": "ብቴሌግራም ተዘራረብ",
+  "conditionNew": "ሓድሽ",
+  "conditionUsed": "ዝተጠቅመ",
+  "categoryCar": "መኪና",
+  "categoryMotorcycle": "ሞተር ሳይክል",
+  "categoryBicycle": "ብሽክለታ",
+  "categoryConstructionEquipment": "ናይ ኮንስትራክሽን መሳርሒ"
 }

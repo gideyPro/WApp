@@ -2287,4 +2287,22 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get carTelegramHint => 'በቴሌግራም ያውሩ';
+
+  @override
+  String get conditionNew => 'አዲስ';
+
+  @override
+  String get conditionUsed => 'ያገለገለ';
+
+  @override
+  String get categoryCar => 'መኪና';
+
+  @override
+  String get categoryMotorcycle => 'ሞተር ሳይክል';
+
+  @override
+  String get categoryBicycle => 'ብስክሌት';
+
+  @override
+  String get categoryConstructionEquipment => 'የኮንስትራክሽን መሳሪያ';
 }
