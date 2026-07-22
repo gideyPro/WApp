@@ -425,7 +425,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
             if (v == '__other__') {
               setState(() {
                 _isCustomMake = true;
-                _isCustomModel = false;
+                _isCustomModel = true;
                 _formData = _formData.copyWith(make: '', model: '');
               });
             } else {
@@ -467,7 +467,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           dropdownColor: context.sheetBg,
           items: [
             ..._availableModels.map((m) => DropdownMenuItem(value: m, child: Text(m))),
-            if (_formData.make.isNotEmpty && !_isCustomMake)
+            if (_formData.make.isNotEmpty)
               DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
           ],
           onChanged: (v) {
@@ -521,7 +521,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                 ],
                 if (_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') ...[
                   const SizedBox(height: 12),
-                  _buildCompactDropdown(label: l10n.listingBodyType, value: _formData.bodyType, options: bodyTypesByCategory[_formData.vehicleCategory] ?? [], onChanged: (v) => _formData = _formData.copyWith(bodyType: v)),
+                  _buildCompactDropdown(label: l10n.listingBodyType, value: _formData.bodyType, options: bodyTypesByCategory[_formData.vehicleCategory] ?? [], onChanged: (v) => _formData = _formData.copyWith(bodyType: v), displayBuilder: (bt) => bodyTypeLabel(bt, l10n)),
                 ],
                 if (_formData.vehicleCategory != 'bicycle') ...[
                   const SizedBox(height: 12),

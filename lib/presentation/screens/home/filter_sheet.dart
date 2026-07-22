@@ -544,7 +544,7 @@ class _FilterSheetState extends State<FilterSheet> {
         _modalChipRow(
           options: [
             (l10n.searchFilterAny, null, _bodyType == null),
-            ..._bodyTypeOptions.map((bt) => (bt, bt, _bodyType == bt)),
+            ..._bodyTypeOptions.map((bt) => (bodyTypeLabel(bt, l10n), bt, _bodyType == bt)),
           ],
           onSelected: (v) => setState(() => _bodyType = v as String?),
         ),

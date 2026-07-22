@@ -148,5 +148,9 @@ String conditionLabel(String condition, AppLocalizations l10n) {
     default: return condition;
   }
 }
+
+String bodyTypeLabel(String type, AppLocalizations l10n) {
+  return type == 'other' ? l10n.listingOther : type;
+}
 const carRentalPeriods = ['day', 'month', 'year'];
 const carFeatureOptions = ['AC', 'Power Steering', 'Central Locking', 'Power Windows', 'ABS', 'Airbag', 'Sunroof', 'Bluetooth', 'Backup Camera', 'Navigation', 'Cruise Control', 'Leather Seats', 'Alloy Wheels', 'Fog Lights', 'Roof Rack', 'Tow Bar'];
