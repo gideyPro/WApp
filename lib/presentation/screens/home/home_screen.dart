@@ -16,6 +16,7 @@ import '../../providers/car_providers.dart';
 import '../../widgets/featured_listing_card.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/vehicle_listing_card.dart';
+import '../../widgets/vehicle_featured_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import 'filter_sheet.dart';
 
@@ -469,7 +470,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
 
   void _handleListingTap(Listing listing) {
-    context.push('/listings/${listing.id}');
+    if (listing.propertyType == PropertyType.car) {
+      context.push('/cars/${listing.id}');
+    } else {
+      context.push('/listings/${listing.id}');
+    }
   }
 
   @override
@@ -917,17 +922,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         itemBuilder: (context, index) {
           final listing = featuredState.listings[index];
           final fav = _isFavorite(listing.id);
+          final isCar = listing.propertyType == PropertyType.car;
           return Padding(
             padding: const EdgeInsets.only(right: 16),
             child: SizedBox(
               width: 280,
-              child: FeaturedListingCard(
-                listing: listing,
-                isFavorite: fav,
-                isTogglingFavorite: _isToggling(listing.id),
-                onFavorite: () => _toggleFavorite(listing.id),
-                onTap: () => _handleListingTap(listing),
-              ),
+              child: isCar
+                  ? VehicleFeaturedCard(
+                      listing: listing,
+                      isFavorite: fav,
+                      isTogglingFavorite: _isToggling(listing.id),
+                      onFavorite: () => _toggleFavorite(listing.id),
+                      onTap: () => _handleListingTap(listing),
+                    )
+                  : FeaturedListingCard(
+                      listing: listing,
+                      isFavorite: fav,
+                      isTogglingFavorite: _isToggling(listing.id),
+                      onFavorite: () => _toggleFavorite(listing.id),
+                      onTap: () => _handleListingTap(listing),
+                    ),
             ),
           );
         },
@@ -955,17 +969,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               itemBuilder: (context, index) {
                 final listing = vipState.listings[index];
                 final fav = _isFavorite(listing.id);
+                final isCar = listing.propertyType == PropertyType.car;
                 return Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: SizedBox(
                     width: 280,
-                    child: FeaturedListingCard(
-                      listing: listing,
-                      isFavorite: fav,
-                      isTogglingFavorite: _isToggling(listing.id),
-                      onFavorite: () => _toggleFavorite(listing.id),
-                      onTap: () => _handleListingTap(listing),
-                    ),
+                    child: isCar
+                        ? VehicleFeaturedCard(
+                            listing: listing,
+                            isFavorite: fav,
+                            isTogglingFavorite: _isToggling(listing.id),
+                            onFavorite: () => _toggleFavorite(listing.id),
+                            onTap: () => _handleListingTap(listing),
+                          )
+                        : FeaturedListingCard(
+                            listing: listing,
+                            isFavorite: fav,
+                            isTogglingFavorite: _isToggling(listing.id),
+                            onFavorite: () => _toggleFavorite(listing.id),
+                            onTap: () => _handleListingTap(listing),
+                          ),
                   ),
                 );
               },
