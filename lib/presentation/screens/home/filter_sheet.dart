@@ -290,8 +290,34 @@ class _FilterSheetState extends State<FilterSheet> {
     ));
   }
 
-  List<String> get _availableModels =>
-      _make != null ? (carModelsByMake[_make] ?? []) : [];
+  List<String> get _availableModels {
+    if (_make == null) return [];
+    if (_vehicleCategory != null) return modelsForCategoryMake(_vehicleCategory!, _make!);
+    for (final cat in vehicleCategories) {
+      final models = modelsForCategoryMake(cat, _make!);
+      if (models.isNotEmpty) return models;
+    }
+    return [];
+  }
+
+  List<String> get _bodyTypeOptions {
+    if (_vehicleCategory != null) return bodyTypesByCategory[_vehicleCategory] ?? [];
+    final all = <String>{};
+    for (final cat in vehicleCategories) {
+      if (cat == 'motorcycle' || cat == 'bicycle') continue;
+      all.addAll(bodyTypesByCategory[cat] ?? []);
+    }
+    return all.toList();
+  }
+
+  List<String> get _allMakes {
+    if (_vehicleCategory != null) return makesForCategory(_vehicleCategory!);
+    final all = <String>{};
+    for (final cat in vehicleCategories) {
+      all.addAll(makesForCategory(cat));
+    }
+    return all.toList()..sort();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -451,7 +477,7 @@ class _FilterSheetState extends State<FilterSheet> {
       _modalChipRow(
         options: [
           (l10n.searchFilterAny, null, _make == null),
-          ...carMakes.map((m) => (m, m, _make == m)),
+          ..._allMakes.map((m) => (m, m, _make == m)),
         ],
         onSelected: (v) => setState(() {
           _make = v as String?;
@@ -482,17 +508,6 @@ class _FilterSheetState extends State<FilterSheet> {
         const SizedBox(height: 16),
       ],
 
-      Text(l10n.listingYear, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
-      const SizedBox(height: 10),
-      Row(
-        children: [
-          Expanded(child: _yearDropdown(l10n.searchFilterAny, _yearMin, (v) => setState(() => _yearMin = v))),
-          const SizedBox(width: 12),
-          Expanded(child: _yearDropdown(l10n.searchFilterAny, _yearMax, (v) => setState(() => _yearMax = v))),
-        ],
-      ),
-      const SizedBox(height: 16),
-
       Text(l10n.listingVehicleCategory, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
       const SizedBox(height: 10),
       _modalChipRow(
@@ -500,39 +515,53 @@ class _FilterSheetState extends State<FilterSheet> {
           (l10n.searchFilterAny, null, _vehicleCategory == null),
           ...vehicleCategories.map((c) => (c, c, _vehicleCategory == c)),
         ],
-        onSelected: (v) => setState(() => _vehicleCategory = v as String?),
+        onSelected: (v) => setState(() {
+          _vehicleCategory = v as String?;
+          _make = null;
+          _model = null;
+          _modelController.clear();
+          _bodyType = null;
+        }),
       ),
       const SizedBox(height: 16),
 
-      Text(l10n.listingBodyType, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
-      const SizedBox(height: 10),
-      _modalChipRow(
-        options: [
-          (l10n.searchFilterAny, null, _bodyType == null),
-          ('Sedan', 'Sedan', _bodyType == 'Sedan'),
-          ('SUV', 'SUV', _bodyType == 'SUV'),
-          ('Hatchback', 'Hatchback', _bodyType == 'Hatchback'),
-          ('Pickup', 'Pickup', _bodyType == 'Pickup'),
-          ('Minivan', 'Minivan', _bodyType == 'Minivan'),
-          ('Coupe', 'Coupe', _bodyType == 'Coupe'),
-          ('Convertible', 'Convertible', _bodyType == 'Convertible'),
-          ('Wagon', 'Wagon', _bodyType == 'Wagon'),
-          ('Van', 'Van', _bodyType == 'Van'),
-          ('Truck', 'Truck', _bodyType == 'Truck'),
-        ],
-        onSelected: (v) => setState(() => _bodyType = v as String?),
-      ),
-      const SizedBox(height: 16),
+      if (_vehicleCategory == null || _vehicleCategory != 'bicycle') ...[
+        Text(l10n.listingYear, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(child: _yearDropdown(l10n.searchFilterAny, _yearMin, (v) => setState(() => _yearMin = v))),
+            const SizedBox(width: 12),
+            Expanded(child: _yearDropdown(l10n.searchFilterAny, _yearMax, (v) => setState(() => _yearMax = v))),
+          ],
+        ),
+        const SizedBox(height: 16),
+      ],
 
-      Text(l10n.listingMileageMax, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
-      const SizedBox(height: 10),
-      TextField(
-        controller: _mileageController,
-        decoration: _inputDecoration('e.g. 100000'),
-        keyboardType: TextInputType.number,
-        style: AppTextStyles.bodyMedium,
-      ),
-      const SizedBox(height: 16),
+      if (_vehicleCategory == null || _vehicleCategory == 'car' || _vehicleCategory == 'construction_equipment') ...[
+        Text(l10n.listingBodyType, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 10),
+        _modalChipRow(
+          options: [
+            (l10n.searchFilterAny, null, _bodyType == null),
+            ..._bodyTypeOptions.map((bt) => (bt, bt, _bodyType == bt)),
+          ],
+          onSelected: (v) => setState(() => _bodyType = v as String?),
+        ),
+        const SizedBox(height: 16),
+      ],
+
+      if (_vehicleCategory == null || _vehicleCategory != 'bicycle') ...[
+        Text(l10n.listingMileageMax, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 10),
+        TextField(
+          controller: _mileageController,
+          decoration: _inputDecoration('e.g. 100000'),
+          keyboardType: TextInputType.number,
+          style: AppTextStyles.bodyMedium,
+        ),
+        const SizedBox(height: 16),
+      ],
 
       _buildPriceSection(l10n),
       _buildSortSection(l10n, isVehicle: true),

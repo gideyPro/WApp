@@ -41,7 +41,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   bool _isCustomMake = false;
   bool _isCustomModel = false;
 
-  List<String> get _availableModels => carModelsByMake[_formData.make] ?? [];
+  List<String> get _availableModels => modelsForCategoryMake(_formData.vehicleCategory, _formData.make);
 
   AddressService get _addressService => ref.read(addressServiceProvider);
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
@@ -55,8 +55,9 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   void initState() {
     super.initState();
     final l = widget.listing;
-    final makeInList = carModelsByMake.containsKey(l.carMake);
-    final modelInList = makeInList && (carModelsByMake[l.carMake]?.contains(l.carModel) ?? false);
+    final cat = l.carVehicleCategory ?? 'car';
+    final makeInList = vehicleModelsByCategoryMake[cat]?.containsKey(l.carMake) == true;
+    final modelInList = makeInList && (vehicleModelsByCategoryMake[cat]?[l.carMake]?.contains(l.carModel) ?? false);
 
     _formData = CarFormData(
       vehicleCategory: l.carVehicleCategory ?? 'car',
@@ -431,14 +432,14 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   }
 
   Widget _buildMakeDropdown() {
-    final makes = carMakes.toList()..sort();
+    final makes = makesForCategory(_formData.vehicleCategory).toList()..sort();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('${l10n.listingMake} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
-          initialValue: _isCustomMake ? null : (carModelsByMake.containsKey(_formData.make) ? _formData.make : null),
+          initialValue: _isCustomMake ? null : (vehicleModelsByCategoryMake[_formData.vehicleCategory]?.containsKey(_formData.make) == true ? _formData.make : null),
           style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
           decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6)),
           dropdownColor: context.sheetBg,
@@ -537,23 +538,31 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             title: l10n.listingStepDetails,
             child: Column(
               children: [
+                _buildCompactDropdown(label: l10n.listingVehicleCategory, value: _formData.vehicleCategory, options: vehicleCategories, onChanged: (v) => _formData = _formData.copyWith(vehicleCategory: v, bodyType: '')),
+                const SizedBox(height: 12),
                 _buildMakeDropdown(),
                 const SizedBox(height: 12),
                 _buildModelDropdown(),
-                const SizedBox(height: 12),
-                _buildCompactField(label: '${l10n.listingYear} *', value: _formData.year, onChanged: (v) => _formData = _formData.copyWith(year: v), keyboardType: TextInputType.number),
-                const SizedBox(height: 12),
-                _buildCompactDropdown(label: l10n.listingVehicleCategory, value: _formData.vehicleCategory, options: vehicleCategories, onChanged: (v) => _formData = _formData.copyWith(vehicleCategory: v, bodyType: '')),
-                const SizedBox(height: 8),
-                _buildCompactDropdown(label: l10n.listingBodyType, value: _formData.bodyType, options: bodyTypesByCategory[_formData.vehicleCategory] ?? [], onChanged: (v) => _formData = _formData.copyWith(bodyType: v)),
-                const SizedBox(height: 12),
-                _buildCompactField(label: '${l10n.listingMileage} (${mileageUnitByCategory[_formData.vehicleCategory] ?? 'km'})', value: _formData.mileageKm, onChanged: (v) => _formData = _formData.copyWith(mileageKm: v), keyboardType: TextInputType.number),
+                if (_formData.vehicleCategory != 'bicycle') ...[
+                  const SizedBox(height: 12),
+                  _buildCompactField(label: '${l10n.listingYear} *', value: _formData.year, onChanged: (v) => _formData = _formData.copyWith(year: v), keyboardType: TextInputType.number),
+                ],
+                if (_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') ...[
+                  const SizedBox(height: 12),
+                  _buildCompactDropdown(label: l10n.listingBodyType, value: _formData.bodyType, options: bodyTypesByCategory[_formData.vehicleCategory] ?? [], onChanged: (v) => _formData = _formData.copyWith(bodyType: v)),
+                ],
+                if (_formData.vehicleCategory != 'bicycle') ...[
+                  const SizedBox(height: 12),
+                  _buildCompactField(label: '${l10n.listingMileage} (${mileageUnitByCategory[_formData.vehicleCategory] ?? 'km'})', value: _formData.mileageKm, onChanged: (v) => _formData = _formData.copyWith(mileageKm: v), keyboardType: TextInputType.number),
+                ],
                 const SizedBox(height: 12),
                 _buildCompactField(label: l10n.listingColor, value: _formData.color, onChanged: (v) => _formData = _formData.copyWith(color: v)),
                 const SizedBox(height: 12),
                 _buildCompactDropdown(label: l10n.listingCondition, value: _formData.condition, options: carConditions, onChanged: (v) => _formData = _formData.copyWith(condition: v)),
-                const SizedBox(height: 12),
-                _buildCompactField(label: l10n.listingVin, value: _formData.vin, onChanged: (v) => _formData = _formData.copyWith(vin: v)),
+                if (_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') ...[
+                  const SizedBox(height: 12),
+                  _buildCompactField(label: l10n.listingVin, value: _formData.vin, onChanged: (v) => _formData = _formData.copyWith(vin: v)),
+                ],
               ],
             ),
           ),

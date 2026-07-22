@@ -805,16 +805,25 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     void add(String label, String? value) {
       if (value != null && value.isNotEmpty) specs.add(MapEntry(label, value));
     }
-    add(l10n.listingVehicleCategory, listing.carVehicleCategory);
+    final cat = listing.carVehicleCategory;
+    add(l10n.listingVehicleCategory, cat);
     add(l10n.listingMake, listing.carMake);
     add(l10n.listingModel, listing.carModel);
-    add(l10n.listingYear, listing.carYear?.toString());
-    final unit = listing.carVehicleCategory == 'construction_equipment' ? 'Hours' : 'km';
-    add('${l10n.listingMileage} ($unit)', listing.carMileageKm != null ? NumberFormat("#,###").format(listing.carMileageKm!.toInt()) : null);
-    add(l10n.listingBodyType, listing.carBodyType);
+    if (cat != 'bicycle') {
+      add(l10n.listingYear, listing.carYear?.toString());
+    }
+    if (cat != 'bicycle') {
+      final unit = cat == 'construction_equipment' ? 'Hours' : 'km';
+      add('${l10n.listingMileage} ($unit)', listing.carMileageKm != null ? NumberFormat("#,###").format(listing.carMileageKm!.toInt()) : null);
+    }
+    if (cat == 'car' || cat == 'construction_equipment') {
+      add(l10n.listingBodyType, listing.carBodyType);
+    }
     add(l10n.listingColor, listing.carColor);
     add(l10n.listingCondition, listing.carCondition);
-    add(l10n.listingVin, listing.carVin);
+    if (cat == 'car' || cat == 'construction_equipment') {
+      add(l10n.listingVin, listing.carVin);
+    }
 
     if (specs.isEmpty) return const SizedBox();
 
