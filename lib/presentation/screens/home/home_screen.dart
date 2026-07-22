@@ -534,6 +534,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     onSubmitted: (_) => _performSearch(),
                     onClear: _clearSearch,
                     onFilterTap: _handleFilterTap,
+                    onAvatarTap: () => ref.read(selectedTabProvider.notifier).state = 4,
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -1290,6 +1291,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   final ValueChanged<String> onSubmitted;
   final VoidCallback onClear;
   final VoidCallback onFilterTap;
+  final VoidCallback? onAvatarTap;
 
   _SearchBarDelegate({
     this.user,
@@ -1301,6 +1303,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     required this.onSubmitted,
     required this.onClear,
     required this.onFilterTap,
+    this.onAvatarTap,
   });
 
   String _getGreeting(AppLocalizations l10n) {
@@ -1475,7 +1478,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
         : '?';
     final avatarUrl = user?.googleAvatar as String?;
     return GestureDetector(
-      onTap: () => context.push('/account'),
+      onTap: onAvatarTap,
       child: Container(
         width: 44,
         height: 44,
