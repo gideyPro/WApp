@@ -243,20 +243,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  Widget _buildCarListings() {
-    final state = ref.watch(carListingsProvider);
-    final l10n = AppLocalizations.of(context);
-    final header = _buildSectionHeader(
-      l10n.listingCarPlural,
-      eyebrow: l10n.homeLatestRecently.toUpperCase(),
-    );
-
+  Widget _buildCarLatestSliver(ListingsState state, AppLocalizations l10n) {
     if (state.isLoading && state.listings.isEmpty) {
       return SliverPadding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
         sliver: SliverList(
           delegate: SliverChildListDelegate([
-            header,
             for (int i = 0; i < 3; i++)
               const VehicleListingCard(isLoading: true),
           ]),
@@ -268,7 +260,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       return SliverFillRemaining(
         child: Column(
           children: [
-            header,
             Expanded(
               child: Center(
                 child: TextButton.icon(
@@ -284,20 +275,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     if (state.listings.isEmpty) {
-      return SliverFillRemaining(
-        child: Column(
-          children: [
-            header,
-            Expanded(
-              child: WaveEmptyState(
-                icon: Icons.directions_car_outlined,
-                title: l10n.listingsNoResults,
-                subtitle: 'No vehicle listings available',
-              ),
-            ),
-          ],
-        ),
-      );
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
 
     return SliverPadding(
@@ -305,25 +283,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            if (index == 0) return header;
-            final i = index - 1;
-            if (i == state.listings.length) {
+            if (index == state.listings.length) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator()),
               );
             }
-            final listing = state.listings[i];
+            final listing = state.listings[index];
             final fav = _isFavorite(listing.id);
-            return VehicleListingCard(
-              listing: listing,
-              isFavorite: fav,
-              isTogglingFavorite: _isToggling(listing.id),
-              onFavorite: () => _toggleFavorite(listing.id),
-              onTap: () => context.push('/cars/${listing.id}'),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: VehicleListingCard(
+                listing: listing,
+                isFavorite: fav,
+                isTogglingFavorite: _isToggling(listing.id),
+                onFavorite: () => _toggleFavorite(listing.id),
+                onTap: () => context.push('/cars/${listing.id}'),
+              ),
             );
           },
-          childCount: 1 + state.listings.length + (state.isLoadingMore ? 1 : 0),
+          childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
         ),
       ),
     );
@@ -567,7 +546,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 else if (canBrowseAll)
                   ..._buildAllBrowseSlivers(featuredState, vipState, listingsState, carState, l10n)
                 else if (_selectedCategory == HomeCategory.vehicles)
-                  _buildCarListings()
+                  ..._buildCarBrowseSlivers(featuredState, vipState, carState, l10n)
                 else ...[
                   SliverToBoxAdapter(
                     child: FadeTransition(
@@ -1092,6 +1071,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ),
       _buildMergedFeed(propState, carState),
     ];
+  }
+
+  List<Widget> _buildCarBrowseSlivers(
+    ListingsState featuredState,
+    ListingsState vipState,
+    ListingsState carState,
+    AppLocalizations l10n,
+  ) {
+    final carFeatured = _filterCarListings(featuredState);
+    final carVip = _filterCarListings(vipState);
+    return [
+      SliverToBoxAdapter(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (carFeatured.listings.isNotEmpty) _buildSectionHeader(l10n.listingsFeatured),
+              if (carFeatured.listings.isNotEmpty) _buildFeaturedListings(carFeatured),
+              if (carVip.listings.isNotEmpty) _buildVipSection(carVip),
+              _buildSectionHeader(l10n.listingCarPlural,
+                  eyebrow: l10n.homeLatestRecently.toUpperCase()),
+            ],
+          ),
+        ),
+      ),
+      _buildCarLatestSliver(carState, l10n),
+    ];
+  }
+
+  ListingsState _filterCarListings(ListingsState state) {
+    final carListings = state.listings.where((l) => l.propertyType == PropertyType.car).toList();
+    return state.copyWith(listings: carListings);
   }
 
   Widget _buildVipTeaser() {
