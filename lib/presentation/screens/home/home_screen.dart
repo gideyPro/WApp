@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -543,7 +544,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     focusNode: _searchFocusNode,
                     hasActiveFilters: _hasActiveFilters,
                     searchQuery: _searchController.text,
-                    unreadCount: ref.watch(unreadCountProvider),
                     onSearchChanged: _onSearchChanged,
                     onSubmitted: (_) => _performSearch(),
                     onClear: _clearSearch,
@@ -1256,7 +1256,6 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   final FocusNode focusNode;
   final bool hasActiveFilters;
   final String searchQuery;
-  final int unreadCount;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<String> onSubmitted;
   final VoidCallback onClear;
@@ -1268,7 +1267,6 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     required this.focusNode,
     required this.hasActiveFilters,
     required this.searchQuery,
-    this.unreadCount = 0,
     required this.onSearchChanged,
     required this.onSubmitted,
     required this.onClear,
@@ -1344,7 +1342,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                           ),
                         ],
                       ),
-                      _buildNotificationBell(context),
+                      _buildUserAvatar(context),
                     ],
                   ),
                 ),
@@ -1441,39 +1439,43 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
-  Widget _buildNotificationBell(BuildContext context) {
+  Widget _buildUserAvatar(BuildContext context) {
+    final initials = user?.initials.isNotEmpty == true
+        ? user!.initials
+        : '?';
+    final avatarUrl = user?.googleAvatar as String?;
     return GestureDetector(
-      onTap: () => context.push('/notifications'),
+      onTap: () => context.push('/account'),
       child: Container(
         width: 44,
         height: 44,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: AppColors.gradientHero,
+          image: avatarUrl != null
+              ? DecorationImage(
+                  image: CachedNetworkImageProvider(avatarUrl),
+                  fit: BoxFit.cover,
+                )
+              : null,
+          gradient: avatarUrl != null ? null : AppColors.gradientHero,
           boxShadow: AppColors.shadowMd,
           border: Border.all(
             color: Colors.white.withValues(alpha: 0.2),
             width: 2,
           ),
         ),
-        child: Center(
-          child: unreadCount > 0
-              ? Badge(
-                  label: Text(
-                    unreadCount > 99 ? '99+' : '$unreadCount',
-                    style: AppTextStyles.labelSmall.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: unreadCount > 99 ? 8 : 10,
-                    ),
+        child: avatarUrl != null
+            ? null
+            : Center(
+                child: Text(
+                  initials,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
                   ),
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  child: const Icon(Icons.notifications_outlined,
-                      color: Colors.white, size: 22),
-                )
-              : const Icon(Icons.notifications_outlined,
-                  color: Colors.white, size: 22),
-        ),
+                ),
+              ),
       ),
     );
   }

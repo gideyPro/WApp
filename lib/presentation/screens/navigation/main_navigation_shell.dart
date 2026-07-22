@@ -8,7 +8,7 @@ import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../home/home_screen.dart';
 import '../orders/orders_screen.dart';
-import '../messages/messages_screen.dart';
+import '../notifications/notifications_screen.dart';
 import '../account/account_screen.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -94,11 +94,9 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       const HomeScreen(),
       const OrdersScreen(),
       const Center(child: Text('')), // Placeholder for FAB
-      const MessagesScreen(),
+      const NotificationsScreen(),
       const AccountScreen(),
     ];
-
-    final unreadNotifCount = ref.watch(unreadCountProvider);
 
     return PopScope(
       canPop: false,
@@ -112,7 +110,6 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
         resizeToAvoidBottomInset: false,
         body: Column(
           children: [
-            _buildNotificationHeader(unreadNotifCount),
             Expanded(
               child: IndexedStack(
                 index: selectedIndex,
@@ -150,7 +147,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
                 _buildNavItem(Icons.home_rounded, AppLocalizations.of(context).navHome, 0),
                 _buildNavItem(Icons.receipt_long_outlined, AppLocalizations.of(context).navOrders, 1),
                 const SizedBox(width: 48), // Space for FAB notch
-                _buildNavItem(Icons.chat_bubble_outline_rounded, AppLocalizations.of(context).navMessages, 3),
+                _buildNavItem(Icons.notifications_outlined, AppLocalizations.of(context).settingsNotifications, 3, badgeCount: ref.watch(unreadCountProvider)),
                 _buildNavItem(Icons.person_outline, AppLocalizations.of(context).navSettings, 4),
               ],
             ),
@@ -160,46 +157,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     );
   }
 
-  Widget _buildNotificationHeader(int unreadCount) {
-    if (unreadCount == 0) return const SizedBox(height: 0);
-    return GestureDetector(
-      onTap: () => context.push('/notifications'),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top + 4,
-          bottom: 4,
-          left: 16,
-          right: 16,
-        ),
-        color: AppColors.accent600,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Badge(
-              label: Text(
-                unreadCount > 99 ? '99+' : '$unreadCount',
-                style: AppTextStyles.labelSmall.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: unreadCount > 99 ? 8 : 10,
-                ),
-              ),
-              backgroundColor: Colors.white,
-              textColor: AppColors.accent600,
-              child: const Icon(Icons.notifications, color: Colors.white, size: 20),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              AppLocalizations.of(context).settingsNotifications,
-              style: AppTextStyles.labelSmall.copyWith(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, int index) {
+  Widget _buildNavItem(IconData icon, String label, int index, {int? badgeCount}) {
     final selectedIndex = ref.watch(selectedTabProvider);
     final isSelected = selectedIndex == index;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -210,11 +168,28 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? AppColors.accent600 : (isDark ? AppColors.primary600 : AppColors.primary300),
-              size: 26,
-            ),
+            badgeCount != null && badgeCount > 0
+                ? Badge(
+                    label: Text(
+                      badgeCount > 99 ? '99+' : '$badgeCount',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: badgeCount > 99 ? 8 : 10,
+                      ),
+                    ),
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    child: Icon(
+                      icon,
+                      color: isSelected ? AppColors.accent600 : (isDark ? AppColors.primary600 : AppColors.primary300),
+                      size: 26,
+                    ),
+                  )
+                : Icon(
+                    icon,
+                    color: isSelected ? AppColors.accent600 : (isDark ? AppColors.primary600 : AppColors.primary300),
+                    size: 26,
+                  ),
             const SizedBox(height: 4),
             Text(
               label,
