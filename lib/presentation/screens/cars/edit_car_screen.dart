@@ -914,7 +914,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [DropdownMenuItem(value: null, child: Text(loc.listingNoOptions, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)))]
+          ? [DropdownMenuItem(value: null, child: Text(loc.listingSelect, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)))]
           : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
