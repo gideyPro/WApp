@@ -8,10 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/text_styles.dart';
 import '../../core/theme/theme_colors.dart';
+import '../../data/car_data.dart';
 import '../../data/models/listing.dart';
 import '../../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 import 'common/wave_card.dart';
+import 'common/wave_glass.dart';
 
 class VehicleListingCard extends ConsumerStatefulWidget {
   final Listing? listing;
@@ -151,6 +153,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
   Widget _buildImageSection(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isRent = widget.listing?.listingType == ListingType.rental;
+    final vehicleCategory = widget.listing?.carVehicleCategory;
 
     return Container(
       decoration: BoxDecoration(
@@ -250,6 +253,35 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
                   ),
                 ),
               ),
+
+              // Vehicle category badge — bottom-left
+              if (vehicleCategory != null && vehicleCategory.isNotEmpty)
+                Positioned(
+                  bottom: 8,
+                  left: 8,
+                  child: WaveGlass(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _categoryIcon(vehicleCategory),
+                          size: 12,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          vehicleCategoryLabel(vehicleCategory, l10n),
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
 
               // Owner action overlays
               if (widget.imageOverlayActions != null)
@@ -388,6 +420,15 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
         ],
       ],
     );
+  }
+
+  static IconData _categoryIcon(String category) {
+    switch (category) {
+      case 'motorcycle': return Icons.motorcycle_rounded;
+      case 'bicycle': return Icons.pedal_bike_rounded;
+      case 'construction_equipment': return Icons.construction_rounded;
+      default: return Icons.directions_car_rounded;
+    }
   }
 
   Widget _buildSkeleton(BuildContext context) {

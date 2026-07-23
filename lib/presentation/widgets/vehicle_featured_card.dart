@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/text_styles.dart';
 import '../../core/theme/theme_colors.dart';
+import '../../data/car_data.dart';
 import '../../data/models/listing.dart';
 import '../../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
@@ -148,8 +149,13 @@ class VehicleFeaturedCard extends ConsumerWidget {
   Widget _buildBadgesRow(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isRent = listing?.listingType == ListingType.rental;
+    final cat = listing?.carVehicleCategory;
     return Row(
       children: [
+        if (cat != null && cat.isNotEmpty) ...[
+          _buildBadge(vehicleCategoryLabel(cat, l10n), AppColors.primary600),
+          const SizedBox(width: 4),
+        ],
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(
