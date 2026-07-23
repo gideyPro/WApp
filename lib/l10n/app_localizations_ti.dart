@@ -2268,7 +2268,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingDetail => 'ዝርዝራት';
 
   @override
-  String get listingSpecifications => 'ዝርዝር መግለጻት';
+  String get listingSpecifications => 'ዝርዝር መግለፂ';
 
   @override
   String get carContactSeller => 'ርክብ ምስ በዓል ንብረት';
