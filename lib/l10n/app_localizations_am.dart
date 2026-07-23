@@ -2412,16 +2412,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get featureAbs => 'ኤቢኤስ';
 
   @override
-  String get featureAirbag => 'ኤርባግ';
+  String get featureAirbag => 'የደህንነት አየር ከረጢት';
 
   @override
-  String get featureAlarmSystem => 'አላም ሲስተም';
+  String get featureAlarmSystem => 'የማስጠንቀቂያ ደወል';
 
   @override
   String get featureAlloyWheels => 'አሎይ ዊልስ';
 
   @override
-  String get featureBackupCamera => 'ባክአፕ ካሜራ';
+  String get featureBackupCamera => 'የኋላ መመልከቻ ካሜራ';
 
   @override
   String get featureBasket => 'ቅርጫት';
@@ -2436,40 +2436,40 @@ class AppLocalizationsAm extends AppLocalizations {
   String get featureBluetooth => 'ብሉቱዝ';
 
   @override
-  String get featureCentralLocking => 'ሴንትራል ሎኪንግ';
+  String get featureCentralLocking => 'ማዕከላዊ መቆለፊያ';
 
   @override
-  String get featureCrashBars => 'ክራሽ ባርስ';
+  String get featureCrashBars => 'የመጋጨት መከላከያ ብረት';
 
   @override
-  String get featureCruiseControl => 'ክሩዝ ኮንትሮል';
+  String get featureCruiseControl => 'የፍጥነት መቆጣጠሪያ';
 
   @override
-  String get featureDiscBrakes => 'ዲስክ ብሬክስ';
+  String get featureDiscBrakes => 'የዲስክ ፍሬን';
 
   @override
-  String get featureElectricAssist => 'ኤሌክትሪክ አሲስት';
+  String get featureElectricAssist => 'በኤሌክትሪክ የሚታገዝ';
 
   @override
-  String get featureFenders => 'ፌንደር';
+  String get featureFenders => 'ጭቃ መከላከያ';
 
   @override
-  String get featureFogLights => 'ፎግ ላይቶች';
+  String get featureFogLights => 'የጭጋግ መብራቶች';
 
   @override
-  String get featureFrontSuspension => 'የፊት ሱስፔንሽን';
+  String get featureFrontSuspension => 'የፊት አሞርቲሰር';
 
   @override
   String get featureGps => 'ጂፒኤስ';
 
   @override
-  String get featureHeatedGrips => 'ሙቅ ግሪፕስ';
+  String get featureHeatedGrips => 'የሚሞቁ እጀታዎች';
 
   @override
-  String get featureHeatedSeat => 'ሙቅ ወንበር';
+  String get featureHeatedSeat => 'የሚሞቅ ወንበር';
 
   @override
-  String get featureHydraulicThumb => 'ሃይድሮሊክ እጅ';
+  String get featureHydraulicThumb => 'ሃይድሮሊክ መቆንጠጫ';
 
   @override
   String get featureKickstand => 'መቆሚያ';
@@ -2484,10 +2484,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get featureLockIncluded => 'መቆለፊያ ተካቷል';
 
   @override
-  String get featureLongReachArm => 'ሎንግ ሪች ክንድ';
+  String get featureLongReachArm => 'የሚዘረጋ ረጅም ክንድ';
 
   @override
-  String get featureLowHours => 'ዝቅተኛ ሰአታት';
+  String get featureLowHours => 'አነስተኛ የስራ ሰዓት';
 
   @override
   String get featureLuggageRack => 'የሻንጣ መደርደሪያ';
@@ -2499,13 +2499,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get featurePowerSteering => 'ፓወር ስቲሪንግ';
 
   @override
-  String get featurePowerWindows => 'ፓወር ዊንዶውስ';
+  String get featurePowerWindows => 'የኤሌክትሪክ መስኮቶች';
 
   @override
   String get featureQuickAttach => 'ፈጣን ማያያዣ';
 
   @override
-  String get featureRearSuspension => 'የኋላ ሱስፔንሽን';
+  String get featureRearSuspension => 'የኋላ አሞርቲሰር';
 
   @override
   String get featureRops => 'ሮፕስ';
@@ -2514,7 +2514,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get featureRoofRack => 'የጣሪያ መደርደሪያ';
 
   @override
-  String get featureServiceRecords => 'የአገልግሎት መዝገቦች';
+  String get featureServiceRecords => 'የጥገና ታሪክ';
 
   @override
   String get featureSidePanniers => 'የጎን ቦርሳዎች';
@@ -2523,17 +2523,17 @@ class AppLocalizationsAm extends AppLocalizations {
   String get featureSunroof => 'ሰንሩፍ';
 
   @override
-  String get featureTopCase => 'ቶፕ ኬዝ';
+  String get featureTopCase => 'የኋላ ሳጥን';
 
   @override
-  String get featureTowBar => 'ቶው ባር';
+  String get featureTowBar => 'መጎተቻ ብረት';
 
   @override
-  String get featureTrackVsWheels => 'ትራክ ወይም ዊልስ';
+  String get featureTrackVsWheels => 'ሰንሰለት ወይም ጎማ';
 
   @override
   String get featureUsbCharger => 'ዩኤስቢ ቻርጀር';
 
   @override
-  String get featureWindshield => 'ዊንድሺልድ';
+  String get featureWindshield => 'የፊት መስታወት';
 }

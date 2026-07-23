@@ -1078,7 +1078,7 @@ const carFeatureOptions = ['AC', 'Power Steering', 'Central Locking', 'Power Win
 
 const motorcycleFeatureOptions = ['ABS', 'Top Case', 'Side Panniers', 'Windshield', 'Heated Grips', 'Crash Bars', 'LED Lights', 'USB Charger', 'Alarm System', 'Luggage Rack'];
 
-const bicycleFeatureOptions = ['Front Suspension', 'Rear Suspension', 'Disc Brakes', 'Electric Assist', 'Battery Included', 'Lights', 'Fenders', 'Kickstand', 'Basket', 'Bell', 'Lock Included'];
+const bicycleFeatureOptions = ['Front Suspension', 'Rear Suspension', 'Disc Brakes', 'Electric Assist', 'Battery Included', 'LED Lights', 'Fenders', 'Kickstand', 'Basket', 'Bell', 'Lock Included'];
 
 const constructionFeatureOptions = ['GPS', 'Backup Camera', 'ROPS', 'AC', 'Heated Seat', 'Long Reach Arm', 'Quick Attach', 'Hydraulic Thumb', 'Track vs Wheels', 'Low Hours', 'Service Records'];
 
