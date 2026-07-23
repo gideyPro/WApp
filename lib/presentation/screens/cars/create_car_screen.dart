@@ -717,22 +717,20 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     final images = _formData.images;
     return Column(
       children: [
-        GestureDetector(
+        LiquidGlass(
+          borderRadius: AppSpacing.borderRadiusMd,
+          blur: 20,
+          interactive: true,
           onTap: _pickImages,
-          child: LiquidGlass(
-            borderRadius: AppSpacing.borderRadiusMd,
-            blur: 20,
-            interactive: true,
-            padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
-            child: Column(
-              children: [
-                Icon(Icons.add_photo_alternate_outlined, size: 36, color: context.theme.iconSecondary),
-                const SizedBox(height: 10),
-                Text(l10n.carAddPhoto, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
-                const SizedBox(height: 4),
-                Text(l10n.carPhotoFormatHint, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
-              ],
-            ),
+          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+          child: Column(
+            children: [
+              Icon(Icons.add_photo_alternate_outlined, size: 36, color: context.theme.iconSecondary),
+              const SizedBox(height: 10),
+              Text(l10n.carAddPhoto, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
+              const SizedBox(height: 4),
+              Text(l10n.carPhotoFormatHint, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+            ],
           ),
         ),
         if (images.isNotEmpty) ...[
