@@ -2207,7 +2207,7 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get carVipSubtitle => 'ንፍሉይ ምርኣይ ናይ VIP ባጅ ረኽቡ';
+  String get carVipSubtitle => 'ብVIP ተጠቀምቲ ብቻ ዝረአ';
 
   @override
   String get carCustomFeatures => 'ባህርያት ራስካ';

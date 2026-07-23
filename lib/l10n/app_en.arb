@@ -713,7 +713,7 @@
   "mediaOwnershipProof": "Ownership Proof",
   "mediaVideo": "Video",
   "mediaFileSizeError": "{label} exceeds {limit} limit. Please choose a smaller file.",
-  "carVipSubtitle": "Get a VIP badge for premium visibility",
+  "carVipSubtitle": "Get a VIP badge for VIP only visibility",
   "carCustomFeatures": "Custom features",
   "submissionStepValidating": "Validating data",
   "submissionStepUploading": "Uploading files",

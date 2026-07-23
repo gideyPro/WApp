@@ -2235,7 +2235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get carVipSubtitle => 'Get a VIP badge for premium visibility';
+  String get carVipSubtitle => 'Get a VIP badge for VIP only visibility';
 
   @override
   String get carCustomFeatures => 'Custom features';

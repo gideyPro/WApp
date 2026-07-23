@@ -4231,7 +4231,7 @@ abstract class AppLocalizations {
   /// No description provided for @carVipSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Get a VIP badge for premium visibility'**
+  /// **'Get a VIP badge for VIP only visibility'**
   String get carVipSubtitle;
 
   /// No description provided for @carCustomFeatures.
