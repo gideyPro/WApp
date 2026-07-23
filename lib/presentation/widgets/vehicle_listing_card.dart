@@ -359,15 +359,38 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
   }
 
   Widget _buildVehicleSpecs(BuildContext context) {
-    final children = <Widget>[];
-    if (widget.listing?.carMileageKm != null) {
-      final unit = widget.listing?.carVehicleCategory == 'construction_equipment' ? ' hrs' : ' km';
-      children.add(_specChip(
-        Icons.speed_rounded,
-        '${widget.listing!.carMileageKm!.toStringAsFixed(0)}$unit',
-      ));
+    final listing = widget.listing;
+    final cat = listing?.carVehicleCategory;
+    final chips = <Widget>[];
+
+    if (cat != 'bicycle') {
+      final year = listing?.carYear;
+      if (year != null) {
+        chips.add(_specChip(Icons.calendar_today_rounded, year.toString()));
+      }
+      final km = listing?.carMileageKm;
+      if (km != null) {
+        final unit = cat == 'construction_equipment' ? ' hrs' : ' km';
+        chips.add(_specChip(Icons.speed_rounded, '${km.toStringAsFixed(0)}$unit'));
+      }
     }
-    return Row(children: children);
+    if (cat == 'car' || cat == 'construction_equipment') {
+      final bt = listing?.carBodyType;
+      if (bt != null && bt.isNotEmpty) {
+        chips.add(_specChip(Icons.directions_car_rounded, bt));
+      }
+    }
+    final cond = listing?.carCondition;
+    if (cond != null && chips.isEmpty) {
+      chips.add(_specChip(Icons.build_outlined, cond));
+    }
+
+    if (chips.isEmpty) return const SizedBox.shrink();
+    return Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      children: chips,
+    );
   }
 
   Widget _specChip(IconData icon, String label) {

@@ -234,22 +234,27 @@ class VehicleFeaturedCard extends ConsumerWidget {
 
   Widget _buildSpecs(BuildContext context) {
     final chips = <Widget>[];
+    final cat = listing?.carVehicleCategory;
     final mileage = listing?.carMileageKm;
     final bodyType = listing?.carBodyType;
     final condition = listing?.carCondition;
 
-    if (mileage != null) {
-      final unit = listing?.carVehicleCategory == 'construction_equipment' ? ' hrs' : ' km';
-      chips.add(_specChip(
-        Icons.speed_rounded,
-        '${mileage.toStringAsFixed(0)}$unit',
-      ));
+    if (cat != 'bicycle') {
+      if (mileage != null) {
+        final unit = cat == 'construction_equipment' ? ' hrs' : ' km';
+        chips.add(_specChip(
+          Icons.speed_rounded,
+          '${mileage.toStringAsFixed(0)}$unit',
+        ));
+      }
     }
-    if (bodyType != null) {
-      chips.add(const SizedBox(width: 6));
-      chips.add(_specChip(Icons.directions_car_rounded, bodyType));
+    if (cat == 'car' || cat == 'construction_equipment') {
+      if (bodyType != null && bodyType.isNotEmpty) {
+        chips.add(const SizedBox(width: 6));
+        chips.add(_specChip(Icons.directions_car_rounded, bodyType));
+      }
     }
-    if (condition != null && chips.isEmpty) {
+    if (condition != null) {
       chips.add(const SizedBox(width: 6));
       chips.add(_specChip(Icons.build_outlined, condition));
     }
