@@ -19,6 +19,7 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/app_providers.dart';
+import '../../../core/utils/ethiopian_date_helper.dart';
 
 
 class EditCarScreen extends ConsumerStatefulWidget {
@@ -547,7 +548,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                 _buildModelDropdown(),
                 if (_formData.vehicleCategory != 'bicycle') ...[
                   const SizedBox(height: 12),
-                  _buildCompactField(label: '${l10n.listingYear} *', value: _formData.year, onChanged: (v) => _formData = _formData.copyWith(year: v), keyboardType: TextInputType.number),
+                  _buildYearField(l10n),
                 ],
                 if (_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') ...[
                   const SizedBox(height: 12),
@@ -818,6 +819,28 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           const SizedBox(height: 10),
           child,
         ],
+      ),
+    );
+  }
+
+  Widget _buildYearField(AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildCompactField(label: '${l10n.listingYear} *', value: _formData.year, onChanged: (v) => _formData = _formData.copyWith(year: v), keyboardType: TextInputType.number),
+        _buildEthiopianYearSuffix(_formData.year),
+      ],
+    );
+  }
+
+  Widget _buildEthiopianYearSuffix(String yearStr) {
+    final year = int.tryParse(yearStr);
+    if (year == null || year < 1900) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 2, left: 4),
+      child: Text(
+        EthiopianDateHelper.toEthiopianYearSuffix(year),
+        style: AppTextStyles.bodySmall.copyWith(fontSize: 9, color: AppColors.accent600),
       ),
     );
   }
