@@ -550,7 +550,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                 ],
                 Row(
                   children: [
-                    Expanded(child: _buildCompactField(label: '${l10n.listingColor} *', value: _formData.color, onChanged: (v) => _formData = _formData.copyWith(color: v))),
+                    Expanded(child: _buildCompactDropdown(label: '${l10n.listingColor} *', value: _formData.color, options: vehicleColors, onChanged: (v) => _formData = _formData.copyWith(color: v), displayBuilder: (c) => colorLabel(c, l10n))),
                     const SizedBox(width: 12),
                     Expanded(child: _buildCompactDropdown(label: '${l10n.listingCondition} *', value: _formData.condition, options: carConditions, onChanged: (v) => _formData = _formData.copyWith(condition: v), displayBuilder: (c) => conditionLabel(c, l10n))),
                   ],

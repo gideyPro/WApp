@@ -149,6 +149,50 @@ String conditionLabel(String condition, AppLocalizations l10n) {
   }
 }
 
+const vehicleColors = ['White', 'Black', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Yellow', 'Orange', 'Brown', 'Gold', 'Purple', 'Pink', 'Maroon'];
+
+const _amColorTranslations = {
+  'White': 'ነጭ',
+  'Black': 'ጥቁር',
+  'Silver': 'ብር',
+  'Gray': 'ግራጫ',
+  'Red': 'ቀይ',
+  'Blue': 'ሰማያዊ',
+  'Green': 'አረንጓዴ',
+  'Yellow': 'ቢጫ',
+  'Orange': 'ብርቱካን',
+  'Brown': 'ቡኒ',
+  'Gold': 'ወርቅ',
+  'Purple': 'ወይንጠጅ',
+  'Pink': 'ሮዝ',
+  'Maroon': 'የቀይ ቡኒ',
+};
+
+const _tiColorTranslations = {
+  'White': 'ፃዕዳ',
+  'Black': 'ፀሊም',
+  'Silver': 'ብሩር',
+  'Gray': 'ግራጫ',
+  'Red': 'ቀይሕ',
+  'Blue': 'ሰማያዊ',
+  'Green': 'ቆፃል',
+  'Yellow': 'ቢጫ',
+  'Orange': 'ብርቱካን',
+  'Brown': 'ቡኒ',
+  'Gold': 'ወርቃዊ',
+  'Purple': 'ወይናይ',
+  'Pink': 'ሮዝ',
+  'Maroon': 'ቡኒ ቀይሕ',
+};
+
+String colorLabel(String color, AppLocalizations l10n) {
+  switch (l10n.localeName) {
+    case 'am': return _amColorTranslations[color] ?? color;
+    case 'ti': return _tiColorTranslations[color] ?? color;
+    default: return color;
+  }
+}
+
 String bodyTypeLabel(String type, AppLocalizations l10n) {
   switch (type) {
     case 'sedan': return l10n.bodyTypeSedan;

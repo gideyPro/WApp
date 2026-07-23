@@ -820,7 +820,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     if (cat == 'car' || cat == 'construction_equipment') {
       add(l10n.listingBodyType, listing.carBodyType != null ? bodyTypeLabel(listing.carBodyType!, l10n) : null);
     }
-    add(l10n.listingColor, listing.carColor);
+    add(l10n.listingColor, listing.carColor != null ? colorLabel(listing.carColor!, l10n) : null);
     add(l10n.listingCondition, listing.carCondition != null ? conditionLabel(listing.carCondition!, l10n) : null);
     if (cat == 'car' || cat == 'construction_equipment') {
       add(l10n.listingVin, listing.carVin);
