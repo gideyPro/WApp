@@ -218,8 +218,14 @@ class VehicleFeaturedCard extends ConsumerWidget {
   }
 
   Widget _buildTitle(BuildContext context) {
-    final title = listing?.carTitle;
-    if (title == null || title.isEmpty) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
+    final item = listing;
+    if (item == null) return const SizedBox.shrink();
+    final parts = <String>[];
+    if (item.carYear != null) parts.add(item.carYear.toString());
+    if ((item.carMake ?? '').isNotEmpty) parts.add(makeLabel(item.carMake!, l10n));
+    if ((item.carModel ?? '').isNotEmpty) parts.add(modelLabel(item.carModel!, l10n));
+    final title = parts.isNotEmpty ? parts.join(' ') : item.carTitle;
     return Text(
       title,
       style: AppTextStyles.bodySmall.copyWith(
@@ -233,6 +239,7 @@ class VehicleFeaturedCard extends ConsumerWidget {
   }
 
   Widget _buildSpecs(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final chips = <Widget>[];
     final cat = listing?.carVehicleCategory;
     final mileage = listing?.carMileageKm;
@@ -251,12 +258,12 @@ class VehicleFeaturedCard extends ConsumerWidget {
     if (cat == 'car' || cat == 'construction_equipment') {
       if (bodyType != null && bodyType.isNotEmpty) {
         chips.add(const SizedBox(width: 6));
-        chips.add(_specChip(Icons.directions_car_rounded, bodyType));
+        chips.add(_specChip(Icons.directions_car_rounded, bodyTypeLabel(bodyType, l10n)));
       }
     }
     if (condition != null) {
       chips.add(const SizedBox(width: 6));
-      chips.add(_specChip(Icons.build_outlined, condition));
+      chips.add(_specChip(Icons.build_outlined, conditionLabel(condition, l10n)));
     }
 
     if (chips.isEmpty) return const SizedBox.shrink();

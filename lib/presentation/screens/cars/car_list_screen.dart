@@ -242,15 +242,15 @@ return VehicleListingCard(
         child: Row(
           children: [
             if (_filterValues.make != null)
-              _filterChip('${l10n.listingMake}: ${_filterValues.make}', () => _removeFilter('make')),
+              _filterChip('${l10n.listingMake}: ${makeLabel(_filterValues.make!, l10n)}', () => _removeFilter('make')),
             if (_filterValues.model != null)
-              _filterChip('${l10n.listingModel}: ${_filterValues.model}', () => _removeFilter('model')),
+              _filterChip('${l10n.listingModel}: ${modelLabel(_filterValues.model!, l10n)}', () => _removeFilter('model')),
             if (_filterValues.yearMin != null)
               _filterChip('${l10n.listingYear}: ${_filterValues.yearMin}-${_filterValues.yearMax ?? ''}', () => _removeFilter('year_min')),
             if (_filterValues.vehicleCategory != null)
               _filterChip(vehicleCategoryLabel(_filterValues.vehicleCategory!, l10n), () => _removeFilter('vehicle_category')),
             if (_filterValues.bodyType != null)
-              _filterChip(_filterValues.bodyType!, () => _removeFilter('body_type')),
+              _filterChip(bodyTypeLabel(_filterValues.bodyType!, l10n), () => _removeFilter('body_type')),
             if (_filterValues.mileageMax != null)
               _filterChip('${l10n.listingMileageMax}: ${_filterValues.mileageMax}', () => _removeFilter('mileage_max')),
             if (_filterValues.priceMin != null || _filterValues.priceMax != null)

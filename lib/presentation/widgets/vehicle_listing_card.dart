@@ -346,8 +346,20 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
   }
 
   Widget _buildTitle(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final listing = widget.listing;
+    String title;
+    if (listing != null) {
+      final parts = <String>[];
+      if (listing.carYear != null) parts.add(listing.carYear.toString());
+      if ((listing.carMake ?? '').isNotEmpty) parts.add(makeLabel(listing.carMake!, l10n));
+      if ((listing.carModel ?? '').isNotEmpty) parts.add(modelLabel(listing.carModel!, l10n));
+      title = parts.isNotEmpty ? parts.join(' ') : listing.carTitle;
+    } else {
+      title = 'Vehicle';
+    }
     return Text(
-      widget.listing?.carTitle ?? 'Vehicle',
+      title,
       style: AppTextStyles.bodySmall.copyWith(
         fontSize: 14,
         fontWeight: FontWeight.w600,
@@ -359,6 +371,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
   }
 
   Widget _buildVehicleSpecs(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final listing = widget.listing;
     final cat = listing?.carVehicleCategory;
     final chips = <Widget>[];
@@ -377,12 +390,12 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
     if (cat == 'car' || cat == 'construction_equipment') {
       final bt = listing?.carBodyType;
       if (bt != null && bt.isNotEmpty) {
-        chips.add(_specChip(Icons.directions_car_rounded, bt));
+        chips.add(_specChip(Icons.directions_car_rounded, bodyTypeLabel(bt, l10n)));
       }
     }
     final cond = listing?.carCondition;
     if (cond != null && chips.isEmpty) {
-      chips.add(_specChip(Icons.build_outlined, cond));
+      chips.add(_specChip(Icons.build_outlined, conditionLabel(cond, l10n)));
     }
 
     if (chips.isEmpty) return const SizedBox.shrink();

@@ -652,13 +652,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ],
             if (_selectedCategory == HomeCategory.vehicles || _selectedCategory == HomeCategory.all) ...[
               if (v.make != null)
-                _filterChip('${l10n.listingMake}: ${v.make}',
+                _filterChip('${l10n.listingMake}: ${makeLabel(v.make!, l10n)}',
                   () => _removeFilterAndCheck(() => setState(() {
                     _filterValues = v.clearField('make');
                   })),
                 ),
               if (v.model != null)
-                _filterChip('${l10n.listingModel}: ${v.model}',
+                _filterChip('${l10n.listingModel}: ${modelLabel(v.model!, l10n)}',
                   () => _removeFilterAndCheck(() => setState(() {
                     _filterValues = v.clearField('model');
                   })),
@@ -676,7 +676,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   })),
                 ),
               if (v.bodyType != null)
-                _filterChip(v.bodyType!,
+                _filterChip(bodyTypeLabel(v.bodyType!, l10n),
                   () => _removeFilterAndCheck(() => setState(() {
                     _filterValues = v.clearField('body_type');
                   })),
