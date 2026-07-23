@@ -808,8 +808,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     }
     final cat = listing.carVehicleCategory;
     add(l10n.listingVehicleCategory, cat != null ? vehicleCategoryLabel(cat, l10n) : null);
-    add(l10n.listingMake, listing.carMake);
-    add(l10n.listingModel, listing.carModel);
+    add(l10n.listingMake, listing.carMake != null ? makeLabel(listing.carMake!, l10n) : null);
+    add(l10n.listingModel, listing.carModel != null ? modelLabel(listing.carModel!, l10n) : null);
     if (cat != 'bicycle') {
       add(l10n.listingYear, listing.carYear?.toString());
     }
