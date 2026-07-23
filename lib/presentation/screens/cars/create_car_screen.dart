@@ -99,6 +99,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
         if (_formData.addressId == null) errors.add(l10n.carLocationRequired);
         break;
       case 2:
+        if (_formData.images.isEmpty) errors.add(l10n.listingErrorImageRequired);
         if (!_formData.termsAccepted) errors.add(l10n.carTermsRequired);
         break;
     }

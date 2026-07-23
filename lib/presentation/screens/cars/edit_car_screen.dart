@@ -138,6 +138,10 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         if (_formData.addressId == null) errors.add(l10n.carLocationRequired);
         break;
       case 2:
+        final totalImages = _formData.images.length +
+            _formData.existingImages.length -
+            _formData.removedImageIds.length;
+        if (totalImages == 0) errors.add(l10n.listingErrorImageRequired);
         break;
     }
     return errors;
