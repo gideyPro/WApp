@@ -277,7 +277,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     if (state.listings.isEmpty) {
-      return const SliverToBoxAdapter(child: SizedBox.shrink());
+      return SliverFillRemaining(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.directions_car_outlined, size: 64, color: context.textMuted),
+                const SizedBox(height: 16),
+                Text(l10n.messageEmptySubtitle, style: AppTextStyles.bodyMedium.copyWith(color: context.textMuted)),
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
     return SliverPadding(
