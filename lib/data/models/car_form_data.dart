@@ -41,7 +41,7 @@ class CarFormData {
 
   CarFormData({
     this.type = 'car',
-    this.vehicleCategory = '',
+    this.vehicleCategory = 'car',
     this.make = '',
     this.model = '',
     this.year = '',

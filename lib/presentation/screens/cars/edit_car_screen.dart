@@ -123,7 +123,6 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         if (_formData.make.isEmpty) errors.add('${l10n.listingMake} ${l10n.commonIsRequired}');
         if (_formData.model.isEmpty) errors.add('${l10n.listingModel} ${l10n.commonIsRequired}');
         if (_formData.vehicleCategory != 'bicycle' && _formData.year.isEmpty) errors.add('${l10n.listingYear} ${l10n.commonIsRequired}');
-        if (_formData.vehicleCategory.isEmpty) errors.add('${l10n.listingVehicleCategory} ${l10n.commonIsRequired}');
         if (_formData.condition.isEmpty) errors.add('${l10n.listingCondition} ${l10n.commonIsRequired}');
         if (_formData.color.isEmpty) errors.add('${l10n.listingColor} ${l10n.commonIsRequired}');
         if (_formData.vehicleCategory != 'bicycle' && _formData.mileageKm.isEmpty) errors.add('${l10n.listingMileage} ${l10n.commonIsRequired}');
