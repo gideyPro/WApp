@@ -2308,4 +2308,232 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get categoryConstructionEquipment => 'ናይ ኮንስትራክሽን መሳርሒ';
+
+  @override
+  String get bodyTypeSedan => 'ሴዳን';
+
+  @override
+  String get bodyTypeSuv => 'ኤስዩቪ';
+
+  @override
+  String get bodyTypeHatchback => 'ሃችባክ';
+
+  @override
+  String get bodyTypePickup => 'ፒከፕ';
+
+  @override
+  String get bodyTypeTruck => 'መኪና ጽዕነት';
+
+  @override
+  String get bodyTypeVan => 'ቫን';
+
+  @override
+  String get bodyTypeMinibus => 'ሚኒባስ';
+
+  @override
+  String get bodyTypeCoupe => 'ኩፔ';
+
+  @override
+  String get bodyTypeConvertible => 'ኮንቨርቲብል';
+
+  @override
+  String get bodyTypeStationWagon => 'ስቴሽን ዋጎን';
+
+  @override
+  String get bodyTypeStandard => 'ስታንዳርድ';
+
+  @override
+  String get bodyTypeCruiser => 'ክሩዘር';
+
+  @override
+  String get bodyTypeSport => 'ስፖርት';
+
+  @override
+  String get bodyTypeTouring => 'ቱሪንግ';
+
+  @override
+  String get bodyTypeDualSport => 'ዱአል ስፖርት';
+
+  @override
+  String get bodyTypeScooter => 'ስኩተር';
+
+  @override
+  String get bodyTypeMoped => 'ሞፔድ';
+
+  @override
+  String get bodyTypeMountain => 'እምባ';
+
+  @override
+  String get bodyTypeRoad => 'መንገዲ';
+
+  @override
+  String get bodyTypeHybrid => 'ሃይብሪድ';
+
+  @override
+  String get bodyTypeCity => 'ከተማ';
+
+  @override
+  String get bodyTypeElectric => 'ኤሌክትሪክ';
+
+  @override
+  String get bodyTypeFolding => 'መታጠፊያ';
+
+  @override
+  String get bodyTypeExcavator => 'ኤክስካቬተር';
+
+  @override
+  String get bodyTypeBulldozer => 'ቡልዶዘር';
+
+  @override
+  String get bodyTypeLoader => 'ሎደር';
+
+  @override
+  String get bodyTypeCrane => 'ክሬን';
+
+  @override
+  String get bodyTypeForklift => 'ፎርክሊፍት';
+
+  @override
+  String get bodyTypeRoller => 'ሮለር';
+
+  @override
+  String get bodyTypeDumper => 'ዳምፐር';
+
+  @override
+  String get bodyTypeGenerator => 'ጀነሬተር';
+
+  @override
+  String get bodyTypeCompressor => 'ኮምፕረሰር';
+
+  @override
+  String get featureAc => 'ኤሲ';
+
+  @override
+  String get featureAbs => 'ኤቢኤስ';
+
+  @override
+  String get featureAirbag => 'ኤርባግ';
+
+  @override
+  String get featureAlarmSystem => 'አላም ሲስተም';
+
+  @override
+  String get featureAlloyWheels => 'አሎይ ዊልስ';
+
+  @override
+  String get featureBackupCamera => 'ባክአፕ ካሜራ';
+
+  @override
+  String get featureBasket => 'ቅርጫት';
+
+  @override
+  String get featureBatteryIncluded => 'ባትሪ ተካቲቱ';
+
+  @override
+  String get featureBell => 'ደወል';
+
+  @override
+  String get featureBluetooth => 'ብሉቱዝ';
+
+  @override
+  String get featureCentralLocking => 'ሴንትራል ሎኪንግ';
+
+  @override
+  String get featureCrashBars => 'ክራሽ ባርስ';
+
+  @override
+  String get featureCruiseControl => 'ክሩዝ ኮንትሮል';
+
+  @override
+  String get featureDiscBrakes => 'ዲስክ ብሬክስ';
+
+  @override
+  String get featureElectricAssist => 'ኤሌክትሪክ አሲስት';
+
+  @override
+  String get featureFenders => 'ፌንደር';
+
+  @override
+  String get featureFogLights => 'ፎግ ላይቶች';
+
+  @override
+  String get featureFrontSuspension => 'ናይ ቅድሚ ሱስፔንሽን';
+
+  @override
+  String get featureGps => 'ጂፒኤስ';
+
+  @override
+  String get featureHeatedGrips => 'ሙቅ ግሪፕስ';
+
+  @override
+  String get featureHeatedSeat => 'ሙቅ መንበር';
+
+  @override
+  String get featureHydraulicThumb => 'ሃይድሮሊክ ኢድ';
+
+  @override
+  String get featureKickstand => 'መቆሚያ';
+
+  @override
+  String get featureLeatherSeats => 'ናይ ቆርበት መንበራት';
+
+  @override
+  String get featureLedLights => 'ኤልኢዲ መብራህቲ';
+
+  @override
+  String get featureLockIncluded => 'መቆለፊ ተካቲቱ';
+
+  @override
+  String get featureLongReachArm => 'ሎንግ ሪች ክንዲ';
+
+  @override
+  String get featureLowHours => 'ዝቑል ሰዓታት';
+
+  @override
+  String get featureLuggageRack => 'ናይ ሻንጣ መደርደሪ';
+
+  @override
+  String get featureNavigation => 'ናቪጌሽን';
+
+  @override
+  String get featurePowerSteering => 'ፓወር ስቲሪንግ';
+
+  @override
+  String get featurePowerWindows => 'ፓወር ዊንዶውስ';
+
+  @override
+  String get featureQuickAttach => 'ቅልጡፍ መኣሳሰሪ';
+
+  @override
+  String get featureRearSuspension => 'ናይ ድሕሪ ሱስፔንሽን';
+
+  @override
+  String get featureRops => 'ሮፕስ';
+
+  @override
+  String get featureRoofRack => 'ናይ ጣራ መደርደሪ';
+
+  @override
+  String get featureServiceRecords => 'ናይ ኣገልግሎት መዝገባት';
+
+  @override
+  String get featureSidePanniers => 'ናይ ጎን ቦርሳታት';
+
+  @override
+  String get featureSunroof => 'ሰንሩፍ';
+
+  @override
+  String get featureTopCase => 'ቶፕ ኬዝ';
+
+  @override
+  String get featureTowBar => 'ቶው ባር';
+
+  @override
+  String get featureTrackVsWheels => 'ትራክ ወይም ዊልስ';
+
+  @override
+  String get featureUsbCharger => 'ዩኤስቢ ቻርጀር';
+
+  @override
+  String get featureWindshield => 'ዊንድሺልድ';
 }

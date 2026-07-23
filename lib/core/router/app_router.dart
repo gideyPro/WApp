@@ -28,7 +28,6 @@ import '../../presentation/screens/cars/car_list_screen.dart';
 import '../../presentation/screens/cars/car_detail_screen.dart';
 import '../../presentation/screens/cars/create_car_screen.dart';
 import '../../presentation/screens/cars/edit_car_screen.dart';
-import '../../presentation/screens/cars/my_cars_screen.dart';
 import '../../presentation/screens/notifications/notifications_screen.dart';
 
 Page<void> _buildPageTransition<T>({
@@ -335,13 +334,6 @@ final goRouter = GoRouter(
       pageBuilder: (_, state) => _buildPageTransition(
         key: state.pageKey,
         child: EditCarScreen(listing: state.extra as dynamic),
-      ),
-    ),
-    GoRoute(
-      path: '/my-cars',
-      pageBuilder: (_, state) => _buildPageTransition(
-        key: state.pageKey,
-        child: const MyCarsScreen(),
       ),
     ),
   ],

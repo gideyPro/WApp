@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../data/models/listing.dart';
+import 'widgets/create_listing_sheet.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/listing_card.dart';
@@ -276,7 +277,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () async {
-              final result = await context.push<bool>('/listings/create');
+              final result = await showCreateListingSheet(context);
               if (result == true && mounted) {
                 _loadTab(_currentTab);
               }
@@ -380,9 +381,8 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
                     icon: Icons.add,
                     variant: ButtonVariant.success,
                     isFullWidth: true,
-                    onPressed: () async {
-                      if (!mounted) return;
-                      context.push('/listings/create');
+                    onPressed: () {
+                      showCreateListingSheet(context);
                     },
                   ),
                 ),

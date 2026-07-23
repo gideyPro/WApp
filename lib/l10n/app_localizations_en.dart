@@ -2339,4 +2339,232 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryConstructionEquipment => 'Construction Equipment';
+
+  @override
+  String get bodyTypeSedan => 'Sedan';
+
+  @override
+  String get bodyTypeSuv => 'SUV';
+
+  @override
+  String get bodyTypeHatchback => 'Hatchback';
+
+  @override
+  String get bodyTypePickup => 'Pickup';
+
+  @override
+  String get bodyTypeTruck => 'Truck';
+
+  @override
+  String get bodyTypeVan => 'Van';
+
+  @override
+  String get bodyTypeMinibus => 'Minibus';
+
+  @override
+  String get bodyTypeCoupe => 'Coupe';
+
+  @override
+  String get bodyTypeConvertible => 'Convertible';
+
+  @override
+  String get bodyTypeStationWagon => 'Station Wagon';
+
+  @override
+  String get bodyTypeStandard => 'Standard';
+
+  @override
+  String get bodyTypeCruiser => 'Cruiser';
+
+  @override
+  String get bodyTypeSport => 'Sport';
+
+  @override
+  String get bodyTypeTouring => 'Touring';
+
+  @override
+  String get bodyTypeDualSport => 'Dual Sport';
+
+  @override
+  String get bodyTypeScooter => 'Scooter';
+
+  @override
+  String get bodyTypeMoped => 'Moped';
+
+  @override
+  String get bodyTypeMountain => 'Mountain';
+
+  @override
+  String get bodyTypeRoad => 'Road';
+
+  @override
+  String get bodyTypeHybrid => 'Hybrid';
+
+  @override
+  String get bodyTypeCity => 'City';
+
+  @override
+  String get bodyTypeElectric => 'Electric';
+
+  @override
+  String get bodyTypeFolding => 'Folding';
+
+  @override
+  String get bodyTypeExcavator => 'Excavator';
+
+  @override
+  String get bodyTypeBulldozer => 'Bulldozer';
+
+  @override
+  String get bodyTypeLoader => 'Loader';
+
+  @override
+  String get bodyTypeCrane => 'Crane';
+
+  @override
+  String get bodyTypeForklift => 'Forklift';
+
+  @override
+  String get bodyTypeRoller => 'Roller';
+
+  @override
+  String get bodyTypeDumper => 'Dumper';
+
+  @override
+  String get bodyTypeGenerator => 'Generator';
+
+  @override
+  String get bodyTypeCompressor => 'Compressor';
+
+  @override
+  String get featureAc => 'AC';
+
+  @override
+  String get featureAbs => 'ABS';
+
+  @override
+  String get featureAirbag => 'Airbag';
+
+  @override
+  String get featureAlarmSystem => 'Alarm System';
+
+  @override
+  String get featureAlloyWheels => 'Alloy Wheels';
+
+  @override
+  String get featureBackupCamera => 'Backup Camera';
+
+  @override
+  String get featureBasket => 'Basket';
+
+  @override
+  String get featureBatteryIncluded => 'Battery Included';
+
+  @override
+  String get featureBell => 'Bell';
+
+  @override
+  String get featureBluetooth => 'Bluetooth';
+
+  @override
+  String get featureCentralLocking => 'Central Locking';
+
+  @override
+  String get featureCrashBars => 'Crash Bars';
+
+  @override
+  String get featureCruiseControl => 'Cruise Control';
+
+  @override
+  String get featureDiscBrakes => 'Disc Brakes';
+
+  @override
+  String get featureElectricAssist => 'Electric Assist';
+
+  @override
+  String get featureFenders => 'Fenders';
+
+  @override
+  String get featureFogLights => 'Fog Lights';
+
+  @override
+  String get featureFrontSuspension => 'Front Suspension';
+
+  @override
+  String get featureGps => 'GPS';
+
+  @override
+  String get featureHeatedGrips => 'Heated Grips';
+
+  @override
+  String get featureHeatedSeat => 'Heated Seat';
+
+  @override
+  String get featureHydraulicThumb => 'Hydraulic Thumb';
+
+  @override
+  String get featureKickstand => 'Kickstand';
+
+  @override
+  String get featureLeatherSeats => 'Leather Seats';
+
+  @override
+  String get featureLedLights => 'LED Lights';
+
+  @override
+  String get featureLockIncluded => 'Lock Included';
+
+  @override
+  String get featureLongReachArm => 'Long Reach Arm';
+
+  @override
+  String get featureLowHours => 'Low Hours';
+
+  @override
+  String get featureLuggageRack => 'Luggage Rack';
+
+  @override
+  String get featureNavigation => 'Navigation';
+
+  @override
+  String get featurePowerSteering => 'Power Steering';
+
+  @override
+  String get featurePowerWindows => 'Power Windows';
+
+  @override
+  String get featureQuickAttach => 'Quick Attach';
+
+  @override
+  String get featureRearSuspension => 'Rear Suspension';
+
+  @override
+  String get featureRops => 'ROPS';
+
+  @override
+  String get featureRoofRack => 'Roof Rack';
+
+  @override
+  String get featureServiceRecords => 'Service Records';
+
+  @override
+  String get featureSidePanniers => 'Side Panniers';
+
+  @override
+  String get featureSunroof => 'Sunroof';
+
+  @override
+  String get featureTopCase => 'Top Case';
+
+  @override
+  String get featureTowBar => 'Tow Bar';
+
+  @override
+  String get featureTrackVsWheels => 'Track vs Wheels';
+
+  @override
+  String get featureUsbCharger => 'USB Charger';
+
+  @override
+  String get featureWindshield => 'Windshield';
 }

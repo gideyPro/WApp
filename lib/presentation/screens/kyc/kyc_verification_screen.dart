@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import '../listing/widgets/create_listing_sheet.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -739,11 +739,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     );
   }
 
-  Future<void> _onCreateListingFromKyc() async {
-    if (mounted) {
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      context.push('/listings/create');
-    }
+  void _onCreateListingFromKyc() {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    showCreateListingSheet(context);
   }
 
   Widget _buildPendingState(KycStatusState state, AppLocalizations l10n) {

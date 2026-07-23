@@ -195,7 +195,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
               const SizedBox(height: 24),
               _buildSection(
                 title: l10n.listingsKeyFeatures,
-                child: _buildFeatureChips(listing.carFeatures!),
+                child: _buildFeatureChips(listing.carFeatures!, l10n),
               ),
             ],
             if (listing.vipBlocked) ...[
@@ -771,7 +771,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     );
   }
 
-  Widget _buildFeatureChips(List<String> features) {
+  Widget _buildFeatureChips(List<String> features, AppLocalizations l10n) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -788,7 +788,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
             const Icon(Icons.check_circle_outline, size: 16, color: AppColors.accent500),
             const SizedBox(width: 6),
             Text(
-              f,
+              featureLabel(f, l10n),
               style: AppTextStyles.labelMedium.copyWith(
                 color: context.textSecondary,
                 fontWeight: FontWeight.w600,

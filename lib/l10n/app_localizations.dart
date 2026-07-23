@@ -4431,6 +4431,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Construction Equipment'**
   String get categoryConstructionEquipment;
+
+  /// No description provided for @bodyTypeSedan.
+  ///
+  /// In en, this message translates to:
+  /// **'Sedan'**
+  String get bodyTypeSedan;
+
+  /// No description provided for @bodyTypeSuv.
+  ///
+  /// In en, this message translates to:
+  /// **'SUV'**
+  String get bodyTypeSuv;
+
+  /// No description provided for @bodyTypeHatchback.
+  ///
+  /// In en, this message translates to:
+  /// **'Hatchback'**
+  String get bodyTypeHatchback;
+
+  /// No description provided for @bodyTypePickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup'**
+  String get bodyTypePickup;
+
+  /// No description provided for @bodyTypeTruck.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck'**
+  String get bodyTypeTruck;
+
+  /// No description provided for @bodyTypeVan.
+  ///
+  /// In en, this message translates to:
+  /// **'Van'**
+  String get bodyTypeVan;
+
+  /// No description provided for @bodyTypeMinibus.
+  ///
+  /// In en, this message translates to:
+  /// **'Minibus'**
+  String get bodyTypeMinibus;
+
+  /// No description provided for @bodyTypeCoupe.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupe'**
+  String get bodyTypeCoupe;
+
+  /// No description provided for @bodyTypeConvertible.
+  ///
+  /// In en, this message translates to:
+  /// **'Convertible'**
+  String get bodyTypeConvertible;
+
+  /// No description provided for @bodyTypeStationWagon.
+  ///
+  /// In en, this message translates to:
+  /// **'Station Wagon'**
+  String get bodyTypeStationWagon;
+
+  /// No description provided for @bodyTypeStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get bodyTypeStandard;
+
+  /// No description provided for @bodyTypeCruiser.
+  ///
+  /// In en, this message translates to:
+  /// **'Cruiser'**
+  String get bodyTypeCruiser;
+
+  /// No description provided for @bodyTypeSport.
+  ///
+  /// In en, this message translates to:
+  /// **'Sport'**
+  String get bodyTypeSport;
+
+  /// No description provided for @bodyTypeTouring.
+  ///
+  /// In en, this message translates to:
+  /// **'Touring'**
+  String get bodyTypeTouring;
+
+  /// No description provided for @bodyTypeDualSport.
+  ///
+  /// In en, this message translates to:
+  /// **'Dual Sport'**
+  String get bodyTypeDualSport;
+
+  /// No description provided for @bodyTypeScooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Scooter'**
+  String get bodyTypeScooter;
+
+  /// No description provided for @bodyTypeMoped.
+  ///
+  /// In en, this message translates to:
+  /// **'Moped'**
+  String get bodyTypeMoped;
+
+  /// No description provided for @bodyTypeMountain.
+  ///
+  /// In en, this message translates to:
+  /// **'Mountain'**
+  String get bodyTypeMountain;
+
+  /// No description provided for @bodyTypeRoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Road'**
+  String get bodyTypeRoad;
+
+  /// No description provided for @bodyTypeHybrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Hybrid'**
+  String get bodyTypeHybrid;
+
+  /// No description provided for @bodyTypeCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get bodyTypeCity;
+
+  /// No description provided for @bodyTypeElectric.
+  ///
+  /// In en, this message translates to:
+  /// **'Electric'**
+  String get bodyTypeElectric;
+
+  /// No description provided for @bodyTypeFolding.
+  ///
+  /// In en, this message translates to:
+  /// **'Folding'**
+  String get bodyTypeFolding;
+
+  /// No description provided for @bodyTypeExcavator.
+  ///
+  /// In en, this message translates to:
+  /// **'Excavator'**
+  String get bodyTypeExcavator;
+
+  /// No description provided for @bodyTypeBulldozer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulldozer'**
+  String get bodyTypeBulldozer;
+
+  /// No description provided for @bodyTypeLoader.
+  ///
+  /// In en, this message translates to:
+  /// **'Loader'**
+  String get bodyTypeLoader;
+
+  /// No description provided for @bodyTypeCrane.
+  ///
+  /// In en, this message translates to:
+  /// **'Crane'**
+  String get bodyTypeCrane;
+
+  /// No description provided for @bodyTypeForklift.
+  ///
+  /// In en, this message translates to:
+  /// **'Forklift'**
+  String get bodyTypeForklift;
+
+  /// No description provided for @bodyTypeRoller.
+  ///
+  /// In en, this message translates to:
+  /// **'Roller'**
+  String get bodyTypeRoller;
+
+  /// No description provided for @bodyTypeDumper.
+  ///
+  /// In en, this message translates to:
+  /// **'Dumper'**
+  String get bodyTypeDumper;
+
+  /// No description provided for @bodyTypeGenerator.
+  ///
+  /// In en, this message translates to:
+  /// **'Generator'**
+  String get bodyTypeGenerator;
+
+  /// No description provided for @bodyTypeCompressor.
+  ///
+  /// In en, this message translates to:
+  /// **'Compressor'**
+  String get bodyTypeCompressor;
+
+  /// No description provided for @featureAc.
+  ///
+  /// In en, this message translates to:
+  /// **'AC'**
+  String get featureAc;
+
+  /// No description provided for @featureAbs.
+  ///
+  /// In en, this message translates to:
+  /// **'ABS'**
+  String get featureAbs;
+
+  /// No description provided for @featureAirbag.
+  ///
+  /// In en, this message translates to:
+  /// **'Airbag'**
+  String get featureAirbag;
+
+  /// No description provided for @featureAlarmSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarm System'**
+  String get featureAlarmSystem;
+
+  /// No description provided for @featureAlloyWheels.
+  ///
+  /// In en, this message translates to:
+  /// **'Alloy Wheels'**
+  String get featureAlloyWheels;
+
+  /// No description provided for @featureBackupCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Camera'**
+  String get featureBackupCamera;
+
+  /// No description provided for @featureBasket.
+  ///
+  /// In en, this message translates to:
+  /// **'Basket'**
+  String get featureBasket;
+
+  /// No description provided for @featureBatteryIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Included'**
+  String get featureBatteryIncluded;
+
+  /// No description provided for @featureBell.
+  ///
+  /// In en, this message translates to:
+  /// **'Bell'**
+  String get featureBell;
+
+  /// No description provided for @featureBluetooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth'**
+  String get featureBluetooth;
+
+  /// No description provided for @featureCentralLocking.
+  ///
+  /// In en, this message translates to:
+  /// **'Central Locking'**
+  String get featureCentralLocking;
+
+  /// No description provided for @featureCrashBars.
+  ///
+  /// In en, this message translates to:
+  /// **'Crash Bars'**
+  String get featureCrashBars;
+
+  /// No description provided for @featureCruiseControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Cruise Control'**
+  String get featureCruiseControl;
+
+  /// No description provided for @featureDiscBrakes.
+  ///
+  /// In en, this message translates to:
+  /// **'Disc Brakes'**
+  String get featureDiscBrakes;
+
+  /// No description provided for @featureElectricAssist.
+  ///
+  /// In en, this message translates to:
+  /// **'Electric Assist'**
+  String get featureElectricAssist;
+
+  /// No description provided for @featureFenders.
+  ///
+  /// In en, this message translates to:
+  /// **'Fenders'**
+  String get featureFenders;
+
+  /// No description provided for @featureFogLights.
+  ///
+  /// In en, this message translates to:
+  /// **'Fog Lights'**
+  String get featureFogLights;
+
+  /// No description provided for @featureFrontSuspension.
+  ///
+  /// In en, this message translates to:
+  /// **'Front Suspension'**
+  String get featureFrontSuspension;
+
+  /// No description provided for @featureGps.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS'**
+  String get featureGps;
+
+  /// No description provided for @featureHeatedGrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Heated Grips'**
+  String get featureHeatedGrips;
+
+  /// No description provided for @featureHeatedSeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Heated Seat'**
+  String get featureHeatedSeat;
+
+  /// No description provided for @featureHydraulicThumb.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydraulic Thumb'**
+  String get featureHydraulicThumb;
+
+  /// No description provided for @featureKickstand.
+  ///
+  /// In en, this message translates to:
+  /// **'Kickstand'**
+  String get featureKickstand;
+
+  /// No description provided for @featureLeatherSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Leather Seats'**
+  String get featureLeatherSeats;
+
+  /// No description provided for @featureLedLights.
+  ///
+  /// In en, this message translates to:
+  /// **'LED Lights'**
+  String get featureLedLights;
+
+  /// No description provided for @featureLockIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Included'**
+  String get featureLockIncluded;
+
+  /// No description provided for @featureLongReachArm.
+  ///
+  /// In en, this message translates to:
+  /// **'Long Reach Arm'**
+  String get featureLongReachArm;
+
+  /// No description provided for @featureLowHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Hours'**
+  String get featureLowHours;
+
+  /// No description provided for @featureLuggageRack.
+  ///
+  /// In en, this message translates to:
+  /// **'Luggage Rack'**
+  String get featureLuggageRack;
+
+  /// No description provided for @featureNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation'**
+  String get featureNavigation;
+
+  /// No description provided for @featurePowerSteering.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Steering'**
+  String get featurePowerSteering;
+
+  /// No description provided for @featurePowerWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Windows'**
+  String get featurePowerWindows;
+
+  /// No description provided for @featureQuickAttach.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Attach'**
+  String get featureQuickAttach;
+
+  /// No description provided for @featureRearSuspension.
+  ///
+  /// In en, this message translates to:
+  /// **'Rear Suspension'**
+  String get featureRearSuspension;
+
+  /// No description provided for @featureRops.
+  ///
+  /// In en, this message translates to:
+  /// **'ROPS'**
+  String get featureRops;
+
+  /// No description provided for @featureRoofRack.
+  ///
+  /// In en, this message translates to:
+  /// **'Roof Rack'**
+  String get featureRoofRack;
+
+  /// No description provided for @featureServiceRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Records'**
+  String get featureServiceRecords;
+
+  /// No description provided for @featureSidePanniers.
+  ///
+  /// In en, this message translates to:
+  /// **'Side Panniers'**
+  String get featureSidePanniers;
+
+  /// No description provided for @featureSunroof.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunroof'**
+  String get featureSunroof;
+
+  /// No description provided for @featureTopCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Case'**
+  String get featureTopCase;
+
+  /// No description provided for @featureTowBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Tow Bar'**
+  String get featureTowBar;
+
+  /// No description provided for @featureTrackVsWheels.
+  ///
+  /// In en, this message translates to:
+  /// **'Track vs Wheels'**
+  String get featureTrackVsWheels;
+
+  /// No description provided for @featureUsbCharger.
+  ///
+  /// In en, this message translates to:
+  /// **'USB Charger'**
+  String get featureUsbCharger;
+
+  /// No description provided for @featureWindshield.
+  ///
+  /// In en, this message translates to:
+  /// **'Windshield'**
+  String get featureWindshield;
 }
 
 class _AppLocalizationsDelegate

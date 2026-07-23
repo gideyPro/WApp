@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../listing/widgets/create_listing_sheet.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
@@ -57,35 +57,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     }
   }
 
-  void _showCreateListingSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: context.sheetBg,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(Icons.home_work_outlined, color: context.theme.textSecondary),
-              title: Text('Property', style: TextStyle(color: context.theme.textPrimary)),
-              onTap: () {
-                Navigator.pop(ctx);
-                context.push('/listings/create');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.directions_car_outlined, color: context.theme.textSecondary),
-              title: Text('Vehicle', style: TextStyle(color: context.theme.textPrimary)),
-              onTap: () {
-                Navigator.pop(ctx);
-                context.push('/cars/create');
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  void _showCreateListingSheet() => showCreateListingSheet(context);
 
   @override
   Widget build(BuildContext context) {
