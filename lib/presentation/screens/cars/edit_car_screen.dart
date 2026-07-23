@@ -131,7 +131,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       case 0:
         if (_formData.make.isEmpty) errors.add('${l10n.listingMake} ${l10n.commonIsRequired}');
         if (_formData.model.isEmpty) errors.add('${l10n.listingModel} ${l10n.commonIsRequired}');
-        if (_formData.year.isEmpty) errors.add('${l10n.listingYear} ${l10n.commonIsRequired}');
+        if (_formData.vehicleCategory != 'bicycle' && _formData.year.isEmpty) errors.add('${l10n.listingYear} ${l10n.commonIsRequired}');
         break;
       case 1:
         if (!_formData.isForRent && _formData.priceFixed.isEmpty) errors.add('${l10n.listingPriceEtb} ${l10n.commonIsRequired}');
@@ -439,46 +439,45 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       children: [
         Text('${l10n.listingMake} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
-        DropdownButtonFormField<String>(
-          key: ValueKey('make_dropdown_${_formData.vehicleCategory}'),
-          initialValue: _isCustomMake ? null : (vehicleModelsByCategoryMake[_formData.vehicleCategory]?.containsKey(_formData.make) == true ? _formData.make : null),
-          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-          decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6)),
-          dropdownColor: context.sheetBg,
-          items: [
-            ...makes.map((m) => DropdownMenuItem(value: m, child: Text(m))),
-            DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
-          ],
-          onChanged: (v) {
-            if (v == '__other__') {
-              setState(() {
-                _isCustomMake = true;
-                _isCustomModel = true;
-                _formData = _formData.copyWith(make: '', model: '');
-              });
-            } else {
-              setState(() {
-                _isCustomMake = false;
-                _isCustomModel = false;
-                _formData = _formData.copyWith(make: v!, model: '');
-              });
-            }
-          },
-          isExpanded: true,
-        ),
-        if (_isCustomMake) ...[
-          const SizedBox(height: 8),
+        if (_isCustomMake)
           TextFormField(
             initialValue: _formData.make,
             autofocus: true,
             style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-              decoration: InputDecoration(
-                hintText: l10n.carEnterMakeName,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              ),
+            decoration: InputDecoration(
+              hintText: l10n.carEnterMakeName,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            ),
             onChanged: (v) => _formData = _formData.copyWith(make: v),
+          )
+        else
+          DropdownButtonFormField<String>(
+            key: ValueKey('make_dropdown_${_formData.vehicleCategory}'),
+            initialValue: vehicleModelsByCategoryMake[_formData.vehicleCategory]?.containsKey(_formData.make) == true ? _formData.make : null,
+            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+            decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6)),
+            dropdownColor: context.sheetBg,
+            items: [
+              ...makes.map((m) => DropdownMenuItem(value: m, child: Text(m))),
+              DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
+            ],
+            onChanged: (v) {
+              if (v == '__other__') {
+                setState(() {
+                  _isCustomMake = true;
+                  _isCustomModel = true;
+                  _formData = _formData.copyWith(make: '', model: '');
+                });
+              } else {
+                setState(() {
+                  _isCustomMake = false;
+                  _isCustomModel = false;
+                  _formData = _formData.copyWith(make: v!, model: '');
+                });
+              }
+            },
+            isExpanded: true,
           ),
-        ],
       ],
     );
   }
@@ -489,45 +488,44 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       children: [
         Text('${l10n.listingModel} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
-        DropdownButtonFormField<String>(
-          key: ValueKey('model_dropdown_${_formData.vehicleCategory}_${_formData.make}'),
-          initialValue: _isCustomModel ? null : (_availableModels.contains(_formData.model) ? _formData.model : null),
-          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-          decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6)),
-          dropdownColor: context.sheetBg,
-          items: [
-            ..._availableModels.map((m) => DropdownMenuItem(value: m, child: Text(m))),
-            if (_formData.make.isNotEmpty)
-              DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
-          ],
-          onChanged: (v) {
-            if (v == '__other__') {
-              setState(() {
-                _isCustomModel = true;
-                _formData = _formData.copyWith(model: '');
-              });
-            } else {
-              setState(() {
-                _isCustomModel = false;
-                _formData = _formData.copyWith(model: v!);
-              });
-            }
-          },
-          isExpanded: true,
-        ),
-        if (_isCustomModel) ...[
-          const SizedBox(height: 8),
+        if (_isCustomModel)
           TextFormField(
             initialValue: _formData.model,
             autofocus: true,
             style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-              decoration: InputDecoration(
-                hintText: l10n.carEnterModelName,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              ),
+            decoration: InputDecoration(
+              hintText: l10n.carEnterModelName,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            ),
             onChanged: (v) => _formData = _formData.copyWith(model: v),
+          )
+        else
+          DropdownButtonFormField<String>(
+            key: ValueKey('model_dropdown_${_formData.vehicleCategory}_${_formData.make}'),
+            initialValue: _availableModels.contains(_formData.model) ? _formData.model : null,
+            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+            decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6)),
+            dropdownColor: context.sheetBg,
+            items: [
+              ..._availableModels.map((m) => DropdownMenuItem(value: m, child: Text(m))),
+              if (_formData.make.isNotEmpty)
+                DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
+            ],
+            onChanged: (v) {
+              if (v == '__other__') {
+                setState(() {
+                  _isCustomModel = true;
+                  _formData = _formData.copyWith(model: '');
+                });
+              } else {
+                setState(() {
+                  _isCustomModel = false;
+                  _formData = _formData.copyWith(model: v!);
+                });
+              }
+            },
+            isExpanded: true,
           ),
-        ],
       ],
     );
   }
