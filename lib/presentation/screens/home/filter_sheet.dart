@@ -185,8 +185,6 @@ class _FilterSheetState extends State<FilterSheet> {
   late int? _priceMax;
   late String? _priceLabel;
   late String _sort;
-  late String? _location;
-
   late String? _propertyType;
   late String? _listingType;
   late bool _isFeatured;
@@ -201,7 +199,6 @@ class _FilterSheetState extends State<FilterSheet> {
 
   final _modelController = TextEditingController();
   final _mileageController = TextEditingController();
-  final _locationController = TextEditingController();
 
   @override
   void initState() {
@@ -211,7 +208,6 @@ class _FilterSheetState extends State<FilterSheet> {
     _priceMin = v.priceMin;
     _priceMax = v.priceMax;
     _sort = v.sort;
-    _location = v.location;
     _priceLabel = _labelForPrice(_priceMin, _priceMax);
     _propertyType = v.propertyType;
     _listingType = v.listingType;
@@ -225,7 +221,6 @@ class _FilterSheetState extends State<FilterSheet> {
     _bodyType = v.bodyType;
     _modelController.text = _model ?? '';
     _mileageController.text = _mileageMax?.toString() ?? '';
-    _locationController.text = _location ?? '';
   }
 
   String? _labelForPrice(int? min, int? max) {
@@ -239,7 +234,6 @@ class _FilterSheetState extends State<FilterSheet> {
   void dispose() {
     _modelController.dispose();
     _mileageController.dispose();
-    _locationController.dispose();
     super.dispose();
   }
 
@@ -249,7 +243,6 @@ class _FilterSheetState extends State<FilterSheet> {
       _priceMax = null;
       _priceLabel = null;
       _sort = 'newest';
-      _location = null;
       _propertyType = null;
       _listingType = null;
       _isFeatured = false;
@@ -262,21 +255,18 @@ class _FilterSheetState extends State<FilterSheet> {
       _bodyType = null;
       _modelController.clear();
       _mileageController.clear();
-      _locationController.clear();
     });
   }
 
   void _apply() {
     _model = _modelController.text.isNotEmpty ? _modelController.text : null;
     _mileageMax = int.tryParse(_mileageController.text);
-    _location = _locationController.text.isNotEmpty ? _locationController.text : null;
 
     Navigator.pop(context, UnifiedFilterValues(
       category: _category,
       priceMin: _priceMin,
       priceMax: _priceMax,
       sort: _sort,
-      location: _location,
       propertyType: _category == HomeCategory.property ? _propertyType : null,
       listingType: _category == HomeCategory.property ? _listingType : null,
       isFeatured: _category == HomeCategory.property ? _isFeatured : false,
@@ -374,15 +364,6 @@ class _FilterSheetState extends State<FilterSheet> {
               if (widget.showCategoryToggle)
                 _buildCategoryToggle(l10n),
 
-              Text(l10n.searchPlaceholder, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _locationController,
-                decoration: _inputDecoration(l10n.searchPlaceholder),
-                style: AppTextStyles.bodyMedium,
-              ),
-              const SizedBox(height: 16),
-
               if (_category == HomeCategory.all) ...[
                 _buildPriceSection(l10n),
                 _buildSortSection(l10n, isVehicle: false),
@@ -398,33 +379,56 @@ class _FilterSheetState extends State<FilterSheet> {
   }
 
   Widget _buildCategoryToggle(AppLocalizations l10n) {
-    return Column(
-      children: [
-        SegmentedButton<HomeCategory>(
-          segments: const [
-            ButtonSegment(value: HomeCategory.all, label: Text('All'), icon: Icon(Icons.apps_rounded, size: 16)),
-            ButtonSegment(value: HomeCategory.property, label: Text('Property'), icon: Icon(Icons.home_rounded, size: 16)),
-            ButtonSegment(value: HomeCategory.vehicles, label: Text('Vehicles'), icon: Icon(Icons.directions_car_rounded, size: 16)),
-          ],
-          selected: {_category},
-          onSelectionChanged: (selected) {
-            setState(() {
-              _category = selected.first;
-              _make = null;
-              _model = null;
-              _modelController.clear();
-              _propertyType = null;
-              _listingType = null;
-              _isFeatured = false;
-            });
-          },
-          style: SegmentedButton.styleFrom(
-            selectedBackgroundColor: AppColors.accent500.withValues(alpha: 0.15),
-            selectedForegroundColor: AppColors.accent500,
-          ),
+    const categories = HomeCategory.values;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: categories.map((cat) {
+            final isSelected = cat == _category;
+            return Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  _category = cat;
+                  _make = null;
+                  _model = null;
+                  _modelController.clear();
+                  _propertyType = null;
+                  _listingType = null;
+                  _isFeatured = false;
+                }),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  decoration: BoxDecoration(
+                    gradient: isSelected ? AppColors.gradientAccent : null,
+                    color: isSelected ? null : context.cardBg.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isSelected ? Colors.transparent : context.divider.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(cat.icon, size: 15, color: isSelected ? Colors.white : context.textSecondary),
+                      const SizedBox(width: 6),
+                      Text(
+                        cat.label(l10n),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color: isSelected ? Colors.white : context.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
-        const SizedBox(height: 16),
-      ],
+      ),
     );
   }
 
@@ -472,6 +476,23 @@ class _FilterSheetState extends State<FilterSheet> {
 
   List<Widget> _buildVehicleSections(AppLocalizations l10n) {
     return [
+      Text(l10n.listingVehicleCategory, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+      const SizedBox(height: 10),
+      _modalChipRow(
+        options: [
+          (l10n.searchFilterAny, null, _vehicleCategory == null),
+          ...vehicleCategories.map((c) => (vehicleCategoryLabel(c, l10n), c, _vehicleCategory == c)),
+        ],
+        onSelected: (v) => setState(() {
+          _vehicleCategory = v as String?;
+          _make = null;
+          _model = null;
+          _modelController.clear();
+          _bodyType = null;
+        }),
+      ),
+      const SizedBox(height: 16),
+
       Text(l10n.listingMake, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
       const SizedBox(height: 10),
       _modalChipRow(
@@ -507,23 +528,6 @@ class _FilterSheetState extends State<FilterSheet> {
         ),
         const SizedBox(height: 16),
       ],
-
-      Text(l10n.listingVehicleCategory, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
-      const SizedBox(height: 10),
-      _modalChipRow(
-        options: [
-          (l10n.searchFilterAny, null, _vehicleCategory == null),
-          ...vehicleCategories.map((c) => (vehicleCategoryLabel(c, l10n), c, _vehicleCategory == c)),
-        ],
-        onSelected: (v) => setState(() {
-          _vehicleCategory = v as String?;
-          _make = null;
-          _model = null;
-          _modelController.clear();
-          _bodyType = null;
-        }),
-      ),
-      const SizedBox(height: 16),
 
       if (_vehicleCategory == null || _vehicleCategory != 'bicycle') ...[
         Text(l10n.listingYear, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
