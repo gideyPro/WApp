@@ -639,7 +639,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
               children: [
                 Wrap(
                   spacing: 8, runSpacing: 4,
-                  children: carFeatureOptions.map((f) => FilterChip(
+                  children: featureOptionsForCategory(_formData.vehicleCategory).map((f) => FilterChip(
                     label: Text(f, style: AppTextStyles.labelSmall),
                     selected: _formData.features.contains(f),
                     onSelected: (selected) {
