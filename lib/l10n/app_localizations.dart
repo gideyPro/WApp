@@ -3922,6 +3922,12 @@ abstract class AppLocalizations {
   /// **'Make'**
   String get listingMake;
 
+  /// No description provided for @listingMakeModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Make & Model'**
+  String get listingMakeModel;
+
   /// No description provided for @listingModel.
   ///
   /// In en, this message translates to:

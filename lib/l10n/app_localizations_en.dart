@@ -2078,6 +2078,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingMake => 'Make';
 
   @override
+  String get listingMakeModel => 'Make & Model';
+
+  @override
   String get listingModel => 'Model';
 
   @override

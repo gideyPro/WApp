@@ -662,6 +662,7 @@
   "listingCarPlural": "Vehicles",
   "listingVehicleCategory": "Vehicle Category",
   "listingMake": "Make",
+  "listingMakeModel": "Make & Model",
   "listingModel": "Model",
   "listingYear": "Year",
   "listingTransmission": "Transmission",

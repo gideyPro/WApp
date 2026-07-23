@@ -2050,6 +2050,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingMake => 'አምራች';
 
   @override
+  String get listingMakeModel => 'አምራች እና ሞዴል';
+
+  @override
   String get listingModel => 'ሞዴል';
 
   @override

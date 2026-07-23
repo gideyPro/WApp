@@ -662,6 +662,7 @@
   "listingCarPlural": "ተሽከርካሪዎች",
   "listingVehicleCategory": "የተሽከርካሪ ምድብ",
   "listingMake": "አምራች",
+  "listingMakeModel": "አምራች እና ሞዴል",
   "listingModel": "ሞዴል",
   "listingYear": "ዓመት",
   "listingTransmission": "ማስተላለፊያ",

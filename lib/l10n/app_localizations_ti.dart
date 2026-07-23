@@ -2050,6 +2050,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingMake => 'መምረቲ';
 
   @override
+  String get listingMakeModel => 'መምረቲ ን ሞዴል';
+
+  @override
   String get listingModel => 'ሞዴል';
 
   @override
@@ -2292,7 +2295,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get conditionNew => 'ሓድሽ';
 
   @override
-  String get conditionUsed => 'ዝተጠቅመ';
+  String get conditionUsed => 'ዝሰረሐ';
 
   @override
   String get categoryCar => 'መኪና';
