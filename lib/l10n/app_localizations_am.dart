@@ -1864,14 +1864,14 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsShowPricesIn => 'የገንዘብ ዓይነት(Currency)፦';
 
   @override
-  String get subscriptionsDowngradeTitle => 'ዕቅድ መለወጥ?';
+  String get subscriptionsDowngradeTitle => 'ፓኬጅ ቀይር?';
 
   @override
   String get subscriptionsDowngradeMessage =>
       'የአሁኑ ፓኬጅዎ ጥቅሞች (የንብረት መለጠፊያ ቦታዎች፣ ባህርይ ያላቸው ዝርዝሮች፣ ቪአይፒ መዳረሻ እና ሌሎችም) ወደ አዲሱ ፓኬጅ አይተላለፉም። ያልተጠቀሙባቸው ጥቅሞች ሊጠፉ ይችላሉ።';
 
   @override
-  String get subscriptionsDowngradeConfirm => 'ለማንኛውም ቀይር';
+  String get subscriptionsDowngradeConfirm => 'ዝምብለህ ቀይር';
 
   @override
   String get commonTryAgain => 'እንደገና ሞክር';

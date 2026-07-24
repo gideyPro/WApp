@@ -1864,14 +1864,14 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsShowPricesIn => ' ዓይነት ገንዘብ(Currency)፦';
 
   @override
-  String get subscriptionsDowngradeTitle => 'ፓኬጅ ምምላውጥ?';
+  String get subscriptionsDowngradeTitle => 'ፓኬጅ ቀይር?';
 
   @override
   String get subscriptionsDowngradeMessage =>
-      'ናይ ሕጂ ፓኬጅኩም ጥቅማት (ናይ ንብረት መለጠፊ ቦታታት፣ ተለይቶ ዝቀርቡ ዝርዝራት፣ ቪአይፒ መዳረሻ ከምኡውን ካልኦት) ናብ ሓዱሽ ፓኬጅ ኣይምሓለፉን። ዘይተጠቅምኩምዎ ጥቅማት ኪጠፍኡ ይኽእሉ እዮም።';
+      'ናይ ሕጂ ፓኬጅኩም ጥቅማት (ናይ ንብረት መለጠፊ ቦታታት፣ ብፍሉይ ዝቀርቡ ዝርዝራት፣ ቪአይፒ ከምኡውን ካልኦት) ናብ ሓዱሽ ፓኬጅ ኣይምሓለፉን። ዘይተጠቅምኩምዎ ጥቅማት ክጠፍኡ ይኽእሉ እዮም።';
 
   @override
-  String get subscriptionsDowngradeConfirm => 'ብዘይከኣለ ቀይር';
+  String get subscriptionsDowngradeConfirm => 'ብዘየግድስ ቀይር';
 
   @override
   String get commonTryAgain => 'ደጊምካ ፈትን';
