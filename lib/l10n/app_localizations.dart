@@ -3562,6 +3562,24 @@ abstract class AppLocalizations {
   /// **'Show prices in:'**
   String get subscriptionsShowPricesIn;
 
+  /// No description provided for @subscriptionsDowngradeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Plan?'**
+  String get subscriptionsDowngradeTitle;
+
+  /// No description provided for @subscriptionsDowngradeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current plan\'s features (listing slots, featured listings, VIP access, and other benefits) will not carry over to the new plan. Any unused benefits from your current plan may be lost.'**
+  String get subscriptionsDowngradeMessage;
+
+  /// No description provided for @subscriptionsDowngradeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Anyway'**
+  String get subscriptionsDowngradeConfirm;
+
   /// No description provided for @commonTryAgain.
   ///
   /// In en, this message translates to:

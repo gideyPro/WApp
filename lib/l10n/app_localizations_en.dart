@@ -1889,6 +1889,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsShowPricesIn => 'Show prices in:';
 
   @override
+  String get subscriptionsDowngradeTitle => 'Switch Plan?';
+
+  @override
+  String get subscriptionsDowngradeMessage =>
+      'Your current plan\'s features (listing slots, featured listings, VIP access, and other benefits) will not carry over to the new plan. Any unused benefits from your current plan may be lost.';
+
+  @override
+  String get subscriptionsDowngradeConfirm => 'Switch Anyway';
+
+  @override
   String get commonTryAgain => 'Try Again';
 
   @override

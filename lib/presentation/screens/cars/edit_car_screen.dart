@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
@@ -20,6 +20,7 @@ import '../../widgets/common/wave_liquid_glass.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/app_providers.dart';
 import '../../../core/utils/ethiopian_date_helper.dart';
+import '../listing/widgets/submission_overlay.dart';
 
 
 class EditCarScreen extends ConsumerStatefulWidget {
@@ -36,6 +37,9 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   int _currentStep = 0;
   bool _isSubmitting = false;
   final Map<int, List<String>> _stepErrors = {};
+  ValueNotifier<SubmissionState>? _submissionNotifier;
+  Future<bool?>? _submissionDismissed;
+  Timer? _uploadProgressTimer;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
@@ -94,6 +98,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   void dispose() {
     _pageController.dispose();
     _specificLocationController.dispose();
+    _uploadProgressTimer?.cancel();
     super.dispose();
   }
 
@@ -317,18 +322,210 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   }
 
   Future<void> _submit() async {
+    if (!mounted) return;
     setState(() => _isSubmitting = true);
-    final response = await ref.read(carServiceProvider).updateListing(
-      listingId: widget.listing.id,
-      formData: _formData,
+
+    final (:notifier, :dismissed) = SubmissionOverlay.show(context);
+    _submissionNotifier = notifier;
+    _submissionDismissed = dismissed;
+    _submissionNotifier!.value = SubmissionState.submitting(
+      phase: SubmissionPhase.validating,
+      label: l10n.submissionValidating,
+      progress: 0.2,
     );
-    setState(() => _isSubmitting = false);
-    if (response.success && mounted) {
-      ref.read(carDetailProvider.notifier).refreshListing(widget.listing.id);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.listingUpdated)));
-      context.pop();
-    } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message)));
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.uploading,
+        label: l10n.submissionUploading,
+      );
+
+      _startUploadProgressSimulation();
+
+      final response = await ref.read(carServiceProvider).updateListing(
+        listingId: widget.listing.id,
+        formData: _formData,
+        onProgress: (progress) {
+          if (!mounted) return;
+          _stopUploadProgressSimulation();
+          _submissionNotifier!.value = SubmissionState.submitting(
+            phase: SubmissionPhase.uploading,
+            label: l10n.submissionUploading,
+            progress: 0.2 + progress * 0.7,
+          );
+        },
+      );
+
+      _stopUploadProgressSimulation();
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: l10n.submissionSaving,
+        progress: 0.9,
+      );
+      await Future.delayed(const Duration(milliseconds: 300));
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: l10n.submissionSaving,
+        progress: 1.0,
+      );
+
+      if (!mounted) return;
+      if (response.success) {
+        ref.read(carDetailProvider.notifier).refreshListing(widget.listing.id);
+        if (!mounted) return;
+        _submissionNotifier!.value = SubmissionState.success(
+          message: l10n.submissionUpdatedMessage,
+          isEdit: true,
+        );
+        final result = await _submissionDismissed;
+        if (mounted && result == true) Navigator.of(context).pop(true);
+      } else {
+        _submissionNotifier!.value = SubmissionState.error(
+          message: response.message.isNotEmpty
+              ? response.message
+              : l10n.submissionErrorDefault,
+          onRetry: _retrySubmission,
+          onSaveDraft: _saveDraftAndExit,
+        );
+      }
+    } catch (e) {
+      _stopUploadProgressSimulation();
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.error(
+        message: _friendlyErrorMessage(e),
+        onRetry: _retrySubmission,
+        onSaveDraft: _saveDraftAndExit,
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
+  void _startUploadProgressSimulation() {
+    _uploadProgressTimer?.cancel();
+    double simulatedProgress = 0.2;
+    _uploadProgressTimer = Timer.periodic(
+      const Duration(milliseconds: 300),
+      (_) {
+        if (!mounted) return;
+        simulatedProgress += 0.04;
+        if (simulatedProgress >= 0.9) {
+          simulatedProgress = 0.9;
+          _uploadProgressTimer?.cancel();
+        }
+        _submissionNotifier?.value = SubmissionState.submitting(
+          phase: SubmissionPhase.uploading,
+          label: l10n.submissionUploading,
+          progress: simulatedProgress,
+        );
+      },
+    );
+  }
+
+  void _stopUploadProgressSimulation() {
+    _uploadProgressTimer?.cancel();
+    _uploadProgressTimer = null;
+  }
+
+  Future<void> _retrySubmission() async {
+    if (!mounted) return;
+    _submissionNotifier!.value = SubmissionState.submitting(
+      phase: SubmissionPhase.validating,
+      label: l10n.submissionValidating,
+      progress: 0.2,
+    );
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.uploading,
+        label: l10n.submissionUploading,
+      );
+
+      _startUploadProgressSimulation();
+
+      final response = await ref.read(carServiceProvider).updateListing(
+        listingId: widget.listing.id,
+        formData: _formData,
+        onProgress: (progress) {
+          if (!mounted) return;
+          _stopUploadProgressSimulation();
+          _submissionNotifier!.value = SubmissionState.submitting(
+            phase: SubmissionPhase.uploading,
+            label: l10n.submissionUploading,
+            progress: 0.2 + progress * 0.7,
+          );
+        },
+      );
+
+      _stopUploadProgressSimulation();
+
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: l10n.submissionSaving,
+        progress: 0.9,
+      );
+      await Future.delayed(const Duration(milliseconds: 300));
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.submitting(
+        phase: SubmissionPhase.saving,
+        label: l10n.submissionSaving,
+        progress: 1.0,
+      );
+
+      if (!mounted) return;
+      if (response.success) {
+        ref.read(carDetailProvider.notifier).refreshListing(widget.listing.id);
+        if (!mounted) return;
+        _submissionNotifier!.value = SubmissionState.success(
+          message: l10n.submissionUpdatedMessage,
+          isEdit: true,
+        );
+        final result = await _submissionDismissed;
+        if (mounted && result == true) Navigator.of(context).pop(true);
+      } else {
+        _submissionNotifier!.value = SubmissionState.error(
+          message: response.message.isNotEmpty
+              ? response.message
+              : l10n.submissionErrorDefault,
+          onRetry: _retrySubmission,
+          onSaveDraft: _saveDraftAndExit,
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.error(
+        message: _friendlyErrorMessage(e),
+        onRetry: _retrySubmission,
+        onSaveDraft: _saveDraftAndExit,
+      );
+    }
+  }
+
+  String _friendlyErrorMessage(Object error) {
+    final l10n = AppLocalizations.of(context);
+    final msg = error.toString();
+    if (msg.contains('Connection refused') || msg.contains('SocketException')) {
+      return l10n.submissionConnectionLost;
+    }
+    if (msg.contains('timeout')) {
+      return l10n.submissionRequestTimedOut;
+    }
+    return msg.replaceAll(RegExp(r'^Exception:\s*'), '');
+  }
+
+  Future<void> _saveDraftAndExit() async {
+    if (mounted) {
+      Navigator.of(context).pop(false);
     }
   }
 

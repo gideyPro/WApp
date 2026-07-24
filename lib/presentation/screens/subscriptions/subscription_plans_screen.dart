@@ -689,7 +689,7 @@ class _SubscriptionPlansScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.subscriptionsDowngradeCancel),
+            child: Text(l10n.commonCancel),
           ),
           WaveButton(
             text: l10n.subscriptionsDowngradeConfirm,
