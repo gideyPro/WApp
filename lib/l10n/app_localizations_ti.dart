@@ -2226,7 +2226,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get submissionStepValidating => 'ዳታ ይረጋገጽ ኣሎ';
 
   @override
-  String get submissionStepUploading => 'ፋይላት ይፀዕዓኑ ኣለዉ';
+  String get submissionStepUploading => 'ፋይላት ይፀዓኑ ኣለዉ';
 
   @override
   String get submissionStepSaving => 'ምዝገባ ይቕመጥ ኣሎ';
@@ -2235,7 +2235,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get submissionValidating => 'ዳታ ይረጋገጽ ኣሎ...';
 
   @override
-  String get submissionUploading => 'ፋይላት ይፀዕዓኑ ኣለዉ';
+  String get submissionUploading => 'ፋይላት ይፀዓኑ ኣለዉ';
 
   @override
   String get submissionSaving => 'ምዝገባ ይቕመጥ ኣሎ...';

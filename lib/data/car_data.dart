@@ -172,7 +172,7 @@ const _tiColorTranslations = {
   'White': 'ፃዕዳ',
   'Black': 'ፀሊም',
   'Silver': 'ብሩር',
-  'Gray': 'ግራጫ',
+  'Gray': 'ሓመዳይ',
   'Red': 'ቀይሕ',
   'Blue': 'ሰማያዊ',
   'Green': 'ቆፃል',

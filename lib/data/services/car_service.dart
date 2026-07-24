@@ -217,7 +217,7 @@ class CarService {
       MapEntry('vehicle_category', formData.vehicleCategory),
       MapEntry('make', formData.make),
       MapEntry('model', formData.model),
-      MapEntry('year', formData.year),
+      if (formData.year.isNotEmpty) MapEntry('year', formData.year),
       if (formData.mileageKm.isNotEmpty) MapEntry('mileage_km', formData.mileageKm),
       if (formData.bodyType.isNotEmpty) MapEntry('body_type', formData.bodyType),
       if (formData.color.isNotEmpty) MapEntry('color', formData.color),
