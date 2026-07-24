@@ -680,8 +680,39 @@ class _SubscriptionPlansScreenState
     );
   }
 
+  Future<bool> _showDowngradeWarning() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.subscriptionsDowngradeTitle),
+        content: Text(l10n.subscriptionsDowngradeMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.subscriptionsDowngradeCancel),
+          ),
+          WaveButton(
+            text: l10n.subscriptionsDowngradeConfirm,
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
+
   Future<void> _selectPlan(SubscriptionPlan plan) async {
     if (_processingPlanId != null) return;
+
+    final subState = ref.read(subscriptionProvider);
+    final sub = subState.subscription;
+    final currentPlan = sub?.plan;
+    if (currentPlan != null &&
+        sub?.isActive == true &&
+        plan.id != currentPlan.id) {
+      final proceed = await _showDowngradeWarning();
+      if (!proceed) return;
+    }
 
     // For free plans, activate directly
     if (plan.isFree) {
