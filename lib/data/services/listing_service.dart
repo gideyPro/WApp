@@ -333,6 +333,7 @@ class ListingService {
       ],
       if (formData.frontAreaSqm != null) MapEntry('front_area_sqm', formData.frontAreaSqm.toString()),
       if (formData.sideAreaSqm != null) MapEntry('side_area_sqm', formData.sideAreaSqm.toString()),
+      const MapEntry('terms_accepted', '1'),
     ]);
 
     // House-specific fields

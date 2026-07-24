@@ -231,7 +231,9 @@ class CarService {
       if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),
       if (formData.specificLocation.isNotEmpty) MapEntry('specific_location', formData.specificLocation),
       if (formData.description.isNotEmpty) MapEntry('description', formData.description),
+      const MapEntry('terms_accepted', '1'),
     ]);
+
     if (formData.isVip) {
       dioFormData.fields.add(const MapEntry('is_vip', '1'));
     }
