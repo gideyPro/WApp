@@ -535,7 +535,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           title: Text(l10n.listingsCreate),
           actions: [
             TextButton(
-              onPressed: _isSubmitting ? null : _nextStep,
+              onPressed: _isSubmitting ? null : (_currentStep == 2 ? _submit : _nextStep),
               child: Text(_currentStep == 2 ? l10n.listingSubmit : l10n.listingNext),
             ),
           ],

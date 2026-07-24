@@ -549,7 +549,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           title: Text(l10n.listingEditTitle),
           actions: [
             TextButton(
-              onPressed: _isSubmitting ? null : _nextStep,
+              onPressed: _isSubmitting ? null : (_currentStep == 2 ? _submit : _nextStep),
               child: Text(_currentStep == 2 ? l10n.updateListing : l10n.listingNext),
             ),
           ],
