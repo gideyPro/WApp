@@ -75,6 +75,7 @@ class SubscriptionServiceApi {
           plans: plans,
           subscription: subscription,
           canCreateListing: data['can_create_listing'] ?? false,
+          canCreateVehicle: data['can_create_vehicle'] ?? false,
           canFeatureListing: data['can_feature_listing'] ?? false,
           canViewVip: data['can_view_vip'] ?? false,
           canCreateOrder: data['can_create_order'] ?? false,
@@ -118,6 +119,7 @@ class SubscriptionServiceApi {
           success: true,
           subscription: subscription,
           canCreateListing: data['can_create_listing'] ?? false,
+          canCreateVehicle: data['can_create_vehicle'] ?? false,
           canFeatureListing: data['can_feature_listing'] ?? false,
           canViewVip: data['can_view_vip'] ?? false,
           canCreateOrder: data['can_create_order'] ?? false,
@@ -337,6 +339,7 @@ class FullSubscriptionData {
   final List<SubscriptionPlan> plans;
   final Subscription? subscription;
   final bool canCreateListing;
+  final bool canCreateVehicle;
   final bool canFeatureListing;
   final bool canViewVip;
   final bool canCreateOrder;
@@ -353,6 +356,7 @@ class FullSubscriptionData {
     this.plans = const [],
     this.subscription,
     this.canCreateListing = false,
+    this.canCreateVehicle = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
     this.canCreateOrder = false,
@@ -382,6 +386,7 @@ class CurrentSubscriptionResponse {
   final String message;
   final Subscription? subscription;
   final bool canCreateListing;
+  final bool canCreateVehicle;
   final bool canFeatureListing;
   final bool canViewVip;
   final bool canCreateOrder;
@@ -397,6 +402,7 @@ class CurrentSubscriptionResponse {
     this.message = '',
     this.subscription,
     this.canCreateListing = true,
+    this.canCreateVehicle = true,
     this.canFeatureListing = true,
     this.canViewVip = true,
     this.canCreateOrder = true,

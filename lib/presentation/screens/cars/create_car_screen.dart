@@ -507,8 +507,8 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       );
     }
 
-    if (subscriptionEnabled && !subState.canCreateListing) {
-      final (:title, :subtitle) = _listingGateMessage(subState, l10n);
+    if (subscriptionEnabled && !subState.canCreateVehicle) {
+      final (:title, :subtitle) = _vehicleGateMessage(subState, l10n);
       return WaveFullPageUpgrade(
         appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
         icon: Icons.add_home_work_outlined,
@@ -1151,7 +1151,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     );
   }
 
-  ({String title, String subtitle}) _listingGateMessage(
+  ({String title, String subtitle}) _vehicleGateMessage(
       SubscriptionState subState, AppLocalizations l10n) {
     if (!subState.hasPaidSubscription) {
       return (
@@ -1160,7 +1160,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       );
     }
     final plan = subState.subscription?.plan;
-    if (plan == null || plan.maxListings == 0) {
+    if (plan == null || plan.maxVehicles == 0) {
       return (
         title: l10n.subscriptionPlanNotSupportedListing,
         subtitle: l10n.subscriptionPlanNotSupportedListingSubtitle,

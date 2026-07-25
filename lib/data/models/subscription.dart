@@ -36,6 +36,7 @@ class SubscriptionPlan {
   final double priceUsd;
   final int durationMonths;
   final int maxListings;
+  final int maxVehicles;
   final int maxFeaturedListings;
   final bool viewVip;
   final int maxOrders;
@@ -57,6 +58,7 @@ class SubscriptionPlan {
     this.priceUsd = 0.0,
     this.durationMonths = 1,
     this.maxListings = 1,
+    this.maxVehicles = 0,
     this.maxFeaturedListings = 0,
     this.viewVip = false,
     this.maxOrders = 0,
@@ -80,6 +82,7 @@ class SubscriptionPlan {
       priceUsd: _parseDouble(json['price_usd']),
       durationMonths: json['duration_months'] ?? 1,
       maxListings: json['max_listings'] ?? 1,
+      maxVehicles: json['max_vehicles'] ?? 0,
       maxFeaturedListings: json['max_featured_listings'] ?? 0,
       viewVip: json['view_vip'] ?? false,
       maxOrders: json['max_orders'] ?? 0,
@@ -186,6 +189,7 @@ class Subscription {
   final DateTime? cancelledAt;
   final DateTime? expiredAt;
   final int listingsUsed;
+  final int vehiclesUsed;
   final int featuredListingsUsed;
   final int ordersUsed;
   final DateTime? createdAt;
@@ -202,6 +206,7 @@ class Subscription {
     this.cancelledAt,
     this.expiredAt,
     this.listingsUsed = 0,
+    this.vehiclesUsed = 0,
     this.featuredListingsUsed = 0,
     this.ordersUsed = 0,
     this.createdAt,
@@ -226,6 +231,7 @@ class Subscription {
           ? DateTime.parse(json['expired_at'])
           : null,
       listingsUsed: json['listings_used'] ?? 0,
+      vehiclesUsed: json['vehicles_used'] ?? 0,
       featuredListingsUsed: json['featured_listings_used'] ?? 0,
       ordersUsed: json['orders_used'] ?? 0,
       createdAt: json['created_at'] != null

@@ -90,6 +90,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
             plans: data.plans,
             subscription: data.subscription,
             canCreateListing: data.canCreateListing,
+            canCreateVehicle: data.canCreateVehicle,
             canFeatureListing: data.canFeatureListing,
             canViewVip: data.canViewVip,
             canCreateOrder: data.canCreateOrder,
@@ -145,6 +146,7 @@ class SubscriptionState {
   final List<SubscriptionPlan> plans;
   final Subscription? subscription;
   final bool canCreateListing;
+  final bool canCreateVehicle;
   final bool canFeatureListing;
   final bool canViewVip;
   final bool canCreateOrder;
@@ -161,6 +163,7 @@ class SubscriptionState {
     this.plans = const [],
     this.subscription,
     this.canCreateListing = false,
+    this.canCreateVehicle = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
     this.canCreateOrder = false,
@@ -178,6 +181,7 @@ class SubscriptionState {
         plans = const [],
         subscription = null,
         canCreateListing = false,
+        canCreateVehicle = false,
         canFeatureListing = false,
         canViewVip = false,
         canCreateOrder = false,
@@ -193,6 +197,7 @@ class SubscriptionState {
     required this.plans,
     this.subscription,
     this.canCreateListing = false,
+    this.canCreateVehicle = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
     this.canCreateOrder = false,
@@ -210,6 +215,7 @@ class SubscriptionState {
     List<SubscriptionPlan>? plans,
     Subscription? subscription,
     bool? canCreateListing,
+    bool? canCreateVehicle,
     bool? canFeatureListing,
     bool? canViewVip,
     bool? canCreateOrder,
@@ -226,6 +232,7 @@ class SubscriptionState {
       plans: plans ?? this.plans,
       subscription: subscription ?? this.subscription,
       canCreateListing: canCreateListing ?? this.canCreateListing,
+      canCreateVehicle: canCreateVehicle ?? this.canCreateVehicle,
       canFeatureListing: canFeatureListing ?? this.canFeatureListing,
       canViewVip: canViewVip ?? this.canViewVip,
       canCreateOrder: canCreateOrder ?? this.canCreateOrder,
