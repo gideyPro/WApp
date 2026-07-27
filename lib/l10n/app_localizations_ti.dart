@@ -591,7 +591,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingRegion => 'ክልል';
 
   @override
-  String get listingZone => 'ዞን';
+  String get listingZone => 'ዞባ';
 
   @override
   String get listingWoreda => 'ወረዳ';
