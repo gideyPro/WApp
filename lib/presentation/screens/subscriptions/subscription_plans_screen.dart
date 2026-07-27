@@ -382,6 +382,15 @@ class _SubscriptionPlansScreenState
               max: contactViewsUsed + contactViewsRemaining,
               icon: Icons.visibility_outlined,
             ),
+          if ((showContactBar || localPlan.maxOrders > 0) && localPlan.maxVehicles > 0)
+            const SizedBox(height: 12),
+          if (localPlan.maxVehicles > 0)
+            _buildUsageBar(
+              label: l10n.listingCarPlural,
+              used: sub.vehiclesUsed,
+              max: localPlan.maxVehicles,
+              icon: Icons.directions_car_outlined,
+            ),
           // Manage / Upgrade CTA
           const SizedBox(height: 18),
           Row(
@@ -704,6 +713,7 @@ class _SubscriptionPlansScreenState
   Future<void> _selectPlan(SubscriptionPlan plan) async {
     if (_processingPlanId != null) return;
 
+    final navigator = Navigator.of(context);
     final subState = ref.read(subscriptionProvider);
     final sub = subState.subscription;
     final currentPlan = sub?.plan;
@@ -756,7 +766,7 @@ class _SubscriptionPlansScreenState
       final activateCompleter = Completer<String>();
 
       // 2. Open WebView IMMEDIATELY with urlFuture — no waiting for Chapa
-      final webViewFuture = Navigator.of(context).push(
+      final webViewFuture = navigator.push(
         MaterialPageRoute(
           builder: (context) => WaveWebViewPage(
             urlFuture: paymentFuture.then((r) {

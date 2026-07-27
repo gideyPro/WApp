@@ -119,6 +119,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           plans: data.plans,
           subscription: data.subscription,
           canCreateListing: data.canCreateListing,
+          canCreateVehicle: data.canCreateVehicle,
           canFeatureListing: data.canFeatureListing,
           canViewVip: data.canViewVip,
           canCreateOrder: data.canCreateOrder,
