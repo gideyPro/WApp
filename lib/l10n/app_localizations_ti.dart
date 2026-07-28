@@ -2564,4 +2564,22 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get agentIdEmpty => 'መለለይ ኤጀንት የድሊ እዩ';
+
+  @override
+  String get listingErrorTaxPaidYearRequired => 'ዓመት ክፍሊት ቀረጽ የድሊ እዩ';
+
+  @override
+  String get listingErrorAcquisitionClarificationRequired => 'ሓበረታ ግዢ የድሊ እዩ';
+
+  @override
+  String get listingErrorLeasePricePerSqmRequired => 'ብካሬ ሜተር ዋጋ ሊዝ የድሊ እዩ';
+
+  @override
+  String get listingErrorBuildTypeRequired => 'ኣይነት ህንጻ የድሊ እዩ';
+
+  @override
+  String get listingErrorAnnualPaymentRequired => 'ዓመታዊ ክፍሊት የድሊ እዩ';
+
+  @override
+  String get listingErrorBuildingStatusRequired => 'ኩነት ህንጻ የድሊ እዩ';
 }

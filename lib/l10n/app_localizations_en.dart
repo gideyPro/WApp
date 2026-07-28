@@ -2595,4 +2595,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get agentIdEmpty => 'Agent ID is required';
+
+  @override
+  String get listingErrorTaxPaidYearRequired => 'Tax paid year is required';
+
+  @override
+  String get listingErrorAcquisitionClarificationRequired =>
+      'Acquisition clarification is required';
+
+  @override
+  String get listingErrorLeasePricePerSqmRequired =>
+      'Lease price per sqm is required';
+
+  @override
+  String get listingErrorBuildTypeRequired => 'Build type is required';
+
+  @override
+  String get listingErrorAnnualPaymentRequired => 'Annual payment is required';
+
+  @override
+  String get listingErrorBuildingStatusRequired =>
+      'Building status is required';
 }

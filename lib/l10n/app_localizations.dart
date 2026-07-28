@@ -4941,6 +4941,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Agent ID is required'**
   String get agentIdEmpty;
+
+  /// No description provided for @listingErrorTaxPaidYearRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax paid year is required'**
+  String get listingErrorTaxPaidYearRequired;
+
+  /// No description provided for @listingErrorAcquisitionClarificationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Acquisition clarification is required'**
+  String get listingErrorAcquisitionClarificationRequired;
+
+  /// No description provided for @listingErrorLeasePricePerSqmRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Lease price per sqm is required'**
+  String get listingErrorLeasePricePerSqmRequired;
+
+  /// No description provided for @listingErrorBuildTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Build type is required'**
+  String get listingErrorBuildTypeRequired;
+
+  /// No description provided for @listingErrorAnnualPaymentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual payment is required'**
+  String get listingErrorAnnualPaymentRequired;
+
+  /// No description provided for @listingErrorBuildingStatusRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Building status is required'**
+  String get listingErrorBuildingStatusRequired;
 }
 
 class _AppLocalizationsDelegate

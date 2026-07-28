@@ -2564,4 +2564,22 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get agentIdEmpty => 'የኤጀንት መለያ ያስፈልጋል';
+
+  @override
+  String get listingErrorTaxPaidYearRequired => 'የታክስ ክፍያ ዓመት ያስፈልጋል';
+
+  @override
+  String get listingErrorAcquisitionClarificationRequired => 'የግዢ ማብራሪያ ያስፈልጋል';
+
+  @override
+  String get listingErrorLeasePricePerSqmRequired => 'በካሬ ሜትር የሊዝ ዋጋ ያስፈልጋል';
+
+  @override
+  String get listingErrorBuildTypeRequired => 'የግንባታ ዓይነት ያስፈልጋል';
+
+  @override
+  String get listingErrorAnnualPaymentRequired => 'ዓመታዊ ክፍያ ያስፈልጋል';
+
+  @override
+  String get listingErrorBuildingStatusRequired => 'የግንባታ ሁኔታ ያስፈልጋል';
 }

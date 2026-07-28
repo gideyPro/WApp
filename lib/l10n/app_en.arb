@@ -831,5 +831,11 @@
   "orderPostedByAgentLabel": "This order is posted by an agent",
   "agentIdLabel": "Agent ID",
   "agentIdRequired": "Agent ID is required when posted by agent",
-  "agentIdEmpty": "Agent ID is required"
+  "agentIdEmpty": "Agent ID is required",
+  "listingErrorTaxPaidYearRequired": "Tax paid year is required",
+  "listingErrorAcquisitionClarificationRequired": "Acquisition clarification is required",
+  "listingErrorLeasePricePerSqmRequired": "Lease price per sqm is required",
+  "listingErrorBuildTypeRequired": "Build type is required",
+  "listingErrorAnnualPaymentRequired": "Annual payment is required",
+  "listingErrorBuildingStatusRequired": "Building status is required"
 }

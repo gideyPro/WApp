@@ -831,5 +831,11 @@
   "orderPostedByAgentLabel": "ይህ ትዕዛዝ በኤጀንት የተለጠፈ ነው",
   "agentIdLabel": "የኤጀንት መለያ",
   "agentIdRequired": "በኤጀንት ሲለጠፍ የኤጀንት መለያ ያስፈልጋል",
-  "agentIdEmpty": "የኤጀንት መለያ ያስፈልጋል"
+  "agentIdEmpty": "የኤጀንት መለያ ያስፈልጋል",
+  "listingErrorTaxPaidYearRequired": "የታክስ ክፍያ ዓመት ያስፈልጋል",
+  "listingErrorAcquisitionClarificationRequired": "የግዢ ማብራሪያ ያስፈልጋል",
+  "listingErrorLeasePricePerSqmRequired": "በካሬ ሜትር የሊዝ ዋጋ ያስፈልጋል",
+  "listingErrorBuildTypeRequired": "የግንባታ ዓይነት ያስፈልጋል",
+  "listingErrorAnnualPaymentRequired": "ዓመታዊ ክፍያ ያስፈልጋል",
+  "listingErrorBuildingStatusRequired": "የግንባታ ሁኔታ ያስፈልጋል"
 }

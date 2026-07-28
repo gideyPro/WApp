@@ -419,20 +419,37 @@ class ListingFormData {
 
     // Holding-specific validation
     if (holdingType == 'Free Hold') {
-      if (taxPaidUntilYear != null &&
-          (taxPaidUntilYear! < 2000 ||
-              taxPaidUntilYear! > DateTime.now().year + 10)) {
+      if (taxPaidUntilYear == null) {
+        errors.add(l10n.listingErrorTaxPaidYearRequired);
+      } else if (taxPaidUntilYear! < 2000 ||
+          taxPaidUntilYear! > DateTime.now().year + 10) {
         errors.add(l10n.listingErrorTaxYearRange(
             '2000', (DateTime.now().year + 10).toString()));
       }
+      if (acquisitionClarification == null ||
+          acquisitionClarification!.trim().isEmpty) {
+        errors.add(l10n.listingErrorAcquisitionClarificationRequired);
+      }
     } else if (holdingType == 'Lease Hold') {
       if (leasedYear == null) errors.add(l10n.listingErrorLeasedYearRequired);
+      if (leasePricePerSqm == null || leasePricePerSqm! <= 0) {
+        errors.add(l10n.listingErrorLeasePricePerSqmRequired);
+      }
+      if (buildType == null || buildType!.trim().isEmpty) {
+        errors.add(l10n.listingErrorBuildTypeRequired);
+      }
+      if (annualPayment == null || annualPayment! <= 0) {
+        errors.add(l10n.listingErrorAnnualPaymentRequired);
+      }
     } else if (holdingType == 'Cooperative') {
       if (cooperativeName == null || cooperativeName!.trim().isEmpty) {
         errors.add(l10n.listingErrorCooperativeNameRequired);
       }
       if (cooperativeCode == null || cooperativeCode!.trim().isEmpty) {
         errors.add(l10n.listingErrorCooperativeCodeRequired);
+      }
+      if (buildingStatus == null || buildingStatus!.trim().isEmpty) {
+        errors.add(l10n.listingErrorBuildingStatusRequired);
       }
     }
 
