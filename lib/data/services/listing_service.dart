@@ -324,6 +324,7 @@ class ListingService {
       MapEntry('has_debt_or_encumbrance', formData.hasDebtOrEncumbrance ? '1' : '0'),
       if (formData.debtAmount != null) MapEntry('debt_amount', formData.debtAmount.toString()),
       if (formData.debtHolder != null) MapEntry('debt_holder', formData.debtHolder!),
+      if (formData.postedByAgent) MapEntry('agent_id', formData.agentId),
       MapEntry('electricity', formData.electricity ? '1' : '0'),
       MapEntry('water', formData.water ? '1' : '0'),
       MapEntry('parking_available', formData.parkingAvailable ? '1' : '0'),

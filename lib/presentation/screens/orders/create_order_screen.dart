@@ -49,6 +49,9 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   int? _kebeleId;
   bool _loadingZones = false, _loadingWoredas = false, _loadingKebeles = false;
 
+  bool _postedByAgent = false;
+  final _agentIdCtrl = TextEditingController();
+
   bool _formatting = false;
   bool _rentalEnabled = false;
 
@@ -66,6 +69,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     _minAreaCtrl.dispose();
     _maxAreaCtrl.dispose();
     _descriptionCtrl.dispose();
+    _agentIdCtrl.dispose();
     super.dispose();
   }
 
@@ -214,6 +218,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     if (_maxBudgetCtrl.text.isNotEmpty) data['max_budget'] = _maxBudgetCtrl.text.replaceAll(',', '');
     if (_minAreaCtrl.text.isNotEmpty) data['min_area'] = _minAreaCtrl.text.replaceAll(',', '');
     if (_maxAreaCtrl.text.isNotEmpty) data['max_area'] = _maxAreaCtrl.text.replaceAll(',', '');
+    if (_postedByAgent && _agentIdCtrl.text.isNotEmpty) data['agent_id'] = _agentIdCtrl.text;
 
     final response = await ref.read(orderServiceProvider).createOrder(data);
 
@@ -578,6 +583,49 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 decoration: _inputDecoration(hint: l10n.ordersDescriptionHint),
                 maxLines: 4,
                 validator: _requiredValidator,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            _sectionCard(
+              title: 'Posted by agent',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 24, height: 24,
+                        child: Checkbox(
+                          value: _postedByAgent,
+                          onChanged: (v) => setState(() {
+                            _postedByAgent = v ?? false;
+                            if (!_postedByAgent) _agentIdCtrl.clear();
+                          }),
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () => setState(() {
+                          _postedByAgent = !_postedByAgent;
+                          if (!_postedByAgent) _agentIdCtrl.clear();
+                        }),
+                        child: Text('This order is posted by an agent',
+                            style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                      ),
+                    ],
+                  ),
+                  if (_postedByAgent) ...[
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _agentIdCtrl,
+                      style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                      decoration: _inputDecoration(label: 'Agent ID'),
+                    ),
+                  ],
+                ],
               ),
             ),
 

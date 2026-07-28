@@ -61,6 +61,19 @@ class ListingStep4Review extends StatelessWidget {
                 overflow: TextOverflow.ellipsis),
             const SizedBox(height: 12),
           ],
+          if (formData.postedByAgent) ...[
+            Row(
+              children: [
+                Icon(Icons.person_outline, size: 16, color: context.theme.textSecondary),
+                const SizedBox(width: 6),
+                Text('Posted by agent (ID: ${formData.agentId})',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: context.theme.textSecondary,
+                    )),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
           Row(
             children: [
               SizedBox(

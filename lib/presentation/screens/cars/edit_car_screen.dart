@@ -896,6 +896,52 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          _sectionCard(
+            title: 'Posted by agent',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 24, height: 24,
+                      child: Checkbox(
+                        value: _formData.postedByAgent,
+                        onChanged: (v) => setState(() => _formData = _formData.copyWith(
+                          postedByAgent: v ?? false,
+                          agentId: (v ?? false) ? _formData.agentId : '',
+                        )),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () => setState(() => _formData = _formData.copyWith(
+                        postedByAgent: !_formData.postedByAgent,
+                        agentId: !_formData.postedByAgent ? _formData.agentId : '',
+                      )),
+                      child: Text('This listing is posted by an agent',
+                          style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                    ),
+                  ],
+                ),
+                if (_formData.postedByAgent) ...[
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    initialValue: _formData.agentId,
+                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                    decoration: InputDecoration(
+                      labelText: 'Agent ID',
+                      labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    ),
+                    onChanged: (v) => _formData = _formData.copyWith(agentId: v),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
           WaveButton(
             text: l10n.updateListing,
             icon: Icons.check,

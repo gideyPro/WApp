@@ -32,6 +32,7 @@ class ListingStep1Basics extends ConsumerStatefulWidget {
 class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   late TextEditingController _priceController;
   late TextEditingController _debtAmountController;
+  late TextEditingController _agentIdController;
   late TextEditingController _taxPaidUntilController;
   late TextEditingController _leasedYearController;
   late TextEditingController _leasePriceController;
@@ -59,6 +60,9 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       text: widget.formData.debtAmount != null
           ? _formatNumber(widget.formData.debtAmount!)
           : '',
+    );
+    _agentIdController = TextEditingController(
+      text: widget.formData.agentId,
     );
     _taxPaidUntilController = TextEditingController(
       text: widget.formData.taxPaidUntilYear?.toString() ?? '',
@@ -102,6 +106,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   void dispose() {
     _priceController.dispose();
     _debtAmountController.dispose();
+    _agentIdController.dispose();
     _taxPaidUntilController.dispose();
     _leasedYearController.dispose();
     _leasePriceController.dispose();
@@ -465,6 +470,54 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                       widget.onUpdate(widget.formData
                           .copyWith(debtAmount: double.tryParse(cleaned)));
                     },
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          _sectionCard(
+            title: 'Posted by agent',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Checkbox(
+                        value: widget.formData.postedByAgent,
+                        onChanged: (v) => widget.onUpdate(
+                            widget.formData.copyWith(
+                              postedByAgent: v ?? false,
+                              agentId: (v ?? false) ? widget.formData.agentId : '',
+                            )),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () => widget.onUpdate(
+                          widget.formData.copyWith(
+                            postedByAgent: !widget.formData.postedByAgent,
+                            agentId: !widget.formData.postedByAgent ? widget.formData.agentId : '',
+                          )),
+                      child: Text('This listing is posted by an agent',
+                          style: AppTextStyles.labelMedium.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: context.theme.textSecondary,
+                              letterSpacing: 0.3)),
+                    ),
+                  ],
+                ),
+                if (widget.formData.postedByAgent) ...[
+                  const SizedBox(height: 8),
+                  _compactTextField(
+                    label: 'Agent ID',
+                    controller: _agentIdController,
+                    onSubmitted: (v) => widget.onUpdate(
+                        widget.formData.copyWith(agentId: v)),
                   ),
                 ],
               ],

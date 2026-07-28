@@ -234,6 +234,9 @@ class CarService {
       const MapEntry('terms_accepted', '1'),
     ]);
 
+    if (formData.postedByAgent) {
+      dioFormData.fields.add(MapEntry('agent_id', formData.agentId));
+    }
     if (formData.isVip) {
       dioFormData.fields.add(const MapEntry('is_vip', '1'));
     }

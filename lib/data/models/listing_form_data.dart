@@ -66,6 +66,10 @@ class ListingFormData {
   double? debtAmount;
   String? debtHolder;
 
+  // --- Agent ---
+  bool postedByAgent = false;
+  String agentId = '';
+
   // --- Options ---
   bool isVip = false;
 
@@ -130,6 +134,8 @@ class ListingFormData {
     this.hasDebtOrEncumbrance = false,
     this.debtAmount,
     this.debtHolder,
+    this.postedByAgent = false,
+    this.agentId = '',
     this.isVip = false,
     this.termsAccepted = false,
     this.existingImages = const [],
@@ -189,6 +195,8 @@ class ListingFormData {
         'hasDebtOrEncumbrance': hasDebtOrEncumbrance,
         'debtAmount': debtAmount,
         'debtHolder': debtHolder,
+        'postedByAgent': postedByAgent,
+        'agentId': agentId,
         'isVip': isVip,
         'termsAccepted': termsAccepted,
         'savedAt': DateTime.now().toIso8601String(),
@@ -258,6 +266,8 @@ class ListingFormData {
         hasDebtOrEncumbrance: data['hasDebtOrEncumbrance'] ?? false,
         debtAmount: data['debtAmount'],
         debtHolder: data['debtHolder'],
+        postedByAgent: data['postedByAgent'] ?? false,
+        agentId: data['agentId'] ?? '',
         isVip: data['isVip'] ?? false,
         termsAccepted: data['termsAccepted'] ?? false,
       );
@@ -316,6 +326,8 @@ class ListingFormData {
     bool? hasDebtOrEncumbrance,
     double? debtAmount,
     String? debtHolder,
+    bool? postedByAgent,
+    String? agentId,
     bool? isVip,
     bool? termsAccepted,
     List<XFile>? images,
@@ -374,6 +386,8 @@ class ListingFormData {
       hasDebtOrEncumbrance: hasDebtOrEncumbrance ?? this.hasDebtOrEncumbrance,
       debtAmount: debtAmount ?? this.debtAmount,
       debtHolder: debtHolder ?? this.debtHolder,
+      postedByAgent: postedByAgent ?? this.postedByAgent,
+      agentId: agentId ?? this.agentId,
       isVip: isVip ?? this.isVip,
       termsAccepted: termsAccepted ?? this.termsAccepted,
       existingImages: existingImages ?? this.existingImages,

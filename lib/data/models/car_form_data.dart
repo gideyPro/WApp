@@ -35,6 +35,9 @@ class CarFormData {
   List<ImageModel> existingImages;
   List<int> removedImageIds;
 
+  bool postedByAgent;
+  String agentId;
+
   bool isVip;
 
   bool termsAccepted;
@@ -65,6 +68,8 @@ class CarFormData {
     List<XFile>? images,
     List<ImageModel>? existingImages,
     List<int>? removedImageIds,
+    this.postedByAgent = false,
+    this.agentId = '',
     this.isVip = false,
     this.termsAccepted = false,
   })  : features = features ?? [],
@@ -98,6 +103,8 @@ class CarFormData {
     List<XFile>? images,
     List<ImageModel>? existingImages,
     List<int>? removedImageIds,
+    bool? postedByAgent,
+    String? agentId,
     bool? isVip,
     bool? termsAccepted,
   }) {
@@ -127,6 +134,8 @@ class CarFormData {
       images: images ?? this.images,
       existingImages: existingImages ?? this.existingImages,
       removedImageIds: removedImageIds ?? this.removedImageIds,
+      postedByAgent: postedByAgent ?? this.postedByAgent,
+      agentId: agentId ?? this.agentId,
       isVip: isVip ?? this.isVip,
       termsAccepted: termsAccepted ?? this.termsAccepted,
     );
