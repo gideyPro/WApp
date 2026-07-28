@@ -711,7 +711,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           },
           isExpanded: true,
         ),
-        if (_formData.make == '__other__') ...[
+        if (_formData.make.isNotEmpty && !makes.contains(_formData.make)) ...[
           const SizedBox(height: 8),
           TextFormField(
             controller: _customMakeController,
@@ -757,7 +757,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           },
           isExpanded: true,
         ),
-        if (_formData.model == '__other__') ...[
+        if (_formData.model.isNotEmpty && !models.contains(_formData.model)) ...[
           const SizedBox(height: 8),
           TextFormField(
             controller: _customModelController,
