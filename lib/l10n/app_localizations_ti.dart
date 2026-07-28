@@ -2546,4 +2546,22 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get featureWindshield => 'ናይ ቅድሚ መስታወት';
+
+  @override
+  String get listingPostedByAgent => 'ብኤጀንት ዝተለጠፈ';
+
+  @override
+  String get listingPostedByAgentLabel => 'እዚ ዝርዝር ብኤጀንት ዝተለጠፈ እዩ';
+
+  @override
+  String get orderPostedByAgentLabel => 'እዚ ትእዛዝ ብኤጀንት ዝተለጠፈ እዩ';
+
+  @override
+  String get agentIdLabel => 'መለለይ ኤጀንት';
+
+  @override
+  String get agentIdRequired => 'ብኤጀንት ምስ ዝለጠፍ መለለይ ኤጀንት የድሊ እዩ';
+
+  @override
+  String get agentIdEmpty => 'መለለይ ኤጀንት የድሊ እዩ';
 }

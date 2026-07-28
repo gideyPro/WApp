@@ -81,7 +81,7 @@ class ListingStep4Review extends StatelessWidget {
                   postedByAgent: !formData.postedByAgent,
                   agentId: !formData.postedByAgent ? formData.agentId : '',
                 )),
-                child: Text('This listing is posted by an agent',
+                child: Text(l10n.listingPostedByAgentLabel,
                     style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
               ),
             ],
@@ -93,14 +93,14 @@ class ListingStep4Review extends StatelessWidget {
                 initialValue: formData.agentId,
                 style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                 decoration: InputDecoration(
-                  labelText: 'Agent ID',
+                  labelText: l10n.agentIdLabel,
                   labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
                 ),
                 validator: (v) {
                   if (formData.postedByAgent && (v == null || v.trim().isEmpty)) {
-                    return 'Agent ID is required';
+                    return l10n.agentIdEmpty;
                   }
                   return null;
                 },

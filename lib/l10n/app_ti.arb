@@ -825,5 +825,11 @@
   "featureTowBar": "ናይ መጎተቲ ሓጺን",
   "featureTrackVsWheels": "ሰንሰለት ወይ ጎማ",
   "featureUsbCharger": "ዩኤስቢ ቻርጀር",
-  "featureWindshield": "ናይ ቅድሚ መስታወት"
+  "featureWindshield": "ናይ ቅድሚ መስታወት",
+  "listingPostedByAgent": "ብኤጀንት ዝተለጠፈ",
+  "listingPostedByAgentLabel": "እዚ ዝርዝር ብኤጀንት ዝተለጠፈ እዩ",
+  "orderPostedByAgentLabel": "እዚ ትእዛዝ ብኤጀንት ዝተለጠፈ እዩ",
+  "agentIdLabel": "መለለይ ኤጀንት",
+  "agentIdRequired": "ብኤጀንት ምስ ዝለጠፍ መለለይ ኤጀንት የድሊ እዩ",
+  "agentIdEmpty": "መለለይ ኤጀንት የድሊ እዩ"
 }

@@ -4905,6 +4905,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Windshield'**
   String get featureWindshield;
+
+  /// No description provided for @listingPostedByAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Posted by agent'**
+  String get listingPostedByAgent;
+
+  /// No description provided for @listingPostedByAgentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'This listing is posted by an agent'**
+  String get listingPostedByAgentLabel;
+
+  /// No description provided for @orderPostedByAgentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'This order is posted by an agent'**
+  String get orderPostedByAgentLabel;
+
+  /// No description provided for @agentIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent ID'**
+  String get agentIdLabel;
+
+  /// No description provided for @agentIdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent ID is required when posted by agent'**
+  String get agentIdRequired;
+
+  /// No description provided for @agentIdEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent ID is required'**
+  String get agentIdEmpty;
 }
 
 class _AppLocalizationsDelegate

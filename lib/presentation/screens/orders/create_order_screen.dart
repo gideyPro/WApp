@@ -205,9 +205,10 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_postedByAgent && _agentIdCtrl.text.trim().isEmpty) {
+      final l10n = AppLocalizations.of(context);
       setState(() => _submitting = false);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Agent ID is required when posted by agent'),
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(l10n.agentIdRequired),
         backgroundColor: AppColors.error,
       ));
       return;
@@ -598,7 +599,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             const SizedBox(height: 8),
 
             _sectionCard(
-              title: 'Posted by agent',
+              title: l10n.listingPostedByAgent,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -621,7 +622,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                           _postedByAgent = !_postedByAgent;
                           if (!_postedByAgent) _agentIdCtrl.clear();
                         }),
-                        child: Text('This order is posted by an agent',
+                        child: Text(l10n.orderPostedByAgentLabel,
                             style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                       ),
                     ],
@@ -631,10 +632,10 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                     TextFormField(
                       controller: _agentIdCtrl,
                       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                      decoration: _inputDecoration(label: 'Agent ID'),
+                      decoration: _inputDecoration(label: l10n.agentIdLabel),
                       validator: (v) {
                         if (_postedByAgent && (v == null || v.trim().isEmpty)) {
-                          return 'Agent ID is required';
+                          return l10n.agentIdEmpty;
                         }
                         return null;
                       },

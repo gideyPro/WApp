@@ -144,7 +144,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         if (_formData.description.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
         if (totalImages == 0) errors.add(l10n.listingErrorImageRequired);
         if (_formData.postedByAgent && _formData.agentId.trim().isEmpty) {
-          errors.add('Agent ID is required when posted by agent');
+          errors.add(l10n.agentIdRequired);
         }
         break;
     }
@@ -900,7 +900,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           ),
           const SizedBox(height: 16),
           _sectionCard(
-            title: 'Posted by agent',
+            title: l10n.listingPostedByAgent,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -923,7 +923,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                         postedByAgent: !_formData.postedByAgent,
                         agentId: !_formData.postedByAgent ? _formData.agentId : '',
                       )),
-                      child: Text('This listing is posted by an agent',
+                        child: Text(l10n.listingPostedByAgentLabel,
                           style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                     ),
                   ],
@@ -934,7 +934,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                     initialValue: _formData.agentId,
                     style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: InputDecoration(
-                      labelText: 'Agent ID',
+                      labelText: l10n.agentIdLabel,
                       labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     ),

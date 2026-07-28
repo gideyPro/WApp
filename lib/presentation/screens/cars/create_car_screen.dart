@@ -112,7 +112,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
         if (_formData.description.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
         if (!_formData.termsAccepted) errors.add(l10n.carTermsRequired);
         if (_formData.postedByAgent && _formData.agentId.trim().isEmpty) {
-          errors.add('Agent ID is required when posted by agent');
+          errors.add(l10n.agentIdRequired);
         }
         break;
     }
@@ -889,7 +889,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           ),
           const SizedBox(height: 8),
           _sectionCard(
-            title: 'Posted by agent',
+            title: l10n.listingPostedByAgent,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -912,7 +912,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                         postedByAgent: !_formData.postedByAgent,
                         agentId: !_formData.postedByAgent ? _formData.agentId : '',
                       )),
-                      child: Text('This listing is posted by an agent',
+                        child: Text(l10n.listingPostedByAgentLabel,
                           style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                     ),
                   ],
@@ -923,7 +923,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                     initialValue: _formData.agentId,
                     style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: InputDecoration(
-                      labelText: 'Agent ID',
+                      labelText: l10n.agentIdLabel,
                       labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     ),

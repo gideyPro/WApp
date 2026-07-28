@@ -825,5 +825,11 @@
   "featureTowBar": "Tow Bar",
   "featureTrackVsWheels": "Track vs Wheels",
   "featureUsbCharger": "USB Charger",
-  "featureWindshield": "Windshield"
+  "featureWindshield": "Windshield",
+  "listingPostedByAgent": "Posted by agent",
+  "listingPostedByAgentLabel": "This listing is posted by an agent",
+  "orderPostedByAgentLabel": "This order is posted by an agent",
+  "agentIdLabel": "Agent ID",
+  "agentIdRequired": "Agent ID is required when posted by agent",
+  "agentIdEmpty": "Agent ID is required"
 }

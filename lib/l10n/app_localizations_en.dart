@@ -2577,4 +2577,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureWindshield => 'Windshield';
+
+  @override
+  String get listingPostedByAgent => 'Posted by agent';
+
+  @override
+  String get listingPostedByAgentLabel => 'This listing is posted by an agent';
+
+  @override
+  String get orderPostedByAgentLabel => 'This order is posted by an agent';
+
+  @override
+  String get agentIdLabel => 'Agent ID';
+
+  @override
+  String get agentIdRequired => 'Agent ID is required when posted by agent';
+
+  @override
+  String get agentIdEmpty => 'Agent ID is required';
 }

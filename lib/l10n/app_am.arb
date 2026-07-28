@@ -825,5 +825,11 @@
   "featureTowBar": "መጎተቻ ብረት",
   "featureTrackVsWheels": "ሰንሰለት ወይም ጎማ",
   "featureUsbCharger": "ዩኤስቢ ቻርጀር",
-  "featureWindshield": "የፊት መስታወት"
+  "featureWindshield": "የፊት መስታወት",
+  "listingPostedByAgent": "በኤጀንት የተለጠፈ",
+  "listingPostedByAgentLabel": "ይህ ዝርዝር በኤጀንት የተለጠፈ ነው",
+  "orderPostedByAgentLabel": "ይህ ትዕዛዝ በኤጀንት የተለጠፈ ነው",
+  "agentIdLabel": "የኤጀንት መለያ",
+  "agentIdRequired": "በኤጀንት ሲለጠፍ የኤጀንት መለያ ያስፈልጋል",
+  "agentIdEmpty": "የኤጀንት መለያ ያስፈልጋል"
 }

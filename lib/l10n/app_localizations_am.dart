@@ -2546,4 +2546,22 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get featureWindshield => 'የፊት መስታወት';
+
+  @override
+  String get listingPostedByAgent => 'በኤጀንት የተለጠፈ';
+
+  @override
+  String get listingPostedByAgentLabel => 'ይህ ዝርዝር በኤጀንት የተለጠፈ ነው';
+
+  @override
+  String get orderPostedByAgentLabel => 'ይህ ትዕዛዝ በኤጀንት የተለጠፈ ነው';
+
+  @override
+  String get agentIdLabel => 'የኤጀንት መለያ';
+
+  @override
+  String get agentIdRequired => 'በኤጀንት ሲለጠፍ የኤጀንት መለያ ያስፈልጋል';
+
+  @override
+  String get agentIdEmpty => 'የኤጀንት መለያ ያስፈልጋል';
 }

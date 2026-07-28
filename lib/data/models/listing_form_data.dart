@@ -498,7 +498,7 @@ class ListingFormData {
     final errors = <String>[];
     if (!termsAccepted) errors.add(l10n.listingErrorTermsRequired);
     if (postedByAgent && agentId.trim().isEmpty) {
-      errors.add('Agent ID is required when posted by agent');
+      errors.add(l10n.agentIdRequired);
     }
     return errors;
   }
