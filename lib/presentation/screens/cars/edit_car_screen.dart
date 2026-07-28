@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
@@ -51,8 +52,10 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   final Map<String, int?> _kebeleIds = {};
   bool _loadingZones = false, _loadingWoredas = false, _loadingKebeles = false;
   int? _addressId;
+  bool _formatting = false;
   late TextEditingController _specificLocationController;
   late TextEditingController _yearController;
+  late TextEditingController _priceController;
 
   @override
   void initState() {
@@ -86,6 +89,21 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     _specificLocationController = TextEditingController(text: l.specificLocation ?? '');
     _yearController = TextEditingController(text: _formData.year)
       ..addListener(() => _formData = _formData.copyWith(year: _yearController.text));
+    _priceController = TextEditingController(text: _formData.priceFixed)
+      ..addListener(() {
+        if (_formatting) return;
+        _formatting = true;
+        final raw = _priceController.text.replaceAll(',', '');
+        final formatted = _formatNumber(raw);
+        if (formatted != _priceController.text) {
+          _priceController.value = TextEditingValue(
+            text: formatted,
+            selection: TextSelection.collapsed(offset: formatted.length),
+          );
+        }
+        _formData = _formData.copyWith(priceFixed: raw);
+        _formatting = false;
+      });
     _selectedRegion = l.address?.region;
     _selectedZone = l.address?.zone;
     _selectedWoreda = l.address?.woreda;
@@ -104,6 +122,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     _pageController.dispose();
     _specificLocationController.dispose();
     _yearController.dispose();
+    _priceController.dispose();
     _uploadProgressTimer?.cancel();
     super.dispose();
   }
@@ -806,7 +825,16 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                       ],
                     ),
                   )
-                : _buildCompactField(label: '${l10n.listingPriceEtb} (ETB) *', value: _formData.priceFixed, onChanged: (v) => _formData = _formData.copyWith(priceFixed: v), keyboardType: TextInputType.number),
+                : TextFormField(
+                    controller: _priceController,
+                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                    decoration: InputDecoration(
+                      labelText: '${l10n.listingPriceEtb} (ETB) *',
+                      labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
           ),
           const SizedBox(height: 16),
           _sectionCard(
@@ -1065,6 +1093,13 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         ],
       ),
     );
+  }
+
+  String _formatNumber(String raw) {
+    if (raw.isEmpty) return '';
+    final n = int.tryParse(raw.replaceAll(',', ''));
+    if (n == null) return raw;
+    return NumberFormat('#,###', 'en_US').format(n);
   }
 
   Widget _buildYearField(AppLocalizations l10n) {

@@ -1,6 +1,7 @@
 import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -30,6 +31,7 @@ class ListingStep1Basics extends ConsumerStatefulWidget {
 }
 
 class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
+  bool _formatting = false;
   late TextEditingController _priceController;
   late TextEditingController _debtAmountController;
   late TextEditingController _taxPaidUntilController;
@@ -54,12 +56,12 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       text: widget.formData.priceFixed != null
           ? _formatNumber(widget.formData.priceFixed!)
           : '',
-    );
+    )..addListener(() => _onPriceChanged(_priceController));
     _debtAmountController = TextEditingController(
       text: widget.formData.debtAmount != null
           ? _formatNumber(widget.formData.debtAmount!)
           : '',
-    );
+    )..addListener(() => _onPriceChanged(_debtAmountController));
     _taxPaidUntilController = TextEditingController(
       text: widget.formData.taxPaidUntilYear?.toString() ?? '',
     );
@@ -67,14 +69,14 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       text: widget.formData.leasedYear?.toString() ?? '',
     );
     _leasePriceController = TextEditingController(
-      text: widget.formData.leasePricePerSqm?.toString() ?? '',
-    );
+      text: _formatNumberString(widget.formData.leasePricePerSqm?.toString() ?? ''),
+    )..addListener(() => _onPriceChanged(_leasePriceController));
     _buildTypeController = TextEditingController(
       text: widget.formData.buildType ?? '',
     );
     _annualPaymentController = TextEditingController(
-      text: widget.formData.annualPayment?.toString() ?? '',
-    );
+      text: _formatNumberString(widget.formData.annualPayment?.toString() ?? ''),
+    )..addListener(() => _onPriceChanged(_annualPaymentController));
     _cooperativeNameController = TextEditingController(
       text: widget.formData.cooperativeName ?? '',
     );
@@ -118,6 +120,27 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (m) => '${m[1] ?? ''},',
         );
+  }
+
+  String _formatNumberString(String raw) {
+    if (raw.isEmpty) return '';
+    final n = int.tryParse(raw.replaceAll(',', ''));
+    if (n == null) return raw;
+    return NumberFormat('#,###', 'en_US').format(n);
+  }
+
+  void _onPriceChanged(TextEditingController ctrl) {
+    if (_formatting) return;
+    _formatting = true;
+    final raw = ctrl.text.replaceAll(',', '');
+    final formatted = _formatNumberString(raw);
+    if (formatted != ctrl.text) {
+      ctrl.value = TextEditingValue(
+        text: formatted,
+        selection: TextSelection.collapsed(offset: formatted.length),
+      );
+    }
+    _formatting = false;
   }
 
   Future<void> _loadRegions() async {
