@@ -4977,6 +4977,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Building status is required'**
   String get listingErrorBuildingStatusRequired;
+
+  /// No description provided for @listingErrorDebtAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt amount is required'**
+  String get listingErrorDebtAmountRequired;
 }
 
 class _AppLocalizationsDelegate

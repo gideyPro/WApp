@@ -2616,4 +2616,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get listingErrorBuildingStatusRequired =>
       'Building status is required';
+
+  @override
+  String get listingErrorDebtAmountRequired => 'Debt amount is required';
 }

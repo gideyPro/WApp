@@ -2582,4 +2582,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingErrorBuildingStatusRequired => 'ኩነት ህንጻ የድሊ እዩ';
+
+  @override
+  String get listingErrorDebtAmountRequired => 'መጠን ዕዳ የድሊ እዩ';
 }

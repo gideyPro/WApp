@@ -2582,4 +2582,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get listingErrorBuildingStatusRequired => 'የግንባታ ሁኔታ ያስፈልጋል';
+
+  @override
+  String get listingErrorDebtAmountRequired => 'የዕዳ መጠን ያስፈልጋል';
 }

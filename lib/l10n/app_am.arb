@@ -837,5 +837,6 @@
   "listingErrorLeasePricePerSqmRequired": "በካሬ ሜትር የሊዝ ዋጋ ያስፈልጋል",
   "listingErrorBuildTypeRequired": "የግንባታ ዓይነት ያስፈልጋል",
   "listingErrorAnnualPaymentRequired": "ዓመታዊ ክፍያ ያስፈልጋል",
-  "listingErrorBuildingStatusRequired": "የግንባታ ሁኔታ ያስፈልጋል"
+  "listingErrorBuildingStatusRequired": "የግንባታ ሁኔታ ያስፈልጋል",
+  "listingErrorDebtAmountRequired": "የዕዳ መጠን ያስፈልጋል"
 }

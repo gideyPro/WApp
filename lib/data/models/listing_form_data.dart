@@ -453,6 +453,10 @@ class ListingFormData {
       }
     }
 
+    if (hasDebtOrEncumbrance && (debtAmount == null || debtAmount! <= 0)) {
+      errors.add(l10n.listingErrorDebtAmountRequired);
+    }
+
     return errors;
   }
 

@@ -837,5 +837,6 @@
   "listingErrorLeasePricePerSqmRequired": "Lease price per sqm is required",
   "listingErrorBuildTypeRequired": "Build type is required",
   "listingErrorAnnualPaymentRequired": "Annual payment is required",
-  "listingErrorBuildingStatusRequired": "Building status is required"
+  "listingErrorBuildingStatusRequired": "Building status is required",
+  "listingErrorDebtAmountRequired": "Debt amount is required"
 }
