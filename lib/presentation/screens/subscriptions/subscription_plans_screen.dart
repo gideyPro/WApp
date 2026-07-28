@@ -1155,6 +1155,16 @@ class _PlanCard extends StatelessWidget {
           _buildDivider(),
           _buildComparisonRow(context, l10n.subscriptionsVipAccess,
               plan.viewVip ? '✓' : '—', Icons.diamond, plan.viewVip),
+          if (plan.maxVehicles > 0) ...[
+            _buildDivider(),
+            _buildComparisonRow(context, l10n.listingCarPlural,
+                '${plan.maxVehicles}', Icons.directions_car_outlined, true),
+          ],
+          if (plan.maxOrders > 0) ...[
+            _buildDivider(),
+            _buildComparisonRow(context, l10n.subscriptionsOrders,
+                '${plan.maxOrders}', Icons.receipt_long_outlined, true),
+          ],
           if (plan.maxContacts > 0) ...[
             _buildDivider(),
             _buildComparisonRow(context, l10n.subscriptionsContactViews,
