@@ -55,12 +55,15 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   bool _loadingZones = false, _loadingWoredas = false, _loadingKebeles = false;
   int? _addressId;
   late TextEditingController _specificLocationController;
+  late TextEditingController _yearController;
 
   @override
   void initState() {
     super.initState();
     _formData = CarFormData();
     _specificLocationController = TextEditingController();
+    _yearController = TextEditingController(text: _formData.year)
+      ..addListener(() => _formData = _formData.copyWith(year: _yearController.text));
     _loadRegions();
   }
 
@@ -68,6 +71,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   void dispose() {
     _pageController.dispose();
     _specificLocationController.dispose();
+    _yearController.dispose();
     _uploadProgressTimer?.cancel();
     super.dispose();
   }
@@ -1059,21 +1063,31 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildCompactField(label: '${l10n.listingYear} *', value: _formData.year, onChanged: (v) => _formData = _formData.copyWith(year: v), keyboardType: TextInputType.number),
-        _buildEthiopianYearSuffix(_formData.year),
+        TextFormField(
+          controller: _yearController,
+          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+          decoration: InputDecoration(
+            labelText: '${l10n.listingYear} *',
+            labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          ),
+          keyboardType: TextInputType.number,
+        ),
+        ListenableBuilder(
+          listenable: _yearController,
+          builder: (context, _) {
+            final year = int.tryParse(_yearController.text);
+            if (year == null || year < 1900) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.only(top: 2, left: 4),
+              child: Text(
+                EthiopianDateHelper.toEthiopianYearSuffix(year),
+                style: AppTextStyles.bodySmall.copyWith(fontSize: 9, color: AppColors.accent600),
+              ),
+            );
+          },
+        ),
       ],
-    );
-  }
-
-  Widget _buildEthiopianYearSuffix(String yearStr) {
-    final year = int.tryParse(yearStr);
-    if (year == null || year < 1900) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(top: 2, left: 4),
-      child: Text(
-        EthiopianDateHelper.toEthiopianYearSuffix(year),
-        style: AppTextStyles.bodySmall.copyWith(fontSize: 9, color: AppColors.accent600),
-      ),
     );
   }
 
