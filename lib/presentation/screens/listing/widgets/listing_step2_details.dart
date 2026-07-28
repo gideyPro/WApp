@@ -333,7 +333,7 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
         ),
         keyboardType: keyboardType,
         textInputAction: TextInputAction.done,
-        onFieldSubmitted: onSubmitted,
+        onChanged: onSubmitted,
       ),
     );
   }

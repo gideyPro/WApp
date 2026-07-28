@@ -839,5 +839,5 @@
   "listingErrorAnnualPaymentRequired": "ዓመታዊ ክፍሊት የድሊ እዩ",
   "listingErrorBuildingStatusRequired": "ኩነት ህንጻ የድሊ እዩ",
   "listingErrorDebtAmountRequired": "መጠን ዕዳ የድሊ እዩ",
-  "listingErrorYearBuiltRequired": "ዓመት ህንጻ የድሊ እዩ"
+  "listingErrorYearBuiltRequired": "ዓመት ህንፀት የድሊ እዩ"
 }

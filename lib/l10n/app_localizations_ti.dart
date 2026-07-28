@@ -2588,5 +2588,5 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingErrorDebtAmountRequired => 'መጠን ዕዳ የድሊ እዩ';
 
   @override
-  String get listingErrorYearBuiltRequired => 'ዓመት ህንጻ የድሊ እዩ';
+  String get listingErrorYearBuiltRequired => 'ዓመት ህንፀት የድሊ እዩ';
 }
