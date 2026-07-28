@@ -112,6 +112,8 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       existingOwnershipProofUrl: listing.ownershipProofUrl,
       existingVideoUrl: listing.videoUrl,
       isVip: listing.isVip,
+      postedByAgent: listing.postedByAgent,
+      agentId: listing.agentId?.toString() ?? '',
     );
   }
 

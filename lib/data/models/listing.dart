@@ -199,6 +199,9 @@ class Listing {
   final String? carCondition;
   final String? carVin;
   final List<String>? carFeatures;
+  final int? agentId;
+
+  bool get postedByAgent => agentId != null;
 
   int get totalRooms =>
       (bedrooms ?? 0) + (bathrooms ?? 0) + (salons ?? 0) + (kitchens ?? 0);
@@ -283,6 +286,7 @@ class Listing {
     this.carCondition,
     this.carVin,
     this.carFeatures,
+    this.agentId,
   });
 
   Listing copyWith({
@@ -541,6 +545,7 @@ class Listing {
       carCondition: property is Map ? property['condition'] : json['condition'],
       carVin: property is Map ? property['vin'] : json['vin'],
       carFeatures: _parseCarFeatures(property is Map ? property['features'] : json['features']),
+      agentId: TypeUtils.safeInt(json['agent_id']),
     );
   }
 
@@ -614,6 +619,7 @@ class Listing {
       'condition': carCondition,
       'vin': carVin,
       'features': carFeatures,
+      'agent_id': agentId,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'view_count': viewCount,

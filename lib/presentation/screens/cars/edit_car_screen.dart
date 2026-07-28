@@ -77,6 +77,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       description: l.description ?? '',
       existingImages: l.images,
       isVip: l.isVip,
+      postedByAgent: l.postedByAgent,
+      agentId: l.agentId?.toString() ?? '',
       termsAccepted: true,
     );
 
