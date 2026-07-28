@@ -249,6 +249,11 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   }
 
   Future<void> _submit() async {
+    final errors = _validateCurrentStep();
+    if (errors.isNotEmpty) {
+      setState(() => _stepErrors[_currentStep] = errors);
+      return;
+    }
     if (!_formData.termsAccepted) return;
     if (!mounted) return;
     setState(() => _isSubmitting = true);

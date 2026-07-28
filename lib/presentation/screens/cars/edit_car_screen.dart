@@ -327,6 +327,11 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   }
 
   Future<void> _submit() async {
+    final errors = _validateCurrentStep();
+    if (errors.isNotEmpty) {
+      setState(() => _stepErrors[_currentStep] = errors);
+      return;
+    }
     if (!mounted) return;
     setState(() => _isSubmitting = true);
 
