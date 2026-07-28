@@ -56,6 +56,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   late TextEditingController _specificLocationController;
   late TextEditingController _yearController;
   late TextEditingController _priceController;
+  late TextEditingController _customMakeController;
+  late TextEditingController _customModelController;
 
   @override
   void initState() {
@@ -104,6 +106,14 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         _formData = _formData.copyWith(priceFixed: raw);
         _formatting = false;
       });
+    final existingMakes = makesForCategory(l.carVehicleCategory ?? 'car');
+    _customMakeController = TextEditingController(
+      text: (l.carMake != null && !existingMakes.contains(l.carMake!)) ? l.carMake! : '',
+    );
+    final existingModels = modelsForCategoryMake(l.carVehicleCategory ?? 'car', l.carMake ?? '');
+    _customModelController = TextEditingController(
+      text: (l.carModel != null && !existingModels.contains(l.carModel!)) ? l.carModel! : '',
+    );
     _selectedRegion = l.address?.region;
     _selectedZone = l.address?.zone;
     _selectedWoreda = l.address?.woreda;
@@ -123,6 +133,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     _specificLocationController.dispose();
     _yearController.dispose();
     _priceController.dispose();
+    _customMakeController.dispose();
+    _customModelController.dispose();
     _uploadProgressTimer?.cancel();
     super.dispose();
   }
@@ -150,8 +162,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     final errors = <String>[];
     switch (_currentStep) {
       case 0:
-        if (_formData.make.isEmpty) errors.add('${l10n.listingMake} ${l10n.commonIsRequired}');
-        if (_formData.model.isEmpty) errors.add('${l10n.listingModel} ${l10n.commonIsRequired}');
+        if (_formData.make.isEmpty || (_formData.make == '__other__' && _customMakeController.text.isEmpty)) errors.add('${l10n.listingMake} ${l10n.commonIsRequired}');
+        if (_formData.model.isEmpty || (_formData.model == '__other__' && _customModelController.text.isEmpty)) errors.add('${l10n.listingModel} ${l10n.commonIsRequired}');
         if (_formData.vehicleCategory != 'bicycle' && _formData.year.isEmpty) errors.add('${l10n.listingYear} ${l10n.commonIsRequired}');
         if (_formData.condition.isEmpty) errors.add('${l10n.listingCondition} ${l10n.commonIsRequired}');
         if (_formData.color.isEmpty) errors.add('${l10n.listingColor} ${l10n.commonIsRequired}');
@@ -378,9 +390,13 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
       _startUploadProgressSimulation();
 
+      final submitData = _formData.copyWith(
+        make: _formData.make == '__other__' ? _customMakeController.text : _formData.make,
+        model: _formData.model == '__other__' ? _customModelController.text : _formData.model,
+      );
       final response = await ref.read(carServiceProvider).updateListing(
         listingId: widget.listing.id,
-        formData: _formData,
+        formData: submitData,
         onProgress: (progress) {
           if (!mounted) return;
           _stopUploadProgressSimulation();
@@ -485,9 +501,13 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
       _startUploadProgressSimulation();
 
+      final retryData = _formData.copyWith(
+        make: _formData.make == '__other__' ? _customMakeController.text : _formData.make,
+        model: _formData.model == '__other__' ? _customModelController.text : _formData.model,
+      );
       final response = await ref.read(carServiceProvider).updateListing(
         listingId: widget.listing.id,
-        formData: _formData,
+        formData: retryData,
         onProgress: (progress) {
           if (!mounted) return;
           _stopUploadProgressSimulation();
@@ -691,6 +711,18 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           },
           isExpanded: true,
         ),
+        if (_formData.make == '__other__') ...[
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: _customMakeController,
+            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+            decoration: InputDecoration(
+              labelText: '* ${l10n.listingMake}',
+              labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -725,6 +757,18 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           },
           isExpanded: true,
         ),
+        if (_formData.model == '__other__') ...[
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: _customModelController,
+            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+            decoration: InputDecoration(
+              labelText: '* ${l10n.listingModel}',
+              labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            ),
+          ),
+        ],
       ],
     );
   }
