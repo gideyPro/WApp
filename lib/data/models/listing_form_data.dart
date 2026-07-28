@@ -497,6 +497,9 @@ class ListingFormData {
   List<String> validateStep4(AppLocalizations l10n) {
     final errors = <String>[];
     if (!termsAccepted) errors.add(l10n.listingErrorTermsRequired);
+    if (postedByAgent && agentId.trim().isEmpty) {
+      errors.add('Agent ID is required when posted by agent');
+    }
     return errors;
   }
 }

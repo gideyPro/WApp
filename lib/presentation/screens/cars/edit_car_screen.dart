@@ -143,6 +143,9 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             _formData.removedImageIds.length;
         if (_formData.description.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
         if (totalImages == 0) errors.add(l10n.listingErrorImageRequired);
+        if (_formData.postedByAgent && _formData.agentId.trim().isEmpty) {
+          errors.add('Agent ID is required when posted by agent');
+        }
         break;
     }
     return errors;

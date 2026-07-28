@@ -204,6 +204,15 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    if (_postedByAgent && _agentIdCtrl.text.trim().isEmpty) {
+      setState(() => _submitting = false);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Agent ID is required when posted by agent'),
+        backgroundColor: AppColors.error,
+      ));
+      return;
+    }
+
     setState(() => _submitting = true);
 
     final data = <String, dynamic>{
@@ -623,6 +632,12 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       controller: _agentIdCtrl,
                       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                       decoration: _inputDecoration(label: 'Agent ID'),
+                      validator: (v) {
+                        if (_postedByAgent && (v == null || v.trim().isEmpty)) {
+                          return 'Agent ID is required';
+                        }
+                        return null;
+                      },
                     ),
                   ],
                 ],

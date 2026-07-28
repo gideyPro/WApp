@@ -61,19 +61,54 @@ class ListingStep4Review extends StatelessWidget {
                 overflow: TextOverflow.ellipsis),
             const SizedBox(height: 12),
           ],
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              SizedBox(
+                width: 24, height: 24,
+                child: Checkbox(
+                  value: formData.postedByAgent,
+                  onChanged: (v) => onUpdate(formData.copyWith(
+                    postedByAgent: v ?? false,
+                    agentId: (v ?? false) ? formData.agentId : '',
+                  )),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () => onUpdate(formData.copyWith(
+                  postedByAgent: !formData.postedByAgent,
+                  agentId: !formData.postedByAgent ? formData.agentId : '',
+                )),
+                child: Text('This listing is posted by an agent',
+                    style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+              ),
+            ],
+          ),
           if (formData.postedByAgent) ...[
-            Row(
-              children: [
-                Icon(Icons.person_outline, size: 16, color: context.theme.textSecondary),
-                const SizedBox(width: 6),
-                Text('Posted by agent (ID: ${formData.agentId})',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: context.theme.textSecondary,
-                    )),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(left: 32, top: 8),
+              child: TextFormField(
+                initialValue: formData.agentId,
+                style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                decoration: InputDecoration(
+                  labelText: 'Agent ID',
+                  labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                ),
+                validator: (v) {
+                  if (formData.postedByAgent && (v == null || v.trim().isEmpty)) {
+                    return 'Agent ID is required';
+                  }
+                  return null;
+                },
+                onChanged: (v) => onUpdate(formData.copyWith(agentId: v)),
+              ),
             ),
-            const SizedBox(height: 16),
           ],
+          const SizedBox(height: 16),
           Row(
             children: [
               SizedBox(

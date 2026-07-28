@@ -111,6 +111,9 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
         if (_formData.images.isEmpty) errors.add(l10n.listingErrorImageRequired);
         if (_formData.description.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
         if (!_formData.termsAccepted) errors.add(l10n.carTermsRequired);
+        if (_formData.postedByAgent && _formData.agentId.trim().isEmpty) {
+          errors.add('Agent ID is required when posted by agent');
+        }
         break;
     }
     return errors;
