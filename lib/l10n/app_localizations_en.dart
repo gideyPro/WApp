@@ -2619,4 +2619,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingErrorDebtAmountRequired => 'Debt amount is required';
+
+  @override
+  String get listingErrorYearBuiltRequired => 'Year built is required';
 }

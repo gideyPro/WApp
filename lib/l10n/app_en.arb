@@ -838,5 +838,6 @@
   "listingErrorBuildTypeRequired": "Build type is required",
   "listingErrorAnnualPaymentRequired": "Annual payment is required",
   "listingErrorBuildingStatusRequired": "Building status is required",
-  "listingErrorDebtAmountRequired": "Debt amount is required"
+  "listingErrorDebtAmountRequired": "Debt amount is required",
+  "listingErrorYearBuiltRequired": "Year built is required"
 }

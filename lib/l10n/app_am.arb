@@ -833,10 +833,11 @@
   "agentIdRequired": "በኤጀንት ሲለጠፍ የኤጀንት መለያ ያስፈልጋል",
   "agentIdEmpty": "የኤጀንት መለያ ያስፈልጋል",
   "listingErrorTaxPaidYearRequired": "የታክስ ክፍያ ዓመት ያስፈልጋል",
-  "listingErrorAcquisitionClarificationRequired": "የግዢ ማብራሪያ ያስፈልጋል",
+  "listingErrorAcquisitionClarificationRequired": "የተገኘበት መንገድ ያስፈልጋል",
   "listingErrorLeasePricePerSqmRequired": "በካሬ ሜትር የሊዝ ዋጋ ያስፈልጋል",
   "listingErrorBuildTypeRequired": "የግንባታ ዓይነት ያስፈልጋል",
   "listingErrorAnnualPaymentRequired": "ዓመታዊ ክፍያ ያስፈልጋል",
   "listingErrorBuildingStatusRequired": "የግንባታ ሁኔታ ያስፈልጋል",
-  "listingErrorDebtAmountRequired": "የዕዳ መጠን ያስፈልጋል"
+  "listingErrorDebtAmountRequired": "የዕዳ መጠን ያስፈልጋል",
+  "listingErrorYearBuiltRequired": "የተገነባበት ዓመት ያስፈልጋል"
 }

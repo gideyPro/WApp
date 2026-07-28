@@ -2569,7 +2569,8 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingErrorTaxPaidYearRequired => 'የታክስ ክፍያ ዓመት ያስፈልጋል';
 
   @override
-  String get listingErrorAcquisitionClarificationRequired => 'የግዢ ማብራሪያ ያስፈልጋል';
+  String get listingErrorAcquisitionClarificationRequired =>
+      'የተገኘበት መንገድ ያስፈልጋል';
 
   @override
   String get listingErrorLeasePricePerSqmRequired => 'በካሬ ሜትር የሊዝ ዋጋ ያስፈልጋል';
@@ -2585,4 +2586,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get listingErrorDebtAmountRequired => 'የዕዳ መጠን ያስፈልጋል';
+
+  @override
+  String get listingErrorYearBuiltRequired => 'የተገነባበት ዓመት ያስፈልጋል';
 }

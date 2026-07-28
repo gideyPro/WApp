@@ -469,8 +469,9 @@ class ListingFormData {
       if (houseType == null || houseType!.isEmpty) {
         errors.add(l10n.listingErrorHouseTypeRequired);
       }
-      if (yearBuilt != null &&
-          (yearBuilt! < 1900 || yearBuilt! > DateTime.now().year)) {
+      if (yearBuilt == null) {
+        errors.add(l10n.listingErrorYearBuiltRequired);
+      } else if (yearBuilt! < 1900 || yearBuilt! > DateTime.now().year) {
         errors.add(
             l10n.listingErrorYearBuiltRange('1900', DateTime.now().year.toString()));
       }

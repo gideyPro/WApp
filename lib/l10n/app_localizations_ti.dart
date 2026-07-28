@@ -2569,7 +2569,8 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingErrorTaxPaidYearRequired => 'ዓመት ክፍሊት ቀረጽ የድሊ እዩ';
 
   @override
-  String get listingErrorAcquisitionClarificationRequired => 'ሓበረታ ግዢ የድሊ እዩ';
+  String get listingErrorAcquisitionClarificationRequired =>
+      'ዝተረኸበሉ መንገዲ የድሊ እዩ';
 
   @override
   String get listingErrorLeasePricePerSqmRequired => 'ብካሬ ሜተር ዋጋ ሊዝ የድሊ እዩ';
@@ -2585,4 +2586,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingErrorDebtAmountRequired => 'መጠን ዕዳ የድሊ እዩ';
+
+  @override
+  String get listingErrorYearBuiltRequired => 'ዓመት ህንጻ የድሊ እዩ';
 }

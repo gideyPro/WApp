@@ -4983,6 +4983,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Debt amount is required'**
   String get listingErrorDebtAmountRequired;
+
+  /// No description provided for @listingErrorYearBuiltRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Year built is required'**
+  String get listingErrorYearBuiltRequired;
 }
 
 class _AppLocalizationsDelegate

@@ -833,10 +833,11 @@
   "agentIdRequired": "ብኤጀንት ምስ ዝለጠፍ መለለይ ኤጀንት የድሊ እዩ",
   "agentIdEmpty": "መለለይ ኤጀንት የድሊ እዩ",
   "listingErrorTaxPaidYearRequired": "ዓመት ክፍሊት ቀረጽ የድሊ እዩ",
-  "listingErrorAcquisitionClarificationRequired": "ሓበረታ ግዢ የድሊ እዩ",
+  "listingErrorAcquisitionClarificationRequired": "ዝተረኸበሉ መንገዲ የድሊ እዩ",
   "listingErrorLeasePricePerSqmRequired": "ብካሬ ሜተር ዋጋ ሊዝ የድሊ እዩ",
   "listingErrorBuildTypeRequired": "ኣይነት ህንጻ የድሊ እዩ",
   "listingErrorAnnualPaymentRequired": "ዓመታዊ ክፍሊት የድሊ እዩ",
   "listingErrorBuildingStatusRequired": "ኩነት ህንጻ የድሊ እዩ",
-  "listingErrorDebtAmountRequired": "መጠን ዕዳ የድሊ እዩ"
+  "listingErrorDebtAmountRequired": "መጠን ዕዳ የድሊ እዩ",
+  "listingErrorYearBuiltRequired": "ዓመት ህንጻ የድሊ እዩ"
 }
