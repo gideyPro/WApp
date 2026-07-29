@@ -391,8 +391,12 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       _startUploadProgressSimulation();
 
       final submitData = _formData.copyWith(
-        make: _formData.make == '__other__' ? _customMakeController.text : _formData.make,
-        model: _formData.model == '__other__' ? _customModelController.text : _formData.model,
+        make: makesForCategory(_formData.vehicleCategory).contains(_formData.make)
+            ? _formData.make
+            : _customMakeController.text,
+        model: _availableModels.contains(_formData.model)
+            ? _formData.model
+            : _customModelController.text,
       );
       final response = await ref.read(carServiceProvider).updateListing(
         listingId: widget.listing.id,
@@ -502,8 +506,12 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       _startUploadProgressSimulation();
 
       final retryData = _formData.copyWith(
-        make: _formData.make == '__other__' ? _customMakeController.text : _formData.make,
-        model: _formData.model == '__other__' ? _customModelController.text : _formData.model,
+        make: makesForCategory(_formData.vehicleCategory).contains(_formData.make)
+            ? _formData.make
+            : _customMakeController.text,
+        model: _availableModels.contains(_formData.model)
+            ? _formData.model
+            : _customModelController.text,
       );
       final response = await ref.read(carServiceProvider).updateListing(
         listingId: widget.listing.id,
