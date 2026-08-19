@@ -2223,7 +2223,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get carCustomFeatures => 'የራስዎ ባህሪዎች';
 
   @override
-  String get submissionStepValidating => 'ውሂብ እየተረጋገጠ ነው';
+  String get submissionStepValidating => 'ዳታ እየተረጋገጠ ነው';
 
   @override
   String get submissionStepUploading => 'ፋይሎች እየተጫኑ ነው';
@@ -2232,7 +2232,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get submissionStepSaving => 'ምዝገባ እየተቀመጠ ነው';
 
   @override
-  String get submissionValidating => 'ውሂብ እየተረጋገጠ ነው...';
+  String get submissionValidating => 'ዳታ እየተረጋገጠ ነው...';
 
   @override
   String get submissionUploading => 'ፋይሎች እየተጫኑ ነው...';
@@ -2254,7 +2254,7 @@ class AppLocalizationsAm extends AppLocalizations {
       'ምዝገባዎ እስኪጸድቅ ድረስ በመጠባበቅ ላይ ነው። ሲፀድቅ እናሳውቅዎታለን።';
 
   @override
-  String get submissionViewListings => 'ምዝገባዎቼን ይመልከቱ';
+  String get submissionViewListings => 'ንብረትዎን ይመልከቱ';
 
   @override
   String get submissionCreateAnother => 'ሌላ ይፍጠሩ';
@@ -2266,10 +2266,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get submissionUpdatedMessage => 'ምዝገባ በተሳካ ሁኔታ ተሻሽሏል።';
 
   @override
-  String get submissionConnectionLost => 'ግንኙነት ተቋርጧል። ውሂብዎ ተቀምጧል።';
+  String get submissionConnectionLost => 'ግንኙነት ተቋርጧል። መረጃዎ ተቀምጧል።';
 
   @override
-  String get submissionRequestTimedOut => 'ጥያቄው ጊዜ አልፎበታል። ውሂብዎ ተቀምጧል።';
+  String get submissionRequestTimedOut => 'የግንኙነት ጥያቄው ጊዜ አልፎበታል። መረጃዎ ተቀምጧል።';
 
   @override
   String get submissionErrorDefault => 'የሆነ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።';

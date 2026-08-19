@@ -39,7 +39,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonRetry => 'ደጊምካ ፈትን';
 
   @override
-  String get commonError => 'ጌጋ';
+  String get commonError => 'ፀገም';
 
   @override
   String get commonNo => 'ኣይ';
@@ -740,7 +740,7 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get listingSummary => 'ፅማረ';
+  String get listingSummary => 'መጠቓለሊ';
 
   @override
   String get listingNew => 'ሓድሽ';
@@ -2251,10 +2251,10 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get submissionPendingApproval =>
-      'ምዝገባኻ ክሳብ ምምጽዳቕ ኣብ መጠበብ ላይ እዩ። ምስ ተቐበለ ክንነግረካ ኢና።';
+      'ምዝገባኻ ክሳብ ክሳብ ዝፀድቕ ይፅበ ኣሎ። ምስ ፀደቐ ክንነግረካ ኢና።';
 
   @override
-  String get submissionViewListings => 'ምዝገባታተይ ርአ';
+  String get submissionViewListings => 'ንብረቶም ይርኣዩ';
 
   @override
   String get submissionCreateAnother => 'ካልእ ፍጠር';
@@ -2266,10 +2266,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get submissionUpdatedMessage => 'ምዝገባ ብዓወት ተሓዲሱ።';
 
   @override
-  String get submissionConnectionLost => 'መስመር ተቋሪጹ። ዳታኻ ተቀሚጡ።';
+  String get submissionConnectionLost => 'መስመር ተቋሪጹ። መረዳእታኹም ተቀሚጡ።';
 
   @override
-  String get submissionRequestTimedOut => 'ሕቶ እዋኑ ሓሊፉዎ። ዳታኻ ተቀሚጡ።';
+  String get submissionRequestTimedOut => 'ናይ ርክብ ሕቶ እዋኑ ሓሊፉዎ። መረዳእታኹም ተቀሚጡ።';
 
   @override
   String get submissionErrorDefault => 'ገለ ጉድለት ተፈጢሩ። በጃኻ ደጊምካ ፈትን።';

@@ -524,7 +524,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   }
 
   Future<void> _launchYoutube() async {
-    final uri = Uri.parse('https://www.youtube.com/@Wavemart_et');
+    final uri = Uri.parse('https://www.youtube.com/@WavemartET');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
