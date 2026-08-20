@@ -831,6 +831,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingBungalow => 'Bungalow';
 
   @override
+  String get listingCooperative140 => 'Cooperative (140m²)';
+
+  @override
+  String get listingCooperative84 => 'Cooperative (84m²)';
+
+  @override
+  String get listingCooperative70 => 'Cooperative (70m²)';
+
+  @override
+  String get listingMarketPlace => 'Market Place';
+
+  @override
   String get listingPurchased => 'Purchased';
 
   @override

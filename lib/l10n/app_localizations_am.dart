@@ -825,6 +825,18 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingBungalow => 'ባንጋሎው';
 
   @override
+  String get listingCooperative140 => 'ማህበር (140m²)';
+
+  @override
+  String get listingCooperative84 => 'ማህበር (84m²)';
+
+  @override
+  String get listingCooperative70 => 'ማህበር (70m²)';
+
+  @override
+  String get listingMarketPlace => 'ገበያ ቦታ';
+
+  @override
   String get listingPurchased => 'የተገዛ';
 
   @override

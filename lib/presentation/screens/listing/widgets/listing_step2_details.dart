@@ -93,10 +93,10 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
 
     final Map<String, String> houseTypeItems = isCooperative
         ? {
-            'cooperative_140': 'Cooperative (140m²)',
-            'cooperative_84': 'Cooperative (84m²)',
-            'cooperative_70': 'Cooperative (70m²)',
-            'market_place': 'Market Place',
+            'cooperative_140': l10n.listingCooperative140,
+            'cooperative_84': l10n.listingCooperative84,
+            'cooperative_70': l10n.listingCooperative70,
+            'market_place': l10n.listingMarketPlace,
           }
         : {
             'villa': l10n.listingVilla,

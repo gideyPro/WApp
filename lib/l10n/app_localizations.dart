@@ -1648,6 +1648,30 @@ abstract class AppLocalizations {
   /// **'Bungalow'**
   String get listingBungalow;
 
+  /// No description provided for @listingCooperative140.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooperative (140m²)'**
+  String get listingCooperative140;
+
+  /// No description provided for @listingCooperative84.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooperative (84m²)'**
+  String get listingCooperative84;
+
+  /// No description provided for @listingCooperative70.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooperative (70m²)'**
+  String get listingCooperative70;
+
+  /// No description provided for @listingMarketPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Market Place'**
+  String get listingMarketPlace;
+
   /// No description provided for @listingPurchased.
   ///
   /// In en, this message translates to:

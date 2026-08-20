@@ -825,6 +825,18 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingBungalow => 'ባንጋሎው';
 
   @override
+  String get listingCooperative140 => 'ማሕበር (140m²)';
+
+  @override
+  String get listingCooperative84 => 'ማሕበር (84m²)';
+
+  @override
+  String get listingCooperative70 => 'ማሕበር (70m²)';
+
+  @override
+  String get listingMarketPlace => 'ገበያ ቦታ';
+
+  @override
   String get listingPurchased => 'ዝተዓደገ';
 
   @override
