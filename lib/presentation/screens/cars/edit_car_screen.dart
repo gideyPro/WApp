@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
@@ -21,6 +20,7 @@ import '../../widgets/common/wave_liquid_glass.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/app_providers.dart';
 import '../../../core/utils/ethiopian_date_helper.dart';
+import '../../../core/utils/format_utils.dart';
 import '../listing/widgets/submission_overlay.dart';
 
 
@@ -77,7 +77,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       features: l.carFeatures ?? [],
       isForRent: l.listingType == ListingType.rental,
       rentalPeriodUnit: l.rentalPeriodUnit?.toString().split('.').last ?? '',
-      priceFixed: l.priceFixed?.toString() ?? '',
+      priceFixed: l.priceFixed,
       addressId: l.addressId,
       specificLocation: l.specificLocation ?? '',
       description: l.description ?? '',
@@ -91,11 +91,12 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     _specificLocationController = TextEditingController(text: l.specificLocation ?? '');
     _yearController = TextEditingController(text: _formData.year)
       ..addListener(() => _formData = _formData.copyWith(year: _yearController.text));
-    _priceController = TextEditingController(text: _formData.priceFixed)
+    _priceController = TextEditingController(text: _formData.priceFixed != null ? smartDecimal(_formData.priceFixed!) : '')
       ..addListener(() {
         if (_formatting) return;
         _formatting = true;
         final raw = _priceController.text.replaceAll(',', '');
+        final parsed = double.tryParse(raw);
         final formatted = _formatNumber(raw);
         if (formatted != _priceController.text) {
           _priceController.value = TextEditingValue(
@@ -103,7 +104,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             selection: TextSelection.collapsed(offset: formatted.length),
           );
         }
-        _formData = _formData.copyWith(priceFixed: raw);
+        _formData = _formData.copyWith(priceFixed: parsed);
         _formatting = false;
       });
     final existingMakes = makesForCategory(l.carVehicleCategory ?? 'car');
@@ -171,7 +172,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         if ((_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') && _formData.bodyType.isEmpty) errors.add('${l10n.listingBodyType} ${l10n.commonIsRequired}');
         break;
       case 1:
-        if (!_formData.isForRent && _formData.priceFixed.isEmpty) errors.add('${l10n.listingPriceEtb} ${l10n.commonIsRequired}');
+        if (!_formData.isForRent && _formData.priceFixed == null) errors.add('${l10n.listingPriceEtb} ${l10n.commonIsRequired}');
         if (_formData.addressId == null) errors.add(l10n.carLocationRequired);
         break;
       case 2:
@@ -885,7 +886,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                       labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     ),
-                    keyboardType: TextInputType.number,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   ),
           ),
           const SizedBox(height: 16),
@@ -1149,9 +1150,9 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
   String _formatNumber(String raw) {
     if (raw.isEmpty) return '';
-    final n = int.tryParse(raw.replaceAll(',', ''));
+    final n = double.tryParse(raw);
     if (n == null) return raw;
-    return NumberFormat('#,###', 'en_US').format(n);
+    return smartDecimal(n);
   }
 
   Widget _buildYearField(AppLocalizations l10n) {

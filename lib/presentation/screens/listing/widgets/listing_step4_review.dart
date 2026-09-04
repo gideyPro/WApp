@@ -7,6 +7,7 @@ import '../../../../data/models/listing_form_data.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/utils/format_utils.dart';
 
 class ListingStep4Review extends StatelessWidget {
   final ListingFormData formData;
@@ -255,8 +256,7 @@ class ListingStep4Review extends StatelessWidget {
   }
 
   String _formatPrice(double price) {
-    return price.toStringAsFixed(0).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},');
+    return smartDecimal(price);
   }
 
   String _getLocalizedHouseType(String? type, AppLocalizations l10n) {

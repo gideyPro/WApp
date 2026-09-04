@@ -70,8 +70,6 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     double? newArea = widget.formData.totalSquareMeters;
     if (v == 'cooperative_140') {
       newArea = 140;
-    } else if (v == 'cooperative_84') {
-      newArea = 84;
     } else if (v == 'cooperative_70') {
       newArea = 70;
     }
@@ -94,7 +92,6 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
     final Map<String, String> houseTypeItems = isCooperative
         ? {
             'cooperative_140': l10n.listingCooperative140,
-            'cooperative_84': l10n.listingCooperative84,
             'cooperative_70': l10n.listingCooperative70,
             'market_place': l10n.listingMarketPlace,
           }

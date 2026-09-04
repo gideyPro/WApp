@@ -1,7 +1,6 @@
 import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
@@ -12,6 +11,7 @@ import '../../../widgets/common/wave_card.dart';
 import '../../../widgets/common/wave_liquid_glass.dart';
 import '../../../providers/app_providers.dart';
 import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/utils/format_utils.dart';
 
 class ListingStep1Basics extends ConsumerStatefulWidget {
   final ListingFormData formData;
@@ -116,17 +116,14 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   }
 
   String _formatNumber(double n) {
-    return n.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (m) => '${m[1] ?? ''},',
-        );
+    return smartDecimal(n);
   }
 
   String _formatNumberString(String raw) {
     if (raw.isEmpty) return '';
-    final n = int.tryParse(raw.replaceAll(',', ''));
+    final n = double.tryParse(raw.replaceAll(',', ''));
     if (n == null) return raw;
-    return NumberFormat('#,###', 'en_US').format(n);
+    return smartDecimal(n);
   }
 
   void _onPriceChanged(TextEditingController ctrl) {

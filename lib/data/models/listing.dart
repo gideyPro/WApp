@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../core/utils/type_utils.dart';
+import '../../core/utils/format_utils.dart';
 import '../../core/network/api_constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'address.dart';
@@ -764,16 +764,15 @@ class Listing {
 
   String getLocalizedPrice(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final formatter = NumberFormat("#,###");
 
     if (priceFixed != null) {
-      return l10n.listingsPriceFixed(formatter.format(priceFixed!.toInt()));
+      return l10n.listingsPriceFixed(smartDecimal(priceFixed!));
     }
 
     if (priceMin != null && priceMax != null) {
       return l10n.listingsPriceRange(
-        formatter.format(priceMin!.toInt()),
-        formatter.format(priceMax!.toInt()),
+        smartDecimal(priceMin!),
+        smartDecimal(priceMax!),
       );
     }
 

@@ -19,7 +19,7 @@ class CarFormData {
   bool isForRent;
   String rentalPeriodUnit;
 
-  String priceFixed;
+  double? priceFixed;
 
   String addressRegion;
   String addressZone;
@@ -57,7 +57,7 @@ class CarFormData {
     this.customFeatures = '',
     this.isForRent = false,
     this.rentalPeriodUnit = '',
-    this.priceFixed = '',
+    this.priceFixed,
     this.addressRegion = '',
     this.addressZone = '',
     this.addressWoreda = '',
@@ -92,7 +92,7 @@ class CarFormData {
     String? customFeatures,
     bool? isForRent,
     String? rentalPeriodUnit,
-    String? priceFixed,
+    double? priceFixed,
     String? addressRegion,
     String? addressZone,
     String? addressWoreda,

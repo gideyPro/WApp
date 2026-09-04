@@ -1654,12 +1654,6 @@ abstract class AppLocalizations {
   /// **'Cooperative (140m²)'**
   String get listingCooperative140;
 
-  /// No description provided for @listingCooperative84.
-  ///
-  /// In en, this message translates to:
-  /// **'Cooperative (84m²)'**
-  String get listingCooperative84;
-
   /// No description provided for @listingCooperative70.
   ///
   /// In en, this message translates to:

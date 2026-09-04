@@ -828,13 +828,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingCooperative140 => 'ማሕበር (140m²)';
 
   @override
-  String get listingCooperative84 => 'ማሕበር (84m²)';
-
-  @override
   String get listingCooperative70 => 'ማሕበር (70m²)';
 
   @override
-  String get listingMarketPlace => 'ገበያ ቦታ';
+  String get listingMarketPlace => 'ዕዳጋ ማእኸል';
 
   @override
   String get listingPurchased => 'ዝተዓደገ';
@@ -2241,7 +2238,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get submissionStepUploading => 'ፋይላት ይፀዓኑ ኣለዉ';
 
   @override
-  String get submissionStepSaving => 'ምዝገባ ይቕመጥ ኣሎ';
+  String get submissionStepSaving => 'ንብረት ኣብ ምስፋር...';
 
   @override
   String get submissionValidating => 'ዳታ ይረጋገጽ ኣሎ...';
@@ -2256,10 +2253,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get submissionSavingChanges => 'ለውጥታት ይቕመጡ ኣለዉ...';
 
   @override
-  String get submissionSubmittingTitle => 'ምዝገባኻ ይላእኽ ኣሎ';
+  String get submissionSubmittingTitle => 'ንብረትካ ይምዝገብ ኣሎ';
 
   @override
-  String get submissionSuccessTitle => 'ምዝገባ ተላኢኹ!';
+  String get submissionSuccessTitle => 'ንብረትካ ተመዝጊቡ!';
 
   @override
   String get submissionPendingApproval =>

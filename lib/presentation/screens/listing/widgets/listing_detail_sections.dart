@@ -13,6 +13,7 @@ import '../../../widgets/common/wave_liquid_glass.dart';
 import '../../../widgets/video/video_player_widget.dart';
 import '../../../providers/app_providers.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/utils/format_utils.dart';
 
 class ListingDetailSections extends ConsumerWidget {
   final Listing listing;
@@ -197,7 +198,7 @@ class ListingDetailSections extends ConsumerWidget {
     if (listing.totalSquareMeters != null && listing.totalSquareMeters! > 0) {
       features.add(_buildFeatureChip(context, 
         icon: Icons.square_foot,
-        label: l10n.listingUnitM2(listing.totalSquareMeters!.toInt()),
+        label: l10n.listingUnitM2(smartDecimal(listing.totalSquareMeters!)),
       ));
     }
 
@@ -358,13 +359,13 @@ class ListingDetailSections extends ConsumerWidget {
       if ((listing.frontAreaSqm ?? 0) > 0) {
         details.add({
           'label': l10n.listingsFrontArea,
-          'value': l10n.listingUnitM2(listing.frontAreaSqm!.toInt())
+          'value': l10n.listingUnitM2(smartDecimal(listing.frontAreaSqm!))
         });
       }
       if ((listing.sideAreaSqm ?? 0) > 0) {
         details.add({
           'label': l10n.listingsSideArea,
-          'value': l10n.listingUnitM2(listing.sideAreaSqm!.toInt())
+          'value': l10n.listingUnitM2(smartDecimal(listing.sideAreaSqm!))
         });
       }
     }
@@ -406,13 +407,13 @@ class ListingDetailSections extends ConsumerWidget {
         if (listing.leasePricePerSqm != null) {
           details.add({
             'label': l10n.listingLeasePrice,
-            'value': '${listing.leasePricePerSqm!.toInt()} ETB'
+            'value': '${smartDecimal(listing.leasePricePerSqm!)} ETB'
           });
         }
         if (listing.annualPayment != null) {
           details.add({
             'label': l10n.listingAnnualPayment,
-            'value': '${listing.annualPayment!.toInt()} ETB'
+            'value': '${smartDecimal(listing.annualPayment!)} ETB'
           });
         }
         if (listing.buildType != null) {
@@ -463,7 +464,7 @@ class ListingDetailSections extends ConsumerWidget {
     if (listing.hasDebtOrEncumbrance) {
       final debtAmount = listing.debtAmount;
       final amount = debtAmount != null
-          ? l10n.listingsEncumbranceYes(debtAmount.toInt())
+          ? l10n.listingsEncumbranceYes(smartDecimal(debtAmount))
           : l10n.listingsYes;
       details.add({'label': l10n.listingsEncumbrance, 'value': amount});
     }

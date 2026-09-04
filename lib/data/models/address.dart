@@ -75,7 +75,7 @@ class Address {
   }
 
   String get fullAddress {
-    final mainParts = [kebele, woreda, zone, region]
+    final mainParts = [region, zone, woreda, kebele]
         .where((e) => e != null && e.isNotEmpty)
         .toList();
     
@@ -90,7 +90,7 @@ class Address {
   }
 
   String get shortAddress {
-    final mainParts = [kebele, woreda, zone]
+    final mainParts = [zone, woreda, kebele]
         .where((e) => e != null && e.isNotEmpty)
         .toList();
     
@@ -126,11 +126,11 @@ class Address {
     String? k = localizedOr(kebele, kebeleLocalized);
     String? s = localizedOr(specificLocation, specificLocationLocalized);
 
-    // Order: Kebele, Woreda, Zone, Region - Special Location
-    // If restricted, show only Zone and Region
+    // Order: Region, Zone, Woreda, Kebele - Special Location
+    // If restricted, show only Region and Zone
     final List<String?> mainComponents = isRestricted 
-        ? [z, r] 
-        : [k, w, z, r];
+        ? [r, z] 
+        : [r, z, w, k];
     
     final parts = mainComponents
         .where((e) => e != null && e.isNotEmpty)

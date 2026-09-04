@@ -19,6 +19,7 @@ import '../../widgets/common/wave_common_widgets.dart';
 import 'widgets/listing_gallery.dart';
 import 'widgets/listing_detail_sections.dart';
 import 'widgets/listing_action_buttons.dart';
+import '../../../core/utils/format_utils.dart';
 
 /// Listing Detail Screen with skeleton loaders
 class ListingDetailScreen extends ConsumerStatefulWidget {
@@ -527,7 +528,7 @@ ${AppLocalizations.of(context).shareListingTitle}
                     const Spacer(),
                     if (similar.totalSquareMeters != null && similar.totalSquareMeters! > 0)
                       Text(
-                        l10n.listingUnitM2(similar.totalSquareMeters!.toInt()),
+                        l10n.listingUnitM2(smartDecimal(similar.totalSquareMeters!)),
                         style: AppTextStyles.caption.copyWith(
                           color: context.textSecondary,
                         ),

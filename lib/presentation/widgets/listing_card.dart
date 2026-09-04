@@ -9,6 +9,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/utils/format_utils.dart';
 import '../../../presentation/providers/app_providers.dart';
 import 'common/wave_card.dart';
 import 'common/wave_glass.dart';
@@ -502,7 +503,7 @@ class PropertyListingCard extends ConsumerWidget {
         ] else ...[
           _buildFeatureChip(
             Icons.square_foot_outlined,
-            l10n.listingUnitM2(listing?.totalSquareMeters?.toInt() ?? 0),
+            l10n.listingUnitM2(listing?.totalSquareMeters != null ? smartDecimal(listing!.totalSquareMeters!) : '0'),
           ),
         ],
         const SizedBox(width: 8),

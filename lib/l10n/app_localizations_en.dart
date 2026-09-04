@@ -834,9 +834,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingCooperative140 => 'Cooperative (140m²)';
 
   @override
-  String get listingCooperative84 => 'Cooperative (84m²)';
-
-  @override
   String get listingCooperative70 => 'Cooperative (70m²)';
 
   @override
