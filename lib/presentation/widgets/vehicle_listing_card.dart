@@ -176,6 +176,8 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
               CachedNetworkImage(
                 imageUrl: widget.listing?.mainThumbnailUrl ?? '',
                 fit: BoxFit.cover,
+                memCacheWidth: 400,
+                memCacheHeight: 300,
                 placeholder: (_, __) => Shimmer.fromColors(
                   baseColor: context.shimmerBase,
                   highlightColor: context.shimmerHighlight,

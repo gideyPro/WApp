@@ -68,11 +68,11 @@ void main() async {
   // Fonts are bundled locally in assets/fonts/
   GoogleFonts.config.allowRuntimeFetching = false;
 
-  // Configure video cache: max 10 cached videos
+  // Configure video cache: max 3 cached videos (reduced for memory optimization)
   CachedVideoPlayerPlus.cacheManager = cache.CacheManager(
     cache.Config(
       'libCachedVideoPlayerPlusData',
-      maxNrOfCacheObjects: 10,
+      maxNrOfCacheObjects: 3,
     ),
   );
 

@@ -261,7 +261,14 @@ class _ConversationTile extends ConsumerWidget {
                 height: 50,
               decoration: BoxDecoration(
                 image: avatarUrl != null
-                    ? DecorationImage(image: CachedNetworkImageProvider(avatarUrl), fit: BoxFit.cover)
+                    ? DecorationImage(
+                        image: ResizeImage(
+                          CachedNetworkImageProvider(avatarUrl),
+                          width: 100,
+                          height: 100,
+                        ),
+                        fit: BoxFit.cover,
+                      )
                     : null,
                 gradient: avatarUrl != null
                     ? null
@@ -1037,7 +1044,14 @@ class _MessageBubble extends ConsumerWidget {
               height: 32,
               decoration: BoxDecoration(
                 image: avatarUrl != null
-                    ? DecorationImage(image: CachedNetworkImageProvider(avatarUrl), fit: BoxFit.cover)
+                    ? DecorationImage(
+                        image: ResizeImage(
+                          CachedNetworkImageProvider(avatarUrl),
+                          width: 64,
+                          height: 64,
+                        ),
+                        fit: BoxFit.cover,
+                      )
                     : null,
                 gradient: avatarUrl != null
                     ? null
@@ -1156,7 +1170,14 @@ class _MessageBubble extends ConsumerWidget {
               height: 32,
               decoration: BoxDecoration(
                 image: myAvatarUrl != null
-                    ? DecorationImage(image: CachedNetworkImageProvider(myAvatarUrl), fit: BoxFit.cover)
+                    ? DecorationImage(
+                        image: ResizeImage(
+                          CachedNetworkImageProvider(myAvatarUrl),
+                          width: 64,
+                          height: 64,
+                        ),
+                        fit: BoxFit.cover,
+                      )
                     : null,
                 gradient: myAvatarUrl != null
                     ? null

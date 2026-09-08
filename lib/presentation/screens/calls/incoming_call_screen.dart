@@ -232,7 +232,14 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         image: avatarUrl != null
-            ? DecorationImage(image: CachedNetworkImageProvider(avatarUrl), fit: BoxFit.cover)
+            ? DecorationImage(
+                image: ResizeImage(
+                  CachedNetworkImageProvider(avatarUrl),
+                  width: 300,
+                  height: 300,
+                ),
+                fit: BoxFit.cover,
+              )
             : null,
         color: avatarUrl != null ? null : AppColors.accent600,
         boxShadow: [

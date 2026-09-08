@@ -28,17 +28,19 @@ class VideoPlayerWidget extends StatefulWidget {
   State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
 }
 
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with WidgetsBindingObserver {
   CachedVideoPlayerPlus? _player;
   ChewieController? _chewieController;
   bool _isLoading = true;
   bool _hasError = false;
   bool _userTappedPlay = false;
   bool _isFinished = false;
+  bool _wasPlayingBeforeBackground = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initializeVideo();
   }
 
@@ -143,7 +145,36 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final controller = _player?.controller;
+    if (controller == null || !controller.value.isInitialized) return;
+
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+        // Save playback state and pause video to release memory
+        _wasPlayingBeforeBackground = controller.value.isPlaying;
+        if (controller.value.isPlaying) {
+          controller.pause();
+        }
+        break;
+      case AppLifecycleState.resumed:
+        // Restore playback if was playing before backgrounding
+        if (_wasPlayingBeforeBackground && _userTappedPlay) {
+          controller.play();
+        }
+        break;
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+        // Release video resources completely
+        _disposeControllers();
+        break;
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _disposeControllers();
     super.dispose();
   }
@@ -182,6 +213,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             CachedNetworkImage(
               imageUrl: widget.thumbnailUrl!,
               fit: BoxFit.cover,
+              memCacheWidth: 640,
+              memCacheHeight: 360,
               placeholder: (_, __) => Container(color: AppColors.zinc100),
               errorWidget: (_, __, ___) => Container(color: AppColors.zinc100),
             )

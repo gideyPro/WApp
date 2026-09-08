@@ -53,6 +53,8 @@ class _ListingGalleryState extends State<ListingGallery> {
               return CachedNetworkImage(
                 imageUrl: images[index].imageUrl,
                 fit: BoxFit.cover,
+                memCacheWidth: 800,
+                memCacheHeight: 600,
                 placeholder: (_, __) => Container(
                   color: AppColors.primary100,
                   child: const Center(

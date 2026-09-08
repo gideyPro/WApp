@@ -170,6 +170,11 @@ class ApiConstants {
   static const String registerFcmToken = '$apiBase/fcm/register';
 
   // ==========================================================================
+  // 17. RESTORE CREDENTIALS ENDPOINTS (Zero-Tap Sign-In)
+  // ==========================================================================
+  static const String restoreCredentials = '$apiBase/restore-credentials';
+
+  // ==========================================================================
   // HEADERS
   // ==========================================================================
   static const String headerContentType = 'Content-Type';

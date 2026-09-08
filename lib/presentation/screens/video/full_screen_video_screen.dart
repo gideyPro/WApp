@@ -13,13 +13,15 @@ class FullScreenVideoScreen extends StatefulWidget {
   State<FullScreenVideoScreen> createState() => _FullScreenVideoScreenState();
 }
 
-class _FullScreenVideoScreenState extends State<FullScreenVideoScreen> {
+class _FullScreenVideoScreenState extends State<FullScreenVideoScreen> with WidgetsBindingObserver {
   CachedVideoPlayerPlus? _player;
   ChewieController? _chewieController;
+  bool _wasPlayingBeforeBackground = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initializeVideo();
   }
 
@@ -55,7 +57,36 @@ class _FullScreenVideoScreenState extends State<FullScreenVideoScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final controller = _player?.controller;
+    if (controller == null || !controller.value.isInitialized) return;
+
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+        _wasPlayingBeforeBackground = controller.value.isPlaying;
+        if (controller.value.isPlaying) {
+          controller.pause();
+        }
+        break;
+      case AppLifecycleState.resumed:
+        if (_wasPlayingBeforeBackground) {
+          controller.play();
+        }
+        break;
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+        _chewieController?.dispose();
+        _chewieController = null;
+        _player?.dispose();
+        _player = null;
+        break;
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _chewieController?.dispose();
     _player?.dispose();
     super.dispose();

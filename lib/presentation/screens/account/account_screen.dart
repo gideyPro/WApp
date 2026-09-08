@@ -183,7 +183,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                                       shape: BoxShape.circle,
                                       image: avatarUrl != null
                                           ? DecorationImage(
-                                              image: CachedNetworkImageProvider(avatarUrl),
+                                              image: ResizeImage(
+                                                CachedNetworkImageProvider(avatarUrl),
+                                                width: 300,
+                                                height: 300,
+                                              ),
                                               fit: BoxFit.cover,
                                             )
                                           : null,

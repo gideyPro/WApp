@@ -934,6 +934,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                       imageUrl: imageUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,
+                      memCacheWidth: 600,
+                      memCacheHeight: 450,
                       errorWidget: (_, __, ___) => Container(
                         color: AppColors.primary100,
                         child: const Icon(Icons.image_not_supported),

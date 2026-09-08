@@ -1500,7 +1500,11 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
           shape: BoxShape.circle,
           image: avatarUrl != null
               ? DecorationImage(
-                  image: CachedNetworkImageProvider(avatarUrl),
+                  image: ResizeImage(
+                    CachedNetworkImageProvider(avatarUrl),
+                    width: 88,
+                    height: 88,
+                  ),
                   fit: BoxFit.cover,
                 )
               : null,

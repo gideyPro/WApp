@@ -2,11 +2,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../data/services/auth_service.dart';
 import '../../data/services/fcm_service.dart';
+import '../../data/services/restore_credential_service.dart';
 import '../../data/models/user.dart';
 
 /// Auth Service Provider
 final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService();
+});
+
+/// Restore Credential Service Provider
+final restoreCredentialServiceProvider = Provider<RestoreCredentialService>((ref) {
+  return RestoreCredentialService();
 });
 
 /// Auth State - Current authenticated user
@@ -75,6 +81,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
     if (response.success && response.user != null) {
       state = AuthState.authenticated(response.user!);
+      // Save restore credential for Zero-Tap Sign-In
+      try {
+        final restoreService = _ref.read(restoreCredentialServiceProvider);
+        await restoreService.saveCredential(
+          type: 'otp',
+          credential: otpCode,
+          deviceName: await _getDeviceName(),
+        );
+      } catch (_) {}
     } else {
       state = state.copyWith(
         isLoading: false,
@@ -112,6 +127,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final response = await _authService.googleLogin(idToken: idToken);
       if (response.success && response.user != null) {
         state = AuthState.authenticated(response.user!);
+        // Save restore credential for Zero-Tap Sign-In
+        try {
+          final restoreService = _ref.read(restoreCredentialServiceProvider);
+          await restoreService.saveCredential(
+            type: 'google',
+            credential: idToken,
+            deviceName: await _getDeviceName(),
+          );
+        } catch (_) {}
       } else {
         state = state.copyWith(isLoading: false, errorMessage: response.message);
       }
@@ -188,6 +212,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Reset auth state to initial (used when canceling registration)
   void resetState() {
     state = AuthState.initial();
+  }
+
+  /// Get device name for restore credential
+  Future<String> _getDeviceName() async {
+    try {
+      // Try to get device info using platform channel or package
+      // For now, return a generic name
+      return 'Android Device';
+    } catch (_) {
+      return 'Unknown Device';
+    }
   }
 
   /// Register new account
