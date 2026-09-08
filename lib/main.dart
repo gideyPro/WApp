@@ -76,6 +76,31 @@ void main() async {
     ),
   );
 
+  // Global ImageCache optimization for Google Play bad behavior thresholds (< 200 MB in background)
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50 MB max
+  PaintingBinding.instance.imageCache.maximumSize = 100; // max 100 decoded images in memory
+
+  // Evict in-memory bitmaps whenever app is paused or hidden
+  AppLifecycleListener(
+    onHide: () {
+      PaintingBinding.instance.imageCache.clear();
+      PaintingBinding.instance.imageCache.clearLiveImages();
+    },
+    onPause: () {
+      PaintingBinding.instance.imageCache.clear();
+      PaintingBinding.instance.imageCache.clearLiveImages();
+    },
+  );
+
+  // Handle native Android onTrimMemory signals
+  const MethodChannel('et.wavemart.app/memory').setMethodCallHandler((call) async {
+    if (call.method == 'onTrimMemory') {
+      PaintingBinding.instance.imageCache.clear();
+      PaintingBinding.instance.imageCache.clearLiveImages();
+    }
+  });
+
+
   // Global error handler for crash logging
   FlutterError.onError = (details) {
     log('Flutter Error: ${details.exceptionAsString()}', name: 'Wavemart');

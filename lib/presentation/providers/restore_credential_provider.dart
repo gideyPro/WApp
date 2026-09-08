@@ -1,10 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/services/restore_credential_service.dart';
 
-/// Provider for restore credential service
-final restoreCredentialServiceProvider = Provider<RestoreCredentialService>((ref) {
-  return RestoreCredentialService();
-});
+
+
 
 /// State for restore credentials
 class RestoreCredentialsState {

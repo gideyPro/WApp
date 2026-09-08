@@ -6,6 +6,7 @@ import '../../../../core/theme/text_styles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
+import '../../../data/services/restore_credential_service.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/auth_background.dart';
 import '../../../l10n/app_localizations.dart';
@@ -62,11 +63,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final minSplashTime = Future.delayed(const Duration(milliseconds: 1500));
 
     final client = ref.read(apiClientProvider);
-    final hasToken = await client.isAuthenticated();
+    var hasToken = await client.isAuthenticated();
 
     if (hasToken) {
       await ref.read(authStateProvider.notifier).checkAuth();
       if (!mounted) return;
+    } else {
+      // Attempt Zero-Tap Sign-In via Android Restore Credentials API
+      try {
+        final restored = await ref.read(restoreCredentialServiceProvider).attemptRestore(ref);
+        if (restored) {
+          hasToken = true;
+        }
+      } catch (_) {}
     }
 
     await minSplashTime;
@@ -79,6 +88,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     context.go(nextRoute);
   }
+
 
   @override
   void dispose() {

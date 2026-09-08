@@ -173,6 +173,8 @@ class ApiConstants {
   // 17. RESTORE CREDENTIALS ENDPOINTS (Zero-Tap Sign-In)
   // ==========================================================================
   static const String restoreCredentials = '$apiBase/restore-credentials';
+  static const String restoreSession = '$apiBase/auth/restore-session';
+
 
   // ==========================================================================
   // HEADERS

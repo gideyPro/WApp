@@ -10,11 +10,6 @@ final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService();
 });
 
-/// Restore Credential Service Provider
-final restoreCredentialServiceProvider = Provider<RestoreCredentialService>((ref) {
-  return RestoreCredentialService();
-});
-
 /// Auth State - Current authenticated user
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier(ref.watch(authServiceProvider), ref);
@@ -31,8 +26,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   AuthNotifier(this._authService, this._ref) : super(AuthState.initial());
 
+  /// Set authenticated user directly (used during Zero-Tap Sign-In)
+  void setAuthenticatedUser(User user) {
+    state = AuthState.authenticated(user);
+  }
+
   /// Check if user is authenticated
   Future<void> checkAuth() async {
+
     final isAuthenticated = await _authService.isAuthenticated();
     if (isAuthenticated) {
       await loadUser();
@@ -81,12 +82,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
     if (response.success && response.user != null) {
       state = AuthState.authenticated(response.user!);
-      // Save restore credential for Zero-Tap Sign-In
+      // Register restore credential with Android CredentialManager for Zero-Tap Sign-In
       try {
         final restoreService = _ref.read(restoreCredentialServiceProvider);
-        await restoreService.saveCredential(
-          type: 'otp',
-          credential: otpCode,
+        await restoreService.registerCredential(
           deviceName: await _getDeviceName(),
         );
       } catch (_) {}
@@ -127,16 +126,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final response = await _authService.googleLogin(idToken: idToken);
       if (response.success && response.user != null) {
         state = AuthState.authenticated(response.user!);
-        // Save restore credential for Zero-Tap Sign-In
+        // Register restore credential with Android CredentialManager for Zero-Tap Sign-In
         try {
           final restoreService = _ref.read(restoreCredentialServiceProvider);
-          await restoreService.saveCredential(
-            type: 'google',
-            credential: idToken,
+          await restoreService.registerCredential(
             deviceName: await _getDeviceName(),
           );
         } catch (_) {}
       } else {
+
         state = state.copyWith(isLoading: false, errorMessage: response.message);
       }
       return response;
@@ -194,6 +192,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     // Clean up FCM token before logging out to stop receiving pushes
     try {
       _ref.read(fcmServiceProvider).cleanup();
+    } catch (_) {}
+    try {
+      await _ref.read(restoreCredentialServiceProvider).clearCredential();
     } catch (_) {}
     await _authService.logout();
     state = AuthState.unauthenticated();
@@ -257,6 +258,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
         // Registration complete, user authenticated
         if (response.user != null) {
           state = AuthState.authenticated(response.user!);
+          try {
+            final restoreService = _ref.read(restoreCredentialServiceProvider);
+            await restoreService.registerCredential(
+              deviceName: await _getDeviceName(),
+            );
+          } catch (_) {}
         }
       }
     } else {
@@ -264,6 +271,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
     return response;
   }
+
 }
 
 /// Auth State
