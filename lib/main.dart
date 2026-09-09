@@ -80,15 +80,13 @@ void main() async {
   PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50 MB max
   PaintingBinding.instance.imageCache.maximumSize = 100; // max 100 decoded images in memory
 
-  // Evict in-memory bitmaps whenever app is paused or hidden
+  // Evict non-visible in-memory bitmaps whenever app is paused or hidden
   AppLifecycleListener(
     onHide: () {
       PaintingBinding.instance.imageCache.clear();
-      PaintingBinding.instance.imageCache.clearLiveImages();
     },
     onPause: () {
       PaintingBinding.instance.imageCache.clear();
-      PaintingBinding.instance.imageCache.clearLiveImages();
     },
   );
 
