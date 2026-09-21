@@ -81,7 +81,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       otpCode: otpCode,
     );
     if (response.success && response.user != null) {
-      state = AuthState.authenticated(response.user!);
       // Register restore credential with Android CredentialManager for Zero-Tap Sign-In
       try {
         final restoreService = _ref.read(restoreCredentialServiceProvider);
@@ -89,6 +88,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           deviceName: await _getDeviceName(),
         );
       } catch (_) {}
+      state = AuthState.authenticated(response.user!);
     } else {
       state = state.copyWith(
         isLoading: false,
@@ -125,7 +125,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final response = await _authService.googleLogin(idToken: idToken);
       if (response.success && response.user != null) {
-        state = AuthState.authenticated(response.user!);
         // Register restore credential with Android CredentialManager for Zero-Tap Sign-In
         try {
           final restoreService = _ref.read(restoreCredentialServiceProvider);
@@ -133,6 +132,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
             deviceName: await _getDeviceName(),
           );
         } catch (_) {}
+        state = AuthState.authenticated(response.user!);
       } else {
 
         state = state.copyWith(isLoading: false, errorMessage: response.message);
@@ -257,13 +257,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
       } else {
         // Registration complete, user authenticated
         if (response.user != null) {
-          state = AuthState.authenticated(response.user!);
           try {
             final restoreService = _ref.read(restoreCredentialServiceProvider);
             await restoreService.registerCredential(
               deviceName: await _getDeviceName(),
             );
           } catch (_) {}
+          state = AuthState.authenticated(response.user!);
         }
       }
     } else {
