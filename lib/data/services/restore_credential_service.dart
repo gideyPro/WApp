@@ -71,7 +71,7 @@ class RestoreCredentialService {
 
   /// Attempt Zero-Tap Sign-In on a new or restored device without user interaction.
   /// Queries Android CredentialManager, then exchanges restore token with backend for a fresh Sanctum token.
-  Future<bool> attemptRestore(Ref ref) async {
+  Future<bool> attemptRestore(dynamic ref) async {
     if (!Platform.isAndroid) return false;
 
     try {
