@@ -67,7 +67,7 @@ class MainActivity: FlutterFragmentActivity() {
                     activityScope.launch {
                         try {
                             val credentialManager = CredentialManager.create(this@MainActivity)
-                            val option = GetRestoreCredentialOption()
+                            val option = GetRestoreCredentialOption("{}")
                             val request = GetCredentialRequest.Builder()
                                 .addCredentialOption(option)
                                 .build()
