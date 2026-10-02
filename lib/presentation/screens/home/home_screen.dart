@@ -13,14 +13,16 @@ import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/car_providers.dart';
+import '../../providers/job_providers.dart';
 import '../../widgets/featured_listing_card.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/vehicle_listing_card.dart';
 import '../../widgets/vehicle_featured_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
+import '../jobs/widgets/job_listing_card.dart';
 import 'filter_sheet.dart';
 
-enum HomeCategory { all, property, vehicles }
+enum HomeCategory { all, property, vehicles, jobs }
 
 extension HomeCategoryX on HomeCategory {
   String label(AppLocalizations l10n) {
@@ -28,6 +30,7 @@ extension HomeCategoryX on HomeCategory {
       case HomeCategory.all: return l10n.searchFilterAll;
       case HomeCategory.property: return l10n.listingSummaryProperty;
       case HomeCategory.vehicles: return l10n.listingCarPlural;
+      case HomeCategory.jobs: return 'Jobs';
     }
   }
 
@@ -36,6 +39,7 @@ extension HomeCategoryX on HomeCategory {
       case HomeCategory.all: return Icons.apps_rounded;
       case HomeCategory.property: return Icons.home_rounded;
       case HomeCategory.vehicles: return Icons.directions_car_rounded;
+      case HomeCategory.jobs: return Icons.work_outline;
     }
   }
 }
@@ -93,6 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       }
       ref.read(listingsProvider.notifier).loadListings();
       ref.read(carListingsProvider.notifier).loadListings();
+      ref.read(jobListingsProvider.notifier).loadListings();
       ref.read(authStateProvider.notifier).loadUser();
       ref.read(favoritesProvider.notifier).loadFavorites();
       _lastLoadTime = DateTime.now();
@@ -128,7 +133,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     setState(() => _isAutoRefreshing = true);
     _refreshPillController.forward();
     try {
-      await ref.read(listingsProvider.notifier).loadListings();
+      await Future.wait([
+        ref.read(listingsProvider.notifier).loadListings(),
+        ref.read(carListingsProvider.notifier).loadListings(),
+        ref.read(jobListingsProvider.notifier).loadListings(),
+      ]);
     } finally {
       if (mounted) {
         await Future.delayed(const Duration(milliseconds: 350));
@@ -153,6 +162,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (_selectedCategory == HomeCategory.vehicles || _selectedCategory == HomeCategory.all) {
       futures.add(ref.read(carListingsProvider.notifier).loadListings());
     }
+    if (_selectedCategory == HomeCategory.jobs || _selectedCategory == HomeCategory.all) {
+      futures.add(ref.read(jobListingsProvider.notifier).loadListings());
+    }
     await Future.wait(futures);
   }
 
@@ -167,6 +179,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ref.invalidate(searchResultsProvider);
     if (category == HomeCategory.vehicles || category == HomeCategory.all) {
       ref.read(carListingsProvider.notifier).loadListings();
+    }
+    if (category == HomeCategory.jobs || category == HomeCategory.all) {
+      ref.read(jobListingsProvider.notifier).loadListings();
     }
   }
 
@@ -339,6 +354,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             filters: _filterValues.toQueryParams(),
           );
         }
+      } else if (_selectedCategory == HomeCategory.jobs) {
+        final state = ref.read(jobListingsProvider);
+        if (!state.isLoadingMore && state.hasMore) {
+          ref.read(jobListingsProvider.notifier).loadListings(
+            page: state.currentPage + 1,
+            filters: _filterValues.toQueryParams(),
+          );
+        }
       } else {
         final state = ref.read(searchResultsProvider);
         if (!state.isLoadingMore && state.hasMore) {
@@ -357,7 +380,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           );
         }
       }
-      if (_selectedCategory != HomeCategory.vehicles) {
+      if (_selectedCategory == HomeCategory.jobs || _selectedCategory == HomeCategory.all) {
+        final jobState = ref.read(jobListingsProvider);
+        if (!jobState.isLoading && !jobState.isLoadingMore && jobState.hasMore) {
+          ref.read(jobListingsProvider.notifier).loadListings(
+            page: jobState.currentPage + 1,
+          );
+        }
+      }
+      if (_selectedCategory == HomeCategory.property || _selectedCategory == HomeCategory.all) {
         final propState = ref.read(listingsProvider);
         if (!propState.isLoading && !propState.isLoadingMore && propState.hasMore) {
           ref.read(listingsProvider.notifier).loadListings(
@@ -392,6 +423,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           setState(() => _hasSearched = false);
           if (_selectedCategory == HomeCategory.vehicles) {
             ref.read(carListingsProvider.notifier).loadListings();
+          } else if (_selectedCategory == HomeCategory.jobs) {
+            ref.read(jobListingsProvider.notifier).loadListings();
           } else {
             ref.invalidate(searchResultsProvider);
           }
@@ -417,6 +450,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ref.read(carListingsProvider.notifier).loadListings(
         filters: filters.isNotEmpty ? filters : null,
       );
+    } else if (_selectedCategory == HomeCategory.jobs) {
+      ref.read(jobListingsProvider.notifier).loadListings(
+        filters: filters.isNotEmpty ? filters : null,
+      );
     } else {
       ref.read(searchResultsProvider.notifier).loadListings(
         filters: filters.isNotEmpty ? filters : null,
@@ -432,6 +469,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     });
     if (_selectedCategory == HomeCategory.vehicles) {
       ref.read(carListingsProvider.notifier).loadListings();
+    } else if (_selectedCategory == HomeCategory.jobs) {
+      ref.read(jobListingsProvider.notifier).loadListings();
     } else {
       ref.invalidate(searchResultsProvider);
     }
@@ -445,6 +484,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     });
     if (_selectedCategory == HomeCategory.vehicles) {
       ref.read(carListingsProvider.notifier).loadListings();
+    } else if (_selectedCategory == HomeCategory.jobs) {
+      ref.read(jobListingsProvider.notifier).loadListings();
     } else {
       ref.invalidate(searchResultsProvider);
     }
@@ -458,6 +499,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       setState(() => _hasSearched = false);
       if (_selectedCategory == HomeCategory.vehicles) {
         ref.read(carListingsProvider.notifier).loadListings();
+      } else if (_selectedCategory == HomeCategory.jobs) {
+        ref.read(jobListingsProvider.notifier).loadListings();
       } else {
         ref.invalidate(searchResultsProvider);
       }
@@ -501,9 +544,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final carState = ref.watch(carListingsProvider);
+    final jobState = ref.watch(jobListingsProvider);
     final searchState = _selectedCategory == HomeCategory.vehicles && _hasSearched
         ? carState
-        : ref.watch(searchResultsProvider);
+        : _selectedCategory == HomeCategory.jobs && _hasSearched
+            ? jobState
+            : ref.watch(searchResultsProvider);
     final canBrowseAll = _selectedCategory == HomeCategory.all && !_hasSearched;
 
     return Scaffold(
@@ -565,9 +611,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
                 else if (canBrowseAll)
-                  ..._buildAllBrowseSlivers(featuredState, vipState, listingsState, carState, l10n)
+                  ..._buildAllBrowseSlivers(featuredState, vipState, listingsState, carState, jobState, l10n)
                 else if (_selectedCategory == HomeCategory.vehicles)
                   ..._buildCarBrowseSlivers(featuredState, vipState, carState, l10n)
+                else if (_selectedCategory == HomeCategory.jobs)
+                  ..._buildJobBrowseSlivers(featuredState, vipState, jobState, l10n)
                 else ...[
                   SliverToBoxAdapter(
                     child: FadeTransition(
@@ -1020,9 +1068,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget _buildMergedFeed(
     ListingsState propState,
     ListingsState carState,
+    ListingsState jobState,
   ) {
-    if (propState.listings.isEmpty && carState.listings.isEmpty) {
-      if (propState.isLoading || carState.isLoading) {
+    if (propState.listings.isEmpty && carState.listings.isEmpty && jobState.listings.isEmpty) {
+      if (propState.isLoading || carState.isLoading || jobState.isLoading) {
         return SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
           sliver: SliverList(
@@ -1040,6 +1089,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final allListings = <Listing>[
       ...propState.listings,
       ...carState.listings,
+      ...jobState.listings,
     ]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return SliverPadding(
@@ -1056,26 +1106,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             final listing = allListings[index];
             final fav = _isFavorite(listing.id);
             final isVehicle = listing.propertyType == PropertyType.car;
+            final isJob = listing.propertyType == PropertyType.job;
+            
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: isVehicle
-                  ? VehicleListingCard(
-                      listing: listing,
-                      isFavorite: fav,
-                      isTogglingFavorite: _isToggling(listing.id),
-                      onFavorite: () => _toggleFavorite(listing.id),
-                      onTap: () => context.push('/cars/${listing.id}'),
+              child: isJob
+                  ? JobListingCard(job: listing) => context.push('/jobs/${listing.id}'),
                     )
-                  : PropertyListingCard(
-                      listing: listing,
-                      isFavorite: fav,
-                      isTogglingFavorite: _isToggling(listing.id),
-                      onFavorite: () => _toggleFavorite(listing.id),
-                      onTap: () => _handleListingTap(listing),
-                    ),
+                  : isVehicle
+                      ? VehicleListingCard(
+                          listing: listing,
+                          isFavorite: fav,
+                          isTogglingFavorite: _isToggling(listing.id),
+                          onFavorite: () => _toggleFavorite(listing.id),
+                          onTap: () => context.push('/cars/${listing.id}'),
+                        )
+                      : PropertyListingCard(
+                          listing: listing,
+                          isFavorite: fav,
+                          isTogglingFavorite: _isToggling(listing.id),
+                          onFavorite: () => _toggleFavorite(listing.id),
+                          onTap: () => _handleListingTap(listing),
+                        ),
             );
           },
-          childCount: allListings.length + (propState.isLoadingMore || carState.isLoadingMore ? 1 : 0),
+          childCount: allListings.length + (propState.isLoadingMore || carState.isLoadingMore || jobState.isLoadingMore ? 1 : 0),
         ),
       ),
     );
@@ -1086,6 +1141,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ListingsState vipState,
     ListingsState propState,
     ListingsState carState,
+    ListingsState jobState,
     AppLocalizations l10n,
   ) {
     return [
@@ -1101,7 +1157,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ],
         ),
       ),
-      _buildMergedFeed(propState, carState),
+      _buildMergedFeed(propState, carState, jobState),
     ];
   }
 
@@ -1136,6 +1192,112 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   ListingsState _filterCarListings(ListingsState state) {
     final carListings = state.listings.where((l) => l.propertyType == PropertyType.car).toList();
     return state.copyWith(listings: carListings);
+  }
+
+  List<Widget> _buildJobBrowseSlivers(
+    ListingsState featuredState,
+    ListingsState vipState,
+    ListingsState jobState,
+    AppLocalizations l10n,
+  ) {
+    final jobFeatured = _filterJobListings(featuredState);
+    final jobVip = _filterJobListings(vipState);
+    return [
+      SliverToBoxAdapter(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (jobFeatured.listings.isNotEmpty) _buildSectionHeader(l10n.listingsFeatured),
+              if (jobFeatured.listings.isNotEmpty) _buildFeaturedListings(jobFeatured),
+              if (jobVip.listings.isNotEmpty) _buildVipSection(jobVip),
+              _buildSectionHeader('Jobs',
+                  eyebrow: l10n.homeLatestRecently.toUpperCase()),
+            ],
+          ),
+        ),
+      ),
+      _buildJobLatestSliver(jobState, l10n),
+    ];
+  }
+
+  ListingsState _filterJobListings(ListingsState state) {
+    final jobListings = state.listings.where((l) => l.propertyType == PropertyType.job).toList();
+    return state.copyWith(listings: jobListings);
+  }
+
+  Widget _buildJobLatestSliver(ListingsState state, AppLocalizations l10n) {
+    if (state.isLoading && state.listings.isEmpty) {
+      return SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+        sliver: SliverList(
+          delegate: SliverChildListDelegate([
+            for (int i = 0; i < 3; i++)
+              const PropertyListingCard(isLoading: true), // Fallback
+          ]),
+        ),
+      );
+    }
+
+    if (state.errorMessage != null && state.listings.isEmpty) {
+      return SliverFillRemaining(
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: TextButton.icon(
+                  onPressed: () => ref.read(jobListingsProvider.notifier).loadListings(),
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: Text(l10n.commonRetryMessage),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (state.listings.isEmpty) {
+      return SliverFillRemaining(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.work_outline, size: 64, color: context.textMuted),
+                const SizedBox(height: 16),
+                Text(l10n.messageEmptySubtitle, style: AppTextStyles.bodyMedium.copyWith(color: context.textMuted)),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            if (index == state.listings.length) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            final listing = state.listings[index];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: JobListingCard(job: listing) => context.push('/jobs/${listing.id}'),
+              ),
+            );
+          },
+          childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
+        ),
+      ),
+    );
   }
 
   Widget _buildVipTeaser() {

@@ -38,6 +38,9 @@ class ApiConstants {
   static const String vipListing = '$apiBase/listings'; // + /{id}/vip
   static const String revealContact = '$apiBase/listings'; // + /{id}/reveal-contact
   static const String checkSubmissionKey = '$apiBase/listings/check-key'; // + /{key}
+  
+  static const String jobs = '$apiBase/jobs';
+  static const String jobSeekers = '$apiBase/job-seekers';
 
   // ==========================================================================
   // 3. FAVORITES ENDPOINTS

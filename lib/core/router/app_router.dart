@@ -30,6 +30,14 @@ import '../../presentation/screens/cars/create_car_screen.dart';
 import '../../presentation/screens/cars/edit_car_screen.dart';
 import '../../presentation/screens/notifications/notifications_screen.dart';
 
+import '../presentation/screens/jobs/job_list_screen.dart';
+import '../presentation/screens/jobs/create_job_screen.dart';
+import '../presentation/screens/jobs/job_detail_screen.dart';
+import '../presentation/screens/jobs/edit_job_screen.dart';
+import '../presentation/screens/job_seekers/job_seekers_screen.dart';
+import '../presentation/screens/job_seekers/job_seeker_detail_screen.dart';
+import '../presentation/screens/job_seekers/edit_job_seeker_profile_screen.dart';
+
 Page<void> _buildPageTransition<T>({
   required LocalKey key,
   required Widget child,
@@ -334,6 +342,76 @@ final goRouter = GoRouter(
       pageBuilder: (_, state) => _buildPageTransition(
         key: state.pageKey,
         child: EditCarScreen(listing: state.extra as dynamic),
+      ),
+    ),
+
+    // Job routes
+    GoRoute(
+      path: '/jobs',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const JobListScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/jobs/create',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const CreateJobScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/jobs/:id',
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: JobDetailScreen(listingId: id),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/jobs/:id/edit',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: EditJobScreen(listing: state.extra as dynamic),
+      ),
+    ),
+    // Job Seeker routes
+    GoRoute(
+      path: '/job-seekers',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const JobSeekersScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/job-seekers/:id',
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: JobSeekerDetailScreen(profileId: id),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/my-job-profile',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const EditJobSeekerProfileScreen(),
       ),
     ),
   ],

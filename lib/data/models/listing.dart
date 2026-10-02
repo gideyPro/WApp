@@ -32,7 +32,7 @@ ListingType _parseListingType(dynamic value) {
   return ListingType.sale;
 }
 
-enum PropertyType { house, land, car }
+enum PropertyType { house, land, car, job }
 
 enum ListingType { sale, rental }
 
@@ -286,6 +286,20 @@ class Listing {
     this.carCondition,
     this.carVin,
     this.carFeatures,
+    this.jobCompanyName,
+    this.jobType,
+    this.jobCategory,
+    this.jobPositionsCount,
+    this.jobSalaryType,
+    this.jobSalaryMin,
+    this.jobSalaryMax,
+    this.jobSalaryCurrency,
+    this.jobReqEducation,
+    this.jobReqExperience,
+    this.jobReqGender,
+    this.jobDeadline,
+    this.property,
+
     this.agentId,
   });
 
@@ -382,6 +396,18 @@ class Listing {
       carCondition: carCondition,
       carVin: carVin,
       carFeatures: carFeatures,
+      jobCompanyName: jobCompanyName,
+      jobType: jobType,
+      jobCategory: jobCategory,
+      jobPositionsCount: jobPositionsCount,
+      jobSalaryType: jobSalaryType,
+      jobSalaryMin: jobSalaryMin,
+      jobSalaryMax: jobSalaryMax,
+      jobSalaryCurrency: jobSalaryCurrency,
+      jobReqEducation: jobReqEducation,
+      jobReqExperience: jobReqExperience,
+      jobReqGender: jobReqGender,
+      jobDeadline: jobDeadline,
     );
   }
 
@@ -545,6 +571,19 @@ class Listing {
       carCondition: property is Map ? property['condition'] : json['condition'],
       carVin: property is Map ? property['vin'] : json['vin'],
       carFeatures: _parseCarFeatures(property is Map ? property['features'] : json['features']),
+      property: property is Map<String, dynamic> ? property : null,
+      jobCompanyName: property is Map ? property['company_name'] : json['company_name'],
+      jobType: property is Map ? property['job_type'] : json['job_type'],
+      jobCategory: property is Map ? property['job_category'] : json['job_category'],
+      jobPositionsCount: TypeUtils.safeInt(property is Map ? property['positions_count'] : json['positions_count']),
+      jobSalaryType: property is Map ? property['salary_type'] : json['salary_type'],
+      jobSalaryMin: TypeUtils.safeDouble(property is Map ? property['salary_min'] : json['salary_min']),
+      jobSalaryMax: TypeUtils.safeDouble(property is Map ? property['salary_max'] : json['salary_max']),
+      jobSalaryCurrency: property is Map ? property['salary_currency'] : json['salary_currency'],
+      jobReqEducation: property is Map ? property['req_education'] : json['req_education'],
+      jobReqExperience: property is Map ? property['req_experience'] : json['req_experience'],
+      jobReqGender: property is Map ? property['req_gender'] : json['req_gender'],
+      jobDeadline: (property is Map ? property['deadline'] : json['deadline']) != null ? DateTime.parse(property is Map ? property['deadline'] : json['deadline']) : null,
       agentId: TypeUtils.safeInt(json['agent_id']),
     );
   }
@@ -619,6 +658,18 @@ class Listing {
       'condition': carCondition,
       'vin': carVin,
       'features': carFeatures,
+      'company_name': jobCompanyName,
+      'job_type': jobType,
+      'job_category': jobCategory,
+      'positions_count': jobPositionsCount,
+      'salary_type': jobSalaryType,
+      'salary_min': jobSalaryMin,
+      'salary_max': jobSalaryMax,
+      'salary_currency': jobSalaryCurrency,
+      'req_education': jobReqEducation,
+      'req_experience': jobReqExperience,
+      'req_gender': jobReqGender,
+      'deadline': jobDeadline?.toIso8601String(),
       'agent_id': agentId,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
