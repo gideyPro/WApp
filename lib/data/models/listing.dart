@@ -80,6 +80,22 @@ class VideoProcessing {
 
 /// Listing Model
 class Listing {
+  // Job fields
+  final String? jobCompanyName;
+  final String? jobType;
+  final String? jobCategory;
+  final int? jobPositionsCount;
+  final String? jobSalaryType;
+  final double? jobSalaryMin;
+  final double? jobSalaryMax;
+  final String? jobSalaryCurrency;
+  final String? jobReqEducation;
+  final String? jobReqExperience;
+  final String? jobReqGender;
+  final DateTime? jobDeadline;
+  
+  final Map<String, dynamic>? property; 
+
   final int id;
   final int? userId;
   final int? propertyId;

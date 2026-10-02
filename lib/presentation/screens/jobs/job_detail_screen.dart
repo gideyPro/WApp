@@ -172,7 +172,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                     child: _ContactButton(
                       icon: Icons.phone,
                       label: 'Call',
-                      hint: 'Call'Hint,
+                      hint: 'Call',
                       color: const Color(0xFF4CAF50),
                       onTap: () => _launchUrl('tel:$phone'),
                     ),
@@ -182,7 +182,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                     child: _ContactButton(
                       icon: Icons.chat_bubble_outline,
                       label: 'WhatsApp',
-                      hint: 'WhatsApp'Hint,
+                      hint: 'WhatsApp',
                       color: const Color(0xFF25D366),
                       onTap: () => _launchUrl('https://wa.me/${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                     ),
@@ -192,7 +192,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                     child: _ContactButton(
                       icon: Icons.send,
                       label: 'Telegram',
-                      hint: 'Telegram'Hint,
+                      hint: 'Telegram',
                       color: const Color(0xFF0088CC),
                       onTap: () => _launchUrl('https://t.me/+${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                     ),

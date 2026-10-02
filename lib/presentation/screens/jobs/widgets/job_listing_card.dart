@@ -11,8 +11,8 @@ class JobListingCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
-        title: Text(job.description?.split('\n').first ?? 'Job' ?? ''),
-        subtitle: Text(job.address?.woreda ?? job.address?.region ?? '' ?? ''),
+        title: Text(job.description?.split('\n').first ?? 'Job'),
+        subtitle: Text(job.address?.woreda ?? job.address?.region ?? ''),
         onTap: () => context.push('/jobs/${job.id}'),
       ),
     );
