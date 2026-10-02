@@ -115,7 +115,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     final errors = <String>[];
     switch (_currentStep) {
       case 0:
-        if (_formData.jobCategory.isEmpty) errors.add('${l10n.listingCategory} ${l10n.commonIsRequired}');
+        if (_formData.jobCategory.isEmpty) errors.add('${'Category'} ${l10n.commonIsRequired}');
         if (_formData.jobType.isEmpty) errors.add('Job Type is required');
         break;
       case 1:
@@ -374,7 +374,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             ),
           ],
           const SizedBox(height: 32),
-          Text('Location', style: AppTextStyles.h3),
+          Text('Location', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: _selectedRegion,

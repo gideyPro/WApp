@@ -30,13 +30,13 @@ import '../../presentation/screens/cars/create_car_screen.dart';
 import '../../presentation/screens/cars/edit_car_screen.dart';
 import '../../presentation/screens/notifications/notifications_screen.dart';
 
-import '../presentation/screens/jobs/job_list_screen.dart';
-import '../presentation/screens/jobs/create_job_screen.dart';
-import '../presentation/screens/jobs/job_detail_screen.dart';
-import '../presentation/screens/jobs/edit_job_screen.dart';
-import '../presentation/screens/job_seekers/job_seekers_screen.dart';
-import '../presentation/screens/job_seekers/job_seeker_detail_screen.dart';
-import '../presentation/screens/job_seekers/edit_job_seeker_profile_screen.dart';
+import '../../presentation/screens/jobs/job_list_screen.dart';
+import '../../presentation/screens/jobs/create_job_screen.dart';
+import '../../presentation/screens/jobs/job_detail_screen.dart';
+import '../../presentation/screens/jobs/edit_job_screen.dart';
+import '../../presentation/screens/job_seekers/job_seekers_screen.dart';
+import '../../presentation/screens/job_seekers/job_seeker_detail_screen.dart';
+import '../../presentation/screens/job_seekers/edit_job_seeker_profile_screen.dart';
 
 Page<void> _buildPageTransition<T>({
   required LocalKey key,

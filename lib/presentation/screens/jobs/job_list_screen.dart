@@ -189,7 +189,6 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
                             }
                             final listing = state.listings[index];
                             return JobListingCard(job: listing);
-                            );
                           },
                         ),
                       ),
@@ -236,9 +235,9 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-//          children: [
-//            if (_filterValues.type != null)
-//              _filterChip('Type: ${jobTypeLabel(_filterValues.type!, l10n)}', () => _removeFilter('job_type')),
+          children: [
+            // if (_filterValues.type != null)
+            //  _filterChip('Type: ${jobTypeLabel(_filterValues.type!, l10n)}', () => _removeFilter('job_type')),
             if (_searchController.text.isNotEmpty)
               _filterChip(_searchController.text, _clearSearch),
             const SizedBox(width: 4),

@@ -809,6 +809,9 @@ class Listing {
       case PropertyType.land:
         type = l10n.listingLand;
         break;
+      case PropertyType.job:
+        type = 'Job';
+        break;
       case PropertyType.car:
         type = 'Vehicle';
         break;
