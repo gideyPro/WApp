@@ -2631,4 +2631,195 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingErrorYearBuiltRequired => 'Year built is required';
+
+  @override
+  String get jobAll => 'All Jobs';
+
+  @override
+  String get jobBasicInfo => 'Basic Info';
+
+  @override
+  String get jobBrowseTitle => 'Browse Jobs';
+
+  @override
+  String get jobCategoryEducation => 'Education';
+
+  @override
+  String get jobCategoryFinance => 'Finance';
+
+  @override
+  String get jobCategoryHealthcare => 'Healthcare';
+
+  @override
+  String get jobCategoryIT => 'IT & Software';
+
+  @override
+  String get jobCategoryOther => 'Other';
+
+  @override
+  String get jobClear => 'Clear';
+
+  @override
+  String get jobCompanyName => 'Company Name';
+
+  @override
+  String get jobCreateButton => 'Post a Job';
+
+  @override
+  String get jobCreateTitle => 'Post a Job';
+
+  @override
+  String get jobDescription => 'Description';
+
+  @override
+  String get jobEditTitle => 'Edit Job';
+
+  @override
+  String get jobEducationLevel => 'Education Level';
+
+  @override
+  String get jobEmployerInfo => 'Employer Info';
+
+  @override
+  String get jobFeatured => 'Featured Job';
+
+  @override
+  String get jobFilter => 'Filter Jobs';
+
+  @override
+  String get jobFixed => 'Fixed';
+
+  @override
+  String get jobImages => 'Images';
+
+  @override
+  String get jobIndividualPoster => 'Individual Poster';
+
+  @override
+  String get jobJob => 'Job';
+
+  @override
+  String get jobJobCategory => 'Job Category';
+
+  @override
+  String get jobJobDetails => 'Job Details';
+
+  @override
+  String get jobJobTitle => 'Job Title';
+
+  @override
+  String get jobJobType => 'Job Type';
+
+  @override
+  String get jobLocation => 'Location';
+
+  @override
+  String get jobLocationImages => 'Location Images';
+
+  @override
+  String get jobLocationPlaceholder => 'Search location...';
+
+  @override
+  String get jobLogin => 'Login';
+
+  @override
+  String get jobLoginRequired => 'Login Required';
+
+  @override
+  String get jobMetaDescription =>
+      'Find the best jobs in Ethiopia on Wavemart.';
+
+  @override
+  String get jobMyJobs => 'My Jobs';
+
+  @override
+  String get jobNegotiable => 'Negotiable';
+
+  @override
+  String get jobNoPhotos => 'No Photos';
+
+  @override
+  String get jobNoResultsDescription =>
+      'We couldn\'t find any jobs matching your criteria.';
+
+  @override
+  String get jobNoResultsTitle => 'No Jobs Found';
+
+  @override
+  String get jobPhotos => 'Photos';
+
+  @override
+  String get jobPositions => 'Positions';
+
+  @override
+  String get jobPostingAsCompany => 'Posting as Company?';
+
+  @override
+  String get jobRange => 'Range';
+
+  @override
+  String get jobRequirements => 'Requirements';
+
+  @override
+  String get jobSalaryAndReqs => 'Salary & Requirements';
+
+  @override
+  String get jobSalaryMax => 'Max Salary';
+
+  @override
+  String get jobSalaryMin => 'Min Salary';
+
+  @override
+  String get jobSalaryPerAgreement => 'Per Agreement';
+
+  @override
+  String get jobSalaryType => 'Salary Type';
+
+  @override
+  String get jobSelect => 'Select';
+
+  @override
+  String get jobSimilarJobs => 'Similar Jobs';
+
+  @override
+  String get jobSpecificLocation => 'Specific Location';
+
+  @override
+  String get jobSubmit => 'Submit';
+
+  @override
+  String get jobTypeContract => 'Contract';
+
+  @override
+  String get jobTypeFullTime => 'Full Time';
+
+  @override
+  String get jobTypeInternship => 'Internship';
+
+  @override
+  String get jobTypePartTime => 'Part Time';
+
+  @override
+  String get jobUpdate => 'Update';
+
+  @override
+  String get jobContactEmployer => 'Contact Employer';
+
+  @override
+  String get jobCall => 'Call';
+
+  @override
+  String get jobCallHint => 'Tap to call the employer';
+
+  @override
+  String get jobWhatsapp => 'WhatsApp';
+
+  @override
+  String get jobWhatsappHint => 'Chat on WhatsApp';
+
+  @override
+  String get jobTelegram => 'Telegram';
+
+  @override
+  String get jobTelegramHint => 'Chat on Telegram';
 }

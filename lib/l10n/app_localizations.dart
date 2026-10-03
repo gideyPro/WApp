@@ -5007,6 +5007,384 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Year built is required'**
   String get listingErrorYearBuiltRequired;
+
+  /// No description provided for @jobAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All Jobs'**
+  String get jobAll;
+
+  /// No description provided for @jobBasicInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Info'**
+  String get jobBasicInfo;
+
+  /// No description provided for @jobBrowseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Jobs'**
+  String get jobBrowseTitle;
+
+  /// No description provided for @jobCategoryEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get jobCategoryEducation;
+
+  /// No description provided for @jobCategoryFinance.
+  ///
+  /// In en, this message translates to:
+  /// **'Finance'**
+  String get jobCategoryFinance;
+
+  /// No description provided for @jobCategoryHealthcare.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthcare'**
+  String get jobCategoryHealthcare;
+
+  /// No description provided for @jobCategoryIT.
+  ///
+  /// In en, this message translates to:
+  /// **'IT & Software'**
+  String get jobCategoryIT;
+
+  /// No description provided for @jobCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get jobCategoryOther;
+
+  /// No description provided for @jobClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get jobClear;
+
+  /// No description provided for @jobCompanyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Name'**
+  String get jobCompanyName;
+
+  /// No description provided for @jobCreateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Post a Job'**
+  String get jobCreateButton;
+
+  /// No description provided for @jobCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Post a Job'**
+  String get jobCreateTitle;
+
+  /// No description provided for @jobDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get jobDescription;
+
+  /// No description provided for @jobEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Job'**
+  String get jobEditTitle;
+
+  /// No description provided for @jobEducationLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Education Level'**
+  String get jobEducationLevel;
+
+  /// No description provided for @jobEmployerInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer Info'**
+  String get jobEmployerInfo;
+
+  /// No description provided for @jobFeatured.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured Job'**
+  String get jobFeatured;
+
+  /// No description provided for @jobFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Jobs'**
+  String get jobFilter;
+
+  /// No description provided for @jobFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed'**
+  String get jobFixed;
+
+  /// No description provided for @jobImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get jobImages;
+
+  /// No description provided for @jobIndividualPoster.
+  ///
+  /// In en, this message translates to:
+  /// **'Individual Poster'**
+  String get jobIndividualPoster;
+
+  /// No description provided for @jobJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get jobJob;
+
+  /// No description provided for @jobJobCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Job Category'**
+  String get jobJobCategory;
+
+  /// No description provided for @jobJobDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Job Details'**
+  String get jobJobDetails;
+
+  /// No description provided for @jobJobTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Job Title'**
+  String get jobJobTitle;
+
+  /// No description provided for @jobJobType.
+  ///
+  /// In en, this message translates to:
+  /// **'Job Type'**
+  String get jobJobType;
+
+  /// No description provided for @jobLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get jobLocation;
+
+  /// No description provided for @jobLocationImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Images'**
+  String get jobLocationImages;
+
+  /// No description provided for @jobLocationPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search location...'**
+  String get jobLocationPlaceholder;
+
+  /// No description provided for @jobLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get jobLogin;
+
+  /// No description provided for @jobLoginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Required'**
+  String get jobLoginRequired;
+
+  /// No description provided for @jobMetaDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Find the best jobs in Ethiopia on Wavemart.'**
+  String get jobMetaDescription;
+
+  /// No description provided for @jobMyJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'My Jobs'**
+  String get jobMyJobs;
+
+  /// No description provided for @jobNegotiable.
+  ///
+  /// In en, this message translates to:
+  /// **'Negotiable'**
+  String get jobNegotiable;
+
+  /// No description provided for @jobNoPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'No Photos'**
+  String get jobNoPhotos;
+
+  /// No description provided for @jobNoResultsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find any jobs matching your criteria.'**
+  String get jobNoResultsDescription;
+
+  /// No description provided for @jobNoResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Jobs Found'**
+  String get jobNoResultsTitle;
+
+  /// No description provided for @jobPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get jobPhotos;
+
+  /// No description provided for @jobPositions.
+  ///
+  /// In en, this message translates to:
+  /// **'Positions'**
+  String get jobPositions;
+
+  /// No description provided for @jobPostingAsCompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Posting as Company?'**
+  String get jobPostingAsCompany;
+
+  /// No description provided for @jobRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Range'**
+  String get jobRange;
+
+  /// No description provided for @jobRequirements.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirements'**
+  String get jobRequirements;
+
+  /// No description provided for @jobSalaryAndReqs.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary & Requirements'**
+  String get jobSalaryAndReqs;
+
+  /// No description provided for @jobSalaryMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Salary'**
+  String get jobSalaryMax;
+
+  /// No description provided for @jobSalaryMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Min Salary'**
+  String get jobSalaryMin;
+
+  /// No description provided for @jobSalaryPerAgreement.
+  ///
+  /// In en, this message translates to:
+  /// **'Per Agreement'**
+  String get jobSalaryPerAgreement;
+
+  /// No description provided for @jobSalaryType.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary Type'**
+  String get jobSalaryType;
+
+  /// No description provided for @jobSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get jobSelect;
+
+  /// No description provided for @jobSimilarJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Similar Jobs'**
+  String get jobSimilarJobs;
+
+  /// No description provided for @jobSpecificLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Specific Location'**
+  String get jobSpecificLocation;
+
+  /// No description provided for @jobSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get jobSubmit;
+
+  /// No description provided for @jobTypeContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract'**
+  String get jobTypeContract;
+
+  /// No description provided for @jobTypeFullTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Time'**
+  String get jobTypeFullTime;
+
+  /// No description provided for @jobTypeInternship.
+  ///
+  /// In en, this message translates to:
+  /// **'Internship'**
+  String get jobTypeInternship;
+
+  /// No description provided for @jobTypePartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Part Time'**
+  String get jobTypePartTime;
+
+  /// No description provided for @jobUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get jobUpdate;
+
+  /// No description provided for @jobContactEmployer.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Employer'**
+  String get jobContactEmployer;
+
+  /// No description provided for @jobCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get jobCall;
+
+  /// No description provided for @jobCallHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to call the employer'**
+  String get jobCallHint;
+
+  /// No description provided for @jobWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get jobWhatsapp;
+
+  /// No description provided for @jobWhatsappHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat on WhatsApp'**
+  String get jobWhatsappHint;
+
+  /// No description provided for @jobTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram'**
+  String get jobTelegram;
+
+  /// No description provided for @jobTelegramHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat on Telegram'**
+  String get jobTelegramHint;
 }
 
 class _AppLocalizationsDelegate

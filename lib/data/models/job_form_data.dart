@@ -1,6 +1,3 @@
-import 'package:image_picker/image_picker.dart';
-import 'image.dart';
-
 class JobFormData {
   // Job-specific fields
   String? companyName;

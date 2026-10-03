@@ -1,17 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'widgets/job_listing_card.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
-import '../../../data/job_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../home/home_screen.dart';
 import '../../providers/job_providers.dart';
-import '../../providers/listing_providers.dart';
-import '../../widgets/listing_card.dart';
 import '../home/filter_sheet.dart';
 
 class JobListScreen extends ConsumerStatefulWidget {
@@ -27,7 +23,6 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
   Timer? _debounce;
   UnifiedFilterValues _filterValues = const UnifiedFilterValues(category: HomeCategory.jobs);
   Map<String, dynamic> _activeFilters = {};
-  final Set<int> _togglingFavorites = {};
 
   @override
   void initState() {
@@ -95,11 +90,6 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
     _performSearch();
   }
 
-  void _removeFilter(String key) {
-    setState(() => _filterValues = _filterValues.clearField(key));
-    _performSearch();
-  }
-
   void _clearAllFilters() {
     _searchController.clear();
     setState(() {
@@ -108,19 +98,6 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
     });
     ref.read(jobListingsProvider.notifier).loadListings();
   }
-
-  bool _isFavorite(int listingId) {
-    final favState = ref.watch(favoritesProvider);
-    return favState.favorites.any((f) => f.id == listingId);
-  }
-
-  Future<void> _toggleFavorite(int listingId) async {
-    setState(() => _togglingFavorites.add(listingId));
-    await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
-    if (mounted) setState(() => _togglingFavorites.remove(listingId));
-  }
-
-  bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
 
   @override
   void dispose() {
@@ -136,12 +113,11 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(jobListingsProvider);
-    ref.watch(favoritesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.primary50,
       appBar: AppBar(
-        title: Text('Jobs'),
+        title: const Text('Jobs'),
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list, color: _filterValues.hasAnyFilter ? AppColors.accent500 : null),

@@ -1111,8 +1111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: isJob
-                  ? JobListingCard(job: listing) => context.push('/jobs/${listing.id}'),
-                    )
+                  ? JobListingCard(job: listing)
                   : isVehicle
                       ? VehicleListingCard(
                           listing: listing,
@@ -1290,8 +1289,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             final listing = state.listings[index];
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: JobListingCard(job: listing) => context.push('/jobs/${listing.id}'),
-              ),
+              child: JobListingCard(job: listing),
             );
           },
           childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),

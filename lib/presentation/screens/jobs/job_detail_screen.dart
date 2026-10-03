@@ -44,20 +44,20 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(jobDetailProvider);
     final authState = ref.watch(authStateProvider);
 
     if (state.isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text('Job Details')),
+        appBar: AppBar(title: const Text('Job Details')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (state.errorMessage != null && state.listing == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Job Details')),
+        appBar: AppBar(title: const Text('Job Details')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -76,7 +76,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     final listing = state.listing;
     if (listing == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Job Details')),
+        appBar: AppBar(title: const Text('Job Details')),
         body: const Center(child: Text('Job not found')),
       );
     }
@@ -86,7 +86,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Job Details'),
+        title: const Text('Job Details'),
         actions: [
           if (isOwner)
             IconButton(

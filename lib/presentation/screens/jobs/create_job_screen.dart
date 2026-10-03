@@ -1,12 +1,7 @@
-import 'dart:io';
-import 'dart:math';
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/job_form_data.dart';
 import '../../../data/job_data.dart';
@@ -14,14 +9,9 @@ import '../../../data/services/address_service.dart';
 import '../../../data/services/listing_media_manager.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
-import '../../widgets/common/wave_button.dart';
-import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_liquid_glass.dart';
-import '../../widgets/common/wave_upgrade_card.dart';
 import '../../providers/job_providers.dart';
 import '../../providers/app_providers.dart';
-import '../../../core/utils/format_utils.dart';
 import '../listing/widgets/submission_overlay.dart';
 
 class CreateJobScreen extends ConsumerStatefulWidget {
@@ -181,7 +171,11 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       if (mounted && response.success) {
         _kebeleIds.clear();
         final kebeles = response.kebeles.map((k) => k.kebele).where((s) => s != null && s.isNotEmpty).cast<String>().toList();
-        for (final k in response.kebeles) if (k.kebele != null && k.kebele!.isNotEmpty) _kebeleIds[k.kebele!] = k.id;
+        for (final k in response.kebeles) {
+          if (k.kebele != null && k.kebele!.isNotEmpty) {
+            _kebeleIds[k.kebele!] = k.id;
+          }
+        }
         setState(() => _kebeles = kebeles);
       }
     } catch (_) {}
@@ -260,14 +254,13 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final stepLabels = [l10n.listingStepDetails, 'Salary & Location', l10n.listingDescriptionLabel];
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         leading: _currentStep > 0
             ? IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: _prevStep)
             : null,
-        title: Text('Create Job'),
+        title: const Text('Create Job'),
         actions: [
           TextButton(
             onPressed: _isSubmitting ? null : (_currentStep == 2 ? _submit : _nextStep),
@@ -296,7 +289,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               color: AppColors.error.withValues(alpha: 0.1),
-              child: Text(_stepErrors[_currentStep]!.join('\n'), style: TextStyle(color: AppColors.error)),
+              child: Text(_stepErrors[_currentStep]!.join('\n'), style: const TextStyle(color: AppColors.error)),
             )
         ],
       ),
@@ -309,14 +302,14 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       child: Column(
         children: [
           DropdownButtonFormField<String>(
-            value: _formData.jobCategory.isEmpty ? null : _formData.jobCategory,
+            initialValue: _formData.jobCategory.isEmpty ? null : _formData.jobCategory,
             decoration: const InputDecoration(labelText: 'Job Category *'),
             items: jobCategories.map((c) => DropdownMenuItem(value: c, child: Text(jobCategoryLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(jobCategory: v ?? '')),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _formData.jobType.isEmpty ? null : _formData.jobType,
+            initialValue: _formData.jobType.isEmpty ? null : _formData.jobType,
             decoration: const InputDecoration(labelText: 'Job Type *'),
             items: jobTypes.map((c) => DropdownMenuItem(value: c, child: Text(jobTypeLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(jobType: v ?? '')),
@@ -334,14 +327,14 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _formData.reqEducation,
+            initialValue: _formData.reqEducation,
             decoration: const InputDecoration(labelText: 'Required Education'),
             items: educationLevels.map((c) => DropdownMenuItem(value: c, child: Text(educationLevelLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(reqEducation: v)),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _formData.reqGender,
+            initialValue: _formData.reqGender,
             decoration: const InputDecoration(labelText: 'Required Gender'),
             items: genderOptions.map((c) => DropdownMenuItem(value: c, child: Text(genderOptionLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(reqGender: v ?? 'any')),
@@ -357,7 +350,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       child: Column(
         children: [
           DropdownButtonFormField<String>(
-            value: _formData.salaryType,
+            initialValue: _formData.salaryType,
             decoration: const InputDecoration(labelText: 'Salary Type *'),
             items: salaryTypes.map((c) => DropdownMenuItem(value: c, child: Text(salaryTypeLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(salaryType: v ?? 'per_agreement')),
@@ -374,31 +367,31 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             ),
           ],
           const SizedBox(height: 32),
-          Text('Location', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text('Location', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _selectedRegion,
+            initialValue: _selectedRegion,
             decoration: const InputDecoration(labelText: 'Region *'),
             items: _regions.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
             onChanged: _onRegionSelected,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _selectedZone,
+            initialValue: _selectedZone,
             decoration: const InputDecoration(labelText: 'Zone'),
             items: _zones.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
             onChanged: _onZoneSelected,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _selectedWoreda,
+            initialValue: _selectedWoreda,
             decoration: const InputDecoration(labelText: 'Woreda'),
             items: _woredas.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
             onChanged: _onWoredaSelected,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _selectedKebele,
+            initialValue: _selectedKebele,
             decoration: const InputDecoration(labelText: 'Kebele'),
             items: _kebeles.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
             onChanged: _onKebeleSelected,
