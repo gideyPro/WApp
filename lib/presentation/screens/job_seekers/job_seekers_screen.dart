@@ -69,19 +69,16 @@ class _JobSeekersScreenState extends ConsumerState<JobSeekersScreen> {
                   },
                   child: state.profiles.isEmpty
                       ? const Center(child: Text('No job seekers found'))
-                      : GridView.builder(
+                      : ListView.builder(
                           controller: _scrollController,
-                          padding: const EdgeInsets.all(16),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.8,
-                          ),
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
                           itemCount: state.profiles.length + (state.isLoadingMore ? 1 : 0),
                           itemBuilder: (context, index) {
                             if (index == state.profiles.length) {
-                              return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                              return const Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                              );
                             }
                             return JobSeekerCard(profile: state.profiles[index]);
                           },

@@ -1252,10 +1252,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: isJob
-                  ? GestureDetector(
-                      onTap: () => context.push('/jobs/${listing.id}'),
-                      child: JobListingCard(job: listing),
-                    )
+                  ? JobListingCard(job: listing)
                   : isVehicle
                       ? VehicleListingCard(
                           listing: listing,
