@@ -75,9 +75,9 @@ class JobSeekerProfilesNotifier extends StateNotifier<JobSeekerProfilesState> {
     try {
       final response = await _service.getProfiles(page: page, filters: filters);
       
-      final newProfiles = <JobSeekerProfile>[
+      final List<JobSeekerProfile> newProfiles = [
         if (page != 1) ...state.profiles,
-        ...?response.profiles,
+        ...(response.profiles ?? <JobSeekerProfile>[]),
       ];
 
       state = state.copyWith(

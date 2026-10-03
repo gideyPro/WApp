@@ -20,9 +20,13 @@ import '../../widgets/vehicle_listing_card.dart';
 import '../../widgets/vehicle_featured_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../jobs/widgets/job_listing_card.dart';
+import '../job_seekers/widgets/job_seeker_card.dart';
+import '../../providers/job_seeker_providers.dart';
 import 'filter_sheet.dart';
 
 enum HomeCategory { all, property, vehicles, jobs }
+
+enum JobsSection { listings, seekers }
 
 extension HomeCategoryX on HomeCategory {
   String label(AppLocalizations l10n) {
@@ -40,6 +44,22 @@ extension HomeCategoryX on HomeCategory {
       case HomeCategory.property: return Icons.home_rounded;
       case HomeCategory.vehicles: return Icons.directions_car_rounded;
       case HomeCategory.jobs: return Icons.work_outline;
+    }
+  }
+}
+
+extension JobsSectionX on JobsSection {
+  String get label {
+    switch (this) {
+      case JobsSection.listings: return 'Listings';
+      case JobsSection.seekers: return 'Seekers';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case JobsSection.listings: return Icons.work_outline;
+      case JobsSection.seekers: return Icons.person_search_outlined;
     }
   }
 }
@@ -64,6 +84,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _hasSearched = false;
   bool _isAutoRefreshing = false;
   HomeCategory _selectedCategory = HomeCategory.all;
+  JobsSection _jobsSection = JobsSection.listings;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
@@ -163,7 +184,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       futures.add(ref.read(carListingsProvider.notifier).loadListings());
     }
     if (_selectedCategory == HomeCategory.jobs || _selectedCategory == HomeCategory.all) {
-      futures.add(ref.read(jobListingsProvider.notifier).loadListings());
+      if (_selectedCategory == HomeCategory.jobs && _jobsSection == JobsSection.seekers) {
+        futures.add(ref.read(jobSeekerProfilesProvider.notifier).loadProfiles());
+      } else {
+        futures.add(ref.read(jobListingsProvider.notifier).loadListings());
+      }
     }
     await Future.wait(futures);
   }
@@ -173,6 +198,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     _searchController.clear();
     setState(() {
       _selectedCategory = category;
+      if (category != HomeCategory.jobs) {
+        _jobsSection = JobsSection.listings;
+      }
       _hasSearched = false;
       _filterValues = UnifiedFilterValues(category: category);
     });
@@ -181,6 +209,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ref.read(carListingsProvider.notifier).loadListings();
     }
     if (category == HomeCategory.jobs || category == HomeCategory.all) {
+      ref.read(jobListingsProvider.notifier).loadListings();
+    }
+    if (category == HomeCategory.jobs && _jobsSection == JobsSection.seekers) {
+      final seekerState = ref.read(jobSeekerProfilesProvider);
+      if (seekerState.profiles.isEmpty && !seekerState.isLoading) {
+        ref.read(jobSeekerProfilesProvider.notifier).loadProfiles();
+      }
+    }
+  }
+
+  void _onJobsSectionChanged(JobsSection section) {
+    if (section == _jobsSection) return;
+    _searchController.clear();
+    setState(() {
+      _jobsSection = section;
+      _hasSearched = false;
+      _filterValues = const UnifiedFilterValues(category: HomeCategory.jobs);
+    });
+    ref.invalidate(searchResultsProvider);
+    if (section == JobsSection.seekers) {
+      final seekerState = ref.read(jobSeekerProfilesProvider);
+      if (seekerState.profiles.isEmpty && !seekerState.isLoading) {
+        ref.read(jobSeekerProfilesProvider.notifier).loadProfiles();
+      }
+    } else {
+      ref.read(jobListingsProvider.notifier).loadListings();
+    }
+  }
+
+  void _reloadJobsFeed() {
+    if (_selectedCategory != HomeCategory.jobs && _selectedCategory != HomeCategory.all) {
+      return;
+    }
+    if (_selectedCategory == HomeCategory.jobs && _jobsSection == JobsSection.seekers) {
+      ref.read(jobSeekerProfilesProvider.notifier).loadProfiles();
+    } else {
       ref.read(jobListingsProvider.notifier).loadListings();
     }
   }
@@ -244,6 +308,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       const SizedBox(width: 6),
                       Text(
                         cat.label(l10n),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color: isSelected ? Colors.white : context.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildJobsSectionPills() {
+    const sections = JobsSection.values;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: sections.map((section) {
+            final isSelected = section == _jobsSection;
+            return Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: GestureDetector(
+                onTap: () => _onJobsSectionChanged(section),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutCubic,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: isSelected ? AppColors.gradientAccent : null,
+                    color: isSelected ? null : context.cardBg.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : context.divider.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        section.icon,
+                        size: 14,
+                        color: isSelected ? Colors.white : context.textSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        section.label,
                         style: AppTextStyles.bodySmall.copyWith(
                           fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                           color: isSelected ? Colors.white : context.textPrimary,
@@ -381,11 +499,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         }
       }
       if (_selectedCategory == HomeCategory.jobs || _selectedCategory == HomeCategory.all) {
-        final jobState = ref.read(jobListingsProvider);
-        if (!jobState.isLoading && !jobState.isLoadingMore && jobState.hasMore) {
-          ref.read(jobListingsProvider.notifier).loadListings(
-            page: jobState.currentPage + 1,
-          );
+        if (_selectedCategory == HomeCategory.jobs && _jobsSection == JobsSection.seekers) {
+          final seekerState = ref.read(jobSeekerProfilesProvider);
+          if (!seekerState.isLoading && !seekerState.isLoadingMore && seekerState.hasMore) {
+            ref.read(jobSeekerProfilesProvider.notifier).loadProfiles(
+              page: seekerState.currentPage + 1,
+            );
+          }
+        } else {
+          final jobState = ref.read(jobListingsProvider);
+          if (!jobState.isLoading && !jobState.isLoadingMore && jobState.hasMore) {
+            ref.read(jobListingsProvider.notifier).loadListings(
+              page: jobState.currentPage + 1,
+            );
+          }
         }
       }
       if (_selectedCategory == HomeCategory.property || _selectedCategory == HomeCategory.all) {
@@ -424,7 +551,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           if (_selectedCategory == HomeCategory.vehicles) {
             ref.read(carListingsProvider.notifier).loadListings();
           } else if (_selectedCategory == HomeCategory.jobs) {
-            ref.read(jobListingsProvider.notifier).loadListings();
+            _reloadJobsFeed();
           } else {
             ref.invalidate(searchResultsProvider);
           }
@@ -451,6 +578,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         filters: filters.isNotEmpty ? filters : null,
       );
     } else if (_selectedCategory == HomeCategory.jobs) {
+      if (_jobsSection == JobsSection.seekers) {
+        setState(() => _jobsSection = JobsSection.listings);
+      }
       ref.read(jobListingsProvider.notifier).loadListings(
         filters: filters.isNotEmpty ? filters : null,
       );
@@ -470,7 +600,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (_selectedCategory == HomeCategory.vehicles) {
       ref.read(carListingsProvider.notifier).loadListings();
     } else if (_selectedCategory == HomeCategory.jobs) {
-      ref.read(jobListingsProvider.notifier).loadListings();
+      _reloadJobsFeed();
     } else {
       ref.invalidate(searchResultsProvider);
     }
@@ -485,7 +615,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (_selectedCategory == HomeCategory.vehicles) {
       ref.read(carListingsProvider.notifier).loadListings();
     } else if (_selectedCategory == HomeCategory.jobs) {
-      ref.read(jobListingsProvider.notifier).loadListings();
+      _reloadJobsFeed();
     } else {
       ref.invalidate(searchResultsProvider);
     }
@@ -500,7 +630,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       if (_selectedCategory == HomeCategory.vehicles) {
         ref.read(carListingsProvider.notifier).loadListings();
       } else if (_selectedCategory == HomeCategory.jobs) {
-        ref.read(jobListingsProvider.notifier).loadListings();
+        _reloadJobsFeed();
       } else {
         ref.invalidate(searchResultsProvider);
       }
@@ -545,6 +675,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final carState = ref.watch(carListingsProvider);
     final jobState = ref.watch(jobListingsProvider);
+    final seekerState = ref.watch(jobSeekerProfilesProvider);
     final searchState = _selectedCategory == HomeCategory.vehicles && _hasSearched
         ? carState
         : _selectedCategory == HomeCategory.jobs && _hasSearched
@@ -606,7 +737,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ),
                 if (!_hasSearched)
                   SliverToBoxAdapter(
-                    child: _buildCategoryPills(l10n),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildCategoryPills(l10n),
+                        if (_selectedCategory == HomeCategory.jobs)
+                          _buildJobsSectionPills(),
+                      ],
+                    ),
                   ),
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
@@ -614,6 +752,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ..._buildAllBrowseSlivers(featuredState, vipState, listingsState, carState, jobState, l10n)
                 else if (_selectedCategory == HomeCategory.vehicles)
                   ..._buildCarBrowseSlivers(featuredState, vipState, carState, l10n)
+                else if (_selectedCategory == HomeCategory.jobs &&
+                    _jobsSection == JobsSection.seekers)
+                  ..._buildJobSeekerBrowseSlivers(seekerState, l10n)
                 else if (_selectedCategory == HomeCategory.jobs)
                   ..._buildJobBrowseSlivers(featuredState, vipState, jobState, l10n)
                 else ...[
@@ -1111,7 +1252,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: isJob
-                  ? JobListingCard(job: listing)
+                  ? GestureDetector(
+                      onTap: () => context.push('/jobs/${listing.id}'),
+                      child: JobListingCard(job: listing),
+                    )
                   : isVehicle
                       ? VehicleListingCard(
                           listing: listing,
@@ -1193,6 +1337,63 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return state.copyWith(listings: carListings);
   }
 
+
+  List<Widget> _buildJobSeekerBrowseSlivers(JobSeekerProfilesState state, AppLocalizations l10n) {
+    if (state.isLoading && state.profiles.isEmpty) {
+      return [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              const Center(child: CircularProgressIndicator()),
+            ]),
+          ),
+        )
+      ];
+    }
+    if (state.profiles.isEmpty) {
+      return [
+        SliverFillRemaining(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.person_search_outlined, size: 64, color: context.textMuted),
+                  const SizedBox(height: 16),
+                  Text('No profiles found', style: AppTextStyles.bodyMedium.copyWith(color: context.textMuted)),
+                ],
+              ),
+            ),
+          ),
+        )
+      ];
+    }
+    return [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index == state.profiles.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              final profile = state.profiles[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: JobSeekerCard(profile: profile),
+              );
+            },
+            childCount: state.profiles.length + (state.isLoadingMore ? 1 : 0),
+          ),
+        ),
+      )
+    ];
+  }
   List<Widget> _buildJobBrowseSlivers(
     ListingsState featuredState,
     ListingsState vipState,

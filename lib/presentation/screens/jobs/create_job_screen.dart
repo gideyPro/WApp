@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../widgets/common/wave_common_widgets.dart';
+import '../../widgets/common/wave_upgrade_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
@@ -9,7 +12,6 @@ import '../../../data/services/address_service.dart';
 import '../../../data/services/listing_media_manager.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
-import '../../widgets/common/wave_common_widgets.dart';
 import '../../providers/job_providers.dart';
 import '../../providers/app_providers.dart';
 import '../listing/widgets/submission_overlay.dart';
@@ -254,6 +256,56 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final settingsAsync = ref.watch(appSettingsProvider);
+    final subState = ref.watch(subscriptionProvider);
+    final kycState = ref.watch(kycStatusProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
+
+    if (subState.isLoading || kycState.isLoading || settingsAsync.isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (kycState.hasError) {
+      return WaveMessageScreen.error(
+        title: l10n.kycConnectionErrorTitle,
+        subtitle: kycState.errorMessage ?? l10n.kycConnectionErrorSubtitle,
+        onRetry: () => ref.read(kycStatusProvider.notifier).loadKycStatus(),
+      );
+    }
+
+    if (subState.hasError) {
+      return WaveMessageScreen.error(
+        title: l10n.errorSubscription,
+        subtitle: subState.errorMessage!,
+        onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
+      );
+    }
+
+    if (!kycState.isVerified && !kycState.isApproved) {
+      return WaveFullPageUpgrade(
+        appBar: const WaveAppBar(title: Text('Create Job')),
+        icon: Icons.verified_outlined,
+        iconColor: AppColors.accent500,
+        title: kycState.isPending ? l10n.kycPendingTitle : l10n.kycRequiredTitle,
+        subtitle: kycState.isPending ? l10n.kycPendingSubtitleReview : l10n.kycRequiredSubtitlePost,
+        buttonLabel: kycState.isPending ? '' : l10n.kycVerifyNow,
+        onButtonTap: kycState.isPending ? null : () => context.push('/kyc'),
+      );
+    }
+
+    if (subscriptionEnabled && !subState.canCreateJob) {
+      return WaveFullPageUpgrade(
+        appBar: const WaveAppBar(title: Text('Create Job')),
+        icon: Icons.work_outline,
+        iconColor: AppColors.accent500,
+        title: l10n.localeName == 'am' ? 'የስራ ማስታወቂያ ገደብ' : l10n.localeName == 'ti' ? 'ናይ ስራሕ መጠን ገደብ' : 'Job Posting Limit Reached',
+        subtitle: l10n.localeName == 'am' ? 'ተጨማሪ የስራ ማስታወቂያ ለማውጣት እቅድዎን ያሻሽሉ' : l10n.localeName == 'ti' ? 'ተወሳኺ ስራሕ ንምውፃእ እቅድኹም ኣመሓይሹ' : 'You have reached your limit. Upgrade plan to post more jobs.',
+      );
+    }
+
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(

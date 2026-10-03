@@ -91,6 +91,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
             subscription: data.subscription,
             canCreateListing: data.canCreateListing,
             canCreateVehicle: data.canCreateVehicle,
+            canCreateJob: data.canCreateJob,
             canFeatureListing: data.canFeatureListing,
             canViewVip: data.canViewVip,
             canCreateOrder: data.canCreateOrder,
@@ -120,6 +121,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           subscription: data.subscription,
           canCreateListing: data.canCreateListing,
           canCreateVehicle: data.canCreateVehicle,
+            canCreateJob: data.canCreateJob,
           canFeatureListing: data.canFeatureListing,
           canViewVip: data.canViewVip,
           canCreateOrder: data.canCreateOrder,
@@ -148,6 +150,7 @@ class SubscriptionState {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canCreateVehicle;
+  final bool canCreateJob;
   final bool canFeatureListing;
   final bool canViewVip;
   final bool canCreateOrder;
@@ -165,6 +168,7 @@ class SubscriptionState {
     this.subscription,
     this.canCreateListing = false,
     this.canCreateVehicle = false,
+    this.canCreateJob = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
     this.canCreateOrder = false,
@@ -183,6 +187,7 @@ class SubscriptionState {
         subscription = null,
         canCreateListing = false,
         canCreateVehicle = false,
+        canCreateJob = false,
         canFeatureListing = false,
         canViewVip = false,
         canCreateOrder = false,
@@ -199,6 +204,7 @@ class SubscriptionState {
     this.subscription,
     this.canCreateListing = false,
     this.canCreateVehicle = false,
+    this.canCreateJob = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
     this.canCreateOrder = false,
@@ -217,6 +223,7 @@ class SubscriptionState {
     Subscription? subscription,
     bool? canCreateListing,
     bool? canCreateVehicle,
+    bool? canCreateJob,
     bool? canFeatureListing,
     bool? canViewVip,
     bool? canCreateOrder,
@@ -234,6 +241,7 @@ class SubscriptionState {
       subscription: subscription ?? this.subscription,
       canCreateListing: canCreateListing ?? this.canCreateListing,
       canCreateVehicle: canCreateVehicle ?? this.canCreateVehicle,
+      canCreateJob: canCreateJob ?? this.canCreateJob,
       canFeatureListing: canFeatureListing ?? this.canFeatureListing,
       canViewVip: canViewVip ?? this.canViewVip,
       canCreateOrder: canCreateOrder ?? this.canCreateOrder,

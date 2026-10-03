@@ -340,6 +340,7 @@ class FullSubscriptionData {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canCreateVehicle;
+  final bool canCreateJob;
   final bool canFeatureListing;
   final bool canViewVip;
   final bool canCreateOrder;
@@ -357,6 +358,7 @@ class FullSubscriptionData {
     this.subscription,
     this.canCreateListing = false,
     this.canCreateVehicle = false,
+    this.canCreateJob = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
     this.canCreateOrder = false,
@@ -387,6 +389,7 @@ class CurrentSubscriptionResponse {
   final Subscription? subscription;
   final bool canCreateListing;
   final bool canCreateVehicle;
+  final bool canCreateJob;
   final bool canFeatureListing;
   final bool canViewVip;
   final bool canCreateOrder;
@@ -403,6 +406,7 @@ class CurrentSubscriptionResponse {
     this.subscription,
     this.canCreateListing = true,
     this.canCreateVehicle = true,
+    this.canCreateJob = true,
     this.canFeatureListing = true,
     this.canViewVip = true,
     this.canCreateOrder = true,

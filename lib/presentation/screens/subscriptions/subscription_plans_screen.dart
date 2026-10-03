@@ -391,6 +391,15 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxVehicles,
               icon: Icons.directions_car_outlined,
             ),
+          if (localPlan.maxVehicles > 0 && localPlan.maxJobs > 0)
+            const SizedBox(height: 12),
+          if (localPlan.maxJobs > 0)
+            _buildUsageBar(
+              label: l10n.localeName == 'am' ? 'ስራዎች' : l10n.localeName == 'ti' ? 'ስራሕቲ' : 'Jobs',
+              used: sub.jobsUsed,
+              max: localPlan.maxJobs,
+              icon: Icons.work_outline,
+            ),
           // Manage / Upgrade CTA
           const SizedBox(height: 18),
           Row(
@@ -1159,6 +1168,11 @@ class _PlanCard extends StatelessWidget {
             _buildDivider(),
             _buildComparisonRow(context, l10n.listingCarPlural,
                 '${plan.maxVehicles}', Icons.directions_car_outlined, true),
+          ],
+          if (plan.maxJobs > 0) ...[
+            _buildDivider(),
+            _buildComparisonRow(context, l10n.localeName == 'am' ? 'ስራዎች' : l10n.localeName == 'ti' ? 'ስራሕቲ' : 'Jobs',
+                '${plan.maxJobs}', Icons.work_outline, true),
           ],
           if (plan.maxOrders > 0) ...[
             _buildDivider(),

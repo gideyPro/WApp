@@ -2600,174 +2600,172 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingErrorYearBuiltRequired => 'የተገነባበት ዓመት ያስፈልጋል';
 
   @override
-  String get jobAll => 'All Jobs';
+  String get jobAll => 'ሁሉም ስራዎች';
 
   @override
-  String get jobBasicInfo => 'Basic Info';
+  String get jobBasicInfo => 'መሰረታዊ መረጃ';
 
   @override
-  String get jobBrowseTitle => 'Browse Jobs';
+  String get jobBrowseTitle => 'ስራዎችን ያስሱ';
 
   @override
-  String get jobCategoryEducation => 'Education';
+  String get jobCategoryEducation => 'ትምህርት';
 
   @override
-  String get jobCategoryFinance => 'Finance';
+  String get jobCategoryFinance => 'ፋይናንስ';
 
   @override
-  String get jobCategoryHealthcare => 'Healthcare';
+  String get jobCategoryHealthcare => 'ጤና ጥበቃ';
 
   @override
-  String get jobCategoryIT => 'IT & Software';
+  String get jobCategoryIT => 'አይቲ እና ሶፍትዌር';
 
   @override
-  String get jobCategoryOther => 'Other';
+  String get jobCategoryOther => 'ሌላ';
 
   @override
-  String get jobClear => 'Clear';
+  String get jobClear => 'አጽዳ';
 
   @override
-  String get jobCompanyName => 'Company Name';
+  String get jobCompanyName => 'የድርጅት ስም';
 
   @override
-  String get jobCreateButton => 'Post a Job';
+  String get jobCreateButton => 'ስራ ለጥፍ';
 
   @override
-  String get jobCreateTitle => 'Post a Job';
+  String get jobCreateTitle => 'ስራ ለጥፍ';
 
   @override
-  String get jobDescription => 'Description';
+  String get jobDescription => 'መግለጫ';
 
   @override
-  String get jobEditTitle => 'Edit Job';
+  String get jobEditTitle => 'ስራ ያስተካክሉ';
 
   @override
-  String get jobEducationLevel => 'Education Level';
+  String get jobEducationLevel => 'የትምህርት ደረጃ';
 
   @override
-  String get jobEmployerInfo => 'Employer Info';
+  String get jobEmployerInfo => 'የቀጣሪ መረጃ';
 
   @override
-  String get jobFeatured => 'Featured Job';
+  String get jobFeatured => 'ልዩ ስራ';
 
   @override
-  String get jobFilter => 'Filter Jobs';
+  String get jobFilter => 'ስራዎችን አጣራ';
 
   @override
-  String get jobFixed => 'Fixed';
+  String get jobFixed => 'ቋሚ';
 
   @override
-  String get jobImages => 'Images';
+  String get jobImages => 'ምስሎች';
 
   @override
-  String get jobIndividualPoster => 'Individual Poster';
+  String get jobIndividualPoster => 'ግለሰብ ለጣፊ';
 
   @override
-  String get jobJob => 'Job';
+  String get jobJob => 'ስራ';
 
   @override
-  String get jobJobCategory => 'Job Category';
+  String get jobJobCategory => 'የስራ ዘርፍ';
 
   @override
-  String get jobJobDetails => 'Job Details';
+  String get jobJobDetails => 'የስራ ዝርዝር';
 
   @override
-  String get jobJobTitle => 'Job Title';
+  String get jobJobTitle => 'የስራ መደብ';
 
   @override
-  String get jobJobType => 'Job Type';
+  String get jobJobType => 'የስራ አይነት';
 
   @override
-  String get jobLocation => 'Location';
+  String get jobLocation => 'ቦታ';
 
   @override
-  String get jobLocationImages => 'Location Images';
+  String get jobLocationImages => 'የቦታ ምስሎች';
 
   @override
-  String get jobLocationPlaceholder => 'Search location...';
+  String get jobLocationPlaceholder => 'ቦታ ይፈልጉ...';
 
   @override
-  String get jobLogin => 'Login';
+  String get jobLogin => 'ግባ';
 
   @override
-  String get jobLoginRequired => 'Login Required';
+  String get jobLoginRequired => 'መግባት ያስፈልጋል';
 
   @override
-  String get jobMetaDescription =>
-      'Find the best jobs in Ethiopia on Wavemart.';
+  String get jobMetaDescription => 'በዌቭማርት ምርጥ ስራዎችን በኢትዮጵያ ያግኙ።';
 
   @override
-  String get jobMyJobs => 'My Jobs';
+  String get jobMyJobs => 'የእኔ ስራዎች';
 
   @override
-  String get jobNegotiable => 'Negotiable';
+  String get jobNegotiable => 'በድርድር';
 
   @override
-  String get jobNoPhotos => 'No Photos';
+  String get jobNoPhotos => 'ምስል የለም';
 
   @override
-  String get jobNoResultsDescription =>
-      'We couldn\'t find any jobs matching your criteria.';
+  String get jobNoResultsDescription => 'ከእርስዎ መስፈርት ጋር የሚስማማ ስራ ማግኘት አልቻልንም።';
 
   @override
-  String get jobNoResultsTitle => 'No Jobs Found';
+  String get jobNoResultsTitle => 'ምንም ስራ አልተገኘም';
 
   @override
-  String get jobPhotos => 'Photos';
+  String get jobPhotos => 'ምስሎች';
 
   @override
-  String get jobPositions => 'Positions';
+  String get jobPositions => 'የስራ መደቦች';
 
   @override
-  String get jobPostingAsCompany => 'Posting as Company?';
+  String get jobPostingAsCompany => 'በድርጅት ስም እየለጠፉ ነው?';
 
   @override
-  String get jobRange => 'Range';
+  String get jobRange => 'ክልል';
 
   @override
-  String get jobRequirements => 'Requirements';
+  String get jobRequirements => 'መስፈርቶች';
 
   @override
-  String get jobSalaryAndReqs => 'Salary & Requirements';
+  String get jobSalaryAndReqs => 'ደሞዝ እና መስፈርቶች';
 
   @override
-  String get jobSalaryMax => 'Max Salary';
+  String get jobSalaryMax => 'ከፍተኛ ደሞዝ';
 
   @override
-  String get jobSalaryMin => 'Min Salary';
+  String get jobSalaryMin => 'ዝቅተኛ ደሞዝ';
 
   @override
-  String get jobSalaryPerAgreement => 'Per Agreement';
+  String get jobSalaryPerAgreement => 'በስምምነት';
 
   @override
-  String get jobSalaryType => 'Salary Type';
+  String get jobSalaryType => 'የደሞዝ አይነት';
 
   @override
-  String get jobSelect => 'Select';
+  String get jobSelect => 'ይምረጡ';
 
   @override
-  String get jobSimilarJobs => 'Similar Jobs';
+  String get jobSimilarJobs => 'ተመሳሳይ ስራዎች';
 
   @override
-  String get jobSpecificLocation => 'Specific Location';
+  String get jobSpecificLocation => 'ልዩ ቦታ';
 
   @override
-  String get jobSubmit => 'Submit';
+  String get jobSubmit => 'አስገባ';
 
   @override
-  String get jobTypeContract => 'Contract';
+  String get jobTypeContract => 'ኮንትራት';
 
   @override
-  String get jobTypeFullTime => 'Full Time';
+  String get jobTypeFullTime => 'ሙሉ ጊዜ';
 
   @override
-  String get jobTypeInternship => 'Internship';
+  String get jobTypeInternship => 'ልምምድ';
 
   @override
-  String get jobTypePartTime => 'Part Time';
+  String get jobTypePartTime => 'ትርፍ ጊዜ';
 
   @override
-  String get jobUpdate => 'Update';
+  String get jobUpdate => 'አዘምን';
 
   @override
   String get jobContactEmployer => 'ቀጣሪውን ያግኙ';
@@ -2776,17 +2774,17 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobCall => 'ይደውሉ';
 
   @override
-  String get jobCallHint => 'Tap to call the employer';
+  String get jobCallHint => 'ቀጣሪውን ለመደወል ይንኩ';
 
   @override
   String get jobWhatsapp => 'WhatsApp';
 
   @override
-  String get jobWhatsappHint => 'Chat on WhatsApp';
+  String get jobWhatsappHint => 'በዋትስአፕ ያነጋግሩ';
 
   @override
   String get jobTelegram => 'Telegram';
 
   @override
-  String get jobTelegramHint => 'Chat on Telegram';
+  String get jobTelegramHint => 'በቴሌግራም ያነጋግሩ';
 }
