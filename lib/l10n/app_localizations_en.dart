@@ -2828,4 +2828,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobSeekerMessage => 'Message';
+
+  @override
+  String get homeJobs => 'Jobs';
+
+  @override
+  String get homeSeekers => 'Seekers';
+
+  @override
+  String get seekersTitle => 'Job Seekers';
+
+  @override
+  String get seekersNoProfiles => 'No profiles found';
+
+  @override
+  String get seekersNoResults => 'No job seekers found';
+
+  @override
+  String get jobSearchPlaceholder => 'Search jobs...';
+
+  @override
+  String get jobNotFound => 'Job not found';
+
+  @override
+  String get jobRequiredGender => 'Required Gender';
+
+  @override
+  String get jobPostingLimitTitle => 'Job Posting Limit Reached';
+
+  @override
+  String get jobPostingLimitSubtitle =>
+      'You have reached your limit. Upgrade plan to post more jobs.';
+
+  @override
+  String get seekerProfileDetails => 'Profile Details';
+
+  @override
+  String get seekerExperience => 'Experience';
+
+  @override
+  String get seekerMyProfile => 'My Job Profile';
+
+  @override
+  String get seekerFullName => 'Full Name';
+
+  @override
+  String get seekerProfessionalTitle => 'Professional Title';
+
+  @override
+  String get seekerMakePublic => 'Make Profile Public';
+
+  @override
+  String get seekerSaveProfile => 'Save Profile';
+
+  @override
+  String get seekerProfileSaved => 'Profile updated successfully';
 }

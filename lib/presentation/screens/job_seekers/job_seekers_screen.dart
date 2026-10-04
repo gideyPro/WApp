@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
 import 'widgets/job_seeker_card.dart';
 import '../../providers/job_seeker_providers.dart';
 
@@ -42,11 +43,12 @@ class _JobSeekersScreenState extends ConsumerState<JobSeekersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(jobSeekerProfilesProvider);
     
     return Scaffold(
       backgroundColor: AppColors.primary50,
-      appBar: AppBar(title: const Text('Job Seekers')),
+      appBar: AppBar(title: Text(l10n.seekersTitle)),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
           : state.errorMessage != null && state.profiles.isEmpty
@@ -58,7 +60,7 @@ class _JobSeekersScreenState extends ConsumerState<JobSeekersScreen> {
                       const SizedBox(height: 12),
                       ElevatedButton(
                         onPressed: () => ref.read(jobSeekerProfilesProvider.notifier).loadProfiles(),
-                        child: const Text('Retry'),
+                        child: Text(l10n.commonRetry),
                       ),
                     ],
                   ),
@@ -68,7 +70,7 @@ class _JobSeekersScreenState extends ConsumerState<JobSeekersScreen> {
                     await ref.read(jobSeekerProfilesProvider.notifier).loadProfiles();
                   },
                   child: state.profiles.isEmpty
-                      ? const Center(child: Text('No job seekers found'))
+                      ? Center(child: Text(l10n.seekersNoResults))
                       : ListView.builder(
                           controller: _scrollController,
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),

@@ -50,14 +50,14 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
     if (state.isLoading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Job Details')),
+        appBar: AppBar(title: Text(l10n.jobJobDetails)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (state.errorMessage != null && state.listing == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Job Details')),
+        appBar: AppBar(title: Text(l10n.jobJobDetails)),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -76,8 +76,8 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     final listing = state.listing;
     if (listing == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Job Details')),
-        body: const Center(child: Text('Job not found')),
+        appBar: AppBar(title: Text(l10n.jobJobDetails)),
+        body: Center(child: Text(l10n.jobNotFound)),
       );
     }
 
@@ -86,7 +86,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Job Details'),
+        title: Text(l10n.jobJobDetails),
         actions: [
           if (isOwner)
             IconButton(
@@ -130,7 +130,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text('Contact Employer', style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
+          child: Text(l10n.jobContactEmployer, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
         ),
         WaveCard(
           useLiquidGlass: true,
@@ -179,8 +179,8 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                   Expanded(
                     child: _ContactButton(
                       icon: Icons.phone,
-                      label: 'Call',
-                      hint: 'Call',
+                      label: l10n.jobCall,
+                      hint: l10n.jobCallHint,
                       color: const Color(0xFF4CAF50),
                       onTap: () => _launchUrl('tel:$phone'),
                     ),
@@ -189,8 +189,8 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                   Expanded(
                     child: _ContactButton(
                       icon: Icons.chat_bubble_outline,
-                      label: 'WhatsApp',
-                      hint: 'WhatsApp',
+                      label: l10n.jobWhatsapp,
+                      hint: l10n.jobWhatsappHint,
                       color: const Color(0xFF25D366),
                       onTap: () => _launchUrl('https://wa.me/${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                     ),
@@ -199,8 +199,8 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                   Expanded(
                     child: _ContactButton(
                       icon: Icons.send,
-                      label: 'Telegram',
-                      hint: 'Telegram',
+                      label: l10n.jobTelegram,
+                      hint: l10n.jobTelegramHint,
                       color: const Color(0xFF0088CC),
                       onTap: () => _launchUrl('https://t.me/+${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                     ),

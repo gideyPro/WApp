@@ -61,6 +61,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   Future<void> _submit(JobSeekerProfile? existing) async {
     if (!_formKey.currentState!.validate()) return;
 
+    final l10n = AppLocalizations.of(context);
     setState(() => _isSubmitting = true);
 
     final data = {
@@ -83,14 +84,14 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
 
     if (response.success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
+        SnackBar(content: Text(l10n.seekerProfileSaved)),
       );
       ref.invalidate(myJobSeekerProfileProvider);
       ref.invalidate(jobSeekerProfilesProvider);
       context.pop();
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.message ?? 'Failed to update profile')),
+        SnackBar(content: Text(response.message ?? l10n.commonError)),
       );
     }
   }
@@ -102,7 +103,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
 
     return Scaffold(
       backgroundColor: AppColors.primary50,
-      appBar: AppBar(title: const Text('My Job Profile')),
+      appBar: AppBar(title: Text(l10n.seekerMyProfile)),
       body: myProfileAsync.when(
         data: (profile) {
           if (profile != null && _fullNameController.text.isEmpty && _titleController.text.isEmpty) {
@@ -134,8 +135,8 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _buildTextField('Full Name', _fullNameController, required: true),
-                  _buildTextField('Professional Title', _titleController, required: true),
+                  _buildTextField(l10n.seekerFullName, _fullNameController, required: true),
+                  _buildTextField(l10n.seekerProfessionalTitle, _titleController, required: true),
                   _buildDropdown(
                     label: l10n.jobJobCategory,
                     value: _category,
@@ -152,10 +153,10 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                     onChanged: (v) => setState(() => _education = v),
                     required: true,
                   ),
-                  _buildTextField('Experience', _experienceController, maxLines: 3),
-                  _buildTextField('Description / About', _descriptionController, maxLines: 5),
+                  _buildTextField(l10n.seekerExperience, _experienceController, maxLines: 3),
+                  _buildTextField(l10n.jobDescription, _descriptionController, maxLines: 5),
                   SwitchListTile(
-                    title: const Text('Make Profile Public'),
+                    title: Text(l10n.seekerMakePublic),
                     value: _isPublic,
                     onChanged: (val) => setState(() => _isPublic = val),
                     contentPadding: EdgeInsets.zero,
@@ -165,7 +166,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                     onPressed: _isSubmitting ? null : () => _submit(profile),
                     child: _isSubmitting
                         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Text('Save Profile'),
+                        : Text(l10n.seekerSaveProfile),
                   ),
                 ],
               ),

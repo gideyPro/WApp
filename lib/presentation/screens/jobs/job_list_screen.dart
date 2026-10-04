@@ -117,7 +117,7 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
     return Scaffold(
       backgroundColor: AppColors.primary50,
       appBar: AppBar(
-        title: const Text('Jobs'),
+        title: Text(l10n.homeJobs),
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list, color: _filterValues.hasAnyFilter ? AppColors.accent500 : null),
@@ -182,7 +182,7 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
         controller: _searchController,
         onChanged: _onSearchChanged,
         decoration: InputDecoration(
-          hintText: 'Search jobs...',
+          hintText: l10n.jobSearchPlaceholder,
           hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textSecondary.withValues(alpha: 0.5)),
           prefixIcon: Icon(Icons.search, size: 20, color: context.textSecondary.withValues(alpha: 0.5)),
           suffixIcon: _searchController.text.isNotEmpty

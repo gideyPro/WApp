@@ -125,7 +125,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
         break;
       case 2:
         if (_formData.description == null || _formData.description!.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
-        if (!_formData.termsAccepted) errors.add('Terms must be accepted');
+        if (!_formData.termsAccepted) errors.add(l10n.listingErrorTermsRequired);
         break;
     }
     return errors;
@@ -344,8 +344,8 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
         appBar: WaveAppBar(title: Text(l10n.jobCreateTitle)),
         icon: Icons.work_outline,
         iconColor: AppColors.accent500,
-        title: l10n.localeName == 'am' ? 'የስራ ማስታወቂያ ገደብ' : l10n.localeName == 'ti' ? 'ናይ ስራሕ መጠን ገደብ' : 'Job Posting Limit Reached',
-        subtitle: l10n.localeName == 'am' ? 'ተጨማሪ የስራ ማስታወቂያ ለማውጣት እቅድዎን ያሻሽሉ' : l10n.localeName == 'ti' ? 'ተወሳኺ ስራሕ ንምውፃእ እቅድኹም ኣመሓይሹ' : 'You have reached your limit. Upgrade plan to post more jobs.',
+        title: l10n.jobPostingLimitTitle,
+        subtitle: l10n.jobPostingLimitSubtitle,
       );
     }
 
@@ -446,7 +446,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _formData.reqGender,
-            decoration: const InputDecoration(labelText: 'Required Gender'),
+            decoration: InputDecoration(labelText: l10n.jobRequiredGender),
             items: genderOptions.map((c) => DropdownMenuItem(value: c, child: Text(genderOptionLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(reqGender: v ?? 'any')),
           ),
@@ -506,7 +506,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
           ),
           const SizedBox(height: 16),
           CheckboxListTile(
-            title: const Text('I accept the terms and conditions'),
+            title: Text(l10n.listingAcceptTerms),
             value: _formData.termsAccepted,
             onChanged: (v) => setState(() => _formData = _formData.copyWith(termsAccepted: v ?? false)),
             controlAffinity: ListTileControlAffinity.leading,

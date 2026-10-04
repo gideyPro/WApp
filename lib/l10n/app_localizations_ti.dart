@@ -2793,4 +2793,58 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get jobSeekerMessage => 'መልእክት';
+
+  @override
+  String get homeJobs => 'ስራሕቲ';
+
+  @override
+  String get homeSeekers => 'ደለይቲ ስራሕ';
+
+  @override
+  String get seekersTitle => 'ደለይቲ ስራሕ';
+
+  @override
+  String get seekersNoProfiles => 'ዝኾነ መገለጫ ኣይተረኽበን';
+
+  @override
+  String get seekersNoResults => 'ዝኾነ ደላይ ስራሕ ኣይተረኽበን';
+
+  @override
+  String get jobSearchPlaceholder => 'ስራሕቲ ድለዩ...';
+
+  @override
+  String get jobNotFound => 'ስራሕ ኣይተረኽበን';
+
+  @override
+  String get jobRequiredGender => 'ዝድለ ጾታ';
+
+  @override
+  String get jobPostingLimitTitle => 'ገደብ ምልጣፍ ስራሕ';
+
+  @override
+  String get jobPostingLimitSubtitle => 'ተወሳኺ ስራሕ ንምልጣፍ ትልምኹም ኣመሓይሹ';
+
+  @override
+  String get seekerProfileDetails => 'ዝርዝር መገለጫ';
+
+  @override
+  String get seekerExperience => 'ተመክሮ';
+
+  @override
+  String get seekerMyProfile => 'ናይ ስራሕ መገለጫይ';
+
+  @override
+  String get seekerFullName => 'ምሉእ ስም';
+
+  @override
+  String get seekerProfessionalTitle => 'ሞያዊ መዓርግ';
+
+  @override
+  String get seekerMakePublic => 'መገለጫ ህዝባዊ ግበር';
+
+  @override
+  String get seekerSaveProfile => 'መገለጫ ዕቀብ';
+
+  @override
+  String get seekerProfileSaved => 'መገለጫ ብዓወት ተዘሚኑ';
 }

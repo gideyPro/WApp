@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../data/job_data.dart';
 import '../../../data/services/message_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
@@ -57,7 +58,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.primary50,
-      appBar: AppBar(title: const Text('Profile Details')),
+      appBar: AppBar(title: Text(l10n.seekerProfileDetails)),
       body: profileAsync.when(
         data: (profile) {
           final isOwnProfile = currentUserId != null && profile.userId == currentUserId;
@@ -111,21 +112,21 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                   ),
                 ],
                 const SizedBox(height: 24),
-                _buildSectionTitle('Education'),
-                Text(profile.educationLevel, style: AppTextStyles.bodyMedium),
+                _buildSectionTitle(l10n.jobCategoryEducation),
+                Text(educationLevelLabel(profile.educationLevel, l10n), style: AppTextStyles.bodyMedium),
                 const SizedBox(height: 16),
                 if (profile.jobCategory != null) ...[
-                  _buildSectionTitle('Category'),
-                  Text(profile.jobCategory!, style: AppTextStyles.bodyMedium),
+                  _buildSectionTitle(l10n.jobJobCategory),
+                  Text(jobCategoryLabel(profile.jobCategory!, l10n), style: AppTextStyles.bodyMedium),
                   const SizedBox(height: 16),
                 ],
                 if (profile.experience != null) ...[
-                  _buildSectionTitle('Experience'),
+                  _buildSectionTitle(l10n.seekerExperience),
                   Text(profile.experience!, style: AppTextStyles.bodyMedium),
                   const SizedBox(height: 16),
                 ],
                 if (profile.description != null) ...[
-                  _buildSectionTitle('About'),
+                  _buildSectionTitle(l10n.jobDescription),
                   Text(profile.description!, style: AppTextStyles.bodyMedium),
                 ],
               ],

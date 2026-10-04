@@ -436,7 +436,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _formData.reqGender,
-            decoration: const InputDecoration(labelText: 'Required Gender'),
+            decoration: InputDecoration(labelText: l10n.jobRequiredGender),
             items: genderOptions.map((c) => DropdownMenuItem(value: c, child: Text(genderOptionLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(reqGender: v ?? 'any')),
           ),

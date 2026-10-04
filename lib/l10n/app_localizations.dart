@@ -5397,6 +5397,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message'**
   String get jobSeekerMessage;
+
+  /// No description provided for @homeJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Jobs'**
+  String get homeJobs;
+
+  /// No description provided for @homeSeekers.
+  ///
+  /// In en, this message translates to:
+  /// **'Seekers'**
+  String get homeSeekers;
+
+  /// No description provided for @seekersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Job Seekers'**
+  String get seekersTitle;
+
+  /// No description provided for @seekersNoProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No profiles found'**
+  String get seekersNoProfiles;
+
+  /// No description provided for @seekersNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No job seekers found'**
+  String get seekersNoResults;
+
+  /// No description provided for @jobSearchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search jobs...'**
+  String get jobSearchPlaceholder;
+
+  /// No description provided for @jobNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Job not found'**
+  String get jobNotFound;
+
+  /// No description provided for @jobRequiredGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Required Gender'**
+  String get jobRequiredGender;
+
+  /// No description provided for @jobPostingLimitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Job Posting Limit Reached'**
+  String get jobPostingLimitTitle;
+
+  /// No description provided for @jobPostingLimitSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached your limit. Upgrade plan to post more jobs.'**
+  String get jobPostingLimitSubtitle;
+
+  /// No description provided for @seekerProfileDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Details'**
+  String get seekerProfileDetails;
+
+  /// No description provided for @seekerExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience'**
+  String get seekerExperience;
+
+  /// No description provided for @seekerMyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My Job Profile'**
+  String get seekerMyProfile;
+
+  /// No description provided for @seekerFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get seekerFullName;
+
+  /// No description provided for @seekerProfessionalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Title'**
+  String get seekerProfessionalTitle;
+
+  /// No description provided for @seekerMakePublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Make Profile Public'**
+  String get seekerMakePublic;
+
+  /// No description provided for @seekerSaveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Profile'**
+  String get seekerSaveProfile;
+
+  /// No description provided for @seekerProfileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get seekerProfileSaved;
 }
 
 class _AppLocalizationsDelegate

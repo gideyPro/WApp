@@ -2793,4 +2793,58 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get jobSeekerMessage => 'መልእክት';
+
+  @override
+  String get homeJobs => 'ስራዎች';
+
+  @override
+  String get homeSeekers => 'የስራ ፈላጊዎች';
+
+  @override
+  String get seekersTitle => 'የስራ ፈላጊዎች';
+
+  @override
+  String get seekersNoProfiles => 'ምንም መገለጫ አልተገኘም';
+
+  @override
+  String get seekersNoResults => 'ምንም የስራ ፈላጊ አልተገኘም';
+
+  @override
+  String get jobSearchPlaceholder => 'ስራዎችን ይፈልጉ...';
+
+  @override
+  String get jobNotFound => 'ስራ አልተገኘም';
+
+  @override
+  String get jobRequiredGender => 'የሚፈለግ ጾታ';
+
+  @override
+  String get jobPostingLimitTitle => 'የስራ ማስታወቂያ ገደብ';
+
+  @override
+  String get jobPostingLimitSubtitle => 'ተጨማሪ የስራ ማስታወቂያ ለማውጣት እቅድዎን ያሻሽሉ';
+
+  @override
+  String get seekerProfileDetails => 'የመገለጫ ዝርዝር';
+
+  @override
+  String get seekerExperience => 'የስራ ልምድ';
+
+  @override
+  String get seekerMyProfile => 'የእኔ የስራ መገለጫ';
+
+  @override
+  String get seekerFullName => 'ሙሉ ስም';
+
+  @override
+  String get seekerProfessionalTitle => 'የሙያ መጠሪያ';
+
+  @override
+  String get seekerMakePublic => 'መገለጫውን ይፋ ማድረግ';
+
+  @override
+  String get seekerSaveProfile => 'መገለጫ አስቀምጥ';
+
+  @override
+  String get seekerProfileSaved => 'መገለጫው በተሳካ ሁኔታ ተዘምኗል';
 }

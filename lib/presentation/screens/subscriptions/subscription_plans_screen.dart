@@ -395,7 +395,7 @@ class _SubscriptionPlansScreenState
             const SizedBox(height: 12),
           if (localPlan.maxJobs > 0)
             _buildUsageBar(
-              label: l10n.localeName == 'am' ? 'ስራዎች' : l10n.localeName == 'ti' ? 'ስራሕቲ' : 'Jobs',
+              label: l10n.homeJobs,
               used: sub.jobsUsed,
               max: localPlan.maxJobs,
               icon: Icons.work_outline,
@@ -1171,7 +1171,7 @@ class _PlanCard extends StatelessWidget {
           ],
           if (plan.maxJobs > 0) ...[
             _buildDivider(),
-            _buildComparisonRow(context, l10n.localeName == 'am' ? 'ስራዎች' : l10n.localeName == 'ti' ? 'ስራሕቲ' : 'Jobs',
+            _buildComparisonRow(context, l10n.homeJobs,
                 '${plan.maxJobs}', Icons.work_outline, true),
           ],
           if (plan.maxOrders > 0) ...[

@@ -18,12 +18,12 @@ class JobListingCard extends ConsumerWidget {
 
   const JobListingCard({super.key, required this.job, this.onTap});
 
-  String _jobTitle() {
+  String _jobTitle(AppLocalizations l10n) {
     final firstLine = job.description?.split('\n').first.trim();
     if (firstLine != null && firstLine.isNotEmpty) return firstLine;
     final company = job.jobCompanyName?.trim();
     if (company != null && company.isNotEmpty) return company;
-    return 'Job';
+    return l10n.jobJob;
   }
 
   bool get _isCompanyPosting {
@@ -81,7 +81,7 @@ class JobListingCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _jobTitle(),
+                  _jobTitle(l10n),
                   style: AppTextStyles.titleSmall.copyWith(
                     color: context.theme.textPrimary,
                   ),
@@ -152,7 +152,7 @@ class JobListingCard extends ConsumerWidget {
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
-                          '$positions Positions',
+                          '$positions ${l10n.jobPositions}',
                           style: AppTextStyles.bodySmall.copyWith(
                             fontSize: 11,
                             color: context.theme.textSecondary,

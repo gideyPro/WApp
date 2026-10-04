@@ -34,7 +34,7 @@ extension HomeCategoryX on HomeCategory {
       case HomeCategory.all: return l10n.searchFilterAll;
       case HomeCategory.property: return l10n.listingSummaryProperty;
       case HomeCategory.vehicles: return l10n.listingCarPlural;
-      case HomeCategory.jobs: return 'Jobs';
+      case HomeCategory.jobs: return l10n.homeJobs;
     }
   }
 
@@ -49,10 +49,10 @@ extension HomeCategoryX on HomeCategory {
 }
 
 extension JobsSectionX on JobsSection {
-  String get label {
+  String label(AppLocalizations l10n) {
     switch (this) {
-      case JobsSection.listings: return 'Listings';
-      case JobsSection.seekers: return 'Seekers';
+      case JobsSection.listings: return l10n.listingsTitle;
+      case JobsSection.seekers: return l10n.homeSeekers;
     }
   }
 
@@ -325,6 +325,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildJobsSectionPills() {
+    final l10n = AppLocalizations.of(context);
     const sections = JobsSection.values;
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
@@ -361,7 +362,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        section.label,
+                        section.label(l10n),
                         style: AppTextStyles.bodySmall.copyWith(
                           fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                           color: isSelected ? Colors.white : context.textPrimary,
@@ -1359,7 +1360,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 children: [
                   Icon(Icons.person_search_outlined, size: 64, color: context.textMuted),
                   const SizedBox(height: 16),
-                  Text('No profiles found', style: AppTextStyles.bodyMedium.copyWith(color: context.textMuted)),
+                  Text(l10n.seekersNoProfiles, style: AppTextStyles.bodyMedium.copyWith(color: context.textMuted)),
                 ],
               ),
             ),
@@ -1409,7 +1410,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               if (jobFeatured.listings.isNotEmpty) _buildSectionHeader(l10n.listingsFeatured),
               if (jobFeatured.listings.isNotEmpty) _buildFeaturedListings(jobFeatured),
               if (jobVip.listings.isNotEmpty) _buildVipSection(jobVip),
-              _buildSectionHeader('Jobs',
+              _buildSectionHeader(l10n.homeJobs,
                   eyebrow: l10n.homeLatestRecently.toUpperCase()),
             ],
           ),
