@@ -100,7 +100,12 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(listing.jobCompanyName ?? 'View', style: Theme.of(context).textTheme.headlineSmall),
+            Text(
+              (listing.jobCompanyName?.trim().isNotEmpty ?? false)
+                  ? listing.jobCompanyName!.trim()
+                  : l10n.jobIndividualPoster,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
             const SizedBox(height: 8),
             if (listing.description != null) Text(listing.description!),
             const SizedBox(height: 24),
@@ -114,7 +119,10 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
   Widget _buildEmployerContact(Listing listing, AppLocalizations l10n) {
     final phone = listing.sellerPhone!;
-    final name = listing.sellerName ?? 'Employer';
+    final company = listing.jobCompanyName?.trim();
+    final name = (listing.sellerName?.isNotEmpty ?? false)
+        ? listing.sellerName!
+        : ((company != null && company.isNotEmpty) ? company : l10n.jobIndividualPoster);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

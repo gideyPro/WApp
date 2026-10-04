@@ -4264,6 +4264,12 @@ abstract class AppLocalizations {
   /// **'{label} exceeds {limit} limit. Please choose a smaller file.'**
   String mediaFileSizeError(Object label, Object limit);
 
+  /// No description provided for @mediaImagesLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Images cannot be modified after submission.'**
+  String get mediaImagesLocked;
+
   /// No description provided for @carVipSubtitle.
   ///
   /// In en, this message translates to:
@@ -5385,6 +5391,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chat on Telegram'**
   String get jobTelegramHint;
+
+  /// No description provided for @jobSeekerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get jobSeekerMessage;
 }
 
 class _AppLocalizationsDelegate

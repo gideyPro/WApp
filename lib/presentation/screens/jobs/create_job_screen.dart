@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
+import '../../widgets/common/wave_card.dart';
+import '../../widgets/common/wave_liquid_glass.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../core/theme/text_styles.dart';
 import '../../../data/models/job_form_data.dart';
 import '../../../data/job_data.dart';
 import '../../../data/services/address_service.dart';
@@ -32,6 +36,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
   String? _currentSubmissionKey;
   ValueNotifier<SubmissionState>? _submissionNotifier;
   Future<bool?>? _submissionDismissed;
+  bool _postedAsCompany = false;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
@@ -39,6 +44,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
   List<String> _regions = [], _zones = [], _woredas = [], _kebeles = [];
   final Map<String, int?> _kebeleIds = {};
+  bool _loadingZones = false, _loadingWoredas = false, _loadingKebeles = false;
   int? _addressId;
 
   late TextEditingController _companyController;
@@ -67,7 +73,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       ..addListener(() => _formData = _formData.copyWith(description: _descriptionController.text));
     _specificLocationController = TextEditingController()
       ..addListener(() => _formData = _formData.copyWith(specificLocation: _specificLocationController.text));
-      
+
     _loadRegions();
   }
 
@@ -107,12 +113,15 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     final errors = <String>[];
     switch (_currentStep) {
       case 0:
-        if (_formData.jobCategory.isEmpty) errors.add('${'Category'} ${l10n.commonIsRequired}');
-        if (_formData.jobType.isEmpty) errors.add('Job Type is required');
+        if (_formData.jobCategory.isEmpty) errors.add('${l10n.jobJobCategory} ${l10n.commonIsRequired}');
+        if (_formData.jobType.isEmpty) errors.add('${l10n.jobJobType} ${l10n.commonIsRequired}');
+        if (_postedAsCompany && _companyController.text.trim().isEmpty) {
+          errors.add('${l10n.jobCompanyName} ${l10n.commonIsRequired}');
+        }
         break;
       case 1:
-        if (_formData.salaryType == 'fixed' && _formData.salaryMin == null) errors.add('Salary is required');
-        if (_formData.addressId == null) errors.add('Location is required');
+        if (_formData.salaryType == 'fixed' && _formData.salaryMin == null) errors.add('${l10n.jobSalaryMin} ${l10n.commonIsRequired}');
+        if (_formData.addressId == null) errors.add('${l10n.jobLocation} ${l10n.commonIsRequired}');
         break;
       case 2:
         if (_formData.description == null || _formData.description!.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
@@ -120,6 +129,17 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
         break;
     }
     return errors;
+  }
+
+  void _onPostedAsCompanyChanged(bool value) {
+    setState(() {
+      _postedAsCompany = value;
+      if (!value) {
+        _companyController.clear();
+        _formData.companyName = null;
+      }
+      _stepErrors.remove(0);
+    });
   }
 
   Future<void> _loadRegions() async {
@@ -137,6 +157,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       _selectedRegion = region;
       _selectedZone = null; _selectedWoreda = null; _selectedKebele = null; _addressId = null;
       _zones = []; _woredas = []; _kebeles = [];
+      if (region != null) _loadingZones = true;
     });
     if (region == null) return;
     final locale = Localizations.localeOf(context).languageCode;
@@ -144,6 +165,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       final response = await _addressService.getZones(region: region, locale: locale);
       if (mounted && response.success) setState(() => _zones = response.zones.map((z) => z.zone ?? '').where((s) => s.isNotEmpty).toList());
     } catch (_) {}
+    if (mounted) setState(() => _loadingZones = false);
     _syncAddress();
   }
 
@@ -151,6 +173,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     setState(() {
       _selectedZone = zone; _selectedWoreda = null; _selectedKebele = null; _addressId = null;
       _woredas = []; _kebeles = [];
+      if (zone != null) _loadingWoredas = true;
     });
     if (zone == null || _selectedRegion == null) return;
     final locale = Localizations.localeOf(context).languageCode;
@@ -158,6 +181,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       final response = await _addressService.getWoredas(region: _selectedRegion!, zone: zone, locale: locale);
       if (mounted && response.success) setState(() => _woredas = response.woredas.map((w) => w.woreda ?? '').where((s) => s.isNotEmpty).toList());
     } catch (_) {}
+    if (mounted) setState(() => _loadingWoredas = false);
     _syncAddress();
   }
 
@@ -165,6 +189,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     setState(() {
       _selectedWoreda = woreda; _selectedKebele = null; _addressId = null;
       _kebeles = [];
+      if (woreda != null) _loadingKebeles = true;
     });
     if (woreda == null || _selectedRegion == null || _selectedZone == null) return;
     final locale = Localizations.localeOf(context).languageCode;
@@ -181,6 +206,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
         setState(() => _kebeles = kebeles);
       }
     } catch (_) {}
+    if (mounted) setState(() => _loadingKebeles = false);
     _syncAddress();
   }
 
@@ -195,11 +221,12 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
   void _syncAddress() {
     setState(() {
       _formData = _formData.copyWith(
-        addressRegion: _selectedRegion != null ? 1 : null, // Backend uses IDs, but this is mockup
+        addressRegion: _selectedRegion != null ? 1 : null,
         addressZone: _selectedZone != null ? 1 : null,
         addressWoreda: _selectedWoreda != null ? 1 : null,
         addressKebele: _selectedKebele != null ? 1 : null,
         addressId: _addressId,
+        specificLocation: _specificLocationController.text,
       );
     });
   }
@@ -207,7 +234,23 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
   Future<void> _pickImages() async {
     final files = await ImagePicker().pickMultiImage(imageQuality: 85, maxWidth: 1920);
     if (files.isEmpty) return;
-    final persisted = await ListingMediaManager.persistFiles(files);
+    final valid = <XFile>[];
+    String? oversized;
+    for (final f in files) {
+      if (await f.length() > 10 * 1024 * 1024) {
+        oversized ??= f.name;
+        continue;
+      }
+      valid.add(f);
+    }
+    if (oversized != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(l10n.mediaFileSizeError(oversized, '10MB')),
+        backgroundColor: AppColors.error,
+      ));
+    }
+    if (valid.isEmpty) return;
+    final persisted = await ListingMediaManager.persistFiles(valid);
     setState(() => _formData = _formData.copyWith(images: [..._formData.images, ...persisted]));
   }
 
@@ -286,7 +329,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
 
     if (!kycState.isVerified && !kycState.isApproved) {
       return WaveFullPageUpgrade(
-        appBar: const WaveAppBar(title: Text('Create Job')),
+        appBar: WaveAppBar(title: Text(l10n.jobCreateTitle)),
         icon: Icons.verified_outlined,
         iconColor: AppColors.accent500,
         title: kycState.isPending ? l10n.kycPendingTitle : l10n.kycRequiredTitle,
@@ -298,7 +341,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
 
     if (subscriptionEnabled && !subState.canCreateJob) {
       return WaveFullPageUpgrade(
-        appBar: const WaveAppBar(title: Text('Create Job')),
+        appBar: WaveAppBar(title: Text(l10n.jobCreateTitle)),
         icon: Icons.work_outline,
         iconColor: AppColors.accent500,
         title: l10n.localeName == 'am' ? 'የስራ ማስታወቂያ ገደብ' : l10n.localeName == 'ti' ? 'ናይ ስራሕ መጠን ገደብ' : 'Job Posting Limit Reached',
@@ -312,7 +355,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
         leading: _currentStep > 0
             ? IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: _prevStep)
             : null,
-        title: const Text('Create Job'),
+        title: Text(l10n.jobCreateTitle),
         actions: [
           TextButton(
             onPressed: _isSubmitting ? null : (_currentStep == 2 ? _submit : _nextStep),
@@ -355,32 +398,48 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
         children: [
           DropdownButtonFormField<String>(
             initialValue: _formData.jobCategory.isEmpty ? null : _formData.jobCategory,
-            decoration: const InputDecoration(labelText: 'Job Category *'),
+            decoration: InputDecoration(labelText: '${l10n.jobJobCategory} *'),
             items: jobCategories.map((c) => DropdownMenuItem(value: c, child: Text(jobCategoryLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(jobCategory: v ?? '')),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _formData.jobType.isEmpty ? null : _formData.jobType,
-            decoration: const InputDecoration(labelText: 'Job Type *'),
+            decoration: InputDecoration(labelText: '${l10n.jobJobType} *'),
             items: jobTypes.map((c) => DropdownMenuItem(value: c, child: Text(jobTypeLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(jobType: v ?? '')),
           ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: _companyController,
-            decoration: const InputDecoration(labelText: 'Company Name'),
+          const SizedBox(height: 8),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            secondary: Icon(
+              _postedAsCompany ? Icons.business_rounded : Icons.person_outline_rounded,
+              color: _postedAsCompany ? AppColors.accent600 : context.theme.iconSecondary,
+            ),
+            title: Text(
+              l10n.jobPostingAsCompany,
+              style: AppTextStyles.labelLarge.copyWith(color: context.theme.textPrimary),
+            ),
+            value: _postedAsCompany,
+            activeThumbColor: AppColors.accent600,
+            onChanged: _onPostedAsCompanyChanged,
           ),
+          if (_postedAsCompany) ...[
+            TextFormField(
+              controller: _companyController,
+              decoration: InputDecoration(labelText: '${l10n.jobCompanyName} *'),
+            ),
+          ],
           const SizedBox(height: 16),
           TextFormField(
             controller: _positionsController,
-            decoration: const InputDecoration(labelText: 'Number of Positions'),
+            decoration: InputDecoration(labelText: l10n.jobPositions),
             keyboardType: TextInputType.number,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _formData.reqEducation,
-            decoration: const InputDecoration(labelText: 'Required Education'),
+            decoration: InputDecoration(labelText: l10n.jobEducationLevel),
             items: educationLevels.map((c) => DropdownMenuItem(value: c, child: Text(educationLevelLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(reqEducation: v)),
           ),
@@ -403,7 +462,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
         children: [
           DropdownButtonFormField<String>(
             initialValue: _formData.salaryType,
-            decoration: const InputDecoration(labelText: 'Salary Type *'),
+            decoration: InputDecoration(labelText: '${l10n.jobSalaryType} *'),
             items: salaryTypes.map((c) => DropdownMenuItem(value: c, child: Text(salaryTypeLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(salaryType: v ?? 'per_agreement')),
           ),
@@ -411,43 +470,20 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(child: TextFormField(controller: _salaryMinController, decoration: const InputDecoration(labelText: 'Min Salary'), keyboardType: TextInputType.number)),
+                Expanded(child: TextFormField(controller: _salaryMinController, decoration: InputDecoration(labelText: l10n.jobSalaryMin), keyboardType: TextInputType.number)),
                 const SizedBox(width: 16),
                 if (_formData.salaryType == 'range')
-                  Expanded(child: TextFormField(controller: _salaryMaxController, decoration: const InputDecoration(labelText: 'Max Salary'), keyboardType: TextInputType.number)),
+                  Expanded(child: TextFormField(controller: _salaryMaxController, decoration: InputDecoration(labelText: l10n.jobSalaryMax), keyboardType: TextInputType.number)),
               ],
             ),
           ],
-          const SizedBox(height: 32),
-          const Text('Location', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            initialValue: _selectedRegion,
-            decoration: const InputDecoration(labelText: 'Region *'),
-            items: _regions.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
-            onChanged: _onRegionSelected,
+          const SizedBox(height: 24),
+          _sectionCard(
+            title: l10n.jobLocation,
+            subtitle: '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
+            child: _buildAddressDropdowns(),
           ),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            initialValue: _selectedZone,
-            decoration: const InputDecoration(labelText: 'Zone'),
-            items: _zones.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
-            onChanged: _onZoneSelected,
-          ),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            initialValue: _selectedWoreda,
-            decoration: const InputDecoration(labelText: 'Woreda'),
-            items: _woredas.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
-            onChanged: _onWoredaSelected,
-          ),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            initialValue: _selectedKebele,
-            decoration: const InputDecoration(labelText: 'Kebele'),
-            items: _kebeles.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
-            onChanged: _onKebeleSelected,
-          ),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -458,15 +494,14 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       padding: AppSpacing.paddingLg,
       child: Column(
         children: [
-          ElevatedButton.icon(
-            onPressed: _pickImages,
-            icon: const Icon(Icons.add_photo_alternate),
-            label: Text('Add Images (${_formData.images.length})'),
+          _sectionCard(
+            title: l10n.jobImages,
+            child: _buildImageUploader(),
           ),
           const SizedBox(height: 16),
           TextFormField(
             controller: _descriptionController,
-            decoration: const InputDecoration(labelText: 'Job Description *', alignLabelWithHint: true),
+            decoration: InputDecoration(labelText: '${l10n.listingDescriptionLabel} *', alignLabelWithHint: true),
             maxLines: 5,
           ),
           const SizedBox(height: 16),
@@ -478,6 +513,207 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             contentPadding: EdgeInsets.zero,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildImageUploader() {
+    final images = _formData.images;
+    return Column(
+      children: [
+        LiquidGlass(
+          borderRadius: AppSpacing.borderRadiusMd,
+          blur: 20,
+          interactive: true,
+          onTap: _pickImages,
+          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+          child: Column(
+            children: [
+              Icon(Icons.add_photo_alternate_outlined, size: 36, color: context.theme.iconSecondary),
+              const SizedBox(height: 10),
+              Text(l10n.listingTapToAdd, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
+              const SizedBox(height: 4),
+              Text(l10n.mediaImageFormatHint, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+            ],
+          ),
+        ),
+        if (images.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 108,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                ...images.map((file) => _ImageThumb(
+                  file: File(file.path),
+                  onRemove: () {
+                    final updated = List<XFile>.from(images)..remove(file);
+                    setState(() => _formData = _formData.copyWith(images: updated));
+                  },
+                )),
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 100, height: 100,
+                  child: LiquidGlass(
+                    borderRadius: AppSpacing.borderRadiusMd, blur: 20,
+                    interactive: true,
+                    onTap: _pickImages,
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add, size: 28, color: context.theme.iconSecondary),
+                        const SizedBox(height: 4),
+                        Text(l10n.carAddPhoto, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(l10n.listingImagesSelected(images.length), style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildAddressDropdowns() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: _compactDropdownField(value: _selectedRegion, items: _regions, label: '${l10n.listingRegion} *', onChanged: _onRegionSelected)),
+            const SizedBox(width: 8),
+            Expanded(child: _compactDropdownField(value: _selectedZone, items: _zones, label: l10n.listingZone, onChanged: _onZoneSelected, isLoading: _loadingZones)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(child: _compactDropdownField(value: _selectedWoreda, items: _woredas, label: l10n.listingWoreda, onChanged: _onWoredaSelected, isLoading: _loadingWoredas)),
+            const SizedBox(width: 8),
+            Expanded(child: _compactDropdownField(value: _selectedKebele, items: _kebeles, label: l10n.listingKebele, onChanged: _onKebeleSelected, isLoading: _loadingKebeles)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _specificLocationController,
+          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+          decoration: InputDecoration(
+            labelText: l10n.jobSpecificLocation,
+            labelStyle: AppTextStyles.bodySmall,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          ),
+          onChanged: (_) => _syncAddress(),
+        ),
+      ],
+    );
+  }
+
+  Widget _compactDropdownField({String? value, required List<String> items, required String label, required Function(String?) onChanged, bool isLoading = false}) {
+    return DropdownButtonFormField<String>(
+      initialValue: items.contains(value) ? value : null,
+      style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: AppTextStyles.bodySmall,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        suffixIcon: isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : null,
+      ),
+      dropdownColor: context.sheetBg,
+      items: items.isEmpty
+          ? [DropdownMenuItem(value: null, child: Text(l10n.listingSelect, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)))]
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
+      onChanged: items.isEmpty ? null : onChanged,
+      isExpanded: true,
+    );
+  }
+
+  Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
+    return WaveCard(
+      useLiquidGlass: true, isGlass: true, padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+          if (subtitle != null) ...[
+            const SizedBox(height: 4),
+            Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+          ],
+          const SizedBox(height: 10),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _ImageThumb extends StatelessWidget {
+  final File file;
+  final VoidCallback onRemove;
+
+  const _ImageThumb({required this.file, required this.onRemove});
+
+  void _showPreview(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (ctx) => Stack(
+        children: [
+          Center(child: InteractiveViewer(
+            child: Image.file(file, fit: BoxFit.contain),
+          )),
+          Positioned(
+            top: 40, right: 16,
+            child: GestureDetector(
+              onTap: () => Navigator.of(ctx).pop(),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                child: const Icon(Icons.close, size: 24, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        onTap: () => _showPreview(context),
+        child: Stack(
+          children: [
+            SizedBox(
+              width: 100, height: 100,
+              child: LiquidGlass(
+                borderRadius: 10, blur: 12,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(9),
+                  child: Image.file(file, width: 100, height: 100, fit: BoxFit.cover),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 4, right: 4,
+              child: GestureDetector(
+                onTap: onRemove,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle),
+                  child: const Icon(Icons.close, size: 14, color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2254,6 +2254,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get mediaImagesLocked => 'Images cannot be modified after submission.';
+
+  @override
   String get carVipSubtitle => 'Get a VIP badge for VIP only visibility';
 
   @override
@@ -2822,4 +2825,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobTelegramHint => 'Chat on Telegram';
+
+  @override
+  String get jobSeekerMessage => 'Message';
 }

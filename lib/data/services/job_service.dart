@@ -214,7 +214,10 @@ class JobService {
     final dioFormData = FormData();
     dioFormData.fields.addAll([
       const MapEntry('type', 'job'),
-      if (formData.companyName != null && formData.companyName!.isNotEmpty) MapEntry('company_name', formData.companyName!),
+      if (formData.companyName != null && formData.companyName!.isNotEmpty)
+        MapEntry('company_name', formData.companyName!)
+      else if (isUpdate)
+        const MapEntry('company_name', ''),
       MapEntry('job_type', formData.jobType),
       if (formData.jobCategory.isNotEmpty) MapEntry('job_category', formData.jobCategory),
       MapEntry('positions_count', formData.positionsCount.toString()),

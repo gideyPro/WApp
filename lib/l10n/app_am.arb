@@ -719,6 +719,7 @@
   "mediaOwnershipProof": "የባለቤትነት ማረጋገጫ",
   "mediaVideo": "ቪዲዮ",
   "mediaFileSizeError": "{label} ከ{limit} ገደብ አልፏል። እባክዎ ትንሽ ፋይል ይምረጡ።",
+  "mediaImagesLocked": "ከተላከበኋላ ምስሎችን መቀየር አይቻልም።",
   "carVipSubtitle": "በVIP ተጠቃሚዎች ብቻ የሚታይ",
   "carCustomFeatures": "የራስዎ ባህሪዎች",
   "submissionStepValidating": "ዳታ እየተረጋገጠ ነው",
@@ -905,5 +906,6 @@
   "jobWhatsapp": "WhatsApp",
   "jobWhatsappHint": "በዋትስአፕ ያነጋግሩ",
   "jobTelegram": "Telegram",
-  "jobTelegramHint": "በቴሌግራም ያነጋግሩ"
+  "jobTelegramHint": "በቴሌግራም ያነጋግሩ",
+  "jobSeekerMessage": "መልእክት"
 }

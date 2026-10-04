@@ -2226,6 +2226,9 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
+  String get mediaImagesLocked => 'ድሕሪ ምኽታብ ስእልታት ክቕየሩ ኣይክእሉን።';
+
+  @override
   String get carVipSubtitle => 'ብVIP ተጠቀምቲ ብቻ ዝረአ';
 
   @override
@@ -2787,4 +2790,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get jobTelegramHint => 'ብቴሌግራም ኣዘራርቡ';
+
+  @override
+  String get jobSeekerMessage => 'መልእክት';
 }

@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../data/job_data.dart';
 import '../../providers/job_seeker_providers.dart';
 import '../../../data/models/job_seeker_profile.dart';
+import '../../../l10n/app_localizations.dart';
 
 class EditJobSeekerProfileScreen extends ConsumerStatefulWidget {
   const EditJobSeekerProfileScreen({super.key});
@@ -18,11 +20,11 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _titleController = TextEditingController();
-  final _categoryController = TextEditingController();
-  final _educationController = TextEditingController();
   final _experienceController = TextEditingController();
   final _descriptionController = TextEditingController();
-  
+
+  String? _category;
+  String? _education;
   bool _isPublic = true;
   File? _selectedImage;
   bool _isSubmitting = false;
@@ -31,8 +33,6 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   void dispose() {
     _fullNameController.dispose();
     _titleController.dispose();
-    _categoryController.dispose();
-    _educationController.dispose();
     _experienceController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -51,35 +51,36 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   void _populateForm(JobSeekerProfile profile) {
     _fullNameController.text = profile.fullName;
     _titleController.text = profile.professionalTitle;
-    _categoryController.text = profile.jobCategory ?? '';
-    _educationController.text = profile.educationLevel;
+    _category = profile.jobCategory;
+    _education = profile.educationLevel;
     _experienceController.text = profile.experience ?? '';
     _descriptionController.text = profile.description ?? '';
     _isPublic = profile.isPublic;
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(JobSeekerProfile? existing) async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() => _isSubmitting = true);
-    
+
     final data = {
       'full_name': _fullNameController.text.trim(),
       'professional_title': _titleController.text.trim(),
-      'job_category': _categoryController.text.trim(),
-      'education_level': _educationController.text.trim(),
+      'job_category': _category?.trim() ?? '',
+      'education_level': _education ?? '',
       'experience': _experienceController.text.trim(),
       'description': _descriptionController.text.trim(),
       'is_public': _isPublic ? '1' : '0',
     };
-    
+
     final response = await ref.read(jobSeekerServiceProvider).createOrUpdateProfile(
       data: data,
       photo: _selectedImage,
+      update: existing != null,
     );
-    
+
     setState(() => _isSubmitting = false);
-    
+
     if (response.success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile updated successfully')),
@@ -96,6 +97,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final myProfileAsync = ref.watch(myJobSeekerProfileProvider);
 
     return Scaffold(
@@ -103,11 +105,10 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
       appBar: AppBar(title: const Text('My Job Profile')),
       body: myProfileAsync.when(
         data: (profile) {
-          // Pre-populate if this is the first time we're seeing the data and controllers are empty
           if (profile != null && _fullNameController.text.isEmpty && _titleController.text.isEmpty) {
             _populateForm(profile);
           }
-          
+
           return Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -135,8 +136,22 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   const SizedBox(height: 24),
                   _buildTextField('Full Name', _fullNameController, required: true),
                   _buildTextField('Professional Title', _titleController, required: true),
-                  _buildTextField('Job Category', _categoryController),
-                  _buildTextField('Education Level', _educationController, required: true),
+                  _buildDropdown(
+                    label: l10n.jobJobCategory,
+                    value: _category,
+                    items: _withExisting(_category, jobCategories),
+                    labelFor: (v) => jobCategoryLabel(v, l10n),
+                    onChanged: (v) => setState(() => _category = v),
+                    required: true,
+                  ),
+                  _buildDropdown(
+                    label: l10n.jobEducationLevel,
+                    value: _education,
+                    items: _withExisting(_education, educationLevels),
+                    labelFor: (v) => educationLevelLabel(v, l10n),
+                    onChanged: (v) => setState(() => _education = v),
+                    required: true,
+                  ),
                   _buildTextField('Experience', _experienceController, maxLines: 3),
                   _buildTextField('Description / About', _descriptionController, maxLines: 5),
                   SwitchListTile(
@@ -147,7 +162,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: _isSubmitting ? null : _submit,
+                    onPressed: _isSubmitting ? null : () => _submit(profile),
                     child: _isSubmitting
                         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
                         : const Text('Save Profile'),
@@ -163,12 +178,18 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     );
   }
 
+  List<String> _withExisting(String? existing, List<String> base) {
+    if (existing == null || existing.isEmpty || base.contains(existing)) return base;
+    return [...base, existing];
+  }
+
   Widget _buildTextField(
     String label,
     TextEditingController controller, {
     bool required = false,
     int maxLines = 1,
   }) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
@@ -179,7 +200,35 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
           border: const OutlineInputBorder(),
         ),
         validator: required
-            ? (val) => val == null || val.isEmpty ? 'This field is required' : null
+            ? (val) => val == null || val.isEmpty ? '$label ${l10n.commonIsRequired}' : null
+            : null,
+      ),
+    );
+  }
+
+  Widget _buildDropdown({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required String Function(String) labelFor,
+    required ValueChanged<String?> onChanged,
+    bool required = false,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: DropdownButtonFormField<String>(
+        initialValue: value,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        items: items
+            .map((e) => DropdownMenuItem(value: e, child: Text(labelFor(e))))
+            .toList(),
+        onChanged: onChanged,
+        validator: required
+            ? (val) => val == null || val.isEmpty ? '$label ${l10n.commonIsRequired}' : null
             : null,
       ),
     );

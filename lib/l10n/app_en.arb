@@ -719,6 +719,7 @@
   "mediaOwnershipProof": "Ownership Proof",
   "mediaVideo": "Video",
   "mediaFileSizeError": "{label} exceeds {limit} limit. Please choose a smaller file.",
+  "mediaImagesLocked": "Images cannot be modified after submission.",
   "carVipSubtitle": "Get a VIP badge for VIP only visibility",
   "carCustomFeatures": "Custom features",
   "submissionStepValidating": "Validating data",
@@ -905,5 +906,6 @@
   "jobWhatsapp": "WhatsApp",
   "jobWhatsappHint": "Chat on WhatsApp",
   "jobTelegram": "Telegram",
-  "jobTelegramHint": "Chat on Telegram"
+  "jobTelegramHint": "Chat on Telegram",
+  "jobSeekerMessage": "Message"
 }

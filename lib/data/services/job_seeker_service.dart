@@ -136,6 +136,7 @@ class JobSeekerService {
   Future<JobSeekerProfileResponse> createOrUpdateProfile({
     required Map<String, dynamic> data,
     File? photo,
+    bool update = false,
   }) async {
     try {
       final formData = FormData.fromMap(data);
@@ -145,11 +146,12 @@ class JobSeekerService {
           await MultipartFile.fromFile(photo.path, filename: 'photo.jpg'),
         ));
       }
-      
-      final response = await _apiClient.dio.post(
+
+      final response = await _apiClient.dio.request(
         '${ApiConstants.apiBase}/job-seekers/profile',
         data: formData,
         options: Options(
+          method: update ? 'PUT' : 'POST',
           headers: {'Content-Type': 'multipart/form-data'},
         ),
       );

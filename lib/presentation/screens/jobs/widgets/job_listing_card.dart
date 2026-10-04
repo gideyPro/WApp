@@ -19,11 +19,16 @@ class JobListingCard extends ConsumerWidget {
   const JobListingCard({super.key, required this.job, this.onTap});
 
   String _jobTitle() {
-    final company = job.jobCompanyName?.trim();
-    if (company != null && company.isNotEmpty) return company;
     final firstLine = job.description?.split('\n').first.trim();
     if (firstLine != null && firstLine.isNotEmpty) return firstLine;
+    final company = job.jobCompanyName?.trim();
+    if (company != null && company.isNotEmpty) return company;
     return 'Job';
+  }
+
+  bool get _isCompanyPosting {
+    final company = job.jobCompanyName?.trim();
+    return company != null && company.isNotEmpty;
   }
 
   @override
@@ -82,6 +87,32 @@ class JobListingCard extends ConsumerWidget {
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      _isCompanyPosting
+                          ? Icons.business_rounded
+                          : Icons.person_outline_rounded,
+                      size: 13,
+                      color: context.theme.iconSecondary,
+                    ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        _isCompanyPosting
+                            ? job.jobCompanyName!.trim()
+                            : l10n.jobIndividualPoster,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontSize: 11,
+                          color: context.theme.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
                 if (categoryLabel != null) ...[
                   const SizedBox(height: 6),

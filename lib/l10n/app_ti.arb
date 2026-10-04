@@ -719,6 +719,7 @@
   "mediaOwnershipProof": "መረጋገፂ ዋንነት",
   "mediaVideo": "ቪዲዮ",
   "mediaFileSizeError": "{label} ካብ {limit} ገደብ ሓሊፉ። በጃኹም ንእሽቶ ፋይል ምረፁ።",
+  "mediaImagesLocked": "ድሕሪ ምኽታብ ስእልታት ክቕየሩ ኣይክእሉን።",
   "carVipSubtitle": "ብVIP ተጠቀምቲ ብቻ ዝረአ",
   "carCustomFeatures": "ባህርያት ራስካ",
   "submissionStepValidating": "ዳታ ይረጋገጽ ኣሎ",
@@ -905,5 +906,6 @@
   "jobWhatsapp": "WhatsApp",
   "jobWhatsappHint": "ብዋትስኣፕ ኣዘራርቡ",
   "jobTelegram": "Telegram",
-  "jobTelegramHint": "ብቴሌግራም ኣዘራርቡ"
+  "jobTelegramHint": "ብቴሌግራም ኣዘራርቡ",
+  "jobSeekerMessage": "መልእክት"
 }

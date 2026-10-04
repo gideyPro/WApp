@@ -2226,6 +2226,9 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
+  String get mediaImagesLocked => 'ከተላከበኋላ ምስሎችን መቀየር አይቻልም።';
+
+  @override
   String get carVipSubtitle => 'በVIP ተጠቃሚዎች ብቻ የሚታይ';
 
   @override
@@ -2787,4 +2790,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get jobTelegramHint => 'በቴሌግራም ያነጋግሩ';
+
+  @override
+  String get jobSeekerMessage => 'መልእክት';
 }
