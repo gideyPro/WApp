@@ -32,7 +32,7 @@ Future<bool?> showCreateListingSheet(BuildContext context) {
           ),
           ListTile(
             leading: Icon(Icons.work_outline, color: context.theme.textSecondary),
-            title: Text('Job', style: TextStyle(color: context.theme.textPrimary)),
+            title: Text(l10n.jobJob, style: TextStyle(color: context.theme.textPrimary)),
             onTap: () async {
               Navigator.pop(ctx);
               completer.complete(await context.push<bool>('/jobs/create'));

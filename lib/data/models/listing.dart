@@ -20,6 +20,9 @@ PropertyType _parsePropertyType(dynamic value) {
   if (className == 'house') return PropertyType.house;
   if (className == 'land') return PropertyType.land;
   if (className == 'car') return PropertyType.car;
+  if (className == 'job' || className == 'jobposting') {
+    return PropertyType.job;
+  }
   return PropertyType.house;
 }
 

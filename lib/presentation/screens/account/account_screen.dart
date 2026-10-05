@@ -369,13 +369,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                           onTap: () => context.push('/my-listings'),
                         ),
                         _MenuItemData(
-                          icon: Icons.work_outline,
-                          title: 'My Job Postings',
-                          onTap: () => context.push('/my-listings?type=job'),
-                        ),
-                        _MenuItemData(
                           icon: Icons.person_search_outlined,
-                          title: 'My Job Profile',
+                          title: l10n.seekerMyProfile,
                           onTap: () => context.push('/my-job-profile'),
                         ),
                         _MenuItemData(

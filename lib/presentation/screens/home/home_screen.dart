@@ -51,7 +51,7 @@ extension HomeCategoryX on HomeCategory {
 extension JobsSectionX on JobsSection {
   String label(AppLocalizations l10n) {
     switch (this) {
-      case JobsSection.listings: return l10n.listingsTitle;
+      case JobsSection.listings: return l10n.homeJobs;
       case JobsSection.seekers: return l10n.homeSeekers;
     }
   }

@@ -7,12 +7,14 @@ import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/vehicle_listing_card.dart';
+import '../jobs/widgets/job_listing_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/car_providers.dart';
+import '../../providers/job_providers.dart';
 
 class _TabState {
   List<Listing> listings = [];
@@ -168,10 +170,13 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
   Future<void> _editListing(Listing listing) async {
     setState(() => _editingListingId = listing.id);
     final isCar = listing.propertyType == PropertyType.car;
+    final isJob = listing.propertyType == PropertyType.job;
 
     final detail = isCar
         ? await ref.read(carServiceProvider).getListingDetail(listing.id)
-        : await ref.read(listingServiceProvider).getListingDetail(listing.id);
+        : isJob
+            ? await ref.read(jobServiceProvider).getListingDetail(listing.id)
+            : await ref.read(listingServiceProvider).getListingDetail(listing.id);
 
     if (!mounted) return;
     setState(() => _editingListingId = null);
@@ -179,8 +184,13 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error));
       return;
     }
+    final editRoute = isCar
+        ? '/cars/${detail.listing!.id}/edit'
+        : isJob
+            ? '/jobs/${detail.listing!.id}/edit'
+            : '/listings/${detail.listing!.id}/edit';
     final result = await context.push<bool>(
-      isCar ? '/cars/${detail.listing!.id}/edit' : '/listings/${detail.listing!.id}/edit',
+      editRoute,
       extra: detail.listing,
     );
     if (result == true && mounted) _loadTab(_currentTab);
@@ -410,96 +420,67 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
           final listing = state.listings[index];
           final isEditing = _isEditing(listing.id);
           final isCar = listing.propertyType == PropertyType.car;
+          final isJob = listing.propertyType == PropertyType.job;
+          final ownerActions = <Widget>[
+            if (isEditing)
+              const Padding(
+                padding: EdgeInsets.all(6),
+                child: SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.white,
+                    ),
+                  ),
+                ),
+              )
+            else
+              _buildOwnerActionIcon(
+                icon: Icons.edit_outlined,
+                tooltip: AppLocalizations.of(context).commonEdit,
+                onTap: () => _editListing(listing),
+              ),
+            const SizedBox(width: 4),
+            _buildOwnerActionIcon(
+              icon: Icons.delete_outline,
+              tooltip: AppLocalizations.of(context).commonDelete,
+              color: AppColors.error,
+              onTap: isEditing ? null : () => _deleteListing(listing),
+            ),
+            if (!listing.isFeaturedActive)
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: _buildOwnerActionIcon(
+                  icon: canFeature ? Icons.workspace_premium_outlined : Icons.lock_outline,
+                  tooltip: canFeature ? 'Feature' : 'Upgrade to Feature',
+                  color: canFeature ? AppColors.accent500 : AppColors.stone400,
+                  onTap: isEditing ? null : () => _featureListing(listing),
+                ),
+              ),
+          ];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: isCar
                 ? VehicleListingCard(
                     listing: listing,
                     onTap: () => context.push('/cars/${listing.id}'),
-                    imageOverlayActions: [
-                      if (isEditing)
-                        const Padding(
-                          padding: EdgeInsets.all(6),
-                          child: SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          ),
-                        )
-                      else
-                        _buildOwnerActionIcon(
-                          icon: Icons.edit_outlined,
-                          tooltip: AppLocalizations.of(context).commonEdit,
-                          onTap: () => _editListing(listing),
-                        ),
-                      const SizedBox(width: 4),
-                      _buildOwnerActionIcon(
-                        icon: Icons.delete_outline,
-                        tooltip: AppLocalizations.of(context).commonDelete,
-                        color: AppColors.error,
-                        onTap: isEditing ? null : () => _deleteListing(listing),
-                      ),
-                      if (!listing.isFeaturedActive)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: _buildOwnerActionIcon(
-                            icon: canFeature ? Icons.workspace_premium_outlined : Icons.lock_outline,
-                            tooltip: canFeature ? 'Feature' : 'Upgrade to Feature',
-                            color: canFeature ? AppColors.accent500 : AppColors.stone400,
-                            onTap: isEditing ? null : () => _featureListing(listing),
-                          ),
-                        ),
-                    ],
+                    imageOverlayActions: ownerActions,
                   )
-                : PropertyListingCard(
-                    listing: listing,
-                    hideFavoriteButton: true,
-                    imageOverlayActions: [
-                      if (isEditing)
-                        const Padding(
-                          padding: EdgeInsets.all(6),
-                          child: SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        )
-                      else
-                        _buildOwnerActionIcon(
-                          icon: Icons.edit_outlined,
-                          tooltip: AppLocalizations.of(context).commonEdit,
-                          onTap: () => _editListing(listing),
-                        ),
-                      const SizedBox(width: 4),
-                      _buildOwnerActionIcon(
-                        icon: Icons.delete_outline,
-                        tooltip: AppLocalizations.of(context).commonDelete,
-                        color: AppColors.error,
-                        onTap: isEditing ? null : () => _deleteListing(listing),
+                : isJob
+                    ? JobListingCard(
+                        job: listing,
+                        showOwnerBadges: true,
+                        footerActions: ownerActions,
+                        onTap: () => context.push('/jobs/${listing.id}'),
+                      )
+                    : PropertyListingCard(
+                        listing: listing,
+                        hideFavoriteButton: true,
+                        imageOverlayActions: ownerActions,
+                        onTap: () => context.push('/listings/${listing.id}'),
                       ),
-                      if (!listing.isFeaturedActive)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: _buildOwnerActionIcon(
-                            icon: canFeature ? Icons.workspace_premium_outlined : Icons.lock_outline,
-                            tooltip: canFeature ? 'Feature' : 'Upgrade to Feature',
-                            color: canFeature ? AppColors.accent500 : AppColors.stone400,
-                            onTap: isEditing ? null : () => _featureListing(listing),
-                          ),
-                        ),
-                    ],
-                    onTap: () => context.push('/listings/${listing.id}'),
-                  ),
           );
         },
       ),

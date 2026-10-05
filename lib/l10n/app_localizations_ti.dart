@@ -2618,7 +2618,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobCategoryFinance => 'ፋይናንስ';
 
   @override
-  String get jobCategoryHealthcare => 'ጥዕና ሓለዋ';
+  String get jobCategoryHealthcare => 'ጥዕና';
 
   @override
   String get jobCategoryIT => 'ኣይቲን ሶፍትዌርን';
@@ -2642,7 +2642,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobDescription => 'መግለፂ';
 
   @override
-  String get jobEditTitle => 'ስራሕ ኣዐሪ';
+  String get jobEditTitle => 'ኣስተኻኽል';
 
   @override
   String get jobEducationLevel => 'ደረጃ ትምህርቲ';
@@ -2816,7 +2816,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobNotFound => 'ስራሕ ኣይተረኽበን';
 
   @override
-  String get jobRequiredGender => 'ዝድለ ጾታ';
+  String get jobRequiredGender => 'ዝድለ ፆታ';
 
   @override
   String get jobPostingLimitTitle => 'ገደብ ምልጣፍ ስራሕ';
@@ -2831,7 +2831,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerExperience => 'ተመክሮ';
 
   @override
-  String get seekerMyProfile => 'ናይ ስራሕ መገለጫይ';
+  String get seekerMyProfile => 'ናይ ስራሕ ፕሮፋይል';
 
   @override
   String get seekerFullName => 'ምሉእ ስም';
@@ -2840,11 +2840,11 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerProfessionalTitle => 'ሞያዊ መዓርግ';
 
   @override
-  String get seekerMakePublic => 'መገለጫ ህዝባዊ ግበር';
+  String get seekerMakePublic => 'ናይ ስራሕ ፕሮፋይል ለጥፍ';
 
   @override
-  String get seekerSaveProfile => 'መገለጫ ዕቀብ';
+  String get seekerSaveProfile => 'ኣስፍር';
 
   @override
-  String get seekerProfileSaved => 'መገለጫ ብዓወት ተዘሚኑ';
+  String get seekerProfileSaved => 'ፕሮፋይል ብዓወት ልሰፊሩ';
 }

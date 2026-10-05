@@ -2618,7 +2618,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobCategoryFinance => 'ፋይናንስ';
 
   @override
-  String get jobCategoryHealthcare => 'ጤና ጥበቃ';
+  String get jobCategoryHealthcare => 'ጤና';
 
   @override
   String get jobCategoryIT => 'አይቲ እና ሶፍትዌር';
@@ -2627,7 +2627,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobCategoryOther => 'ሌላ';
 
   @override
-  String get jobClear => 'አጽዳ';
+  String get jobClear => 'አፅዳ';
 
   @override
   String get jobCompanyName => 'የድርጅት ስም';
@@ -2642,7 +2642,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobDescription => 'መግለጫ';
 
   @override
-  String get jobEditTitle => 'ስራ ያስተካክሉ';
+  String get jobEditTitle => 'ኣስተካክል';
 
   @override
   String get jobEducationLevel => 'የትምህርት ደረጃ';
@@ -2816,7 +2816,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobNotFound => 'ስራ አልተገኘም';
 
   @override
-  String get jobRequiredGender => 'የሚፈለግ ጾታ';
+  String get jobRequiredGender => 'የሚፈለግ ፆታ';
 
   @override
   String get jobPostingLimitTitle => 'የስራ ማስታወቂያ ገደብ';
@@ -2831,7 +2831,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekerExperience => 'የስራ ልምድ';
 
   @override
-  String get seekerMyProfile => 'የእኔ የስራ መገለጫ';
+  String get seekerMyProfile => 'የእኔ የስራ ፕሮፋይል';
 
   @override
   String get seekerFullName => 'ሙሉ ስም';
@@ -2840,10 +2840,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekerProfessionalTitle => 'የሙያ መጠሪያ';
 
   @override
-  String get seekerMakePublic => 'መገለጫውን ይፋ ማድረግ';
+  String get seekerMakePublic => 'የስራ ፕሮፋይል ለጥፍ';
 
   @override
-  String get seekerSaveProfile => 'መገለጫ አስቀምጥ';
+  String get seekerSaveProfile => 'አስቀምጥ';
 
   @override
   String get seekerProfileSaved => 'መገለጫው በተሳካ ሁኔታ ተዘምኗል';
