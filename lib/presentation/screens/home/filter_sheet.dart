@@ -3,6 +3,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../data/car_data.dart';
+import '../../../data/job_data.dart';
 import '../../../l10n/app_localizations.dart';
 import 'home_screen.dart';
 
@@ -25,6 +26,10 @@ class UnifiedFilterValues {
   final String? vehicleCategory;
   final String? bodyType;
 
+  final String? jobCategory;
+  final String? jobType;
+  final String? educationLevel;
+
   const UnifiedFilterValues({
     this.category = HomeCategory.property,
     this.priceMin,
@@ -41,6 +46,9 @@ class UnifiedFilterValues {
     this.mileageMax,
     this.vehicleCategory,
     this.bodyType,
+    this.jobCategory,
+    this.jobType,
+    this.educationLevel,
   });
 
   bool get hasAnyFilter {
@@ -59,6 +67,12 @@ class UnifiedFilterValues {
           bodyType != null ||
           priceMin != null ||
           priceMax != null ||
+          (location != null && location!.isNotEmpty);
+    }
+    if (category == HomeCategory.jobs) {
+      return jobCategory != null ||
+          jobType != null ||
+          educationLevel != null ||
           (location != null && location!.isNotEmpty);
     }
     return propertyType != null ||
@@ -95,6 +109,16 @@ class UnifiedFilterValues {
         bodyType: key == 'body_type' ? null : bodyType,
       );
     }
+    if (category == HomeCategory.jobs) {
+      return UnifiedFilterValues(
+        category: category,
+        sort: sort,
+        location: key == 'location' ? null : location,
+        jobCategory: key == 'job_category' ? null : jobCategory,
+        jobType: key == 'job_type' ? null : jobType,
+        educationLevel: key == 'education_level' ? null : educationLevel,
+      );
+    }
     return UnifiedFilterValues(
       category: category,
       priceMin: key == 'price_min' ? null : priceMin,
@@ -111,7 +135,10 @@ class UnifiedFilterValues {
     final params = <String, dynamic>{};
     if (location != null && location!.isNotEmpty) params['location'] = location;
     if (sort != 'newest') {
-      if (category == HomeCategory.vehicles &&
+      if (category == HomeCategory.jobs) {
+        // Jobs only expose newest/oldest — never send price/vehicle sort keys.
+        if (sort == 'oldest') params['sort'] = 'oldest';
+      } else if (category == HomeCategory.vehicles &&
           (sort == 'year_desc' || sort == 'year_asc' ||
               sort == 'mileage_low' || sort == 'mileage_high')) {
         if (sort == 'year_desc' || sort == 'year_asc') {
@@ -125,8 +152,10 @@ class UnifiedFilterValues {
         params['sort'] = sort;
       }
     }
-    if (priceMin != null) params['price_min'] = priceMin;
-    if (priceMax != null) params['price_max'] = priceMax;
+    if (category != HomeCategory.jobs) {
+      if (priceMin != null) params['price_min'] = priceMin;
+      if (priceMax != null) params['price_max'] = priceMax;
+    }
 
     if (category == HomeCategory.vehicles) {
       if (make != null) params['make'] = make;
@@ -140,6 +169,10 @@ class UnifiedFilterValues {
       if (propertyType != null) params['type'] = propertyType;
       if (listingType != null) params['listing_type'] = listingType;
       if (isFeatured) params['is_featured'] = true;
+    } else if (category == HomeCategory.jobs) {
+      if (jobCategory != null) params['job_category'] = jobCategory;
+      if (jobType != null) params['job_type'] = jobType;
+      if (educationLevel != null) params['education_level'] = educationLevel;
     }
 
     return params;
@@ -197,6 +230,10 @@ class _FilterSheetState extends State<FilterSheet> {
   late String? _vehicleCategory;
   late String? _bodyType;
 
+  late String? _jobCategory;
+  late String? _jobType;
+  late String? _educationLevel;
+
   final _modelController = TextEditingController();
   final _mileageController = TextEditingController();
 
@@ -219,6 +256,9 @@ class _FilterSheetState extends State<FilterSheet> {
     _mileageMax = v.mileageMax;
     _vehicleCategory = v.vehicleCategory;
     _bodyType = v.bodyType;
+    _jobCategory = v.jobCategory;
+    _jobType = v.jobType;
+    _educationLevel = v.educationLevel;
     _modelController.text = _model ?? '';
     _mileageController.text = _mileageMax?.toString() ?? '';
   }
@@ -253,6 +293,9 @@ class _FilterSheetState extends State<FilterSheet> {
       _mileageMax = null;
       _vehicleCategory = null;
       _bodyType = null;
+      _jobCategory = null;
+      _jobType = null;
+      _educationLevel = null;
       _modelController.clear();
       _mileageController.clear();
     });
@@ -277,6 +320,9 @@ class _FilterSheetState extends State<FilterSheet> {
       mileageMax: _category == HomeCategory.vehicles ? _mileageMax : null,
       vehicleCategory: _category == HomeCategory.vehicles ? _vehicleCategory : null,
       bodyType: _category == HomeCategory.vehicles ? _bodyType : null,
+      jobCategory: _category == HomeCategory.jobs ? _jobCategory : null,
+      jobType: _category == HomeCategory.jobs ? _jobType : null,
+      educationLevel: _category == HomeCategory.jobs ? _educationLevel : null,
     ));
   }
 
@@ -368,6 +414,7 @@ class _FilterSheetState extends State<FilterSheet> {
                 _buildPriceSection(l10n),
                 _buildSortSection(l10n, isVehicle: false),
               ] else if (_category == HomeCategory.property) ..._buildPropertySections(l10n)
+              else if (_category == HomeCategory.jobs) ..._buildJobSections(l10n)
               else ..._buildVehicleSections(l10n),
 
               const SizedBox(height: 8),
@@ -398,6 +445,9 @@ class _FilterSheetState extends State<FilterSheet> {
                   _propertyType = null;
                   _listingType = null;
                   _isFeatured = false;
+                  _jobCategory = null;
+                  _jobType = null;
+                  _educationLevel = null;
                 }),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
@@ -471,6 +521,45 @@ class _FilterSheetState extends State<FilterSheet> {
 
       _buildPriceSection(l10n),
       _buildSortSection(l10n, isVehicle: false),
+    ];
+  }
+
+  List<Widget> _buildJobSections(AppLocalizations l10n) {
+    return [
+      Text(l10n.jobJobCategory, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+      const SizedBox(height: 10),
+      _modalChipRow(
+        options: [
+          (l10n.searchFilterAll, null, _jobCategory == null),
+          ...jobCategories.map((c) => (jobCategoryLabel(c, l10n), c, _jobCategory == c)),
+        ],
+        onSelected: (v) => setState(() => _jobCategory = v as String?),
+      ),
+      const SizedBox(height: 16),
+
+      Text(l10n.jobJobType, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+      const SizedBox(height: 10),
+      _modalChipRow(
+        options: [
+          (l10n.searchFilterAll, null, _jobType == null),
+          ...jobTypes.map((t) => (jobTypeLabel(t, l10n), t, _jobType == t)),
+        ],
+        onSelected: (v) => setState(() => _jobType = v as String?),
+      ),
+      const SizedBox(height: 16),
+
+      Text(l10n.jobEducationLevel, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+      const SizedBox(height: 10),
+      _modalChipRow(
+        options: [
+          (l10n.searchFilterAll, null, _educationLevel == null),
+          ...educationLevels.map((e) => (educationLevelLabel(e, l10n), e, _educationLevel == e)),
+        ],
+        onSelected: (v) => setState(() => _educationLevel = v as String?),
+      ),
+      const SizedBox(height: 16),
+
+      _buildSortSection(l10n, isVehicle: false, isJob: true),
     ];
   }
 
@@ -607,7 +696,7 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _buildSortSection(AppLocalizations l10n, {required bool isVehicle}) {
+  Widget _buildSortSection(AppLocalizations l10n, {required bool isVehicle, bool isJob = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -615,6 +704,7 @@ class _FilterSheetState extends State<FilterSheet> {
         const SizedBox(height: 10),
         _modalChipRow(
           options: _sortOptions.where((opt) {
+            if (isJob) return opt.$1 == 'newest' || opt.$1 == 'oldest';
             if (isVehicle) return true;
             return opt.$1 != 'year_desc' && opt.$1 != 'year_asc' &&
                    opt.$1 != 'mileage_low' && opt.$1 != 'mileage_high';

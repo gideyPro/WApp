@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../data/job_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../home/home_screen.dart';
 import '../../providers/job_providers.dart';
@@ -97,6 +98,11 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
       _activeFilters = {};
     });
     ref.read(jobListingsProvider.notifier).loadListings();
+  }
+
+  void _removeFilter(String key) {
+    setState(() => _filterValues = _filterValues.clearField(key));
+    _performSearch();
   }
 
   @override
@@ -212,8 +218,21 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            // if (_filterValues.type != null)
-            //  _filterChip('Type: ${jobTypeLabel(_filterValues.type!, l10n)}', () => _removeFilter('job_type')),
+            if (_filterValues.jobCategory != null)
+              _filterChip(
+                jobCategoryLabel(_filterValues.jobCategory!, l10n),
+                () => _removeFilter('job_category'),
+              ),
+            if (_filterValues.jobType != null)
+              _filterChip(
+                jobTypeLabel(_filterValues.jobType!, l10n),
+                () => _removeFilter('job_type'),
+              ),
+            if (_filterValues.educationLevel != null)
+              _filterChip(
+                educationLevelLabel(_filterValues.educationLevel!, l10n),
+                () => _removeFilter('education_level'),
+              ),
             if (_searchController.text.isNotEmpty)
               _filterChip(_searchController.text, _clearSearch),
             const SizedBox(width: 4),

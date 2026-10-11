@@ -161,13 +161,11 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        if (listing.userContactHidden != true) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            phone,
-                            style: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary),
-                          ),
-                        ],
+                        const SizedBox(height: 2),
+                        Text(
+                          phone,
+                          style: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary),
+                        ),
                       ],
                     ),
                   ),
