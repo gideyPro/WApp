@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug-only override: allow cleartext everywhere so `flutter run` /
+     debug APKs can talk to local backends on any http URL.
+     Release builds use the main res/xml config (cleartext blocked except
+     the placeholder host substituted by the Build Local APK workflow). -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
