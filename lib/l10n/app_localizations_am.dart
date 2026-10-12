@@ -2648,6 +2648,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobEducationLevel => 'የትምህርት ደረጃ';
 
   @override
+  String get jobEducationOtherHint => 'የትምህርት ደረጃ ያስገቡ';
+
+  @override
   String get jobEmployerInfo => 'የቀጣሪ መረጃ';
 
   @override
@@ -2847,4 +2850,13 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get seekerProfileSaved => 'መገለጫው በተሳካ ሁኔታ ተዘምኗል';
+
+  @override
+  String get seekerCv => 'ሲቪ';
+
+  @override
+  String get seekerUploadCv => 'ሲቪ ይስቀሉ (አማራጭ)';
+
+  @override
+  String get seekerViewCv => 'ሲቪ ይመልከቱ';
 }

@@ -859,6 +859,7 @@
   "jobDescription": "መግለጫ",
   "jobEditTitle": "ኣስተካክል",
   "jobEducationLevel": "የትምህርት ደረጃ",
+  "jobEducationOtherHint": "የትምህርት ደረጃ ያስገቡ",
   "jobEmployerInfo": "የቀጣሪ መረጃ",
   "jobFeatured": "ልዩ ስራ",
   "jobFilter": "ስራዎችን አጣራ",
@@ -925,5 +926,8 @@
   "seekerProfessionalTitle": "የሙያ መጠሪያ",
   "seekerMakePublic": "የስራ ፕሮፋይል ለጥፍ",
   "seekerSaveProfile": "አስቀምጥ",
-  "seekerProfileSaved": "መገለጫው በተሳካ ሁኔታ ተዘምኗል"
+  "seekerProfileSaved": "መገለጫው በተሳካ ሁኔታ ተዘምኗል",
+  "seekerCv": "ሲቪ",
+  "seekerUploadCv": "ሲቪ ይስቀሉ (አማራጭ)",
+  "seekerViewCv": "ሲቪ ይመልከቱ"
 }

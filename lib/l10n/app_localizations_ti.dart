@@ -2648,6 +2648,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobEducationLevel => 'ደረጃ ትምህርቲ';
 
   @override
+  String get jobEducationOtherHint => 'ደረጃ ትምህርቲ ኣእቱ';
+
+  @override
   String get jobEmployerInfo => 'ሓበሬታ ኣስራሒ';
 
   @override
@@ -2847,4 +2850,13 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get seekerProfileSaved => 'ፕሮፋይል ብዓወት ልሰፊሩ';
+
+  @override
+  String get seekerCv => 'ሲቪ';
+
+  @override
+  String get seekerUploadCv => 'ሲቪ ኣእትው (ኣማራጭ)';
+
+  @override
+  String get seekerViewCv => 'ሲቪ ርአ';
 }

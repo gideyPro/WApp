@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/network/api_constants.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../data/job_data.dart';
 import '../../../data/services/message_service.dart';
@@ -47,6 +49,14 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
       }
     } finally {
       if (mounted) setState(() => _isStartingChat = false);
+    }
+  }
+
+  Future<void> _openCv(String cv) async {
+    final url = cv.startsWith('http') ? cv : '${ApiConstants.baseUrl}/storage/$cv';
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 
@@ -128,6 +138,15 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                 if (profile.description != null) ...[
                   _buildSectionTitle(l10n.jobDescription),
                   Text(profile.description!, style: AppTextStyles.bodyMedium),
+                ],
+                if (profile.cv != null) ...[
+                  const SizedBox(height: 16),
+                  _buildSectionTitle(l10n.seekerCv),
+                  OutlinedButton.icon(
+                    onPressed: () => _openCv(profile.cv!),
+                    icon: const Icon(Icons.picture_as_pdf, size: 18, color: Colors.red),
+                    label: Text(l10n.seekerViewCv),
+                  ),
                 ],
               ],
             ),

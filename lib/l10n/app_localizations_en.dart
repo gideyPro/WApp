@@ -2681,6 +2681,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobEducationLevel => 'Education Level';
 
   @override
+  String get jobEducationOtherHint => 'Enter education level';
+
+  @override
   String get jobEmployerInfo => 'Employer Info';
 
   @override
@@ -2883,4 +2886,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seekerProfileSaved => 'Profile updated successfully';
+
+  @override
+  String get seekerCv => 'CV';
+
+  @override
+  String get seekerUploadCv => 'Upload CV (Optional)';
+
+  @override
+  String get seekerViewCv => 'View CV';
 }

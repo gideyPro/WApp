@@ -859,6 +859,7 @@
   "jobDescription": "Description",
   "jobEditTitle": "Edit Job",
   "jobEducationLevel": "Education Level",
+  "jobEducationOtherHint": "Enter education level",
   "jobEmployerInfo": "Employer Info",
   "jobFeatured": "Featured Job",
   "jobFilter": "Filter Jobs",
@@ -925,5 +926,8 @@
   "seekerProfessionalTitle": "Professional Title",
   "seekerMakePublic": "Make Profile Public",
   "seekerSaveProfile": "Save Profile",
-  "seekerProfileSaved": "Profile updated successfully"
+  "seekerProfileSaved": "Profile updated successfully",
+  "seekerCv": "CV",
+  "seekerUploadCv": "Upload CV (Optional)",
+  "seekerViewCv": "View CV"
 }

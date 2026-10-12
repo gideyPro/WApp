@@ -136,6 +136,7 @@ class JobSeekerService {
   Future<JobSeekerProfileResponse> createOrUpdateProfile({
     required Map<String, dynamic> data,
     File? photo,
+    File? cv,
     bool update = false,
   }) async {
     try {
@@ -144,6 +145,12 @@ class JobSeekerService {
         formData.files.add(MapEntry(
           'photo',
           await MultipartFile.fromFile(photo.path, filename: 'photo.jpg'),
+        ));
+      }
+      if (cv != null) {
+        formData.files.add(MapEntry(
+          'cv',
+          await MultipartFile.fromFile(cv.path, filename: 'cv.pdf'),
         ));
       }
 

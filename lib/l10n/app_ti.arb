@@ -859,6 +859,7 @@
   "jobDescription": "መግለፂ",
   "jobEditTitle": "ኣስተኻኽል",
   "jobEducationLevel": "ደረጃ ትምህርቲ",
+  "jobEducationOtherHint": "ደረጃ ትምህርቲ ኣእቱ",
   "jobEmployerInfo": "ሓበሬታ ኣስራሒ",
   "jobFeatured": "ፍሉይ ስራሕ",
   "jobFilter": "ስራሕቲ መፃረዪ",
@@ -925,5 +926,8 @@
   "seekerProfessionalTitle": "ሞያዊ መዓርግ",
   "seekerMakePublic": "ናይ ስራሕ ፕሮፋይል ለጥፍ",
   "seekerSaveProfile": "ኣስፍር",
-  "seekerProfileSaved": "ፕሮፋይል ብዓወት ልሰፊሩ"
+  "seekerProfileSaved": "ፕሮፋይል ብዓወት ልሰፊሩ",
+  "seekerCv": "ሲቪ",
+  "seekerUploadCv": "ሲቪ ኣእትው (ኣማራጭ)",
+  "seekerViewCv": "ሲቪ ርአ"
 }

@@ -54,6 +54,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
   late TextEditingController _salaryMaxController;
   late TextEditingController _descriptionController;
   late TextEditingController _specificLocationController;
+  final _educationCustomController = TextEditingController();
 
   @override
   void initState() {
@@ -87,6 +88,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     _salaryMaxController.dispose();
     _descriptionController.dispose();
     _specificLocationController.dispose();
+    _educationCustomController.dispose();
     super.dispose();
   }
 
@@ -122,6 +124,9 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       case 1:
         if (_formData.salaryType == 'fixed' && _formData.salaryMin == null) errors.add('${l10n.jobSalaryMin} ${l10n.commonIsRequired}');
         if (_formData.addressId == null) errors.add('${l10n.jobLocation} ${l10n.commonIsRequired}');
+        if (_formData.reqEducation == 'other' && _educationCustomController.text.trim().isEmpty) {
+          errors.add('${l10n.jobEducationLevel} ${l10n.commonIsRequired}');
+        }
         break;
       case 2:
         if (_formData.description == null || _formData.description!.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
@@ -275,8 +280,14 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     );
 
     try {
+      final customEdu = _educationCustomController.text.trim();
+      final formData = _formData.copyWith(
+        reqEducation: _formData.reqEducation == 'other'
+            ? (customEdu.isEmpty ? 'other' : customEdu)
+            : _formData.reqEducation,
+      );
       final response = await ref.read(jobServiceProvider).createListing(
-        formData: _formData,
+        formData: formData,
         submissionKey: _currentSubmissionKey,
         onProgress: (p) {},
       );
@@ -443,6 +454,18 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             items: educationLevels.map((c) => DropdownMenuItem(value: c, child: Text(educationLevelLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(reqEducation: v)),
           ),
+          if (_formData.reqEducation == 'other')
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: TextFormField(
+                controller: _educationCustomController,
+                maxLength: 30,
+                decoration: InputDecoration(
+                  labelText: l10n.jobEducationOtherHint,
+                  counterText: '',
+                ),
+              ),
+            ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _formData.reqGender,

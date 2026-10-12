@@ -4,6 +4,7 @@ class JobSeekerProfile {
   final String professionalTitle;
   final String fullName;
   final String? photo;
+  final String? cv;
   final String? jobCategory;
   final String educationLevel;
   final String? experience;
@@ -18,6 +19,7 @@ class JobSeekerProfile {
     required this.professionalTitle,
     required this.fullName,
     this.photo,
+    this.cv,
     this.jobCategory,
     required this.educationLevel,
     this.experience,
@@ -34,6 +36,7 @@ class JobSeekerProfile {
       professionalTitle: json['professional_title'] as String,
       fullName: json['full_name'] as String,
       photo: json['photo'] as String?,
+      cv: json['cv'] as String?,
       jobCategory: json['job_category'] as String?,
       educationLevel: json['education_level'] as String,
       experience: json['experience'] as String?,
@@ -51,6 +54,7 @@ class JobSeekerProfile {
       'professional_title': professionalTitle,
       'full_name': fullName,
       'photo': photo,
+      'cv': cv,
       'job_category': jobCategory,
       'education_level': educationLevel,
       'experience': experience,
@@ -67,6 +71,7 @@ class JobSeekerProfile {
     String? professionalTitle,
     String? fullName,
     String? photo,
+    String? cv,
     String? jobCategory,
     String? educationLevel,
     String? experience,
@@ -81,6 +86,7 @@ class JobSeekerProfile {
       professionalTitle: professionalTitle ?? this.professionalTitle,
       fullName: fullName ?? this.fullName,
       photo: photo ?? this.photo,
+      cv: cv ?? this.cv,
       jobCategory: jobCategory ?? this.jobCategory,
       educationLevel: educationLevel ?? this.educationLevel,
       experience: experience ?? this.experience,

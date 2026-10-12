@@ -31,7 +31,8 @@ const educationLevels = [
   'tvet_diploma',
   'bachelors',
   'masters',
-  'phd'
+  'phd',
+  'other'
 ];
 
 const genderOptions = [
@@ -142,6 +143,7 @@ String educationLevelLabel(String level, AppLocalizations l10n) {
       case 'bachelors': return 'የመጀመሪያ ዲግሪ';
       case 'masters': return 'ማስተርስ ዲግሪ';
       case 'phd': return 'ዶክትሬት (PhD)';
+      case 'other': return 'ሌላ';
     }
   } else if (lang == 'ti') {
     switch (level) {
@@ -151,6 +153,7 @@ String educationLevelLabel(String level, AppLocalizations l10n) {
       case 'bachelors': return 'ቀዳማይ ዲግሪ';
       case 'masters': return 'ማስተርስ ዲግሪ';
       case 'phd': return 'ዶክትሬት (PhD)';
+      case 'other': return 'ሓላዕቲ';
     }
   }
   switch (level) {
@@ -160,6 +163,7 @@ String educationLevelLabel(String level, AppLocalizations l10n) {
     case 'bachelors': return 'Bachelors Degree';
     case 'masters': return 'Masters Degree';
     case 'phd': return 'PhD';
+    case 'other': return 'Other';
     default: return level;
   }
 }

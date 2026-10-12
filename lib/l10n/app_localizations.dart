@@ -5104,6 +5104,12 @@ abstract class AppLocalizations {
   /// **'Education Level'**
   String get jobEducationLevel;
 
+  /// No description provided for @jobEducationOtherHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter education level'**
+  String get jobEducationOtherHint;
+
   /// No description provided for @jobEmployerInfo.
   ///
   /// In en, this message translates to:
@@ -5505,6 +5511,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile updated successfully'**
   String get seekerProfileSaved;
+
+  /// No description provided for @seekerCv.
+  ///
+  /// In en, this message translates to:
+  /// **'CV'**
+  String get seekerCv;
+
+  /// No description provided for @seekerUploadCv.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload CV (Optional)'**
+  String get seekerUploadCv;
+
+  /// No description provided for @seekerViewCv.
+  ///
+  /// In en, this message translates to:
+  /// **'View CV'**
+  String get seekerViewCv;
 }
 
 class _AppLocalizationsDelegate
