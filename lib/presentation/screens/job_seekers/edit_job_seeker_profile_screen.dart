@@ -63,7 +63,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   }
 
   Future<void> _pickCv() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
