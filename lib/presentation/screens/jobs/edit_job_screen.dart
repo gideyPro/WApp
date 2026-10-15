@@ -7,6 +7,7 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../data/models/listing.dart';
 import '../../../data/models/job_form_data.dart';
+import '../../../data/models/job_requirement_item.dart';
 import '../../../data/job_data.dart';
 import '../../../data/services/address_service.dart';
 import '../../../data/services/listing_media_manager.dart';
@@ -46,6 +47,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
   bool _loadingZones = false, _loadingWoredas = false, _loadingKebeles = false;
   int? _addressId;
 
+  late TextEditingController _titleController;
   late TextEditingController _companyController;
   late TextEditingController _positionsController;
   late TextEditingController _experienceController;
@@ -62,6 +64,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     super.initState();
     final l = widget.listing;
     _formData = JobFormData(
+      title: l.jobTitle ?? l.resolvedJobTitle,
       companyName: l.jobCompanyName,
       jobType: l.jobType ?? 'full_time',
       jobCategory: l.jobCategory ?? '',
@@ -71,9 +74,12 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
       salaryMax: l.jobSalaryMax,
       salaryCurrency: l.jobSalaryCurrency ?? 'ETB',
       reqEducation: l.jobReqEducation,
+      reqEducations: List<EducationItem>.from(l.jobReqEducations ?? []),
       reqExperience: l.jobReqExperience,
+      reqExperiences: List<ExperienceItem>.from(l.jobReqExperiences ?? []),
       reqGender: l.jobReqGender ?? 'any',
-      description: l.description,
+      description: l.jobDescriptionBody.isNotEmpty ? l.jobDescriptionBody : l.description,
+      deadline: l.jobDeadline,
       specificLocation: l.specificLocation,
       addressId: l.addressId,
       termsAccepted: true,
@@ -87,6 +93,8 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
       _formData = _formData.copyWith(reqEducation: 'other');
     }
 
+    _titleController = TextEditingController(text: _formData.title)
+      ..addListener(() => _formData = _formData.copyWith(title: _titleController.text));
     _companyController = TextEditingController(text: _formData.companyName)
       ..addListener(() => _formData = _formData.copyWith(companyName: _companyController.text));
     _positionsController = TextEditingController(text: _formData.positionsCount.toString())
@@ -118,6 +126,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _titleController.dispose();
     _companyController.dispose();
     _positionsController.dispose();
     _experienceController.dispose();
@@ -152,6 +161,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     final errors = <String>[];
     switch (_currentStep) {
       case 0:
+        if (_titleController.text.trim().isEmpty) errors.add('${l10n.jobJobTitle} ${l10n.commonIsRequired}');
         if (_formData.jobCategory.isEmpty) errors.add('${l10n.jobJobCategory} ${l10n.commonIsRequired}');
         if (_formData.jobType.isEmpty) errors.add('${l10n.jobJobType} ${l10n.commonIsRequired}');
         if (_postedAsCompany && _companyController.text.trim().isEmpty) {
@@ -161,9 +171,6 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
       case 1:
         if (_formData.salaryType == 'fixed' && _formData.salaryMin == null) errors.add('${l10n.jobSalaryMin} ${l10n.commonIsRequired}');
         if (_formData.addressId == null) errors.add('${l10n.jobLocation} ${l10n.commonIsRequired}');
-        if (_formData.reqEducation == 'other' && _educationCustomController.text.trim().isEmpty) {
-          errors.add('${l10n.jobEducationLevel} ${l10n.commonIsRequired}');
-        }
         break;
       case 2:
         if (_formData.description == null || _formData.description!.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
@@ -307,6 +314,147 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     setState(() => _formData = _formData.copyWith(images: [..._formData.images, ...persisted]));
   }
 
+  Future<void> _pickDeadline() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _formData.deadline ?? now.add(const Duration(days: 30)),
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() => _formData = _formData.copyWith(deadline: picked));
+    }
+  }
+
+  void _showAddEducationDialog() {
+    final l10n = AppLocalizations.of(context);
+    String selectedLevel = educationLevels.first;
+    final fieldController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: Text(l10n.jobEducationLevel),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                initialValue: selectedLevel,
+                decoration: InputDecoration(labelText: l10n.jobEducationLevel),
+                items: educationLevels
+                    .map((c) => DropdownMenuItem(
+                          value: c,
+                          child: Text(educationLevelLabel(c, l10n)),
+                        ))
+                    .toList(),
+                onChanged: (v) {
+                  if (v != null) setDialogState(() => selectedLevel = v);
+                },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: fieldController,
+                decoration: const InputDecoration(
+                  labelText: 'Field of Study (Optional)',
+                  hintText: 'e.g. Computer Science, Accounting',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.commonCancel),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final field = fieldController.text.trim();
+                final newItem = EducationItem(
+                  educationLevel: selectedLevel,
+                  fieldOfStudy: field.isNotEmpty ? field : null,
+                );
+                final updated = List<EducationItem>.from(_formData.reqEducations)..add(newItem);
+                setState(() {
+                  _formData = _formData.copyWith(
+                    reqEducations: updated,
+                    reqEducation: updated.first.educationLevel,
+                  );
+                });
+                Navigator.pop(ctx);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAddExperienceDialog() {
+    final l10n = AppLocalizations.of(context);
+    final titleController = TextEditingController();
+    final companyController = TextEditingController();
+    final yearsController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.seekerExperience),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(labelText: '${l10n.jobJobTitle} / Role'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: companyController,
+              decoration: InputDecoration(labelText: '${l10n.jobCompanyName} (Optional)'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: yearsController,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: const InputDecoration(labelText: 'Years of Experience'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.commonCancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final title = titleController.text.trim();
+              final comp = companyController.text.trim();
+              final yrs = double.tryParse(yearsController.text.trim());
+              if (title.isNotEmpty || comp.isNotEmpty || yrs != null) {
+                final newItem = ExperienceItem(
+                  jobTitle: title.isNotEmpty ? title : null,
+                  company: comp.isNotEmpty ? comp : null,
+                  years: yrs,
+                );
+                final updated = List<ExperienceItem>.from(_formData.reqExperiences)..add(newItem);
+                setState(() {
+                  _formData = _formData.copyWith(
+                    reqExperiences: updated,
+                    reqExperience: updated.map((e) => e.displayLabel()).join(', '),
+                  );
+                });
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _submit() async {
     final errors = _validateCurrentStep();
     if (errors.isNotEmpty) {
@@ -403,7 +551,13 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TextFormField(
+            controller: _titleController,
+            decoration: InputDecoration(labelText: '${l10n.jobJobTitle} *'),
+          ),
+          const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _formData.jobCategory.isEmpty ? null : _formData.jobCategory,
             decoration: InputDecoration(labelText: '${l10n.jobJobCategory} *'),
@@ -437,8 +591,8 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               controller: _companyController,
               decoration: InputDecoration(labelText: '${l10n.jobCompanyName} *'),
             ),
+            const SizedBox(height: 16),
           ],
-          const SizedBox(height: 16),
           TextFormField(
             controller: _positionsController,
             decoration: InputDecoration(labelText: l10n.jobPositions),
@@ -446,30 +600,122 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            initialValue: _formData.reqEducation,
-            decoration: InputDecoration(labelText: l10n.jobEducationLevel),
-            items: educationLevels.map((c) => DropdownMenuItem(value: c, child: Text(educationLevelLabel(c, l10n)))).toList(),
-            onChanged: (v) => setState(() => _formData = _formData.copyWith(reqEducation: v)),
-          ),
-          if (_formData.reqEducation == 'other')
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: TextFormField(
-                controller: _educationCustomController,
-                maxLength: 30,
-                decoration: InputDecoration(
-                  labelText: l10n.jobEducationOtherHint,
-                  counterText: '',
-                ),
-              ),
-            ),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
             initialValue: _formData.reqGender,
             decoration: InputDecoration(labelText: l10n.jobRequiredGender),
             items: genderOptions.map((c) => DropdownMenuItem(value: c, child: Text(genderOptionLabel(c, l10n)))).toList(),
             onChanged: (v) => setState(() => _formData = _formData.copyWith(reqGender: v ?? 'any')),
           ),
+          const SizedBox(height: 16),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.event_outlined, color: AppColors.accent600),
+            title: Text(
+              _formData.deadline != null
+                  ? 'Deadline: ${_formData.deadline!.year}-${_formData.deadline!.month.toString().padLeft(2, '0')}-${_formData.deadline!.day.toString().padLeft(2, '0')}'
+                  : 'Application Deadline (Optional)',
+              style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary),
+            ),
+            trailing: _formData.deadline != null
+                ? IconButton(
+                    icon: const Icon(Icons.clear, size: 20),
+                    onPressed: () => setState(() => _formData.deadline = null),
+                  )
+                : const Icon(Icons.calendar_today_outlined, size: 20),
+            onTap: _pickDeadline,
+          ),
+          const Divider(height: 32),
+          // Education Requirements
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l10n.jobEducationLevel, style: AppTextStyles.labelLarge.copyWith(color: context.theme.textPrimary)),
+              TextButton.icon(
+                onPressed: _showAddEducationDialog,
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Add Education'),
+              ),
+            ],
+          ),
+          if (_formData.reqEducations.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(
+                'No specific education requirements added.',
+                style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+              ),
+            )
+          else
+            ..._formData.reqEducations.asMap().entries.map((entry) {
+              final idx = entry.key;
+              final edu = entry.value;
+              return Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  dense: true,
+                  leading: const Icon(Icons.school, size: 20, color: AppColors.accent600),
+                  title: Text(edu.displayLabel(l10n)),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
+                    onPressed: () {
+                      final updated = List<EducationItem>.from(_formData.reqEducations)..removeAt(idx);
+                      setState(() {
+                        _formData = _formData.copyWith(
+                          reqEducations: updated,
+                          reqEducation: updated.isNotEmpty ? updated.first.educationLevel : null,
+                        );
+                      });
+                    },
+                  ),
+                ),
+              );
+            }),
+          const Divider(height: 32),
+          // Experience Requirements
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l10n.seekerExperience, style: AppTextStyles.labelLarge.copyWith(color: context.theme.textPrimary)),
+              TextButton.icon(
+                onPressed: _showAddExperienceDialog,
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Add Experience'),
+              ),
+            ],
+          ),
+          if (_formData.reqExperiences.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(
+                'No specific experience requirements added.',
+                style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+              ),
+            )
+          else
+            ..._formData.reqExperiences.asMap().entries.map((entry) {
+              final idx = entry.key;
+              final exp = entry.value;
+              return Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  dense: true,
+                  leading: const Icon(Icons.work, size: 20, color: AppColors.accent600),
+                  title: Text(exp.displayLabel()),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
+                    onPressed: () {
+                      final updated = List<ExperienceItem>.from(_formData.reqExperiences)..removeAt(idx);
+                      setState(() {
+                        _formData = _formData.copyWith(
+                          reqExperiences: updated,
+                          reqExperience: updated.isNotEmpty ? updated.map((e) => e.displayLabel()).join(', ') : null,
+                        );
+                      });
+                    },
+                  ),
+                ),
+              );
+            }),
+          const SizedBox(height: 16),
         ],
       ),
     );

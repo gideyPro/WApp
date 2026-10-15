@@ -123,14 +123,40 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                 ],
                 const SizedBox(height: 24),
                 _buildSectionTitle(l10n.jobCategoryEducation),
-                Text(educationLevelLabel(profile.educationLevel, l10n), style: AppTextStyles.bodyMedium),
+                if (profile.educations != null && profile.educations!.isNotEmpty) ...[
+                  ...profile.educations!.map((edu) => Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('• ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Expanded(child: Text(edu.displayLabel(l10n), style: AppTextStyles.bodyMedium)),
+                      ],
+                    ),
+                  )),
+                ] else ...[
+                  Text(educationLevelLabel(profile.educationLevel, l10n), style: AppTextStyles.bodyMedium),
+                ],
                 const SizedBox(height: 16),
                 if (profile.jobCategory != null) ...[
                   _buildSectionTitle(l10n.jobJobCategory),
                   Text(jobCategoryLabel(profile.jobCategory!, l10n), style: AppTextStyles.bodyMedium),
                   const SizedBox(height: 16),
                 ],
-                if (profile.experience != null) ...[
+                if (profile.experiences != null && profile.experiences!.isNotEmpty) ...[
+                  _buildSectionTitle(l10n.seekerExperience),
+                  ...profile.experiences!.map((exp) => Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('• ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Expanded(child: Text(exp.displayLabel(), style: AppTextStyles.bodyMedium)),
+                      ],
+                    ),
+                  )),
+                  const SizedBox(height: 16),
+                ] else if (profile.experience != null && profile.experience!.isNotEmpty) ...[
                   _buildSectionTitle(l10n.seekerExperience),
                   Text(profile.experience!, style: AppTextStyles.bodyMedium),
                   const SizedBox(height: 16),

@@ -5,9 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/text_styles.dart';
 import '../../../data/job_data.dart';
 import '../../providers/job_seeker_providers.dart';
 import '../../../data/models/job_seeker_profile.dart';
+import '../../../data/models/job_requirement_item.dart';
 import '../../../l10n/app_localizations.dart';
 
 class EditJobSeekerProfileScreen extends ConsumerStatefulWidget {
@@ -31,6 +33,10 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   File? _selectedImage;
   File? _selectedCv;
   bool _isSubmitting = false;
+  bool _formPopulated = false;
+
+  List<EducationItem> _educations = [];
+  List<ExperienceItem> _experiences = [];
 
   @override
   void dispose() {
@@ -70,10 +76,13 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   }
 
   void _populateForm(JobSeekerProfile profile) {
+    if (_formPopulated) return;
+    _formPopulated = true;
+
     _fullNameController.text = profile.fullName;
     _titleController.text = profile.professionalTitle;
     _category = profile.jobCategory;
-    // A stored custom education value maps to the "Other" option + its text.
+
     final edu = profile.educationLevel;
     if (edu.isNotEmpty && edu != 'other' && !educationLevels.contains(edu)) {
       _education = 'other';
@@ -84,6 +93,133 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     _experienceController.text = profile.experience ?? '';
     _descriptionController.text = profile.description ?? '';
     _isPublic = profile.isPublic;
+
+    if (profile.educations != null && profile.educations!.isNotEmpty) {
+      _educations = List.from(profile.educations!);
+    } else if (profile.educationLevel.isNotEmpty && profile.educationLevel != 'other') {
+      _educations = [EducationItem(educationLevel: profile.educationLevel)];
+    }
+
+    if (profile.experiences != null && profile.experiences!.isNotEmpty) {
+      _experiences = List.from(profile.experiences!);
+    }
+  }
+
+  void _showAddEducationDialog() {
+    final l10n = AppLocalizations.of(context);
+    String selectedLevel = 'bachelors';
+    final fieldController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: Text(l10n.jobCategoryEducation),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                initialValue: selectedLevel,
+                decoration: InputDecoration(labelText: l10n.jobEducationLevel),
+                items: educationLevels.map((lvl) {
+                  return DropdownMenuItem(
+                    value: lvl,
+                    child: Text(educationLevelLabel(lvl, l10n)),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  if (val != null) setDialogState(() => selectedLevel = val);
+                },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: fieldController,
+                decoration: const InputDecoration(
+                  labelText: 'Field of Study (e.g. Accounting, CS)',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.commonCancel),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final field = fieldController.text.trim();
+                setState(() {
+                  _educations.add(EducationItem(
+                    educationLevel: selectedLevel,
+                    fieldOfStudy: field.isNotEmpty ? field : null,
+                  ));
+                });
+                Navigator.pop(ctx);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAddExperienceDialog() {
+    final l10n = AppLocalizations.of(context);
+    final titleController = TextEditingController();
+    final companyController = TextEditingController();
+    final yearsController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.seekerExperience),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(labelText: l10n.jobJobTitle),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: companyController,
+              decoration: InputDecoration(labelText: l10n.jobCompanyName),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: yearsController,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: const InputDecoration(labelText: 'Years of Experience'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.commonCancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final title = titleController.text.trim();
+              final comp = companyController.text.trim();
+              final yrs = double.tryParse(yearsController.text.trim());
+              if (title.isNotEmpty || comp.isNotEmpty) {
+                setState(() {
+                  _experiences.add(ExperienceItem(
+                    jobTitle: title.isNotEmpty ? title : null,
+                    company: comp.isNotEmpty ? comp : null,
+                    years: yrs,
+                  ));
+                });
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _submit(JobSeekerProfile? existing) async {
@@ -93,13 +229,19 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     setState(() => _isSubmitting = true);
 
     final customEdu = _educationCustomController.text.trim();
-    final data = {
+    final primaryEdu = _educations.isNotEmpty
+        ? _educations.first.educationLevel
+        : (_education == 'other' ? (customEdu.isEmpty ? 'other' : customEdu) : (_education ?? 'bachelors'));
+
+    final data = <String, dynamic>{
       'full_name': _fullNameController.text.trim(),
       'professional_title': _titleController.text.trim(),
       'job_category': _category?.trim() ?? '',
-      'education_level': _education == 'other'
-          ? (customEdu.isEmpty ? 'other' : customEdu)
-          : (_education ?? ''),
+      'education_level': primaryEdu,
+      if (_educations.isNotEmpty)
+        'educations': _educations.map((e) => e.toJson()).toList(),
+      if (_experiences.isNotEmpty)
+        'experiences': _experiences.map((e) => e.toJson()).toList(),
       'experience': _experienceController.text.trim(),
       'description': _descriptionController.text.trim(),
       'is_public': _isPublic ? '1' : '0',
@@ -138,32 +280,39 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
       appBar: AppBar(title: Text(l10n.seekerMyProfile)),
       body: myProfileAsync.when(
         data: (profile) {
-          if (profile != null && _fullNameController.text.isEmpty && _titleController.text.isEmpty) {
-            _populateForm(profile);
-          }
-
-          return Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+          if (profile != null) _populateForm(profile);
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Center(
-                    child: GestureDetector(
-                      onTap: _pickImage,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: AppColors.stone200,
-                        backgroundImage: _selectedImage != null
-                            ? FileImage(_selectedImage!) as ImageProvider
-                            : (profile?.photo != null
-                                ? NetworkImage(profile!.photo!)
-                                : null),
-                        child: _selectedImage == null && profile?.photo == null
-                            ? const Icon(Icons.add_a_photo, size: 30)
-                            : null,
-                      ),
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: _selectedImage != null
+                              ? FileImage(_selectedImage!)
+                              : (profile?.photo != null ? NetworkImage(profile!.photo!) : null) as ImageProvider?,
+                          child: (_selectedImage == null && profile?.photo == null)
+                              ? const Icon(Icons.person, size: 50)
+                              : null,
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: CircleAvatar(
+                            radius: 18,
+                            backgroundColor: AppColors.accent600,
+                            child: IconButton(
+                              icon: const Icon(Icons.camera_alt, size: 18, color: Colors.white),
+                              onPressed: _pickImage,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -173,33 +322,89 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                     label: l10n.jobJobCategory,
                     value: _category,
                     items: _withExisting(_category, jobCategories),
-                    labelFor: (v) => jobCategoryLabel(v, l10n),
-                    onChanged: (v) => setState(() => _category = v),
-                    required: true,
+                    onChanged: (val) => setState(() => _category = val),
+                    itemLabel: (cat) => jobCategoryLabel(cat, l10n),
                   ),
-                  _buildDropdown(
-                    label: l10n.jobEducationLevel,
-                    value: _education,
-                    items: _withExisting(_education, educationLevels),
-                    labelFor: (v) => educationLevelLabel(v, l10n),
-                    onChanged: (v) => setState(() => _education = v),
-                    required: true,
-                  ),
-                  if (_education == 'other')
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: TextFormField(
-                        controller: _educationCustomController,
-                        maxLength: 30,
-                        decoration: InputDecoration(
-                          labelText: l10n.jobEducationOtherHint,
-                          counterText: '',
-                        ),
-                        validator: (v) => (v == null || v.trim().isEmpty)
-                            ? '${l10n.jobEducationLevel} ${l10n.commonIsRequired}'
-                            : null,
+
+                  // Educations Section
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(l10n.jobCategoryEducation, style: AppTextStyles.labelLarge),
+                      TextButton.icon(
+                        onPressed: _showAddEducationDialog,
+                        icon: const Icon(Icons.add, size: 18),
+                        label: const Text('Add Education'),
                       ),
-                    ),
+                    ],
+                  ),
+                  if (_educations.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        'No education credentials added yet.',
+                        style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+                      ),
+                    )
+                  else
+                    ..._educations.asMap().entries.map((entry) {
+                      final idx = entry.key;
+                      final edu = entry.value;
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          dense: true,
+                          leading: const Icon(Icons.school, size: 20, color: AppColors.accent600),
+                          title: Text(edu.displayLabel(l10n)),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
+                            onPressed: () => setState(() => _educations.removeAt(idx)),
+                          ),
+                        ),
+                      );
+                    }),
+
+                  const SizedBox(height: 16),
+                  // Experiences Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(l10n.seekerExperience, style: AppTextStyles.labelLarge),
+                      TextButton.icon(
+                        onPressed: _showAddExperienceDialog,
+                        icon: const Icon(Icons.add, size: 18),
+                        label: const Text('Add Experience'),
+                      ),
+                    ],
+                  ),
+                  if (_experiences.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        'No work history added yet.',
+                        style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+                      ),
+                    )
+                  else
+                    ..._experiences.asMap().entries.map((entry) {
+                      final idx = entry.key;
+                      final exp = entry.value;
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          dense: true,
+                          leading: const Icon(Icons.work, size: 20, color: AppColors.accent600),
+                          title: Text(exp.displayLabel()),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
+                            onPressed: () => setState(() => _experiences.removeAt(idx)),
+                          ),
+                        ),
+                      );
+                    }),
+
+                  const SizedBox(height: 12),
                   _buildTextField(l10n.seekerExperience, _experienceController, maxLines: 3),
                   _buildTextField(l10n.jobDescription, _descriptionController, maxLines: 5),
                   Padding(
@@ -294,11 +499,10 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
         controller: controller,
         maxLines: maxLines,
         decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
+          labelText: required ? '$label *' : label,
         ),
         validator: required
-            ? (val) => val == null || val.isEmpty ? '$label ${l10n.commonIsRequired}' : null
+            ? (val) => val == null || val.trim().isEmpty ? '$label ${l10n.commonIsRequired}' : null
             : null,
       ),
     );
@@ -308,26 +512,21 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     required String label,
     required String? value,
     required List<String> items,
-    required String Function(String) labelFor,
     required ValueChanged<String?> onChanged,
-    bool required = false,
+    required String Function(String) itemLabel,
   }) {
-    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: DropdownButtonFormField<String>(
         initialValue: value,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        items: items
-            .map((e) => DropdownMenuItem(value: e, child: Text(labelFor(e))))
-            .toList(),
+        decoration: InputDecoration(labelText: label),
+        items: items.map((item) {
+          return DropdownMenuItem(
+            value: item,
+            child: Text(itemLabel(item)),
+          );
+        }).toList(),
         onChanged: onChanged,
-        validator: required
-            ? (val) => val == null || val.isEmpty ? '$label ${l10n.commonIsRequired}' : null
-            : null,
       ),
     );
   }

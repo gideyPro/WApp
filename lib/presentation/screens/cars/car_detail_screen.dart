@@ -39,6 +39,25 @@ class CarDetailScreen extends ConsumerStatefulWidget {
 class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   bool _isVipLoading = false;
   bool _isFeatureLoading = false;
+  bool _isRevealingContact = false;
+
+  Future<void> _revealContact(int listingId) async {
+    setState(() => _isRevealingContact = true);
+    try {
+      final result = await ref.read(carDetailProvider.notifier).revealContact(listingId);
+      if (result != null && mounted) {
+        final message = result['message'] as String? ?? 'Contact revealed';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isRevealingContact = false);
+    }
+  }
 
   @override
   void initState() {
@@ -184,11 +203,11 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
             _buildPriceAndTitle(listing),
             const Divider(height: 32),
             _buildSpecsSection(listing),
-            if (listing.description != null && listing.description!.isNotEmpty) ...[
+            if (listing.carDescriptionBody.isNotEmpty) ...[
               const SizedBox(height: 24),
               _buildSection(
                 title: l10n.listingDescriptionLabel,
-                child: Text(listing.description!, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textTertiary, height: 1.6)),
+                child: Text(listing.carDescriptionBody, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textTertiary, height: 1.6)),
               ),
             ],
             if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
@@ -434,8 +453,16 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                 ),
               ),
           ],
-          if (!isOwner && listing.sellerPhone != null && listing.sellerPhone!.isNotEmpty) ...[
-            _buildSellerContact(listing),
+          if (!isOwner) ...[
+            if (listing.contactRevealed || (listing.sellerPhone != null && listing.sellerPhone!.isNotEmpty && !listing.userContactHidden)) ...[
+              _buildSellerContact(listing),
+            ] else if (listing.userContactHidden) ...[
+              const SizedBox(height: 12),
+              _buildContactUpgradeSection(l10n),
+            ] else if (listing.contactMax > 0) ...[
+              const SizedBox(height: 12),
+              _buildContactRevealSection(listing, l10n),
+            ],
           ],
           if (!isOwner) ...[
             const SizedBox(height: 12),
@@ -458,10 +485,61 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     );
   }
 
+  Widget _buildContactRevealSection(Listing listing, AppLocalizations l10n) {
+    return LiquidGlass(
+      borderRadius: 8,
+      blur: 20,
+      tint: AppColors.accent500,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          const Icon(Icons.lock_outline, size: 28, color: AppColors.accent600),
+          const SizedBox(height: 8),
+          Text(l10n.listingsRevealContact, style: AppTextStyles.title.copyWith(fontSize: 14)),
+          if (listing.contactMax > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              l10n.listingsContactViewsRemaining(listing.contactRemaining, listing.contactMax),
+              style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _isRevealingContact ? null : () => _revealContact(listing.id),
+              icon: _isRevealingContact
+                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  : const Icon(Icons.visibility_outlined, size: 18),
+              label: Text(_isRevealingContact ? l10n.listingsRevealing : l10n.listingsRevealContact),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accent500,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContactUpgradeSection(AppLocalizations l10n) {
+    return UpgradeCard(
+      icon: Icons.lock_outline,
+      iconColor: AppColors.accent500,
+      title: l10n.upgradeToContact,
+      subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+      buttonLabel: l10n.listingViewPlans,
+    );
+  }
+
   Widget _buildSellerContact(Listing listing) {
     final l10n = AppLocalizations.of(context);
-    final phone = listing.sellerPhone!;
-    final name = listing.sellerName ?? 'Seller';
+    final phone = listing.revealedContact ?? listing.sellerPhone ?? '';
+    final name = listing.revealedName ?? listing.sellerName ?? 'Seller';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

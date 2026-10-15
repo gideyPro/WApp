@@ -44,8 +44,13 @@ class JobListingCard extends ConsumerWidget {
   }
 
   String _jobTitle(AppLocalizations l10n) {
-    final firstLine = job.description?.split('\n').first.trim();
-    if (firstLine != null && firstLine.isNotEmpty) return firstLine;
+    if (job.jobTitle != null && job.jobTitle!.trim().isNotEmpty) {
+      return job.jobTitle!.trim();
+    }
+    final category = job.jobCategory;
+    if (category != null && category.isNotEmpty) {
+      return jobCategoryLabel(category, l10n);
+    }
     final company = job.jobCompanyName?.trim();
     if (company != null && company.isNotEmpty) return company;
     return l10n.jobJob;

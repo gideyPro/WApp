@@ -6,6 +6,8 @@ import '../../core/network/api_constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'address.dart';
 import 'image.dart';
+import 'job_requirement_item.dart';
+import '../job_data.dart';
 
 const _jsonDecoder = JsonDecoder();
 
@@ -96,6 +98,9 @@ class Listing {
   final String? jobReqExperience;
   final String? jobReqGender;
   final DateTime? jobDeadline;
+  final String? jobTitle;
+  final List<EducationItem>? jobReqEducations;
+  final List<ExperienceItem>? jobReqExperiences;
   
   final Map<String, dynamic>? property; 
 
@@ -317,6 +322,9 @@ class Listing {
     this.jobReqExperience,
     this.jobReqGender,
     this.jobDeadline,
+    this.jobTitle,
+    this.jobReqEducations,
+    this.jobReqExperiences,
     this.property,
 
     this.agentId,
@@ -603,8 +611,35 @@ class Listing {
       jobReqExperience: property is Map ? property['req_experience'] : json['req_experience'],
       jobReqGender: property is Map ? property['req_gender'] : json['req_gender'],
       jobDeadline: (property is Map ? property['deadline'] : json['deadline']) != null ? DateTime.parse(property is Map ? property['deadline'] : json['deadline']) : null,
+      jobTitle: property is Map ? (property['title'] ?? property['job_title']) : (json['title'] ?? json['job_title']),
+      jobReqEducations: _parseEducationItems(property is Map ? property['req_educations'] : json['req_educations']),
+      jobReqExperiences: _parseExperienceItems(property is Map ? property['req_experiences'] : json['req_experiences']),
       agentId: TypeUtils.safeInt(json['agent_id']),
     );
+  }
+
+  static List<EducationItem>? _parseEducationItems(dynamic value) {
+    if (value == null) return null;
+    if (value is String) value = _safeDecodeJson(value);
+    if (value is List) {
+      return value
+          .whereType<Map>()
+          .map((e) => EducationItem.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+    }
+    return null;
+  }
+
+  static List<ExperienceItem>? _parseExperienceItems(dynamic value) {
+    if (value == null) return null;
+    if (value is String) value = _safeDecodeJson(value);
+    if (value is List) {
+      return value
+          .whereType<Map>()
+          .map((e) => ExperienceItem.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+    }
+    return null;
   }
 
   static List<String>? _parseCarFeatures(dynamic value) {
@@ -801,9 +836,66 @@ class Listing {
     }
   }
 
+  String? get resolvedJobTitle {
+    if (jobTitle != null && jobTitle!.trim().isNotEmpty) {
+      return jobTitle!.trim();
+    }
+    return null;
+  }
+
+  String get jobDescriptionBody {
+    return description?.trim() ?? '';
+  }
+
+  String get carDescriptionBody {
+    if (description == null || description!.isEmpty) return '';
+    final lines = description!.trim().split('\n');
+    if (lines.isNotEmpty) {
+      final first = lines[0].trim();
+      final title = carTitle.trim();
+      if (first == title || (carMake != null && carModel != null && first.startsWith('$carMake $carModel'))) {
+        return lines.sublist(1).join('\n').trim();
+      }
+    }
+    return description!.trim();
+  }
+
+  String? get jobEducationSummary {
+    if (jobReqEducations != null && jobReqEducations!.isNotEmpty) {
+      final first = jobReqEducations!.first;
+      if (first.fieldOfStudy != null && first.fieldOfStudy!.trim().isNotEmpty) {
+        return '${first.educationLevel} in ${first.fieldOfStudy!.trim()}';
+      }
+      return first.educationLevel;
+    }
+    return jobReqEducation;
+  }
+
+  double get jobTotalReqExperienceYears {
+    if (jobReqExperiences != null && jobReqExperiences!.isNotEmpty) {
+      return jobReqExperiences!.fold(0.0, (sum, item) => sum + (item.years ?? 0.0));
+    }
+    return 0.0;
+  }
+
   String getLocalizedTitle(BuildContext context, [Map<String, String>? cache]) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).languageCode;
+
+    if (propertyType == PropertyType.job) {
+      final title = resolvedJobTitle;
+      if (title != null && title.isNotEmpty) {
+        return title;
+      }
+      if (jobCategory != null && jobCategory!.isNotEmpty) {
+        return jobCategoryLabel(jobCategory!, l10n);
+      }
+    } else if (propertyType == PropertyType.car) {
+      if (carTitle.isNotEmpty && carTitle != 'Vehicle') {
+        return carTitle;
+      }
+    }
+
     String type;
     switch (propertyType) {
       case PropertyType.house:

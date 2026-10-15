@@ -140,7 +140,39 @@ class JobSeekerService {
     bool update = false,
   }) async {
     try {
-      final formData = FormData.fromMap(data);
+      final mapCopy = Map<String, dynamic>.from(data);
+      final educations = mapCopy.remove('educations');
+      final experiences = mapCopy.remove('experiences');
+      final formData = FormData.fromMap(mapCopy);
+
+      if (educations is List) {
+        for (int i = 0; i < educations.length; i++) {
+          final edu = educations[i];
+          if (edu is Map) {
+            formData.fields.add(MapEntry('educations[$i][education_level]', edu['education_level']?.toString() ?? 'other'));
+            if (edu['field_of_study'] != null && edu['field_of_study'].toString().isNotEmpty) {
+              formData.fields.add(MapEntry('educations[$i][field_of_study]', edu['field_of_study'].toString()));
+            }
+          }
+        }
+      }
+
+      if (experiences is List) {
+        for (int i = 0; i < experiences.length; i++) {
+          final exp = experiences[i];
+          if (exp is Map) {
+            if (exp['job_title'] != null && exp['job_title'].toString().isNotEmpty) {
+              formData.fields.add(MapEntry('experiences[$i][job_title]', exp['job_title'].toString()));
+            }
+            if (exp['company'] != null && exp['company'].toString().isNotEmpty) {
+              formData.fields.add(MapEntry('experiences[$i][company]', exp['company'].toString()));
+            }
+            if (exp['years'] != null) {
+              formData.fields.add(MapEntry('experiences[$i][years]', exp['years'].toString()));
+            }
+          }
+        }
+      }
       if (photo != null) {
         formData.files.add(MapEntry(
           'photo',

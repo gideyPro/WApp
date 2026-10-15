@@ -1,5 +1,8 @@
+import 'job_requirement_item.dart';
+
 class JobFormData {
   // Job-specific fields
+  String? title;
   String? companyName;
   String jobType = 'full_time';
   String jobCategory = '';
@@ -9,7 +12,9 @@ class JobFormData {
   double? salaryMax;
   String salaryCurrency = 'ETB';
   String? reqEducation;
+  List<EducationItem> reqEducations = [];
   String? reqExperience;
+  List<ExperienceItem> reqExperiences = [];
   String reqGender = 'any';
   String? description;
   DateTime? deadline;
@@ -23,6 +28,7 @@ class JobFormData {
   bool postedByAgent = false;
   
   JobFormData({
+    this.title,
     this.companyName,
     this.jobType = 'full_time',
     this.jobCategory = '',
@@ -32,7 +38,9 @@ class JobFormData {
     this.salaryMax,
     this.salaryCurrency = 'ETB',
     this.reqEducation,
+    List<EducationItem>? reqEducations,
     this.reqExperience,
+    List<ExperienceItem>? reqExperiences,
     this.reqGender = 'any',
     this.description,
     this.deadline,
@@ -46,9 +54,12 @@ class JobFormData {
     this.termsAccepted = false,
     this.agentId,
     this.postedByAgent = false,
-  }) : images = images ?? [];
+  })  : reqEducations = reqEducations ?? [],
+        reqExperiences = reqExperiences ?? [],
+        images = images ?? [];
 
   JobFormData copyWith({
+    String? title,
     String? companyName,
     String? jobType,
     String? jobCategory,
@@ -58,7 +69,9 @@ class JobFormData {
     double? salaryMax,
     String? salaryCurrency,
     String? reqEducation,
+    List<EducationItem>? reqEducations,
     String? reqExperience,
+    List<ExperienceItem>? reqExperiences,
     String? reqGender,
     String? description,
     DateTime? deadline,
@@ -74,6 +87,7 @@ class JobFormData {
     bool? postedByAgent,
   }) {
     return JobFormData(
+      title: title ?? this.title,
       companyName: companyName ?? this.companyName,
       jobType: jobType ?? this.jobType,
       jobCategory: jobCategory ?? this.jobCategory,
@@ -83,7 +97,9 @@ class JobFormData {
       salaryMax: salaryMax ?? this.salaryMax,
       salaryCurrency: salaryCurrency ?? this.salaryCurrency,
       reqEducation: reqEducation ?? this.reqEducation,
+      reqEducations: reqEducations ?? this.reqEducations,
       reqExperience: reqExperience ?? this.reqExperience,
+      reqExperiences: reqExperiences ?? this.reqExperiences,
       reqGender: reqGender ?? this.reqGender,
       description: description ?? this.description,
       deadline: deadline ?? this.deadline,

@@ -214,6 +214,8 @@ class JobService {
     final dioFormData = FormData();
     dioFormData.fields.addAll([
       const MapEntry('type', 'job'),
+      if (formData.title != null && formData.title!.isNotEmpty)
+        MapEntry('title', formData.title!),
       if (formData.companyName != null && formData.companyName!.isNotEmpty)
         MapEntry('company_name', formData.companyName!)
       else if (isUpdate)
@@ -227,6 +229,23 @@ class JobService {
       MapEntry('salary_currency', formData.salaryCurrency),
       if (formData.reqEducation != null && formData.reqEducation!.isNotEmpty) MapEntry('req_education', formData.reqEducation!),
       if (formData.reqExperience != null && formData.reqExperience!.isNotEmpty) MapEntry('req_experience', formData.reqExperience!),
+      if (formData.reqEducations.isNotEmpty) ...[
+        for (int i = 0; i < formData.reqEducations.length; i++) ...[
+          MapEntry('req_educations[$i][education_level]', formData.reqEducations[i].educationLevel),
+          if (formData.reqEducations[i].fieldOfStudy != null && formData.reqEducations[i].fieldOfStudy!.isNotEmpty)
+            MapEntry('req_educations[$i][field_of_study]', formData.reqEducations[i].fieldOfStudy!),
+        ],
+      ],
+      if (formData.reqExperiences.isNotEmpty) ...[
+        for (int i = 0; i < formData.reqExperiences.length; i++) ...[
+          if (formData.reqExperiences[i].jobTitle != null && formData.reqExperiences[i].jobTitle!.isNotEmpty)
+            MapEntry('req_experiences[$i][job_title]', formData.reqExperiences[i].jobTitle!),
+          if (formData.reqExperiences[i].company != null && formData.reqExperiences[i].company!.isNotEmpty)
+            MapEntry('req_experiences[$i][company]', formData.reqExperiences[i].company!),
+          if (formData.reqExperiences[i].years != null)
+            MapEntry('req_experiences[$i][years]', formData.reqExperiences[i].years!.toString()),
+        ],
+      ],
       MapEntry('req_gender', formData.reqGender),
       if (formData.deadline != null) MapEntry('deadline', formData.deadline!.toIso8601String()),
       if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),

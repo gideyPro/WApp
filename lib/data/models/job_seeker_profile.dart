@@ -1,3 +1,5 @@
+import 'job_requirement_item.dart';
+
 class JobSeekerProfile {
   final int id;
   final int userId;
@@ -8,6 +10,8 @@ class JobSeekerProfile {
   final String? jobCategory;
   final String educationLevel;
   final String? experience;
+  final List<EducationItem>? educations;
+  final List<ExperienceItem>? experiences;
   final String? description;
   final bool isPublic;
   final DateTime? createdAt;
@@ -23,13 +27,36 @@ class JobSeekerProfile {
     this.jobCategory,
     required this.educationLevel,
     this.experience,
+    this.educations,
+    this.experiences,
     this.description,
     required this.isPublic,
     this.createdAt,
     this.updatedAt,
   });
 
+  double get totalExperienceYears {
+    if (experiences == null || experiences!.isEmpty) return 0.0;
+    return experiences!.fold(0.0, (sum, item) => sum + (item.years ?? 0.0));
+  }
+
   factory JobSeekerProfile.fromJson(Map<String, dynamic> json) {
+    List<EducationItem>? parsedEducations;
+    if (json['educations'] is List) {
+      parsedEducations = (json['educations'] as List)
+          .whereType<Map<String, dynamic>>()
+          .map((e) => EducationItem.fromJson(e))
+          .toList();
+    }
+
+    List<ExperienceItem>? parsedExperiences;
+    if (json['experiences'] is List) {
+      parsedExperiences = (json['experiences'] as List)
+          .whereType<Map<String, dynamic>>()
+          .map((e) => ExperienceItem.fromJson(e))
+          .toList();
+    }
+
     return JobSeekerProfile(
       id: json['id'] as int,
       userId: json['user_id'] as int,
@@ -38,8 +65,10 @@ class JobSeekerProfile {
       photo: json['photo'] as String?,
       cv: json['cv'] as String?,
       jobCategory: json['job_category'] as String?,
-      educationLevel: json['education_level'] as String,
+      educationLevel: (json['education_level'] ?? 'other') as String,
       experience: json['experience'] as String?,
+      educations: parsedEducations,
+      experiences: parsedExperiences,
       description: json['description'] as String?,
       isPublic: json['is_public'] == 1 || json['is_public'] == true,
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
@@ -58,6 +87,8 @@ class JobSeekerProfile {
       'job_category': jobCategory,
       'education_level': educationLevel,
       'experience': experience,
+      if (educations != null) 'educations': educations!.map((e) => e.toJson()).toList(),
+      if (experiences != null) 'experiences': experiences!.map((e) => e.toJson()).toList(),
       'description': description,
       'is_public': isPublic,
       'created_at': createdAt?.toIso8601String(),
@@ -75,6 +106,8 @@ class JobSeekerProfile {
     String? jobCategory,
     String? educationLevel,
     String? experience,
+    List<EducationItem>? educations,
+    List<ExperienceItem>? experiences,
     String? description,
     bool? isPublic,
     DateTime? createdAt,
@@ -90,6 +123,8 @@ class JobSeekerProfile {
       jobCategory: jobCategory ?? this.jobCategory,
       educationLevel: educationLevel ?? this.educationLevel,
       experience: experience ?? this.experience,
+      educations: educations ?? this.educations,
+      experiences: experiences ?? this.experiences,
       description: description ?? this.description,
       isPublic: isPublic ?? this.isPublic,
       createdAt: createdAt ?? this.createdAt,
