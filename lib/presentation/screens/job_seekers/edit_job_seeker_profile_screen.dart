@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../data/job_data.dart';
 import '../../providers/job_seeker_providers.dart';
 import '../../../data/models/job_seeker_profile.dart';
@@ -96,7 +97,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
 
     if (profile.educations != null && profile.educations!.isNotEmpty) {
       _educations = List.from(profile.educations!);
-    } else if (profile.educationLevel.isNotEmpty && profile.educationLevel != 'other') {
+    } else if (profile.educationLevel.isNotEmpty && profile.educationLevel != 'other' && profile.educationLevel != 'none') {
       _educations = [EducationItem(educationLevel: profile.educationLevel)];
     }
 
@@ -109,6 +110,8 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     final l10n = AppLocalizations.of(context);
     String selectedLevel = 'bachelors';
     final fieldController = TextEditingController();
+    String? fieldError;
+    const noFieldRequired = ['none', 'high_school', 'other'];
 
     showDialog(
       context: context,
@@ -128,15 +131,30 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   );
                 }).toList(),
                 onChanged: (val) {
-                  if (val != null) setDialogState(() => selectedLevel = val);
+                  if (val != null) {
+                    setDialogState(() {
+                      selectedLevel = val;
+                      if (noFieldRequired.contains(val)) {
+                        fieldError = null;
+                      }
+                    });
+                  }
                 },
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: fieldController,
-                decoration: const InputDecoration(
-                  labelText: 'Field of Study (e.g. Accounting, CS)',
+                decoration: InputDecoration(
+                  labelText: noFieldRequired.contains(selectedLevel)
+                      ? 'Field of Study (Optional)'
+                      : 'Field of Study (e.g. Accounting, CS) *',
+                  errorText: fieldError,
                 ),
+                onChanged: (_) {
+                  if (fieldError != null) {
+                    setDialogState(() => fieldError = null);
+                  }
+                },
               ),
             ],
           ),
@@ -148,6 +166,12 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
             ElevatedButton(
               onPressed: () {
                 final field = fieldController.text.trim();
+                if (!noFieldRequired.contains(selectedLevel) && field.isEmpty) {
+                  setDialogState(() {
+                    fieldError = 'Field of study is required';
+                  });
+                  return;
+                }
                 setState(() {
                   _educations.add(EducationItem(
                     educationLevel: selectedLevel,
@@ -169,55 +193,99 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     final titleController = TextEditingController();
     final companyController = TextEditingController();
     final yearsController = TextEditingController();
+    String? titleError;
+    String? companyError;
+    String? yearsError;
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.seekerExperience),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: l10n.jobJobTitle),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: Text(l10n.seekerExperience),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    labelText: '${l10n.jobJobTitle} *',
+                    errorText: titleError,
+                  ),
+                  onChanged: (_) {
+                    if (titleError != null) setDialogState(() => titleError = null);
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: companyController,
+                  decoration: InputDecoration(
+                    labelText: '${l10n.jobCompanyName} *',
+                    errorText: companyError,
+                  ),
+                  onChanged: (_) {
+                    if (companyError != null) setDialogState(() => companyError = null);
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: yearsController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: 'Years of Experience *',
+                    errorText: yearsError,
+                  ),
+                  onChanged: (_) {
+                    if (yearsError != null) setDialogState(() => yearsError = null);
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: companyController,
-              decoration: InputDecoration(labelText: l10n.jobCompanyName),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: yearsController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(labelText: 'Years of Experience'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.commonCancel),
           ),
-          ElevatedButton(
-            onPressed: () {
-              final title = titleController.text.trim();
-              final comp = companyController.text.trim();
-              final yrs = double.tryParse(yearsController.text.trim());
-              if (title.isNotEmpty || comp.isNotEmpty) {
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.commonCancel),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final title = titleController.text.trim();
+                final comp = companyController.text.trim();
+                final yrsText = yearsController.text.trim();
+                final yrs = double.tryParse(yrsText);
+
+                bool hasError = false;
+                if (title.isEmpty) {
+                  titleError = 'Job title is required';
+                  hasError = true;
+                }
+                if (comp.isEmpty) {
+                  companyError = 'Company name is required';
+                  hasError = true;
+                }
+                if (yrsText.isEmpty || yrs == null || yrs < 0) {
+                  yearsError = 'Valid years required (e.g. 2)';
+                  hasError = true;
+                }
+
+                if (hasError) {
+                  setDialogState(() {});
+                  return;
+                }
+
                 setState(() {
                   _experiences.add(ExperienceItem(
-                    jobTitle: title.isNotEmpty ? title : null,
-                    company: comp.isNotEmpty ? comp : null,
+                    jobTitle: title,
+                    company: comp,
                     years: yrs,
                   ));
                 });
-              }
-              Navigator.pop(ctx);
-            },
-            child: const Text('Save'),
-          ),
-        ],
+                Navigator.pop(ctx);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -231,7 +299,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     final customEdu = _educationCustomController.text.trim();
     final primaryEdu = _educations.isNotEmpty
         ? _educations.first.educationLevel
-        : (_education == 'other' ? (customEdu.isEmpty ? 'other' : customEdu) : (_education ?? 'bachelors'));
+        : (_education == 'other' ? (customEdu.isEmpty ? 'other' : customEdu) : (_education ?? 'none'));
 
     final data = <String, dynamic>{
       'full_name': _fullNameController.text.trim(),
@@ -276,7 +344,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     final myProfileAsync = ref.watch(myJobSeekerProfileProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.primary50,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(title: Text(l10n.seekerMyProfile)),
       body: myProfileAsync.when(
         data: (profile) {
@@ -331,7 +399,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(l10n.jobCategoryEducation, style: AppTextStyles.labelLarge),
+                      Text(l10n.jobCategoryEducation, style: AppTextStyles.labelLarge.copyWith(color: context.theme.textPrimary)),
                       TextButton.icon(
                         onPressed: _showAddEducationDialog,
                         icon: const Icon(Icons.add, size: 18),
@@ -344,7 +412,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
                         'No education credentials added yet.',
-                        style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+                        style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
                       ),
                     )
                   else
@@ -370,7 +438,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(l10n.seekerExperience, style: AppTextStyles.labelLarge),
+                      Text(l10n.seekerExperience, style: AppTextStyles.labelLarge.copyWith(color: context.theme.textPrimary)),
                       TextButton.icon(
                         onPressed: _showAddExperienceDialog,
                         icon: const Icon(Icons.add, size: 18),
@@ -383,7 +451,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
                         'No work history added yet.',
-                        style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+                        style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
                       ),
                     )
                   else
@@ -448,7 +516,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                                 const SizedBox(width: 8),
                                 Text(
                                   profile!.cv!.split('/').last,
-                                  style: const TextStyle(fontSize: 13, color: AppColors.stone500),
+                                  style: TextStyle(fontSize: 13, color: context.theme.textMuted),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],

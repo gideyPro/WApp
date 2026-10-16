@@ -193,12 +193,12 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
             if (listing.jobCategory != null && listing.jobCategory!.isNotEmpty)
               _buildBadge(
                 jobCategoryLabel(listing.jobCategory!, l10n),
-                AppColors.primary600,
+                AppColors.accent600,
               ),
             if (listing.jobType != null && listing.jobType!.isNotEmpty)
               _buildBadge(
                 jobTypeLabel(listing.jobType!, l10n),
-                AppColors.primary700,
+                AppColors.cta600,
               ),
             if ((listing.jobPositionsCount ?? 1) > 1)
               _buildBadge(
@@ -449,7 +449,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
       children: [
         Icon(icon, size: 18, color: AppColors.accent600),
         const SizedBox(width: 6),
-        Text(title, style: AppTextStyles.labelLarge.copyWith(fontWeight: FontWeight.w600)),
+        Text(title, style: AppTextStyles.labelLarge.copyWith(color: context.textPrimary, fontWeight: FontWeight.w600)),
       ],
     );
   }
@@ -460,7 +460,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
       children: [
         Icon(icon, size: 18, color: AppColors.accent600),
         const SizedBox(width: 8),
-        Text('$title: ', style: AppTextStyles.labelLarge.copyWith(fontWeight: FontWeight.w600)),
+        Text('$title: ', style: AppTextStyles.labelLarge.copyWith(color: context.textPrimary, fontWeight: FontWeight.w600)),
         Expanded(child: Text(value, style: AppTextStyles.bodyMedium)),
       ],
     );
@@ -535,7 +535,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
             const SizedBox(height: 4),
             Text(
               l10n.listingsContactViewsRemaining(listing.contactRemaining, listing.contactMax),
-              style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+              style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
               textAlign: TextAlign.center,
             ),
           ],

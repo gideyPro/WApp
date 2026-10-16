@@ -331,6 +331,8 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     final l10n = AppLocalizations.of(context);
     String selectedLevel = educationLevels.first;
     final fieldController = TextEditingController();
+    String? fieldError;
+    const noFieldRequired = ['none', 'high_school', 'other'];
 
     showDialog(
       context: context,
@@ -350,16 +352,28 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                         ))
                     .toList(),
                 onChanged: (v) {
-                  if (v != null) setDialogState(() => selectedLevel = v);
+                  if (v != null) {
+                    setDialogState(() {
+                      selectedLevel = v;
+                      if (noFieldRequired.contains(v)) {
+                        fieldError = null;
+                      }
+                    });
+                  }
                 },
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: fieldController,
-                decoration: const InputDecoration(
-                  labelText: 'Field of Study (Optional)',
-                  hintText: 'e.g. Computer Science, Accounting',
+                decoration: InputDecoration(
+                  labelText: noFieldRequired.contains(selectedLevel)
+                      ? 'Field of Study (Optional)'
+                      : 'Field of Study (e.g. Computer Science, Accounting) *',
+                  errorText: fieldError,
                 ),
+                onChanged: (_) {
+                  if (fieldError != null) setDialogState(() => fieldError = null);
+                },
               ),
             ],
           ),
@@ -371,6 +385,10 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
             ElevatedButton(
               onPressed: () {
                 final field = fieldController.text.trim();
+                if (!noFieldRequired.contains(selectedLevel) && field.isEmpty) {
+                  setDialogState(() => fieldError = 'Field of study is required');
+                  return;
+                }
                 final newItem = EducationItem(
                   educationLevel: selectedLevel,
                   fieldOfStudy: field.isNotEmpty ? field : null,
@@ -397,44 +415,75 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     final titleController = TextEditingController();
     final companyController = TextEditingController();
     final yearsController = TextEditingController();
+    String? titleError;
+    String? yearsError;
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.seekerExperience),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: '${l10n.jobJobTitle} / Role'),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: companyController,
-              decoration: InputDecoration(labelText: '${l10n.jobCompanyName} (Optional)'),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: yearsController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(labelText: 'Years of Experience'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.commonCancel),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: Text(l10n.seekerExperience),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(
+                  labelText: '${l10n.jobJobTitle} / Role *',
+                  errorText: titleError,
+                ),
+                onChanged: (_) {
+                  if (titleError != null) setDialogState(() => titleError = null);
+                },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: companyController,
+                decoration: InputDecoration(labelText: '${l10n.jobCompanyName} (Optional)'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: yearsController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Years of Experience *',
+                  errorText: yearsError,
+                ),
+                onChanged: (_) {
+                  if (yearsError != null) setDialogState(() => yearsError = null);
+                },
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              final title = titleController.text.trim();
-              final comp = companyController.text.trim();
-              final yrs = double.tryParse(yearsController.text.trim());
-              if (title.isNotEmpty || comp.isNotEmpty || yrs != null) {
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.commonCancel),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final title = titleController.text.trim();
+                final comp = companyController.text.trim();
+                final yrsText = yearsController.text.trim();
+                final yrs = double.tryParse(yrsText);
+
+                bool hasError = false;
+                if (title.isEmpty) {
+                  titleError = 'Job title / role is required';
+                  hasError = true;
+                }
+                if (yrsText.isEmpty || yrs == null || yrs < 0) {
+                  yearsError = 'Valid years required (e.g. 2)';
+                  hasError = true;
+                }
+
+                if (hasError) {
+                  setDialogState(() {});
+                  return;
+                }
+
                 final newItem = ExperienceItem(
-                  jobTitle: title.isNotEmpty ? title : null,
+                  jobTitle: title,
                   company: comp.isNotEmpty ? comp : null,
                   years: yrs,
                 );
@@ -445,12 +494,12 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                     reqExperience: updated.map((e) => e.displayLabel()).join(', '),
                   );
                 });
-              }
-              Navigator.pop(ctx);
-            },
-            child: const Text('Save'),
-          ),
-        ],
+                Navigator.pop(ctx);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -475,10 +524,13 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
 
     try {
       final customEdu = _educationCustomController.text.trim();
+      final effectiveEdu = _formData.reqEducations.isNotEmpty
+          ? _formData.reqEducations.first.educationLevel
+          : (_formData.reqEducation == 'other'
+              ? (customEdu.isEmpty ? 'other' : customEdu)
+              : (_formData.reqEducation ?? 'none'));
       final formData = _formData.copyWith(
-        reqEducation: _formData.reqEducation == 'other'
-            ? (customEdu.isEmpty ? 'other' : customEdu)
-            : _formData.reqEducation,
+        reqEducation: effectiveEdu,
       );
       final response = await ref.read(jobServiceProvider).updateListing(
         id: widget.listing.id,
@@ -539,8 +591,11 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           if (_stepErrors[_currentStep] != null && _stepErrors[_currentStep]!.isNotEmpty)
             Container(
               padding: const EdgeInsets.all(8),
-              color: AppColors.error.withValues(alpha: 0.1),
-              child: Text(_stepErrors[_currentStep]!.join('\n'), style: const TextStyle(color: AppColors.error)),
+              color: AppColors.error.withValues(alpha: context.isDarkMode ? 0.15 : 0.1),
+              child: Text(
+                _stepErrors[_currentStep]!.join('\n'),
+                style: TextStyle(color: context.isDarkMode ? AppColors.errorLight : AppColors.error),
+              ),
             )
         ],
       ),
@@ -641,7 +696,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Text(
                 'No specific education requirements added.',
-                style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+                style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
               ),
             )
           else
@@ -687,7 +742,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Text(
                 'No specific experience requirements added.',
-                style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
+                style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
               ),
             )
           else

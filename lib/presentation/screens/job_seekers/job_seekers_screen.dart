@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/job_seeker_card.dart';
 import '../../providers/job_seeker_providers.dart';
@@ -47,7 +48,7 @@ class _JobSeekersScreenState extends ConsumerState<JobSeekersScreen> {
     final state = ref.watch(jobSeekerProfilesProvider);
     
     return Scaffold(
-      backgroundColor: AppColors.primary50,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(title: Text(l10n.seekersTitle)),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -56,7 +57,7 @@ class _JobSeekersScreenState extends ConsumerState<JobSeekersScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(state.errorMessage!, style: const TextStyle(color: AppColors.stone500)),
+                      Text(state.errorMessage!, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)),
                       const SizedBox(height: 12),
                       ElevatedButton(
                         onPressed: () => ref.read(jobSeekerProfilesProvider.notifier).loadProfiles(),

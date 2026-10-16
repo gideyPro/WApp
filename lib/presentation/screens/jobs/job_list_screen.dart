@@ -121,7 +121,7 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
     final state = ref.watch(jobListingsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.primary50,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
         title: Text(l10n.homeJobs),
         actions: [
@@ -143,7 +143,7 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(state.errorMessage!, style: const TextStyle(color: AppColors.stone500)),
+                            Text(state.errorMessage!, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)),
                             const SizedBox(height: 12),
                             ElevatedButton(
                               onPressed: () => ref.read(jobListingsProvider.notifier).loadListings(),
