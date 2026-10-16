@@ -222,6 +222,7 @@ class _SubscriptionPlansScreenState
                         isLoading: _processingPlanId == plan.id,
                         selectedCurrency: _selectedCurrency,
                         onSelect: () => _selectPlan(plan),
+                        onStartTrial: plan.canStartTrial ? () => _startTrial(plan) : null,
                       )),
                 ],
               ),
@@ -258,6 +259,19 @@ class _SubscriptionPlansScreenState
     final hasFeatures = localPlan.features != null && localPlan.features!.isNotEmpty;
     final showContactBar = contactViewsUsed + contactViewsRemaining > 0;
 
+    // Near/at limit → offer renewal (the new period extends the current one).
+    final atLimit =
+        (localPlan.maxListings > 0 && sub.listingsUsed >= localPlan.maxListings) ||
+            (localPlan.maxFeaturedListings > 0 &&
+                sub.featuredListingsUsed >= localPlan.maxFeaturedListings) ||
+            (localPlan.maxOrders > 0 && sub.ordersUsed >= localPlan.maxOrders) ||
+            (localPlan.maxVehicles > 0 && sub.vehiclesUsed >= localPlan.maxVehicles) ||
+            (localPlan.maxJobs > 0 && sub.jobsUsed >= localPlan.maxJobs) ||
+            (localPlan.maxContacts > 0 &&
+                contactViewsRemaining <= 0 &&
+                contactViewsUsed > 0);
+    final showRenewCta = (isUrgent || atLimit) && !localPlan.isFree;
+
     return Container(
       padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
@@ -278,7 +292,9 @@ class _SubscriptionPlansScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${l10n.subscriptionsCurrentPlan}: ${localPlan.name}',
+                      sub.isOnTrial
+                          ? l10n.subscriptionsFreeTrial(localPlan.name)
+                          : '${l10n.subscriptionsCurrentPlan}: ${localPlan.name}',
                       style: AppTextStyles.bodyLargePlus.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -400,7 +416,7 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxJobs,
               icon: Icons.work_outline,
             ),
-          // Manage / Upgrade CTA
+          // Manage / Renew CTA
           const SizedBox(height: 18),
           Row(
             children: [
@@ -434,6 +450,29 @@ class _SubscriptionPlansScreenState
                   ),
                 ),
               ),
+              if (showRenewCta) ...[
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => _selectPlan(localPlan),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.primary900,
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    child: Text(
+                      l10n.subscriptionsRenew,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.primary900,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ],
@@ -719,6 +758,70 @@ class _SubscriptionPlansScreenState
     return result ?? false;
   }
 
+  Future<void> _startTrial(SubscriptionPlan plan) async {
+    if (_processingPlanId != null) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.subscriptionsStartFreeTrialTitle),
+        content: Text(
+          l10n.subscriptionsStartFreeTrialPrompt(
+            (plan.trialDays ?? 0).toString(),
+            plan.name,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          WaveButton(
+            text: l10n.subscriptionsStartTrialButton,
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    setState(() => _processingPlanId = plan.id);
+    try {
+      final response = await _subscriptionService.startTrial(plan.id);
+      if (mounted) {
+        if (response.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message),
+              backgroundColor: AppColors.success,
+            ),
+          );
+          ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _processingPlanId = null);
+      }
+    }
+  }
+
   Future<void> _selectPlan(SubscriptionPlan plan) async {
     if (_processingPlanId != null) return;
 
@@ -927,6 +1030,7 @@ class _PlanCard extends StatelessWidget {
   final bool isLoading;
   final String selectedCurrency;
   final VoidCallback onSelect;
+  final VoidCallback? onStartTrial;
 
   const _PlanCard({
     required this.plan,
@@ -935,6 +1039,7 @@ class _PlanCard extends StatelessWidget {
     this.isLoading = false,
     required this.selectedCurrency,
     required this.onSelect,
+    this.onStartTrial,
   });
 
   bool get _isFree => plan.isFree;
@@ -1206,21 +1311,39 @@ class _PlanCard extends StatelessWidget {
             width: double.infinity,
             child: WaveButton(
               text: isCurrentPlan
-                  ? l10n.subscriptionsCurrentPlan
+                  ? (_isFree
+                      ? l10n.subscriptionsCurrentPlan
+                      : l10n.subscriptionsRenew)
                   : _isFree
                       ? l10n.subscriptionsSelectPlan
                       : l10n.subscriptionsSubscribe,
               icon: isCurrentPlan
-                  ? Icons.check_circle
+                  ? (_isFree ? Icons.check_circle : Icons.refresh)
                   : _isFree
                       ? Icons.check
                       : Icons.arrow_forward,
-              isLoading: isLoading && !isCurrentPlan,
-              onPressed: isCurrentPlan ? null : onSelect,
+              // The current plan card allows renewing — the new period extends
+              // from the current end date, so no remaining days are lost.
+              // The auto-assigned free plan has nothing to renew.
+              isLoading: isLoading,
+              onPressed: isCurrentPlan && _isFree ? null : onSelect,
               variant:
                   isCurrentPlan ? ButtonVariant.outline : ButtonVariant.primary,
             ),
           ),
+          if (!isCurrentPlan && plan.canStartTrial && onStartTrial != null) ...[
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: WaveButton(
+                text: l10n.subscriptionsStartTrialDaysButton((plan.trialDays ?? 0).toString()),
+                icon: Icons.flash_on,
+                isLoading: isLoading,
+                onPressed: onStartTrial,
+                variant: ButtonVariant.outline,
+              ),
+            ),
+          ],
         ],
       ),
     );

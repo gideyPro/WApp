@@ -185,6 +185,35 @@ class SubscriptionServiceApi {
     }
   }
 
+  /// Start a free trial for a plan
+  Future<SubscriptionResponse> startTrial(int planId) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '${ApiConstants.subscribeToPlan}/$planId/start-trial',
+      );
+
+      if (response.statusCode == 200) {
+        return SubscriptionResponse(
+          success: true,
+          message: ApiEnvelope.extractMessage(response.data, 'Free trial started!'),
+          requiresPayment: false,
+        );
+      }
+
+      return SubscriptionResponse(
+        success: false,
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to start free trial'),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return SubscriptionResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        requiresPayment: false,
+      );
+    }
+  }
+
   /// Initiate payment for mobile SDK - gets tx_ref without calling Chapa
   Future<SubscriptionResponse> initiatePayment({
     required int planId,

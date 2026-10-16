@@ -1487,6 +1487,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsManage => 'Manage';
 
   @override
+  String get subscriptionsRenew => 'Renew Plan';
+
+  @override
+  String subscriptionsFreeTrial(Object planName) {
+    return 'Free Trial: $planName';
+  }
+
+  @override
+  String get subscriptionsStartFreeTrialTitle => 'Start Free Trial?';
+
+  @override
+  String subscriptionsStartFreeTrialPrompt(Object days, Object planName) {
+    return 'Start your $days-day free trial on $planName? One trial per account.';
+  }
+
+  @override
+  String get subscriptionsStartTrialButton => 'Start Trial';
+
+  @override
+  String subscriptionsStartTrialDaysButton(Object days) {
+    return 'Start $days-day Free Trial';
+  }
+
+  @override
   String subscriptionsUpgradeOff(Object percent) {
     return 'Upgrade $percent% off';
   }

@@ -2848,6 +2848,42 @@ abstract class AppLocalizations {
   /// **'Manage'**
   String get subscriptionsManage;
 
+  /// No description provided for @subscriptionsRenew.
+  ///
+  /// In en, this message translates to:
+  /// **'Renew Plan'**
+  String get subscriptionsRenew;
+
+  /// No description provided for @subscriptionsFreeTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Trial: {planName}'**
+  String subscriptionsFreeTrial(Object planName);
+
+  /// No description provided for @subscriptionsStartFreeTrialTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Free Trial?'**
+  String get subscriptionsStartFreeTrialTitle;
+
+  /// No description provided for @subscriptionsStartFreeTrialPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your {days}-day free trial on {planName}? One trial per account.'**
+  String subscriptionsStartFreeTrialPrompt(Object days, Object planName);
+
+  /// No description provided for @subscriptionsStartTrialButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Trial'**
+  String get subscriptionsStartTrialButton;
+
+  /// No description provided for @subscriptionsStartTrialDaysButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Start {days}-day Free Trial'**
+  String subscriptionsStartTrialDaysButton(Object days);
+
   /// No description provided for @subscriptionsUpgradeOff.
   ///
   /// In en, this message translates to:

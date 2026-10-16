@@ -1473,6 +1473,30 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsManage => 'ቀይር';
 
   @override
+  String get subscriptionsRenew => 'ፓኬጁን አድስ';
+
+  @override
+  String subscriptionsFreeTrial(Object planName) {
+    return 'የነፃ ሙከራ፦ $planName';
+  }
+
+  @override
+  String get subscriptionsStartFreeTrialTitle => 'የነፃ ሙከራ ይጀምሩ?';
+
+  @override
+  String subscriptionsStartFreeTrialPrompt(Object days, Object planName) {
+    return 'የ$days ቀናት የነፃ ሙከራ በ$planName ይጀምሩ? በአንድ መለያ አንድ ሙከራ ብቻ።';
+  }
+
+  @override
+  String get subscriptionsStartTrialButton => 'ሙከራ ጀምር';
+
+  @override
+  String subscriptionsStartTrialDaysButton(Object days) {
+    return 'የ$days ቀናት ነፃ ሙከራ ጀምር';
+  }
+
+  @override
   String subscriptionsUpgradeOff(Object percent) {
     return '$percent% ቅናሽ';
   }

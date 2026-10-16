@@ -1473,6 +1473,30 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsManage => 'ቀይር';
 
   @override
+  String get subscriptionsRenew => 'ፓኬጅ ኣሓድስ';
+
+  @override
+  String subscriptionsFreeTrial(Object planName) {
+    return 'ናጻ ፈተነ፦ $planName';
+  }
+
+  @override
+  String get subscriptionsStartFreeTrialTitle => 'ናጻ ፈተነ ክትጅምሩ?';
+
+  @override
+  String subscriptionsStartFreeTrialPrompt(Object days, Object planName) {
+    return 'ናይ $days መዓልታት ናጻ ፈተነ ኣብ $planName ይጀምሩ? ንሓደ ኣካውንት ሓደ ፈተነ ጥራሕ።';
+  }
+
+  @override
+  String get subscriptionsStartTrialButton => 'ፈተነ ጀምር';
+
+  @override
+  String subscriptionsStartTrialDaysButton(Object days) {
+    return 'ናይ $days መዓልቲ ናጻ ፈተነ ጀምር';
+  }
+
+  @override
   String subscriptionsUpgradeOff(Object percent) {
     return '$percent% ቅናሽ';
   }

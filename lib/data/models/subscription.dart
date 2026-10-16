@@ -47,6 +47,11 @@ class SubscriptionPlan {
   final bool isActive;
   final int? sortOrder;
   final PriceInfo? priceInfo;
+  final int? trialDays;
+  final bool canStartTrial;
+  final int? billingCycleDays;
+  final String planType;
+  final Map<String, dynamic>? planFeatures;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -70,6 +75,11 @@ class SubscriptionPlan {
     this.isActive = true,
     this.sortOrder,
     this.priceInfo,
+    this.trialDays,
+    this.canStartTrial = false,
+    this.billingCycleDays,
+    this.planType = 'marketplace',
+    this.planFeatures,
     this.createdAt,
     this.updatedAt,
   });
@@ -95,6 +105,11 @@ class SubscriptionPlan {
       isActive: json['is_active'] ?? true,
       sortOrder: json['sort_order'],
       priceInfo: _parsePriceInfo(json['price_info']),
+      trialDays: json['trial_days'],
+      canStartTrial: json['can_start_trial'] == true,
+      billingCycleDays: json['billing_cycle_days'],
+      planType: json['plan_type']?.toString() ?? 'marketplace',
+      planFeatures: json['plan_features'] is Map ? Map<String, dynamic>.from(json['plan_features']) : null,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
@@ -171,6 +186,9 @@ class SubscriptionPlan {
   }
 
   String get durationLabel {
+    if (billingCycleDays != null && billingCycleDays! > 0) {
+      return '$billingCycleDays Days';
+    }
     if (durationMonths == 1) return '1 Month';
     if (durationMonths == 3) return '3 Months';
     if (durationMonths == 6) return '6 Months';
@@ -179,6 +197,71 @@ class SubscriptionPlan {
   }
 
   bool get isFree => price == 0;
+  bool get hasTrial => (trialDays ?? 0) > 0;
+
+  int getQuota(String key) {
+    if (planFeatures != null && planFeatures!.containsKey(key)) {
+      final val = planFeatures![key];
+      if (val is int) return val;
+      if (val is num) return val.toInt();
+    }
+    switch (key) {
+      case 'max_listings':
+        return maxListings;
+      case 'max_vehicles':
+        return maxVehicles;
+      case 'max_jobs':
+        return maxJobs;
+      case 'max_featured_listings':
+        return maxFeaturedListings;
+      case 'max_orders':
+        return maxOrders;
+      case 'max_contacts':
+        return maxContacts;
+      default:
+        return 0;
+    }
+  }
+
+  bool hasFeature(String key) {
+    if (planFeatures != null && planFeatures!.containsKey(key)) {
+      final val = planFeatures![key];
+      if (val is bool) return val;
+    }
+    switch (key) {
+      case 'view_vip':
+        return viewVip;
+      default:
+        return false;
+    }
+  }
+
+  /// Resolve information depth for a specific model (e.g. 'car', 'job', 'listing').
+  /// Checks dynamic planFeatures['details_access_<model>'] before falling back to plan's detailsAccess.
+  DetailsAccess detailsAccessFor(String model) {
+    final normalized = model.toLowerCase();
+    final specificKey = 'details_access_$normalized';
+    if (planFeatures != null && planFeatures!.containsKey(specificKey)) {
+      final val = planFeatures![specificKey];
+      if (val != null && val.toString().isNotEmpty && val.toString() != 'default') {
+        return _parseDetailsAccess(val);
+      }
+    }
+    return detailsAccess;
+  }
+
+  /// Whether the plan allows watching video for a specific model.
+  bool canSeeVideoFor(String model) {
+    final access = detailsAccessFor(model);
+    return access == DetailsAccess.withoutContact ||
+        access == DetailsAccess.moderatedContact ||
+        access == DetailsAccess.full;
+  }
+
+  /// Whether the plan allows viewing seller contact for a specific model.
+  bool canSeeContactFor(String model) {
+    return detailsAccessFor(model) == DetailsAccess.full;
+  }
 }
 
 /// User Subscription Model
@@ -191,6 +274,8 @@ class Subscription {
   final DateTime? endsAt;
   final DateTime? cancelledAt;
   final DateTime? expiredAt;
+  final DateTime? trialEndsAt;
+  final String? billingLabel;
   final int listingsUsed;
   final int vehiclesUsed;
   final int jobsUsed;
@@ -209,6 +294,8 @@ class Subscription {
     this.endsAt,
     this.cancelledAt,
     this.expiredAt,
+    this.trialEndsAt,
+    this.billingLabel,
     this.listingsUsed = 0,
     this.vehiclesUsed = 0,
     this.jobsUsed = 0,
@@ -235,6 +322,10 @@ class Subscription {
       expiredAt: json['expired_at'] != null
           ? DateTime.parse(json['expired_at'])
           : null,
+      trialEndsAt: json['trial_ends_at'] != null
+          ? DateTime.parse(json['trial_ends_at'])
+          : null,
+      billingLabel: json['billing_label']?.toString(),
       listingsUsed: json['listings_used'] ?? 0,
       vehiclesUsed: json['vehicles_used'] ?? 0,
       jobsUsed: json['jobs_used'] ?? 0,
@@ -255,6 +346,11 @@ class Subscription {
       status == 'active' &&
       (cancelledAt == null || cancelledAt!.isAfter(DateTime.now())) &&
       (endsAt == null || endsAt!.isAfter(DateTime.now()));
+
+  bool get isOnTrial =>
+      trialEndsAt != null &&
+      isActive &&
+      trialEndsAt!.isAfter(DateTime.now());
 
   bool get isExpired => status == 'expired' || (endsAt != null && endsAt!.isBefore(DateTime.now()));
 
