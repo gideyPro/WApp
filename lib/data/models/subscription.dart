@@ -262,6 +262,27 @@ class SubscriptionPlan {
   bool canSeeContactFor(String model) {
     return detailsAccessFor(model) == DetailsAccess.full;
   }
+
+  /// Resolve max contact views for a specific model (e.g. 'car', 'job', 'listing').
+  /// Checks dynamic planFeatures['max_contacts_<model>'] before falling back to plan's maxContacts.
+  int maxContactsFor(String model) {
+    final normalized = model.toLowerCase();
+    final specificKey = (normalized == 'car' || normalized == 'vehicle')
+        ? 'max_contacts_car'
+        : ((normalized == 'job' || normalized == 'jobposting')
+            ? 'max_contacts_job'
+            : 'max_contacts');
+    if (planFeatures != null && planFeatures!.containsKey(specificKey)) {
+      final val = planFeatures![specificKey];
+      if (val is int) return val;
+      if (val is num) return val.toInt();
+      if (val != null) {
+        final parsed = int.tryParse(val.toString());
+        if (parsed != null) return parsed;
+      }
+    }
+    return maxContacts;
+  }
 }
 
 /// User Subscription Model
