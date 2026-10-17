@@ -51,6 +51,24 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     ref.read(kycStatusProvider.notifier).loadKycStatus();
   }
 
+  void _checkInitialRentalAutoSelect() {
+    final settingsAsync = ref.read(appSettingsProvider);
+    final rentalEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['rental_enabled'] == true,
+      orElse: () => false,
+    );
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
+    final subState = ref.read(subscriptionProvider);
+    if (rentalEnabled && subscriptionEnabled && !subState.canCreateListing && subState.canCreateRentalListing && _formData.listingType == 'sale') {
+      setState(() {
+        _formData.listingType = 'rental';
+      });
+    }
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -67,6 +85,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     if (draft != null) {
       setState(() => _formData = draft);
     }
+    _checkInitialRentalAutoSelect();
   }
 
   void _startAutoSave() {
@@ -93,6 +112,33 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   }
 
   Future<void> _nextStep() async {
+    final settingsAsync = ref.read(appSettingsProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
+    final subState = ref.read(subscriptionProvider);
+    if (subscriptionEnabled) {
+      if (_formData.listingType == 'rental' && !subState.canCreateRentalListing) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.subscriptionLimitReachedRental),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        return;
+      }
+      if (_formData.listingType == 'sale' && !subState.canCreateListing) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.subscriptionLimitReached),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        return;
+      }
+    }
+
     final errors = _validateCurrentStep();
     if (errors.isNotEmpty) {
       setState(() => _stepErrors[_currentStep] = errors);
@@ -380,7 +426,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       );
     }
     final plan = subState.subscription?.plan;
-    if (plan == null || plan.maxListings == 0) {
+    if (plan == null || (plan.maxListings == 0 && plan.maxRentalListings == 0)) {
       return (
         title: l10n.subscriptionPlanNotSupportedListing,
         subtitle: l10n.subscriptionPlanNotSupportedListingSubtitle,
@@ -471,10 +517,25 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     final subState = ref.watch(subscriptionProvider);
     final kycState = ref.watch(kycStatusProvider);
     final settingsAsync = ref.watch(appSettingsProvider);
+    final rentalEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['rental_enabled'] == true,
+      orElse: () => false,
+    );
     final subscriptionEnabled = settingsAsync.maybeWhen(
       data: (data) => data['subscription_enabled'] == true,
       orElse: () => false,
     );
+
+    ref.listen<SubscriptionState>(subscriptionProvider, (prev, next) {
+      final settings = ref.read(appSettingsProvider).valueOrNull;
+      final rentEnabled = settings?['rental_enabled'] == true;
+      final subEnabled = settings?['subscription_enabled'] == true;
+      if (rentEnabled && subEnabled && !next.canCreateListing && next.canCreateRentalListing && _formData.listingType == 'sale') {
+        setState(() {
+          _formData.listingType = 'rental';
+        });
+      }
+    });
 
     // Loading state — wait for data before gating
     if (subState.isLoading || kycState.isLoading || settingsAsync.isLoading) {
@@ -519,7 +580,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     }
 
     // Subscription gate — full page matching listing detail error view
-    if (subscriptionEnabled && !subState.canCreateListing) {
+    final canCreateAny = subState.canCreateListing || (rentalEnabled && subState.canCreateRentalListing);
+    if (subscriptionEnabled && !canCreateAny) {
       final (:title, :subtitle) = _listingGateMessage(subState, l10n);
       return WaveFullPageUpgrade(
         appBar: WaveAppBar(title: Text(l10n.listingsCreate)),

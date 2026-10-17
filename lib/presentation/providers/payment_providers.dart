@@ -90,7 +90,9 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
             plans: data.plans,
             subscription: data.subscription,
             canCreateListing: data.canCreateListing,
+            canCreateRentalListing: data.canCreateRentalListing,
             canCreateVehicle: data.canCreateVehicle,
+            canCreateRentalVehicle: data.canCreateRentalVehicle,
             canCreateJob: data.canCreateJob,
             canFeatureListing: data.canFeatureListing,
             canViewVip: data.canViewVip,
@@ -120,8 +122,10 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           plans: data.plans,
           subscription: data.subscription,
           canCreateListing: data.canCreateListing,
+          canCreateRentalListing: data.canCreateRentalListing,
           canCreateVehicle: data.canCreateVehicle,
-            canCreateJob: data.canCreateJob,
+          canCreateRentalVehicle: data.canCreateRentalVehicle,
+          canCreateJob: data.canCreateJob,
           canFeatureListing: data.canFeatureListing,
           canViewVip: data.canViewVip,
           canCreateOrder: data.canCreateOrder,
@@ -149,7 +153,9 @@ class SubscriptionState {
   final List<SubscriptionPlan> plans;
   final Subscription? subscription;
   final bool canCreateListing;
+  final bool canCreateRentalListing;
   final bool canCreateVehicle;
+  final bool canCreateRentalVehicle;
   final bool canCreateJob;
   final bool canFeatureListing;
   final bool canViewVip;
@@ -167,7 +173,9 @@ class SubscriptionState {
     this.plans = const [],
     this.subscription,
     this.canCreateListing = false,
+    this.canCreateRentalListing = false,
     this.canCreateVehicle = false,
+    this.canCreateRentalVehicle = false,
     this.canCreateJob = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
@@ -186,7 +194,9 @@ class SubscriptionState {
         plans = const [],
         subscription = null,
         canCreateListing = false,
+        canCreateRentalListing = false,
         canCreateVehicle = false,
+        canCreateRentalVehicle = false,
         canCreateJob = false,
         canFeatureListing = false,
         canViewVip = false,
@@ -203,7 +213,9 @@ class SubscriptionState {
     required this.plans,
     this.subscription,
     this.canCreateListing = false,
+    this.canCreateRentalListing = false,
     this.canCreateVehicle = false,
+    this.canCreateRentalVehicle = false,
     this.canCreateJob = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
@@ -222,7 +234,9 @@ class SubscriptionState {
     List<SubscriptionPlan>? plans,
     Subscription? subscription,
     bool? canCreateListing,
+    bool? canCreateRentalListing,
     bool? canCreateVehicle,
+    bool? canCreateRentalVehicle,
     bool? canCreateJob,
     bool? canFeatureListing,
     bool? canViewVip,
@@ -240,7 +254,9 @@ class SubscriptionState {
       plans: plans ?? this.plans,
       subscription: subscription ?? this.subscription,
       canCreateListing: canCreateListing ?? this.canCreateListing,
+      canCreateRentalListing: canCreateRentalListing ?? this.canCreateRentalListing,
       canCreateVehicle: canCreateVehicle ?? this.canCreateVehicle,
+      canCreateRentalVehicle: canCreateRentalVehicle ?? this.canCreateRentalVehicle,
       canCreateJob: canCreateJob ?? this.canCreateJob,
       canFeatureListing: canFeatureListing ?? this.canFeatureListing,
       canViewVip: canViewVip ?? this.canViewVip,

@@ -315,7 +315,7 @@ class ListingService {
       MapEntry('use_type', formData.useType),
       if (formData.specificLocation != null) MapEntry('specific_location', formData.specificLocation!),
       if (formData.priceFixed != null) MapEntry('price_fixed', formData.priceFixed.toString()),
-      if (formData.rentalPeriodUnit != null && formData.rentalPeriodUnit != 'week') 
+      if (formData.rentalPeriodUnit != null && formData.rentalPeriodUnit!.isNotEmpty) 
         MapEntry('rental_period_unit', formData.rentalPeriodUnit!),
       if (formData.facingDirection != null) MapEntry('facing_direction', formData.facingDirection!),
       if (formData.description != null) MapEntry('description', formData.description!),

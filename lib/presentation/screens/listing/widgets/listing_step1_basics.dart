@@ -303,6 +303,11 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
       data: (data) => data['rental_enabled'] == true,
       orElse: () => false,
     );
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
+    final subState = ref.watch(subscriptionProvider);
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
@@ -349,9 +354,20 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                       groupValue: widget.formData.listingType,
                       onChanged: widget.isEditMode
                           ? null
-                          : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
+                          : (v) {
+                              if (subscriptionEnabled && !subState.canCreateListing) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(l10n.subscriptionLimitReached),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                                return;
+                              }
+                              widget.onUpdate(widget.formData.copyWith(listingType: v));
+                            },
                     ),
-                    if (rentalEnabled) ...[
+                    if (rentalEnabled || widget.formData.listingType == 'rental') ...[
                       const SizedBox(width: 12),
                       _radioCard(
                         label: l10n.listingForRent,
@@ -360,18 +376,43 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                         groupValue: widget.formData.listingType,
                         onChanged: widget.isEditMode
                             ? null
-                            : (v) => widget.onUpdate(widget.formData.copyWith(listingType: v)),
+                            : (v) {
+                                if (subscriptionEnabled && !subState.canCreateRentalListing) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(l10n.subscriptionLimitReachedRental),
+                                      backgroundColor: AppColors.error,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                widget.onUpdate(widget.formData.copyWith(listingType: v));
+                              },
                       ),
                     ],
                   ],
                 ),
+                if (widget.isEditMode) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.info_outline, size: 14, color: context.theme.textMuted),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          l10n.listingTypeNotEditable,
+                          style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
                 if (widget.formData.listingType == 'rental') ...[
                   const SizedBox(height: 12),
                   _compactDropdown(
                     value: widget.formData.rentalPeriodUnit,
                     items: {
                       'day': 'Day',
-                      'week': 'Week',
                       'month': 'Month',
                       'year': 'Year',
                     },

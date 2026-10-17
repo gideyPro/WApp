@@ -1,0 +1,73 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:wavemart/data/models/subscription.dart';
+
+void main() {
+  group('SubscriptionPlan rental quotas', () {
+    test('parses max_rental_listings and max_rental_vehicles from JSON', () {
+      final json = {
+        'id': 1,
+        'name': 'Pro Plan',
+        'slug': 'pro',
+        'price': '1000.00',
+        'price_usd': '20.00',
+        'max_listings': 5,
+        'max_rental_listings': 10,
+        'max_vehicles': 3,
+        'max_rental_vehicles': 6,
+        'max_jobs': 2,
+        'max_contacts': 15,
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.maxListings, 5);
+      expect(plan.maxRentalListings, 10);
+      expect(plan.maxVehicles, 3);
+      expect(plan.maxRentalVehicles, 6);
+
+      expect(plan.getQuota('max_listings'), 5);
+      expect(plan.getQuota('max_rental_listings'), 10);
+      expect(plan.getQuota('max_vehicles'), 3);
+      expect(plan.getQuota('max_rental_vehicles'), 6);
+    });
+
+    test('defaults rental quotas to 0 when omitted', () {
+      final json = {
+        'id': 2,
+        'name': 'Basic Plan',
+        'slug': 'basic',
+        'price': 0,
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.maxRentalListings, 0);
+      expect(plan.maxRentalVehicles, 0);
+      expect(plan.getQuota('max_rental_listings'), 0);
+      expect(plan.getQuota('max_rental_vehicles'), 0);
+    });
+  });
+
+  group('Subscription rental usage', () {
+    test('parses rental_listings_used and rental_vehicles_used from JSON', () {
+      final json = {
+        'id': 10,
+        'user_id': 1,
+        'plan_id': 1,
+        'status': 'active',
+        'starts_at': '2026-10-17T00:00:00.000Z',
+        'listings_used': 2,
+        'rental_listings_used': 4,
+        'vehicles_used': 1,
+        'rental_vehicles_used': 3,
+      };
+
+      final sub = Subscription.fromJson(json);
+
+      expect(sub.listingsUsed, 2);
+      expect(sub.rentalListingsUsed, 4);
+      expect(sub.vehiclesUsed, 1);
+      expect(sub.rentalVehiclesUsed, 3);
+    });
+  });
+}

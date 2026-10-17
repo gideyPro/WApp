@@ -1431,6 +1431,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsListings => 'ንብረቶች';
 
   @override
+  String get subscriptionsRentalListings => 'የኪራይ ንብረቶች';
+
+  @override
+  String get subscriptionsRentalVehicles => 'የኪራይ ተሽከርካሪዎች';
+
+  @override
   String get subscriptionsFeaturedListings => 'ልዩ ንብረቶች';
 
   @override
@@ -1664,6 +1670,14 @@ class AppLocalizationsAm extends AppLocalizations {
   @override
   String get subscriptionLimitReached =>
       'የምዝገባ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገዝ ምዝገባዎን ያሳድጉ።';
+
+  @override
+  String get subscriptionLimitReachedRental =>
+      'የኪራይ ዝርዝሮች ገደብ ላይ ደርሰዋል። ተጨማሪ ኪራይ ለመለጠፍ ምዝገባዎን ያሳድጉ።';
+
+  @override
+  String get subscriptionLimitReachedRentalVehicle =>
+      'የኪራይ ተሽከርካሪዎች ገደብ ላይ ደርሰዋል። ተጨማሪ ለመለጠፍ ምዝገባዎን ያሳድጉ።';
 
   @override
   String get subscriptionLimitReachedTitle => 'የምዝገባ ገደብ ደርሷል';
@@ -2883,4 +2897,31 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get seekerViewCv => 'ሲቪ ይመልከቱ';
+
+  @override
+  String get listingPerDay => '/ ቀን';
+
+  @override
+  String get listingPerMonth => '/ ወር';
+
+  @override
+  String get listingPerYear => '/ ዓመት';
+
+  @override
+  String get searchUnder15K => 'ከ15 ሺህ በታች';
+
+  @override
+  String get search15K30K => '15 ሺህ - 30 ሺህ';
+
+  @override
+  String get search30K60K => '30 ሺህ - 60 ሺህ';
+
+  @override
+  String get search60K100K => '60 ሺህ - 100 ሺህ';
+
+  @override
+  String get search100KPlus => '100 ሺህ+';
+
+  @override
+  String get listingTypeNotEditable => 'የማስታወቂያው አይነት ከተፈጠረ በኋላ ሊቀየር አይችልም';
 }

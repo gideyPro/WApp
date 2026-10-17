@@ -12,7 +12,7 @@ class ListingFormData {
   String useType; // 'Residential' | 'Commercial' | 'Mixed' | 'Investment'
   String? specificLocation;
   double? priceFixed;
-  String? rentalPeriodUnit; // 'day' | 'week' | 'month' | 'year'
+  String? rentalPeriodUnit; // 'day' | 'month' | 'year'
 
   // --- Free Hold ---
   int? taxPaidUntilYear;

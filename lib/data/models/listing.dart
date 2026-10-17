@@ -927,18 +927,47 @@ class Listing {
     return l10n.listingsTitleTemplate(action, location, type);
   }
 
+  String? getLocalizedRentalPeriod(BuildContext context) {
+    if (rentalPeriodUnit == null) return null;
+    final l10n = AppLocalizations.of(context);
+    switch (rentalPeriodUnit!) {
+      case RentalPeriod.day:
+        return l10n.listingPerDay;
+      case RentalPeriod.month:
+        return l10n.listingPerMonth;
+      case RentalPeriod.year:
+        return l10n.listingPerYear;
+    }
+  }
+
+  bool get isVehicle => carMake != null || carModel != null || carVehicleCategory != null;
+
   String getLocalizedPrice(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    if (listingType == ListingType.rental && priceFixed == null && priceMin == null && isVehicle) {
+      return l10n.carRentalPriceNegotiable;
+    }
+
+    final periodSuffix = (listingType == ListingType.rental)
+        ? (getLocalizedRentalPeriod(context) ?? '')
+        : '';
+
     if (priceFixed != null) {
-      return l10n.listingsPriceFixed(smartDecimal(priceFixed!));
+      final base = l10n.listingsPriceFixed(smartDecimal(priceFixed!));
+      return periodSuffix.isNotEmpty ? '$base $periodSuffix' : base;
     }
 
     if (priceMin != null && priceMax != null) {
-      return l10n.listingsPriceRange(
+      final base = l10n.listingsPriceRange(
         smartDecimal(priceMin!),
         smartDecimal(priceMax!),
       );
+      return periodSuffix.isNotEmpty ? '$base $periodSuffix' : base;
+    }
+
+    if (listingType == ListingType.rental) {
+      return l10n.carRentalPriceNegotiable;
     }
 
     return l10n.listingPriceOnRequest;

@@ -259,13 +259,16 @@ class _SubscriptionPlansScreenState
     final hasFeatures = localPlan.features != null && localPlan.features!.isNotEmpty;
     final showContactBar = contactViewsUsed + contactViewsRemaining > 0;
 
-    // Near/at limit → offer renewal (the new period extends the current one).
     final atLimit =
         (localPlan.maxListings > 0 && sub.listingsUsed >= localPlan.maxListings) ||
+            (localPlan.maxRentalListings > 0 &&
+                sub.rentalListingsUsed >= localPlan.maxRentalListings) ||
             (localPlan.maxFeaturedListings > 0 &&
                 sub.featuredListingsUsed >= localPlan.maxFeaturedListings) ||
             (localPlan.maxOrders > 0 && sub.ordersUsed >= localPlan.maxOrders) ||
             (localPlan.maxVehicles > 0 && sub.vehiclesUsed >= localPlan.maxVehicles) ||
+            (localPlan.maxRentalVehicles > 0 &&
+                sub.rentalVehiclesUsed >= localPlan.maxRentalVehicles) ||
             (localPlan.maxJobs > 0 && sub.jobsUsed >= localPlan.maxJobs) ||
             (localPlan.maxContacts > 0 &&
                 contactViewsRemaining <= 0 &&
@@ -371,7 +374,16 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxListings,
               icon: Icons.home_work_outlined,
             ),
-          if (localPlan.maxListings > 0 && localPlan.maxFeaturedListings > 0)
+          if (localPlan.maxListings > 0 && localPlan.maxRentalListings > 0)
+            const SizedBox(height: 12),
+          if (localPlan.maxRentalListings > 0)
+            _buildUsageBar(
+              label: l10n.subscriptionsRentalListings,
+              used: sub.rentalListingsUsed,
+              max: localPlan.maxRentalListings,
+              icon: Icons.key_rounded,
+            ),
+          if ((localPlan.maxListings > 0 || localPlan.maxRentalListings > 0) && localPlan.maxFeaturedListings > 0)
             const SizedBox(height: 12),
           if (localPlan.maxFeaturedListings > 0)
             _buildUsageBar(
@@ -398,7 +410,7 @@ class _SubscriptionPlansScreenState
               max: contactViewsUsed + contactViewsRemaining,
               icon: Icons.visibility_outlined,
             ),
-          if ((showContactBar || localPlan.maxOrders > 0) && localPlan.maxVehicles > 0)
+          if ((showContactBar || localPlan.maxOrders > 0) && (localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0))
             const SizedBox(height: 12),
           if (localPlan.maxVehicles > 0)
             _buildUsageBar(
@@ -407,7 +419,16 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxVehicles,
               icon: Icons.directions_car_outlined,
             ),
-          if (localPlan.maxVehicles > 0 && localPlan.maxJobs > 0)
+          if (localPlan.maxVehicles > 0 && localPlan.maxRentalVehicles > 0)
+            const SizedBox(height: 12),
+          if (localPlan.maxRentalVehicles > 0)
+            _buildUsageBar(
+              label: l10n.subscriptionsRentalVehicles,
+              used: sub.rentalVehiclesUsed,
+              max: localPlan.maxRentalVehicles,
+              icon: Icons.car_rental,
+            ),
+          if ((localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0) && localPlan.maxJobs > 0)
             const SizedBox(height: 12),
           if (localPlan.maxJobs > 0)
             _buildUsageBar(
@@ -1258,6 +1279,11 @@ class _PlanCard extends StatelessWidget {
         children: [
           _buildComparisonRow(context, l10n.subscriptionsListings,
               '${plan.maxListings}', Icons.home_outlined, true),
+          if (plan.maxRentalListings > 0) ...[
+            _buildDivider(),
+            _buildComparisonRow(context, l10n.subscriptionsRentalListings,
+                '${plan.maxRentalListings}', Icons.key_rounded, true),
+          ],
           _buildDivider(),
           _buildComparisonRow(
             context,
@@ -1273,6 +1299,11 @@ class _PlanCard extends StatelessWidget {
             _buildDivider(),
             _buildComparisonRow(context, l10n.listingCarPlural,
                 '${plan.maxVehicles}', Icons.directions_car_outlined, true),
+          ],
+          if (plan.maxRentalVehicles > 0) ...[
+            _buildDivider(),
+            _buildComparisonRow(context, l10n.subscriptionsRentalVehicles,
+                '${plan.maxRentalVehicles}', Icons.car_rental, true),
           ],
           if (plan.maxJobs > 0) ...[
             _buildDivider(),

@@ -1445,6 +1445,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsListings => 'Listings';
 
   @override
+  String get subscriptionsRentalListings => 'Rental Listings';
+
+  @override
+  String get subscriptionsRentalVehicles => 'Rental Vehicles';
+
+  @override
   String get subscriptionsFeaturedListings => 'Featured Listings';
 
   @override
@@ -1682,6 +1688,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subscriptionLimitReached =>
       'You\'ve reached your listing limit. Upgrade your subscription to post more listings.';
+
+  @override
+  String get subscriptionLimitReachedRental =>
+      'You\'ve reached your rental listing limit. Upgrade your subscription to post more rentals.';
+
+  @override
+  String get subscriptionLimitReachedRentalVehicle =>
+      'You\'ve reached your vehicle rental limit. Upgrade your subscription to post more rentals.';
 
   @override
   String get subscriptionLimitReachedTitle => 'Listing Limit Reached';
@@ -2919,4 +2933,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seekerViewCv => 'View CV';
+
+  @override
+  String get listingPerDay => '/ day';
+
+  @override
+  String get listingPerMonth => '/ month';
+
+  @override
+  String get listingPerYear => '/ year';
+
+  @override
+  String get searchUnder15K => 'Under 15K';
+
+  @override
+  String get search15K30K => '15K - 30K';
+
+  @override
+  String get search30K60K => '30K - 60K';
+
+  @override
+  String get search60K100K => '60K - 100K';
+
+  @override
+  String get search100KPlus => '100K+';
+
+  @override
+  String get listingTypeNotEditable =>
+      'Listing type cannot be changed after creation';
 }

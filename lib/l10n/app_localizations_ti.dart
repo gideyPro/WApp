@@ -1431,6 +1431,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsListings => 'ንብረታት';
 
   @override
+  String get subscriptionsRentalListings => 'ናይ ክራይ ንብረታት';
+
+  @override
+  String get subscriptionsRentalVehicles => 'ናይ ክራይ መካይን';
+
+  @override
   String get subscriptionsFeaturedListings => 'ፍሉያት ንብረታት';
 
   @override
@@ -1664,6 +1670,14 @@ class AppLocalizationsTi extends AppLocalizations {
   @override
   String get subscriptionLimitReached =>
       'ናይ ምዝገባ ደረትኩም በፂሕኩም ኣለኹም። ተወሳኺ ንብረታት ንምምዝጋብ ምዝገባኩም ኣዕብዩ።';
+
+  @override
+  String get subscriptionLimitReachedRental =>
+      'ናይ ክራይ ዝርዝራት ደረት በፂሕኩም ኣለኹም። ዝያዳ ክራይ ንምልጣፍ ምዝገባኹም ኣዕብዩ።';
+
+  @override
+  String get subscriptionLimitReachedRentalVehicle =>
+      'ናይ ክራይ መካይን ደረት በፂሕኩም ኣለኹም። ዝያዳ ንምልጣፍ ምዝገባኹም ኣዕብዩ።';
 
   @override
   String get subscriptionLimitReachedTitle => 'ናይ ምዝገባ ደረት በፂሑ';
@@ -2883,4 +2897,31 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get seekerViewCv => 'ሲቪ ርአ';
+
+  @override
+  String get listingPerDay => '/ መዓልቲ';
+
+  @override
+  String get listingPerMonth => '/ ወርሒ';
+
+  @override
+  String get listingPerYear => '/ ዓመት';
+
+  @override
+  String get searchUnder15K => 'ትሕቲ 15 ሺሕ';
+
+  @override
+  String get search15K30K => '15 ሺሕ - 30 ሺሕ';
+
+  @override
+  String get search30K60K => '30 ሺሕ - 60 ሺሕ';
+
+  @override
+  String get search60K100K => '60 ሺሕ - 100 ሺሕ';
+
+  @override
+  String get search100KPlus => '100 ሺሕ+';
+
+  @override
+  String get listingTypeNotEditable => 'ዓይነት ምዝገባ ድሕሪ ምፍጣሩ ክቀያየር ኣይክእልን';
 }

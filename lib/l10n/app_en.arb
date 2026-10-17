@@ -452,6 +452,8 @@
   "subscriptionsChoosePlan": "Choose Your Plan",
   "subscriptionsSelectPlanSubtitle": "Select a plan that fits your needs. Upgrade anytime.",
   "subscriptionsListings": "Listings",
+  "subscriptionsRentalListings": "Rental Listings",
+  "subscriptionsRentalVehicles": "Rental Vehicles",
   "subscriptionsFeaturedListings": "Featured Listings",
   "subscriptionsDaysLeft": "{count} days left",
   "subscriptionsFreeSuccess": "Free plan activated successfully!",
@@ -521,6 +523,8 @@
   "subscriptionRequiredDetailsSubtitle": "You need an active subscription with access to view property details and contact owners.",
   "subscriptionRequiredOrderSubtitle": "You need an active subscription to create an order.",
   "subscriptionLimitReached": "You've reached your listing limit. Upgrade your subscription to post more listings.",
+  "subscriptionLimitReachedRental": "You've reached your rental listing limit. Upgrade your subscription to post more rentals.",
+  "subscriptionLimitReachedRentalVehicle": "You've reached your vehicle rental limit. Upgrade your subscription to post more rentals.",
   "subscriptionLimitReachedTitle": "Listing Limit Reached",
   "kycRequiredTitle": "KYC Verification Required",
   "kycPendingSubtitleReview": "Your KYC verification is still pending review. You can post a listing once it's approved.",
@@ -935,5 +939,14 @@
   "seekerProfileSaved": "Profile updated successfully",
   "seekerCv": "CV",
   "seekerUploadCv": "Upload CV (Optional)",
-  "seekerViewCv": "View CV"
+  "seekerViewCv": "View CV",
+  "listingPerDay": "/ day",
+  "listingPerMonth": "/ month",
+  "listingPerYear": "/ year",
+  "searchUnder15K": "Under 15K",
+  "search15K30K": "15K - 30K",
+  "search30K60K": "30K - 60K",
+  "search60K100K": "60K - 100K",
+  "search100KPlus": "100K+",
+  "listingTypeNotEditable": "Listing type cannot be changed after creation"
 }

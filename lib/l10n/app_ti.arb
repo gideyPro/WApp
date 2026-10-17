@@ -452,6 +452,8 @@
   "subscriptionsChoosePlan": "ፓኬጅኹም ይምረፁ",
   "subscriptionsSelectPlanSubtitle": "ንዓኹም ዝበቅዕ ፓኬጅ ይምረፁ። ኣብ ዝኾነ እዋን ክተዕብይዎ ትኽእሉ ኢኹም።",
   "subscriptionsListings": "ንብረታት",
+  "subscriptionsRentalListings": "ናይ ክራይ ንብረታት",
+  "subscriptionsRentalVehicles": "ናይ ክራይ መካይን",
   "subscriptionsFeaturedListings": "ፍሉያት ንብረታት",
   "subscriptionsDaysLeft": "{count} መዓልታት ተሪፎም",
   "subscriptionsFreeSuccess": "ነፃ ፓኬጅ ብትኽክል ተወሊዑ!",
@@ -521,6 +523,8 @@
   "subscriptionRequiredDetailsSubtitle": "ዝርዝር ንብረታት ንምርኣይን ምስ ዋናታት ንምርኻብን ዘኽእል ንጡፍ ፓኬጅ የድሊ።",
   "subscriptionRequiredOrderSubtitle": "ትእዛዝ ንምምዝጋብ ዘኽእል ንጡፍ ፓኬጅ የድሊ።",
   "subscriptionLimitReached": "ናይ ምዝገባ ደረትኩም በፂሕኩም ኣለኹም። ተወሳኺ ንብረታት ንምምዝጋብ ምዝገባኩም ኣዕብዩ።",
+  "subscriptionLimitReachedRental": "ናይ ክራይ ዝርዝራት ደረት በፂሕኩም ኣለኹም። ዝያዳ ክራይ ንምልጣፍ ምዝገባኹም ኣዕብዩ።",
+  "subscriptionLimitReachedRentalVehicle": "ናይ ክራይ መካይን ደረት በፂሕኩም ኣለኹም። ዝያዳ ንምልጣፍ ምዝገባኹም ኣዕብዩ።",
   "subscriptionLimitReachedTitle": "ናይ ምዝገባ ደረት በፂሑ",
   "kycRequiredTitle": "መረጋገፂ መንነት (KYC) የድሊ",
   "kycPendingSubtitleReview": "መረጋገፂ መንነትኩም ገና ኣብ ገምጋም ይርከብ። ምስ ፀደቐ ንብረት ክትምዝግቡ ትኽእሉ ኢኹም።",
@@ -935,5 +939,14 @@
   "seekerProfileSaved": "ፕሮፋይል ብዓወት ልሰፊሩ",
   "seekerCv": "ሲቪ",
   "seekerUploadCv": "ሲቪ ኣእትው (ኣማራጭ)",
-  "seekerViewCv": "ሲቪ ርአ"
+  "seekerViewCv": "ሲቪ ርአ",
+  "listingPerDay": "/ መዓልቲ",
+  "listingPerMonth": "/ ወርሒ",
+  "listingPerYear": "/ ዓመት",
+  "searchUnder15K": "ትሕቲ 15 ሺሕ",
+  "search15K30K": "15 ሺሕ - 30 ሺሕ",
+  "search30K60K": "30 ሺሕ - 60 ሺሕ",
+  "search60K100K": "60 ሺሕ - 100 ሺሕ",
+  "search100KPlus": "100 ሺሕ+",
+  "listingTypeNotEditable": "ዓይነት ምዝገባ ድሕሪ ምፍጣሩ ክቀያየር ኣይክእልን"
 }

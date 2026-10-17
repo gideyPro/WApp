@@ -36,7 +36,9 @@ class SubscriptionPlan {
   final double priceUsd;
   final int durationMonths;
   final int maxListings;
+  final int maxRentalListings;
   final int maxVehicles;
+  final int maxRentalVehicles;
   final int maxJobs;
   final int maxFeaturedListings;
   final bool viewVip;
@@ -64,7 +66,9 @@ class SubscriptionPlan {
     this.priceUsd = 0.0,
     this.durationMonths = 1,
     this.maxListings = 1,
+    this.maxRentalListings = 0,
     this.maxVehicles = 0,
+    this.maxRentalVehicles = 0,
     this.maxJobs = 0,
     this.maxFeaturedListings = 0,
     this.viewVip = false,
@@ -94,7 +98,9 @@ class SubscriptionPlan {
       priceUsd: _parseDouble(json['price_usd']),
       durationMonths: json['duration_months'] ?? 1,
       maxListings: json['max_listings'] ?? 1,
+      maxRentalListings: json['max_rental_listings'] ?? 0,
       maxVehicles: json['max_vehicles'] ?? 0,
+      maxRentalVehicles: json['max_rental_vehicles'] ?? 0,
       maxJobs: json['max_jobs'] ?? 0,
       maxFeaturedListings: json['max_featured_listings'] ?? 0,
       viewVip: json['view_vip'] ?? false,
@@ -208,8 +214,12 @@ class SubscriptionPlan {
     switch (key) {
       case 'max_listings':
         return maxListings;
+      case 'max_rental_listings':
+        return maxRentalListings;
       case 'max_vehicles':
         return maxVehicles;
+      case 'max_rental_vehicles':
+        return maxRentalVehicles;
       case 'max_jobs':
         return maxJobs;
       case 'max_featured_listings':
@@ -298,7 +308,9 @@ class Subscription {
   final DateTime? trialEndsAt;
   final String? billingLabel;
   final int listingsUsed;
+  final int rentalListingsUsed;
   final int vehiclesUsed;
+  final int rentalVehiclesUsed;
   final int jobsUsed;
   final int featuredListingsUsed;
   final int ordersUsed;
@@ -318,7 +330,9 @@ class Subscription {
     this.trialEndsAt,
     this.billingLabel,
     this.listingsUsed = 0,
+    this.rentalListingsUsed = 0,
     this.vehiclesUsed = 0,
+    this.rentalVehiclesUsed = 0,
     this.jobsUsed = 0,
     this.featuredListingsUsed = 0,
     this.ordersUsed = 0,
@@ -348,7 +362,9 @@ class Subscription {
           : null,
       billingLabel: json['billing_label']?.toString(),
       listingsUsed: json['listings_used'] ?? 0,
+      rentalListingsUsed: json['rental_listings_used'] ?? 0,
       vehiclesUsed: json['vehicles_used'] ?? 0,
+      rentalVehiclesUsed: json['rental_vehicles_used'] ?? 0,
       jobsUsed: json['jobs_used'] ?? 0,
       featuredListingsUsed: json['featured_listings_used'] ?? 0,
       ordersUsed: json['orders_used'] ?? 0,

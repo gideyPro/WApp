@@ -75,7 +75,9 @@ class SubscriptionServiceApi {
           plans: plans,
           subscription: subscription,
           canCreateListing: data['can_create_listing'] ?? false,
+          canCreateRentalListing: data['can_create_rental_listing'] ?? false,
           canCreateVehicle: data['can_create_vehicle'] ?? false,
+          canCreateRentalVehicle: data['can_create_rental_vehicle'] ?? false,
           canCreateJob: data['can_create_job'] ?? false,
           canFeatureListing: data['can_feature_listing'] ?? false,
           canViewVip: data['can_view_vip'] ?? false,
@@ -120,7 +122,9 @@ class SubscriptionServiceApi {
           success: true,
           subscription: subscription,
           canCreateListing: data['can_create_listing'] ?? false,
+          canCreateRentalListing: data['can_create_rental_listing'] ?? false,
           canCreateVehicle: data['can_create_vehicle'] ?? false,
+          canCreateRentalVehicle: data['can_create_rental_vehicle'] ?? false,
           canCreateJob: data['can_create_job'] ?? false,
           canFeatureListing: data['can_feature_listing'] ?? false,
           canViewVip: data['can_view_vip'] ?? false,
@@ -137,12 +141,18 @@ class SubscriptionServiceApi {
       return const CurrentSubscriptionResponse(
         success: false,
         canCreateListing: false,
+        canCreateRentalListing: false,
+        canCreateVehicle: false,
+        canCreateRentalVehicle: false,
         canFeatureListing: false,
       );
     } catch (e) {
       return const CurrentSubscriptionResponse(
         success: false,
         canCreateListing: false,
+        canCreateRentalListing: false,
+        canCreateVehicle: false,
+        canCreateRentalVehicle: false,
         canFeatureListing: false,
       );
     }
@@ -370,7 +380,9 @@ class FullSubscriptionData {
   final List<SubscriptionPlan> plans;
   final Subscription? subscription;
   final bool canCreateListing;
+  final bool canCreateRentalListing;
   final bool canCreateVehicle;
+  final bool canCreateRentalVehicle;
   final bool canCreateJob;
   final bool canFeatureListing;
   final bool canViewVip;
@@ -388,7 +400,9 @@ class FullSubscriptionData {
     this.plans = const [],
     this.subscription,
     this.canCreateListing = false,
+    this.canCreateRentalListing = false,
     this.canCreateVehicle = false,
+    this.canCreateRentalVehicle = false,
     this.canCreateJob = false,
     this.canFeatureListing = false,
     this.canViewVip = false,
@@ -419,7 +433,9 @@ class CurrentSubscriptionResponse {
   final String message;
   final Subscription? subscription;
   final bool canCreateListing;
+  final bool canCreateRentalListing;
   final bool canCreateVehicle;
+  final bool canCreateRentalVehicle;
   final bool canCreateJob;
   final bool canFeatureListing;
   final bool canViewVip;
@@ -436,7 +452,9 @@ class CurrentSubscriptionResponse {
     this.message = '',
     this.subscription,
     this.canCreateListing = true,
+    this.canCreateRentalListing = true,
     this.canCreateVehicle = true,
+    this.canCreateRentalVehicle = true,
     this.canCreateJob = true,
     this.canFeatureListing = true,
     this.canViewVip = true,

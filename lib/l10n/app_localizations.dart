@@ -2782,6 +2782,18 @@ abstract class AppLocalizations {
   /// **'Listings'**
   String get subscriptionsListings;
 
+  /// No description provided for @subscriptionsRentalListings.
+  ///
+  /// In en, this message translates to:
+  /// **'Rental Listings'**
+  String get subscriptionsRentalListings;
+
+  /// No description provided for @subscriptionsRentalVehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Rental Vehicles'**
+  String get subscriptionsRentalVehicles;
+
   /// No description provided for @subscriptionsFeaturedListings.
   ///
   /// In en, this message translates to:
@@ -3195,6 +3207,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'ve reached your listing limit. Upgrade your subscription to post more listings.'**
   String get subscriptionLimitReached;
+
+  /// No description provided for @subscriptionLimitReachedRental.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached your rental listing limit. Upgrade your subscription to post more rentals.'**
+  String get subscriptionLimitReachedRental;
+
+  /// No description provided for @subscriptionLimitReachedRentalVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached your vehicle rental limit. Upgrade your subscription to post more rentals.'**
+  String get subscriptionLimitReachedRentalVehicle;
 
   /// No description provided for @subscriptionLimitReachedTitle.
   ///
@@ -5565,6 +5589,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View CV'**
   String get seekerViewCv;
+
+  /// No description provided for @listingPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'/ day'**
+  String get listingPerDay;
+
+  /// No description provided for @listingPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'/ month'**
+  String get listingPerMonth;
+
+  /// No description provided for @listingPerYear.
+  ///
+  /// In en, this message translates to:
+  /// **'/ year'**
+  String get listingPerYear;
+
+  /// No description provided for @searchUnder15K.
+  ///
+  /// In en, this message translates to:
+  /// **'Under 15K'**
+  String get searchUnder15K;
+
+  /// No description provided for @search15K30K.
+  ///
+  /// In en, this message translates to:
+  /// **'15K - 30K'**
+  String get search15K30K;
+
+  /// No description provided for @search30K60K.
+  ///
+  /// In en, this message translates to:
+  /// **'30K - 60K'**
+  String get search30K60K;
+
+  /// No description provided for @search60K100K.
+  ///
+  /// In en, this message translates to:
+  /// **'60K - 100K'**
+  String get search60K100K;
+
+  /// No description provided for @search100KPlus.
+  ///
+  /// In en, this message translates to:
+  /// **'100K+'**
+  String get search100KPlus;
+
+  /// No description provided for @listingTypeNotEditable.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing type cannot be changed after creation'**
+  String get listingTypeNotEditable;
 }
 
 class _AppLocalizationsDelegate

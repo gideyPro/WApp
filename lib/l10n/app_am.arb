@@ -452,6 +452,8 @@
   "subscriptionsChoosePlan": "ፓኬጅዎን ይምረጡ",
   "subscriptionsSelectPlanSubtitle": "ለእርስዎ የሚስማማውን ፓኬጅ ይምረጡ። በማንኛውም ጊዜ ማሳደግ ይችላሉ።",
   "subscriptionsListings": "ንብረቶች",
+  "subscriptionsRentalListings": "የኪራይ ንብረቶች",
+  "subscriptionsRentalVehicles": "የኪራይ ተሽከርካሪዎች",
   "subscriptionsFeaturedListings": "ልዩ ንብረቶች",
   "subscriptionsDaysLeft": "{count} ቀናት ቀርተዋል",
   "subscriptionsFreeSuccess": "ነፃ ፓኬጅ በትክክል ገቢር ሆኗል!",
@@ -521,6 +523,8 @@
   "subscriptionRequiredDetailsSubtitle": "የንብረት ዝርዝሮችን ለማየት እና ባለቤቶችን ለማነጋገር የሚያስችል ንቁ ፓኬጅ ያስፈልግዎታል።",
   "subscriptionRequiredOrderSubtitle": "ትእዛዝ ለመጨመር የሚያስችል ንቁ ፓኬጅ ያስፈልግዎታል።",
   "subscriptionLimitReached": "የምዝገባ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገዝ ምዝገባዎን ያሳድጉ።",
+  "subscriptionLimitReachedRental": "የኪራይ ዝርዝሮች ገደብ ላይ ደርሰዋል። ተጨማሪ ኪራይ ለመለጠፍ ምዝገባዎን ያሳድጉ።",
+  "subscriptionLimitReachedRentalVehicle": "የኪራይ ተሽከርካሪዎች ገደብ ላይ ደርሰዋል። ተጨማሪ ለመለጠፍ ምዝገባዎን ያሳድጉ።",
   "subscriptionLimitReachedTitle": "የምዝገባ ገደብ ደርሷል",
   "kycRequiredTitle": "የማንነት ማረጋገጫ (KYC) ያስፈልጋል",
   "kycPendingSubtitleReview": "የማንነት ማረጋገጫዎ ገና በግምገማ ላይ ነው። ሲፀድቅ ንብረት መመዝገብ ይችላሉ።",
@@ -935,5 +939,14 @@
   "seekerProfileSaved": "መገለጫው በተሳካ ሁኔታ ተዘምኗል",
   "seekerCv": "ሲቪ",
   "seekerUploadCv": "ሲቪ ይስቀሉ (አማራጭ)",
-  "seekerViewCv": "ሲቪ ይመልከቱ"
+  "seekerViewCv": "ሲቪ ይመልከቱ",
+  "listingPerDay": "/ ቀን",
+  "listingPerMonth": "/ ወር",
+  "listingPerYear": "/ ዓመት",
+  "searchUnder15K": "ከ15 ሺህ በታች",
+  "search15K30K": "15 ሺህ - 30 ሺህ",
+  "search30K60K": "30 ሺህ - 60 ሺህ",
+  "search60K100K": "60 ሺህ - 100 ሺህ",
+  "search100KPlus": "100 ሺህ+",
+  "listingTypeNotEditable": "የማስታወቂያው አይነት ከተፈጠረ በኋላ ሊቀየር አይችልም"
 }

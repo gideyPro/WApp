@@ -848,17 +848,52 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   }
 
   Widget _buildStep2Pricing(AppLocalizations l10n) {
+    final settingsAsync = ref.read(appSettingsProvider);
+    final rentalEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['rental_enabled'] == true,
+      orElse: () => false,
+    );
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
         children: [
           _sectionCard(
             title: l10n.listingListingType,
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _typeChoiceChip(selected: !_formData.isForRent, label: l10n.listingForSale, icon: Icons.sell_outlined, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: false))),
-                const SizedBox(width: 12),
-                _typeChoiceChip(selected: _formData.isForRent, label: l10n.listingForRent, icon: Icons.key, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: true))),
+                Row(
+                  children: [
+                    _typeChoiceChip(
+                      selected: !_formData.isForRent,
+                      label: l10n.listingForSale,
+                      icon: Icons.sell_outlined,
+                      onTap: null,
+                    ),
+                    if (rentalEnabled || _formData.isForRent) ...[
+                      const SizedBox(width: 12),
+                      _typeChoiceChip(
+                        selected: _formData.isForRent,
+                        label: l10n.listingForRent,
+                        icon: Icons.key,
+                        onTap: null,
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.info_outline, size: 14, color: context.theme.textMuted),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        l10n.listingTypeNotEditable,
+                        style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -1273,13 +1308,13 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     );
   }
 
-  Widget _typeChoiceChip({required bool selected, required String label, required IconData icon, required VoidCallback onTap}) {
+  Widget _typeChoiceChip({required bool selected, required String label, required IconData icon, VoidCallback? onTap}) {
     return Expanded(
       child: LiquidGlass(
         borderRadius: 4, blur: selected ? 20 : 16,
         variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
         tint: selected ? AppColors.accent500 : null,
-        interactive: true, onTap: onTap,
+        interactive: onTap != null, onTap: onTap,
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

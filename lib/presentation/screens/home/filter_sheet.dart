@@ -165,6 +165,7 @@ class UnifiedFilterValues {
       if (mileageMax != null) params['mileage_max'] = mileageMax;
       if (vehicleCategory != null) params['vehicle_category'] = vehicleCategory;
       if (bodyType != null) params['body_type'] = bodyType;
+      if (listingType != null) params['listing_type'] = listingType;
     } else if (category == HomeCategory.property) {
       if (propertyType != null) params['type'] = propertyType;
       if (listingType != null) params['listing_type'] = listingType;
@@ -185,6 +186,14 @@ const _priceRanges = <String, (int?, int?)>{
   '10M-50M': (10000000, 50000000),
   '50M-100M': (50000000, 100000000),
   '100M+': (100000000, null),
+};
+
+const _rentalPriceRanges = <String, (int?, int?)>{
+  'Under 15K': (0, 15000),
+  '15K-30K': (15000, 30000),
+  '30K-60K': (30000, 60000),
+  '60K-100K': (60000, 100000),
+  '100K+': (100000, null),
 };
 
 const _sortOptions = [
@@ -311,7 +320,7 @@ class _FilterSheetState extends State<FilterSheet> {
       priceMax: _priceMax,
       sort: _sort,
       propertyType: _category == HomeCategory.property ? _propertyType : null,
-      listingType: _category == HomeCategory.property ? _listingType : null,
+      listingType: (_category == HomeCategory.property || _category == HomeCategory.vehicles) ? _listingType : null,
       isFeatured: _category == HomeCategory.property ? _isFeatured : false,
       make: _category == HomeCategory.vehicles ? _make : null,
       model: _category == HomeCategory.vehicles ? _model : null,
@@ -504,7 +513,12 @@ class _FilterSheetState extends State<FilterSheet> {
           (l10n.listingForSale, 'sale', _listingType == 'sale'),
           (l10n.listingForRent, 'rental', _listingType == 'rental'),
         ],
-        onSelected: (v) => setState(() => _listingType = v as String?),
+        onSelected: (v) => setState(() {
+          _listingType = v as String?;
+          _priceLabel = null;
+          _priceMin = null;
+          _priceMax = null;
+        }),
       ),
       const SizedBox(height: 16),
 
@@ -565,6 +579,23 @@ class _FilterSheetState extends State<FilterSheet> {
 
   List<Widget> _buildVehicleSections(AppLocalizations l10n) {
     return [
+      Text(l10n.searchListingStatus, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+      const SizedBox(height: 10),
+      _modalChipRow(
+        options: [
+          (l10n.searchFilterAll, null, _listingType == null),
+          (l10n.listingForSale, 'sale', _listingType == 'sale'),
+          (l10n.listingForRent, 'rental', _listingType == 'rental'),
+        ],
+        onSelected: (v) => setState(() {
+          _listingType = v as String?;
+          _priceLabel = null;
+          _priceMin = null;
+          _priceMax = null;
+        }),
+      ),
+      const SizedBox(height: 16),
+
       Text(l10n.listingVehicleCategory, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
       const SizedBox(height: 10),
       _modalChipRow(
@@ -662,20 +693,32 @@ class _FilterSheetState extends State<FilterSheet> {
   }
 
   Widget _buildPriceSection(AppLocalizations l10n) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l10n.searchPriceRange, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 10),
-        _modalChipRow(
-          options: [
+    final isRental = _listingType == 'rental';
+    final options = isRental
+        ? [
+            (l10n.searchFilterAny, null, _priceLabel == null),
+            (l10n.searchUnder15K, 'Under 15K', _priceLabel == 'Under 15K'),
+            (l10n.search15K30K, '15K-30K', _priceLabel == '15K-30K'),
+            (l10n.search30K60K, '30K-60K', _priceLabel == '30K-60K'),
+            (l10n.search60K100K, '60K-100K', _priceLabel == '60K-100K'),
+            (l10n.search100KPlus, '100K+', _priceLabel == '100K+'),
+          ]
+        : [
             (l10n.searchFilterAny, null, _priceLabel == null),
             (l10n.searchUnder5M, 'Under 5M', _priceLabel == 'Under 5M'),
             (l10n.search5M10M, '5M-10M', _priceLabel == '5M-10M'),
             (l10n.search10M50M, '10M-50M', _priceLabel == '10M-50M'),
             (l10n.search50M100M, '50M-100M', _priceLabel == '50M-100M'),
             (l10n.search100MPlus, '100M+', _priceLabel == '100M+'),
-          ],
+          ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.searchPriceRange, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 10),
+        _modalChipRow(
+          options: options,
           onSelected: (v) {
             final label = v as String?;
             setState(() {
@@ -684,7 +727,7 @@ class _FilterSheetState extends State<FilterSheet> {
                 _priceMin = null;
                 _priceMax = null;
               } else {
-                final range = _priceRanges[label]!;
+                final range = isRental ? _rentalPriceRanges[label]! : _priceRanges[label]!;
                 _priceMin = range.$1;
                 _priceMax = range.$2;
               }

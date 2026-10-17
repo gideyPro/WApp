@@ -88,6 +88,23 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     _customMakeController = TextEditingController();
     _customModelController = TextEditingController();
     _loadRegions();
+    _checkInitialRentalAutoSelect();
+  }
+
+  void _checkInitialRentalAutoSelect() {
+    final settingsAsync = ref.read(appSettingsProvider);
+    final rentalEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['rental_enabled'] == true,
+      orElse: () => false,
+    );
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
+    final subState = ref.read(subscriptionProvider);
+    if (rentalEnabled && subscriptionEnabled && !subState.canCreateVehicle && subState.canCreateRentalVehicle && !_formData.isForRent) {
+      _formData = _formData.copyWith(isForRent: true);
+    }
   }
 
   @override
@@ -136,6 +153,23 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       case 1:
         if (!_formData.isForRent && _formData.priceFixed == null) errors.add('${l10n.listingPriceEtb} ${l10n.commonIsRequired}');
         if (_formData.addressId == null) errors.add(l10n.carLocationRequired);
+        final settingsAsync = ref.read(appSettingsProvider);
+        final rentalEnabled = settingsAsync.maybeWhen(
+          data: (data) => data['rental_enabled'] == true,
+          orElse: () => false,
+        );
+        final subscriptionEnabled = settingsAsync.maybeWhen(
+          data: (data) => data['subscription_enabled'] == true,
+          orElse: () => false,
+        );
+        final subState = ref.read(subscriptionProvider);
+        if (subscriptionEnabled) {
+          if (_formData.isForRent && (!rentalEnabled || !subState.canCreateRentalVehicle)) {
+            errors.add(l10n.subscriptionLimitReachedRentalVehicle);
+          } else if (!_formData.isForRent && !subState.canCreateVehicle) {
+            errors.add(l10n.subscriptionLimitReached);
+          }
+        }
         break;
       case 2:
         if (_formData.images.isEmpty) errors.add(l10n.listingErrorImageRequired);
@@ -511,10 +545,26 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     final settingsAsync = ref.watch(appSettingsProvider);
     final subState = ref.watch(subscriptionProvider);
     final kycState = ref.watch(kycStatusProvider);
+    final rentalEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['rental_enabled'] == true,
+      orElse: () => false,
+    );
     final subscriptionEnabled = settingsAsync.maybeWhen(
       data: (data) => data['subscription_enabled'] == true,
       orElse: () => false,
     );
+
+    ref.listen<SubscriptionState>(subscriptionProvider, (prev, next) {
+      final settings = ref.read(appSettingsProvider).valueOrNull;
+      final rentEnabled = settings?['rental_enabled'] == true;
+      final subEnabled = settings?['subscription_enabled'] == true;
+      if (rentEnabled && subEnabled && !next.canCreateVehicle && next.canCreateRentalVehicle && !_formData.isForRent) {
+        setState(() {
+          _formData = _formData.copyWith(isForRent: true);
+        });
+      }
+    });
+
     if (subState.isLoading || kycState.isLoading || settingsAsync.isLoading) {
       return _buildSkeleton();
     }
@@ -553,7 +603,8 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       );
     }
 
-    if (subscriptionEnabled && !subState.canCreateVehicle) {
+    final canCreateAnyVehicle = subState.canCreateVehicle || (rentalEnabled && subState.canCreateRentalVehicle);
+    if (subscriptionEnabled && !canCreateAnyVehicle) {
       final (:title, :subtitle) = _vehicleGateMessage(subState, l10n);
       return WaveFullPageUpgrade(
         appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
@@ -818,21 +869,65 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   }
 
   Widget _buildStep2Pricing(AppLocalizations l10n) {
+    final settingsAsync = ref.read(appSettingsProvider);
+    final rentalEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['rental_enabled'] == true,
+      orElse: () => false,
+    );
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
+    final subState = ref.read(subscriptionProvider);
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
         children: [
-          _sectionCard(
-            title: l10n.listingListingType,
-            child: Row(
-              children: [
-                _typeChoiceChip(selected: !_formData.isForRent, label: l10n.listingForSale, icon: Icons.sell_outlined, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: false))),
-                const SizedBox(width: 12),
-                _typeChoiceChip(selected: _formData.isForRent, label: l10n.listingForRent, icon: Icons.key, onTap: () => setState(() => _formData = _formData.copyWith(isForRent: true))),
-              ],
+          if (rentalEnabled) ...[
+            _sectionCard(
+              title: l10n.listingListingType,
+              child: Row(
+                children: [
+                  _typeChoiceChip(
+                    selected: !_formData.isForRent,
+                    label: l10n.listingForSale,
+                    icon: Icons.sell_outlined,
+                    onTap: () {
+                      if (subscriptionEnabled && !subState.canCreateVehicle) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.subscriptionLimitReached),
+                            backgroundColor: AppColors.error,
+                          ),
+                        );
+                        return;
+                      }
+                      setState(() => _formData = _formData.copyWith(isForRent: false));
+                    },
+                  ),
+                  const SizedBox(width: 12),
+                  _typeChoiceChip(
+                    selected: _formData.isForRent,
+                    label: l10n.listingForRent,
+                    icon: Icons.key,
+                    onTap: () {
+                      if (subscriptionEnabled && !subState.canCreateRentalVehicle) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.subscriptionLimitReachedRentalVehicle),
+                            backgroundColor: AppColors.error,
+                          ),
+                        );
+                        return;
+                      }
+                      setState(() => _formData = _formData.copyWith(isForRent: true));
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
+          ],
           _sectionCard(
             title: l10n.listingPricing,
             child: _formData.isForRent
@@ -1302,7 +1397,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       );
     }
     final plan = subState.subscription?.plan;
-    if (plan == null || plan.maxVehicles == 0) {
+    if (plan == null || (plan.maxVehicles == 0 && plan.maxRentalVehicles == 0)) {
       return (
         title: l10n.subscriptionPlanNotSupportedListing,
         subtitle: l10n.subscriptionPlanNotSupportedListingSubtitle,
