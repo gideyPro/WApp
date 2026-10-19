@@ -12,6 +12,7 @@ class JobFormData {
   double? salaryMax;
   String salaryCurrency = 'ETB';
   String? reqEducation;
+  String? reqEducationCustom;
   List<EducationItem> reqEducations = [];
   String? reqExperience;
   List<ExperienceItem> reqExperiences = [];
@@ -38,6 +39,7 @@ class JobFormData {
     this.salaryMax,
     this.salaryCurrency = 'ETB',
     this.reqEducation,
+    this.reqEducationCustom,
     List<EducationItem>? reqEducations,
     this.reqExperience,
     List<ExperienceItem>? reqExperiences,
@@ -69,6 +71,7 @@ class JobFormData {
     double? salaryMax,
     String? salaryCurrency,
     String? reqEducation,
+    String? reqEducationCustom,
     List<EducationItem>? reqEducations,
     String? reqExperience,
     List<ExperienceItem>? reqExperiences,
@@ -97,6 +100,7 @@ class JobFormData {
       salaryMax: salaryMax ?? this.salaryMax,
       salaryCurrency: salaryCurrency ?? this.salaryCurrency,
       reqEducation: reqEducation ?? this.reqEducation,
+      reqEducationCustom: reqEducationCustom ?? this.reqEducationCustom,
       reqEducations: reqEducations ?? this.reqEducations,
       reqExperience: reqExperience ?? this.reqExperience,
       reqExperiences: reqExperiences ?? this.reqExperiences,

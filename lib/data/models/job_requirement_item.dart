@@ -5,10 +5,14 @@ import '../job_data.dart';
 class EducationItem {
   final String educationLevel;
   final String? fieldOfStudy;
+  /// Custom text for the "Other" level only; sent to the API through the
+  /// companion `*_custom` field (not part of the item JSON).
+  final String? customText;
 
   const EducationItem({
     required this.educationLevel,
     this.fieldOfStudy,
+    this.customText,
   });
 
   factory EducationItem.fromJson(Map<String, dynamic> json) {
@@ -27,7 +31,10 @@ class EducationItem {
   }
 
   String displayLabel(AppLocalizations l10n) {
-    final levelLabel = educationLevelLabel(educationLevel, l10n);
+    final custom = customText?.trim() ?? '';
+    final levelLabel = (educationLevel == 'other' && custom.isNotEmpty)
+        ? custom
+        : educationLevelLabel(educationLevel, l10n);
     if (fieldOfStudy != null && fieldOfStudy!.trim().isNotEmpty) {
       return '$levelLabel - ${fieldOfStudy!.trim()}';
     }
@@ -37,10 +44,12 @@ class EducationItem {
   EducationItem copyWith({
     String? educationLevel,
     String? fieldOfStudy,
+    String? customText,
   }) {
     return EducationItem(
       educationLevel: educationLevel ?? this.educationLevel,
       fieldOfStudy: fieldOfStudy ?? this.fieldOfStudy,
+      customText: customText ?? this.customText,
     );
   }
 

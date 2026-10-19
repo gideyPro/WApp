@@ -196,6 +196,18 @@ abstract class AppLocalizations {
   /// **'Press back again to exit'**
   String get commonPressBackAgain;
 
+  /// No description provided for @commonOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get commonOptional;
+
+  /// No description provided for @commonSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get commonSave;
+
   /// No description provided for @navHome.
   ///
   /// In en, this message translates to:
@@ -5074,11 +5086,29 @@ abstract class AppLocalizations {
   /// **'Year built is required'**
   String get listingErrorYearBuiltRequired;
 
+  /// No description provided for @jobAddEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Education'**
+  String get jobAddEducation;
+
+  /// No description provided for @jobAddExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Experience'**
+  String get jobAddExperience;
+
   /// No description provided for @jobAll.
   ///
   /// In en, this message translates to:
   /// **'All Jobs'**
   String get jobAll;
+
+  /// No description provided for @jobApplicationDeadlineOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Application Deadline (Optional)'**
+  String get jobApplicationDeadlineOptional;
 
   /// No description provided for @jobBasicInfo.
   ///
@@ -5146,6 +5176,12 @@ abstract class AppLocalizations {
   /// **'Post a Job'**
   String get jobCreateTitle;
 
+  /// No description provided for @jobDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline'**
+  String get jobDeadline;
+
   /// No description provided for @jobDescription.
   ///
   /// In en, this message translates to:
@@ -5181,6 +5217,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Featured Job'**
   String get jobFeatured;
+
+  /// No description provided for @jobFieldOfStudy.
+  ///
+  /// In en, this message translates to:
+  /// **'Field of Study'**
+  String get jobFieldOfStudy;
+
+  /// No description provided for @jobFieldOfStudyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Computer Science, Accounting'**
+  String get jobFieldOfStudyHint;
 
   /// No description provided for @jobFilter.
   ///
@@ -5283,6 +5331,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Negotiable'**
   String get jobNegotiable;
+
+  /// No description provided for @jobNoDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'No deadline'**
+  String get jobNoDeadline;
+
+  /// No description provided for @jobNoEducationAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'No specific education requirements added.'**
+  String get jobNoEducationAdded;
+
+  /// No description provided for @jobNoExperienceAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'No specific experience requirements added.'**
+  String get jobNoExperienceAdded;
 
   /// No description provided for @jobNoPhotos.
   ///
@@ -5416,6 +5482,18 @@ abstract class AppLocalizations {
   /// **'Update'**
   String get jobUpdate;
 
+  /// No description provided for @jobValidYearsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter valid years (e.g. 2)'**
+  String get jobValidYearsRequired;
+
+  /// No description provided for @jobYearsOfExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Years of Experience'**
+  String get jobYearsOfExperience;
+
   /// No description provided for @jobContactEmployer.
   ///
   /// In en, this message translates to:
@@ -5535,6 +5613,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Experience'**
   String get seekerExperience;
+
+  /// No description provided for @seekerNoEducationAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'No education credentials added yet.'**
+  String get seekerNoEducationAdded;
+
+  /// No description provided for @seekerNoExperienceAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'No work history added yet.'**
+  String get seekerNoExperienceAdded;
+
+  /// No description provided for @seekerNoBio.
+  ///
+  /// In en, this message translates to:
+  /// **'No bio provided.'**
+  String get seekerNoBio;
+
+  /// No description provided for @seekerNoWorkExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'No work experience listed.'**
+  String get seekerNoWorkExperience;
+
+  /// No description provided for @seekerPdfDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF Document'**
+  String get seekerPdfDocument;
+
+  /// No description provided for @seekerVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get seekerVideo;
+
+  /// No description provided for @seekerWaveMartOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'WaveMart options'**
+  String get seekerWaveMartOptions;
+
+  /// No description provided for @seekerContactOptionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'In-app messaging and calling with candidate'**
+  String get seekerContactOptionsSubtitle;
+
+  /// No description provided for @seekerYearsExp.
+  ///
+  /// In en, this message translates to:
+  /// **'{years} yrs exp'**
+  String seekerYearsExp(String years);
+
+  /// No description provided for @seekerYearsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{years} yrs total'**
+  String seekerYearsTotal(String years);
 
   /// No description provided for @seekerMyProfile.
   ///

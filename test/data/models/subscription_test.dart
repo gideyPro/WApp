@@ -70,4 +70,59 @@ void main() {
       expect(sub.rentalVehiclesUsed, 3);
     });
   });
+
+  group('SubscriptionPlan separate contact quotas and fallback', () {
+    test('parses separate sale and rental contact quotas', () {
+      final json = {
+        'id': 3,
+        'name': 'Premium',
+        'slug': 'premium',
+        'price': 1000,
+        'max_contacts': 10,
+        'max_rental_contacts': 5,
+        'plan_features': {
+          'max_contacts_car': 8,
+          'max_rental_contacts_car': 3,
+        },
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.maxContacts, 10);
+      expect(plan.maxRentalContacts, 5);
+      expect(plan.maxRentalContactsCar, 3);
+
+      // Property Sale vs Rental
+      expect(plan.maxContactsFor('listing', listingType: 'sale'), 10);
+      expect(plan.maxContactsFor('listing', listingType: 'rental'), 5);
+
+      // Vehicle Sale vs Rental
+      expect(plan.maxContactsFor('car', listingType: 'sale'), 8);
+      expect(plan.maxContactsFor('car', listingType: 'rental'), 3);
+    });
+
+    test('falls back rental contacts to sale contact quota when omitted', () {
+      final json = {
+        'id': 4,
+        'name': 'Standard',
+        'slug': 'standard',
+        'price': 500,
+        'max_contacts': 12,
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.maxContacts, 12);
+      expect(plan.maxRentalContacts, 12); // Fallback to max_contacts
+      expect(plan.maxRentalContactsCar, 0);
+
+      // Unspecified rental inherits sale quota
+      expect(plan.maxContactsFor('listing', listingType: 'sale'), 12);
+      expect(plan.maxContactsFor('listing', listingType: 'rental'), 12);
+
+      // Car inherits base max_contacts
+      expect(plan.maxContactsFor('car', listingType: 'sale'), 12);
+      expect(plan.maxContactsFor('car', listingType: 'rental'), 12);
+    });
+  });
 }

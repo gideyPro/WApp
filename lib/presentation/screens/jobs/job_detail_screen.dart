@@ -14,6 +14,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/job_providers.dart';
 import '../../widgets/common/wave_card.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../listing/widgets/listing_gallery.dart';
@@ -44,8 +45,9 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open: $url'), backgroundColor: AppColors.error),
+          SnackBar(content: Text(l10n.settingsWebOpenError(url)), backgroundColor: AppColors.error),
         );
       }
     }
@@ -83,13 +85,25 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     }
 
     if (state.errorMessage != null && state.listing == null) {
+      if (state.requiresSubscription) {
+        return Scaffold(
+          appBar: AppBar(title: Text(l10n.jobJobDetails)),
+          body: WaveMessageScreen(
+            type: WaveMessageType.warning,
+            title: l10n.subscriptionRequiredTitle,
+            subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+            actionLabel: l10n.listingUpgradeNow,
+            onAction: () => context.pushReplacement('/subscriptions'),
+          ),
+        );
+      }
       return Scaffold(
         appBar: AppBar(title: Text(l10n.jobJobDetails)),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Error: ${state.errorMessage}'),
+              Text('${l10n.commonError}: ${state.errorMessage}'),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => ref.read(jobDetailProvider.notifier).loadListing(widget.listingId),
@@ -280,7 +294,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
       salaryText = '$currency ${smartDecimal(listing.jobSalaryMin!)} - ${smartDecimal(listing.jobSalaryMax!)}';
     }
 
-    String deadlineText = 'No deadline';
+    String deadlineText = l10n.jobNoDeadline;
     bool isExpired = false;
     if (listing.jobDeadline != null) {
       deadlineText = DateFormat('MMM d, yyyy').format(listing.jobDeadline!);
@@ -341,7 +355,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Deadline',
+                      l10n.jobDeadline,
                       style: AppTextStyles.caption.copyWith(color: context.textSecondary),
                     ),
                   ],

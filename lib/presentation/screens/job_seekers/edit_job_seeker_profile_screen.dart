@@ -97,6 +97,10 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
 
     if (profile.educations != null && profile.educations!.isNotEmpty) {
       _educations = List.from(profile.educations!);
+      final custom = _educationCustomController.text.trim();
+      if (custom.isNotEmpty && _educations.first.educationLevel == 'other') {
+        _educations[0] = _educations[0].copyWith(customText: custom);
+      }
     } else if (profile.educationLevel.isNotEmpty && profile.educationLevel != 'other' && profile.educationLevel != 'none') {
       _educations = [EducationItem(educationLevel: profile.educationLevel)];
     }
@@ -110,7 +114,9 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     final l10n = AppLocalizations.of(context);
     String selectedLevel = 'bachelors';
     final fieldController = TextEditingController();
+    final customController = TextEditingController();
     String? fieldError;
+    String? customError;
     const noFieldRequired = ['none', 'high_school', 'other'];
 
     showDialog(
@@ -134,6 +140,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   if (val != null) {
                     setDialogState(() {
                       selectedLevel = val;
+                      customError = null;
                       if (noFieldRequired.contains(val)) {
                         fieldError = null;
                       }
@@ -141,13 +148,30 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   }
                 },
               ),
+              if (selectedLevel == 'other') ...[
+                const SizedBox(height: 12),
+                TextField(
+                  controller: customController,
+                  maxLength: 50,
+                  decoration: InputDecoration(
+                    labelText: l10n.jobEducationOtherHint,
+                    errorText: customError,
+                    counterText: '',
+                  ),
+                  onChanged: (_) {
+                    if (customError != null) {
+                      setDialogState(() => customError = null);
+                    }
+                  },
+                ),
+              ],
               const SizedBox(height: 12),
               TextField(
                 controller: fieldController,
                 decoration: InputDecoration(
                   labelText: noFieldRequired.contains(selectedLevel)
-                      ? 'Field of Study (Optional)'
-                      : 'Field of Study (e.g. Accounting, CS) *',
+                      ? '${l10n.jobFieldOfStudy} (${l10n.commonOptional})'
+                      : '${l10n.jobFieldOfStudy} (${l10n.jobFieldOfStudyHint}) *',
                   errorText: fieldError,
                 ),
                 onChanged: (_) {
@@ -166,9 +190,16 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
             ElevatedButton(
               onPressed: () {
                 final field = fieldController.text.trim();
+                final custom = customController.text.trim();
+                if (selectedLevel == 'other' && custom.isEmpty) {
+                  setDialogState(() {
+                    customError = '${l10n.jobEducationLevel} ${l10n.commonIsRequired}';
+                  });
+                  return;
+                }
                 if (!noFieldRequired.contains(selectedLevel) && field.isEmpty) {
                   setDialogState(() {
-                    fieldError = 'Field of study is required';
+                    fieldError = '${l10n.jobFieldOfStudy} ${l10n.commonIsRequired}';
                   });
                   return;
                 }
@@ -176,11 +207,12 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   _educations.add(EducationItem(
                     educationLevel: selectedLevel,
                     fieldOfStudy: field.isNotEmpty ? field : null,
+                    customText: selectedLevel == 'other' ? custom : null,
                   ));
                 });
                 Navigator.pop(ctx);
               },
-              child: const Text('Save'),
+              child: Text(l10n.commonSave),
             ),
           ],
         ),
@@ -232,7 +264,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                   controller: yearsController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
-                    labelText: 'Years of Experience *',
+                    labelText: '${l10n.jobYearsOfExperience} *',
                     errorText: yearsError,
                   ),
                   onChanged: (_) {
@@ -256,15 +288,15 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
 
                 bool hasError = false;
                 if (title.isEmpty) {
-                  titleError = 'Job title is required';
+                  titleError = '${l10n.jobJobTitle} ${l10n.commonIsRequired}';
                   hasError = true;
                 }
                 if (comp.isEmpty) {
-                  companyError = 'Company name is required';
+                  companyError = '${l10n.jobCompanyName} ${l10n.commonIsRequired}';
                   hasError = true;
                 }
                 if (yrsText.isEmpty || yrs == null || yrs < 0) {
-                  yearsError = 'Valid years required (e.g. 2)';
+                  yearsError = l10n.jobValidYearsRequired;
                   hasError = true;
                 }
 
@@ -282,7 +314,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                 });
                 Navigator.pop(ctx);
               },
-              child: const Text('Save'),
+              child: Text(l10n.commonSave),
             ),
           ],
         ),
@@ -296,16 +328,17 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     final l10n = AppLocalizations.of(context);
     setState(() => _isSubmitting = true);
 
-    final customEdu = _educationCustomController.text.trim();
-    final primaryEdu = _educations.isNotEmpty
-        ? _educations.first.educationLevel
-        : (_education == 'other' ? (customEdu.isEmpty ? 'other' : customEdu) : (_education ?? 'none'));
+    final firstItem = _educations.isNotEmpty ? _educations.first : null;
+    final primaryEdu = firstItem?.educationLevel ?? (_education ?? 'none');
+    final itemCustom = (firstItem?.customText ?? '').trim();
+    final customEdu = itemCustom.isNotEmpty ? itemCustom : _educationCustomController.text.trim();
 
     final data = <String, dynamic>{
       'full_name': _fullNameController.text.trim(),
       'professional_title': _titleController.text.trim(),
       'job_category': _category?.trim() ?? '',
       'education_level': primaryEdu,
+      if (primaryEdu == 'other' && customEdu.isNotEmpty) 'education_level_custom': customEdu,
       if (_educations.isNotEmpty)
         'educations': _educations.map((e) => e.toJson()).toList(),
       if (_experiences.isNotEmpty)
@@ -403,7 +436,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                       TextButton.icon(
                         onPressed: _showAddEducationDialog,
                         icon: const Icon(Icons.add, size: 18),
-                        label: const Text('Add Education'),
+                        label: Text(l10n.jobAddEducation),
                       ),
                     ],
                   ),
@@ -411,7 +444,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        'No education credentials added yet.',
+                        l10n.seekerNoEducationAdded,
                         style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
                       ),
                     )
@@ -442,7 +475,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                       TextButton.icon(
                         onPressed: _showAddExperienceDialog,
                         icon: const Icon(Icons.add, size: 18),
-                        label: const Text('Add Experience'),
+                        label: Text(l10n.jobAddExperience),
                       ),
                     ],
                   ),
@@ -450,7 +483,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        'No work history added yet.',
+                        l10n.seekerNoExperienceAdded,
                         style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
                       ),
                     )
@@ -544,7 +577,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) => Center(child: Text('Error: $e')),
+        error: (e, st) => Center(child: Text('${l10n.commonError}: $e')),
       ),
     );
   }

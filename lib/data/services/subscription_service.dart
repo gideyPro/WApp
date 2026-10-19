@@ -88,6 +88,12 @@ class SubscriptionServiceApi {
           canSeeFullAddress: data['can_see_full_address'] ?? false,
           contactViewsUsed: data['contact_views_used'] ?? 0,
           contactViewsRemaining: data['contact_views_remaining'] ?? 0,
+          rentalContactViewsUsed: data['rental_contact_views_used'] ?? 0,
+          rentalContactViewsRemaining: data['rental_contact_views_remaining'] ?? 0,
+          carContactViewsUsed: data['car_contact_views_used'] ?? 0,
+          carContactViewsRemaining: data['car_contact_views_remaining'] ?? 0,
+          carRentalContactViewsUsed: data['car_rental_contact_views_used'] ?? 0,
+          carRentalContactViewsRemaining: data['car_rental_contact_views_remaining'] ?? 0,
         );
       }
 
@@ -135,6 +141,12 @@ class SubscriptionServiceApi {
           canSeeFullAddress: data['can_see_full_address'] ?? false,
           contactViewsUsed: data['contact_views_used'] ?? 0,
           contactViewsRemaining: data['contact_views_remaining'] ?? 0,
+          rentalContactViewsUsed: data['rental_contact_views_used'] ?? 0,
+          rentalContactViewsRemaining: data['rental_contact_views_remaining'] ?? 0,
+          carContactViewsUsed: data['car_contact_views_used'] ?? 0,
+          carContactViewsRemaining: data['car_contact_views_remaining'] ?? 0,
+          carRentalContactViewsUsed: data['car_rental_contact_views_used'] ?? 0,
+          carRentalContactViewsRemaining: data['car_rental_contact_views_remaining'] ?? 0,
         );
       }
 
@@ -393,6 +405,12 @@ class FullSubscriptionData {
   final bool canSeeFullAddress;
   final int contactViewsUsed;
   final int contactViewsRemaining;
+  final int rentalContactViewsUsed;
+  final int rentalContactViewsRemaining;
+  final int carContactViewsUsed;
+  final int carContactViewsRemaining;
+  final int carRentalContactViewsUsed;
+  final int carRentalContactViewsRemaining;
 
   const FullSubscriptionData({
     required this.success,
@@ -413,6 +431,12 @@ class FullSubscriptionData {
     this.canSeeFullAddress = false,
     this.contactViewsUsed = 0,
     this.contactViewsRemaining = 0,
+    this.rentalContactViewsUsed = 0,
+    this.rentalContactViewsRemaining = 0,
+    this.carContactViewsUsed = 0,
+    this.carContactViewsRemaining = 0,
+    this.carRentalContactViewsUsed = 0,
+    this.carRentalContactViewsRemaining = 0,
   });
 }
 
@@ -446,6 +470,12 @@ class CurrentSubscriptionResponse {
   final bool canSeeFullAddress;
   final int contactViewsUsed;
   final int contactViewsRemaining;
+  final int rentalContactViewsUsed;
+  final int rentalContactViewsRemaining;
+  final int carContactViewsUsed;
+  final int carContactViewsRemaining;
+  final int carRentalContactViewsUsed;
+  final int carRentalContactViewsRemaining;
 
   const CurrentSubscriptionResponse({
     required this.success,
@@ -465,6 +495,12 @@ class CurrentSubscriptionResponse {
     this.canSeeFullAddress = false,
     this.contactViewsUsed = 0,
     this.contactViewsRemaining = 0,
+    this.rentalContactViewsUsed = 0,
+    this.rentalContactViewsRemaining = 0,
+    this.carContactViewsUsed = 0,
+    this.carContactViewsRemaining = 0,
+    this.carRentalContactViewsUsed = 0,
+    this.carRentalContactViewsRemaining = 0,
   });
 }
 

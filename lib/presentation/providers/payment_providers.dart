@@ -103,6 +103,12 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
             canSeeFullAddress: data.canSeeFullAddress,
             contactViewsUsed: data.contactViewsUsed,
             contactViewsRemaining: data.contactViewsRemaining,
+            rentalContactViewsUsed: data.rentalContactViewsUsed,
+            rentalContactViewsRemaining: data.rentalContactViewsRemaining,
+            carContactViewsUsed: data.carContactViewsUsed,
+            carContactViewsRemaining: data.carContactViewsRemaining,
+            carRentalContactViewsUsed: data.carRentalContactViewsUsed,
+            carRentalContactViewsRemaining: data.carRentalContactViewsRemaining,
           );
           return;
         }
@@ -135,6 +141,12 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           canSeeFullAddress: data.canSeeFullAddress,
           contactViewsUsed: data.contactViewsUsed,
           contactViewsRemaining: data.contactViewsRemaining,
+          rentalContactViewsUsed: data.rentalContactViewsUsed,
+          rentalContactViewsRemaining: data.rentalContactViewsRemaining,
+          carContactViewsUsed: data.carContactViewsUsed,
+          carContactViewsRemaining: data.carContactViewsRemaining,
+          carRentalContactViewsUsed: data.carRentalContactViewsUsed,
+          carRentalContactViewsRemaining: data.carRentalContactViewsRemaining,
         );
       } else {
         state = state.copyWith(
@@ -166,6 +178,12 @@ class SubscriptionState {
   final bool canSeeFullAddress;
   final int contactViewsUsed;
   final int contactViewsRemaining;
+  final int rentalContactViewsUsed;
+  final int rentalContactViewsRemaining;
+  final int carContactViewsUsed;
+  final int carContactViewsRemaining;
+  final int carRentalContactViewsUsed;
+  final int carRentalContactViewsRemaining;
   final String? errorMessage;
 
   const SubscriptionState({
@@ -186,6 +204,12 @@ class SubscriptionState {
     this.canSeeFullAddress = false,
     this.contactViewsUsed = 0,
     this.contactViewsRemaining = 0,
+    this.rentalContactViewsUsed = 0,
+    this.rentalContactViewsRemaining = 0,
+    this.carContactViewsUsed = 0,
+    this.carContactViewsRemaining = 0,
+    this.carRentalContactViewsUsed = 0,
+    this.carRentalContactViewsRemaining = 0,
     this.errorMessage,
   });
 
@@ -207,6 +231,12 @@ class SubscriptionState {
         canSeeFullAddress = false,
         contactViewsUsed = 0,
         contactViewsRemaining = 0,
+        rentalContactViewsUsed = 0,
+        rentalContactViewsRemaining = 0,
+        carContactViewsUsed = 0,
+        carContactViewsRemaining = 0,
+        carRentalContactViewsUsed = 0,
+        carRentalContactViewsRemaining = 0,
         errorMessage = null;
 
   const SubscriptionState.loaded({
@@ -226,6 +256,12 @@ class SubscriptionState {
     this.canSeeFullAddress = false,
     this.contactViewsUsed = 0,
     this.contactViewsRemaining = 0,
+    this.rentalContactViewsUsed = 0,
+    this.rentalContactViewsRemaining = 0,
+    this.carContactViewsUsed = 0,
+    this.carContactViewsRemaining = 0,
+    this.carRentalContactViewsUsed = 0,
+    this.carRentalContactViewsRemaining = 0,
   })  : isLoading = false,
         errorMessage = null;
 
@@ -247,6 +283,12 @@ class SubscriptionState {
     bool? canSeeFullAddress,
     int? contactViewsUsed,
     int? contactViewsRemaining,
+    int? rentalContactViewsUsed,
+    int? rentalContactViewsRemaining,
+    int? carContactViewsUsed,
+    int? carContactViewsRemaining,
+    int? carRentalContactViewsUsed,
+    int? carRentalContactViewsRemaining,
     String? errorMessage,
   }) {
     return SubscriptionState(
@@ -267,6 +309,12 @@ class SubscriptionState {
       canSeeFullAddress: canSeeFullAddress ?? this.canSeeFullAddress,
       contactViewsUsed: contactViewsUsed ?? this.contactViewsUsed,
       contactViewsRemaining: contactViewsRemaining ?? this.contactViewsRemaining,
+      rentalContactViewsUsed: rentalContactViewsUsed ?? this.rentalContactViewsUsed,
+      rentalContactViewsRemaining: rentalContactViewsRemaining ?? this.rentalContactViewsRemaining,
+      carContactViewsUsed: carContactViewsUsed ?? this.carContactViewsUsed,
+      carContactViewsRemaining: carContactViewsRemaining ?? this.carContactViewsRemaining,
+      carRentalContactViewsUsed: carRentalContactViewsUsed ?? this.carRentalContactViewsUsed,
+      carRentalContactViewsRemaining: carRentalContactViewsRemaining ?? this.carRentalContactViewsRemaining,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

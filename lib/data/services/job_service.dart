@@ -228,6 +228,7 @@ class JobService {
       if (formData.salaryMax != null) MapEntry('salary_max', formData.salaryMax!.toString()),
       MapEntry('salary_currency', formData.salaryCurrency),
       if (formData.reqEducation != null && formData.reqEducation!.isNotEmpty) MapEntry('req_education', formData.reqEducation!),
+      if (formData.reqEducationCustom != null && formData.reqEducationCustom!.isNotEmpty) MapEntry('req_education_custom', formData.reqEducationCustom!),
       if (formData.reqExperience != null && formData.reqExperience!.isNotEmpty) MapEntry('req_experience', formData.reqExperience!),
       if (formData.reqEducations.isNotEmpty) ...[
         for (int i = 0; i < formData.reqEducations.length; i++) ...[

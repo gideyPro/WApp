@@ -57,6 +57,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonPressBackAgain => 'Press back again to exit';
 
   @override
+  String get commonOptional => 'Optional';
+
+  @override
+  String get commonSave => 'Save';
+
+  @override
   String get navHome => 'Home';
 
   @override
@@ -2674,7 +2680,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingErrorYearBuiltRequired => 'Year built is required';
 
   @override
+  String get jobAddEducation => 'Add Education';
+
+  @override
+  String get jobAddExperience => 'Add Experience';
+
+  @override
   String get jobAll => 'All Jobs';
+
+  @override
+  String get jobApplicationDeadlineOptional =>
+      'Application Deadline (Optional)';
 
   @override
   String get jobBasicInfo => 'Basic Info';
@@ -2710,6 +2726,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobCreateTitle => 'Post a Job';
 
   @override
+  String get jobDeadline => 'Deadline';
+
+  @override
   String get jobDescription => 'Description';
 
   @override
@@ -2726,6 +2745,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobFeatured => 'Featured Job';
+
+  @override
+  String get jobFieldOfStudy => 'Field of Study';
+
+  @override
+  String get jobFieldOfStudyHint => 'e.g. Computer Science, Accounting';
 
   @override
   String get jobFilter => 'Filter Jobs';
@@ -2778,6 +2803,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobNegotiable => 'Negotiable';
+
+  @override
+  String get jobNoDeadline => 'No deadline';
+
+  @override
+  String get jobNoEducationAdded => 'No specific education requirements added.';
+
+  @override
+  String get jobNoExperienceAdded =>
+      'No specific experience requirements added.';
 
   @override
   String get jobNoPhotos => 'No Photos';
@@ -2847,6 +2882,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobUpdate => 'Update';
 
   @override
+  String get jobValidYearsRequired => 'Enter valid years (e.g. 2)';
+
+  @override
+  String get jobYearsOfExperience => 'Years of Experience';
+
+  @override
   String get jobContactEmployer => 'Contact Employer';
 
   @override
@@ -2906,6 +2947,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seekerExperience => 'Experience';
+
+  @override
+  String get seekerNoEducationAdded => 'No education credentials added yet.';
+
+  @override
+  String get seekerNoExperienceAdded => 'No work history added yet.';
+
+  @override
+  String get seekerNoBio => 'No bio provided.';
+
+  @override
+  String get seekerNoWorkExperience => 'No work experience listed.';
+
+  @override
+  String get seekerPdfDocument => 'PDF Document';
+
+  @override
+  String get seekerVideo => 'Video';
+
+  @override
+  String get seekerWaveMartOptions => 'WaveMart options';
+
+  @override
+  String get seekerContactOptionsSubtitle =>
+      'In-app messaging and calling with candidate';
+
+  @override
+  String seekerYearsExp(String years) {
+    return '$years yrs exp';
+  }
+
+  @override
+  String seekerYearsTotal(String years) {
+    return '$years yrs total';
+  }
 
   @override
   String get seekerMyProfile => 'My Job Profile';

@@ -44,6 +44,8 @@ class SubscriptionPlan {
   final bool viewVip;
   final int maxOrders;
   final int maxContacts;
+  final int maxRentalContacts;
+  final int maxRentalContactsCar;
   final DetailsAccess detailsAccess;
   final List<String>? features;
   final bool isActive;
@@ -74,6 +76,8 @@ class SubscriptionPlan {
     this.viewVip = false,
     this.maxOrders = 0,
     this.maxContacts = 0,
+    this.maxRentalContacts = 0,
+    this.maxRentalContactsCar = 0,
     this.detailsAccess = DetailsAccess.discovery,
     this.features,
     this.isActive = true,
@@ -106,6 +110,8 @@ class SubscriptionPlan {
       viewVip: json['view_vip'] ?? false,
       maxOrders: json['max_orders'] ?? 0,
       maxContacts: json['max_contacts'] ?? 0,
+      maxRentalContacts: json['max_rental_contacts'] ?? json['max_contacts'] ?? 0,
+      maxRentalContactsCar: json['max_rental_contacts_car'] ?? (json['plan_features']?['max_rental_contacts_car']) ?? 0,
       detailsAccess: _parseDetailsAccess(json['details_access']),
       features: _parseFeatures(json['features']),
       isActive: json['is_active'] ?? true,
@@ -273,15 +279,17 @@ class SubscriptionPlan {
     return detailsAccessFor(model) == DetailsAccess.full;
   }
 
-  /// Resolve max contact views for a specific model (e.g. 'car', 'job', 'listing').
-  /// Checks dynamic planFeatures['max_contacts_<model>'] before falling back to plan's maxContacts.
-  int maxContactsFor(String model) {
+  /// Resolve max contact views for a specific model (e.g. 'car', 'job', 'listing') and listing type.
+  /// Checks dynamic planFeatures / explicit quotas before falling back hierarchy.
+  int maxContactsFor(String model, {String? listingType}) {
     final normalized = model.toLowerCase();
+    final isRental = listingType?.toLowerCase() == 'rental';
     final specificKey = (normalized == 'car' || normalized == 'vehicle')
-        ? 'max_contacts_car'
+        ? (isRental ? 'max_rental_contacts_car' : 'max_contacts_car')
         : ((normalized == 'job' || normalized == 'jobposting')
             ? 'max_contacts_job'
-            : 'max_contacts');
+            : (isRental ? 'max_rental_contacts' : 'max_contacts'));
+
     if (planFeatures != null && planFeatures!.containsKey(specificKey)) {
       final val = planFeatures![specificKey];
       if (val is int) return val;
@@ -291,6 +299,25 @@ class SubscriptionPlan {
         if (parsed != null) return parsed;
       }
     }
+
+    if (isRental) {
+      if (normalized == 'car' || normalized == 'vehicle') {
+        if (maxRentalContactsCar > 0) return maxRentalContactsCar;
+        return maxContactsFor(model, listingType: 'sale');
+      }
+      if (maxRentalContacts > 0) return maxRentalContacts;
+      return maxContacts;
+    }
+
+    if (normalized == 'car' || normalized == 'vehicle') {
+      final carMax = planFeatures?['max_contacts_car'];
+      if (carMax != null) {
+        final parsed = int.tryParse(carMax.toString());
+        if (parsed != null) return parsed;
+      }
+      return maxContacts;
+    }
+
     return maxContacts;
   }
 }

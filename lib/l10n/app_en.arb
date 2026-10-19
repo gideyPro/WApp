@@ -16,6 +16,8 @@
   "commonContinue": "Continue",
   "commonRetryMessage": "Please try again",
   "commonPressBackAgain": "Press back again to exit",
+  "commonOptional": "Optional",
+  "commonSave": "Save",
   "navHome": "Home",
   "navOrders": "Orders",
   "navMessages": "Messages",
@@ -854,7 +856,10 @@
   "listingErrorBuildingStatusRequired": "Building status is required",
   "listingErrorDebtAmountRequired": "Debt amount is required",
   "listingErrorYearBuiltRequired": "Year built is required",
+  "jobAddEducation": "Add Education",
+  "jobAddExperience": "Add Experience",
   "jobAll": "All Jobs",
+  "jobApplicationDeadlineOptional": "Application Deadline (Optional)",
   "jobBasicInfo": "Basic Info",
   "jobBrowseTitle": "Browse Jobs",
   "jobCategoryEducation": "Education",
@@ -866,12 +871,15 @@
   "jobCompanyName": "Company Name",
   "jobCreateButton": "Post a Job",
   "jobCreateTitle": "Post a Job",
+  "jobDeadline": "Deadline",
   "jobDescription": "Description",
   "jobEditTitle": "Edit Job",
   "jobEducationLevel": "Education Level",
   "jobEducationOtherHint": "Enter education level",
   "jobEmployerInfo": "Employer Info",
   "jobFeatured": "Featured Job",
+  "jobFieldOfStudy": "Field of Study",
+  "jobFieldOfStudyHint": "e.g. Computer Science, Accounting",
   "jobFilter": "Filter Jobs",
   "jobFixed": "Fixed",
   "jobImages": "Images",
@@ -889,6 +897,9 @@
   "jobMetaDescription": "Find the best jobs in Ethiopia on Wavemart.",
   "jobMyJobs": "My Jobs",
   "jobNegotiable": "Negotiable",
+  "jobNoDeadline": "No deadline",
+  "jobNoEducationAdded": "No specific education requirements added.",
+  "jobNoExperienceAdded": "No specific experience requirements added.",
   "jobNoPhotos": "No Photos",
   "jobNoResultsDescription": "We couldn't find any jobs matching your criteria.",
   "jobNoResultsTitle": "No Jobs Found",
@@ -911,6 +922,8 @@
   "jobTypeInternship": "Internship",
   "jobTypePartTime": "Part Time",
   "jobUpdate": "Update",
+  "jobValidYearsRequired": "Enter valid years (e.g. 2)",
+  "jobYearsOfExperience": "Years of Experience",
   "jobContactEmployer": "Contact Employer",
   "jobCall": "Call",
   "jobCallHint": "Tap to call the employer",
@@ -931,6 +944,30 @@
   "jobPostingLimitSubtitle": "You have reached your limit. Upgrade plan to post more jobs.",
   "seekerProfileDetails": "Profile Details",
   "seekerExperience": "Experience",
+  "seekerNoEducationAdded": "No education credentials added yet.",
+  "seekerNoExperienceAdded": "No work history added yet.",
+  "seekerNoBio": "No bio provided.",
+  "seekerNoWorkExperience": "No work experience listed.",
+  "seekerPdfDocument": "PDF Document",
+  "seekerVideo": "Video",
+  "seekerWaveMartOptions": "WaveMart options",
+  "seekerContactOptionsSubtitle": "In-app messaging and calling with candidate",
+  "seekerYearsExp": "{years} yrs exp",
+  "@seekerYearsExp": {
+    "placeholders": {
+      "years": {
+        "type": "String"
+      }
+    }
+  },
+  "seekerYearsTotal": "{years} yrs total",
+  "@seekerYearsTotal": {
+    "placeholders": {
+      "years": {
+        "type": "String"
+      }
+    }
+  },
   "seekerMyProfile": "My Job Profile",
   "seekerFullName": "Full Name",
   "seekerProfessionalTitle": "Professional Title",

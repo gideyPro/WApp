@@ -57,6 +57,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get commonPressBackAgain => 'ለመውጣት ደግመው ይጫኑ';
 
   @override
+  String get commonOptional => 'አማራጭ';
+
+  @override
+  String get commonSave => 'አስቀምጥ';
+
+  @override
   String get navHome => 'መነሻ';
 
   @override
@@ -2641,7 +2647,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingErrorYearBuiltRequired => 'የተገነባበት ዓመት ያስፈልጋል';
 
   @override
+  String get jobAddEducation => 'ትምህርት አክል';
+
+  @override
+  String get jobAddExperience => 'የስራ ልምድ አክል';
+
+  @override
   String get jobAll => 'ሁሉም ስራዎች';
+
+  @override
+  String get jobApplicationDeadlineOptional => 'የማመልከቻ የመጨረሻ ቀን (አማራጭ)';
 
   @override
   String get jobBasicInfo => 'መሰረታዊ መረጃ';
@@ -2677,6 +2692,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobCreateTitle => 'ስራ ለጥፍ';
 
   @override
+  String get jobDeadline => 'የመጨረሻ ቀን';
+
+  @override
   String get jobDescription => 'መግለጫ';
 
   @override
@@ -2693,6 +2711,12 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get jobFeatured => 'ልዩ ስራ';
+
+  @override
+  String get jobFieldOfStudy => 'የትምህርት ዘርፍ';
+
+  @override
+  String get jobFieldOfStudyHint => 'ለምሳሌ፡ የሂሳብ አያያዝ፣ ኮምፒውተር ሳይንስ';
 
   @override
   String get jobFilter => 'ስራዎችን አጣራ';
@@ -2744,6 +2768,15 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get jobNegotiable => 'በድርድር';
+
+  @override
+  String get jobNoDeadline => 'የመጨረሻ ቀን የለም';
+
+  @override
+  String get jobNoEducationAdded => 'ልዩ የትምህርት መስፈርት አልተጨመረም።';
+
+  @override
+  String get jobNoExperienceAdded => 'ልዩ የስራ ልምድ መስፈርት አልተጨመረም።';
 
   @override
   String get jobNoPhotos => 'ምስል የለም';
@@ -2812,6 +2845,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobUpdate => 'አዘምን';
 
   @override
+  String get jobValidYearsRequired => 'ትክክለኛ ዓመታት ያስገቡ (ለምሳሌ 2)';
+
+  @override
+  String get jobYearsOfExperience => 'የስራ ልምድ (ዓመታት)';
+
+  @override
   String get jobContactEmployer => 'ቀጣሪውን ያግኙ';
 
   @override
@@ -2870,6 +2909,41 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get seekerExperience => 'የስራ ልምድ';
+
+  @override
+  String get seekerNoEducationAdded => 'እስከ አሁን የትምህርት ማስረጃ አልተጨመረም።';
+
+  @override
+  String get seekerNoExperienceAdded => 'እስከ አሁን የስራ ታሪክ አልተጨመረም።';
+
+  @override
+  String get seekerNoBio => 'ምንም መግለጫ አልተሰጠም።';
+
+  @override
+  String get seekerNoWorkExperience => 'የሥራ ልምድ አልተዘረዘረም።';
+
+  @override
+  String get seekerPdfDocument => 'የPDF ሰነድ';
+
+  @override
+  String get seekerVideo => 'ቪዲዮ';
+
+  @override
+  String get seekerWaveMartOptions => 'የWaveMart አማራጮች';
+
+  @override
+  String get seekerContactOptionsSubtitle =>
+      'ከእጩ ጋር በመተግበሪያው ውስጥ መልእክት መላላክ እና መደወል';
+
+  @override
+  String seekerYearsExp(String years) {
+    return '$years ዓመት ልምድ';
+  }
+
+  @override
+  String seekerYearsTotal(String years) {
+    return 'ጠቅላላ $years ዓመት';
+  }
 
   @override
   String get seekerMyProfile => 'የእኔ የስራ ፕሮፋይል';

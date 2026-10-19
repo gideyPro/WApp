@@ -181,6 +181,12 @@ class _SubscriptionPlansScreenState
                   state.canViewVip,
                   contactViewsUsed: state.contactViewsUsed,
                   contactViewsRemaining: state.contactViewsRemaining,
+                  rentalContactViewsUsed: state.rentalContactViewsUsed,
+                  rentalContactViewsRemaining: state.rentalContactViewsRemaining,
+                  carContactViewsUsed: state.carContactViewsUsed,
+                  carContactViewsRemaining: state.carContactViewsRemaining,
+                  carRentalContactViewsUsed: state.carRentalContactViewsUsed,
+                  carRentalContactViewsRemaining: state.carRentalContactViewsRemaining,
                 )
             else
               _buildInactiveSubscriptionBanner(
@@ -249,6 +255,12 @@ class _SubscriptionPlansScreenState
     bool canViewVip, {
     int contactViewsUsed = 0,
     int contactViewsRemaining = 0,
+    int rentalContactViewsUsed = 0,
+    int rentalContactViewsRemaining = 0,
+    int carContactViewsUsed = 0,
+    int carContactViewsRemaining = 0,
+    int carRentalContactViewsUsed = 0,
+    int carRentalContactViewsRemaining = 0,
   }) {
     final localPlan = sub.plan;
     if (localPlan == null) return const SizedBox.shrink();
@@ -258,6 +270,9 @@ class _SubscriptionPlansScreenState
     final hasVip = localPlan.viewVip;
     final hasFeatures = localPlan.features != null && localPlan.features!.isNotEmpty;
     final showContactBar = contactViewsUsed + contactViewsRemaining > 0;
+    final showRentalContactBar = rentalContactViewsUsed + rentalContactViewsRemaining > 0;
+    final showCarContactBar = carContactViewsUsed + carContactViewsRemaining > 0;
+    final showCarRentalContactBar = carRentalContactViewsUsed + carRentalContactViewsRemaining > 0;
 
     final atLimit =
         (localPlan.maxListings > 0 && sub.listingsUsed >= localPlan.maxListings) ||
@@ -272,7 +287,10 @@ class _SubscriptionPlansScreenState
             (localPlan.maxJobs > 0 && sub.jobsUsed >= localPlan.maxJobs) ||
             (localPlan.maxContacts > 0 &&
                 contactViewsRemaining <= 0 &&
-                contactViewsUsed > 0);
+                contactViewsUsed > 0) ||
+            (localPlan.maxRentalContacts > 0 &&
+                rentalContactViewsRemaining <= 0 &&
+                rentalContactViewsUsed > 0);
     final showRenewCta = (isUrgent || atLimit) && !localPlan.isFree;
 
     return Container(
@@ -401,16 +419,25 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxOrders,
               icon: Icons.receipt_long_outlined,
             ),
-          if ((localPlan.maxOrders > 0) && showContactBar)
+          if ((localPlan.maxOrders > 0) && (showContactBar || showRentalContactBar))
             const SizedBox(height: 12),
           if (showContactBar)
             _buildUsageBar(
-              label: l10n.subscriptionsContactViews,
+              label: '${l10n.subscriptionsContactViews} (${l10n.listingSale})',
               used: contactViewsUsed,
               max: contactViewsUsed + contactViewsRemaining,
               icon: Icons.visibility_outlined,
             ),
-          if ((showContactBar || localPlan.maxOrders > 0) && (localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0))
+          if (showContactBar && showRentalContactBar)
+            const SizedBox(height: 12),
+          if (showRentalContactBar)
+            _buildUsageBar(
+              label: '${l10n.subscriptionsContactViews} (${l10n.listingRent})',
+              used: rentalContactViewsUsed,
+              max: rentalContactViewsUsed + rentalContactViewsRemaining,
+              icon: Icons.key_rounded,
+            ),
+          if ((showContactBar || showRentalContactBar || localPlan.maxOrders > 0) && (localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0 || showCarContactBar || showCarRentalContactBar))
             const SizedBox(height: 12),
           if (localPlan.maxVehicles > 0)
             _buildUsageBar(
@@ -426,6 +453,24 @@ class _SubscriptionPlansScreenState
               label: l10n.subscriptionsRentalVehicles,
               used: sub.rentalVehiclesUsed,
               max: localPlan.maxRentalVehicles,
+              icon: Icons.car_rental,
+            ),
+          if ((localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0) && showCarContactBar)
+            const SizedBox(height: 12),
+          if (showCarContactBar)
+            _buildUsageBar(
+              label: '${l10n.listingCarPlural} ${l10n.subscriptionsContactViews} (${l10n.listingSale})',
+              used: carContactViewsUsed,
+              max: carContactViewsUsed + carContactViewsRemaining,
+              icon: Icons.visibility_outlined,
+            ),
+          if (showCarContactBar && showCarRentalContactBar)
+            const SizedBox(height: 12),
+          if (showCarRentalContactBar)
+            _buildUsageBar(
+              label: '${l10n.listingCarPlural} ${l10n.subscriptionsContactViews} (${l10n.listingRent})',
+              used: carRentalContactViewsUsed,
+              max: carRentalContactViewsUsed + carRentalContactViewsRemaining,
               icon: Icons.car_rental,
             ),
           if ((localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0) && localPlan.maxJobs > 0)
@@ -1317,8 +1362,13 @@ class _PlanCard extends StatelessWidget {
           ],
           if (plan.maxContacts > 0) ...[
             _buildDivider(),
-            _buildComparisonRow(context, l10n.subscriptionsContactViews,
+            _buildComparisonRow(context, '${l10n.subscriptionsContactViews} (${l10n.listingSale})',
                 '${plan.maxContacts}', Icons.contact_phone_outlined, true),
+          ],
+          if (plan.maxRentalContacts > 0) ...[
+            _buildDivider(),
+            _buildComparisonRow(context, '${l10n.subscriptionsContactViews} (${l10n.listingRent})',
+                '${plan.maxRentalContacts}', Icons.key_rounded, true),
           ],
           if (plan.features != null && plan.features!.isNotEmpty) ...[
             const SizedBox(height: 16),

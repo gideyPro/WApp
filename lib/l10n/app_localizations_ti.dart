@@ -57,6 +57,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonPressBackAgain => 'ንምውፃእ ደጊምኩም ፅቐጡ';
 
   @override
+  String get commonOptional => 'ኣማራጺ';
+
+  @override
+  String get commonSave => 'ዓቅብ';
+
+  @override
   String get navHome => 'መበገሲ';
 
   @override
@@ -2641,7 +2647,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingErrorYearBuiltRequired => 'ዓመት ህንፀት የድሊ እዩ';
 
   @override
+  String get jobAddEducation => 'ትምህርቲ ወስኽ';
+
+  @override
+  String get jobAddExperience => 'ተመክሮ ወስኽ';
+
+  @override
   String get jobAll => 'ኹሎም ስራሕቲ';
+
+  @override
+  String get jobApplicationDeadlineOptional => 'ናይ መሕትት መወዳእታ ዕለት (ኣማራጺ)';
 
   @override
   String get jobBasicInfo => 'መሰረታዊ ሓበሬታ';
@@ -2677,6 +2692,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobCreateTitle => 'ስራሕ ለጥፍ';
 
   @override
+  String get jobDeadline => 'መወዳእታ ዕለት';
+
+  @override
   String get jobDescription => 'መግለፂ';
 
   @override
@@ -2693,6 +2711,12 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get jobFeatured => 'ፍሉይ ስራሕ';
+
+  @override
+  String get jobFieldOfStudy => 'ዓውዲ ትምህርቲ';
+
+  @override
+  String get jobFieldOfStudyHint => 'ንኣብነት፡ ኣካውንቲንግ፣ ኮምፒውተር ሳይንስ';
 
   @override
   String get jobFilter => 'ስራሕቲ መፃረዪ';
@@ -2744,6 +2768,15 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get jobNegotiable => 'ብድርድር';
+
+  @override
+  String get jobNoDeadline => 'መወዳእታ ዕለት የለን';
+
+  @override
+  String get jobNoEducationAdded => 'ፍሉይ ናይ ትምህርቲ መስፈርቲ ኣይተጨመረን።';
+
+  @override
+  String get jobNoExperienceAdded => 'ፍሉይ ናይ ስራሕ ተመክሮ መስፈርቲ ኣይተጨመረን።';
 
   @override
   String get jobNoPhotos => 'ስእሊ የለን';
@@ -2812,6 +2845,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobUpdate => 'ኣሐድስ';
 
   @override
+  String get jobValidYearsRequired => 'ቅኑዕ ዓመታት ኣእቱ (ንኣብነት 2)';
+
+  @override
+  String get jobYearsOfExperience => 'ዓመታት ተመክሮ';
+
+  @override
   String get jobContactEmployer => 'ኣስራሒ ረኽቡ';
 
   @override
@@ -2870,6 +2909,41 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get seekerExperience => 'ተመክሮ';
+
+  @override
+  String get seekerNoEducationAdded => 'ክሳብ ሕጂ ናይ ትምህርቲ መረጋገጺ ኣይተጨመረን።';
+
+  @override
+  String get seekerNoExperienceAdded => 'ክሳብ ሕጂ ናይ ስራሕ ታሪኽ ኣይተጨመረን።';
+
+  @override
+  String get seekerNoBio => 'ዝኾነ መግለጺ ኣይተረኸበን።';
+
+  @override
+  String get seekerNoWorkExperience => 'ናይ ስራሕ ተመክሮ ኣይተዘርዘረን።';
+
+  @override
+  String get seekerPdfDocument => 'ናይ PDF ሰነድ';
+
+  @override
+  String get seekerVideo => 'ቪዲዮ';
+
+  @override
+  String get seekerWaveMartOptions => 'ኣማራጺታት WaveMart';
+
+  @override
+  String get seekerContactOptionsSubtitle =>
+      'ምስ ተወዳዳሪ ኣብ መተግበሪያ ውሽጢ መልእኽቲ ምስዳድን ምድዋልን';
+
+  @override
+  String seekerYearsExp(String years) {
+    return '$years ዓመት ተመክሮ';
+  }
+
+  @override
+  String seekerYearsTotal(String years) {
+    return 'ጠቕላላ $years ዓመት';
+  }
 
   @override
   String get seekerMyProfile => 'ናይ ስራሕ ፕሮፋይል';

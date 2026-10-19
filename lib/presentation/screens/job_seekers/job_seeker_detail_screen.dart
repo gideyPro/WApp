@@ -270,8 +270,10 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
               if (profile.totalExperienceYears > 0)
                 _buildBadgeChip(
                   icon: Icons.timeline_outlined,
-                  label:
-                      '${profile.totalExperienceYears.toStringAsFixed(profile.totalExperienceYears.truncateToDouble() == profile.totalExperienceYears ? 0 : 1)} yrs exp',
+                  label: l10n.seekerYearsExp(
+                    profile.totalExperienceYears.toStringAsFixed(
+                        profile.totalExperienceYears.truncateToDouble() == profile.totalExperienceYears ? 0 : 1),
+                  ),
                   bgColor: AppColors.cta100.withValues(alpha: 0.7),
                   textColor: AppColors.cta900,
                 ),
@@ -306,10 +308,10 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('WaveMart options', style: AppTextStyles.titleSmall.copyWith(color: context.theme.textPrimary)),
+                    Text(l10n.seekerWaveMartOptions, style: AppTextStyles.titleSmall.copyWith(color: context.theme.textPrimary)),
                     const SizedBox(height: 2),
                     Text(
-                      'In-app messaging and calling with candidate',
+                      l10n.seekerContactOptionsSubtitle,
                       style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
                     ),
                   ],
@@ -362,7 +364,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                 ),
                 _ContactActionButton(
                   icon: Icons.videocam,
-                  label: 'Video',
+                  label: l10n.seekerVideo,
                   color: const Color(0xFF8B5CF6),
                   isLoading: _isActionLoading && _loadingAction == 'video',
                   onTap: () {
@@ -415,7 +417,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
           ),
           const SizedBox(height: 12),
           Text(
-            description?.isNotEmpty == true ? description! : 'No bio provided.',
+            description?.isNotEmpty == true ? description! : l10n.seekerNoBio,
             style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary, height: 1.6),
           ),
         ],
@@ -503,7 +505,8 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${profile.totalExperienceYears.toStringAsFixed(profile.totalExperienceYears.truncateToDouble() == profile.totalExperienceYears ? 0 : 1)} yrs total',
+                    l10n.seekerYearsTotal(
+                        profile.totalExperienceYears.toStringAsFixed(profile.totalExperienceYears.truncateToDouble() == profile.totalExperienceYears ? 0 : 1)),
                     style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.bold, color: context.theme.textPrimary),
                   ),
                 ),
@@ -520,7 +523,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
           ] else if (profile.experience != null && profile.experience!.isNotEmpty) ...[
             Text(profile.experience!, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary, height: 1.5)),
           ] else ...[
-            Text('No work experience listed.', style: AppTextStyles.caption.copyWith(color: context.theme.textMuted, fontStyle: FontStyle.italic)),
+            Text(l10n.seekerNoWorkExperience, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted, fontStyle: FontStyle.italic)),
           ],
         ],
       ),
@@ -645,7 +648,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
               children: [
                 Text(l10n.seekerCv, style: AppTextStyles.titleSmall.copyWith(fontSize: 14)),
                 const SizedBox(height: 2),
-                Text('PDF Document', style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+                Text(l10n.seekerPdfDocument, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
               ],
             ),
           ),
@@ -729,7 +732,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => ref.invalidate(jobSeekerDetailProvider(widget.profileId)),
-                  child: const Text('Retry'),
+                  child: Text(l10n.commonRetry),
                 ),
               ],
             ),
