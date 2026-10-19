@@ -202,13 +202,16 @@ class AppTheme {
 
       // Chip Theme
       chipTheme: ChipThemeData(
-        labelStyle: AppTextStyles.bodySmall,
+        labelStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.stone900),
       ),
 
       // ListTile Theme
+      // NOTE: title/subtitle styles must carry explicit colors — a colorless
+      // style here shadows the Material 3 defaults and leaves ListTile text
+      // with color: null (renders white in light mode → invisible on cards).
       listTileTheme: ListTileThemeData(
-        titleTextStyle: AppTextStyles.bodyLarge,
-        subtitleTextStyle: AppTextStyles.bodySmall,
+        titleTextStyle: AppTextStyles.bodyLarge.copyWith(color: AppColors.stone900),
+        subtitleTextStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.stone600),
       ),
     );
   }
@@ -444,10 +447,10 @@ class AppTheme {
         ),
       ),
 
-      // ListTile Theme
+      // ListTile Theme — explicit colors (see light theme note).
       listTileTheme: ListTileThemeData(
-        titleTextStyle: AppTextStyles.bodyLarge,
-        subtitleTextStyle: AppTextStyles.bodySmall,
+        titleTextStyle: AppTextStyles.bodyLarge.copyWith(color: Colors.white),
+        subtitleTextStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.primary300),
       ),
     );
   }

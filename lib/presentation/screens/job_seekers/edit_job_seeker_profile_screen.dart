@@ -528,7 +528,10 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                                 Expanded(
                                   child: Text(
                                     _selectedCv!.path.split('/').last,
-                                    style: const TextStyle(fontSize: 13),
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: context.theme.textPrimary,
+                                    ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
