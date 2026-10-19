@@ -241,6 +241,11 @@ return VehicleListingCard(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
+            if (_filterValues.listingType != null)
+              _filterChip(
+                _filterValues.listingType == 'sale' ? l10n.listingForSale : l10n.listingForRent,
+                () => _removeFilter('listing_type'),
+              ),
             if (_filterValues.make != null)
               _filterChip('${l10n.listingMake}: ${makeLabel(_filterValues.make!, l10n)}', () => _removeFilter('make')),
             if (_filterValues.model != null)

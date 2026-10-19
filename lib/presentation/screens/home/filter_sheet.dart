@@ -65,6 +65,7 @@ class UnifiedFilterValues {
           mileageMax != null ||
           vehicleCategory != null ||
           bodyType != null ||
+          listingType != null ||
           priceMin != null ||
           priceMax != null ||
           (location != null && location!.isNotEmpty);
@@ -87,26 +88,40 @@ class UnifiedFilterValues {
     if (category == HomeCategory.all) {
       return UnifiedFilterValues(
         category: category,
-        priceMin: key == 'price_min' ? null : priceMin,
-        priceMax: key == 'price_max' ? null : priceMax,
+        priceMin: (key == 'price_min' || key == 'price_max') ? null : priceMin,
+        priceMax: (key == 'price_min' || key == 'price_max') ? null : priceMax,
         sort: sort,
         location: key == 'location' ? null : location,
+        propertyType: key == 'type' ? null : propertyType,
+        listingType: key == 'listing_type' ? null : listingType,
+        isFeatured: key == 'is_featured' ? false : isFeatured,
+        make: key == 'make' ? null : make,
+        model: key == 'model' ? null : model,
+        yearMin: (key == 'year_min' || key == 'year_max') ? null : yearMin,
+        yearMax: (key == 'year_min' || key == 'year_max') ? null : yearMax,
+        mileageMax: key == 'mileage_max' ? null : mileageMax,
+        vehicleCategory: key == 'vehicle_category' ? null : vehicleCategory,
+        bodyType: key == 'body_type' ? null : bodyType,
+        jobCategory: key == 'job_category' ? null : jobCategory,
+        jobType: key == 'job_type' ? null : jobType,
+        educationLevel: key == 'education_level' ? null : educationLevel,
       );
     }
     if (category == HomeCategory.vehicles) {
       return UnifiedFilterValues(
         category: category,
-        priceMin: key == 'price_min' ? null : priceMin,
-        priceMax: key == 'price_max' ? null : priceMax,
+        priceMin: (key == 'price_min' || key == 'price_max') ? null : priceMin,
+        priceMax: (key == 'price_min' || key == 'price_max') ? null : priceMax,
         sort: sort,
         location: key == 'location' ? null : location,
         make: key == 'make' ? null : make,
         model: key == 'model' ? null : model,
-        yearMin: key == 'year_min' ? null : yearMin,
-        yearMax: key == 'year_max' ? null : yearMax,
+        yearMin: (key == 'year_min' || key == 'year_max') ? null : yearMin,
+        yearMax: (key == 'year_min' || key == 'year_max') ? null : yearMax,
         mileageMax: key == 'mileage_max' ? null : mileageMax,
         vehicleCategory: key == 'vehicle_category' ? null : vehicleCategory,
         bodyType: key == 'body_type' ? null : bodyType,
+        listingType: key == 'listing_type' ? null : listingType,
       );
     }
     if (category == HomeCategory.jobs) {
@@ -121,8 +136,8 @@ class UnifiedFilterValues {
     }
     return UnifiedFilterValues(
       category: category,
-      priceMin: key == 'price_min' ? null : priceMin,
-      priceMax: key == 'price_max' ? null : priceMax,
+      priceMin: (key == 'price_min' || key == 'price_max') ? null : priceMin,
+      priceMax: (key == 'price_min' || key == 'price_max') ? null : priceMax,
       sort: sort,
       location: key == 'location' ? null : location,
       propertyType: key == 'type' ? null : propertyType,

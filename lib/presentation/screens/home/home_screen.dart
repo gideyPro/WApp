@@ -798,45 +798,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 _filterChip(
                   v.propertyType == 'house' ? l10n.listingHouse : l10n.listingLand,
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = UnifiedFilterValues(
-                      category: _selectedCategory,
-                      priceMin: v.priceMin,
-                      priceMax: v.priceMax,
-                      sort: v.sort,
-                      location: v.location,
-                      listingType: v.listingType,
-                      isFeatured: v.isFeatured,
-                    );
-                  })),
-                ),
-              if (v.listingType != null)
-                _filterChip(
-                  v.listingType == 'sale' ? l10n.listingForSale : l10n.listingForRent,
-                  () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = UnifiedFilterValues(
-                      category: _selectedCategory,
-                      priceMin: v.priceMin,
-                      priceMax: v.priceMax,
-                      sort: v.sort,
-                      location: v.location,
-                      propertyType: v.propertyType,
-                      isFeatured: v.isFeatured,
-                    );
+                    _filterValues = v.clearField('type');
                   })),
                 ),
               if (v.isFeatured)
                 _filterChip(
                   l10n.listingsFeatured,
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = UnifiedFilterValues(
-                      category: _selectedCategory,
-                      priceMin: v.priceMin,
-                      priceMax: v.priceMax,
-                      sort: v.sort,
-                      location: v.location,
-                      propertyType: v.propertyType,
-                      listingType: v.listingType,
-                    );
+                    _filterValues = v.clearField('is_featured');
+                  })),
+                ),
+            ],
+            if (_selectedCategory == HomeCategory.property ||
+                _selectedCategory == HomeCategory.vehicles ||
+                _selectedCategory == HomeCategory.all) ...[
+              if (v.listingType != null)
+                _filterChip(
+                  v.listingType == 'sale' ? l10n.listingForSale : l10n.listingForRent,
+                  () => _removeFilterAndCheck(() => setState(() {
+                    _filterValues = v.clearField('listing_type');
                   })),
                 ),
             ],
@@ -886,21 +866,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         ? 'ETB ${v.priceMin}+'
                         : 'Up to ETB ${v.priceMax}',
                 () => _removeFilterAndCheck(() => setState(() {
-                  _filterValues = UnifiedFilterValues(
-                    category: _selectedCategory,
-                    sort: v.sort,
-                    location: v.location,
-                    propertyType: v.propertyType,
-                    listingType: v.listingType,
-                    isFeatured: v.isFeatured,
-                    make: v.make,
-                    model: v.model,
-                    yearMin: v.yearMin,
-                    yearMax: v.yearMax,
-                    mileageMax: v.mileageMax,
-                    vehicleCategory: v.vehicleCategory,
-                    bodyType: v.bodyType,
-                  );
+                  _filterValues = v.clearField('price_min');
                 })),
               ),
             if (_searchController.text.isNotEmpty)
