@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -145,6 +146,72 @@ class _Avatar extends StatelessWidget {
             color: AppColors.accent600,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Shimmer placeholder matching [JobSeekerCard], used while profiles load.
+class JobSeekerCardSkeleton extends StatelessWidget {
+  const JobSeekerCardSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: context.shimmerBase,
+      highlightColor: context.shimmerHighlight,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: context.cardBg,
+          borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: context.shimmerBase,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _bar(context, 140, 14),
+                  const SizedBox(height: 8),
+                  _bar(context, 72, 10),
+                  const SizedBox(height: 8),
+                  _bar(context, 110, 12),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: context.shimmerBase,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bar(BuildContext context, double width, double height) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: context.shimmerBase,
+        borderRadius: BorderRadius.circular(4),
       ),
     );
   }

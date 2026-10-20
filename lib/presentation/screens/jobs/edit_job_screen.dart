@@ -172,6 +172,13 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
         if (_postedAsCompany && _companyController.text.trim().isEmpty) {
           errors.add('${l10n.jobCompanyName} ${l10n.commonIsRequired}');
         }
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        if (_formData.deadline == null) {
+          errors.add('${l10n.jobDeadline} ${l10n.commonIsRequired}');
+        } else if (_formData.deadline!.isBefore(today)) {
+          errors.add(l10n.jobDeadlinePast);
+        }
         break;
       case 1:
         if (_formData.salaryType == 'fixed' && _formData.salaryMin == null) errors.add('${l10n.jobSalaryMin} ${l10n.commonIsRequired}');
@@ -321,11 +328,17 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
 
   Future<void> _pickDeadline() async {
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final lastDate = today.add(const Duration(days: 365));
+    var initialDate = _formData.deadline ?? today;
+    if (initialDate.isBefore(today)) initialDate = today;
+    if (initialDate.isAfter(lastDate)) initialDate = lastDate;
+
     final picked = await showDatePicker(
       context: context,
-      initialDate: _formData.deadline ?? now.add(const Duration(days: 30)),
-      firstDate: now,
-      lastDate: now.add(const Duration(days: 365)),
+      initialDate: initialDate,
+      firstDate: today,
+      lastDate: lastDate,
     );
     if (picked != null) {
       setState(() => _formData = _formData.copyWith(deadline: picked));
@@ -442,7 +455,6 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
   void _showAddExperienceDialog() {
     final l10n = AppLocalizations.of(context);
     final titleController = TextEditingController();
-    final companyController = TextEditingController();
     final yearsController = TextEditingController();
     String? titleError;
     String? yearsError;
@@ -467,11 +479,6 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: companyController,
-                decoration: InputDecoration(labelText: '${l10n.jobCompanyName} (${l10n.commonOptional})'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
                 controller: yearsController,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
@@ -492,7 +499,6 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
             ElevatedButton(
               onPressed: () {
                 final title = titleController.text.trim();
-                final comp = companyController.text.trim();
                 final yrsText = yearsController.text.trim();
                 final yrs = double.tryParse(yrsText);
 
@@ -513,14 +519,13 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
 
                 final newItem = ExperienceItem(
                   jobTitle: title,
-                  company: comp.isNotEmpty ? comp : null,
                   years: yrs,
                 );
                 final updated = List<ExperienceItem>.from(_formData.reqExperiences)..add(newItem);
                 setState(() {
                   _formData = _formData.copyWith(
                     reqExperiences: updated,
-                    reqExperience: updated.map((e) => e.displayLabel()).join(', '),
+                    reqExperience: updated.map((e) => e.displayRequirementLabel()).join(', '),
                   );
                 });
                 Navigator.pop(ctx);
@@ -695,7 +700,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
             title: Text(
               _formData.deadline != null
                   ? '${l10n.jobDeadline}: ${_formData.deadline!.year}-${_formData.deadline!.month.toString().padLeft(2, '0')}-${_formData.deadline!.day.toString().padLeft(2, '0')}'
-                  : l10n.jobApplicationDeadlineOptional,
+                  : '${l10n.jobDeadline} *',
               style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary),
             ),
             trailing: _formData.deadline != null
@@ -782,7 +787,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                 child: ListTile(
                   dense: true,
                   leading: const Icon(Icons.work, size: 20, color: AppColors.accent600),
-                  title: Text(exp.displayLabel()),
+                  title: Text(exp.displayRequirementLabel()),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
                     onPressed: () {
@@ -790,7 +795,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                       setState(() {
                         _formData = _formData.copyWith(
                           reqExperiences: updated,
-                          reqExperience: updated.isNotEmpty ? updated.map((e) => e.displayLabel()).join(', ') : null,
+                          reqExperience: updated.isNotEmpty ? updated.map((e) => e.displayRequirementLabel()).join(', ') : null,
                         );
                       });
                     },

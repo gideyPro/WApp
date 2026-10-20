@@ -2695,6 +2695,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobDeadline => 'የመጨረሻ ቀን';
 
   @override
+  String get jobDeadlinePast => 'የመጨረሻ ቀን ከዛሬ በፊት መሆን አይችልም';
+
+  @override
   String get jobDescription => 'መግለጫ';
 
   @override

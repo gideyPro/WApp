@@ -105,6 +105,20 @@ class ExperienceItem {
     return parts.join(' ');
   }
 
+  /// Label used for job requirement entries. Recruiters specify the role and
+  /// years, not a company, so any legacy company value is ignored.
+  String displayRequirementLabel() {
+    final title = jobTitle?.trim() ?? '';
+    final yrStr = years != null
+        ? '${years!.toStringAsFixed(years! % 1 == 0 ? 0 : 1)} yrs'
+        : '';
+
+    final parts = <String>[];
+    if (title.isNotEmpty) parts.add(title);
+    if (yrStr.isNotEmpty) parts.add('($yrStr)');
+    return parts.join(' ');
+  }
+
   ExperienceItem copyWith({
     String? jobTitle,
     String? company,

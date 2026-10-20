@@ -872,6 +872,7 @@
   "jobCreateButton": "ስራሕ ለጥፍ",
   "jobCreateTitle": "ስራሕ ለጥፍ",
   "jobDeadline": "መወዳእታ ዕለት",
+  "jobDeadlinePast": "መወዳእታ ዕለት ካብ ሎሚ ኣቐዲሙ ክኸውን ኣይክእልን",
   "jobDescription": "መግለፂ",
   "jobEditTitle": "ኣስተኻኽል",
   "jobEducationLevel": "ደረጃ ትምህርቲ",

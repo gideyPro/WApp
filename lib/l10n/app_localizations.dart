@@ -5182,6 +5182,12 @@ abstract class AppLocalizations {
   /// **'Deadline'**
   String get jobDeadline;
 
+  /// No description provided for @jobDeadlinePast.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline cannot be before today'**
+  String get jobDeadlinePast;
+
   /// No description provided for @jobDescription.
   ///
   /// In en, this message translates to:

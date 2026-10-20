@@ -872,6 +872,7 @@
   "jobCreateButton": "Post a Job",
   "jobCreateTitle": "Post a Job",
   "jobDeadline": "Deadline",
+  "jobDeadlinePast": "Deadline cannot be before today",
   "jobDescription": "Description",
   "jobEditTitle": "Edit Job",
   "jobEducationLevel": "Education Level",

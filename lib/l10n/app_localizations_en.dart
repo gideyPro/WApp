@@ -2729,6 +2729,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobDeadline => 'Deadline';
 
   @override
+  String get jobDeadlinePast => 'Deadline cannot be before today';
+
+  @override
   String get jobDescription => 'Description';
 
   @override

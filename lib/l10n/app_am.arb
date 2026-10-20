@@ -872,6 +872,7 @@
   "jobCreateButton": "ስራ ለጥፍ",
   "jobCreateTitle": "ስራ ለጥፍ",
   "jobDeadline": "የመጨረሻ ቀን",
+  "jobDeadlinePast": "የመጨረሻ ቀን ከዛሬ በፊት መሆን አይችልም",
   "jobDescription": "መግለጫ",
   "jobEditTitle": "ኣስተካክል",
   "jobEducationLevel": "የትምህርት ደረጃ",

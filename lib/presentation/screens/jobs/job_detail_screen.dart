@@ -424,7 +424,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('• ', style: TextStyle(fontWeight: FontWeight.bold)),
-                    Expanded(child: Text(exp.displayLabel(), style: AppTextStyles.bodyMedium)),
+                    Expanded(child: Text(exp.displayRequirementLabel(), style: AppTextStyles.bodyMedium)),
                   ],
                 ),
               )),

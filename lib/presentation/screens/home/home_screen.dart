@@ -1308,9 +1308,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
           sliver: SliverList(
-            delegate: SliverChildListDelegate([
-              const Center(child: CircularProgressIndicator()),
-            ]),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => const Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: JobSeekerCardSkeleton(),
+              ),
+              childCount: 5,
+            ),
           ),
         )
       ];

@@ -2695,6 +2695,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobDeadline => 'መወዳእታ ዕለት';
 
   @override
+  String get jobDeadlinePast => 'መወዳእታ ዕለት ካብ ሎሚ ኣቐዲሙ ክኸውን ኣይክእልን';
+
+  @override
   String get jobDescription => 'መግለፂ';
 
   @override
