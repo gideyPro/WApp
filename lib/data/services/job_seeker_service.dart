@@ -186,11 +186,16 @@ class JobSeekerService {
         ));
       }
 
-      final response = await _apiClient.dio.request(
+      // PHP does not populate request data/files for multipart PUT requests,
+      // so the update is sent as POST with Laravel method spoofing.
+      if (update) {
+        formData.fields.add(const MapEntry('_method', 'PUT'));
+      }
+
+      final response = await _apiClient.dio.post(
         '${ApiConstants.apiBase}/job-seekers/profile',
         data: formData,
         options: Options(
-          method: update ? 'PUT' : 'POST',
           headers: {'Content-Type': 'multipart/form-data'},
         ),
       );
