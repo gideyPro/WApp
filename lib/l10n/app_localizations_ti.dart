@@ -2920,6 +2920,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerNoBio => 'ዝኾነ መግለጺ ኣይተረኸበን።';
 
   @override
+  String get seekerAboutBio => 'ስለ / ባዮ';
+
+  @override
   String get seekerNoWorkExperience => 'ናይ ስራሕ ተመክሮ ኣይተዘርዘረን።';
 
   @override

@@ -1,3 +1,4 @@
+import '../../core/network/api_constants.dart';
 import 'job_requirement_item.dart';
 
 class JobSeekerProfile {
@@ -62,7 +63,7 @@ class JobSeekerProfile {
       userId: json['user_id'] as int,
       professionalTitle: json['professional_title'] as String,
       fullName: json['full_name'] as String,
-      photo: json['photo'] as String?,
+      photo: _normalizeStorageUrl(json['photo']),
       cv: json['cv'] as String?,
       jobCategory: json['job_category'] as String?,
       educationLevel: (json['education_level'] ?? 'other') as String,
@@ -74,6 +75,16 @@ class JobSeekerProfile {
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
     );
+  }
+
+  /// Resolve a stored file path (e.g. `job-seeker-photos/1/x.jpg`) into a
+  /// full URL. The API returns relative paths for uploaded files.
+  static String? _normalizeStorageUrl(dynamic value) {
+    final path = value?.toString().trim();
+    if (path == null || path.isEmpty) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    final clean = path.startsWith('/') ? path.substring(1) : path;
+    return '${ApiConstants.baseUrl}/storage/$clean';
   }
 
   Map<String, dynamic> toJson() {

@@ -2958,6 +2958,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seekerNoBio => 'No bio provided.';
 
   @override
+  String get seekerAboutBio => 'About / Bio';
+
+  @override
   String get seekerNoWorkExperience => 'No work experience listed.';
 
   @override

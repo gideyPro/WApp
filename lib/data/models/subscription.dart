@@ -93,6 +93,7 @@ class SubscriptionPlan {
   });
 
   factory SubscriptionPlan.fromJson(Map<String, dynamic> json) {
+    final planFeatures = _parsePlanFeatures(json['plan_features']);
     return SubscriptionPlan(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
@@ -111,7 +112,9 @@ class SubscriptionPlan {
       maxOrders: json['max_orders'] ?? 0,
       maxContacts: json['max_contacts'] ?? 0,
       maxRentalContacts: json['max_rental_contacts'] ?? json['max_contacts'] ?? 0,
-      maxRentalContactsCar: json['max_rental_contacts_car'] ?? (json['plan_features']?['max_rental_contacts_car']) ?? 0,
+      maxRentalContactsCar: json['max_rental_contacts_car'] ??
+          _parseIntOrNull(planFeatures?['max_rental_contacts_car']) ??
+          0,
       detailsAccess: _parseDetailsAccess(json['details_access']),
       features: _parseFeatures(json['features']),
       isActive: json['is_active'] ?? true,
@@ -121,7 +124,7 @@ class SubscriptionPlan {
       canStartTrial: json['can_start_trial'] == true,
       billingCycleDays: json['billing_cycle_days'],
       planType: json['plan_type']?.toString() ?? 'marketplace',
-      planFeatures: json['plan_features'] is Map ? Map<String, dynamic>.from(json['plan_features']) : null,
+      planFeatures: planFeatures,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
@@ -177,6 +180,42 @@ class SubscriptionPlan {
         }
       } catch (_) {}
     }
+    return null;
+  }
+
+  /// Normalize `plan_features` into a flat `{feature_key: value}` map.
+  ///
+  /// The API serializes this key in two shapes:
+  ///  - `/api/subscriptions` `plans[]`: a flat map (built by `planFeatureMap`)
+  ///  - `current_subscription.plan`: the raw `planFeatures` relation, i.e. a
+  ///    list of pivot rows (`feature_key`, `value_type`, `int_value`, ...)
+  ///
+  /// Indexing the list shape with a string key throws
+  /// "type 'String' is not a subtype of type 'int' of 'index'".
+  static Map<String, dynamic>? _parsePlanFeatures(dynamic value) {
+    if (value is Map) return Map<String, dynamic>.from(value);
+    if (value is List) {
+      final map = <String, dynamic>{};
+      for (final row in value) {
+        if (row is! Map) continue;
+        final key = row['feature_key']?.toString();
+        if (key == null || key.isEmpty) continue;
+        map[key] = switch (row['value_type']) {
+          'integer' => row['int_value'],
+          'boolean' => row['bool_value'],
+          'string' => row['string_value'],
+          _ => row['string_value'] ?? row['int_value'] ?? row['bool_value'],
+        };
+      }
+      return map.isEmpty ? null : map;
+    }
+    return null;
+  }
+
+  static int? _parseIntOrNull(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value);
     return null;
   }
 

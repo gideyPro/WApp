@@ -2920,6 +2920,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekerNoBio => 'ምንም መግለጫ አልተሰጠም።';
 
   @override
+  String get seekerAboutBio => 'ስለ / ባዮ';
+
+  @override
   String get seekerNoWorkExperience => 'የሥራ ልምድ አልተዘረዘረም።';
 
   @override

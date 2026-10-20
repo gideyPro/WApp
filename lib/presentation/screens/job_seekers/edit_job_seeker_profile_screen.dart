@@ -24,7 +24,6 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _titleController = TextEditingController();
-  final _experienceController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _educationCustomController = TextEditingController();
 
@@ -43,7 +42,6 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
   void dispose() {
     _fullNameController.dispose();
     _titleController.dispose();
-    _experienceController.dispose();
     _descriptionController.dispose();
     _educationCustomController.dispose();
     super.dispose();
@@ -91,7 +89,6 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     } else {
       _education = edu;
     }
-    _experienceController.text = profile.experience ?? '';
     _descriptionController.text = profile.description ?? '';
     _isPublic = profile.isPublic;
 
@@ -343,7 +340,6 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
         'educations': _educations.map((e) => e.toJson()).toList(),
       if (_experiences.isNotEmpty)
         'experiences': _experiences.map((e) => e.toJson()).toList(),
-      'experience': _experienceController.text.trim(),
       'description': _descriptionController.text.trim(),
       'is_public': _isPublic ? '1' : '0',
     };
@@ -506,8 +502,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                     }),
 
                   const SizedBox(height: 12),
-                  _buildTextField(l10n.seekerExperience, _experienceController, maxLines: 3),
-                  _buildTextField(l10n.jobDescription, _descriptionController, maxLines: 5),
+                  _buildTextField(l10n.seekerAboutBio, _descriptionController, maxLines: 5),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: Column(

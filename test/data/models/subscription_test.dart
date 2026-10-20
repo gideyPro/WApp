@@ -125,4 +125,86 @@ void main() {
       expect(plan.maxContactsFor('car', listingType: 'rental'), 12);
     });
   });
+
+  group('SubscriptionPlan plan_features serialization shapes', () {
+    test('parses relation-shaped plan_features (list of pivot rows)', () {
+      // current_subscription.plan serializes the planFeatures relation, so
+      // plan_features arrives as a list of rows instead of a flat map.
+      final json = {
+        'id': 6,
+        'name': 'Premium',
+        'slug': 'premium',
+        'price': 1000,
+        'max_contacts': 50,
+        'plan_features': [
+          {
+            'feature_key': 'max_rental_contacts_car',
+            'value_type': 'integer',
+            'int_value': 7,
+            'bool_value': null,
+            'string_value': null,
+          },
+          {
+            'feature_key': 'details_access',
+            'value_type': 'string',
+            'int_value': null,
+            'bool_value': null,
+            'string_value': 'full',
+          },
+          {
+            'feature_key': 'view_vip',
+            'value_type': 'boolean',
+            'int_value': null,
+            'bool_value': true,
+            'string_value': null,
+          },
+        ],
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.planFeatures, isNotNull);
+      expect(plan.maxRentalContactsCar, 7);
+      expect(plan.planFeatures!['details_access'], 'full');
+      expect(plan.planFeatures!['view_vip'], true);
+      expect(plan.hasFeature('view_vip'), true);
+    });
+
+    test('does not throw when relation-shaped plan_features omits car quota',
+        () {
+      final json = {
+        'id': 7,
+        'name': 'Basic',
+        'slug': 'basic',
+        'price': 0,
+        'plan_features': [
+          {
+            'feature_key': 'max_listings',
+            'value_type': 'integer',
+            'int_value': 3,
+          },
+        ],
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.maxRentalContactsCar, 0);
+      expect(plan.getQuota('max_listings'), 3);
+    });
+
+    test('ignores plan_features values of unknown shape', () {
+      final json = {
+        'id': 8,
+        'name': 'Legacy',
+        'slug': 'legacy',
+        'price': 0,
+        'plan_features': 'not-a-map',
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.planFeatures, isNull);
+      expect(plan.maxRentalContactsCar, 0);
+    });
+  });
 }

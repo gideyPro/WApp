@@ -5632,6 +5632,12 @@ abstract class AppLocalizations {
   /// **'No bio provided.'**
   String get seekerNoBio;
 
+  /// No description provided for @seekerAboutBio.
+  ///
+  /// In en, this message translates to:
+  /// **'About / Bio'**
+  String get seekerAboutBio;
+
   /// No description provided for @seekerNoWorkExperience.
   ///
   /// In en, this message translates to:

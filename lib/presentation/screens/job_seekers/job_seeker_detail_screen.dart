@@ -412,7 +412,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
             children: [
               Icon(Icons.person_outline, size: 20, color: context.theme.icon),
               const SizedBox(width: 8),
-              Text(l10n.jobDescription, style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.bold)),
+              Text(l10n.seekerAboutBio, style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 12),
@@ -691,8 +691,6 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
               children: [
                 _buildHeroCard(profile, l10n),
                 const SizedBox(height: 16),
-                _buildWaveMartContactCard(profile, isOwnProfile, l10n),
-                const SizedBox(height: 16),
                 _buildAboutCard(profile.description, l10n),
                 const SizedBox(height: 16),
                 _buildEducationCard(profile, l10n),
@@ -702,6 +700,8 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                   const SizedBox(height: 16),
                   _buildCvCard(profile.cv!, l10n),
                 ],
+                const SizedBox(height: 16),
+                _buildWaveMartContactCard(profile, isOwnProfile, l10n),
                 const SizedBox(height: 24),
               ],
             ),
