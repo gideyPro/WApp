@@ -14,6 +14,11 @@ class ListingFormData {
   double? priceFixed;
   String? rentalPeriodUnit; // 'day' | 'month' | 'year'
 
+  // --- Rental owner contact ---
+  bool postedForOtherOwner = false;
+  String ownerName = '';
+  String ownerPhone = '';
+
   // --- Free Hold ---
   int? taxPaidUntilYear;
   String?
@@ -99,6 +104,9 @@ class ListingFormData {
     this.specificLocation,
     this.priceFixed,
     this.rentalPeriodUnit,
+    this.postedForOtherOwner = false,
+    this.ownerName = '',
+    this.ownerPhone = '',
     this.taxPaidUntilYear,
     this.acquisitionClarification,
     this.leasedYear,
@@ -160,6 +168,9 @@ class ListingFormData {
         'specificLocation': specificLocation,
         'priceFixed': priceFixed,
         'rentalPeriodUnit': rentalPeriodUnit,
+        'postedForOtherOwner': postedForOtherOwner,
+        'ownerName': ownerName,
+        'ownerPhone': ownerPhone,
         'taxPaidUntilYear': taxPaidUntilYear,
         'acquisitionClarification': acquisitionClarification,
         'leasedYear': leasedYear,
@@ -231,6 +242,9 @@ class ListingFormData {
         specificLocation: data['specificLocation'],
         priceFixed: data['priceFixed'],
         rentalPeriodUnit: data['rentalPeriodUnit'],
+        postedForOtherOwner: data['postedForOtherOwner'] ?? false,
+        ownerName: data['ownerName'] ?? '',
+        ownerPhone: data['ownerPhone'] ?? '',
         taxPaidUntilYear: data['taxPaidUntilYear'],
         acquisitionClarification: data['acquisitionClarification'],
         leasedYear: data['leasedYear'],
@@ -291,6 +305,9 @@ class ListingFormData {
     String? specificLocation,
     double? priceFixed,
     String? rentalPeriodUnit,
+    bool? postedForOtherOwner,
+    String? ownerName,
+    String? ownerPhone,
     int? taxPaidUntilYear,
     String? acquisitionClarification,
     int? leasedYear,
@@ -350,6 +367,9 @@ class ListingFormData {
       specificLocation: specificLocation ?? this.specificLocation,
       priceFixed: priceFixed ?? this.priceFixed,
       rentalPeriodUnit: rentalPeriodUnit ?? this.rentalPeriodUnit,
+      postedForOtherOwner: postedForOtherOwner ?? this.postedForOtherOwner,
+      ownerName: ownerName ?? this.ownerName,
+      ownerPhone: ownerPhone ?? this.ownerPhone,
       taxPaidUntilYear: taxPaidUntilYear ?? this.taxPaidUntilYear,
       acquisitionClarification:
           acquisitionClarification ?? this.acquisitionClarification,
@@ -411,6 +431,14 @@ class ListingFormData {
     if (type.isEmpty) errors.add(l10n.listingErrorPropertyTypeRequired);
     if (holdingType.isEmpty) errors.add(l10n.listingErrorHoldingTypeRequired);
     if (listingType.isEmpty) errors.add(l10n.listingErrorListingTypeRequired);
+    if (listingType == 'rental' && postedForOtherOwner) {
+      if (ownerName.trim().isEmpty) {
+        errors.add(l10n.listingOwnerNameRequired);
+      }
+      if (ownerPhone.trim().isEmpty) {
+        errors.add(l10n.listingOwnerPhoneRequired);
+      }
+    }
     if (useType.isEmpty) errors.add(l10n.listingErrorUseTypeRequired);
     if (addressId == null) errors.add(l10n.listingErrorAddressRequired);
     if (priceFixed == null || priceFixed! < 1000) {

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
@@ -39,7 +40,6 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   bool _isSubmitting = false;
   final Map<int, List<String>> _stepErrors = {};
   ValueNotifier<SubmissionState>? _submissionNotifier;
-  Future<bool?>? _submissionDismissed;
   Timer? _uploadProgressTimer;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
@@ -373,7 +373,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
     final (:notifier, :dismissed) = SubmissionOverlay.show(context);
     _submissionNotifier = notifier;
-    _submissionDismissed = dismissed;
+    unawaited(dismissed.then(_handleSubmissionResult));
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
       label: l10n.submissionValidating,
@@ -437,15 +437,12 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           message: l10n.submissionUpdatedMessage,
           isEdit: true,
         );
-        final result = await _submissionDismissed;
-        if (mounted && result == true) Navigator.of(context).pop(true);
       } else {
         _submissionNotifier!.value = SubmissionState.error(
           message: response.message.isNotEmpty
               ? response.message
               : l10n.submissionErrorDefault,
           onRetry: _retrySubmission,
-          onSaveDraft: _saveDraftAndExit,
         );
       }
     } catch (e) {
@@ -454,7 +451,6 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       _submissionNotifier!.value = SubmissionState.error(
         message: _friendlyErrorMessage(e),
         onRetry: _retrySubmission,
-        onSaveDraft: _saveDraftAndExit,
       );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -552,15 +548,12 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           message: l10n.submissionUpdatedMessage,
           isEdit: true,
         );
-        final result = await _submissionDismissed;
-        if (mounted && result == true) Navigator.of(context).pop(true);
       } else {
         _submissionNotifier!.value = SubmissionState.error(
           message: response.message.isNotEmpty
               ? response.message
               : l10n.submissionErrorDefault,
           onRetry: _retrySubmission,
-          onSaveDraft: _saveDraftAndExit,
         );
       }
     } catch (e) {
@@ -568,7 +561,6 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       _submissionNotifier!.value = SubmissionState.error(
         message: _friendlyErrorMessage(e),
         onRetry: _retrySubmission,
-        onSaveDraft: _saveDraftAndExit,
       );
     }
   }
@@ -585,9 +577,26 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     return msg.replaceAll(RegExp(r'^Exception:\s*'), '');
   }
 
-  Future<void> _saveDraftAndExit() async {
-    if (mounted) {
-      Navigator.of(context).pop(false);
+  Future<void> _handleSubmissionResult(SubmissionDismissAction? action) async {
+    if (!mounted ||
+        action == null ||
+        action == SubmissionDismissAction.goBack) {
+      return;
+    }
+
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    if (!mounted) return;
+
+    switch (action) {
+      case SubmissionDismissAction.viewListings:
+        context.pushReplacement('/my-listings');
+        break;
+      case SubmissionDismissAction.saveDraftAndExit:
+        Navigator.of(context).pop(false);
+        break;
+      case SubmissionDismissAction.createAnother:
+      case SubmissionDismissAction.goBack:
+        break;
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
@@ -7,6 +8,14 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_liquid_glass.dart';
 
 enum SubmissionPhase { validating, uploading, saving }
+
+/// Action chosen from the submission result dialog.
+enum SubmissionDismissAction {
+  viewListings,
+  createAnother,
+  saveDraftAndExit,
+  goBack,
+}
 
 class SubmissionState {
   final bool isSubmitting;
@@ -17,8 +26,8 @@ class SubmissionState {
   final double progress;
   final String message;
   final bool isEdit;
+  final bool canSaveDraft;
   final VoidCallback? onRetry;
-  final VoidCallback? onSaveDraft;
 
   const SubmissionState._({
     this.isSubmitting = false,
@@ -29,8 +38,8 @@ class SubmissionState {
     this.progress = 0,
     this.message = '',
     this.isEdit = false,
+    this.canSaveDraft = false,
     this.onRetry,
-    this.onSaveDraft,
   });
 
   factory SubmissionState.submitting({
@@ -53,20 +62,20 @@ class SubmissionState {
   factory SubmissionState.error({
     required String message,
     VoidCallback? onRetry,
-    VoidCallback? onSaveDraft,
+    bool canSaveDraft = false,
   }) {
     return SubmissionState._(
       isError: true,
       message: message,
       onRetry: onRetry,
-      onSaveDraft: onSaveDraft,
+      canSaveDraft: canSaveDraft,
     );
   }
 }
 
 class SubmissionOverlay extends StatefulWidget {
   final SubmissionState state;
-  final ValueChanged<bool?>? onDismiss;
+  final ValueChanged<SubmissionDismissAction?>? onDismiss;
 
   const SubmissionOverlay({
     super.key,
@@ -74,7 +83,7 @@ class SubmissionOverlay extends StatefulWidget {
     this.onDismiss,
   });
 
-  static ({ValueNotifier<SubmissionState> notifier, Future<bool?> dismissed}) show(BuildContext context) {
+  static ({ValueNotifier<SubmissionState> notifier, Future<SubmissionDismissAction?> dismissed}) show(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final notifier = ValueNotifier<SubmissionState>(
       SubmissionState.submitting(
@@ -83,7 +92,7 @@ class SubmissionOverlay extends StatefulWidget {
       ),
     );
 
-    final future = showGeneralDialog<bool>(
+    final future = showGeneralDialog<SubmissionDismissAction>(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black54,
@@ -141,9 +150,25 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
     final state = widget.state;
     final themeColors = ThemeColors(context);
 
-    if (state.isSubmitting) return _buildSubmitting(context, themeColors);
-    if (state.isSuccess) return _buildSuccess(context, themeColors);
-    return _buildError(context, themeColors);
+    final content = state.isSubmitting
+        ? _buildSubmitting(context, themeColors)
+        : state.isSuccess
+            ? _buildSuccess(context, themeColors)
+            : _buildError(context, themeColors);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness:
+            themeColors.isDark ? Brightness.light : Brightness.dark,
+        statusBarBrightness:
+            themeColors.isDark ? Brightness.dark : Brightness.light,
+        systemNavigationBarColor: themeColors.scaffold,
+        systemNavigationBarIconBrightness:
+            themeColors.isDark ? Brightness.light : Brightness.dark,
+      ),
+      child: content,
+    );
   }
 
   Widget _buildSubmitting(BuildContext context, ThemeColors themeColors) {
@@ -171,18 +196,18 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: AppColors.accent500.withValues(alpha: 0.3),
+                          color: themeColors.primary.withValues(alpha: 0.3),
                           width: 3,
                         ),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: SizedBox(
                           width: 28,
                           height: 28,
                           child: CircularProgressIndicator(
                             strokeWidth: 3,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.accent500,
+                              themeColors.primary,
                             ),
                           ),
                         ),
@@ -229,8 +254,8 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                     value: state.progress,
                     minHeight: 4,
                     backgroundColor: themeColors.textMuted.withValues(alpha: 0.2),
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.accent500,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      themeColors.primary,
                     ),
                   ),
                 ),
@@ -283,7 +308,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: themeColors.isDark
-                            ? AppColors.success.withValues(alpha: 0.2)
+                            ? AppColors.accent500.withValues(alpha: 0.18)
                             : AppColors.successLight,
                       ),
                       child: Icon(
@@ -333,7 +358,8 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                       borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                     ),
                   ),
-                  onPressed: () => widget.onDismiss?.call(true),
+                  onPressed: () =>
+                      widget.onDismiss?.call(SubmissionDismissAction.viewListings),
                   child: Text(
                     l10n.submissionViewListings,
                     style: AppTextStyles.buttonMedium,
@@ -353,7 +379,8 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                         borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                       ),
                     ),
-                    onPressed: () => widget.onDismiss?.call(false),
+                    onPressed: () => widget.onDismiss
+                        ?.call(SubmissionDismissAction.createAnother),
                     child: Text(
                       l10n.submissionCreateAnother,
                       style: AppTextStyles.buttonMedium,
@@ -397,7 +424,7 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                         Icons.close_rounded,
                         size: 40,
                         color: themeColors.isDark
-                            ? AppColors.error
+                            ? AppColors.errorLight
                             : AppColors.error,
                       ),
                     ),
@@ -450,29 +477,32 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                 ),
                 const SizedBox(height: 12),
               ],
-              if (state.onSaveDraft != null) ...[
-                SizedBox(
-                  width: double.infinity,
-                  height: AppSpacing.buttonHeightMd,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: themeColors.textPrimary,
-                      side: BorderSide(color: themeColors.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
-                      ),
-                    ),
-                    onPressed: state.onSaveDraft,
-                    child: Text(
-                      AppLocalizations.of(context).submissionSaveDraft,
-                      style: AppTextStyles.buttonMedium,
+              SizedBox(
+                width: double.infinity,
+                height: AppSpacing.buttonHeightMd,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: themeColors.textPrimary,
+                    side: BorderSide(color: themeColors.border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
                     ),
                   ),
+                  onPressed: () => widget.onDismiss?.call(
+                    SubmissionDismissAction.saveDraftAndExit,
+                  ),
+                  child: Text(
+                    state.canSaveDraft
+                        ? AppLocalizations.of(context).submissionSaveDraft
+                        : AppLocalizations.of(context).submissionExit,
+                    style: AppTextStyles.buttonMedium,
+                  ),
                 ),
-                const SizedBox(height: 12),
-              ],
+              ),
+              const SizedBox(height: 12),
               TextButton(
-                onPressed: () => widget.onDismiss?.call(null),
+                onPressed: () =>
+                    widget.onDismiss?.call(SubmissionDismissAction.goBack),
                 child: Text(
                   AppLocalizations.of(context).submissionGoBack,
                   style: AppTextStyles.bodySmall.copyWith(
@@ -510,11 +540,15 @@ class _StepIndicator extends StatelessWidget {
       leading = Container(
         width: 20,
         height: 20,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppColors.accent500,
+          color: themeColors.primary,
         ),
-        child: const Icon(Icons.check_rounded, size: 14, color: Colors.white),
+        child: Icon(
+          Icons.check_rounded,
+          size: 14,
+          color: themeColors.primaryText,
+        ),
       );
     } else if (isActive) {
       leading = Container(
@@ -522,15 +556,15 @@ class _StepIndicator extends StatelessWidget {
         height: 20,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.accent500, width: 2),
+          border: Border.all(color: themeColors.primary, width: 2),
         ),
         child: Center(
           child: Container(
             width: 8,
             height: 8,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent500,
+              color: themeColors.primary,
             ),
           ),
         ),
@@ -558,7 +592,7 @@ class _StepIndicator extends StatelessWidget {
           label,
           style: AppTextStyles.bodySmall.copyWith(
             color: isActive
-                ? AppColors.accent500
+                ? themeColors.primary
                 : isCompleted
                     ? themeColors.textPrimary
                     : themeColors.textMuted,

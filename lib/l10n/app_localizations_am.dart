@@ -541,6 +541,21 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingRentalPeriod => 'የኪራይ ጊዜ';
 
   @override
+  String get listingPostedForOtherOwner => 'ለሌላ ባለቤት የተለጠፈ';
+
+  @override
+  String get listingOwnerName => 'የባለቤት ስም';
+
+  @override
+  String get listingOwnerPhone => 'የባለቤት ስልክ ቁጥር';
+
+  @override
+  String get listingOwnerNameRequired => 'የባለቤቱን ስም ያስገቡ';
+
+  @override
+  String get listingOwnerPhoneRequired => 'የባለቤቱን ስልክ ቁጥር ያስገቡ';
+
+  @override
   String get listingStepBasics => 'መሰረታዊ';
 
   @override
@@ -2004,6 +2019,9 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get submissionSaveDraft => 'ረቂቅ አስቀምጥ እና ውጣ';
+
+  @override
+  String get submissionExit => 'ውጣ';
 
   @override
   String get submissionGoBack => 'ተመለስ';

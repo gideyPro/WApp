@@ -547,6 +547,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingRentalPeriod => 'Rental Period';
 
   @override
+  String get listingPostedForOtherOwner => 'Posted for other owner';
+
+  @override
+  String get listingOwnerName => 'Owner Name';
+
+  @override
+  String get listingOwnerPhone => 'Owner Phone Number';
+
+  @override
+  String get listingOwnerNameRequired => 'Enter the owner\'s name';
+
+  @override
+  String get listingOwnerPhoneRequired => 'Enter the owner\'s phone number';
+
+  @override
   String get listingStepBasics => 'Basics';
 
   @override
@@ -2031,6 +2046,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get submissionSaveDraft => 'Save Draft & Exit';
+
+  @override
+  String get submissionExit => 'Exit';
 
   @override
   String get submissionGoBack => 'Go Back';

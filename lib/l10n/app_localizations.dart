@@ -1102,6 +1102,36 @@ abstract class AppLocalizations {
   /// **'Rental Period'**
   String get listingRentalPeriod;
 
+  /// No description provided for @listingPostedForOtherOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Posted for other owner'**
+  String get listingPostedForOtherOwner;
+
+  /// No description provided for @listingOwnerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Name'**
+  String get listingOwnerName;
+
+  /// No description provided for @listingOwnerPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Phone Number'**
+  String get listingOwnerPhone;
+
+  /// No description provided for @listingOwnerNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the owner\'s name'**
+  String get listingOwnerNameRequired;
+
+  /// No description provided for @listingOwnerPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the owner\'s phone number'**
+  String get listingOwnerPhoneRequired;
+
   /// No description provided for @listingStepBasics.
   ///
   /// In en, this message translates to:
@@ -3825,6 +3855,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Draft & Exit'**
   String get submissionSaveDraft;
+
+  /// No description provided for @submissionExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get submissionExit;
 
   /// No description provided for @submissionGoBack.
   ///

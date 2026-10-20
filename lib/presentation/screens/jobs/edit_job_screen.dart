@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/theme_colors.dart';
@@ -35,7 +37,6 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
   bool _isSubmitting = false;
   final Map<int, List<String>> _stepErrors = {};
   ValueNotifier<SubmissionState>? _submissionNotifier;
-  Future<bool?>? _submissionDismissed;
   bool _postedAsCompany = false;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
@@ -538,7 +539,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     );
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit({bool isRetry = false}) async {
     final errors = _validateCurrentStep();
     if (errors.isNotEmpty) {
       setState(() => _stepErrors[_currentStep] = errors);
@@ -547,9 +548,11 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     if (!mounted) return;
     setState(() => _isSubmitting = true);
 
-    final result = SubmissionOverlay.show(context);
-    _submissionNotifier = result.notifier;
-    _submissionDismissed = result.dismissed;
+    if (!isRetry) {
+      final result = SubmissionOverlay.show(context);
+      _submissionNotifier = result.notifier;
+      unawaited(result.dismissed.then(_handleSubmissionResult));
+    }
 
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.uploading,
@@ -575,16 +578,43 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
       if (response.success) {
         ref.read(jobDetailProvider.notifier).refreshListing(widget.listing.id);
         _submissionNotifier!.value = SubmissionState.success(message: l10n.submissionUpdatedMessage, isEdit: true);
-        final dim = await _submissionDismissed;
-        if (mounted && dim == true) Navigator.of(context).pop(true);
       } else {
-        _submissionNotifier!.value = SubmissionState.error(message: response.message, onRetry: _submit, onSaveDraft: () => Navigator.of(context).pop(false));
+        _submissionNotifier!.value = SubmissionState.error(
+          message: response.message,
+          onRetry: () => _submit(isRetry: true),
+        );
       }
     } catch (e) {
       if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.error(message: e.toString(), onRetry: _submit, onSaveDraft: () => Navigator.of(context).pop(false));
+      _submissionNotifier!.value = SubmissionState.error(
+        message: e.toString(),
+        onRetry: () => _submit(isRetry: true),
+      );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
+  Future<void> _handleSubmissionResult(SubmissionDismissAction? action) async {
+    if (!mounted ||
+        action == null ||
+        action == SubmissionDismissAction.goBack) {
+      return;
+    }
+
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    if (!mounted) return;
+
+    switch (action) {
+      case SubmissionDismissAction.viewListings:
+        context.pushReplacement('/my-listings');
+        break;
+      case SubmissionDismissAction.saveDraftAndExit:
+        Navigator.of(context).pop(false);
+        break;
+      case SubmissionDismissAction.createAnother:
+      case SubmissionDismissAction.goBack:
+        break;
     }
   }
 
@@ -599,7 +629,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
         title: Text(l10n.jobEditTitle),
         actions: [
           TextButton(
-            onPressed: _isSubmitting ? null : (_currentStep == 2 ? _submit : _nextStep),
+            onPressed: _isSubmitting ? null : (_currentStep == 2 ? () => _submit() : _nextStep),
             child: Text(_currentStep == 2 ? l10n.updateListing : l10n.listingNext),
           ),
         ],

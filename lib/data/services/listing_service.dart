@@ -317,6 +317,13 @@ class ListingService {
       if (formData.priceFixed != null) MapEntry('price_fixed', formData.priceFixed.toString()),
       if (formData.rentalPeriodUnit != null && formData.rentalPeriodUnit!.isNotEmpty) 
         MapEntry('rental_period_unit', formData.rentalPeriodUnit!),
+      MapEntry('posted_for_other_owner', formData.postedForOtherOwner ? '1' : '0'),
+      if (formData.listingType == 'rental' && formData.postedForOtherOwner) ...[
+        if (formData.ownerName.trim().isNotEmpty)
+          MapEntry('owner_name', formData.ownerName.trim()),
+        if (formData.ownerPhone.trim().isNotEmpty)
+          MapEntry('owner_phone', formData.ownerPhone.trim()),
+      ],
       if (formData.facingDirection != null) MapEntry('facing_direction', formData.facingDirection!),
       if (formData.description != null) MapEntry('description', formData.description!),
       if (formData.serviceType != null) MapEntry('service_type', formData.serviceType!),

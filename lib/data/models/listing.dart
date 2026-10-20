@@ -113,6 +113,9 @@ class Listing {
   final double? priceMin;
   final double? priceMax;
   final RentalPeriod? rentalPeriodUnit;
+  final bool postedForOtherOwner;
+  final String? ownerName;
+  final String? ownerPhone;
   final ListingStatus status;
   final bool isFeatured;
   final bool isVip;
@@ -240,6 +243,9 @@ class Listing {
     this.priceMin,
     this.priceMax,
     this.rentalPeriodUnit,
+    this.postedForOtherOwner = false,
+    this.ownerName,
+    this.ownerPhone,
     this.status = ListingStatus.pending,
     this.isFeatured = false,
     this.isVip = false,
@@ -342,6 +348,9 @@ class Listing {
     int? contactRemaining,
     String? userInterestStatus,
     int? userInterestId,
+    bool? postedForOtherOwner,
+    String? ownerName,
+    String? ownerPhone,
   }) {
     return Listing(
       id: id,
@@ -353,6 +362,9 @@ class Listing {
       priceMin: priceMin,
       priceMax: priceMax,
       rentalPeriodUnit: rentalPeriodUnit,
+      postedForOtherOwner: postedForOtherOwner ?? this.postedForOtherOwner,
+      ownerName: ownerName ?? this.ownerName,
+      ownerPhone: ownerPhone ?? this.ownerPhone,
       status: status,
       isFeatured: isFeatured ?? this.isFeatured,
       isVip: isVip ?? this.isVip,
@@ -615,6 +627,9 @@ class Listing {
       jobReqEducations: _parseEducationItems(property is Map ? property['req_educations'] : json['req_educations']),
       jobReqExperiences: _parseExperienceItems(property is Map ? property['req_experiences'] : json['req_experiences']),
       agentId: TypeUtils.safeInt(json['agent_id']),
+      postedForOtherOwner: TypeUtils.safeBool(json['posted_for_other_owner']),
+      ownerName: json['owner_name']?.toString(),
+      ownerPhone: json['owner_phone']?.toString(),
     );
   }
 
@@ -675,6 +690,9 @@ class Listing {
       'price_min': priceMin,
       'price_max': priceMax,
       'rental_period_unit': rentalPeriodUnit?.toString().split('.').last,
+      'posted_for_other_owner': postedForOtherOwner,
+      'owner_name': ownerName,
+      'owner_phone': ownerPhone,
       'status': status.toString().split('.').last,
       'is_featured': isFeatured,
       'is_vip': isVip,

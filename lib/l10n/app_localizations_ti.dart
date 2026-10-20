@@ -541,6 +541,21 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingRentalPeriod => 'ናይ ኪራይ ግዘ';
 
   @override
+  String get listingPostedForOtherOwner => 'ንኻልእ ዋና ዝተለጠፈ';
+
+  @override
+  String get listingOwnerName => 'ስም ዋና';
+
+  @override
+  String get listingOwnerPhone => 'ቁጽሪ ስልኪ ዋና';
+
+  @override
+  String get listingOwnerNameRequired => 'ስም ዋና ኣእትዉ';
+
+  @override
+  String get listingOwnerPhoneRequired => 'ቁጽሪ ስልኪ ዋና ኣእትዉ';
+
+  @override
   String get listingStepBasics => 'መሰረታዊ';
 
   @override
@@ -2004,6 +2019,9 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get submissionSaveDraft => 'ረቂቕ ዓቂብካ ውፃእ';
+
+  @override
+  String get submissionExit => 'ውፃእ';
 
   @override
   String get submissionGoBack => 'ተመለስ';

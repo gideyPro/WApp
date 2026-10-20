@@ -42,7 +42,6 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   final Map<int, List<String>> _stepErrors = {};
   String? _currentSubmissionKey;
   ValueNotifier<SubmissionState>? _submissionNotifier;
-  Future<bool?>? _submissionDismissed;
   Timer? _uploadProgressTimer;
 
   AppLocalizations get l10n => AppLocalizations.of(context);
@@ -325,7 +324,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     _currentSubmissionKey = _generateSubmissionKey();
     final (:notifier, :dismissed) = SubmissionOverlay.show(context);
     _submissionNotifier = notifier;
-    _submissionDismissed = dismissed;
+    unawaited(dismissed.then(_handleSubmissionResult));
     _submissionNotifier!.value = SubmissionState.submitting(
       phase: SubmissionPhase.validating,
       label: l10n.submissionValidating,
@@ -379,20 +378,18 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
 
       if (!mounted) return;
       if (response.success) {
+        unawaited(ref.read(subscriptionProvider.notifier).refresh());
         await _cleanupImages();
         if (!mounted) return;
         _submissionNotifier!.value = SubmissionState.success(
           message: l10n.submissionCreatedMessage,
         );
-        final result = await _submissionDismissed;
-        if (mounted && result == true) Navigator.of(context).pop(true);
       } else {
         _submissionNotifier!.value = SubmissionState.error(
           message: response.message.isNotEmpty
               ? response.message
               : l10n.submissionErrorDefault,
           onRetry: _retrySubmission,
-          onSaveDraft: _saveDraftAndExit,
         );
       }
     } catch (e) {
@@ -401,7 +398,6 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       _submissionNotifier!.value = SubmissionState.error(
         message: _friendlyErrorMessage(e),
         onRetry: _retrySubmission,
-        onSaveDraft: _saveDraftAndExit,
       );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -495,20 +491,18 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
 
       if (!mounted) return;
       if (response.success) {
+        unawaited(ref.read(subscriptionProvider.notifier).refresh());
         await _cleanupImages();
         if (!mounted) return;
         _submissionNotifier!.value = SubmissionState.success(
           message: l10n.submissionCreatedMessage,
         );
-        final result = await _submissionDismissed;
-        if (mounted && result == true) Navigator.of(context).pop(true);
       } else {
         _submissionNotifier!.value = SubmissionState.error(
           message: response.message.isNotEmpty
               ? response.message
               : l10n.submissionErrorDefault,
           onRetry: _retrySubmission,
-          onSaveDraft: _saveDraftAndExit,
         );
       }
     } catch (e) {
@@ -516,7 +510,6 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       _submissionNotifier!.value = SubmissionState.error(
         message: _friendlyErrorMessage(e),
         onRetry: _retrySubmission,
-        onSaveDraft: _saveDraftAndExit,
       );
     }
   }
@@ -533,9 +526,28 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     return msg.replaceAll(RegExp(r'^Exception:\s*'), '');
   }
 
-  Future<void> _saveDraftAndExit() async {
-    if (mounted) {
-      Navigator.of(context).pop(false);
+  Future<void> _handleSubmissionResult(SubmissionDismissAction? action) async {
+    if (!mounted ||
+        action == null ||
+        action == SubmissionDismissAction.goBack) {
+      return;
+    }
+
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    if (!mounted) return;
+
+    switch (action) {
+      case SubmissionDismissAction.viewListings:
+        context.pushReplacement('/my-listings');
+        break;
+      case SubmissionDismissAction.createAnother:
+        context.pushReplacement('/cars/create');
+        break;
+      case SubmissionDismissAction.saveDraftAndExit:
+        Navigator.of(context).pop(false);
+        break;
+      case SubmissionDismissAction.goBack:
+        break;
     }
   }
 

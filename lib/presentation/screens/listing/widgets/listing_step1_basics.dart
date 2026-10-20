@@ -42,6 +42,8 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
   late TextEditingController _cooperativeNameController;
   late TextEditingController _cooperativeCodeController;
   late TextEditingController _specificLocationController;
+  late TextEditingController _ownerNameController;
+  late TextEditingController _ownerPhoneController;
 
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
   List<String> _regions = [], _zones = [], _woredas = [], _kebeles = [];
@@ -86,6 +88,12 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     _specificLocationController = TextEditingController(
       text: widget.formData.specificLocation ?? '',
     );
+    _ownerNameController = TextEditingController(
+      text: widget.formData.ownerName,
+    );
+    _ownerPhoneController = TextEditingController(
+      text: widget.formData.ownerPhone,
+    );
     
     _selectedRegion = widget.formData.addressRegion;
     _selectedZone = widget.formData.addressZone;
@@ -112,6 +120,8 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     _cooperativeNameController.dispose();
     _cooperativeCodeController.dispose();
     _specificLocationController.dispose();
+    _ownerNameController.dispose();
+    _ownerPhoneController.dispose();
     super.dispose();
   }
 
@@ -295,6 +305,18 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     ));
   }
 
+  void _togglePostedForOtherOwner(bool value) {
+    if (!value) {
+      _ownerNameController.clear();
+      _ownerPhoneController.clear();
+    }
+    widget.onUpdate(widget.formData.copyWith(
+      postedForOtherOwner: value,
+      ownerName: value ? widget.formData.ownerName : '',
+      ownerPhone: value ? widget.formData.ownerPhone : '',
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -364,7 +386,16 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                                 );
                                 return;
                               }
-                              widget.onUpdate(widget.formData.copyWith(listingType: v));
+                              if (v == 'sale') {
+                                _ownerNameController.clear();
+                                _ownerPhoneController.clear();
+                              }
+                              widget.onUpdate(widget.formData.copyWith(
+                                listingType: v,
+                                postedForOtherOwner: v == 'sale' ? false : widget.formData.postedForOtherOwner,
+                                ownerName: v == 'sale' ? '' : widget.formData.ownerName,
+                                ownerPhone: v == 'sale' ? '' : widget.formData.ownerPhone,
+                              ));
                             },
                     ),
                     if (rentalEnabled || widget.formData.listingType == 'rental') ...[
@@ -421,6 +452,48 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                     onChanged: (v) => widget.onUpdate(
                         widget.formData.copyWith(rentalPeriodUnit: v)),
                   ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Switch(
+                        value: widget.formData.postedForOtherOwner,
+                        onChanged: _togglePostedForOtherOwner,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => _togglePostedForOtherOwner(
+                              !widget.formData.postedForOtherOwner),
+                          child: Text(
+                            l10n.listingPostedForOtherOwner,
+                            style: AppTextStyles.labelMedium.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: context.theme.textSecondary,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (widget.formData.postedForOtherOwner) ...[
+                    const SizedBox(height: 8),
+                    _compactTextField(
+                      label: l10n.listingOwnerName,
+                      controller: _ownerNameController,
+                      onSubmitted: (v) => widget.onUpdate(
+                          widget.formData.copyWith(ownerName: v)),
+                    ),
+                    const SizedBox(height: 8),
+                    _compactTextField(
+                      label: l10n.listingOwnerPhone,
+                      controller: _ownerPhoneController,
+                      keyboardType: TextInputType.phone,
+                      onSubmitted: (v) => widget.onUpdate(
+                          widget.formData.copyWith(ownerPhone: v)),
+                    ),
+                  ],
                 ],
               ],
             ),
