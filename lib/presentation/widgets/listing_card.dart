@@ -515,17 +515,6 @@ class PropertyListingCard extends ConsumerWidget {
               ? l10n.listingSale
               : l10n.listingRent,
         ),
-        const Spacer(),
-        const Icon(
-          Icons.visibility_outlined,
-          size: 16,
-          color: AppColors.primary400,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          '${listing?.viewCount ?? 0}',
-          style: AppTextStyles.caption,
-        ),
       ],
     );
   }

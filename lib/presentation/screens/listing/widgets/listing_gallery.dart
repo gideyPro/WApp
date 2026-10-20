@@ -76,30 +76,6 @@ class _ListingGalleryState extends State<ListingGallery> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (listing.viewCount > 0)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.visibility_outlined, size: 12, color: Colors.white),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${listing.viewCount}',
-                          style: AppTextStyles.labelSmall.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (listing.viewCount > 0 && images.length > 1)
-                  const SizedBox(width: 6),
                 if (images.length > 1)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

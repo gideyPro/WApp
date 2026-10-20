@@ -254,13 +254,6 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
               DateFormat('MMM d, yyyy').format(listing.createdAt),
               style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7)),
             ),
-            const Spacer(),
-            Icon(Icons.visibility_outlined, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
-            const SizedBox(width: 4),
-            Text(
-              '${listing.viewCount}',
-              style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7)),
-            ),
           ],
         ),
       ],
