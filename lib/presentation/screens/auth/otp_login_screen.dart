@@ -84,7 +84,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
     if (authState.isAuthenticated) {
       return const Scaffold(
-        backgroundColor: AppColors.primary900,
+        backgroundColor: AppColors.oceanicNavyDark,
         body: Center(
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent500),
