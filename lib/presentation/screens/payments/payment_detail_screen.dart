@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/utils/ethiopian_date_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../data/models/payment.dart';
@@ -58,6 +59,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
+      backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(title: Text(l10n.profilePayments)),
       body: _buildBody(l10n),
     );
@@ -103,30 +105,31 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
   }
 
   Widget _buildStatusBanner(Payment payment, AppLocalizations l10n) {
+    final isDark = context.theme.isDark;
     Color bgColor;
     Color iconColor;
     Color textColor;
     IconData icon;
 
     if (payment.isSuccess) {
-      bgColor = AppColors.emerald50;
-      iconColor = AppColors.emerald600;
-      textColor = AppColors.emerald800;
+      bgColor = isDark ? AppColors.emerald500.withValues(alpha: 0.15) : AppColors.emerald50;
+      iconColor = isDark ? AppColors.emerald400 : AppColors.emerald600;
+      textColor = isDark ? AppColors.emerald300 : AppColors.emerald800;
       icon = Icons.check_circle;
     } else if (payment.isFailed) {
-      bgColor = AppColors.errorLight;
+      bgColor = isDark ? AppColors.error.withValues(alpha: 0.15) : AppColors.errorLight;
       iconColor = AppColors.error;
-      textColor = Colors.red.shade800;
+      textColor = isDark ? Colors.red.shade200 : Colors.red.shade800;
       icon = Icons.cancel_outlined;
     } else if (payment.isCancelled) {
-      bgColor = AppColors.stone100;
-      iconColor = AppColors.stone500;
-      textColor = AppColors.stone600;
+      bgColor = isDark ? AppColors.cardNavyLight : AppColors.stone100;
+      iconColor = isDark ? AppColors.stone400 : AppColors.stone500;
+      textColor = isDark ? AppColors.stone300 : AppColors.stone600;
       icon = Icons.cancel_outlined;
     } else {
-      bgColor = AppColors.accent50;
-      iconColor = AppColors.accent600;
-      textColor = AppColors.warning;
+      bgColor = isDark ? AppColors.accent500.withValues(alpha: 0.15) : AppColors.accent50;
+      iconColor = isDark ? AppColors.accent400 : AppColors.accent600;
+      textColor = isDark ? AppColors.accent300 : AppColors.warning;
       icon = Icons.pending;
     }
 
@@ -240,7 +243,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
             child: Text(
               label,
               style: AppTextStyles.caption.copyWith(
-                color: AppColors.stone500,
+                color: context.textSecondary,
               ),
             ),
           ),
@@ -248,7 +251,8 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
             child: Text(
               value,
               style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
+                color: context.theme.textPrimary,
               ),
               textAlign: TextAlign.end,
             ),
@@ -263,26 +267,28 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
     required String label,
     required String value,
   }) {
+    final isDark = context.theme.isDark;
     return Row(
       children: [
         Container(
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: AppColors.primary50,
-            borderRadius: BorderRadius.circular(12),
+            color: isDark ? AppColors.cardNavyLight : AppColors.primary50,
+            borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, size: 16, color: AppColors.primary600),
+          child: Icon(icon, size: 16, color: isDark ? AppColors.accent400 : AppColors.primary600),
         ),
         const SizedBox(width: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label, style: AppTextStyles.caption.copyWith(
-              color: AppColors.stone500,
+              color: context.textSecondary,
             )),
             Text(value, style: AppTextStyles.bodySmall.copyWith(
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
+              color: context.theme.textPrimary,
             )),
           ],
         ),

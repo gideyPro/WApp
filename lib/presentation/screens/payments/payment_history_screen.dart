@@ -55,6 +55,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
+      backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         title: Text(l10n.profilePayments),
       ),
@@ -180,6 +181,7 @@ class _PaymentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final isDark = context.theme.isDark;
     return Padding(
       padding: AppSpacing.paddingLg,
       child: Row(
@@ -190,10 +192,10 @@ class _PaymentTile extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               color: payment.isSuccess
-                  ? AppColors.emerald50
+                  ? (isDark ? AppColors.emerald500.withValues(alpha: 0.15) : AppColors.emerald50)
                   : payment.isFailed
-                      ? AppColors.errorLight
-                      : AppColors.accent50,
+                      ? (isDark ? AppColors.error.withValues(alpha: 0.15) : AppColors.errorLight)
+                      : (isDark ? AppColors.accent500.withValues(alpha: 0.15) : AppColors.accent50),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -204,10 +206,10 @@ class _PaymentTile extends StatelessWidget {
                       : Icons.pending,
               size: 24,
               color: payment.isSuccess
-                  ? AppColors.emerald600
+                  ? (isDark ? AppColors.emerald400 : AppColors.emerald600)
                   : payment.isFailed
                       ? AppColors.error
-                      : AppColors.accent600,
+                      : (isDark ? AppColors.accent400 : AppColors.accent600),
             ),
           ),
           const SizedBox(width: 12),
@@ -219,18 +221,19 @@ class _PaymentTile extends StatelessWidget {
                   _paymentTitle(payment, context),
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.theme.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '${l10n.paymentsRef}: ${payment.transactionReference ?? l10n.commonNA}',
-                  style: AppTextStyles.caption,
+                  style: AppTextStyles.caption.copyWith(color: context.textSecondary),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   _formatDate(payment.createdAt, context),
                   style: AppTextStyles.caption.copyWith(
-                    color: AppColors.stone400,
+                    color: context.theme.textMuted,
                   ),
                 ),
               ],
@@ -243,20 +246,20 @@ class _PaymentTile extends StatelessWidget {
                 payment.displayAmount,
                 style: AppTextStyles.labelMedium.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primary900,
+                  color: context.theme.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: _statusColor(payment).withValues(alpha: 0.1),
+                  color: _statusColor(payment, isDark).withValues(alpha: isDark ? 0.2 : 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   payment.getStatusLabel(l10n),
                   style: AppTextStyles.labelSmall.copyWith(
-                    color: _statusColor(payment),
+                    color: _statusColor(payment, isDark),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -293,10 +296,10 @@ class _PaymentTile extends StatelessWidget {
     return date.toString();
   }
 
-  Color _statusColor(dynamic payment) {
-    if (payment.isSuccess) return AppColors.emerald600;
+  Color _statusColor(dynamic payment, bool isDark) {
+    if (payment.isSuccess) return isDark ? AppColors.emerald400 : AppColors.emerald600;
     if (payment.isFailed) return AppColors.error;
-    if (payment.isCancelled) return AppColors.stone500;
-    return AppColors.accent600;
+    if (payment.isCancelled) return isDark ? AppColors.stone400 : AppColors.stone500;
+    return isDark ? AppColors.accent400 : AppColors.accent600;
   }
 }

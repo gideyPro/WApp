@@ -101,6 +101,7 @@ class _SubscriptionPlansScreenState
 
     if (!subscriptionEnabled) {
       return Scaffold(
+        backgroundColor: context.scaffoldBg,
         appBar: WaveAppBar(
           title: Text(AppLocalizations.of(context).subscriptionsTitle),
         ),
@@ -125,6 +126,7 @@ class _SubscriptionPlansScreenState
     }
 
     return Scaffold(
+      backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         title: Text(AppLocalizations.of(context).subscriptionsTitle),
       ),
@@ -1166,11 +1168,14 @@ class _PlanCard extends StatelessWidget {
         color: isFeatured
             ? null
             : isCurrentPlan
-                ? AppColors.accent50
+                ? (isDark ? AppColors.accent500.withValues(alpha: 0.15) : AppColors.accent50)
                 : null,
         border: !isFeatured
-            ? const Border(
-                bottom: BorderSide(color: AppColors.primary100, width: 1),
+            ? Border(
+                bottom: BorderSide(
+                  color: isDark ? AppColors.cardNavyLight : AppColors.primary100,
+                  width: 1,
+                ),
               )
             : null,
       ),

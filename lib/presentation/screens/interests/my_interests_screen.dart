@@ -272,7 +272,10 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
         children: [
           const Icon(Icons.broken_image_outlined, size: 48, color: AppColors.error),
           const SizedBox(height: 8),
-          Text('Listing #$listingId is no longer available', style: AppTextStyles.bodyMedium),
+          Text(
+            'Listing #$listingId is no longer available',
+            style: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary),
+          ),
         ],
       ),
     );
