@@ -540,7 +540,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
             ),
           ),
         WaveGlass(
-          borderRadius: 8,
+          borderRadius: 16,
           child: Column(
             children: items.asMap().entries.map((entry) {
               final index = entry.key;
@@ -562,8 +562,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: context.theme.isDark ? AppColors.primary800 : AppColors.primary50,
-              borderRadius: BorderRadius.circular(8),
+              color: context.theme.isDark ? AppColors.cardNavyLight : AppColors.primary50,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               item.icon,
@@ -581,7 +581,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
           subtitle: item.subtitle != null
               ? Text(item.subtitle!, style: AppTextStyles.caption.copyWith(color: context.textSecondary))
               : null,
-          trailing: item.trailing ?? Icon(Icons.chevron_right, color: ThemeColors(context).iconSecondary),
+          trailing: item.trailing ?? Icon(Icons.chevron_right_rounded, color: context.theme.textMuted),
           onTap: item.onTap,
         ),
         if (showDivider) const Divider(height: 1),

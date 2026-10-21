@@ -66,6 +66,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         title: Text(AppLocalizations.of(context).profileHelp),
       ),
@@ -78,20 +79,28 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).helpSearchHint,
-                prefixIcon: const Icon(Icons.search),
+                hintStyle: TextStyle(color: context.textSecondary),
+                prefixIcon: Icon(Icons.search, color: context.textSecondary),
                 suffixIcon: _isSearching
                     ? IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: Icon(Icons.clear, color: context.textSecondary),
                         onPressed: () => _searchController.clear(),
                       )
                     : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: context.theme.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: context.theme.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.accent500, width: 1.5),
                 ),
                 filled: true,
-                fillColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.primary800
-                    : AppColors.stone50,
+                fillColor: context.theme.inputBg,
               ),
               style: AppTextStyles.bodyMedium.copyWith(
                 color: context.theme.textPrimary,
@@ -239,13 +248,15 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.accent50,
+              color: context.theme.isDark
+                  ? AppColors.accent500.withValues(alpha: 0.15)
+                  : AppColors.accent50,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.article_outlined,
               size: 20,
-              color: AppColors.accent600,
+              color: context.theme.isDark ? AppColors.accent400 : AppColors.accent600,
             ),
           ),
           title: Text(
@@ -261,7 +272,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               color: context.theme.textSecondary,
             ),
           ),
-          trailing: const Icon(Icons.chevron_right, color: AppColors.stone400),
+          trailing: Icon(Icons.chevron_right_rounded, color: context.theme.textMuted),
           onTap: () => _showArticleDetail(article),
         );
       },
@@ -274,7 +285,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         gradient: AppColors.gradientAccent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +321,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                     side: const BorderSide(color: Colors.white),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
@@ -326,7 +337,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                     side: const BorderSide(color: Colors.white),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
@@ -351,7 +362,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFFCC0000).withValues(alpha: 0.3),
@@ -442,7 +453,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         maxChildSize: 0.95,
         builder: (_, controller) => Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: context.scaffoldBg,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -469,7 +480,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: Icon(Icons.close, color: context.textSecondary),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],
@@ -486,9 +497,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       article.content,
                       style: AppTextStyles.bodyMedium.copyWith(
                         height: 1.8,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white70
-                            : AppColors.primary700,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],

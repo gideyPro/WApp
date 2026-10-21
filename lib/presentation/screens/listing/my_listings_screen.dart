@@ -12,6 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/job_providers.dart';
@@ -281,6 +282,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
+      backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         title: Text(l10n.profileMyListings),
         actions: [
@@ -302,12 +304,16 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
             controller: _tabController,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            labelColor: AppColors.primary500,
-            unselectedLabelColor: AppColors.stone500,
-            indicatorColor: AppColors.primary500,
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
+            labelColor: AppColors.accent500,
+            unselectedLabelColor: context.textSecondary,
+            indicatorColor: AppColors.accent500,
+            indicatorWeight: 3,
+            labelStyle: AppTextStyles.titleSmall.copyWith(
               fontSize: 14,
+            ),
+            unselectedLabelStyle: AppTextStyles.subtitle.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
             tabs: _tabs.asMap().entries.map((e) {
               return Tab(text: _tabLabels[e.key](l10n));
@@ -358,14 +364,14 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
               Container(
                 width: 80,
                 height: 80,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary50,
+                decoration: BoxDecoration(
+                  color: context.theme.isDark ? AppColors.cardNavyDark : AppColors.primary50,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.home_outlined,
                   size: 40,
-                  color: AppColors.primary400,
+                  color: context.theme.isDark ? AppColors.accent400 : AppColors.primary400,
                 ),
               ),
               const SizedBox(height: 24),
@@ -380,7 +386,7 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
                 const SizedBox(height: 8),
                 Text(
                   l10n.myListingsEmptySubtitle,
-                  style: AppTextStyles.bodyMedium,
+                  style: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
