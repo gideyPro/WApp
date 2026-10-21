@@ -75,7 +75,7 @@ class ListingDetailSections extends ConsumerWidget {
           listing.propertyType == PropertyType.house
               ? l10n.listingHouse.toUpperCase()
               : l10n.listingLand.toUpperCase(),
-          AppColors.primary900,
+          context.isDarkMode ? AppColors.accent400 : AppColors.primary900,
         ),
         if (listing.listingType == ListingType.sale)
           _buildBadge(l10n.listingForSale.toUpperCase(), AppColors.emerald600)
@@ -92,7 +92,7 @@ class ListingDetailSections extends ConsumerWidget {
         if (listing.imageCount != null && listing.imageCount! > 0)
           _buildBadge(
             l10n.listingPhotosCount(listing.imageCount!),
-            AppColors.primary700,
+            context.isDarkMode ? AppColors.accent400 : AppColors.primary700,
           ),
         if (listing.propertyType == PropertyType.house && totalRooms > 0)
           _buildBadge(
@@ -104,7 +104,7 @@ class ListingDetailSections extends ConsumerWidget {
             listing.houseType!.isNotEmpty)
           _buildBadge(
             listing.getLocalizedHouseType(context).toUpperCase(),
-            AppColors.stone700,
+            context.isDarkMode ? AppColors.stone300 : AppColors.stone700,
           ),
       ],
     );
@@ -150,7 +150,7 @@ class ListingDetailSections extends ConsumerWidget {
                 child: Text(
                   location,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.primary600,
+                    color: context.textSecondary,
                   ),
                 ),
               ),
@@ -500,7 +500,7 @@ class ListingDetailSections extends ConsumerWidget {
                         Text(
                           detail['label']!,
                           style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.primary500,
+                            color: context.textSecondary,
                           ),
                         ),
                         Text(
@@ -613,7 +613,7 @@ class ListingDetailSections extends ConsumerWidget {
     return switch (vp.status) {
       VideoProcessingStatus.pending ||
       VideoProcessingStatus.processing =>
-        _buildProcessingIndicator(l10n),
+        _buildProcessingIndicator(context, l10n),
       VideoProcessingStatus.ready => Column(
           children: [
             VideoPlayerWidget(
@@ -657,7 +657,7 @@ class ListingDetailSections extends ConsumerWidget {
     };
   }
 
-  Widget _buildProcessingIndicator(AppLocalizations l10n) {
+  Widget _buildProcessingIndicator(BuildContext context, AppLocalizations l10n) {
     return SizedBox(
       height: 200,
       child: LiquidGlass(
@@ -679,7 +679,7 @@ class ListingDetailSections extends ConsumerWidget {
             Text(
               l10n.listingsVideoOptimizing,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.primary600,
+                color: context.textSecondary,
               ),
             ),
           ],

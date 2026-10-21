@@ -79,7 +79,8 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
     if (state.isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text(l10n.jobJobDetails)),
+        backgroundColor: context.scaffoldBg,
+        appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -87,7 +88,8 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     if (state.errorMessage != null && state.listing == null) {
       if (state.requiresSubscription) {
         return Scaffold(
-          appBar: AppBar(title: Text(l10n.jobJobDetails)),
+          backgroundColor: context.scaffoldBg,
+          appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
           body: WaveMessageScreen(
             type: WaveMessageType.warning,
             title: l10n.subscriptionRequiredTitle,
@@ -98,19 +100,12 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         );
       }
       return Scaffold(
-        appBar: AppBar(title: Text(l10n.jobJobDetails)),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('${l10n.commonError}: ${state.errorMessage}'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.read(jobDetailProvider.notifier).loadListing(widget.listingId),
-                child: Text(l10n.commonRetry),
-              ),
-            ],
-          ),
+        backgroundColor: context.scaffoldBg,
+        appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
+        body: WaveMessageScreen.error(
+          title: l10n.listingsLoadError,
+          subtitle: state.errorMessage,
+          onRetry: () => ref.read(jobDetailProvider.notifier).loadListing(widget.listingId),
         ),
       );
     }
@@ -118,8 +113,12 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     final listing = state.listing;
     if (listing == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(l10n.jobJobDetails)),
-        body: Center(child: Text(l10n.jobNotFound)),
+        backgroundColor: context.scaffoldBg,
+        appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
+        body: WaveMessageScreen.empty(
+          title: l10n.jobNotFound,
+          onAction: () => Navigator.of(context).pop(),
+        ),
       );
     }
 
@@ -127,12 +126,13 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     final isOwner = currentUserId != null && listing.userId == currentUserId;
 
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: context.scaffoldBg,
+      appBar: WaveAppBar(
         title: Text(l10n.jobJobDetails),
         actions: [
           if (isOwner)
             IconButton(
-              icon: const Icon(Icons.edit),
+              icon: Icon(Icons.edit_outlined, color: context.theme.icon),
               onPressed: () => context.push('/jobs/${widget.listingId}/edit', extra: listing),
             ),
         ],

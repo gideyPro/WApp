@@ -16,6 +16,7 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/job_seeker_providers.dart';
 import '../../widgets/common/wave_card.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 class JobSeekerDetailScreen extends ConsumerStatefulWidget {
   final int profileId;
@@ -677,9 +678,8 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
 
     return Scaffold(
       backgroundColor: context.theme.scaffold,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(l10n.seekerProfileDetails),
-        elevation: 0,
       ),
       body: profileAsync.when(
         data: (profile) {
@@ -710,33 +710,10 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
         loading: () => const Center(
           child: CircularProgressIndicator(),
         ),
-        error: (e, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 48, color: AppColors.error),
-                const SizedBox(height: 12),
-                Text(
-                  l10n.commonError,
-                  style: AppTextStyles.title,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '$e',
-                  style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => ref.invalidate(jobSeekerDetailProvider(widget.profileId)),
-                  child: Text(l10n.commonRetry),
-                ),
-              ],
-            ),
-          ),
+        error: (e, _) => WaveMessageScreen.error(
+          isEmbedded: true,
+          subtitle: e.toString(),
+          onRetry: () => ref.invalidate(jobSeekerDetailProvider(widget.profileId)),
         ),
       ),
     );

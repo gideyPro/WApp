@@ -145,7 +145,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     if (isSubscriptionGate) {
       return Scaffold(
         backgroundColor: context.scaffoldBg,
-        appBar: AppBar(title: Text(l10n.listingDetail)),
+        appBar: WaveAppBar(title: Text(l10n.listingDetail)),
       body: WaveMessageScreen(
         type: WaveMessageType.warning,
         title: l10n.subscriptionRequiredTitle,
@@ -158,7 +158,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(title: Text(l10n.listingDetail)),
+      appBar: WaveAppBar(title: Text(l10n.listingDetail)),
       body: WaveMessageScreen.error(
         title: l10n.listingsLoadError,
         subtitle: message,
@@ -171,7 +171,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(title: Text(l10n.listingDetail)),
+      appBar: WaveAppBar(title: Text(l10n.listingDetail)),
       body: WaveMessageScreen.empty(
         title: l10n.listingsNotFound,
         subtitle: l10n.listingsNotFoundSubtitle,
@@ -184,11 +184,11 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(l10n.listingDetail),
         actions: [
           IconButton(
-            icon: const Icon(Icons.share, color: Colors.white),
+            icon: Icon(Icons.share_outlined, color: context.theme.icon),
             onPressed: () => _shareListing(listing),
           ),
         ],
@@ -926,7 +926,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                         Text(
                           spec.key,
                           style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.primary500,
+                            color: context.textSecondary,
                           ),
                         ),
                         Text(
@@ -1011,12 +1011,12 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                       memCacheWidth: 600,
                       memCacheHeight: 450,
                       errorWidget: (_, __, ___) => Container(
-                        color: AppColors.primary100,
+                        color: context.isDarkMode ? AppColors.cardNavyLight : AppColors.stone200,
                         child: const Icon(Icons.image_not_supported),
                       ),
                     )
                   : Container(
-                      color: AppColors.primary100,
+                      color: context.isDarkMode ? AppColors.cardNavyLight : AppColors.stone200,
                       child: const Icon(Icons.image_not_supported),
                     ),
             ),

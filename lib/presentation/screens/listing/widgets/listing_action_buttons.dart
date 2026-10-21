@@ -50,7 +50,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
       useLiquidGlass: true,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       isGlass: !isDark,
-      color: isDark ? AppColors.primary800 : null,
+      color: isDark ? AppColors.cardNavyDark : null,
       padding: AppSpacing.paddingLg,
       child: Column(
         children: [
@@ -65,8 +65,9 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: BorderSide(color: context.theme.divider),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       foregroundColor:
-                          isDark ? AppColors.primary300 : AppColors.primary600,
+                          isDark ? AppColors.accent400 : AppColors.primary600,
                     ),
                   ),
                 ),
@@ -79,6 +80,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.error),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       foregroundColor: AppColors.error,
                     ),
                   ),
@@ -88,7 +90,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
             const SizedBox(height: 12),
             if (listing.isFeaturedActive)
               LiquidGlass(
-                borderRadius: 8,
+                borderRadius: 12,
                 blur: 20,
                 tint: AppColors.success,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -150,7 +152,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
             const SizedBox(height: 12),
             if (listing.isVipActive)
               LiquidGlass(
-                borderRadius: 8,
+                borderRadius: 12,
                 blur: 20,
                 tint: AppColors.vip,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -198,6 +200,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: AppColors.vip),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     foregroundColor: AppColors.vip,
                   ),
                 ),
@@ -222,6 +225,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.accent500),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       foregroundColor: AppColors.accent600,
                     ),
                   ),
@@ -229,7 +233,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
               if (!isOwner && hasInterest)
               Expanded(
                 child: LiquidGlass(
-                  borderRadius: 8,
+                  borderRadius: 12,
                   blur: 20,
                   tint: _getInterestStatusColor(listing.userInterestStatus),
                   padding: const EdgeInsets.symmetric(
