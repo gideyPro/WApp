@@ -203,7 +203,6 @@ class FeaturedListingCard extends ConsumerWidget {
         ),
         if (listing?.ownerKycVerified == true)
           _buildBadge(l10n.listingVerified, AppColors.accent600),
-        _buildBadge(l10n.listingZeroCommission, AppColors.primary700),
         if (listing?.isNew == true)
           _buildBadge(l10n.listingNew, AppColors.cta700),
         if (listing?.isFeatured == true)

@@ -173,7 +173,6 @@ class VehicleFeaturedCard extends ConsumerWidget {
             ),
           ),
         ),
-        _buildBadge(l10n.listingZeroCommission, AppColors.primary700),
         if (listing?.isNew == true)
           _buildBadge(l10n.listingNew, AppColors.cta700),
         if (listing?.isFeatured == true)

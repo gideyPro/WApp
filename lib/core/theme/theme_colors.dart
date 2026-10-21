@@ -27,6 +27,7 @@ class ThemeColors {
   // Border colors
   Color get border =>
       isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.stone300;
+  Color get cardBorder => border;
   Color get divider =>
       isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.stone200;
 
@@ -63,9 +64,12 @@ extension ThemeColorsExtension on BuildContext {
   Color get cardBgElevated => theme.cardBgElevated;
   Color get textPrimary => theme.textPrimary;
   Color get textSecondary => theme.textSecondary;
+  Color get textTertiary => theme.textTertiary;
   Color get textMuted => theme.textMuted;
   Color get iconPrimary => theme.icon;
   Color get divider => theme.divider;
+  Color get border => theme.border;
+  Color get cardBorder => theme.border;
   Color get inputBg => theme.inputBg;
   Color get sheetBg => theme.bottomSheet;
   Color get shimmerBase => theme.shimmerBase;

@@ -89,13 +89,13 @@ class WaveEmptyState extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.primary700 : AppColors.primary50,
+                color: isDark ? AppColors.cardNavyDark : AppColors.primary50,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
                 size: 40,
-                color: isDark ? AppColors.primary300 : AppColors.primary400,
+                color: isDark ? AppColors.accent400 : AppColors.primary400,
               ),
             ),
             const SizedBox(height: 24),
@@ -358,7 +358,7 @@ class WaveMessageScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.primary900 : AppColors.stone50,
+      backgroundColor: isDark ? AppColors.oceanicNavyDark : AppColors.stone50,
       body: Stack(
         children: [
           if (showBackButton)
@@ -386,7 +386,7 @@ class WaveMessageScreen extends StatelessWidget {
     BuildContext context,
     bool isDark,
   ) {
-    final cardBg = isDark ? AppColors.primary800 : Colors.white;
+    final cardBg = isDark ? AppColors.cardNavyDark : Colors.white;
     final shadow = isDark
         ? [
             BoxShadow(
@@ -403,9 +403,9 @@ class WaveMessageScreen extends StatelessWidget {
       padding: EdgeInsets.all(isEmbedded ? 24 : 32),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(isEmbedded ? 4 : 4),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: shadow,
-        border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.05)) : null,
+        border: isDark ? Border.all(color: AppColors.cardNavyLight) : null,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
