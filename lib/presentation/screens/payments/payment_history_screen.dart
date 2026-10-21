@@ -208,7 +208,7 @@ class _PaymentTile extends StatelessWidget {
               color: payment.isSuccess
                   ? (isDark ? AppColors.emerald400 : AppColors.emerald600)
                   : payment.isFailed
-                      ? AppColors.error
+                      ? (isDark ? Colors.red.shade300 : AppColors.error)
                       : (isDark ? AppColors.accent400 : AppColors.accent600),
             ),
           ),
@@ -298,7 +298,7 @@ class _PaymentTile extends StatelessWidget {
 
   Color _statusColor(dynamic payment, bool isDark) {
     if (payment.isSuccess) return isDark ? AppColors.emerald400 : AppColors.emerald600;
-    if (payment.isFailed) return AppColors.error;
+    if (payment.isFailed) return isDark ? Colors.red.shade300 : AppColors.error;
     if (payment.isCancelled) return isDark ? AppColors.stone400 : AppColors.stone500;
     return isDark ? AppColors.accent400 : AppColors.accent600;
   }

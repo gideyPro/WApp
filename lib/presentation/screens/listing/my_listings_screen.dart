@@ -280,6 +280,8 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
     final subState = ref.watch(subscriptionProvider);
     final canFeature = subState.canFeatureListing;
     final l10n = AppLocalizations.of(context);
+    final selectedTabColor =
+        context.theme.isDark ? AppColors.accent400 : AppColors.accent800;
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
@@ -304,9 +306,9 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
             controller: _tabController,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            labelColor: AppColors.accent500,
+            labelColor: selectedTabColor,
             unselectedLabelColor: context.textSecondary,
-            indicatorColor: AppColors.accent500,
+            indicatorColor: selectedTabColor,
             indicatorWeight: 3,
             labelStyle: AppTextStyles.titleSmall.copyWith(
               fontSize: 14,

@@ -5,7 +5,7 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'wave_button.dart';
 
-/// Wavemart AppBar — tight leading defaults for the Montserrat heading font
+/// Wavemart AppBar with a standard 48dp leading tap target.
 class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? title;
   final List<Widget>? actions;
@@ -22,7 +22,7 @@ class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.title,
     this.actions,
     this.leading,
-    this.leadingWidth = 32,
+    this.leadingWidth = 48,
     this.automaticallyImplyLeading = true,
     this.backgroundColor,
     this.elevation = 0,
@@ -40,8 +40,9 @@ class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
             ? IconButton(
                 icon: const Icon(Icons.arrow_back_rounded),
                 onPressed: () => Navigator.of(context).pop(),
+                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                 padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
               )
             : null);
 
@@ -50,7 +51,7 @@ class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.transparent,
       elevation: elevation,
       centerTitle: centerTitle,
-      leadingWidth: effectiveLeading != null ? (leadingWidth ?? 32) : null,
+      leadingWidth: effectiveLeading != null ? (leadingWidth ?? 48) : null,
       leading: effectiveLeading,
       title: title,
       actions: actions,

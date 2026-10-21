@@ -118,7 +118,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
       icon = Icons.check_circle;
     } else if (payment.isFailed) {
       bgColor = isDark ? AppColors.error.withValues(alpha: 0.15) : AppColors.errorLight;
-      iconColor = AppColors.error;
+      iconColor = isDark ? Colors.red.shade300 : AppColors.error;
       textColor = isDark ? Colors.red.shade200 : Colors.red.shade800;
       icon = Icons.cancel_outlined;
     } else if (payment.isCancelled) {

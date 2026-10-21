@@ -146,20 +146,22 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
       return Scaffold(
         backgroundColor: context.scaffoldBg,
         appBar: WaveAppBar(title: Text(l10n.listingDetail)),
-      body: WaveMessageScreen(
-        type: WaveMessageType.warning,
-        title: l10n.subscriptionRequiredTitle,
-        subtitle: l10n.subscriptionRequiredDetailsSubtitle,
-        actionLabel: l10n.listingUpgradeNow,
-        onAction: () => context.pushReplacement('/subscriptions'),
-      ),
-    );
-  }
+        body: WaveMessageScreen(
+          type: WaveMessageType.warning,
+          isEmbedded: true,
+          title: l10n.subscriptionRequiredTitle,
+          subtitle: l10n.subscriptionRequiredDetailsSubtitle,
+          actionLabel: l10n.listingUpgradeNow,
+          onAction: () => context.pushReplacement('/subscriptions'),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(title: Text(l10n.listingDetail)),
       body: WaveMessageScreen.error(
+        isEmbedded: true,
         title: l10n.listingsLoadError,
         subtitle: message,
         onRetry: () => ref.read(carDetailProvider.notifier).loadListing(widget.listingId),
@@ -173,6 +175,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
       backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(title: Text(l10n.listingDetail)),
       body: WaveMessageScreen.empty(
+        isEmbedded: true,
         title: l10n.listingsNotFound,
         subtitle: l10n.listingsNotFoundSubtitle,
         onAction: () => Navigator.of(context).pop(),

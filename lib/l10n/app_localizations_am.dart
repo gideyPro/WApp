@@ -936,9 +936,6 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingVerified => 'ተረጋግጧል';
 
   @override
-  String get listingZeroCommission => '0% ኮሚሽን';
-
-  @override
   String listingUnitM2(Object count) {
     return '$count ካሬ';
   }

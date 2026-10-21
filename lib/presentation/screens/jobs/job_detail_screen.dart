@@ -92,6 +92,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
           appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
           body: WaveMessageScreen(
             type: WaveMessageType.warning,
+            isEmbedded: true,
             title: l10n.subscriptionRequiredTitle,
             subtitle: l10n.subscriptionRequiredDetailsSubtitle,
             actionLabel: l10n.listingUpgradeNow,
@@ -103,6 +104,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         backgroundColor: context.scaffoldBg,
         appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
         body: WaveMessageScreen.error(
+          isEmbedded: true,
           title: l10n.listingsLoadError,
           subtitle: state.errorMessage,
           onRetry: () => ref.read(jobDetailProvider.notifier).loadListing(widget.listingId),
@@ -116,6 +118,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         backgroundColor: context.scaffoldBg,
         appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
         body: WaveMessageScreen.empty(
+          isEmbedded: true,
           title: l10n.jobNotFound,
           onAction: () => Navigator.of(context).pop(),
         ),

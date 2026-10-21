@@ -1858,12 +1858,6 @@ abstract class AppLocalizations {
   /// **'Verified'**
   String get listingVerified;
 
-  /// No description provided for @listingZeroCommission.
-  ///
-  /// In en, this message translates to:
-  /// **'0% Commission'**
-  String get listingZeroCommission;
-
   /// No description provided for @listingUnitM2.
   ///
   /// In en, this message translates to:

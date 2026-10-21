@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -6,11 +5,10 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 
-Future<bool?> showCreateListingSheet(BuildContext context) {
+Future<bool?> showCreateListingSheet(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
-  final completer = Completer<bool?>();
 
-  showModalBottomSheet<void>(
+  final route = await showModalBottomSheet<String>(
     context: context,
     backgroundColor: context.cardBg,
     shape: const RoundedRectangleBorder(
@@ -51,7 +49,8 @@ Future<bool?> showCreateListingSheet(BuildContext context) {
                     color: ctx.textSecondary,
                   ),
                   onPressed: () => Navigator.pop(ctx),
-                  constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                  tooltip: MaterialLocalizations.of(ctx).closeButtonTooltip,
+                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                   padding: EdgeInsets.zero,
                 ),
               ],
@@ -63,10 +62,7 @@ Future<bool?> showCreateListingSheet(BuildContext context) {
               title: l10n.listingSummaryProperty,
               iconBgColor: AppColors.accent500.withValues(alpha: 0.12),
               iconColor: AppColors.accent600,
-              onTap: () async {
-                Navigator.pop(ctx);
-                completer.complete(await context.push<bool>('/listings/create'));
-              },
+              onTap: () => Navigator.pop(ctx, '/listings/create'),
             ),
             const SizedBox(height: 10),
             _buildOptionTile(
@@ -75,10 +71,7 @@ Future<bool?> showCreateListingSheet(BuildContext context) {
               title: l10n.listingCar,
               iconBgColor: AppColors.primary500.withValues(alpha: 0.12),
               iconColor: AppColors.primary600,
-              onTap: () async {
-                Navigator.pop(ctx);
-                completer.complete(await context.push<bool>('/cars/create'));
-              },
+              onTap: () => Navigator.pop(ctx, '/cars/create'),
             ),
             const SizedBox(height: 10),
             _buildOptionTile(
@@ -87,17 +80,16 @@ Future<bool?> showCreateListingSheet(BuildContext context) {
               title: l10n.jobJob,
               iconBgColor: AppColors.cta500.withValues(alpha: 0.12),
               iconColor: AppColors.cta600,
-              onTap: () async {
-                Navigator.pop(ctx);
-                completer.complete(await context.push<bool>('/jobs/create'));
-              },
+              onTap: () => Navigator.pop(ctx, '/jobs/create'),
             ),
           ],
         ),
       ),
     ),
   );
-  return completer.future;
+
+  if (route == null || !context.mounted) return null;
+  return context.push<bool>(route);
 }
 
 Widget _buildOptionTile({
