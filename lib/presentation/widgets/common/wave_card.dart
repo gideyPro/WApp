@@ -23,7 +23,7 @@ class WaveCard extends StatelessWidget {
     super.key,
     required this.child,
     this.onTap,
-    this.borderRadius = AppSpacing.borderRadiusSm,
+    this.borderRadius = AppSpacing.borderRadiusLg,
     this.color,
     this.showBorder = true,
     this.showShadow = true,
@@ -63,7 +63,7 @@ class WaveCard extends StatelessWidget {
           : Colors.white.withValues(alpha: 0.75);
       shadows = AppColors.shadowPremium;
     } else {
-      cardColor = color ?? (isDark ? AppColors.primary800 : Colors.white);
+      cardColor = color ?? (isDark ? AppColors.cardNavyDark : Colors.white);
       shadows = showShadow
           ? (isDark
               ? AppColors.shadowDarkPremium(AppColors.accent900)

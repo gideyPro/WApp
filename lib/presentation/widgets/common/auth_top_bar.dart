@@ -90,9 +90,9 @@ class AuthTopBar extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(4))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
           child: Container(

@@ -106,6 +106,7 @@ class Listing {
 
   final int id;
   final int? userId;
+  final bool ownerKycVerified;
   final int? propertyId;
   final PropertyType propertyType;
   final ListingType listingType;
@@ -236,6 +237,7 @@ class Listing {
   Listing({
     required this.id,
     this.userId,
+    this.ownerKycVerified = false,
     this.propertyId,
     required this.propertyType,
     required this.listingType,
@@ -339,6 +341,7 @@ class Listing {
   Listing copyWith({
     bool? isVip,
     bool? isFeatured,
+    bool? ownerKycVerified,
     DateTime? featuredUntil,
     bool? contactRevealed,
     String? revealedName,
@@ -355,6 +358,7 @@ class Listing {
     return Listing(
       id: id,
       userId: userId,
+      ownerKycVerified: ownerKycVerified ?? this.ownerKycVerified,
       propertyId: propertyId,
       propertyType: propertyType,
       listingType: listingType,
@@ -468,9 +472,14 @@ class Listing {
       }
     }
 
+    final owner = json['user'] is Map
+        ? json['user']
+        : (property is Map ? property['owner'] : null);
+
     return Listing(
       id: TypeUtils.safeInt(json['id'], defaultValue: 0)!,
       userId: TypeUtils.safeInt(json['user_id']),
+      ownerKycVerified: owner is Map && owner['is_kyc_verified'] == true,
       propertyId: TypeUtils.safeInt(json['property_id']),
       propertyType: _parsePropertyType(json['property_type']),
       listingType: _parseListingType(json['listing_type']),

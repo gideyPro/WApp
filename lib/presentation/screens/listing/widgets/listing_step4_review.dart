@@ -97,7 +97,7 @@ class ListingStep4Review extends StatelessWidget {
                   labelText: l10n.agentIdLabel,
                   labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 validator: (v) {
                   if (formData.postedByAgent && (v == null || v.trim().isEmpty)) {

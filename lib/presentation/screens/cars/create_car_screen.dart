@@ -683,7 +683,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
             backgroundColor: context.divider,
             valueColor: AlwaysStoppedAnimation<Color>(context.isDarkMode ? AppColors.accent400 : AppColors.primary950),
             minHeight: 6,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           const SizedBox(height: 8),
           Row(
@@ -1361,7 +1361,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
   Widget _typeChoiceChip({required bool selected, required String label, required IconData icon, required VoidCallback onTap}) {
     return Expanded(
       child: LiquidGlass(
-        borderRadius: 4, blur: selected ? 20 : 16,
+        borderRadius: 16, blur: selected ? 20 : 16,
         variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
         tint: selected ? AppColors.accent500 : null,
         interactive: true, onTap: onTap,
@@ -1440,7 +1440,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                   width: 100,
                   decoration: BoxDecoration(
                     color: context.shimmerHighlight,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1460,7 +1460,7 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
                 width: 140,
                 decoration: BoxDecoration(
                   color: context.shimmerHighlight,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               const SizedBox(height: 8),

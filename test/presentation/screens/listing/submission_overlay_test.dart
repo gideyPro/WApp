@@ -70,7 +70,8 @@ void main() {
     ]);
   });
 
-  testWidgets('non-draft flows show Exit instead of Save Draft', (tester) async {
+  testWidgets('non-draft flows show Exit instead of Save Draft',
+      (tester) async {
     await tester.pumpWidget(
       wrap(
         SubmissionOverlay(
@@ -102,13 +103,13 @@ void main() {
 
     await pump(AppTheme.lightTheme);
     var scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-    var spinner =
-        tester.widget<CircularProgressIndicator>(find.byType(CircularProgressIndicator));
+    var spinner = tester.widget<CircularProgressIndicator>(
+        find.byType(CircularProgressIndicator));
     var statusBar = tester.widget<AnnotatedRegion<SystemUiOverlayStyle>>(
       find.byType(AnnotatedRegion<SystemUiOverlayStyle>),
     );
 
-    expect(scaffold.backgroundColor, AppColors.stone100);
+    expect(scaffold.backgroundColor, AppColors.stone50);
     expect(spinner.valueColor!.value, AppColors.primary900);
     expect(statusBar.value.statusBarIconBrightness, Brightness.dark);
 
@@ -121,7 +122,7 @@ void main() {
       find.byType(AnnotatedRegion<SystemUiOverlayStyle>),
     );
 
-    expect(scaffold.backgroundColor, const Color(0xFF080C14));
+    expect(scaffold.backgroundColor, AppColors.oceanicNavyDark);
     expect(spinner.valueColor!.value, AppColors.accent500);
     expect(statusBar.value.statusBarIconBrightness, Brightness.light);
   });
@@ -150,6 +151,6 @@ void main() {
     await tester.pump();
 
     final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-    expect(scaffold.backgroundColor, const Color(0xFF080C14));
+    expect(scaffold.backgroundColor, AppColors.oceanicNavyDark);
   });
 }

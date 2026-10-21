@@ -33,7 +33,7 @@ class ListingStepIndicator extends StatelessWidget {
             backgroundColor: context.divider,
             valueColor: AlwaysStoppedAnimation<Color>(context.isDarkMode ? AppColors.accent400 : AppColors.primary950),
             minHeight: 6,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           const SizedBox(height: 8),
           // Step circles

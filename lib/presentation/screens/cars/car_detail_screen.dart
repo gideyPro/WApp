@@ -119,15 +119,15 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                     const SizedBox(height: 12),
                     Container(height: 28, width: 140, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(6))),
                     const SizedBox(height: 16),
-                    Container(height: 18, width: double.infinity, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(4))),
+                    Container(height: 18, width: double.infinity, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(12))),
                     const SizedBox(height: 8),
-                    Container(height: 14, width: 180, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(4))),
+                    Container(height: 14, width: 180, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(12))),
                     const SizedBox(height: 24),
-                    Container(height: 16, width: 120, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(4))),
+                    Container(height: 16, width: 120, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(12))),
                     const SizedBox(height: 12),
                     ...List.generate(5, (_) => Padding(
                       padding: const EdgeInsets.only(bottom: 8),
-                      child: Container(height: 14, width: double.infinity, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(4))),
+                      child: Container(height: 14, width: double.infinity, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(12))),
                     )),
                   ],
                 ),
@@ -853,7 +853,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: context.cardBg,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: context.divider.withValues(alpha: 0.5)),
         ),
         child: Row(

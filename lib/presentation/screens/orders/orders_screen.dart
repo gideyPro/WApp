@@ -120,7 +120,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 onTap: () {
                   context.push('/orders/${order.id}');
                 },
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
                 child: Padding(
                   padding: AppSpacing.paddingLg,
                   child: Column(

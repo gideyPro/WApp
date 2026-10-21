@@ -939,6 +939,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingForRent => 'For Rent';
 
   @override
+  String get listingVerified => 'Verified';
+
+  @override
+  String get listingZeroCommission => '0% Commission';
+
+  @override
   String listingUnitM2(Object count) {
     return '$count m²';
   }

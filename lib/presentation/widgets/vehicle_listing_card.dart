@@ -36,8 +36,7 @@ class VehicleListingCard extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<VehicleListingCard> createState() =>
-      _VehicleListingCardState();
+  ConsumerState<VehicleListingCard> createState() => _VehicleListingCardState();
 }
 
 class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
@@ -56,8 +55,8 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
     super.didUpdateWidget(oldWidget);
     final was = oldWidget.listing?.isVip == true ||
         oldWidget.listing?.isFeatured == true;
-    final now = widget.listing?.isVip == true ||
-        widget.listing?.isFeatured == true;
+    final now =
+        widget.listing?.isVip == true || widget.listing?.isFeatured == true;
     if (now != was) {
       _borderController?.dispose();
       _borderController = null;
@@ -98,8 +97,8 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
     }
 
     final card = _buildCardContent(context);
-    final hasBorder = widget.listing?.isVip == true ||
-        widget.listing?.isFeatured == true;
+    final hasBorder =
+        widget.listing?.isVip == true || widget.listing?.isFeatured == true;
 
     if (hasBorder && _borderAnimation != null) {
       return AnimatedBuilder(
@@ -120,7 +119,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: baseColor.withValues(alpha: opacity),
           width: 1.5,
@@ -128,7 +127,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
       ),
       padding: const EdgeInsets.all(1.5),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(4.5),
+        borderRadius: BorderRadius.circular(16.5),
         child: child,
       ),
     );
@@ -138,7 +137,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
     return WaveCard(
       onTap: _handleTap,
       margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 4,
+      borderRadius: 16,
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
       child: Column(
@@ -166,7 +165,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
         ],
       ),
       child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         child: SizedBox(
           width: double.infinity,
           height: 200,
@@ -205,10 +204,11 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
                 top: 10,
                 left: 10,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: isRent ? AppColors.accent600 : AppColors.emerald600,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     isRent ? l10n.listingForRent : l10n.listingForSale,
@@ -262,7 +262,8 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
                   bottom: 8,
                   left: 8,
                   child: WaveGlass(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -317,7 +318,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
           _buildVehicleSpecs(context),
           const SizedBox(height: 6),
           _buildLocation(context),
-    ],
+        ],
       ),
     );
   }
@@ -354,8 +355,12 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
     if (listing != null) {
       final parts = <String>[];
       if (listing.carYear != null) parts.add(listing.carYear.toString());
-      if ((listing.carMake ?? '').isNotEmpty) parts.add(makeLabel(listing.carMake!, l10n));
-      if ((listing.carModel ?? '').isNotEmpty) parts.add(modelLabel(listing.carModel!, l10n));
+      if ((listing.carMake ?? '').isNotEmpty) {
+        parts.add(makeLabel(listing.carMake!, l10n));
+      }
+      if ((listing.carModel ?? '').isNotEmpty) {
+        parts.add(modelLabel(listing.carModel!, l10n));
+      }
       title = parts.isNotEmpty ? parts.join(' ') : listing.carTitle;
     } else {
       title = 'Vehicle';
@@ -386,13 +391,15 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
       final km = listing?.carMileageKm;
       if (km != null) {
         final unit = cat == 'construction_equipment' ? ' hrs' : ' km';
-        chips.add(_specChip(Icons.speed_rounded, '${km.toStringAsFixed(0)}$unit'));
+        chips.add(
+            _specChip(Icons.speed_rounded, '${km.toStringAsFixed(0)}$unit'));
       }
     }
     if (cat == 'car' || cat == 'construction_equipment') {
       final bt = listing?.carBodyType;
       if (bt != null && bt.isNotEmpty) {
-        chips.add(_specChip(Icons.directions_car_rounded, bodyTypeLabel(bt, l10n)));
+        chips.add(
+            _specChip(Icons.directions_car_rounded, bodyTypeLabel(bt, l10n)));
       }
     }
     final cond = listing?.carCondition;
@@ -441,7 +448,8 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
         const SizedBox(width: 4),
         Expanded(
           child: Text(
-            widget.listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
+            widget.listing?.address
+                    ?.getLocalizedAddress(context, cache, isRestricted) ??
                 widget.listing?.address?.region ??
                 l10n.listingUnknownLocation,
             style: AppTextStyles.bodySmall.copyWith(
@@ -462,17 +470,21 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
 
   static IconData _categoryIcon(String category) {
     switch (category) {
-      case 'motorcycle': return Icons.motorcycle_rounded;
-      case 'bicycle': return Icons.pedal_bike_rounded;
-      case 'construction_equipment': return Icons.construction_rounded;
-      default: return Icons.directions_car_rounded;
+      case 'motorcycle':
+        return Icons.motorcycle_rounded;
+      case 'bicycle':
+        return Icons.pedal_bike_rounded;
+      case 'construction_equipment':
+        return Icons.construction_rounded;
+      default:
+        return Icons.directions_car_rounded;
     }
   }
 
   Widget _buildSkeleton(BuildContext context) {
     return WaveCard(
       margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 4,
+      borderRadius: 16,
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
       child: Shimmer.fromColors(
@@ -482,7 +494,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
           children: [
             ClipRRect(
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(4)),
+                  const BorderRadius.vertical(top: Radius.circular(16)),
               child: Container(
                 width: double.infinity,
                 height: 200,
@@ -524,7 +536,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
       height: height,
       decoration: BoxDecoration(
         color: context.shimmerBase,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }

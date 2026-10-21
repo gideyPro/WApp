@@ -96,7 +96,7 @@ class OtpInputFieldState extends State<OtpInputField> {
             ? AppColors.primary900
             : AppColors.primary50.withValues(alpha: 0.5),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: widget.hasError
                 ? AppColors.error.withValues(alpha: 0.4)
@@ -104,13 +104,13 @@ class OtpInputFieldState extends State<OtpInputField> {
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.primary200,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: widget.hasError
                 ? AppColors.error

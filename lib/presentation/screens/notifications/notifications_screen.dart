@@ -145,7 +145,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             child: WaveGlass(
               child: InkWell(
                 onTap: () => _handleNotificationTap(notification),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
                 child: _NotificationTile(notification: notification),
               ),
             ),
@@ -316,7 +316,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   height: 48,
                   decoration: BoxDecoration(
                     color: context.shimmerBase,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -373,7 +373,7 @@ class _NotificationTile extends StatelessWidget {
                   : (context.theme.isDark
                       ? AppColors.accent900
                       : AppColors.accent100),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               notification.icon,

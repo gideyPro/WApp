@@ -37,7 +37,7 @@ class GoogleSignInButton extends ConsumerWidget {
             color: isDark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFFDADCE0),
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16),
         ),

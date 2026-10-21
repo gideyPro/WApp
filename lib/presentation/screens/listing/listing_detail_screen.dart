@@ -183,7 +183,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: context.shimmerHighlight,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -206,7 +206,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                           height: 16,
                           decoration: BoxDecoration(
                             color: context.shimmerHighlight,
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -215,7 +215,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                           width: 200,
                           decoration: BoxDecoration(
                             color: context.shimmerHighlight,
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ],
@@ -227,7 +227,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                       width: 100,
                       decoration: BoxDecoration(
                         color: context.shimmerHighlight,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -247,7 +247,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                       width: 120,
                       decoration: BoxDecoration(
                         color: context.shimmerHighlight,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -261,7 +261,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
                             width: double.maxFinite,
                             decoration: BoxDecoration(
                               color: context.shimmerHighlight,
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         ),

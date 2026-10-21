@@ -290,7 +290,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 width: 120,
                 decoration: BoxDecoration(
                   color: context.shimmerHighlight,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               const SizedBox(height: 8),
@@ -324,7 +324,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                   width: 100,
                   decoration: BoxDecoration(
                     color: context.shimmerHighlight,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -666,7 +666,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     final selected = _type == value;
     return Expanded(
       child: LiquidGlass(
-        borderRadius: 4,
+        borderRadius: 16,
         blur: selected ? 20 : 16,
         variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
         tint: selected ? AppColors.accent500 : null,
@@ -695,7 +695,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     final selected = _listingType == value;
     return Expanded(
       child: LiquidGlass(
-        borderRadius: 4,
+        borderRadius: 16,
         blur: selected ? 20 : 16,
         variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
         tint: selected ? AppColors.accent500 : null,

@@ -148,7 +148,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
                       // Card container — Liquid Glass
                       LiquidGlass(
-                        borderRadius: 4,
+                        borderRadius: 16,
                         padding: const EdgeInsets.all(24),
                         variant: LiquidGlassVariant.prominent,
                         tint: AppColors.accent500,
@@ -309,7 +309,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
             color: isDark
                 ? AppColors.primary900
                 : AppColors.primary50.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
@@ -507,7 +507,7 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   Widget _buildInlineError(String message) {
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 16,
       variant: LiquidGlassVariant.regular,
       tint: AppColors.error,

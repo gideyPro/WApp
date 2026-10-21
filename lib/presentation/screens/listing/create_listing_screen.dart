@@ -474,7 +474,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
                   width: 100,
                   decoration: BoxDecoration(
                     color: context.shimmerHighlight,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -494,7 +494,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
                 width: 140,
                 decoration: BoxDecoration(
                   color: context.shimmerHighlight,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               const SizedBox(height: 8),

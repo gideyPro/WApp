@@ -5,7 +5,7 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'wave_button.dart';
 
-/// Wavemart AppBar — tight leading defaults to fix font-metric spacing with Cinzel
+/// Wavemart AppBar — tight leading defaults for the Montserrat heading font
 class WaveAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? title;
   final List<Widget>? actions;
@@ -493,7 +493,7 @@ class WaveMessageScreen extends StatelessWidget {
           color: isDark
               ? Colors.white.withValues(alpha: 0.08)
               : Colors.black.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(
           Icons.arrow_back_ios_new,

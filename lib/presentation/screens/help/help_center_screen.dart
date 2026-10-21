@@ -86,7 +86,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       )
                     : null,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
                 fillColor: Theme.of(context).brightness == Brightness.dark
@@ -180,7 +180,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         ),
         const SizedBox(height: 12),
         LiquidGlass(
-          borderRadius: 4,
+          borderRadius: 16,
           blur: 20,
           variant: LiquidGlassVariant.regular,
           child: Column(
@@ -274,7 +274,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         gradient: AppColors.gradientAccent,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,7 +351,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFFCC0000).withValues(alpha: 0.3),
@@ -443,7 +443,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         builder: (_, controller) => Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
             children: [

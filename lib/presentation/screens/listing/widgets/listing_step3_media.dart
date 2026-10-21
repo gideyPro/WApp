@@ -428,7 +428,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
               subtitle: _formatFileSize(pickedFile.path),
               icon: Icons.image,
               thumbnail: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
                 child: Image.file(File(pickedFile.path),
                     width: 64, height: 64, fit: BoxFit.cover),
               ),
@@ -461,7 +461,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
         subtitle: l10n.mediaExistingSitePlan,
         icon: Icons.image,
         thumbnail: ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           child: Image.network(widget.formData.existingSitePlanUrl!,
               width: 64, height: 64, fit: BoxFit.cover),
         ),
@@ -514,7 +514,7 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
               subtitle: _formatFileSize(pickedFile.path),
               icon: Icons.image,
               thumbnail: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
                 child: Image.file(File(pickedFile.path),
                     width: 64, height: 64, fit: BoxFit.cover),
               ),

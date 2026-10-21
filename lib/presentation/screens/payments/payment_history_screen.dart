@@ -136,7 +136,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                   width: 48, height: 48,
                   decoration: BoxDecoration(
                     color: context.shimmerBase,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -194,7 +194,7 @@ class _PaymentTile extends StatelessWidget {
                   : payment.isFailed
                       ? AppColors.errorLight
                       : AppColors.accent50,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               payment.isSuccess

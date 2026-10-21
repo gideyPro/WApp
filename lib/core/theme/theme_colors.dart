@@ -8,11 +8,11 @@ class ThemeColors {
   bool get isDark => Theme.of(context).brightness == Brightness.dark;
 
   // Background colors
-  Color get scaffold => isDark ? const Color(0xFF080C14) : AppColors.stone100;
-  Color get surface => isDark ? AppColors.primary800 : Colors.white;
-  Color get card => isDark ? AppColors.primary800 : Colors.white;
-  Color get cardBg => isDark ? AppColors.primary800 : Colors.white;
-  Color get cardBgElevated => isDark ? const Color(0xFF1E293B) : Colors.white;
+  Color get scaffold => isDark ? AppColors.oceanicNavyDark : AppColors.stone50;
+  Color get surface => isDark ? AppColors.cardNavyDark : Colors.white;
+  Color get card => isDark ? AppColors.cardNavyDark : Colors.white;
+  Color get cardBg => isDark ? AppColors.cardNavyDark : Colors.white;
+  Color get cardBgElevated => isDark ? AppColors.cardNavyLight : Colors.white;
 
   // Text colors
   Color get textPrimary => isDark ? Colors.white : AppColors.stone900;
@@ -25,27 +25,31 @@ class ThemeColors {
   Color get iconSecondary => isDark ? AppColors.primary300 : AppColors.stone600;
 
   // Border colors
-  Color get border => isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.stone300;
-  Color get divider => isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.stone200;
+  Color get border =>
+      isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.stone300;
+  Color get divider =>
+      isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.stone200;
 
   // Input colors
-  Color get inputBg => isDark ? AppColors.primary800 : Colors.white;
-  Color get inputBorder => isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.stone300;
+  Color get inputBg => isDark ? AppColors.cardNavyDark : AppColors.stone100;
+  Color get inputBorder =>
+      isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.stone300;
 
   // Button colors
   Color get primary => isDark ? AppColors.accent500 : AppColors.primary900;
   Color get primaryText => isDark ? Colors.black : Colors.white;
 
   // Icon button backgrounds
-  Color get iconBg => isDark ? AppColors.primary700 : AppColors.stone200;
+  Color get iconBg => isDark ? AppColors.cardNavyLight : AppColors.stone200;
 
   // Shimmer colors
-  Color get shimmerBase => isDark ? AppColors.primary700 : AppColors.stone200;
-  Color get shimmerHighlight => isDark ? AppColors.primary800 : AppColors.stone100;
+  Color get shimmerBase => isDark ? AppColors.cardNavyDark : AppColors.stone200;
+  Color get shimmerHighlight =>
+      isDark ? AppColors.cardNavyLight : AppColors.stone100;
 
   // Sheet/Bottom nav
-  Color get bottomSheet => isDark ? AppColors.primary800 : Colors.white;
-  Color get bottomNav => isDark ? AppColors.primary800 : Colors.white;
+  Color get bottomSheet => isDark ? AppColors.cardNavyDark : Colors.white;
+  Color get bottomNav => isDark ? AppColors.cardNavyDark : Colors.white;
 }
 
 // Quick access extension
@@ -68,11 +72,20 @@ extension ThemeColorsExtension on BuildContext {
   Color get shimmerHighlight => theme.shimmerHighlight;
 
   // Glassmorphism helpers
-  Color get glassBg => isDarkMode ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.7);
-  Color get glassBorder => isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.8);
+  Color get glassBg => isDarkMode
+      ? Colors.white.withValues(alpha: 0.05)
+      : Colors.white.withValues(alpha: 0.7);
+  Color get glassBorder => isDarkMode
+      ? Colors.white.withValues(alpha: 0.1)
+      : Colors.white.withValues(alpha: 0.8);
 
   // Liquid Glass helpers (iOS 26 style)
-  Color get liquidGlassBg => isDarkMode ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.75);
-  Color get liquidGlassBorder => isDarkMode ? Colors.white.withValues(alpha: 0.15) : Colors.white.withValues(alpha: 0.85);
-  Color get liquidTint => AppColors.accent500.withValues(alpha: isDarkMode ? 0.12 : 0.06);
+  Color get liquidGlassBg => isDarkMode
+      ? Colors.white.withValues(alpha: 0.08)
+      : Colors.white.withValues(alpha: 0.75);
+  Color get liquidGlassBorder => isDarkMode
+      ? Colors.white.withValues(alpha: 0.15)
+      : Colors.white.withValues(alpha: 0.85);
+  Color get liquidTint =>
+      AppColors.accent500.withValues(alpha: isDarkMode ? 0.12 : 0.06);
 }

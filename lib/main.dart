@@ -277,7 +277,7 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
       builder: (ctx) => PopScope(
         canPop: !isBlocking,
         child: AlertDialog(
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
           title: Row(
             children: [
               Icon(isBlocking ? Icons.warning_amber_rounded : Icons.system_update,
@@ -327,7 +327,7 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 backgroundColor: AppColors.amber,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: Text(l10n.updateNow),
             ),
@@ -402,7 +402,7 @@ class _BlockingUpdateOverlay extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       backgroundColor: AppColors.amber,
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                     child: const Text('Update Now', style: TextStyle(fontWeight: FontWeight.w700)),
                   ),

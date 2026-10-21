@@ -102,7 +102,18 @@ class AppColors {
   static const Color surface = Colors.white;
   static const Color surfaceVariant = Color(0xFFF1F5F9);
 
+  // Dark Theme Oceanic Canvas & Elevated Card Surfaces
+  static const Color oceanicNavyDark = Color(0xFF071D2E);
+  static const Color cardNavyDark = Color(0xFF0E2B43);
+  static const Color cardNavyLight = Color(0xFF143B5C);
+
   // Gradient Definitions
+  static const LinearGradient gradientNavyEmerald = LinearGradient(
+    colors: [primary900, accent500],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   static const LinearGradient gradientPrimary = LinearGradient(
     colors: [primary900, primary700],
     begin: Alignment.centerLeft,

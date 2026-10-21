@@ -933,6 +933,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingForRent => 'ንክራይ';
 
   @override
+  String get listingVerified => 'ተረጋጊፁ';
+
+  @override
+  String get listingZeroCommission => '0% ኮሚሽን';
+
+  @override
   String listingUnitM2(Object count) {
     return '$count ካሬ';
   }

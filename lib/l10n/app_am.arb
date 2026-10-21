@@ -297,6 +297,8 @@
   "listingRent": "ኪራይ",
   "listingForSale": "ለሽያጭ",
   "listingForRent": "ለኪራይ",
+  "listingVerified": "ተረጋግጧል",
+  "listingZeroCommission": "0% ኮሚሽን",
   "listingUnitM2": "{count} ካሬ",
   "listingsTitle": "ንብረቶች",
   "listingsCreate": "አዲስ ንብረት ጨምር",

@@ -196,7 +196,7 @@ class JobSeekerCardSkeleton extends StatelessWidget {
               height: 20,
               decoration: BoxDecoration(
                 color: context.shimmerBase,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ],
@@ -211,7 +211,7 @@ class JobSeekerCardSkeleton extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: context.shimmerBase,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }

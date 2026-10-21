@@ -80,6 +80,6 @@ flutter:
     - assets/icons/
 
   fonts:
-    - family: Cinzel
+    - family: Montserrat
       fonts:
-        - asset: assets/fonts/cinzel/Cinzel-Variable.ttf
+        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf

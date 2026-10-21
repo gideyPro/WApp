@@ -659,7 +659,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             backgroundColor: context.divider,
             valueColor: AlwaysStoppedAnimation<Color>(context.isDarkMode ? AppColors.accent400 : AppColors.primary950),
             minHeight: 6,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           const SizedBox(height: 8),
           Row(
@@ -1320,7 +1320,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   Widget _typeChoiceChip({required bool selected, required String label, required IconData icon, VoidCallback? onTap}) {
     return Expanded(
       child: LiquidGlass(
-        borderRadius: 4, blur: selected ? 20 : 16,
+        borderRadius: 16, blur: selected ? 20 : 16,
         variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
         tint: selected ? AppColors.accent500 : null,
         interactive: onTap != null, onTap: onTap,

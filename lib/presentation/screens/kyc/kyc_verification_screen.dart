@@ -125,7 +125,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       context: context,
       backgroundColor: theme.bottomSheet,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (ctx) => SafeArea(
         child: Column(
@@ -349,7 +349,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     if (_kycStep == _KycStep.otp || _kycStep == _KycStep.documents) return const SizedBox.shrink();
 
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 20,
       variant: LiquidGlassVariant.regular,
       padding: AppSpacing.paddingLg,
@@ -380,7 +380,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
               color: context.theme.isDark
                   ? AppColors.primary900
                   : AppColors.primary50.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: context.theme.isDark
                     ? Colors.white.withValues(alpha: 0.12)
@@ -440,7 +440,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
 
   Widget _buildOtpStep(AppLocalizations l10n) {
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 20,
       variant: LiquidGlassVariant.regular,
       padding: AppSpacing.paddingLg,
@@ -481,7 +481,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 letterSpacing: 8,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
                   color: context.theme.isDark
                       ? Colors.white.withValues(alpha: 0.12)
@@ -489,7 +489,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
                   color: context.theme.isDark
                       ? Colors.white.withValues(alpha: 0.12)
@@ -497,7 +497,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: AppColors.primary600),
               ),
               contentPadding: const EdgeInsets.symmetric(vertical: 16),
@@ -580,7 +580,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       children: [
         // Info banner
         LiquidGlass(
-          borderRadius: 4,
+          borderRadius: 16,
           blur: 20,
           variant: LiquidGlassVariant.regular,
           padding: AppSpacing.paddingLg,
@@ -827,7 +827,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             const SizedBox(height: 12),
             if (state.rejectionReason != null) ...[
               LiquidGlass(
-                borderRadius: 4,
+                borderRadius: 16,
                 blur: 16,
                 variant: LiquidGlassVariant.regular,
                 tint: AppColors.error,
@@ -877,7 +877,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     required AppLocalizations l10n,
   }) {
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 20,
       variant: LiquidGlassVariant.regular,
       interactive: true,
@@ -957,7 +957,7 @@ class _DocumentTypeChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.accent50 : context.cardBg,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.accent400 : AppColors.stone200,
             width: 2,

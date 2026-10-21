@@ -244,7 +244,7 @@ class ListingDetailSections extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: context.cardBg,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.divider.withValues(alpha: 0.5)),
       ),
       child: Row(
@@ -313,7 +313,7 @@ class ListingDetailSections extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: context.cardBg,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.divider.withValues(alpha: 0.5)),
       ),
       child: Row(
@@ -575,7 +575,7 @@ class ListingDetailSections extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         text,
@@ -661,7 +661,7 @@ class ListingDetailSections extends ConsumerWidget {
     return SizedBox(
       height: 200,
       child: LiquidGlass(
-        borderRadius: 4,
+        borderRadius: 16,
         blur: 20,
         child: Center(
         child: Column(

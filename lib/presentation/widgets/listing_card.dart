@@ -52,7 +52,7 @@ class PropertyListingCard extends ConsumerWidget {
     return WaveCard(
       onTap: _handleTap,
       margin: const EdgeInsets.only(bottom: 16),
-      borderRadius: 4,
+      borderRadius: 16,
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
       child: Column(
@@ -95,7 +95,7 @@ class PropertyListingCard extends ConsumerWidget {
 
   Widget _buildSkeleton(BuildContext context) {
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 20,
       margin: const EdgeInsets.only(bottom: 16),
       child: Shimmer.fromColors(
@@ -106,7 +106,7 @@ class PropertyListingCard extends ConsumerWidget {
           children: [
             ClipRRect(
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(4)),
+                  const BorderRadius.vertical(top: Radius.circular(16)),
               child: AspectRatio(
                 aspectRatio: 4 / 3,
                 child: Container(
@@ -159,7 +159,7 @@ class PropertyListingCard extends ConsumerWidget {
       width: width,
       decoration: BoxDecoration(
         color: context.shimmerBase,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }
@@ -170,7 +170,7 @@ class PropertyListingCard extends ConsumerWidget {
       width: width,
       decoration: BoxDecoration(
         color: context.shimmerBase,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }
@@ -183,7 +183,7 @@ class PropertyListingCard extends ConsumerWidget {
         Hero(
           tag: 'listing_image_${listing?.id}',
           child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: AspectRatio(
               aspectRatio: 4 / 3,
               child: CachedNetworkImage(
@@ -423,13 +423,14 @@ class PropertyListingCard extends ConsumerWidget {
   Widget _buildLocation(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cache = ref.watch(addressCacheProvider);
-    
+
     final subState = ref.watch(subscriptionProvider);
     final isRestricted = !subState.canSeeFullAddress;
 
-    final location = listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
-        listing?.address?.region ??
-        l10n.listingUnknownLocation;
+    final location =
+        listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
+            listing?.address?.region ??
+            l10n.listingUnknownLocation;
     return Row(
       children: [
         Icon(
@@ -451,7 +452,8 @@ class PropertyListingCard extends ConsumerWidget {
               ),
               if (isRestricted) ...[
                 const SizedBox(width: 4),
-                Icon(Icons.lock_outline, size: 10, color: context.theme.textMuted),
+                Icon(Icons.lock_outline,
+                    size: 10, color: context.theme.textMuted),
               ],
             ],
           ),
@@ -505,7 +507,9 @@ class PropertyListingCard extends ConsumerWidget {
         ] else ...[
           _buildFeatureChip(
             Icons.square_foot_outlined,
-            l10n.listingUnitM2(listing?.totalSquareMeters != null ? smartDecimal(listing!.totalSquareMeters!) : '0'),
+            l10n.listingUnitM2(listing?.totalSquareMeters != null
+                ? smartDecimal(listing!.totalSquareMeters!)
+                : '0'),
           ),
         ],
         const SizedBox(width: 8),
@@ -535,5 +539,3 @@ class PropertyListingCard extends ConsumerWidget {
     );
   }
 }
-
-

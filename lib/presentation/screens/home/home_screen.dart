@@ -31,19 +31,27 @@ enum JobsSection { listings, seekers }
 extension HomeCategoryX on HomeCategory {
   String label(AppLocalizations l10n) {
     switch (this) {
-      case HomeCategory.all: return l10n.searchFilterAll;
-      case HomeCategory.property: return l10n.listingSummaryProperty;
-      case HomeCategory.vehicles: return l10n.listingCarPlural;
-      case HomeCategory.jobs: return l10n.homeJobs;
+      case HomeCategory.all:
+        return l10n.searchFilterAll;
+      case HomeCategory.property:
+        return l10n.listingSummaryProperty;
+      case HomeCategory.vehicles:
+        return l10n.listingCarPlural;
+      case HomeCategory.jobs:
+        return l10n.homeJobs;
     }
   }
 
   IconData get icon {
     switch (this) {
-      case HomeCategory.all: return Icons.apps_rounded;
-      case HomeCategory.property: return Icons.home_rounded;
-      case HomeCategory.vehicles: return Icons.directions_car_rounded;
-      case HomeCategory.jobs: return Icons.work_outline;
+      case HomeCategory.all:
+        return Icons.apps_rounded;
+      case HomeCategory.property:
+        return Icons.home_rounded;
+      case HomeCategory.vehicles:
+        return Icons.directions_car_rounded;
+      case HomeCategory.jobs:
+        return Icons.work_outline;
     }
   }
 }
@@ -51,15 +59,19 @@ extension HomeCategoryX on HomeCategory {
 extension JobsSectionX on JobsSection {
   String label(AppLocalizations l10n) {
     switch (this) {
-      case JobsSection.listings: return l10n.homeJobs;
-      case JobsSection.seekers: return l10n.homeSeekers;
+      case JobsSection.listings:
+        return l10n.homeJobs;
+      case JobsSection.seekers:
+        return l10n.homeSeekers;
     }
   }
 
   IconData get icon {
     switch (this) {
-      case JobsSection.listings: return Icons.work_outline;
-      case JobsSection.seekers: return Icons.person_search_outlined;
+      case JobsSection.listings:
+        return Icons.work_outline;
+      case JobsSection.seekers:
+        return Icons.person_search_outlined;
     }
   }
 }
@@ -180,12 +192,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (ref.read(subscriptionProvider).canViewVip) {
       futures.add(ref.read(vipListingsProvider.notifier).loadVipListings());
     }
-    if (_selectedCategory == HomeCategory.vehicles || _selectedCategory == HomeCategory.all) {
+    if (_selectedCategory == HomeCategory.vehicles ||
+        _selectedCategory == HomeCategory.all) {
       futures.add(ref.read(carListingsProvider.notifier).loadListings());
     }
-    if (_selectedCategory == HomeCategory.jobs || _selectedCategory == HomeCategory.all) {
-      if (_selectedCategory == HomeCategory.jobs && _jobsSection == JobsSection.seekers) {
-        futures.add(ref.read(jobSeekerProfilesProvider.notifier).loadProfiles());
+    if (_selectedCategory == HomeCategory.jobs ||
+        _selectedCategory == HomeCategory.all) {
+      if (_selectedCategory == HomeCategory.jobs &&
+          _jobsSection == JobsSection.seekers) {
+        futures
+            .add(ref.read(jobSeekerProfilesProvider.notifier).loadProfiles());
       } else {
         futures.add(ref.read(jobListingsProvider.notifier).loadListings());
       }
@@ -239,10 +255,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _reloadJobsFeed() {
-    if (_selectedCategory != HomeCategory.jobs && _selectedCategory != HomeCategory.all) {
+    if (_selectedCategory != HomeCategory.jobs &&
+        _selectedCategory != HomeCategory.all) {
       return;
     }
-    if (_selectedCategory == HomeCategory.jobs && _jobsSection == JobsSection.seekers) {
+    if (_selectedCategory == HomeCategory.jobs &&
+        _jobsSection == JobsSection.seekers) {
       ref.read(jobSeekerProfilesProvider.notifier).loadProfiles();
     } else {
       ref.read(jobListingsProvider.notifier).loadListings();
@@ -254,7 +272,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       context: context,
       backgroundColor: context.sheetBg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       isScrollControlled: true,
       builder: (_) => FilterSheet(
@@ -284,17 +302,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutCubic,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
-                    gradient: isSelected
-                        ? AppColors.gradientAccent
-                        : null,
-                    color: isSelected ? null : context.cardBg.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(20),
+                    gradient: isSelected ? AppColors.gradientAccent : null,
+                    color: isSelected
+                        ? null
+                        : context.cardBg.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: isSelected ? AppColors.shadowSm : null,
                     border: Border.all(
                       color: isSelected
                           ? Colors.transparent
-                          : context.divider.withValues(alpha: 0.5),
+                          : context.divider.withValues(alpha: 0.6),
                     ),
                   ),
                   child: Row(
@@ -303,14 +323,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       Icon(
                         cat.icon,
                         size: 15,
-                        color: isSelected ? Colors.white : context.textSecondary,
+                        color:
+                            isSelected ? Colors.white : context.textSecondary,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         cat.label(l10n),
                         style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color: isSelected ? Colors.white : context.textPrimary,
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color:
+                              isSelected ? Colors.white : context.textPrimary,
                         ),
                       ),
                     ],
@@ -341,10 +364,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutCubic,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     gradient: isSelected ? AppColors.gradientAccent : null,
-                    color: isSelected ? null : context.cardBg.withValues(alpha: 0.6),
+                    color: isSelected
+                        ? null
+                        : context.cardBg.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isSelected
@@ -358,14 +384,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       Icon(
                         section.icon,
                         size: 14,
-                        color: isSelected ? Colors.white : context.textSecondary,
+                        color:
+                            isSelected ? Colors.white : context.textSecondary,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         section.label(l10n),
                         style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color: isSelected ? Colors.white : context.textPrimary,
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color:
+                              isSelected ? Colors.white : context.textPrimary,
                         ),
                       ),
                     ],
@@ -399,7 +428,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             Expanded(
               child: Center(
                 child: TextButton.icon(
-                  onPressed: () => ref.read(carListingsProvider.notifier).loadListings(),
+                  onPressed: () =>
+                      ref.read(carListingsProvider.notifier).loadListings(),
                   icon: const Icon(Icons.refresh_rounded),
                   label: Text(l10n.commonRetryMessage),
                 ),
@@ -418,9 +448,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.directions_car_outlined, size: 64, color: context.textMuted),
+                Icon(Icons.directions_car_outlined,
+                    size: 64, color: context.textMuted),
                 const SizedBox(height: 16),
-                Text(l10n.messageEmptySubtitle, style: AppTextStyles.bodyMedium.copyWith(color: context.textMuted)),
+                Text(l10n.messageEmptySubtitle,
+                    style: AppTextStyles.bodyMedium
+                        .copyWith(color: context.textMuted)),
               ],
             ),
           ),
@@ -469,59 +502,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         final state = ref.read(carListingsProvider);
         if (!state.isLoadingMore && state.hasMore) {
           ref.read(carListingsProvider.notifier).loadListings(
-            page: state.currentPage + 1,
-            filters: _filterValues.toQueryParams(),
-          );
+                page: state.currentPage + 1,
+                filters: _filterValues.toQueryParams(),
+              );
         }
       } else if (_selectedCategory == HomeCategory.jobs) {
         final state = ref.read(jobListingsProvider);
         if (!state.isLoadingMore && state.hasMore) {
           ref.read(jobListingsProvider.notifier).loadListings(
-            page: state.currentPage + 1,
-            filters: _filterValues.toQueryParams(),
-          );
+                page: state.currentPage + 1,
+                filters: _filterValues.toQueryParams(),
+              );
         }
       } else {
         final state = ref.read(searchResultsProvider);
         if (!state.isLoadingMore && state.hasMore) {
           ref.read(searchResultsProvider.notifier).loadListings(
-            page: state.currentPage + 1,
-            filters: _filterValues.toQueryParams(),
-          );
+                page: state.currentPage + 1,
+                filters: _filterValues.toQueryParams(),
+              );
         }
       }
     } else {
-      if (_selectedCategory == HomeCategory.vehicles || _selectedCategory == HomeCategory.all) {
+      if (_selectedCategory == HomeCategory.vehicles ||
+          _selectedCategory == HomeCategory.all) {
         final carState = ref.read(carListingsProvider);
-        if (!carState.isLoading && !carState.isLoadingMore && carState.hasMore) {
+        if (!carState.isLoading &&
+            !carState.isLoadingMore &&
+            carState.hasMore) {
           ref.read(carListingsProvider.notifier).loadListings(
-            page: carState.currentPage + 1,
-          );
+                page: carState.currentPage + 1,
+              );
         }
       }
-      if (_selectedCategory == HomeCategory.jobs || _selectedCategory == HomeCategory.all) {
-        if (_selectedCategory == HomeCategory.jobs && _jobsSection == JobsSection.seekers) {
+      if (_selectedCategory == HomeCategory.jobs ||
+          _selectedCategory == HomeCategory.all) {
+        if (_selectedCategory == HomeCategory.jobs &&
+            _jobsSection == JobsSection.seekers) {
           final seekerState = ref.read(jobSeekerProfilesProvider);
-          if (!seekerState.isLoading && !seekerState.isLoadingMore && seekerState.hasMore) {
+          if (!seekerState.isLoading &&
+              !seekerState.isLoadingMore &&
+              seekerState.hasMore) {
             ref.read(jobSeekerProfilesProvider.notifier).loadProfiles(
-              page: seekerState.currentPage + 1,
-            );
+                  page: seekerState.currentPage + 1,
+                );
           }
         } else {
           final jobState = ref.read(jobListingsProvider);
-          if (!jobState.isLoading && !jobState.isLoadingMore && jobState.hasMore) {
+          if (!jobState.isLoading &&
+              !jobState.isLoadingMore &&
+              jobState.hasMore) {
             ref.read(jobListingsProvider.notifier).loadListings(
-              page: jobState.currentPage + 1,
-            );
+                  page: jobState.currentPage + 1,
+                );
           }
         }
       }
-      if (_selectedCategory == HomeCategory.property || _selectedCategory == HomeCategory.all) {
+      if (_selectedCategory == HomeCategory.property ||
+          _selectedCategory == HomeCategory.all) {
         final propState = ref.read(listingsProvider);
-        if (!propState.isLoading && !propState.isLoadingMore && propState.hasMore) {
+        if (!propState.isLoading &&
+            !propState.isLoadingMore &&
+            propState.hasMore) {
           ref.read(listingsProvider.notifier).loadListings(
-            page: propState.currentPage + 1,
-          );
+                page: propState.currentPage + 1,
+              );
         }
       }
     }
@@ -576,19 +621,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     if (_selectedCategory == HomeCategory.vehicles) {
       ref.read(carListingsProvider.notifier).loadListings(
-        filters: filters.isNotEmpty ? filters : null,
-      );
+            filters: filters.isNotEmpty ? filters : null,
+          );
     } else if (_selectedCategory == HomeCategory.jobs) {
       if (_jobsSection == JobsSection.seekers) {
         setState(() => _jobsSection = JobsSection.listings);
       }
       ref.read(jobListingsProvider.notifier).loadListings(
-        filters: filters.isNotEmpty ? filters : null,
-      );
+            filters: filters.isNotEmpty ? filters : null,
+          );
     } else {
       ref.read(searchResultsProvider.notifier).loadListings(
-        filters: filters.isNotEmpty ? filters : null,
-      );
+            filters: filters.isNotEmpty ? filters : null,
+          );
     }
   }
 
@@ -639,10 +684,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   bool get _hasActiveFilters =>
-      _filterValues.hasAnyFilter ||
-      _searchController.text.isNotEmpty;
-
-
+      _filterValues.hasAnyFilter || _searchController.text.isNotEmpty;
 
   bool _isFavorite(int listingId) {
     final favState = ref.watch(favoritesProvider);
@@ -677,15 +719,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final carState = ref.watch(carListingsProvider);
     final jobState = ref.watch(jobListingsProvider);
     final seekerState = ref.watch(jobSeekerProfilesProvider);
-    final searchState = _selectedCategory == HomeCategory.vehicles && _hasSearched
-        ? carState
-        : _selectedCategory == HomeCategory.jobs && _hasSearched
-            ? jobState
-            : ref.watch(searchResultsProvider);
+    final searchState =
+        _selectedCategory == HomeCategory.vehicles && _hasSearched
+            ? carState
+            : _selectedCategory == HomeCategory.jobs && _hasSearched
+                ? jobState
+                : ref.watch(searchResultsProvider);
     final canBrowseAll = _selectedCategory == HomeCategory.all && !_hasSearched;
+    final mediaQuery = MediaQuery.of(context);
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.primary900 : AppColors.primary50,
+      backgroundColor: isDark ? AppColors.oceanicNavyDark : AppColors.stone50,
       body: Stack(
         children: [
           Positioned(
@@ -718,6 +762,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   pinned: true,
                   delegate: _SearchBarDelegate(
                     user: ref.watch(profileProvider).user,
+                    safeTop: mediaQuery.padding.top,
+                    textScale: mediaQuery.textScaler.scale(1.0),
                     searchController: _searchController,
                     focusNode: _searchFocusNode,
                     hasActiveFilters: _hasActiveFilters,
@@ -726,7 +772,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     onSubmitted: (_) => _performSearch(),
                     onClear: _clearSearch,
                     onFilterTap: _handleFilterTap,
-                    onAvatarTap: () => ref.read(selectedTabProvider.notifier).state = 4,
+                    onAvatarTap: () =>
+                        ref.read(selectedTabProvider.notifier).state = 4,
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -750,14 +797,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 if (_hasSearched)
                   _buildSearchResults(searchState, l10n)
                 else if (canBrowseAll)
-                  ..._buildAllBrowseSlivers(featuredState, vipState, listingsState, carState, jobState, l10n)
+                  ..._buildAllBrowseSlivers(featuredState, vipState,
+                      listingsState, carState, jobState, l10n)
                 else if (_selectedCategory == HomeCategory.vehicles)
-                  ..._buildCarBrowseSlivers(featuredState, vipState, carState, l10n)
+                  ..._buildCarBrowseSlivers(
+                      featuredState, vipState, carState, l10n)
                 else if (_selectedCategory == HomeCategory.jobs &&
                     _jobsSection == JobsSection.seekers)
                   ..._buildJobSeekerBrowseSlivers(seekerState, l10n)
                 else if (_selectedCategory == HomeCategory.jobs)
-                  ..._buildJobBrowseSlivers(featuredState, vipState, jobState, l10n)
+                  ..._buildJobBrowseSlivers(
+                      featuredState, vipState, jobState, l10n)
                 else ...[
                   SliverToBoxAdapter(
                     child: FadeTransition(
@@ -793,20 +843,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            if (_selectedCategory == HomeCategory.property || _selectedCategory == HomeCategory.all) ...[
+            if (_selectedCategory == HomeCategory.property ||
+                _selectedCategory == HomeCategory.all) ...[
               if (v.propertyType != null)
                 _filterChip(
-                  v.propertyType == 'house' ? l10n.listingHouse : l10n.listingLand,
+                  v.propertyType == 'house'
+                      ? l10n.listingHouse
+                      : l10n.listingLand,
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('type');
-                  })),
+                        _filterValues = v.clearField('type');
+                      })),
                 ),
               if (v.isFeatured)
                 _filterChip(
                   l10n.listingsFeatured,
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('is_featured');
-                  })),
+                        _filterValues = v.clearField('is_featured');
+                      })),
                 ),
             ],
             if (_selectedCategory == HomeCategory.property ||
@@ -814,48 +867,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 _selectedCategory == HomeCategory.all) ...[
               if (v.listingType != null)
                 _filterChip(
-                  v.listingType == 'sale' ? l10n.listingForSale : l10n.listingForRent,
+                  v.listingType == 'sale'
+                      ? l10n.listingForSale
+                      : l10n.listingForRent,
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('listing_type');
-                  })),
+                        _filterValues = v.clearField('listing_type');
+                      })),
                 ),
             ],
-            if (_selectedCategory == HomeCategory.vehicles || _selectedCategory == HomeCategory.all) ...[
+            if (_selectedCategory == HomeCategory.vehicles ||
+                _selectedCategory == HomeCategory.all) ...[
               if (v.make != null)
-                _filterChip('${l10n.listingMake}: ${makeLabel(v.make!, l10n)}',
+                _filterChip(
+                  '${l10n.listingMake}: ${makeLabel(v.make!, l10n)}',
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('make');
-                  })),
+                        _filterValues = v.clearField('make');
+                      })),
                 ),
               if (v.model != null)
-                _filterChip('${l10n.listingModel}: ${modelLabel(v.model!, l10n)}',
+                _filterChip(
+                  '${l10n.listingModel}: ${modelLabel(v.model!, l10n)}',
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('model');
-                  })),
+                        _filterValues = v.clearField('model');
+                      })),
                 ),
               if (v.yearMin != null || v.yearMax != null)
-                _filterChip('${l10n.listingYear}: ${v.yearMin ?? ''}-${v.yearMax ?? ''}',
+                _filterChip(
+                  '${l10n.listingYear}: ${v.yearMin ?? ''}-${v.yearMax ?? ''}',
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('year_min');
-                  })),
+                        _filterValues = v.clearField('year_min');
+                      })),
                 ),
               if (v.vehicleCategory != null)
-                _filterChip(vehicleCategoryLabel(v.vehicleCategory!, l10n),
+                _filterChip(
+                  vehicleCategoryLabel(v.vehicleCategory!, l10n),
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('vehicle_category');
-                  })),
+                        _filterValues = v.clearField('vehicle_category');
+                      })),
                 ),
               if (v.bodyType != null)
-                _filterChip(bodyTypeLabel(v.bodyType!, l10n),
+                _filterChip(
+                  bodyTypeLabel(v.bodyType!, l10n),
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('body_type');
-                  })),
+                        _filterValues = v.clearField('body_type');
+                      })),
                 ),
               if (v.mileageMax != null)
-                _filterChip('${l10n.listingMileageMax}: ${v.mileageMax}',
+                _filterChip(
+                  '${l10n.listingMileageMax}: ${v.mileageMax}',
                   () => _removeFilterAndCheck(() => setState(() {
-                    _filterValues = v.clearField('mileage_max');
-                  })),
+                        _filterValues = v.clearField('mileage_max');
+                      })),
                 ),
             ],
             if (v.priceMin != null || v.priceMax != null)
@@ -866,8 +928,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         ? 'ETB ${v.priceMin}+'
                         : 'Up to ETB ${v.priceMax}',
                 () => _removeFilterAndCheck(() => setState(() {
-                  _filterValues = v.clearField('price_min');
-                })),
+                      _filterValues = v.clearField('price_min');
+                    })),
               ),
             if (_searchController.text.isNotEmpty)
               _filterChip(
@@ -881,29 +943,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             GestureDetector(
               onTap: _clearAllFilters,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: context.cardBg,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: AppColors.primary400.withValues(alpha: 0.4),
                   ),
                 ),
                 child: Row(
-                children: [
-                  const Icon(Icons.close,
-                      size: 14, color: AppColors.primary600),
-                  const SizedBox(width: 4),
-                  Text(
-                    l10n.searchClearAll,
-                    style: AppTextStyles.bodySmall.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary600),
-                  ),
-                ],
+                  children: [
+                    const Icon(Icons.close,
+                        size: 14, color: AppColors.primary600),
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.searchClearAll,
+                      style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary600),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
           ],
         ),
       ),
@@ -917,7 +980,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: AppColors.accent500.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: AppColors.accent500.withValues(alpha: 0.3),
           ),
@@ -1169,7 +1232,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       );
     }
 
-    if (subState.isLoading || subState.errorMessage != null) return const SizedBox.shrink();
+    if (subState.isLoading || subState.errorMessage != null) {
+      return const SizedBox.shrink();
+    }
     return _buildVipTeaser();
   }
 
@@ -1178,7 +1243,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ListingsState carState,
     ListingsState jobState,
   ) {
-    if (propState.listings.isEmpty && carState.listings.isEmpty && jobState.listings.isEmpty) {
+    if (propState.listings.isEmpty &&
+        carState.listings.isEmpty &&
+        jobState.listings.isEmpty) {
       if (propState.isLoading || carState.isLoading || jobState.isLoading) {
         return SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
@@ -1215,7 +1282,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             final fav = _isFavorite(listing.id);
             final isVehicle = listing.propertyType == PropertyType.car;
             final isJob = listing.propertyType == PropertyType.job;
-            
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: isJob
@@ -1237,7 +1304,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         ),
             );
           },
-          childCount: allListings.length + (propState.isLoadingMore || carState.isLoadingMore || jobState.isLoadingMore ? 1 : 0),
+          childCount: allListings.length +
+              (propState.isLoadingMore ||
+                      carState.isLoadingMore ||
+                      jobState.isLoadingMore
+                  ? 1
+                  : 0),
         ),
       ),
     );
@@ -1283,8 +1355,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (carFeatured.listings.isNotEmpty) _buildSectionHeader(l10n.listingsFeatured),
-              if (carFeatured.listings.isNotEmpty) _buildFeaturedListings(carFeatured),
+              if (carFeatured.listings.isNotEmpty)
+                _buildSectionHeader(l10n.listingsFeatured),
+              if (carFeatured.listings.isNotEmpty)
+                _buildFeaturedListings(carFeatured),
               if (carVip.listings.isNotEmpty) _buildVipSection(carVip),
               _buildSectionHeader(l10n.listingCarPlural,
                   eyebrow: l10n.homeLatestRecently.toUpperCase()),
@@ -1297,12 +1371,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   ListingsState _filterCarListings(ListingsState state) {
-    final carListings = state.listings.where((l) => l.propertyType == PropertyType.car).toList();
+    final carListings = state.listings
+        .where((l) => l.propertyType == PropertyType.car)
+        .toList();
     return state.copyWith(listings: carListings);
   }
 
-
-  List<Widget> _buildJobSeekerBrowseSlivers(JobSeekerProfilesState state, AppLocalizations l10n) {
+  List<Widget> _buildJobSeekerBrowseSlivers(
+      JobSeekerProfilesState state, AppLocalizations l10n) {
     if (state.isLoading && state.profiles.isEmpty) {
       return [
         SliverPadding(
@@ -1328,9 +1404,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.person_search_outlined, size: 64, color: context.textMuted),
+                  Icon(Icons.person_search_outlined,
+                      size: 64, color: context.textMuted),
                   const SizedBox(height: 16),
-                  Text(l10n.seekersNoProfiles, style: AppTextStyles.bodyMedium.copyWith(color: context.textMuted)),
+                  Text(l10n.seekersNoProfiles,
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(color: context.textMuted)),
                 ],
               ),
             ),
@@ -1362,6 +1441,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       )
     ];
   }
+
   List<Widget> _buildJobBrowseSlivers(
     ListingsState featuredState,
     ListingsState vipState,
@@ -1377,8 +1457,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (jobFeatured.listings.isNotEmpty) _buildSectionHeader(l10n.listingsFeatured),
-              if (jobFeatured.listings.isNotEmpty) _buildFeaturedListings(jobFeatured),
+              if (jobFeatured.listings.isNotEmpty)
+                _buildSectionHeader(l10n.listingsFeatured),
+              if (jobFeatured.listings.isNotEmpty)
+                _buildFeaturedListings(jobFeatured),
               if (jobVip.listings.isNotEmpty) _buildVipSection(jobVip),
               _buildSectionHeader(l10n.homeJobs,
                   eyebrow: l10n.homeLatestRecently.toUpperCase()),
@@ -1391,7 +1473,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   ListingsState _filterJobListings(ListingsState state) {
-    final jobListings = state.listings.where((l) => l.propertyType == PropertyType.job).toList();
+    final jobListings = state.listings
+        .where((l) => l.propertyType == PropertyType.job)
+        .toList();
     return state.copyWith(listings: jobListings);
   }
 
@@ -1415,7 +1499,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             Expanded(
               child: Center(
                 child: TextButton.icon(
-                  onPressed: () => ref.read(jobListingsProvider.notifier).loadListings(),
+                  onPressed: () =>
+                      ref.read(jobListingsProvider.notifier).loadListings(),
                   icon: const Icon(Icons.refresh_rounded),
                   label: Text(l10n.commonRetryMessage),
                 ),
@@ -1436,7 +1521,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               children: [
                 Icon(Icons.work_outline, size: 64, color: context.textMuted),
                 const SizedBox(height: 16),
-                Text(l10n.messageEmptySubtitle, style: AppTextStyles.bodyMedium.copyWith(color: context.textMuted)),
+                Text(l10n.messageEmptySubtitle,
+                    style: AppTextStyles.bodyMedium
+                        .copyWith(color: context.textMuted)),
               ],
             ),
           ),
@@ -1477,7 +1564,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: AppColors.vip.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: AppColors.vip.withValues(alpha: 0.2),
             ),
@@ -1626,6 +1713,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
 class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   final dynamic user;
+  final double safeTop;
+  final double textScale;
   final TextEditingController searchController;
   final FocusNode focusNode;
   final bool hasActiveFilters;
@@ -1638,6 +1727,8 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
 
   _SearchBarDelegate({
     this.user,
+    required this.safeTop,
+    required this.textScale,
     required this.searchController,
     required this.focusNode,
     required this.hasActiveFilters,
@@ -1661,6 +1752,10 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
+    final firstName = user?.firstName?.toString().trim() ?? '';
+    final greeting = user != null && firstName.isNotEmpty
+        ? '${_getGreeting(l10n)}, $firstName'
+        : l10n.authWelcomeBack;
 
     // Calculate dynamic values based on scroll
     // 0.0 at max extent, 1.0 at min extent
@@ -1672,7 +1767,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
 
     return Container(
       decoration: BoxDecoration(
-        color: (isDark ? AppColors.primary900 : AppColors.primary50)
+        color: (isDark ? AppColors.oceanicNavyDark : AppColors.stone50)
             .withValues(alpha: clampedProgress),
         boxShadow: [
           if (clampedProgress > 0.5)
@@ -1687,127 +1782,184 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
         bottom: false,
         child: Column(
           children: [
-            // Personalized Greeting Row (Fades out on scroll)
+            // Brand & Personalized Greeting Row (Fades out on scroll)
             if (greetingOpacity > 0)
               Opacity(
                 opacity: greetingOpacity,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _getGreeting(l10n),
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: context.textSecondary,
-                              letterSpacing: 0.5,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: RichText(
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Wave',
+                                          style: AppTextStyles.title.copyWith(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w900,
+                                            color: isDark
+                                                ? Colors.white
+                                                : AppColors.primary900,
+                                            letterSpacing: -0.5,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Mart',
+                                          style: AppTextStyles.title.copyWith(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w900,
+                                            color: AppColors.accent500,
+                                            letterSpacing: -0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 1.5),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.accent500
+                                        .withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: AppColors.accent500
+                                          .withValues(alpha: 0.3),
+                                      width: 0.8,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'ET',
+                                    style: AppTextStyles.labelSmall.copyWith(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w800,
+                                      color: AppColors.accent500,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Text(
-                            user != null
-                                ? user.firstName
-                                : l10n.authWelcomeBack,
-                            style: AppTextStyles.title.copyWith(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                              color: context.textPrimary,
+                            const SizedBox(height: 2),
+                            Text(
+                              greeting,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: isDark
+                                    ? AppColors.stone400
+                                    : AppColors.stone600,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 12),
                       _buildUserAvatar(context),
                     ],
                   ),
                 ),
               ),
 
-            // Modern Glass Search Bar
+            // Sleek Modern Search Bar
             Padding(
               padding: EdgeInsets.fromLTRB(
                 16,
-                8 + (4 * (1.0 - clampedProgress)),
+                6 + (2 * (1.0 - clampedProgress)),
                 16,
-                12,
+                10,
               ),
               child: Container(
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: (isDark ? AppColors.primary800 : Colors.white)
-                          .withValues(alpha: isDark ? 0.85 : 0.95),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: (isDark ? Colors.white : AppColors.primary900)
-                            .withValues(alpha: 0.08),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16, right: 12),
-                          child: Icon(
-                            Icons.search_rounded,
-                            color: AppColors.accent500,
-                            size: 24,
-                          ),
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: searchController,
-                            focusNode: focusNode,
-                            onChanged: onSearchChanged,
-                            onSubmitted: onSubmitted,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: context.textPrimary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: l10n.searchPlaceholder,
-                              hintStyle: AppTextStyles.bodyMedium.copyWith(
-                                color: context.textSecondary,
-                              ),
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 12),
-                            ),
-                          ),
-                        ),
-                        if (searchQuery.isNotEmpty)
-                          IconButton(
-                            onPressed: onClear,
-                            icon: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: context.theme.divider,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.close_rounded,
-                                color: context.theme.iconSecondary,
-                                size: 14,
-                              ),
-                            ),
-                          ),
-                        VerticalDivider(
-                          color: context.divider,
-                          indent: 16,
-                          endIndent: 16,
-                          width: 1,
-                        ),
-                        _buildFilterButton(),
-                      ],
-                    ),
+                height: 48,
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.cardNavyDark : Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : AppColors.stone200,
+                    width: 0.9,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.3)
+                          : AppColors.primary900.withValues(alpha: 0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 14, right: 10),
+                      child: Icon(
+                        Icons.search_rounded,
+                        color: AppColors.accent500,
+                        size: 22,
+                      ),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: searchController,
+                        focusNode: focusNode,
+                        onChanged: onSearchChanged,
+                        onSubmitted: onSubmitted,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: isDark ? Colors.white : AppColors.stone900,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: l10n.searchPlaceholder,
+                          hintStyle: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.stone400,
+                            fontSize: 14,
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          isDense: true,
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                      ),
+                    ),
+                    if (searchQuery.isNotEmpty)
+                      IconButton(
+                        onPressed: onClear,
+                        icon: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: context.theme.divider,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.close_rounded,
+                            color: context.theme.iconSecondary,
+                            size: 14,
+                          ),
+                        ),
+                      ),
+                    _buildFilterButton(context),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -1816,103 +1968,149 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget _buildUserAvatar(BuildContext context) {
-    final initials = user?.initials.isNotEmpty == true
-        ? user!.initials
-        : '?';
+    final initials = user?.initials.isNotEmpty == true ? user!.initials : '?';
     final avatarUrl = user?.googleAvatar as String?;
-    return GestureDetector(
-      onTap: onAvatarTap,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: avatarUrl != null
-              ? DecorationImage(
-                  image: ResizeImage(
-                    CachedNetworkImageProvider(avatarUrl),
-                    width: 88,
-                    height: 88,
-                  ),
-                  fit: BoxFit.cover,
-                )
-              : null,
-          gradient: avatarUrl != null ? null : AppColors.gradientHero,
-          boxShadow: AppColors.shadowMd,
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.2),
-            width: 2,
-          ),
-        ),
-        child: avatarUrl != null
-            ? null
-            : Center(
-                child: Text(
-                  initials,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.navSettings,
+      child: Tooltip(
+        message: l10n.navSettings,
+        child: GestureDetector(
+          onTap: onAvatarTap,
+          child: Stack(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: avatarUrl != null
+                      ? DecorationImage(
+                          image: ResizeImage(
+                            CachedNetworkImageProvider(avatarUrl),
+                            width: 84,
+                            height: 84,
+                          ),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                  gradient:
+                      avatarUrl != null ? null : AppColors.gradientNavyEmerald,
+                  boxShadow: AppColors.shadowSm,
+                  border: Border.all(
+                    color: AppColors.accent500,
+                    width: 2.0,
                   ),
                 ),
+                child: avatarUrl != null
+                    ? null
+                    : Center(
+                        child: Text(
+                          initials,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
               ),
-      ),
-    );
-  }
-
-  Widget _buildFilterButton() {
-    return GestureDetector(
-      onTap: onFilterTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: hasActiveFilters
-              ? AppColors.accent500.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(4),
-            bottomRight: Radius.circular(4),
-          ),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Icon(
-              Icons.tune_rounded,
-              size: 24,
-              color:
-                  hasActiveFilters ? AppColors.accent500 : AppColors.primary400,
-            ),
-            if (hasActiveFilters)
               Positioned(
-                top: 14,
+                bottom: 0,
                 right: 0,
                 child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
                     color: AppColors.accent500,
                     shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isDark ? AppColors.oceanicNavyDark : Colors.white,
+                      width: 1.8,
+                    ),
                   ),
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  @override
-  double get maxExtent => 170;
+  Widget _buildFilterButton(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.searchFilters,
+      child: Tooltip(
+        message: l10n.searchFilters,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onFilterTap,
+          child: Container(
+            height: 48,
+            constraints: const BoxConstraints(minWidth: 48),
+            margin: const EdgeInsets.only(left: 4, right: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: hasActiveFilters
+                  ? AppColors.accent500
+                  : (isDark ? AppColors.cardNavyLight : AppColors.stone100),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(
+                    Icons.tune_rounded,
+                    size: 19,
+                    color: hasActiveFilters
+                        ? Colors.white
+                        : (isDark ? AppColors.accent400 : AppColors.primary900),
+                  ),
+                  if (hasActiveFilters)
+                    Positioned(
+                      top: -2,
+                      right: -2,
+                      child: Container(
+                        width: 6,
+                        height: 6,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  double get _effectiveTextScale => textScale.clamp(1.0, 3.0).toDouble();
 
   @override
-  double get minExtent => 90;
+  double get maxExtent => safeTop + 136 + ((_effectiveTextScale - 1.0) * 50.0);
+
+  @override
+  double get minExtent => safeTop + 66;
 
   @override
   bool shouldRebuild(_SearchBarDelegate oldDelegate) {
     return oldDelegate.hasActiveFilters != hasActiveFilters ||
         oldDelegate.searchQuery != searchQuery ||
-        oldDelegate.user != user;
+        oldDelegate.user != user ||
+        oldDelegate.safeTop != safeTop ||
+        oldDelegate.textScale != textScale;
   }
 }

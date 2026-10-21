@@ -394,7 +394,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: BoxDecoration(
         color: isDark ? AppColors.zinc900 : Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -423,7 +423,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
                   color: isDark ? AppColors.primary800 : AppColors.primary50.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(
                   controller: _searchController,

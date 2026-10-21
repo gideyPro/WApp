@@ -373,7 +373,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   Widget _buildSuggestionTile(
       BuildContext context, Lead suggestion, AppLocalizations l10n) {
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 20,
       variant: LiquidGlassVariant.regular,
       margin: const EdgeInsets.only(bottom: 12),

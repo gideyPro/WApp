@@ -81,12 +81,14 @@ class JobListingCard extends ConsumerWidget {
     final isRestricted = !subState.canSeeFullAddress;
 
     final category = job.jobCategory;
-    final categoryLabel =
-        (category == null || category.isEmpty) ? null : jobCategoryLabel(category, l10n);
+    final categoryLabel = (category == null || category.isEmpty)
+        ? null
+        : jobCategoryLabel(category, l10n);
     final positions = job.jobPositionsCount;
-    final location = job.address?.getLocalizedAddress(context, cache, isRestricted) ??
-        job.address?.region ??
-        '';
+    final location =
+        job.address?.getLocalizedAddress(context, cache, isRestricted) ??
+            job.address?.region ??
+            '';
 
     return WaveCard(
       onTap: () {
@@ -98,7 +100,7 @@ class JobListingCard extends ConsumerWidget {
         }
       },
       margin: EdgeInsets.zero,
-      borderRadius: AppSpacing.borderRadiusSm,
+      borderRadius: AppSpacing.borderRadiusLg,
       padding: const EdgeInsets.all(12),
       useLiquidGlass: false,
       child: Column(
@@ -113,7 +115,7 @@ class JobListingCard extends ConsumerWidget {
                 decoration: BoxDecoration(
                   gradient: AppColors.gradientAccent,
                   borderRadius:
-                      BorderRadius.circular(AppSpacing.borderRadiusSm),
+                      BorderRadius.circular(AppSpacing.borderRadiusMd),
                 ),
                 child: const Icon(
                   Icons.work_rounded,

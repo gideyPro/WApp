@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
-/// Wavemart Text Styles — Cinzel for headings, system font for body.
+/// Wavemart Text Styles — Montserrat for modern marketplace headings, system font for body.
 class AppTextStyles {
   AppTextStyles._();
 
-  static const String _headingFont = 'Cinzel';
+  static const String _headingFont = 'Montserrat';
+  static const List<String> _headingFallback = ['Noto Sans Ethiopic'];
 
   static TextStyle get headline1 => const TextStyle(
         fontFamily: _headingFont,
+        fontFamilyFallback: _headingFallback,
         fontSize: 30,
         fontWeight: FontWeight.w700,
         height: 1.15,
@@ -17,6 +19,7 @@ class AppTextStyles {
 
   static TextStyle get headline2 => const TextStyle(
         fontFamily: _headingFont,
+        fontFamilyFallback: _headingFallback,
         fontSize: 26,
         fontWeight: FontWeight.w700,
         height: 1.2,
@@ -25,6 +28,7 @@ class AppTextStyles {
 
   static TextStyle get headline3 => const TextStyle(
         fontFamily: _headingFont,
+        fontFamilyFallback: _headingFallback,
         fontSize: 22,
         fontWeight: FontWeight.w600,
         height: 1.25,
@@ -32,6 +36,7 @@ class AppTextStyles {
 
   static TextStyle get headline4 => const TextStyle(
         fontFamily: _headingFont,
+        fontFamilyFallback: _headingFallback,
         fontSize: 18,
         fontWeight: FontWeight.w600,
         height: 1.3,
@@ -39,6 +44,7 @@ class AppTextStyles {
 
   static TextStyle get headline5 => const TextStyle(
         fontFamily: _headingFont,
+        fontFamilyFallback: _headingFallback,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.3,
@@ -46,6 +52,7 @@ class AppTextStyles {
 
   static TextStyle get title => const TextStyle(
         fontFamily: _headingFont,
+        fontFamilyFallback: _headingFallback,
         fontSize: 18,
         fontWeight: FontWeight.w700,
         height: 1.3,
@@ -54,6 +61,7 @@ class AppTextStyles {
 
   static TextStyle get titleSmall => const TextStyle(
         fontFamily: _headingFont,
+        fontFamilyFallback: _headingFallback,
         fontSize: 15,
         fontWeight: FontWeight.w700,
         height: 1.3,
@@ -177,6 +185,7 @@ class AppTextStyles {
   // Badge/Pill Text
   static TextStyle get badge => const TextStyle(
         fontFamily: _headingFont,
+        fontFamilyFallback: _headingFallback,
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 0.8,

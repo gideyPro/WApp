@@ -297,7 +297,7 @@ class _SubscriptionPlansScreenState
       padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         gradient: AppColors.gradientAccent,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -504,7 +504,7 @@ class _SubscriptionPlansScreenState
                     side: const BorderSide(
                         color: Colors.white, width: 1.5),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: Text(
@@ -526,7 +526,7 @@ class _SubscriptionPlansScreenState
                       backgroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: Text(
@@ -592,7 +592,7 @@ class _SubscriptionPlansScreenState
         ),
         const SizedBox(height: 6),
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           child: LinearProgressIndicator(
             value: clampedRatio,
             minHeight: 6,
@@ -611,7 +611,7 @@ class _SubscriptionPlansScreenState
         gradient: const LinearGradient(
           colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
         ),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFFFFD700).withValues(alpha: 0.4),
@@ -644,7 +644,7 @@ class _SubscriptionPlansScreenState
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -678,7 +678,7 @@ class _SubscriptionPlansScreenState
       padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         color: AppColors.stone100,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.stone300),
       ),
       child: Column(
@@ -1290,7 +1290,7 @@ class _PlanCard extends StatelessWidget {
               color: plan.priceInfo!.isUpgrade
                   ? Colors.white.withValues(alpha: 0.25)
                   : AppColors.success,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               _discountLabel(l10n),

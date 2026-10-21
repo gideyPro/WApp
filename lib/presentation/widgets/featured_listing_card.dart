@@ -46,7 +46,7 @@ class FeaturedListingCard extends ConsumerWidget {
     return WaveCard(
       onTap: _handleTap,
       margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 4,
+      borderRadius: 16,
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
       child: Row(
@@ -91,7 +91,7 @@ class FeaturedListingCard extends ConsumerWidget {
 
   Widget _buildImageSection(BuildContext context) {
     return ClipRRect(
-      borderRadius: const BorderRadius.horizontal(left: Radius.circular(4)),
+      borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
       child: SizedBox(
         width: 130,
         height: double.infinity,
@@ -166,23 +166,25 @@ class FeaturedListingCard extends ConsumerWidget {
 
   Widget _buildBadgesRow(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Row(
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
       children: [
         // Property Type Badge
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
           decoration: BoxDecoration(
-            color: AppColors.primary600,
-            borderRadius: BorderRadius.circular(4),
+            color: AppColors.primary900,
+            borderRadius: BorderRadius.circular(6),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 listing?.propertyType == PropertyType.house
-                    ? Icons.home
-                    : Icons.landscape,
-                size: 12,
+                    ? Icons.home_rounded
+                    : Icons.landscape_rounded,
+                size: 11,
                 color: Colors.white,
               ),
               const SizedBox(width: 3),
@@ -193,24 +195,20 @@ class FeaturedListingCard extends ConsumerWidget {
                 style: AppTextStyles.labelSmall.copyWith(
                   color: Colors.white,
                   fontSize: 9,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(width: 6),
+        if (listing?.ownerKycVerified == true)
+          _buildBadge(l10n.listingVerified, AppColors.accent600),
+        _buildBadge(l10n.listingZeroCommission, AppColors.primary700),
         if (listing?.isNew == true)
-          _buildBadge(l10n.listingNew, AppColors.primary600),
+          _buildBadge(l10n.listingNew, AppColors.cta700),
         if (listing?.isFeatured == true)
-          Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: _buildBadge(l10n.listingFeatured, AppColors.accent600),
-          ),
-        if (listing?.isVip == true)
-          Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: _buildBadge(l10n.vipBadge, AppColors.vip),
-          ),
+          _buildBadge(l10n.listingFeatured, AppColors.accent600),
+        if (listing?.isVip == true) _buildBadge(l10n.vipBadge, AppColors.vip),
       ],
     );
   }
@@ -220,7 +218,7 @@ class FeaturedListingCard extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         text,
@@ -264,7 +262,7 @@ class FeaturedListingCard extends ConsumerWidget {
   Widget _buildLocation(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cache = ref.watch(addressCacheProvider);
-    
+
     final subState = ref.watch(subscriptionProvider);
     final isRestricted = !subState.canSeeFullAddress;
 
@@ -281,7 +279,8 @@ class FeaturedListingCard extends ConsumerWidget {
             children: [
               Flexible(
                 child: Text(
-                  listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
+                  listing?.address
+                          ?.getLocalizedAddress(context, cache, isRestricted) ??
                       listing?.address?.region ??
                       l10n.listingUnknownLocation,
                   style: AppTextStyles.bodySmall.copyWith(
@@ -315,7 +314,9 @@ class FeaturedListingCard extends ConsumerWidget {
         ] else ...[
           _buildFeatureChip(
             Icons.square_foot_outlined,
-            l10n.listingUnitM2(listing?.totalSquareMeters != null ? smartDecimal(listing!.totalSquareMeters!) : '0'),
+            l10n.listingUnitM2(listing?.totalSquareMeters != null
+                ? smartDecimal(listing!.totalSquareMeters!)
+                : '0'),
           ),
         ],
         const SizedBox(width: 4),
@@ -349,7 +350,7 @@ class FeaturedListingCard extends ConsumerWidget {
   Widget _buildSkeleton(BuildContext context) {
     return WaveCard(
       margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 4,
+      borderRadius: 16,
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
       child: Shimmer.fromColors(
@@ -362,7 +363,7 @@ class FeaturedListingCard extends ConsumerWidget {
               flex: 2,
               child: ClipRRect(
                 borderRadius:
-                    const BorderRadius.horizontal(left: Radius.circular(4)),
+                    const BorderRadius.horizontal(left: Radius.circular(16)),
                 child: SizedBox(
                   width: 130,
                   height: double.infinity,
@@ -410,13 +411,14 @@ class FeaturedListingCard extends ConsumerWidget {
     );
   }
 
-  Widget _featuredSkeletonBlock(BuildContext context, double width, double height) {
+  Widget _featuredSkeletonBlock(
+      BuildContext context, double width, double height) {
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
         color: context.shimmerBase,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }

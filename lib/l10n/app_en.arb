@@ -297,6 +297,8 @@
   "listingRent": "Rent",
   "listingForSale": "For Sale",
   "listingForRent": "For Rent",
+  "listingVerified": "Verified",
+  "listingZeroCommission": "0% Commission",
   "listingUnitM2": "{count} m²",
   "listingsTitle": "Listings",
   "listingsCreate": "Create new Listing",

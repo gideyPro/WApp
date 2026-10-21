@@ -81,7 +81,7 @@ class _ListingGalleryState extends State<ListingGallery> {
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.black54,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       '${_currentImageIndex + 1}/${images.length}',

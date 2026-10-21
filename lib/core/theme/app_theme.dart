@@ -36,8 +36,8 @@ class AppTheme {
 
       // Text Theme
       // NOTE: titleMedium MUST be a body font style — Flutter's DropdownButton
-      // uses titleMedium for the selected-item label. Using Cinzel here was
-      // causing all dropdowns to render in the decorative heading font.
+      // uses titleMedium for the selected-item label. Keep this as a body font
+      // so dropdowns do not inherit the decorative heading font.
       textTheme: TextTheme(
         displayLarge: AppTextStyles.headline1,
         displayMedium: AppTextStyles.headline2,
@@ -75,8 +75,8 @@ class AppTheme {
         color: Colors.white,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: AppColors.stone200, width: 1.0),
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.stone200, width: 0.8),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -89,11 +89,11 @@ class AppTheme {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           textStyle: AppTextStyles.buttonMedium.copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.0,
+            letterSpacing: 0.5,
           ),
         ),
       ),
@@ -105,7 +105,7 @@ class AppTheme {
           side: const BorderSide(color: AppColors.primary900),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           textStyle: AppTextStyles.buttonMedium.copyWith(
             fontWeight: FontWeight.w600,
@@ -118,17 +118,18 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.stone100,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.stone300),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.stone300),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.accent500, width: 1.5),
         ),
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone400),
@@ -149,9 +150,11 @@ class AppTheme {
         indicatorColor: AppColors.accent50,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppTextStyles.navActive.copyWith(fontWeight: FontWeight.w900);
+            return AppTextStyles.navActive
+                .copyWith(fontWeight: FontWeight.w900);
           }
-          return AppTextStyles.navInactive.copyWith(fontWeight: FontWeight.w700);
+          return AppTextStyles.navInactive
+              .copyWith(fontWeight: FontWeight.w700);
         }),
       ),
 
@@ -165,7 +168,7 @@ class AppTheme {
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
       ),
 
@@ -176,7 +179,7 @@ class AppTheme {
         ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
 
@@ -189,7 +192,7 @@ class AppTheme {
           color: AppColors.stone600,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(16),
         ),
       ),
 
@@ -210,8 +213,10 @@ class AppTheme {
       // style here shadows the Material 3 defaults and leaves ListTile text
       // with color: null (renders white in light mode → invisible on cards).
       listTileTheme: ListTileThemeData(
-        titleTextStyle: AppTextStyles.bodyLarge.copyWith(color: AppColors.stone900),
-        subtitleTextStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.stone600),
+        titleTextStyle:
+            AppTextStyles.bodyLarge.copyWith(color: AppColors.stone900),
+        subtitleTextStyle:
+            AppTextStyles.bodySmall.copyWith(color: AppColors.stone600),
       ),
     );
   }
@@ -221,21 +226,21 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
 
-      // Color Scheme - Dark Navy + Emerald Accent
+      // Color Scheme - Dark Oceanic Navy + Emerald Accent
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.accent400,
+        primary: AppColors.accent500,
         onPrimary: Colors.black,
-        primaryContainer: AppColors.accent900,
+        primaryContainer: AppColors.cardNavyLight,
         onPrimaryContainer: AppColors.accent200,
         secondary: AppColors.primary300,
         onSecondary: Colors.black,
-        secondaryContainer: AppColors.primary800,
+        secondaryContainer: AppColors.cardNavyDark,
         onSecondaryContainer: AppColors.primary200,
         tertiary: AppColors.cta400,
         onTertiary: Colors.black,
         error: AppColors.error,
         onError: Colors.white,
-        surface: AppColors.primary800,
+        surface: AppColors.cardNavyDark,
         onSurface: Colors.white,
         onSurfaceVariant: AppColors.primary300,
         outline: AppColors.primary600,
@@ -261,9 +266,9 @@ class AppTheme {
         labelSmall: AppTextStyles.labelSmall,
       ),
 
-      // Scaffold
-      scaffoldBackgroundColor: const Color(0xFF080C14),
-      canvasColor: AppColors.primary800,
+      // Scaffold - Oceanic Navy Canvas
+      scaffoldBackgroundColor: AppColors.oceanicNavyDark,
+      canvasColor: AppColors.cardNavyDark,
 
       // AppBar Theme
       appBarTheme: AppBarTheme(
@@ -278,14 +283,14 @@ class AppTheme {
         ),
       ),
 
-      // Card Theme - Dark Elevated Surface
+      // Card Theme - Oceanic Dark Elevated Surface
       cardTheme: CardThemeData(
         elevation: 0,
-        color: AppColors.primary800,
+        color: AppColors.cardNavyDark,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -297,11 +302,11 @@ class AppTheme {
           foregroundColor: Colors.black,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           textStyle: AppTextStyles.buttonMedium.copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.0,
+            letterSpacing: 0.5,
           ),
         ),
       ),
@@ -313,7 +318,7 @@ class AppTheme {
           side: const BorderSide(color: AppColors.accent400),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           textStyle: AppTextStyles.buttonMedium.copyWith(
             fontWeight: FontWeight.w600,
@@ -328,9 +333,10 @@ class AppTheme {
           backgroundColor: AppColors.accent500,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
+          textStyle:
+              AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
 
@@ -338,25 +344,27 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.accent400,
-          textStyle: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
+          textStyle:
+              AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
 
       // Input Decoration Theme - Dark Mode
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.primary800,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        fillColor: AppColors.cardNavyDark,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.accent400, width: 1.5),
         ),
         hintStyle: AppTextStyles.bodyMedium.copyWith(
@@ -375,7 +383,7 @@ class AppTheme {
 
       // Navigation Bar
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: AppColors.primary800,
+        backgroundColor: AppColors.cardNavyDark,
         elevation: 0,
         indicatorColor: AppColors.accent800.withValues(alpha: 0.5),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
@@ -400,10 +408,10 @@ class AppTheme {
 
       // Bottom Sheet Theme
       bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: AppColors.primary800,
+        backgroundColor: AppColors.cardNavyDark,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
       ),
 
@@ -414,13 +422,13 @@ class AppTheme {
         ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
 
       // Dialog Theme
       dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.primary800,
+        backgroundColor: AppColors.cardNavyDark,
         surfaceTintColor: Colors.transparent,
         titleTextStyle: AppTextStyles.title.copyWith(
           color: Colors.white,
@@ -429,7 +437,7 @@ class AppTheme {
           color: AppColors.primary200,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(16),
         ),
       ),
 
@@ -450,7 +458,8 @@ class AppTheme {
       // ListTile Theme — explicit colors (see light theme note).
       listTileTheme: ListTileThemeData(
         titleTextStyle: AppTextStyles.bodyLarge.copyWith(color: Colors.white),
-        subtitleTextStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.primary300),
+        subtitleTextStyle:
+            AppTextStyles.bodySmall.copyWith(color: AppColors.primary300),
       ),
     );
   }

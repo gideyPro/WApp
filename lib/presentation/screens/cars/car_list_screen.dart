@@ -75,7 +75,7 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
       context: context,
       backgroundColor: context.sheetBg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       isScrollControlled: true,
       builder: (_) => FilterSheet(
@@ -285,7 +285,7 @@ return VehicleListingCard(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.accent500.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.accent500.withValues(alpha: 0.2)),
       ),
       child: Row(

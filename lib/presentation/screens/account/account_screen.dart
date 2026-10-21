@@ -594,7 +594,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     showDialog(
       context: context,
       builder: (dialogContext) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -651,7 +651,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         backgroundColor: AppColors.error,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: Text(l10n.authLogout),
@@ -671,7 +671,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     showDialog(
       context: context,
       builder: (dialogContext) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -703,7 +703,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppColors.info.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
@@ -755,7 +755,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         backgroundColor: AppColors.error,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: Text(l10n.settingsDeleteAccount),
@@ -785,7 +785,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     showModalBottomSheet(
       context: context,
       backgroundColor: context.sheetBg,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(4))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(

@@ -123,7 +123,7 @@ class _WaveButtonState extends State<WaveButton> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(12),
               splashColor: _getSplashColor(),
               highlightColor: _getHighlightColor(),
               child: AnimatedContainer(
@@ -131,7 +131,7 @@ class _WaveButtonState extends State<WaveButton> {
                 decoration: BoxDecoration(
                   gradient: _isPressed ? null : _getGradient(),
                   color: _isPressed ? _getPressedColor() : _getBackgroundColor(),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: _isPressed ? null : _getShadow(),
                 ),
                 child: Center(

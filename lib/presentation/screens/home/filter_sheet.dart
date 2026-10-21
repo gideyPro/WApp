@@ -421,7 +421,7 @@ class _FilterSheetState extends State<FilterSheet> {
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.accent500,
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: Text(l10n.searchApplyFilters, style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w700)),
                       ),
@@ -804,7 +804,7 @@ class _FilterSheetState extends State<FilterSheet> {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: isSelected ? AppColors.accent500.withValues(alpha: 0.12) : context.cardBg,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected ? AppColors.accent500.withValues(alpha: 0.4) : context.divider.withValues(alpha: 0.5),
               ),
@@ -831,15 +831,15 @@ class _FilterSheetState extends State<FilterSheet> {
       fillColor: context.cardBg,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: context.divider.withValues(alpha: 0.5)),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: context.divider.withValues(alpha: 0.5)),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: AppColors.accent500),
       ),
     );
@@ -851,7 +851,7 @@ class _FilterSheetState extends State<FilterSheet> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: context.cardBg,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.divider.withValues(alpha: 0.5)),
       ),
       child: DropdownButtonHideUnderline(

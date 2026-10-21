@@ -186,7 +186,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
                       // Card container — Liquid Glass
                       LiquidGlass(
-                        borderRadius: 4,
+                        borderRadius: 16,
                         padding: const EdgeInsets.all(24),
                         variant: LiquidGlassVariant.prominent,
                         tint: AppColors.accent500,
@@ -485,7 +485,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             color: isDark
                 ? AppColors.primary900
                 : AppColors.primary50.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
@@ -564,7 +564,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             color: isDark
                 ? AppColors.primary900
                 : AppColors.primary50.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
@@ -650,7 +650,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final isSelected = _selectedGender == value;
 
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: isSelected ? 20 : 16,
       variant: isSelected
           ? LiquidGlassVariant.prominent
@@ -742,7 +742,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildInlineError(String message) {
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 16,
       variant: LiquidGlassVariant.regular,
       tint: AppColors.error,

@@ -135,7 +135,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
       padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
@@ -170,7 +170,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
 
   Widget _buildDetailCard(Payment payment, AppLocalizations l10n) {
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 20,
       variant: LiquidGlassVariant.regular,
       padding: AppSpacing.paddingLg,
@@ -199,7 +199,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
 
   Widget _buildTimestampCard(Payment payment, AppLocalizations l10n) {
     return LiquidGlass(
-      borderRadius: 4,
+      borderRadius: 16,
       blur: 20,
       variant: LiquidGlassVariant.regular,
       padding: AppSpacing.paddingLg,
@@ -270,7 +270,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
           height: 32,
           decoration: BoxDecoration(
             color: AppColors.primary50,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, size: 16, color: AppColors.primary600),
         ),

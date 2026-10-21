@@ -20,25 +20,35 @@ abstract class AppSpacing {
   static const EdgeInsets paddingXl = EdgeInsets.all(xl);
   static const EdgeInsets paddingXxl = EdgeInsets.all(xxl);
 
-  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
-  static const EdgeInsets paddingHorizontalXl = EdgeInsets.symmetric(horizontal: xl);
-  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
-  static const EdgeInsets paddingVerticalLg = EdgeInsets.symmetric(vertical: lg);
+  static const EdgeInsets paddingHorizontalLg =
+      EdgeInsets.symmetric(horizontal: lg);
+  static const EdgeInsets paddingHorizontalXl =
+      EdgeInsets.symmetric(horizontal: xl);
+  static const EdgeInsets paddingVerticalMd =
+      EdgeInsets.symmetric(vertical: md);
+  static const EdgeInsets paddingVerticalLg =
+      EdgeInsets.symmetric(vertical: lg);
 
-  // Border radii matching web's rounded-sm (4px) as the base
-  static const double borderRadiusXs = 2;
-  static const double borderRadiusSm = 4;
-  static const double borderRadiusMd = 8;
-  static const double borderRadiusLg = 12;
-  static const double borderRadiusXl = 16;
-  static const double borderRadiusXxl = 20;
+  // Border radii - Modernized rounded geometry
+  static const double borderRadiusXs = 4;
+  static const double borderRadiusSm = 8;
+  static const double borderRadiusMd = 12;
+  static const double borderRadiusLg = 16;
+  static const double borderRadiusXl = 20;
+  static const double borderRadiusXxl = 24;
 
-  static const BorderRadius borderRadiusAllXs = BorderRadius.all(Radius.circular(borderRadiusXs));
-  static const BorderRadius borderRadiusAllSm = BorderRadius.all(Radius.circular(borderRadiusSm));
-  static const BorderRadius borderRadiusAllMd = BorderRadius.all(Radius.circular(borderRadiusMd));
-  static const BorderRadius borderRadiusAllLg = BorderRadius.all(Radius.circular(borderRadiusLg));
-  static const BorderRadius borderRadiusAllXl = BorderRadius.all(Radius.circular(borderRadiusXl));
-  static const BorderRadius borderRadiusAllXxl = BorderRadius.all(Radius.circular(borderRadiusXxl));
+  static const BorderRadius borderRadiusAllXs =
+      BorderRadius.all(Radius.circular(borderRadiusXs));
+  static const BorderRadius borderRadiusAllSm =
+      BorderRadius.all(Radius.circular(borderRadiusSm));
+  static const BorderRadius borderRadiusAllMd =
+      BorderRadius.all(Radius.circular(borderRadiusMd));
+  static const BorderRadius borderRadiusAllLg =
+      BorderRadius.all(Radius.circular(borderRadiusLg));
+  static const BorderRadius borderRadiusAllXl =
+      BorderRadius.all(Radius.circular(borderRadiusXl));
+  static const BorderRadius borderRadiusAllXxl =
+      BorderRadius.all(Radius.circular(borderRadiusXxl));
 
   static const double iconSm = 16;
   static const double iconMd = 20;

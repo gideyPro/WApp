@@ -710,10 +710,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         prefixIcon: const Icon(Icons.attach_money, size: 18),
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: borderColor)),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: borderColor, width: 2)),
       ),
       keyboardType: TextInputType.number,
@@ -740,7 +740,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
 
     return Expanded(
       child: LiquidGlass(
-        borderRadius: 4,
+        borderRadius: 16,
         blur: isSelected ? 20 : 16,
         variant: isSelected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
         tint: isSelected ? AppColors.accent500 : null,

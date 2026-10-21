@@ -186,7 +186,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with WidgetsBindi
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: BorderRadius.circular(12),
       child: AspectRatio(
         aspectRatio: _player?.controller.value.isInitialized == true
             ? _player!.controller.value.aspectRatio
@@ -275,7 +275,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with WidgetsBindi
     return SizedBox(
       height: 200,
       child: LiquidGlass(
-        borderRadius: 4,
+        borderRadius: 16,
         blur: 20,
         child: Center(
           child: Column(

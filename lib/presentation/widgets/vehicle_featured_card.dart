@@ -44,7 +44,7 @@ class VehicleFeaturedCard extends ConsumerWidget {
     return WaveCard(
       onTap: _handleTap,
       margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 4,
+      borderRadius: 16,
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
       child: Row(
@@ -78,7 +78,7 @@ class VehicleFeaturedCard extends ConsumerWidget {
 
   Widget _buildImageSection(BuildContext context) {
     return ClipRRect(
-      borderRadius: const BorderRadius.horizontal(left: Radius.circular(4)),
+      borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
       child: SizedBox(
         width: 130,
         height: double.infinity,
@@ -152,39 +152,33 @@ class VehicleFeaturedCard extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final isRent = listing?.listingType == ListingType.rental;
     final cat = listing?.carVehicleCategory;
-    return Row(
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
       children: [
-        if (cat != null && cat.isNotEmpty) ...[
+        if (cat != null && cat.isNotEmpty)
           _buildBadge(vehicleCategoryLabel(cat, l10n), AppColors.primary600),
-          const SizedBox(width: 4),
-        ],
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(
-            color: isRent ? AppColors.accent600 : AppColors.emerald600,
-            borderRadius: BorderRadius.circular(4),
+            color: isRent ? AppColors.accent600 : AppColors.primary900,
+            borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
             isRent ? l10n.listingForRent : l10n.listingForSale,
             style: AppTextStyles.labelSmall.copyWith(
               color: Colors.white,
               fontSize: 9,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
-        const SizedBox(width: 4),
+        _buildBadge(l10n.listingZeroCommission, AppColors.primary700),
         if (listing?.isNew == true)
-          _buildBadge(l10n.listingNew, AppColors.primary600),
+          _buildBadge(l10n.listingNew, AppColors.cta700),
         if (listing?.isFeatured == true)
-          Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: _buildBadge(l10n.listingFeatured, AppColors.accent600),
-          ),
-        if (listing?.isVip == true)
-          Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: _buildBadge(l10n.vipBadge, AppColors.vip),
-          ),
+          _buildBadge(l10n.listingFeatured, AppColors.accent600),
+        if (listing?.isVip == true) _buildBadge(l10n.vipBadge, AppColors.vip),
       ],
     );
   }
@@ -194,7 +188,7 @@ class VehicleFeaturedCard extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         text,
@@ -225,8 +219,12 @@ class VehicleFeaturedCard extends ConsumerWidget {
     if (item == null) return const SizedBox.shrink();
     final parts = <String>[];
     if (item.carYear != null) parts.add(item.carYear.toString());
-    if ((item.carMake ?? '').isNotEmpty) parts.add(makeLabel(item.carMake!, l10n));
-    if ((item.carModel ?? '').isNotEmpty) parts.add(modelLabel(item.carModel!, l10n));
+    if ((item.carMake ?? '').isNotEmpty) {
+      parts.add(makeLabel(item.carMake!, l10n));
+    }
+    if ((item.carModel ?? '').isNotEmpty) {
+      parts.add(modelLabel(item.carModel!, l10n));
+    }
     final title = parts.isNotEmpty ? parts.join(' ') : item.carTitle;
     return Text(
       title,
@@ -260,12 +258,14 @@ class VehicleFeaturedCard extends ConsumerWidget {
     if (cat == 'car' || cat == 'construction_equipment') {
       if (bodyType != null && bodyType.isNotEmpty) {
         chips.add(const SizedBox(width: 6));
-        chips.add(_specChip(Icons.directions_car_rounded, bodyTypeLabel(bodyType, l10n)));
+        chips.add(_specChip(
+            Icons.directions_car_rounded, bodyTypeLabel(bodyType, l10n)));
       }
     }
     if (condition != null) {
       chips.add(const SizedBox(width: 6));
-      chips.add(_specChip(Icons.build_outlined, conditionLabel(condition, l10n)));
+      chips.add(
+          _specChip(Icons.build_outlined, conditionLabel(condition, l10n)));
     }
 
     if (chips.isEmpty) return const SizedBox.shrink();
@@ -308,7 +308,8 @@ class VehicleFeaturedCard extends ConsumerWidget {
             children: [
               Flexible(
                 child: Text(
-                  listing?.address?.getLocalizedAddress(context, cache, isRestricted) ??
+                  listing?.address
+                          ?.getLocalizedAddress(context, cache, isRestricted) ??
                       listing?.address?.region ??
                       l10n.listingUnknownLocation,
                   style: AppTextStyles.bodySmall.copyWith(fontSize: 11),
@@ -330,7 +331,7 @@ class VehicleFeaturedCard extends ConsumerWidget {
   Widget _buildSkeleton(BuildContext context) {
     return WaveCard(
       margin: const EdgeInsets.only(bottom: 20),
-      borderRadius: 4,
+      borderRadius: 16,
       padding: EdgeInsets.zero,
       useLiquidGlass: false,
       child: Shimmer.fromColors(
@@ -343,7 +344,7 @@ class VehicleFeaturedCard extends ConsumerWidget {
               flex: 2,
               child: ClipRRect(
                 borderRadius:
-                    const BorderRadius.horizontal(left: Radius.circular(4)),
+                    const BorderRadius.horizontal(left: Radius.circular(16)),
                 child: SizedBox(
                   width: 130,
                   height: double.infinity,
@@ -395,7 +396,7 @@ class VehicleFeaturedCard extends ConsumerWidget {
       height: height,
       decoration: BoxDecoration(
         color: context.shimmerBase,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }

@@ -89,7 +89,7 @@ class _ListingReportSheetState extends ConsumerState<ListingReportSheet> {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? AppColors.primary800 : Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Padding(
         padding: EdgeInsets.only(
@@ -131,7 +131,7 @@ class _ListingReportSheetState extends ConsumerState<ListingReportSheet> {
                   initialValue: _selectedReason,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: context.theme.divider),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
@@ -163,7 +163,7 @@ class _ListingReportSheetState extends ConsumerState<ListingReportSheet> {
                   decoration: InputDecoration(
                     hintText: l10n.reportDescriptionHint,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: context.theme.divider),
                     ),
                     contentPadding: const EdgeInsets.all(12),
@@ -176,7 +176,7 @@ class _ListingReportSheetState extends ConsumerState<ListingReportSheet> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
                       color: AppColors.successLight,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       l10n.reportSuccess,
@@ -200,7 +200,7 @@ class _ListingReportSheetState extends ConsumerState<ListingReportSheet> {
                         disabledBackgroundColor: Colors.grey.shade300,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: Text(
