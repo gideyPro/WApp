@@ -35,7 +35,7 @@ class JobSeekerCard extends StatelessWidget {
         }
       },
       margin: EdgeInsets.zero,
-      borderRadius: AppSpacing.borderRadiusSm,
+      borderRadius: AppSpacing.borderRadiusLg,
       padding: const EdgeInsets.all(12),
       useLiquidGlass: false,
       child: Row(
@@ -64,7 +64,7 @@ class JobSeekerCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.accent500.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppSpacing.borderRadiusSm),
+                      borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: AppColors.accent500.withValues(alpha: 0.2),
                       ),

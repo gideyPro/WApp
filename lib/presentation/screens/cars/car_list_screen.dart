@@ -11,6 +11,7 @@ import '../home/home_screen.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/listing_providers.dart';
 import '../../widgets/vehicle_listing_card.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 import '../home/filter_sheet.dart';
 
 class CarListScreen extends ConsumerStatefulWidget {
@@ -138,8 +139,8 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
     ref.watch(favoritesProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.primary50,
-      appBar: AppBar(
+      backgroundColor: context.scaffoldBg,
+      appBar: WaveAppBar(
         title: Text(l10n.listingCarPlural),
         actions: [
           IconButton(
@@ -156,18 +157,10 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
             child: state.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : state.errorMessage != null && state.listings.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(state.errorMessage!, style: const TextStyle(color: AppColors.stone500)),
-                            const SizedBox(height: 12),
-                            ElevatedButton(
-                              onPressed: () => ref.read(carListingsProvider.notifier).loadListings(),
-                              child: Text(l10n.commonRetry),
-                            ),
-                          ],
-                        ),
+                    ? WaveMessageScreen.error(
+                        isEmbedded: true,
+                        subtitle: state.errorMessage!,
+                        onRetry: () => ref.read(carListingsProvider.notifier).loadListings(),
                       )
                     : RefreshIndicator(
                         onRefresh: () async {
@@ -221,11 +214,15 @@ return VehicleListingCard(
                 )
               : null,
           filled: true,
-          fillColor: context.scaffoldBg,
+          fillColor: context.theme.inputBg,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: context.theme.border),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: context.theme.border),
           ),
         ),
         style: AppTextStyles.bodySmall,

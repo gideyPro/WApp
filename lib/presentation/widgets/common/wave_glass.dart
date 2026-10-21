@@ -13,7 +13,7 @@ class WaveGlass extends StatelessWidget {
     super.key,
     required this.child,
     this.blur = 20,
-    this.borderRadius = 4,
+    this.borderRadius = 16,
     this.color,
     this.border,
     this.padding,

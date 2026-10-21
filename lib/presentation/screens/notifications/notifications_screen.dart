@@ -143,9 +143,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: WaveGlass(
+              borderRadius: 16,
               child: InkWell(
                 onTap: () => _handleNotificationTap(notification),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 child: _NotificationTile(notification: notification),
               ),
             ),
@@ -368,10 +369,10 @@ class _NotificationTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: notification.isRead
                   ? (context.theme.isDark
-                      ? AppColors.primary800
+                      ? AppColors.cardNavyLight
                       : AppColors.primary50)
                   : (context.theme.isDark
-                      ? AppColors.accent900
+                      ? AppColors.accent500.withValues(alpha: 0.15)
                       : AppColors.accent100),
               borderRadius: BorderRadius.circular(12),
             ),

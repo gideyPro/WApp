@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/job_seeker_card.dart';
 import '../../providers/job_seeker_providers.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 class JobSeekersScreen extends ConsumerStatefulWidget {
   const JobSeekersScreen({super.key});
@@ -49,29 +49,24 @@ class _JobSeekersScreenState extends ConsumerState<JobSeekersScreen> {
     
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(title: Text(l10n.seekersTitle)),
+      appBar: WaveAppBar(title: Text(l10n.seekersTitle)),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
           : state.errorMessage != null && state.profiles.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(state.errorMessage!, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)),
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        onPressed: () => ref.read(jobSeekerProfilesProvider.notifier).loadProfiles(),
-                        child: Text(l10n.commonRetry),
-                      ),
-                    ],
-                  ),
+              ? WaveMessageScreen.error(
+                  isEmbedded: true,
+                  subtitle: state.errorMessage!,
+                  onRetry: () => ref.read(jobSeekerProfilesProvider.notifier).loadProfiles(),
                 )
               : RefreshIndicator(
                   onRefresh: () async {
                     await ref.read(jobSeekerProfilesProvider.notifier).loadProfiles();
                   },
                   child: state.profiles.isEmpty
-                      ? Center(child: Text(l10n.seekersNoResults))
+                      ? WaveEmptyState(
+                          icon: Icons.person_search_outlined,
+                          title: l10n.seekersNoResults,
+                        )
                       : ListView.builder(
                           controller: _scrollController,
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),

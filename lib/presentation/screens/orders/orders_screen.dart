@@ -116,11 +116,12 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: WaveGlass(
+              borderRadius: 16,
               child: InkWell(
                 onTap: () {
                   context.push('/orders/${order.id}');
                 },
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 child: Padding(
                   padding: AppSpacing.paddingLg,
                   child: Column(
@@ -137,8 +138,8 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                             const SizedBox(width: 6),
                             _buildBadge(
                               order.getLocalizedHoldingType(context),
-                              AppColors.stone100,
-                              AppColors.primary800,
+                              context.isDarkMode ? AppColors.cardNavyLight : AppColors.stone100,
+                              context.isDarkMode ? AppColors.accent300 : AppColors.primary800,
                             ),
                           ],
                           const Spacer(),
@@ -153,7 +154,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                       Text(
                         order.description,
                         style: AppTextStyles.bodySmall
-                            .copyWith(color: AppColors.primary700),
+                            .copyWith(color: context.textSecondary),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),

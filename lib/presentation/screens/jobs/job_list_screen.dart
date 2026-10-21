@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../home/home_screen.dart';
 import '../../providers/job_providers.dart';
 import '../home/filter_sheet.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
 class JobListScreen extends ConsumerStatefulWidget {
   const JobListScreen({super.key});
@@ -122,7 +123,7 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
-      appBar: AppBar(
+      appBar: WaveAppBar(
         title: Text(l10n.homeJobs),
         actions: [
           IconButton(
@@ -139,18 +140,10 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
             child: state.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : state.errorMessage != null && state.listings.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(state.errorMessage!, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)),
-                            const SizedBox(height: 12),
-                            ElevatedButton(
-                              onPressed: () => ref.read(jobListingsProvider.notifier).loadListings(),
-                              child: Text(l10n.commonRetry),
-                            ),
-                          ],
-                        ),
+                    ? WaveMessageScreen.error(
+                        isEmbedded: true,
+                        subtitle: state.errorMessage!,
+                        onRetry: () => ref.read(jobListingsProvider.notifier).loadListings(),
                       )
                     : RefreshIndicator(
                         onRefresh: () async {
@@ -198,11 +191,15 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
                 )
               : null,
           filled: true,
-          fillColor: context.scaffoldBg,
+          fillColor: context.theme.inputBg,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: context.theme.border),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: context.theme.border),
           ),
         ),
         style: AppTextStyles.bodySmall,

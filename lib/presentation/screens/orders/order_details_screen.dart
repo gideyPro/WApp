@@ -236,8 +236,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 if (_order.holdingType != null)
                   _buildBadge(
                     _order.getLocalizedHoldingType(context),
-                    AppColors.stone100,
-                    AppColors.primary800,
+                    context.isDarkMode ? AppColors.cardNavyLight : AppColors.stone100,
+                    context.isDarkMode ? AppColors.accent300 : AppColors.primary800,
                   ),
                 const Spacer(),
                 _buildBadge(
@@ -392,7 +392,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       suggestion.listingTitle ??
                           l10n.listingIdLabel(suggestion.listingId.toString()),
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.primary900,
+                        color: context.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -574,7 +574,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         Text(
           label,
           style: AppTextStyles.labelSmall.copyWith(
-            color: AppColors.primary400,
+            color: context.textSecondary,
             fontWeight: FontWeight.w800,
             letterSpacing: 0.5,
           ),
@@ -583,7 +583,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         Text(
           value,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.primary900,
+            color: context.textPrimary,
             fontWeight: FontWeight.w700,
           ),
           maxLines: isDescription ? 10 : 2,
