@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../core/utils/format_utils.dart';
@@ -13,11 +16,14 @@ import '../../../data/models/listing.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/job_providers.dart';
+import '../../providers/listing_providers.dart';
+import '../../providers/payment_providers.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../listing/widgets/listing_gallery.dart';
+import '../listing/widgets/listing_report_sheet.dart';
 import 'widgets/job_listing_card.dart';
 
 class JobDetailScreen extends ConsumerStatefulWidget {
@@ -30,6 +36,8 @@ class JobDetailScreen extends ConsumerStatefulWidget {
 
 class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   bool _isRevealingContact = false;
+  bool _isFeatureLoading = false;
+  bool _isDeleting = false;
 
   @override
   void initState() {
@@ -37,6 +45,166 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(jobDetailProvider.notifier).loadListing(widget.listingId);
     });
+  }
+
+  Future<void> _shareListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final title = listing.resolvedJobTitle ?? l10n.jobJob;
+    final company = listing.jobCompanyName?.trim();
+    final companyText = (company != null && company.isNotEmpty) ? ' ($company)' : '';
+    final salaryText = listing.jobSalaryType == 'fixed' && listing.jobSalaryMin != null
+        ? '${listing.jobSalaryCurrency ?? 'ETB'} ${smartDecimal(listing.jobSalaryMin!)}'
+        : l10n.jobSalaryPerAgreement;
+
+    final shareText = '''
+$title$companyText
+$salaryText
+${listing.jobDescriptionBody.isNotEmpty ? '\n${listing.jobDescriptionBody}' : ''}
+
+${l10n.shareListingTitle}
+''';
+
+    await Share.share(
+      shareText,
+      subject: '${l10n.shareListingMessage}$title',
+    );
+  }
+
+  Future<void> _toggleFavorite(int listingId, bool isFavorited) async {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      if (mounted) context.push('/login');
+      return;
+    }
+
+    final success = await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
+    if (mounted) {
+      final l10n = AppLocalizations.of(context);
+      final msg = isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: success ? AppColors.success : AppColors.error,
+        ),
+      );
+    }
+  }
+
+  void _showReportSheet(Listing listing) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => ListingReportSheet(listingId: listing.id),
+    );
+  }
+
+  Future<void> _featureListing(Listing listing) async {
+    final subState = ref.read(subscriptionProvider);
+    if (!subState.canFeatureListing) {
+      if (mounted) context.push('/subscriptions');
+      return;
+    }
+    setState(() => _isFeatureLoading = true);
+    try {
+      final error = await ref.read(jobDetailProvider.notifier).featureListing(listing.id);
+      if (mounted) {
+        if (error != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error), backgroundColor: AppColors.error),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context).statusSuccess), backgroundColor: AppColors.success),
+          );
+        }
+      }
+    } finally {
+      if (mounted) setState(() => _isFeatureLoading = false);
+    }
+  }
+
+  Future<void> _unfeatureListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Unfeature Listing?'),
+        content: const Text('Your listing will no longer appear as featured. You can feature it again later.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Unfeature'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    setState(() => _isFeatureLoading = true);
+    try {
+      final error = await ref.read(jobDetailProvider.notifier).unfeatureListing(listing.id);
+      if (mounted) {
+        if (error != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error), backgroundColor: AppColors.error),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context).statusSuccess), backgroundColor: AppColors.success),
+          );
+        }
+      }
+    } finally {
+      if (mounted) setState(() => _isFeatureLoading = false);
+    }
+  }
+
+  Future<void> _deleteListing(Listing listing) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.listingDeleteConfirmTitle),
+        content: Text(l10n.listingDeleteConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.commonCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: Text(l10n.commonDelete),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      setState(() => _isDeleting = true);
+      try {
+        final error = await ref.read(jobDetailProvider.notifier).deleteListing(listing.id);
+        if (mounted) {
+          if (error != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error), backgroundColor: AppColors.error),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(l10n.statusSuccess), backgroundColor: AppColors.success),
+            );
+            Navigator.of(context).pop();
+          }
+        }
+      } finally {
+        if (mounted) setState(() => _isDeleting = false);
+      }
+    }
   }
 
   Future<void> _launchUrl(String url) async {
@@ -78,11 +246,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     final authState = ref.watch(authStateProvider);
 
     if (state.isLoading) {
-      return Scaffold(
-        backgroundColor: context.scaffoldBg,
-        appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
-        body: const Center(child: CircularProgressIndicator()),
-      );
+      return _buildSkeletonLoader();
     }
 
     if (state.errorMessage != null && state.listing == null) {
@@ -127,21 +291,40 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
     final currentUserId = authState.user?.id;
     final isOwner = currentUserId != null && listing.userId == currentUserId;
+    final favState = ref.watch(favoritesProvider);
+    final isFavorited = favState.favorites.any((f) => f.id == listing.id);
 
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         title: Text(l10n.jobJobDetails),
         actions: [
+          IconButton(
+            icon: Icon(
+              isFavorited ? Icons.favorite : Icons.favorite_border,
+              color: isFavorited ? AppColors.error : context.theme.icon,
+            ),
+            onPressed: () => _toggleFavorite(listing.id, isFavorited),
+          ),
+          IconButton(
+            icon: Icon(Icons.share_outlined, color: context.theme.icon),
+            onPressed: () => _shareListing(listing),
+          ),
           if (isOwner)
             IconButton(
               icon: Icon(Icons.edit_outlined, color: context.theme.icon),
               onPressed: () => context.push('/jobs/${widget.listingId}/edit', extra: listing),
+            )
+          else
+            IconButton(
+              icon: Icon(Icons.flag_outlined, color: context.theme.icon),
+              tooltip: l10n.reportListing,
+              onPressed: () => _showReportSheet(listing),
             ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: AppSpacing.paddingLg,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -178,12 +361,158 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
               const SizedBox(height: 20),
             ],
 
-            _buildContactSection(listing, isOwner, l10n),
+            _buildActionSection(listing, isOwner, l10n),
             const SizedBox(height: 32),
 
             _buildSimilarJobs(listing, l10n),
             const SizedBox(height: 40),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSkeletonLoader() {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: context.scaffoldBg,
+      appBar: WaveAppBar(title: Text(l10n.jobJobDetails)),
+      body: SingleChildScrollView(
+        padding: AppSpacing.paddingLg,
+        child: Shimmer.fromColors(
+          baseColor: context.shimmerBase,
+          highlightColor: context.shimmerHighlight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 240,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Container(
+                    height: 24,
+                    width: 90,
+                    decoration: BoxDecoration(
+                      color: context.shimmerHighlight,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    height: 24,
+                    width: 70,
+                    decoration: BoxDecoration(
+                      color: context.shimmerHighlight,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                height: 28,
+                width: 220,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 16,
+                width: 140,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 76,
+                      decoration: BoxDecoration(
+                        color: context.shimmerHighlight,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      height: 76,
+                      decoration: BoxDecoration(
+                        color: context.shimmerHighlight,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Container(
+                height: 110,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                height: 16,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                height: 14,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                height: 14,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                height: 14,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Container(
+                height: 70,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: context.shimmerHighlight,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -517,27 +846,140 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     );
   }
 
-  Widget _buildContactSection(Listing listing, bool isOwner, AppLocalizations l10n) {
-    if (isOwner) {
-      return const SizedBox.shrink();
-    }
+  Widget _buildActionSection(Listing listing, bool isOwner, AppLocalizations l10n) {
+    final subState = ref.watch(subscriptionProvider);
 
-    final hasPhone = listing.sellerPhone != null && listing.sellerPhone!.isNotEmpty;
-    final isRevealed = listing.contactRevealed || (hasPhone && !listing.userContactHidden);
-
-    if (isRevealed) {
-      return _buildEmployerContact(listing, l10n);
-    }
-
-    if (listing.userContactHidden) {
-      return _buildContactUpgradeSection(l10n);
-    }
-
-    if (listing.contactMax > 0) {
-      return _buildContactRevealSection(listing, l10n);
-    }
-
-    return const SizedBox.shrink();
+    return WaveCard(
+      useLiquidGlass: true,
+      margin: EdgeInsets.zero,
+      isGlass: true,
+      showBorder: true,
+      padding: AppSpacing.paddingLg,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isOwner) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.push('/jobs/${widget.listingId}/edit', extra: listing),
+                    icon: const Icon(Icons.edit, size: 20),
+                    label: Text(l10n.commonEdit),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: BorderSide(color: context.theme.divider),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      foregroundColor: context.isDarkMode ? AppColors.primary300 : AppColors.primary600,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _isDeleting ? null : () => _deleteListing(listing),
+                    icon: _isDeleting
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.error))
+                        : const Icon(Icons.delete_outline, size: 20),
+                    label: Text(l10n.commonDelete),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: AppColors.error),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      foregroundColor: AppColors.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (listing.isFeaturedActive)
+              LiquidGlass(
+                borderRadius: 12,
+                blur: 20,
+                tint: AppColors.success,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle, size: 18, color: AppColors.success),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.jobFeatured,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.success,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: _isFeatureLoading ? null : () => _unfeatureListing(listing),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        foregroundColor: AppColors.stone500,
+                      ),
+                      child: _isFeatureLoading
+                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                          : Text(
+                              'Unfeature',
+                              style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone500),
+                            ),
+                    ),
+                  ],
+                ),
+              )
+            else
+              subState.canFeatureListing
+                  ? SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _isFeatureLoading ? null : () => _featureListing(listing),
+                        icon: _isFeatureLoading
+                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.workspace_premium_outlined, size: 20),
+                        label: Text(_isFeatureLoading ? '' : l10n.listingFeatureThis),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: const BorderSide(color: AppColors.accent500),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          foregroundColor: AppColors.accent500,
+                        ),
+                      ),
+                    )
+                  : UpgradeCard(
+                      icon: Icons.workspace_premium_outlined,
+                      iconColor: AppColors.accent500,
+                      title: l10n.listingUpgradeToFeature,
+                      subtitle: l10n.subscriptionRequiredFeatureSubtitle,
+                    ),
+          ],
+          if (!isOwner) ...[
+            if (listing.contactRevealed || ((listing.sellerPhone?.isNotEmpty ?? false) && !listing.userContactHidden)) ...[
+              _buildEmployerContact(listing, l10n),
+            ] else if (listing.userContactHidden) ...[
+              _buildContactUpgradeSection(l10n),
+            ] else if (listing.contactMax > 0) ...[
+              _buildContactRevealSection(listing, l10n),
+            ],
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: () => _showReportSheet(listing),
+                icon: const Icon(Icons.flag_outlined, size: 16),
+                label: Text(l10n.reportListing),
+                style: TextButton.styleFrom(
+                  foregroundColor: context.textSecondary,
+                  visualDensity: VisualDensity.compact,
+                  textStyle: AppTextStyles.labelSmall,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
   Widget _buildContactRevealSection(Listing listing, AppLocalizations l10n) {
@@ -603,12 +1045,14 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.jobContactEmployer, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
-        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(l10n.jobContactEmployer, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
+        ),
         WaveCard(
           useLiquidGlass: true,
           isGlass: true,
-          showBorder: true,
+          showBorder: false,
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

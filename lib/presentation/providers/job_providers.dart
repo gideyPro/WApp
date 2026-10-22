@@ -119,6 +119,14 @@ class JobDetailNotifier extends StateNotifier<ListingDetailState> {
     return null;
   }
 
+  Future<String?> deleteListing(int id) async {
+    final response = await _jobService.deleteListing(id);
+    if (!response.success) {
+      return response.message;
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> revealContact(int id) async {
     if (state.listing == null) return null;
     final response = await _jobService.revealContact(id);
