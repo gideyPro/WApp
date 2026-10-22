@@ -650,7 +650,9 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
               color: AppColors.error.withValues(alpha: context.isDarkMode ? 0.15 : 0.1),
               child: Text(
                 _stepErrors[_currentStep]!.join('\n'),
-                style: TextStyle(color: context.isDarkMode ? AppColors.errorLight : AppColors.error),
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: context.isDarkMode ? AppColors.errorLight : AppColors.error,
+                ),
               ),
             )
         ],

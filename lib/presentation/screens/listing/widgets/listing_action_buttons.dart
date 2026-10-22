@@ -37,9 +37,9 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     final listing = widget.listing;
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final subState = ref.read(subscriptionProvider);
+    final subState = ref.watch(subscriptionProvider);
 
-    final authState = ref.read(authStateProvider);
+    final authState = ref.watch(authStateProvider);
     final currentUserId = authState.user?.id;
     final isOwner = currentUserId != null && listing.userId == currentUserId;
 

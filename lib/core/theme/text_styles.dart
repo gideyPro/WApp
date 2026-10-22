@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
-/// Wavemart Text Styles — Montserrat for modern marketplace headings, system font for body.
+/// Wavemart Text Styles — Montserrat across all marketplace headings, body, labels, buttons, and captions.
 class AppTextStyles {
   AppTextStyles._();
 
-  static const String _headingFont = 'Montserrat';
-  static const List<String> _headingFallback = ['Noto Sans Ethiopic'];
+  static const String primaryFont = 'Montserrat';
+  static const List<String> fontFallback = ['Noto Sans Ethiopic'];
+
+  // Backward compatibility alias
+  static const String headingFont = primaryFont;
+  static const List<String> headingFallback = fontFallback;
 
   static TextStyle get headline1 => const TextStyle(
-        fontFamily: _headingFont,
-        fontFamilyFallback: _headingFallback,
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 30,
         fontWeight: FontWeight.w700,
         height: 1.15,
@@ -18,8 +22,8 @@ class AppTextStyles {
       );
 
   static TextStyle get headline2 => const TextStyle(
-        fontFamily: _headingFont,
-        fontFamilyFallback: _headingFallback,
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 26,
         fontWeight: FontWeight.w700,
         height: 1.2,
@@ -27,32 +31,32 @@ class AppTextStyles {
       );
 
   static TextStyle get headline3 => const TextStyle(
-        fontFamily: _headingFont,
-        fontFamilyFallback: _headingFallback,
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 22,
         fontWeight: FontWeight.w600,
         height: 1.25,
       );
 
   static TextStyle get headline4 => const TextStyle(
-        fontFamily: _headingFont,
-        fontFamilyFallback: _headingFallback,
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 18,
         fontWeight: FontWeight.w600,
         height: 1.3,
       );
 
   static TextStyle get headline5 => const TextStyle(
-        fontFamily: _headingFont,
-        fontFamilyFallback: _headingFallback,
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.3,
       );
 
   static TextStyle get title => const TextStyle(
-        fontFamily: _headingFont,
-        fontFamilyFallback: _headingFallback,
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 18,
         fontWeight: FontWeight.w700,
         height: 1.3,
@@ -60,8 +64,8 @@ class AppTextStyles {
       );
 
   static TextStyle get titleSmall => const TextStyle(
-        fontFamily: _headingFont,
-        fontFamilyFallback: _headingFallback,
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 15,
         fontWeight: FontWeight.w700,
         height: 1.3,
@@ -69,6 +73,8 @@ class AppTextStyles {
 
   // Eyebrow label — no hardcoded color; inherits from theme
   static TextStyle get eyebrow => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 2.0,
@@ -76,12 +82,16 @@ class AppTextStyles {
       );
 
   static TextStyle get subtitle => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.3,
       );
 
   static TextStyle get bodyLargePlus => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.4,
@@ -89,6 +99,8 @@ class AppTextStyles {
 
   // Body Text
   static TextStyle get bodyLarge => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 15,
         fontWeight: FontWeight.w600,
         height: 1.5,
@@ -96,12 +108,16 @@ class AppTextStyles {
       );
 
   static TextStyle get bodyMedium => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.5,
       );
 
   static TextStyle get bodySmall => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 12,
         fontWeight: FontWeight.w600,
         height: 1.4,
@@ -109,6 +125,8 @@ class AppTextStyles {
 
   // Button Styles
   static TextStyle get buttonLarge => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 15,
         fontWeight: FontWeight.w700,
         color: Colors.white,
@@ -116,6 +134,8 @@ class AppTextStyles {
       );
 
   static TextStyle get buttonMedium => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 14,
         fontWeight: FontWeight.w700,
         color: Colors.white,
@@ -123,6 +143,8 @@ class AppTextStyles {
       );
 
   static TextStyle get buttonSmall => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 12,
         fontWeight: FontWeight.w700,
         color: Colors.white,
@@ -131,6 +153,8 @@ class AppTextStyles {
 
   // Label Styles — no hardcoded color; inherits from theme's onSurface
   static TextStyle get labelLarge => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 14,
         fontWeight: FontWeight.w900,
         color: AppColors.primary800,
@@ -138,6 +162,8 @@ class AppTextStyles {
       );
 
   static TextStyle get labelMedium => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 12,
         fontWeight: FontWeight.w900,
         color: AppColors.primary800,
@@ -145,6 +171,8 @@ class AppTextStyles {
       );
 
   static TextStyle get labelSmall => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 10,
         fontWeight: FontWeight.w900,
         color: AppColors.primary700,
@@ -153,6 +181,8 @@ class AppTextStyles {
 
   // Caption/Helper Text — no hardcoded color; inherits from theme's onSurface
   static TextStyle get caption => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 11,
         fontWeight: FontWeight.w600,
         color: AppColors.stone700,
@@ -160,6 +190,8 @@ class AppTextStyles {
       );
 
   static TextStyle get overline => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 10,
         fontWeight: FontWeight.w700,
         color: AppColors.primary700,
@@ -168,6 +200,8 @@ class AppTextStyles {
 
   // Price Display
   static TextStyle get priceLarge => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 22,
         fontWeight: FontWeight.w800,
         color: AppColors.primary900,
@@ -176,6 +210,8 @@ class AppTextStyles {
       );
 
   static TextStyle get priceMedium => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 16,
         fontWeight: FontWeight.w700,
         color: AppColors.primary800,
@@ -184,8 +220,8 @@ class AppTextStyles {
 
   // Badge/Pill Text
   static TextStyle get badge => const TextStyle(
-        fontFamily: _headingFont,
-        fontFamilyFallback: _headingFallback,
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 0.8,
@@ -193,12 +229,16 @@ class AppTextStyles {
 
   // Navigation
   static TextStyle get navActive => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 12,
         fontWeight: FontWeight.w700,
         color: AppColors.accent500,
       );
 
   static TextStyle get navInactive => const TextStyle(
+        fontFamily: primaryFont,
+        fontFamilyFallback: fontFallback,
         fontSize: 12,
         fontWeight: FontWeight.w600,
         color: AppColors.primary600,

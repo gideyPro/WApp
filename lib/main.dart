@@ -16,6 +16,7 @@ import 'presentation/providers/version_provider.dart';
 import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
 import 'core/constants/app_colors.dart';
+import 'core/theme/text_styles.dart';
 import 'core/network/local_notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -299,7 +300,7 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
               ),
               if (state.whatsNew.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                Text(l10n.updateWhatsNew, style: const TextStyle(fontWeight: FontWeight.w700)),
+                Text(l10n.updateWhatsNew, style: AppTextStyles.titleSmall),
                 const SizedBox(height: 4),
                 Text(state.whatsNew, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700])),
               ],
@@ -308,7 +309,7 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
                   padding: const EdgeInsets.only(top: 12),
                   child: Row(
                     children: [
-                      Text(l10n.updateVersionLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      Text(l10n.updateVersionLabel, style: AppTextStyles.subtitle.copyWith(fontWeight: FontWeight.w600)),
                       Text(state.latestVersion),
                     ],
                   ),
@@ -404,7 +405,7 @@ class _BlockingUpdateOverlay extends StatelessWidget {
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: const Text('Update Now', style: TextStyle(fontWeight: FontWeight.w700)),
+                    child: Text('Update Now', style: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w700)),
                   ),
                 ),
               ],

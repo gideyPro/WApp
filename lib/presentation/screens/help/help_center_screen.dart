@@ -79,7 +79,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).helpSearchHint,
-                hintStyle: TextStyle(color: context.textSecondary),
+                hintStyle: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary),
                 prefixIcon: Icon(Icons.search, color: context.textSecondary),
                 suffixIcon: _isSearching
                     ? IconButton(

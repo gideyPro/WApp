@@ -221,6 +221,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       _filterValues = UnifiedFilterValues(category: category);
     });
     ref.invalidate(searchResultsProvider);
+    if (category == HomeCategory.property || category == HomeCategory.all) {
+      final propState = ref.read(listingsProvider);
+      if (propState.listings.isEmpty && !propState.isLoading) {
+        ref.read(listingsProvider.notifier).loadListings();
+      }
+    }
     if (category == HomeCategory.vehicles || category == HomeCategory.all) {
       ref.read(carListingsProvider.notifier).loadListings();
     }
@@ -1622,10 +1628,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               const SizedBox(width: 8),
               Text(
                 l10n.homeRefreshing,
-                style: const TextStyle(
+                style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.accent500,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

@@ -752,7 +752,7 @@ class _SubscriptionPlansScreenState
           const SizedBox(width: 10),
           Text(
             l10n.subscriptionsShowPricesIn,
-            style: TextStyle(
+            style: AppTextStyles.subtitle.copyWith(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: colors.textSecondary,
@@ -795,7 +795,7 @@ class _SubscriptionPlansScreenState
         ),
         child: Text(
           currency,
-          style: TextStyle(
+          style: AppTextStyles.labelMedium.copyWith(
             fontSize: 13,
             fontWeight: FontWeight.w700,
             color: isSelected ? colors.primaryText : colors.textMuted,
@@ -1197,7 +1197,7 @@ class _PlanCard extends StatelessWidget {
                   children: [
                     Text(
                       plan.name,
-                      style: TextStyle(
+                      style: AppTextStyles.headline3.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                         height: 1.2,
@@ -1210,7 +1210,7 @@ class _PlanCard extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
                           plan.description!,
-                          style: TextStyle(
+                          style: AppTextStyles.bodySmall.copyWith(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
                             height: 1.3,
@@ -1244,7 +1244,7 @@ class _PlanCard extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
+        style: AppTextStyles.badge.copyWith(
           fontSize: 10,
           fontWeight: FontWeight.w800,
           letterSpacing: 1.2,
@@ -1261,7 +1261,7 @@ class _PlanCard extends StatelessWidget {
         if (_hasDiscount)
           Text(
             plan.getDisplayPrice(selectedCurrency),
-            style: TextStyle(
+            style: AppTextStyles.bodySmall.copyWith(
               fontSize: 13,
               fontWeight: FontWeight.w600,
               decoration: TextDecoration.lineThrough,
@@ -1272,7 +1272,7 @@ class _PlanCard extends StatelessWidget {
           _hasDiscount
               ? _formatDiscountedPrice()
               : plan.getDisplayPrice(selectedCurrency),
-          style: TextStyle(
+          style: AppTextStyles.priceLarge.copyWith(
             fontSize: 24,
             fontWeight: FontWeight.w800,
             height: 1.15,
@@ -1281,7 +1281,7 @@ class _PlanCard extends StatelessWidget {
         ),
         Text(
           plan.durationLabel,
-          style: TextStyle(
+          style: AppTextStyles.caption.copyWith(
             fontSize: 12,
             fontWeight: FontWeight.w500,
             color: mutedColor,
@@ -1299,7 +1299,7 @@ class _PlanCard extends StatelessWidget {
             ),
             child: Text(
               _discountLabel(l10n),
-              style: const TextStyle(
+              style: AppTextStyles.badge.copyWith(
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
@@ -1381,7 +1381,7 @@ class _PlanCard extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               l10n.subscriptionsFeatures,
-              style: TextStyle(
+              style: AppTextStyles.subtitle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: colors.textPrimary,
@@ -1451,7 +1451,7 @@ class _PlanCard extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
+              style: AppTextStyles.bodyMedium.copyWith(
                 fontSize: 14,
                 fontWeight: enabled ? FontWeight.w600 : FontWeight.w500,
                 color: enabled ? colors.textPrimary : colors.textMuted,
@@ -1460,7 +1460,7 @@ class _PlanCard extends StatelessWidget {
           ),
           Text(
             value,
-            style: TextStyle(
+            style: AppTextStyles.titleSmall.copyWith(
               fontSize: 15,
               fontWeight: FontWeight.w800,
               color: enabled ? colors.textPrimary : colors.textMuted,
@@ -1494,7 +1494,7 @@ class _PlanCard extends StatelessWidget {
           Expanded(
             child: Text(
               feature,
-              style: TextStyle(
+              style: AppTextStyles.bodyMedium.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 height: 1.3,
@@ -1519,7 +1519,7 @@ class _PlanCard extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           message,
-          style: TextStyle(
+          style: AppTextStyles.caption.copyWith(
             fontSize: 11,
             fontWeight: FontWeight.w600,
             color: AppColors.primary500.withValues(alpha: 0.8),

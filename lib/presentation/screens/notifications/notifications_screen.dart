@@ -71,6 +71,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
+      backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         automaticallyImplyLeading: false,
         title: Text(l10n.settingsNotifications),

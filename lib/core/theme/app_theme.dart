@@ -11,6 +11,8 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamily: AppTextStyles.primaryFont,
+      fontFamilyFallback: AppTextStyles.fontFallback,
 
       // Color Scheme - Logo Navy & Emerald
       colorScheme: const ColorScheme.light(
@@ -225,6 +227,8 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: AppTextStyles.primaryFont,
+      fontFamilyFallback: AppTextStyles.fontFallback,
 
       // Color Scheme - Dark Oceanic Navy + Emerald Accent
       colorScheme: const ColorScheme.dark(

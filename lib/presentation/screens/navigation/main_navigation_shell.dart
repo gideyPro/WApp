@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/car_providers.dart';
+import '../../providers/job_providers.dart';
 import '../home/home_screen.dart';
 import '../orders/orders_screen.dart';
 import '../notifications/notifications_screen.dart';
@@ -57,7 +59,15 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     }
   }
 
-  void _showCreateListingSheet() => showCreateListingSheet(context);
+  Future<void> _showCreateListingSheet() async {
+    final created = await showCreateListingSheet(context);
+    if (created == true && mounted) {
+      ref.read(listingsProvider.notifier).loadListings();
+      ref.read(carListingsProvider.notifier).loadListings();
+      ref.read(jobListingsProvider.notifier).loadListings();
+      ref.read(subscriptionProvider.notifier).refresh();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

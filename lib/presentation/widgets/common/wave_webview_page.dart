@@ -249,18 +249,15 @@ class WaveWebViewPageState extends State<WaveWebViewPage> {
                     const SizedBox(height: 20),
                     Text(
                       AppLocalizations.of(context).webviewActivating,
-                      style: const TextStyle(
+                      style: AppTextStyles.headline4.copyWith(
                         color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       AppLocalizations.of(context).webviewPleaseWait,
-                      style: const TextStyle(
+                      style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.white60,
-                        fontSize: 14,
                       ),
                     ),
                   ],

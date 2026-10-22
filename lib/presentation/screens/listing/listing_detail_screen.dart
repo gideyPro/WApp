@@ -330,6 +330,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
     final isFavorited = favState.favorites.any((f) => f.id == listing.id);
 
     return Scaffold(
+      backgroundColor: context.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(

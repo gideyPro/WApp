@@ -399,8 +399,11 @@ class _MyListingsScreenState extends ConsumerState<MyListingsScreen>
                     icon: Icons.add,
                     variant: ButtonVariant.success,
                     isFullWidth: true,
-                    onPressed: () {
-                      showCreateListingSheet(context);
+                    onPressed: () async {
+                      final result = await showCreateListingSheet(context);
+                      if (result == true && mounted) {
+                        _loadTab(tabIndex);
+                      }
                     },
                   ),
                 ),

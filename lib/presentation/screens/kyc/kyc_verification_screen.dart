@@ -134,7 +134,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ListTile(
               leading: Icon(Icons.camera_alt, color: theme.textPrimary),
               title: Text(l10n.kycTakePhoto,
-                  style: TextStyle(color: theme.textPrimary)),
+                  style: AppTextStyles.bodyMedium.copyWith(color: theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 _pickImage(ImageSource.camera, type);
@@ -143,7 +143,7 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ListTile(
               leading: Icon(Icons.photo_library, color: theme.textPrimary),
               title: Text(l10n.kycChooseGallery,
-                  style: TextStyle(color: theme.textPrimary)),
+                  style: AppTextStyles.bodyMedium.copyWith(color: theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 _pickImage(ImageSource.gallery, type);

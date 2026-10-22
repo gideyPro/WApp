@@ -403,7 +403,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('• ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('• ', style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
                     Expanded(child: Text(edu.displayLabel(l10n), style: AppTextStyles.bodyMedium)),
                   ],
                 ),
@@ -426,7 +426,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('• ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('• ', style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
                     Expanded(child: Text(exp.displayRequirementLabel(), style: AppTextStyles.bodyMedium)),
                   ],
                 ),

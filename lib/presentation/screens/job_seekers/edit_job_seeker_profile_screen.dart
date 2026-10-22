@@ -523,7 +523,7 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                                 Expanded(
                                   child: Text(
                                     _selectedCv!.path.split('/').last,
-                                    style: TextStyle(
+                                    style: AppTextStyles.bodySmall.copyWith(
                                       fontSize: 13,
                                       color: context.theme.textPrimary,
                                     ),
@@ -547,7 +547,10 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                                 const SizedBox(width: 8),
                                 Text(
                                   profile!.cv!.split('/').last,
-                                  style: TextStyle(fontSize: 13, color: context.theme.textMuted),
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    fontSize: 13,
+                                    color: context.theme.textMuted,
+                                  ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
