@@ -153,10 +153,15 @@ class CarDetailNotifier extends StateNotifier<ListingDetailState> {
         contactRevealed: true,
         revealedName: response.name,
         revealedContact: response.contact,
+        sellerName: response.name,
+        sellerPhone: response.contact,
+        contactRemaining: (state.listing!.contactRemaining > 0)
+            ? state.listing!.contactRemaining - 1
+            : 0,
       );
       state = ListingDetailState.loaded(updated);
       return {'name': response.name, 'contact': response.contact};
     }
-    return null;
+    return {'error': response.message};
   }
 }

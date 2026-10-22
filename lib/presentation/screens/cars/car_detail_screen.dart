@@ -42,17 +42,31 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   bool _isRevealingContact = false;
 
   Future<void> _revealContact(int listingId) async {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      if (mounted) context.push('/login');
+      return;
+    }
     setState(() => _isRevealingContact = true);
     try {
       final result = await ref.read(carDetailProvider.notifier).revealContact(listingId);
       if (result != null && mounted) {
-        final message = result['message'] as String? ?? 'Contact revealed';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        if (result.containsKey('error') && result['error'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['error'] as String),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        } else {
+          final message = result['message'] as String? ?? AppLocalizations.of(context).statusSuccess;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
       }
     } finally {
       if (mounted) setState(() => _isRevealingContact = false);
@@ -453,12 +467,12 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
               ),
           ],
           if (!isOwner) ...[
-            if (listing.contactRevealed || (listing.sellerPhone != null && listing.sellerPhone!.isNotEmpty && !listing.userContactHidden)) ...[
+            if (listing.contactRevealed) ...[
               _buildSellerContact(listing),
             ] else if (listing.userContactHidden) ...[
               const SizedBox(height: 12),
               _buildContactUpgradeSection(l10n),
-            ] else if (listing.contactMax > 0) ...[
+            ] else ...[
               const SizedBox(height: 12),
               _buildContactRevealSection(listing, l10n),
             ],

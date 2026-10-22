@@ -955,7 +955,7 @@ ${l10n.shareListingTitle}
                     ),
           ],
           if (!isOwner) ...[
-            if (listing.contactRevealed || ((listing.sellerPhone?.isNotEmpty ?? false) && !listing.userContactHidden)) ...[
+            if (listing.contactRevealed) ...[
               _buildEmployerContact(listing, l10n),
             ] else if (listing.userContactHidden) ...[
               _buildContactUpgradeSection(l10n),
