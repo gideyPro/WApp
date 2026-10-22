@@ -146,9 +146,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (listing.images.isNotEmpty) ...[
-              ListingGallery(
-                listing: listing,
-              ),
+              _buildImageGallery(listing),
               const SizedBox(height: 16),
             ],
 
@@ -186,6 +184,18 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
             _buildSimilarJobs(listing, l10n),
             const SizedBox(height: 40),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageGallery(Listing listing) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        height: 240,
+        child: ListingGallery(
+          listing: listing,
         ),
       ),
     );
