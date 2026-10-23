@@ -189,6 +189,8 @@ class _SubscriptionPlansScreenState
                   carContactViewsRemaining: state.carContactViewsRemaining,
                   carRentalContactViewsUsed: state.carRentalContactViewsUsed,
                   carRentalContactViewsRemaining: state.carRentalContactViewsRemaining,
+                  jobContactViewsUsed: state.jobContactViewsUsed,
+                  jobContactViewsRemaining: state.jobContactViewsRemaining,
                 )
             else
               _buildInactiveSubscriptionBanner(
@@ -263,6 +265,8 @@ class _SubscriptionPlansScreenState
     int carContactViewsRemaining = 0,
     int carRentalContactViewsUsed = 0,
     int carRentalContactViewsRemaining = 0,
+    int jobContactViewsUsed = 0,
+    int jobContactViewsRemaining = 0,
   }) {
     final localPlan = sub.plan;
     if (localPlan == null) return const SizedBox.shrink();
@@ -275,6 +279,7 @@ class _SubscriptionPlansScreenState
     final showRentalContactBar = rentalContactViewsUsed + rentalContactViewsRemaining > 0;
     final showCarContactBar = carContactViewsUsed + carContactViewsRemaining > 0;
     final showCarRentalContactBar = carRentalContactViewsUsed + carRentalContactViewsRemaining > 0;
+    final showJobContactBar = jobContactViewsUsed + jobContactViewsRemaining > 0;
 
     final atLimit =
         (localPlan.maxListings > 0 && sub.listingsUsed >= localPlan.maxListings) ||
@@ -475,6 +480,15 @@ class _SubscriptionPlansScreenState
               max: carRentalContactViewsUsed + carRentalContactViewsRemaining,
               icon: Icons.car_rental,
             ),
+          if (showJobContactBar) ...[
+            const SizedBox(height: 12),
+            _buildUsageBar(
+              label: '${l10n.homeJobs} ${l10n.subscriptionsContactViews}',
+              used: jobContactViewsUsed,
+              max: jobContactViewsUsed + jobContactViewsRemaining,
+              icon: Icons.contact_phone_outlined,
+            ),
+          ],
           if ((localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0) && localPlan.maxJobs > 0)
             const SizedBox(height: 12),
           if (localPlan.maxJobs > 0)

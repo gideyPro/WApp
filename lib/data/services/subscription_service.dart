@@ -94,6 +94,8 @@ class SubscriptionServiceApi {
           carContactViewsRemaining: data['car_contact_views_remaining'] ?? 0,
           carRentalContactViewsUsed: data['car_rental_contact_views_used'] ?? 0,
           carRentalContactViewsRemaining: data['car_rental_contact_views_remaining'] ?? 0,
+          jobContactViewsUsed: data['job_contact_views_used'] ?? 0,
+          jobContactViewsRemaining: data['job_contact_views_remaining'] ?? 0,
         );
       }
 
@@ -147,6 +149,8 @@ class SubscriptionServiceApi {
           carContactViewsRemaining: data['car_contact_views_remaining'] ?? 0,
           carRentalContactViewsUsed: data['car_rental_contact_views_used'] ?? 0,
           carRentalContactViewsRemaining: data['car_rental_contact_views_remaining'] ?? 0,
+          jobContactViewsUsed: data['job_contact_views_used'] ?? 0,
+          jobContactViewsRemaining: data['job_contact_views_remaining'] ?? 0,
         );
       }
 
@@ -411,6 +415,8 @@ class FullSubscriptionData {
   final int carContactViewsRemaining;
   final int carRentalContactViewsUsed;
   final int carRentalContactViewsRemaining;
+  final int jobContactViewsUsed;
+  final int jobContactViewsRemaining;
 
   const FullSubscriptionData({
     required this.success,
@@ -437,6 +443,8 @@ class FullSubscriptionData {
     this.carContactViewsRemaining = 0,
     this.carRentalContactViewsUsed = 0,
     this.carRentalContactViewsRemaining = 0,
+    this.jobContactViewsUsed = 0,
+    this.jobContactViewsRemaining = 0,
   });
 }
 
@@ -476,6 +484,8 @@ class CurrentSubscriptionResponse {
   final int carContactViewsRemaining;
   final int carRentalContactViewsUsed;
   final int carRentalContactViewsRemaining;
+  final int jobContactViewsUsed;
+  final int jobContactViewsRemaining;
 
   const CurrentSubscriptionResponse({
     required this.success,
@@ -501,6 +511,8 @@ class CurrentSubscriptionResponse {
     this.carContactViewsRemaining = 0,
     this.carRentalContactViewsUsed = 0,
     this.carRentalContactViewsRemaining = 0,
+    this.jobContactViewsUsed = 0,
+    this.jobContactViewsRemaining = 0,
   });
 }
 

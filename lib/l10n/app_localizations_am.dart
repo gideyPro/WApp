@@ -1634,6 +1634,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingFeatureThis => 'ይህንን ንብረት ለይተው ያውጡ';
 
   @override
+  String get listingUnfeature => 'መለየት አቁም';
+
+  @override
+  String get listingUnfeatureConfirmTitle => 'የማስታወቂያውን መለየት ማቆም ይፈልጋሉ?';
+
+  @override
+  String get listingUnfeatureConfirmMessage =>
+      'የተለየ ደረጃውን ማስወገድ እርግጠኛ ነዎት? እንደገና ለይቶ ለማውጣት ሌላ ኮታ ማስገባት ያስፈልግዎታል።';
+
+  @override
   String get commonGoodMorning => 'እንደምን አደሩ';
 
   @override

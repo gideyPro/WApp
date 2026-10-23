@@ -1652,6 +1652,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingFeatureThis => 'Feature this Listing';
 
   @override
+  String get listingUnfeature => 'Unfeature';
+
+  @override
+  String get listingUnfeatureConfirmTitle => 'Unfeature Listing?';
+
+  @override
+  String get listingUnfeatureConfirmMessage =>
+      'Are you sure you want to remove the featured status? You will need to use another quota slot to re-feature it.';
+
+  @override
   String get commonGoodMorning => 'Good Morning';
 
   @override

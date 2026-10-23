@@ -109,6 +109,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
             carContactViewsRemaining: data.carContactViewsRemaining,
             carRentalContactViewsUsed: data.carRentalContactViewsUsed,
             carRentalContactViewsRemaining: data.carRentalContactViewsRemaining,
+            jobContactViewsUsed: data.jobContactViewsUsed,
+            jobContactViewsRemaining: data.jobContactViewsRemaining,
           );
           return;
         }
@@ -147,6 +149,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           carContactViewsRemaining: data.carContactViewsRemaining,
           carRentalContactViewsUsed: data.carRentalContactViewsUsed,
           carRentalContactViewsRemaining: data.carRentalContactViewsRemaining,
+          jobContactViewsUsed: data.jobContactViewsUsed,
+          jobContactViewsRemaining: data.jobContactViewsRemaining,
         );
       } else {
         state = state.copyWith(
@@ -184,6 +188,8 @@ class SubscriptionState {
   final int carContactViewsRemaining;
   final int carRentalContactViewsUsed;
   final int carRentalContactViewsRemaining;
+  final int jobContactViewsUsed;
+  final int jobContactViewsRemaining;
   final String? errorMessage;
 
   const SubscriptionState({
@@ -210,6 +216,8 @@ class SubscriptionState {
     this.carContactViewsRemaining = 0,
     this.carRentalContactViewsUsed = 0,
     this.carRentalContactViewsRemaining = 0,
+    this.jobContactViewsUsed = 0,
+    this.jobContactViewsRemaining = 0,
     this.errorMessage,
   });
 
@@ -237,6 +245,8 @@ class SubscriptionState {
         carContactViewsRemaining = 0,
         carRentalContactViewsUsed = 0,
         carRentalContactViewsRemaining = 0,
+        jobContactViewsUsed = 0,
+        jobContactViewsRemaining = 0,
         errorMessage = null;
 
   const SubscriptionState.loaded({
@@ -262,6 +272,8 @@ class SubscriptionState {
     this.carContactViewsRemaining = 0,
     this.carRentalContactViewsUsed = 0,
     this.carRentalContactViewsRemaining = 0,
+    this.jobContactViewsUsed = 0,
+    this.jobContactViewsRemaining = 0,
   })  : isLoading = false,
         errorMessage = null;
 
@@ -289,6 +301,8 @@ class SubscriptionState {
     int? carContactViewsRemaining,
     int? carRentalContactViewsUsed,
     int? carRentalContactViewsRemaining,
+    int? jobContactViewsUsed,
+    int? jobContactViewsRemaining,
     String? errorMessage,
   }) {
     return SubscriptionState(
@@ -315,6 +329,8 @@ class SubscriptionState {
       carContactViewsRemaining: carContactViewsRemaining ?? this.carContactViewsRemaining,
       carRentalContactViewsUsed: carRentalContactViewsUsed ?? this.carRentalContactViewsUsed,
       carRentalContactViewsRemaining: carRentalContactViewsRemaining ?? this.carRentalContactViewsRemaining,
+      jobContactViewsUsed: jobContactViewsUsed ?? this.jobContactViewsUsed,
+      jobContactViewsRemaining: jobContactViewsRemaining ?? this.jobContactViewsRemaining,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

@@ -129,8 +129,8 @@ ${l10n.shareListingTitle}
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Unfeature Listing?'),
-        content: const Text('Your listing will no longer appear as featured. You can feature it again later.'),
+        title: Text(l10n.listingUnfeatureConfirmTitle),
+        content: Text(l10n.listingUnfeatureConfirmMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -138,7 +138,7 @@ ${l10n.shareListingTitle}
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Unfeature'),
+            child: Text(l10n.listingUnfeature),
           ),
         ],
       ),
@@ -222,17 +222,31 @@ ${l10n.shareListingTitle}
   }
 
   Future<void> _revealContact(int listingId) async {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      if (mounted) context.push('/login');
+      return;
+    }
     setState(() => _isRevealingContact = true);
     try {
       final result = await ref.read(jobDetailProvider.notifier).revealContact(listingId);
       if (result != null && mounted) {
-        final message = result['message'] as String? ?? 'Contact revealed';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        if (result.containsKey('error') && result['error'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['error'] as String),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        } else {
+          final message = result['message'] as String? ?? AppLocalizations.of(context).statusSuccess;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
       }
     } finally {
       if (mounted) setState(() => _isRevealingContact = false);
@@ -310,17 +324,6 @@ ${l10n.shareListingTitle}
             icon: Icon(Icons.share_outlined, color: context.theme.icon),
             onPressed: () => _shareListing(listing),
           ),
-          if (isOwner)
-            IconButton(
-              icon: Icon(Icons.edit_outlined, color: context.theme.icon),
-              onPressed: () => context.push('/jobs/${widget.listingId}/edit', extra: listing),
-            )
-          else
-            IconButton(
-              icon: Icon(Icons.flag_outlined, color: context.theme.icon),
-              tooltip: l10n.reportListing,
-              onPressed: () => _showReportSheet(listing),
-            ),
         ],
       ),
       body: SingleChildScrollView(
@@ -914,15 +917,14 @@ ${l10n.shareListingTitle}
                     TextButton(
                       onPressed: _isFeatureLoading ? null : () => _unfeatureListing(listing),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        minimumSize: const Size(48, 48),
                         foregroundColor: AppColors.stone500,
                       ),
                       child: _isFeatureLoading
                           ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
                           : Text(
-                              'Unfeature',
+                              l10n.listingUnfeature,
                               style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone500),
                             ),
                     ),
@@ -958,8 +960,10 @@ ${l10n.shareListingTitle}
             if (listing.contactRevealed) ...[
               _buildEmployerContact(listing, l10n),
             ] else if (listing.userContactHidden) ...[
+              const SizedBox(height: 12),
               _buildContactUpgradeSection(l10n),
-            ] else if (listing.contactMax > 0) ...[
+            ] else ...[
+              const SizedBox(height: 12),
               _buildContactRevealSection(listing, l10n),
             ],
             const SizedBox(height: 12),

@@ -370,11 +370,14 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
     if (current == null) return null;
     final response = await _listingService.revealContact(id);
     if (response.success) {
+      final newRemaining = (!response.alreadyRevealed && current.contactRemaining > 0)
+          ? current.contactRemaining - 1
+          : current.contactRemaining;
       updateListingInline(current.copyWith(
         contactRevealed: true,
         revealedName: response.name,
         revealedContact: response.contact,
-        contactRemaining: current.contactRemaining - 1,
+        contactRemaining: newRemaining,
       ));
       refreshListing(id);
     }
@@ -383,6 +386,7 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
       'message': response.message,
       'name': response.name,
       'contact': response.contact,
+      'already_revealed': response.alreadyRevealed,
     };
   }
 

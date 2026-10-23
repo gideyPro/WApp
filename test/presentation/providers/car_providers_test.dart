@@ -98,6 +98,55 @@ void main() {
       expect(updatedListing.contactRemaining, equals(2));
     });
 
+    test('does not decrement quota when already_revealed is true', () async {
+      final apiClient = ApiClient();
+      apiClient.dio.httpClientAdapter = _StubAdapter((options) {
+        return ResponseBody.fromString(
+          jsonEncode({
+            'success': true,
+            'contact': '+251911223344',
+            'name': 'Seller Name',
+            'already_revealed': true,
+          }),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      });
+
+      final carService = CarService(apiClient: apiClient);
+      final container = ProviderContainer(
+        overrides: [
+          carServiceProvider.overrideWithValue(carService),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(carDetailProvider.notifier);
+
+      final initialListing = Listing(
+        id: 101,
+        propertyType: PropertyType.car,
+        listingType: ListingType.sale,
+        userId: 99,
+        status: ListingStatus.active,
+        contactRevealed: false,
+        contactRemaining: 3,
+        contactMax: 5,
+        createdAt: DateTime.now(),
+      );
+      notifier.updateListingInline(initialListing);
+
+      final result = await notifier.revealContact(101);
+
+      expect(result, isNotNull);
+      expect(result!['already_revealed'], isTrue);
+      expect(notifier.state.listing!.contactRevealed, isTrue);
+      // Quota MUST NOT be decremented because already revealed
+      expect(notifier.state.listing!.contactRemaining, equals(3));
+    });
+
     test('returns error when vehicle contact views exhausted', () async {
       final apiClient = ApiClient();
       apiClient.dio.httpClientAdapter = _StubAdapter((options) {

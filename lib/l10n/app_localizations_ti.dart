@@ -1634,6 +1634,16 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingFeatureThis => 'ነዚ ንብረት ፈሊኻ ኣውፅእ';
 
   @override
+  String get listingUnfeature => 'ምፍላይ ኣቋርጽ';
+
+  @override
+  String get listingUnfeatureConfirmTitle => 'ምፍላይ እቲ ምልክታ ከተቋርጽ ትደሊ ዲኻ?';
+
+  @override
+  String get listingUnfeatureConfirmMessage =>
+      'ነቲ ፍሉይ ደረጃ ከተልዕሎ ርግጸኛ ዲኻ? እንደገና ፈሊኻ ንምውጻእ ካልእ ኮታ ክትጥቀም የድልየካ እዩ።';
+
+  @override
   String get commonGoodMorning => 'ከመይ ሓዲርኩም';
 
   @override

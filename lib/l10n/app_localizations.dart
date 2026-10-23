@@ -3148,6 +3148,24 @@ abstract class AppLocalizations {
   /// **'Feature this Listing'**
   String get listingFeatureThis;
 
+  /// No description provided for @listingUnfeature.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfeature'**
+  String get listingUnfeature;
+
+  /// No description provided for @listingUnfeatureConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfeature Listing?'**
+  String get listingUnfeatureConfirmTitle;
+
+  /// No description provided for @listingUnfeatureConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove the featured status? You will need to use another quota slot to re-feature it.'**
+  String get listingUnfeatureConfirmMessage;
+
   /// No description provided for @commonGoodMorning.
   ///
   /// In en, this message translates to:

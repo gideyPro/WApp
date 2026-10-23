@@ -109,15 +109,14 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     TextButton(
                       onPressed: _isFeatureLoading ? null : () => _unfeatureListing(listing),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        minimumSize: const Size(48, 48),
                         foregroundColor: AppColors.stone500,
                       ),
                       child: _isFeatureLoading
                           ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
                           : Text(
-                              'Unfeature',
+                              l10n.listingUnfeature,
                               style: AppTextStyles.labelSmall.copyWith(
                                 color: AppColors.stone500,
                               ),
@@ -556,8 +555,8 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Unfeature Listing?'),
-        content: const Text('Your listing will no longer appear as featured. You can feature it again later.'),
+        title: Text(l10n.listingUnfeatureConfirmTitle),
+        content: Text(l10n.listingUnfeatureConfirmMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -565,7 +564,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Unfeature'),
+            child: Text(l10n.listingUnfeature),
           ),
         ],
       ),
