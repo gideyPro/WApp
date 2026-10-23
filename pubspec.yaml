@@ -78,11 +78,13 @@ flutter:
     - assets/images/
     - assets/lottie/
     - assets/icons/
+    - assets/fonts/plus_jakarta_sans/OFL.txt
+    - assets/fonts/noto_sans_ethiopic/OFL.txt
 
   fonts:
     - family: PlusJakartaSans
       fonts:
         - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-Variable.ttf
-    - family: Montserrat
+    - family: NotoSansEthiopic
       fonts:
-        - asset: assets/fonts/montserrat/Montserrat-Variable.ttf
+        - asset: assets/fonts/noto_sans_ethiopic/NotoSansEthiopic-Variable.ttf

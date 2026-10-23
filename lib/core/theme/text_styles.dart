@@ -6,7 +6,7 @@ class AppTextStyles {
   AppTextStyles._();
 
   static const String primaryFont = 'PlusJakartaSans';
-  static const List<String> fontFallback = ['Noto Sans Ethiopic'];
+  static const List<String> fontFallback = ['NotoSansEthiopic'];
 
   // Backward compatibility alias
   static const String headingFont = primaryFont;
