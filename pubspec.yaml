@@ -80,6 +80,9 @@ flutter:
     - assets/icons/
 
   fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-Variable.ttf
     - family: Montserrat
       fonts:
         - asset: assets/fonts/montserrat/Montserrat-Variable.ttf

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
-/// Wavemart Text Styles — Montserrat across all marketplace headings, body, labels, buttons, and captions.
+/// Wavemart Text Styles — Plus Jakarta Sans across all marketplace headings, body, labels, buttons, and captions.
 class AppTextStyles {
   AppTextStyles._();
 
-  static const String primaryFont = 'Montserrat';
+  static const String primaryFont = 'PlusJakartaSans';
   static const List<String> fontFallback = ['Noto Sans Ethiopic'];
 
   // Backward compatibility alias
