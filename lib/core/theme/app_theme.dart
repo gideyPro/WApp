@@ -174,8 +174,9 @@ class AppTheme {
         ),
       ),
 
-      // SnackBar Theme
+      // SnackBar Theme (Light)
       snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.stone900,
         contentTextStyle: AppTextStyles.bodyMedium.copyWith(
           color: Colors.white,
         ),
@@ -248,6 +249,8 @@ class AppTheme {
         onSurface: Colors.white,
         onSurfaceVariant: AppColors.primary300,
         outline: AppColors.primary600,
+        inverseSurface: Color(0xFF1E293B),
+        onInverseSurface: Colors.white,
       ),
 
       // Text Theme - Use AppTextStyles as the default for all text
@@ -419,14 +422,18 @@ class AppTheme {
         ),
       ),
 
-      // SnackBar Theme
+      // SnackBar Theme (Dark)
       snackBarTheme: SnackBarThemeData(
+        backgroundColor: const Color(0xFF1E293B),
         contentTextStyle: AppTextStyles.bodyMedium.copyWith(
           color: Colors.white,
         ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
+          side: BorderSide(
+            color: Colors.white.withValues(alpha: 0.12),
+          ),
         ),
       ),
 

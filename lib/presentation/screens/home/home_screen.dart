@@ -738,6 +738,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Future<void> _toggleFavorite(int listingId) async {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      context.push('/login');
+      return;
+    }
     setState(() => _togglingFavorites.add(listingId));
     await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
     if (mounted) setState(() => _togglingFavorites.remove(listingId));

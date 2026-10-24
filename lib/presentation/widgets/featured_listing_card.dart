@@ -236,6 +236,7 @@ class FeaturedListingCard extends ConsumerWidget {
       style: AppTextStyles.priceMedium.copyWith(
         fontSize: 17,
         fontWeight: FontWeight.w800,
+        color: AppColors.emerald600,
       ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,

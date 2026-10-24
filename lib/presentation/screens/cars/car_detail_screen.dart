@@ -198,13 +198,45 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     );
   }
 
+  Future<void> _toggleFavorite(int listingId, bool isFavorited) async {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      if (mounted) context.push('/login');
+      return;
+    }
+
+    final success =
+        await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
+
+    if (mounted) {
+      final l10n = AppLocalizations.of(context);
+      final msg = isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: success ? AppColors.success : AppColors.error,
+        ),
+      );
+    }
+  }
+
   Widget _buildContent(Listing listing) {
     final l10n = AppLocalizations.of(context);
+    final favState = ref.watch(favoritesProvider);
+    final isFavorited = favState.favorites.any((f) => f.id == listing.id);
+
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         title: Text(l10n.listingDetail),
         actions: [
+          IconButton(
+            icon: Icon(
+              isFavorited ? Icons.favorite : Icons.favorite_border,
+              color: isFavorited ? AppColors.error : context.theme.icon,
+            ),
+            onPressed: () => _toggleFavorite(listing.id, isFavorited),
+          ),
           IconButton(
             icon: Icon(Icons.share_outlined, color: context.theme.icon),
             onPressed: () => _shareListing(listing),

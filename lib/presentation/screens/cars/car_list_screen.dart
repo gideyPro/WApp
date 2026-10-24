@@ -8,6 +8,7 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../data/car_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../home/home_screen.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/listing_providers.dart';
 import '../../widgets/vehicle_listing_card.dart';
@@ -117,6 +118,11 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
   }
 
   Future<void> _toggleFavorite(int listingId) async {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      context.push('/login');
+      return;
+    }
     setState(() => _togglingFavorites.add(listingId));
     await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
     if (mounted) setState(() => _togglingFavorites.remove(listingId));

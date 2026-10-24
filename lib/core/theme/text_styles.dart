@@ -204,7 +204,7 @@ class AppTextStyles {
         fontFamilyFallback: fontFallback,
         fontSize: 22,
         fontWeight: FontWeight.w800,
-        color: AppColors.primary900,
+        color: AppColors.emerald600,
         height: 1.15,
         letterSpacing: -0.5,
       );
@@ -214,7 +214,7 @@ class AppTextStyles {
         fontFamilyFallback: fontFallback,
         fontSize: 16,
         fontWeight: FontWeight.w700,
-        color: AppColors.primary800,
+        color: AppColors.emerald600,
         height: 1.2,
       );
 

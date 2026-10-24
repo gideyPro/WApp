@@ -739,9 +739,11 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     );
   }
 
-  void _onCreateListingFromKyc() {
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    showCreateListingSheet(context);
+  Future<void> _onCreateListingFromKyc() async {
+    final result = await showCreateListingSheet(context);
+    if (result == true && mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
   }
 
   Widget _buildPendingState(KycStatusState state, AppLocalizations l10n) {

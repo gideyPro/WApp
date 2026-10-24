@@ -13,7 +13,7 @@ class FavoriteService {
 
   Future<FavoriteResponse> getFavorites({
     int page = 1,
-    int perPage = 15,
+    int perPage = 50,
   }) async {
     try {
       final response = await _apiClient.dio.get(
@@ -69,7 +69,11 @@ class FavoriteService {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        final added = (data is Map) ? (data['added'] ?? false) : false;
+        final innerData = (data is Map && data['data'] is Map)
+            ? data['data'] as Map
+            : (data is Map ? data : const {});
+        final added = innerData['added'] == true ||
+            (data is Map && data['added'] == true);
 
         return FavoriteResponse(
           success: true,

@@ -367,6 +367,15 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
     }
   }
 
+  String _formatCvDisplayName(String path) {
+    final clean = path.split('/').last.split('?').first;
+    final dotIndex = clean.lastIndexOf('.');
+    final ext = (dotIndex != -1 && dotIndex < clean.length - 1)
+        ? clean.substring(dotIndex + 1).toLowerCase()
+        : 'pdf';
+    return 'cv_file.$ext';
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -522,7 +531,9 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    _selectedCv!.path.split('/').last,
+                                    _selectedCv!.path.split('/').last.length > 25
+                                        ? _formatCvDisplayName(_selectedCv!.path)
+                                        : _selectedCv!.path.split('/').last,
                                     style: AppTextStyles.bodySmall.copyWith(
                                       fontSize: 13,
                                       color: context.theme.textPrimary,
@@ -545,13 +556,15 @@ class _EditJobSeekerProfileScreenState extends ConsumerState<EditJobSeekerProfil
                               children: [
                                 const Icon(Icons.picture_as_pdf, size: 18, color: Colors.red),
                                 const SizedBox(width: 8),
-                                Text(
-                                  profile!.cv!.split('/').last,
-                                  style: AppTextStyles.bodySmall.copyWith(
-                                    fontSize: 13,
-                                    color: context.theme.textMuted,
+                                Expanded(
+                                  child: Text(
+                                    _formatCvDisplayName(profile!.cv!),
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      fontSize: 13,
+                                      color: context.theme.textMuted,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),

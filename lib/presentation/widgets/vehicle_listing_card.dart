@@ -342,6 +342,7 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
         fontSize: 26,
         fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
+        color: AppColors.emerald600,
       ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,

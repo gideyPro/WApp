@@ -402,7 +402,9 @@ class PropertyListingCard extends ConsumerWidget {
     return Text(
       listing?.getLocalizedPrice(context) ??
           AppLocalizations.of(context).listingPriceOnRequest,
-      style: AppTextStyles.priceMedium,
+      style: AppTextStyles.priceMedium.copyWith(
+        color: AppColors.emerald600,
+      ),
     );
   }
 
