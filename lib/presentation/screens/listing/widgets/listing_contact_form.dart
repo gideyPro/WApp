@@ -164,7 +164,7 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
             const SizedBox(height: 12),
             const Divider(height: 1),
             const SizedBox(height: 12),
-            Text('WaveMart options', style: AppTextStyles.caption.copyWith(color: AppColors.stone500)),
+            Text(l10n.listingWaveMartOptions, style: AppTextStyles.caption.copyWith(color: AppColors.stone500)),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -12,7 +12,6 @@ import '../../../data/models/job_requirement_item.dart';
 import '../../../data/models/job_seeker_profile.dart';
 import '../../../data/services/message_service.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/job_seeker_providers.dart';
 import '../../widgets/common/wave_card.dart';
@@ -28,7 +27,6 @@ class JobSeekerDetailScreen extends ConsumerStatefulWidget {
 
 class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
   bool _isActionLoading = false;
-  String? _loadingAction; // 'chat', 'voice', 'video'
 
   Future<void> _startChat(int userId) async {
     final authState = ref.read(authStateProvider);
@@ -37,10 +35,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
       return;
     }
 
-    setState(() {
-      _isActionLoading = true;
-      _loadingAction = 'chat';
-    });
+    setState(() => _isActionLoading = true);
     try {
       final l10n = AppLocalizations.of(context);
       final result = await MessageService().startDirectConversation(userId: userId);
@@ -65,71 +60,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
       }
     } finally {
       if (mounted) {
-        setState(() {
-          _isActionLoading = false;
-          _loadingAction = null;
-        });
-      }
-    }
-  }
-
-  Future<void> _startCall(int userId, {required bool isVideo}) async {
-    final authState = ref.read(authStateProvider);
-    if (!authState.isAuthenticated) {
-      context.push('/login');
-      return;
-    }
-
-    setState(() {
-      _isActionLoading = true;
-      _loadingAction = isVideo ? 'video' : 'voice';
-    });
-    try {
-      final l10n = AppLocalizations.of(context);
-      final messageService = MessageService();
-      final convResult = await messageService.startDirectConversation(userId: userId);
-      if (!convResult.success || convResult.conversation == null) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(convResult.message.isNotEmpty ? convResult.message : l10n.commonError),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
-        return;
-      }
-
-      final conferenceService = ref.read(conferenceServiceProvider);
-      final callResult = await conferenceService.startDirectCall(
-        conversationId: convResult.conversation!.id,
-        isVideo: isVideo,
-      );
-      if (callResult.success && callResult.conference != null && mounted) {
-        context.push('/call/${callResult.conference!.id}', extra: {'is_video': isVideo});
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(callResult.message.isNotEmpty ? callResult.message : l10n.commonError),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context).commonError),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isActionLoading = false;
-          _loadingAction = null;
-        });
+        setState(() => _isActionLoading = false);
       }
     }
   }
@@ -342,44 +273,11 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
               ],
             ),
           ] else ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _ContactActionButton(
-                  icon: Icons.message_outlined,
-                  label: l10n.jobSeekerMessage,
-                  color: AppColors.accent600,
-                  isLoading: _isActionLoading && _loadingAction == 'chat',
-                  onTap: () {
-                    if (!_isActionLoading) _startChat(profile.userId);
-                  },
-                ),
-                _ContactActionButton(
-                  icon: Icons.call,
-                  label: l10n.helpCall,
-                  color: AppColors.cta600,
-                  isLoading: _isActionLoading && _loadingAction == 'voice',
-                  onTap: () {
-                    if (!_isActionLoading) _startCall(profile.userId, isVideo: false);
-                  },
-                ),
-                _ContactActionButton(
-                  icon: Icons.videocam,
-                  label: l10n.seekerVideo,
-                  color: const Color(0xFF8B5CF6),
-                  isLoading: _isActionLoading && _loadingAction == 'video',
-                  onTap: () {
-                    if (!_isActionLoading) _startCall(profile.userId, isVideo: true);
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: _isActionLoading ? null : () => _startChat(profile.userId),
-                icon: _isActionLoading && _loadingAction == 'chat'
+                icon: _isActionLoading
                     ? const SizedBox(
                         width: 18,
                         height: 18,
@@ -716,61 +614,6 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
           onRetry: () => ref.invalidate(jobSeekerDetailProvider(widget.profileId)),
         ),
       ),
-    );
-  }
-}
-
-class _ContactActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final bool isLoading;
-  final VoidCallback onTap;
-
-  const _ContactActionButton({
-    required this.icon,
-    required this.label,
-    required this.color,
-    this.isLoading = false,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Material(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(14),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(14),
-            onTap: isLoading ? null : onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: isLoading
-                  ? SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: color,
-                      ),
-                    )
-                  : Icon(icon, size: 24, color: color),
-            ),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          style: AppTextStyles.caption.copyWith(
-            color: context.theme.textSecondary,
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-          ),
-        ),
-      ],
     );
   }
 }

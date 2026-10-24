@@ -963,7 +963,9 @@
   "seekerPdfDocument": "PDF Document",
   "seekerVideo": "Video",
   "seekerWaveMartOptions": "WaveMart options",
-  "seekerContactOptionsSubtitle": "In-app messaging and calling with candidate",
+  "seekerContactOptionsSubtitle": "Direct in-app messaging with candidate",
+  "listingWaveMartOptions": "WaveMart options",
+  "listingMessageSeller": "Message",
   "seekerYearsExp": "{years} yrs exp",
   "@seekerYearsExp": {
     "placeholders": {

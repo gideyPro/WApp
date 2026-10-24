@@ -22,6 +22,7 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../listing/widgets/listing_gallery.dart';
+import '../listing/widgets/listing_message_button.dart';
 import '../listing/widgets/listing_report_sheet.dart';
 import '../../../data/services/listing_service.dart';
 
@@ -625,6 +626,19 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+              const Divider(height: 1),
+              const SizedBox(height: 12),
+              Center(
+                child: Text(
+                  l10n.listingWaveMartOptions,
+                  style: AppTextStyles.caption.copyWith(
+                    color: context.theme.textMuted,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              ListingMessageButton(listingId: listing.id),
             ],
           ),
         ),

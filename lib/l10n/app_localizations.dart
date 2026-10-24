@@ -5731,8 +5731,20 @@ abstract class AppLocalizations {
   /// No description provided for @seekerContactOptionsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'In-app messaging and calling with candidate'**
+  /// **'Direct in-app messaging with candidate'**
   String get seekerContactOptionsSubtitle;
+
+  /// No description provided for @listingWaveMartOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'WaveMart options'**
+  String get listingWaveMartOptions;
+
+  /// No description provided for @listingMessageSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get listingMessageSeller;
 
   /// No description provided for @seekerYearsExp.
   ///

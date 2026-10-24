@@ -3008,7 +3008,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seekerContactOptionsSubtitle =>
-      'In-app messaging and calling with candidate';
+      'Direct in-app messaging with candidate';
+
+  @override
+  String get listingWaveMartOptions => 'WaveMart options';
+
+  @override
+  String get listingMessageSeller => 'Message';
 
   @override
   String seekerYearsExp(String years) {
