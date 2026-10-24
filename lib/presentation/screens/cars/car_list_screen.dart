@@ -25,7 +25,8 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
-  UnifiedFilterValues _filterValues = const UnifiedFilterValues(category: HomeCategory.vehicles);
+  UnifiedFilterValues _filterValues =
+      const UnifiedFilterValues(category: HomeCategory.vehicles);
   Map<String, dynamic> _activeFilters = {};
   final Set<int> _togglingFavorites = {};
 
@@ -45,9 +46,9 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
       if (state.hasMore && !state.isLoadingMore) {
         final page = state.currentPage + 1;
         ref.read(carListingsProvider.notifier).loadListings(
-          page: page,
-          filters: _activeFilters.isNotEmpty ? _activeFilters : null,
-        );
+              page: page,
+              filters: _activeFilters.isNotEmpty ? _activeFilters : null,
+            );
       }
     }
   }
@@ -67,8 +68,8 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
     }
     _activeFilters = filters;
     ref.read(carListingsProvider.notifier).loadListings(
-      filters: filters.isNotEmpty ? filters : null,
-    );
+          filters: filters.isNotEmpty ? filters : null,
+        );
   }
 
   void _showFilterSheet() async {
@@ -84,10 +85,10 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
         showCategoryToggle: false,
       ),
     );
-    if (result != null) {
-      setState(() => _filterValues = result);
-      _performSearch();
-    }
+    if (result == null) return;
+    if (result == _filterValues) return;
+    setState(() => _filterValues = result);
+    _performSearch();
   }
 
   void _clearSearch() {
@@ -103,7 +104,8 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
   void _clearAllFilters() {
     _searchController.clear();
     setState(() {
-      _filterValues = const UnifiedFilterValues(category: HomeCategory.vehicles);
+      _filterValues =
+          const UnifiedFilterValues(category: HomeCategory.vehicles);
       _activeFilters = {};
     });
     ref.read(carListingsProvider.notifier).loadListings();
@@ -130,7 +132,8 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
     super.dispose();
   }
 
-  bool get _hasActiveFilters => _filterValues.hasAnyFilter || _searchController.text.isNotEmpty;
+  bool get _hasActiveFilters =>
+      _filterValues.hasAnyFilter || _searchController.text.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +147,8 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
         title: Text(l10n.listingCarPlural),
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_list, color: _filterValues.hasAnyFilter ? AppColors.accent500 : null),
+            icon: Icon(Icons.filter_list,
+                color: _filterValues.hasAnyFilter ? AppColors.accent500 : null),
             onPressed: _showFilterSheet,
           ),
         ],
@@ -160,36 +164,74 @@ class _CarListScreenState extends ConsumerState<CarListScreen> {
                     ? WaveMessageScreen.error(
                         isEmbedded: true,
                         subtitle: state.errorMessage!,
-                        onRetry: () => ref.read(carListingsProvider.notifier).loadListings(),
+                        onRetry: () => ref
+                            .read(carListingsProvider.notifier)
+                            .loadListings(),
                       )
-                    : RefreshIndicator(
-                        onRefresh: () async {
-                          await ref.read(carListingsProvider.notifier).loadListings(
-                            filters: _activeFilters.isNotEmpty ? _activeFilters : null,
-                          );
-                        },
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(12),
-                          itemCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index == state.listings.length) {
-                              return const Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                              );
-                            }
-                            final listing = state.listings[index];
-return VehicleListingCard(
-              listing: listing,
-              isFavorite: _isFavorite(listing.id),
-              onFavorite: () => _toggleFavorite(listing.id),
-              isTogglingFavorite: _isToggling(listing.id),
-              onTap: () => context.push('/cars/${listing.id}'),
-            );
-                          },
-                        ),
-                      ),
+                    : state.listings.isEmpty
+                        ? WaveEmptyState(
+                            icon: Icons.directions_car_outlined,
+                            title: l10n.searchNoResultsTitle,
+                            subtitle: l10n.searchNoResultsSubtitle,
+                            actionLabel:
+                                _hasActiveFilters ? l10n.searchClearAll : null,
+                            onAction:
+                                _hasActiveFilters ? _clearAllFilters : null,
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () async {
+                              await ref
+                                  .read(carListingsProvider.notifier)
+                                  .loadListings(
+                                    filters: _activeFilters.isNotEmpty
+                                        ? _activeFilters
+                                        : null,
+                                  );
+                            },
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.all(12),
+                              itemCount: 1 +
+                                  state.listings.length +
+                                  (state.isLoadingMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Text(
+                                      l10n.searchResultsCount(state.total),
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        color: context.textMuted,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                final listingIndex = index - 1;
+                                if (listingIndex >= state.listings.length) {
+                                  return const Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2)),
+                                  );
+                                }
+                                final listing = state.listings[listingIndex];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: VehicleListingCard(
+                                    listing: listing,
+                                    isFavorite: _isFavorite(listing.id),
+                                    onFavorite: () =>
+                                        _toggleFavorite(listing.id),
+                                    isTogglingFavorite: _isToggling(listing.id),
+                                    onTap: () =>
+                                        context.push('/cars/${listing.id}'),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
           ),
         ],
       ),
@@ -205,17 +247,22 @@ return VehicleListingCard(
         onChanged: _onSearchChanged,
         decoration: InputDecoration(
           hintText: l10n.searchCars,
-          hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textSecondary.withValues(alpha: 0.5)),
-          prefixIcon: Icon(Icons.search, size: 20, color: context.textSecondary.withValues(alpha: 0.5)),
+          hintStyle: AppTextStyles.bodySmall
+              .copyWith(color: context.textSecondary.withValues(alpha: 0.5)),
+          prefixIcon: Icon(Icons.search,
+              size: 20, color: context.textSecondary.withValues(alpha: 0.5)),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-                  icon: Icon(Icons.clear, size: 18, color: context.textSecondary.withValues(alpha: 0.5)),
+                  icon: Icon(Icons.clear,
+                      size: 18,
+                      color: context.textSecondary.withValues(alpha: 0.5)),
                   onPressed: _clearSearch,
                 )
               : null,
           filled: true,
           fillColor: context.theme.inputBg,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: context.theme.border),
@@ -240,22 +287,41 @@ return VehicleListingCard(
           children: [
             if (_filterValues.listingType != null)
               _filterChip(
-                _filterValues.listingType == 'sale' ? l10n.listingForSale : l10n.listingForRent,
+                _filterValues.listingType == 'sale'
+                    ? l10n.listingForSale
+                    : l10n.listingForRent,
                 () => _removeFilter('listing_type'),
               ),
             if (_filterValues.make != null)
-              _filterChip('${l10n.listingMake}: ${makeLabel(_filterValues.make!, l10n)}', () => _removeFilter('make')),
+              _filterChip(
+                  '${l10n.listingMake}: ${makeLabel(_filterValues.make!, l10n)}',
+                  () => _removeFilter('make')),
             if (_filterValues.model != null)
-              _filterChip('${l10n.listingModel}: ${modelLabel(_filterValues.model!, l10n)}', () => _removeFilter('model')),
+              _filterChip(
+                  '${l10n.listingModel}: ${modelLabel(_filterValues.model!, l10n)}',
+                  () => _removeFilter('model')),
             if (_filterValues.yearMin != null)
-              _filterChip('${l10n.listingYear}: ${_filterValues.yearMin}-${_filterValues.yearMax ?? ''}', () => _removeFilter('year_min')),
+              _filterChip(
+                  '${l10n.listingYear}: ${_filterValues.yearMin}-${_filterValues.yearMax ?? ''}',
+                  () => _removeFilter('year_min')),
             if (_filterValues.vehicleCategory != null)
-              _filterChip(vehicleCategoryLabel(_filterValues.vehicleCategory!, l10n), () => _removeFilter('vehicle_category')),
+              _filterChip(
+                  vehicleCategoryLabel(_filterValues.vehicleCategory!, l10n),
+                  () => _removeFilter('vehicle_category')),
             if (_filterValues.bodyType != null)
-              _filterChip(bodyTypeLabel(_filterValues.bodyType!, l10n), () => _removeFilter('body_type')),
+              _filterChip(bodyTypeLabel(_filterValues.bodyType!, l10n),
+                  () => _removeFilter('body_type')),
+            if (_filterValues.condition != null)
+              _filterChip(
+                '${l10n.listingCondition}: ${conditionLabel(_filterValues.condition!, l10n)}',
+                () => _removeFilter('condition'),
+              ),
             if (_filterValues.mileageMax != null)
-              _filterChip('${l10n.listingMileageMax}: ${_filterValues.mileageMax}', () => _removeFilter('mileage_max')),
-            if (_filterValues.priceMin != null || _filterValues.priceMax != null)
+              _filterChip(
+                  '${l10n.listingMileageMax}: ${_filterValues.mileageMax}',
+                  () => _removeFilter('mileage_max')),
+            if (_filterValues.priceMin != null ||
+                _filterValues.priceMax != null)
               _filterChip(
                 '${_filterValues.priceMin != null ? 'ETB ${_filterValues.priceMin}' : ''} - ${_filterValues.priceMax != null ? 'ETB ${_filterValues.priceMax}' : ''}',
                 () => _removeFilter('price_min'),
@@ -267,7 +333,9 @@ return VehicleListingCard(
               onTap: _clearAllFilters,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Icon(Icons.close, size: 16, color: context.textSecondary.withValues(alpha: 0.5)),
+                child: Icon(Icons.close,
+                    size: 16,
+                    color: context.textSecondary.withValues(alpha: 0.5)),
               ),
             ),
           ],
@@ -288,11 +356,14 @@ return VehicleListingCard(
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(label, style: AppTextStyles.labelSmall.copyWith(color: AppColors.accent500, fontWeight: FontWeight.w600)),
+          Text(label,
+              style: AppTextStyles.labelSmall.copyWith(
+                  color: AppColors.accent500, fontWeight: FontWeight.w600)),
           const SizedBox(width: 4),
           GestureDetector(
             onTap: onRemove,
-            child: Icon(Icons.close, size: 14, color: AppColors.accent500.withValues(alpha: 0.7)),
+            child: Icon(Icons.close,
+                size: 14, color: AppColors.accent500.withValues(alpha: 0.7)),
           ),
         ],
       ),

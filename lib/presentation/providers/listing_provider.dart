@@ -10,32 +10,38 @@ final listingServiceProvider = Provider<ListingService>((ref) {
 });
 
 /// All listings with pagination (Home Screen)
-final listingsProvider = StateNotifierProvider<ListingsNotifier, ListingsState>((ref) {
+final listingsProvider =
+    StateNotifierProvider<ListingsNotifier, ListingsState>((ref) {
   return ListingsNotifier(ref.watch(listingServiceProvider));
 });
 
 /// Search results provider (Search Screen)
-final searchResultsProvider = StateNotifierProvider.autoDispose<ListingsNotifier, ListingsState>((ref) {
+final searchResultsProvider =
+    StateNotifierProvider.autoDispose<ListingsNotifier, ListingsState>((ref) {
   return ListingsNotifier(ref.watch(listingServiceProvider));
 });
 
 /// Featured listings
-final featuredListingsProvider = StateNotifierProvider<FeaturedListingsNotifier, ListingsState>((ref) {
+final featuredListingsProvider =
+    StateNotifierProvider<FeaturedListingsNotifier, ListingsState>((ref) {
   return FeaturedListingsNotifier(ref.watch(listingServiceProvider));
 });
 
 /// VIP listings (for VIP catalogue on home screen)
-final vipListingsProvider = StateNotifierProvider<VipListingsNotifier, ListingsState>((ref) {
+final vipListingsProvider =
+    StateNotifierProvider<VipListingsNotifier, ListingsState>((ref) {
   return VipListingsNotifier(ref.watch(listingServiceProvider));
 });
 
 /// Single listing detail
-final listingDetailProvider = StateNotifierProvider<ListingDetailNotifier, ListingDetailState>((ref) {
+final listingDetailProvider =
+    StateNotifierProvider<ListingDetailNotifier, ListingDetailState>((ref) {
   return ListingDetailNotifier(ref.watch(listingServiceProvider));
 });
 
 /// Similar listings
-final similarListingsProvider = FutureProvider.family<ListingResponse, int>((ref, listingId) {
+final similarListingsProvider =
+    FutureProvider.family<ListingResponse, int>((ref, listingId) {
   return ref.watch(listingServiceProvider).getSimilarListings(listingId);
 });
 
@@ -44,7 +50,10 @@ class ListingsNotifier extends StateNotifier<ListingsState> {
 
   ListingsNotifier(this._listingService) : super(const ListingsState.initial());
 
-  Future<void> loadListings({int page = 1, Map<String, dynamic>? filters}) async {
+  Future<void> loadListings(
+      {int page = 1, Map<String, dynamic>? filters}) async {
+    final isUnfiltered = filters == null || filters.isEmpty;
+
     if (page == 1) {
       state = state.copyWith(isLoading: true, errorMessage: null);
     } else {
@@ -69,13 +78,14 @@ class ListingsNotifier extends StateNotifier<ListingsState> {
         hasMore: (response.currentPage ?? page) < (response.totalPages ?? 1),
       );
 
-      // Cache page 1 results for offline fallback
-      if (page == 1 && newListings.isNotEmpty) {
+      // Cache page 1 results for offline fallback. Filtered result sets must
+      // never overwrite the unfiltered catalogue.
+      if (page == 1 && isUnfiltered && newListings.isNotEmpty) {
         _cacheListings(newListings, response.total ?? 0);
       }
     } else {
       // Try loading from cache on error
-      if (page == 1 && state.listings.isEmpty) {
+      if (page == 1 && isUnfiltered && state.listings.isEmpty) {
         final cached = await _loadCachedListings();
         if (cached != null) {
           state = ListingsState.loaded(
@@ -102,7 +112,8 @@ class ListingsNotifier extends StateNotifier<ListingsState> {
   Future<void> _cacheListings(List<Listing> listings, int total) async {
     try {
       final box = await Hive.openBox('listings_cache');
-      await box.put('all_listings', jsonEncode(listings.map((l) => l.toJson()).toList()));
+      await box.put(
+          'all_listings', jsonEncode(listings.map((l) => l.toJson()).toList()));
       await box.put('all_listings_total', total);
     } catch (_) {}
   }
@@ -169,7 +180,8 @@ class FeaturedListingsNotifier extends StateNotifier<ListingsState> {
   Future<void> _cacheFeaturedListings(List<Listing> listings) async {
     try {
       final box = await Hive.openBox('listings_cache');
-      await box.put('featured_listings', jsonEncode(listings.map((l) => l.toJson()).toList()));
+      await box.put('featured_listings',
+          jsonEncode(listings.map((l) => l.toJson()).toList()));
     } catch (_) {}
   }
 
@@ -235,7 +247,8 @@ class VipListingsNotifier extends StateNotifier<ListingsState> {
   Future<void> _cacheVipListings(List<Listing> listings) async {
     try {
       final box = await Hive.openBox('listings_cache');
-      await box.put('vip_listings', jsonEncode(listings.map((l) => l.toJson()).toList()));
+      await box.put(
+          'vip_listings', jsonEncode(listings.map((l) => l.toJson()).toList()));
     } catch (_) {}
   }
 
@@ -370,9 +383,10 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
     if (current == null) return null;
     final response = await _listingService.revealContact(id);
     if (response.success) {
-      final newRemaining = (!response.alreadyRevealed && current.contactRemaining > 0)
-          ? current.contactRemaining - 1
-          : current.contactRemaining;
+      final newRemaining =
+          (!response.alreadyRevealed && current.contactRemaining > 0)
+              ? current.contactRemaining - 1
+              : current.contactRemaining;
       updateListingInline(current.copyWith(
         contactRevealed: true,
         revealedName: response.name,
@@ -389,7 +403,6 @@ class ListingDetailNotifier extends StateNotifier<ListingDetailState> {
       'already_revealed': response.alreadyRevealed,
     };
   }
-
 }
 
 class ListingsState {

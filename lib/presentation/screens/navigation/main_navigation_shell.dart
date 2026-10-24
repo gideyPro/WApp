@@ -64,7 +64,9 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     if (created == true && mounted) {
       ref.read(listingsProvider.notifier).loadListings();
       ref.read(carListingsProvider.notifier).loadListings();
+      ref.read(homeCarListingsProvider.notifier).loadListings();
       ref.read(jobListingsProvider.notifier).loadListings();
+      ref.read(homeJobListingsProvider.notifier).loadListings();
       ref.read(subscriptionProvider.notifier).refresh();
     }
   }

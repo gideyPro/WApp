@@ -8,15 +8,24 @@ final jobServiceProvider = Provider<JobService>((ref) {
   return JobService();
 });
 
-final jobListingsProvider = StateNotifierProvider<JobListingsNotifier, ListingsState>((ref) {
+final jobListingsProvider =
+    StateNotifierProvider<JobListingsNotifier, ListingsState>((ref) {
   return JobListingsNotifier(ref.watch(jobServiceProvider));
 });
 
-final jobDetailProvider = StateNotifierProvider<JobDetailNotifier, ListingDetailState>((ref) {
+/// Home-screen feed, isolated from the dedicated jobs list screen.
+final homeJobListingsProvider =
+    StateNotifierProvider<JobListingsNotifier, ListingsState>((ref) {
+  return JobListingsNotifier(ref.watch(jobServiceProvider));
+});
+
+final jobDetailProvider =
+    StateNotifierProvider<JobDetailNotifier, ListingDetailState>((ref) {
   return JobDetailNotifier(ref.watch(jobServiceProvider));
 });
 
-final similarJobsProvider = FutureProvider.family<ListingResponse, int>((ref, listingId) {
+final similarJobsProvider =
+    FutureProvider.family<ListingResponse, int>((ref, listingId) {
   return ref.watch(jobServiceProvider).getSimilarListings(listingId);
 });
 
@@ -25,7 +34,8 @@ class JobListingsNotifier extends StateNotifier<ListingsState> {
 
   JobListingsNotifier(this._jobService) : super(const ListingsState.initial());
 
-  Future<void> loadListings({int page = 1, Map<String, dynamic>? filters}) async {
+  Future<void> loadListings(
+      {int page = 1, Map<String, dynamic>? filters}) async {
     if (page == 1) {
       state = state.copyWith(isLoading: true, errorMessage: null);
     } else {
@@ -66,7 +76,8 @@ class JobListingsNotifier extends StateNotifier<ListingsState> {
 class JobDetailNotifier extends StateNotifier<ListingDetailState> {
   final JobService _jobService;
 
-  JobDetailNotifier(this._jobService) : super(const ListingDetailState.initial());
+  JobDetailNotifier(this._jobService)
+      : super(const ListingDetailState.initial());
 
   Future<void> loadListing(int id) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
@@ -137,9 +148,10 @@ class JobDetailNotifier extends StateNotifier<ListingDetailState> {
         revealedContact: response.contact,
         sellerName: response.name,
         sellerPhone: response.contact,
-        contactRemaining: (!response.alreadyRevealed && state.listing!.contactRemaining > 0)
-            ? state.listing!.contactRemaining - 1
-            : state.listing!.contactRemaining,
+        contactRemaining:
+            (!response.alreadyRevealed && state.listing!.contactRemaining > 0)
+                ? state.listing!.contactRemaining - 1
+                : state.listing!.contactRemaining,
       );
       state = ListingDetailState.loaded(updated);
       return {

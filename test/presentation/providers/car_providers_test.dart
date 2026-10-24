@@ -35,8 +35,23 @@ void main() {
     FlutterSecureStorage.setMockInitialValues({});
   });
 
+  group('home feed isolation', () {
+    test(
+        'homeCarListingsProvider does not share state with carListingsProvider',
+        () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final listNotifier = container.read(carListingsProvider.notifier);
+      final homeNotifier = container.read(homeCarListingsProvider.notifier);
+
+      expect(identical(listNotifier, homeNotifier), isFalse);
+    });
+  });
+
   group('CarDetailNotifier.revealContact', () {
-    test('reveals contact and decrements remaining vehicle contact quota', () async {
+    test('reveals contact and decrements remaining vehicle contact quota',
+        () async {
       final apiClient = ApiClient();
       apiClient.dio.httpClientAdapter = _StubAdapter((options) {
         expect(options.method, 'POST');

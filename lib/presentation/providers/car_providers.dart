@@ -8,15 +8,25 @@ final carServiceProvider = Provider<CarService>((ref) {
   return CarService();
 });
 
-final carListingsProvider = StateNotifierProvider<CarListingsNotifier, ListingsState>((ref) {
+final carListingsProvider =
+    StateNotifierProvider<CarListingsNotifier, ListingsState>((ref) {
   return CarListingsNotifier(ref.watch(carServiceProvider));
 });
 
-final carDetailProvider = StateNotifierProvider<CarDetailNotifier, ListingDetailState>((ref) {
+/// Home-screen feed, isolated from the dedicated vehicle list screen so the
+/// two never share filters or pagination state.
+final homeCarListingsProvider =
+    StateNotifierProvider<CarListingsNotifier, ListingsState>((ref) {
+  return CarListingsNotifier(ref.watch(carServiceProvider));
+});
+
+final carDetailProvider =
+    StateNotifierProvider<CarDetailNotifier, ListingDetailState>((ref) {
   return CarDetailNotifier(ref.watch(carServiceProvider));
 });
 
-final similarCarsProvider = FutureProvider.family<ListingResponse, int>((ref, listingId) {
+final similarCarsProvider =
+    FutureProvider.family<ListingResponse, int>((ref, listingId) {
   return ref.watch(carServiceProvider).getSimilarListings(listingId);
 });
 
@@ -25,7 +35,8 @@ class CarListingsNotifier extends StateNotifier<ListingsState> {
 
   CarListingsNotifier(this._carService) : super(const ListingsState.initial());
 
-  Future<void> loadListings({int page = 1, Map<String, dynamic>? filters}) async {
+  Future<void> loadListings(
+      {int page = 1, Map<String, dynamic>? filters}) async {
     if (page == 1) {
       state = state.copyWith(isLoading: true, errorMessage: null);
     } else {
@@ -66,7 +77,8 @@ class CarListingsNotifier extends StateNotifier<ListingsState> {
 class CarDetailNotifier extends StateNotifier<ListingDetailState> {
   final CarService _carService;
 
-  CarDetailNotifier(this._carService) : super(const ListingDetailState.initial());
+  CarDetailNotifier(this._carService)
+      : super(const ListingDetailState.initial());
 
   Future<void> loadListing(int id) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
@@ -155,9 +167,10 @@ class CarDetailNotifier extends StateNotifier<ListingDetailState> {
         revealedContact: response.contact,
         sellerName: response.name,
         sellerPhone: response.contact,
-        contactRemaining: (!response.alreadyRevealed && state.listing!.contactRemaining > 0)
-            ? state.listing!.contactRemaining - 1
-            : state.listing!.contactRemaining,
+        contactRemaining:
+            (!response.alreadyRevealed && state.listing!.contactRemaining > 0)
+                ? state.listing!.contactRemaining - 1
+                : state.listing!.contactRemaining,
       );
       state = ListingDetailState.loaded(updated);
       return {

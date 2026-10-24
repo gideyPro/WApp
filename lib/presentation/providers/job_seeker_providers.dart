@@ -63,9 +63,11 @@ class JobSeekerProfilesState {
 class JobSeekerProfilesNotifier extends StateNotifier<JobSeekerProfilesState> {
   final JobSeekerService _service;
 
-  JobSeekerProfilesNotifier(this._service) : super(const JobSeekerProfilesState.initial());
+  JobSeekerProfilesNotifier(this._service)
+      : super(const JobSeekerProfilesState.initial());
 
-  Future<void> loadProfiles({int page = 1, Map<String, dynamic>? filters}) async {
+  Future<void> loadProfiles(
+      {int page = 1, Map<String, dynamic>? filters}) async {
     if (page == 1) {
       state = state.copyWith(isLoading: true, errorMessage: null);
     } else {
@@ -74,7 +76,7 @@ class JobSeekerProfilesNotifier extends StateNotifier<JobSeekerProfilesState> {
 
     try {
       final response = await _service.getProfiles(page: page, filters: filters);
-      
+
       final List<JobSeekerProfile> newProfiles = [
         if (page != 1) ...state.profiles,
         ...(response.profiles ?? <JobSeekerProfile>[]),
@@ -103,11 +105,21 @@ class JobSeekerProfilesNotifier extends StateNotifier<JobSeekerProfilesState> {
   }
 }
 
-final jobSeekerProfilesProvider = StateNotifierProvider<JobSeekerProfilesNotifier, JobSeekerProfilesState>((ref) {
+final jobSeekerProfilesProvider =
+    StateNotifierProvider<JobSeekerProfilesNotifier, JobSeekerProfilesState>(
+        (ref) {
   return JobSeekerProfilesNotifier(ref.watch(jobSeekerServiceProvider));
 });
 
-final jobSeekerDetailProvider = FutureProvider.family<JobSeekerProfile, int>((ref, profileId) async {
+/// Home-screen seeker feed, isolated from the dedicated job-seekers screen.
+final homeJobSeekerProfilesProvider =
+    StateNotifierProvider<JobSeekerProfilesNotifier, JobSeekerProfilesState>(
+        (ref) {
+  return JobSeekerProfilesNotifier(ref.watch(jobSeekerServiceProvider));
+});
+
+final jobSeekerDetailProvider =
+    FutureProvider.family<JobSeekerProfile, int>((ref, profileId) async {
   final service = ref.watch(jobSeekerServiceProvider);
   final response = await service.getProfile(profileId);
   if (response.profile != null) {
@@ -116,7 +128,8 @@ final jobSeekerDetailProvider = FutureProvider.family<JobSeekerProfile, int>((re
   throw Exception(response.message ?? 'Failed to load profile');
 });
 
-final myJobSeekerProfileProvider = FutureProvider<JobSeekerProfile?>((ref) async {
+final myJobSeekerProfileProvider =
+    FutureProvider<JobSeekerProfile?>((ref) async {
   final service = ref.watch(jobSeekerServiceProvider);
   final response = await service.getMyProfile();
   return response.profile;

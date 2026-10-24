@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'widgets/job_listing_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
@@ -23,7 +24,8 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
-  UnifiedFilterValues _filterValues = const UnifiedFilterValues(category: HomeCategory.jobs);
+  UnifiedFilterValues _filterValues =
+      const UnifiedFilterValues(category: HomeCategory.jobs);
   Map<String, dynamic> _activeFilters = {};
 
   @override
@@ -42,9 +44,9 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
       if (state.hasMore && !state.isLoadingMore) {
         final page = state.currentPage + 1;
         ref.read(jobListingsProvider.notifier).loadListings(
-          page: page,
-          filters: _activeFilters.isNotEmpty ? _activeFilters : null,
-        );
+              page: page,
+              filters: _activeFilters.isNotEmpty ? _activeFilters : null,
+            );
       }
     }
   }
@@ -64,8 +66,8 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
     }
     _activeFilters = filters;
     ref.read(jobListingsProvider.notifier).loadListings(
-      filters: filters.isNotEmpty ? filters : null,
-    );
+          filters: filters.isNotEmpty ? filters : null,
+        );
   }
 
   void _showFilterSheet() async {
@@ -81,10 +83,10 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
         showCategoryToggle: false,
       ),
     );
-    if (result != null) {
-      setState(() => _filterValues = result);
-      _performSearch();
-    }
+    if (result == null) return;
+    if (result == _filterValues) return;
+    setState(() => _filterValues = result);
+    _performSearch();
   }
 
   void _clearSearch() {
@@ -114,7 +116,8 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
     super.dispose();
   }
 
-  bool get _hasActiveFilters => _filterValues.hasAnyFilter || _searchController.text.isNotEmpty;
+  bool get _hasActiveFilters =>
+      _filterValues.hasAnyFilter || _searchController.text.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +130,8 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
         title: Text(l10n.homeJobs),
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_list, color: _filterValues.hasAnyFilter ? AppColors.accent500 : null),
+            icon: Icon(Icons.filter_list,
+                color: _filterValues.hasAnyFilter ? AppColors.accent500 : null),
             onPressed: _showFilterSheet,
           ),
         ],
@@ -143,30 +147,69 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
                     ? WaveMessageScreen.error(
                         isEmbedded: true,
                         subtitle: state.errorMessage!,
-                        onRetry: () => ref.read(jobListingsProvider.notifier).loadListings(),
+                        onRetry: () => ref
+                            .read(jobListingsProvider.notifier)
+                            .loadListings(),
                       )
-                    : RefreshIndicator(
-                        onRefresh: () async {
-                          await ref.read(jobListingsProvider.notifier).loadListings(
-                            filters: _activeFilters.isNotEmpty ? _activeFilters : null,
-                          );
-                        },
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(12),
-                          itemCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index == state.listings.length) {
-                              return const Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                              );
-                            }
-                            final listing = state.listings[index];
-                            return JobListingCard(job: listing);
-                          },
-                        ),
-                      ),
+                    : state.listings.isEmpty
+                        ? WaveEmptyState(
+                            icon: Icons.work_outline_rounded,
+                            title: l10n.searchNoResultsTitle,
+                            subtitle: l10n.searchNoResultsSubtitle,
+                            actionLabel:
+                                _hasActiveFilters ? l10n.searchClearAll : null,
+                            onAction:
+                                _hasActiveFilters ? _clearAllFilters : null,
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () async {
+                              await ref
+                                  .read(jobListingsProvider.notifier)
+                                  .loadListings(
+                                    filters: _activeFilters.isNotEmpty
+                                        ? _activeFilters
+                                        : null,
+                                  );
+                            },
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.all(12),
+                              itemCount: 1 +
+                                  state.listings.length +
+                                  (state.isLoadingMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Text(
+                                      l10n.searchResultsCount(state.total),
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        color: context.textMuted,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                final listingIndex = index - 1;
+                                if (listingIndex >= state.listings.length) {
+                                  return const Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2)),
+                                  );
+                                }
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: JobListingCard(
+                                    job: state.listings[listingIndex],
+                                    onTap: () => context.push(
+                                        '/jobs/${state.listings[listingIndex].id}'),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
           ),
         ],
       ),
@@ -182,17 +225,22 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
         onChanged: _onSearchChanged,
         decoration: InputDecoration(
           hintText: l10n.jobSearchPlaceholder,
-          hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textSecondary.withValues(alpha: 0.5)),
-          prefixIcon: Icon(Icons.search, size: 20, color: context.textSecondary.withValues(alpha: 0.5)),
+          hintStyle: AppTextStyles.bodySmall
+              .copyWith(color: context.textSecondary.withValues(alpha: 0.5)),
+          prefixIcon: Icon(Icons.search,
+              size: 20, color: context.textSecondary.withValues(alpha: 0.5)),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-                  icon: Icon(Icons.clear, size: 18, color: context.textSecondary.withValues(alpha: 0.5)),
+                  icon: Icon(Icons.clear,
+                      size: 18,
+                      color: context.textSecondary.withValues(alpha: 0.5)),
                   onPressed: _clearSearch,
                 )
               : null,
           filled: true,
           fillColor: context.theme.inputBg,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: context.theme.border),
@@ -230,6 +278,11 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
                 educationLevelLabel(_filterValues.educationLevel!, l10n),
                 () => _removeFilter('education_level'),
               ),
+            if (_filterValues.jobSalaryMin != null)
+              _filterChip(
+                '${l10n.searchSalaryMin}: ETB ${_filterValues.jobSalaryMin}',
+                () => _removeFilter('salary_min'),
+              ),
             if (_searchController.text.isNotEmpty)
               _filterChip(_searchController.text, _clearSearch),
             const SizedBox(width: 4),
@@ -237,7 +290,9 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
               onTap: _clearAllFilters,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Icon(Icons.close, size: 16, color: context.textSecondary.withValues(alpha: 0.5)),
+                child: Icon(Icons.close,
+                    size: 16,
+                    color: context.textSecondary.withValues(alpha: 0.5)),
               ),
             ),
           ],
@@ -258,11 +313,14 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(label, style: AppTextStyles.labelSmall.copyWith(color: AppColors.accent500, fontWeight: FontWeight.w600)),
+          Text(label,
+              style: AppTextStyles.labelSmall.copyWith(
+                  color: AppColors.accent500, fontWeight: FontWeight.w600)),
           const SizedBox(width: 4),
           GestureDetector(
             onTap: onRemove,
-            child: Icon(Icons.close, size: 14, color: AppColors.accent500.withValues(alpha: 0.7)),
+            child: Icon(Icons.close,
+                size: 14, color: AppColors.accent500.withValues(alpha: 0.7)),
           ),
         ],
       ),

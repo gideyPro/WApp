@@ -35,8 +35,23 @@ void main() {
     FlutterSecureStorage.setMockInitialValues({});
   });
 
+  group('home feed isolation', () {
+    test(
+        'homeJobListingsProvider does not share state with jobListingsProvider',
+        () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final listNotifier = container.read(jobListingsProvider.notifier);
+      final homeNotifier = container.read(homeJobListingsProvider.notifier);
+
+      expect(identical(listNotifier, homeNotifier), isFalse);
+    });
+  });
+
   group('JobDetailNotifier.revealContact', () {
-    test('reveals contact and decrements remaining job contact quota', () async {
+    test('reveals contact and decrements remaining job contact quota',
+        () async {
       final apiClient = ApiClient();
       apiClient.dio.httpClientAdapter = _StubAdapter((options) {
         expect(options.method, 'POST');
