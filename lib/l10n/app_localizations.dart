@@ -373,7 +373,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpYoutubeSub.
   ///
   /// In en, this message translates to:
-  /// **'Watch tutorials, tips & property tours'**
+  /// **'Watch tutorials, platform tips & video tours'**
   String get helpYoutubeSub;
 
   /// No description provided for @helpYoutubeSubscribe.
@@ -397,7 +397,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpCategoryOrders.
   ///
   /// In en, this message translates to:
-  /// **'Property Requests'**
+  /// **'Custom Requests & Orders'**
   String get helpCategoryOrders;
 
   /// No description provided for @helpCategoryPayments.
@@ -421,241 +421,241 @@ abstract class AppLocalizations {
   /// No description provided for @helpAccCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to create an account'**
+  /// **'How to create and set up your account'**
   String get helpAccCreateTitle;
 
   /// No description provided for @helpAccCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'To create an account on Wavemart:\n\n1. Open the app and tap on \"Register\"\n2. Enter your name, phone number, email address and other details and submit.\n3. You will receive a 6-digit OTP (One-Time Password)\n4. Enter the OTP to verify your account\n\nOnce registered, you can browse properties, create your own listings, and connect with owners or agents.'**
+  /// **'To get started on WaveMart:\n\n1. Open the app and tap \"Register\" or \"Sign In\"\n2. Enter your full name, phone number, and a secure password\n3. You will immediately receive a 6-digit SMS verification code (OTP)\n4. Enter the code to verify your phone number and activate your account\n\nOnce registered, you can browse real estate, vehicles, and jobs, save your favorites, unlock seller contact details, or start publishing your own listings.'**
   String get helpAccCreateContent;
 
   /// No description provided for @helpAccFavTitle.
   ///
   /// In en, this message translates to:
-  /// **'Managing your favorites'**
+  /// **'Managing favorites and saved items'**
   String get helpAccFavTitle;
 
   /// No description provided for @helpAccFavContent.
   ///
   /// In en, this message translates to:
-  /// **'To save a property for later:\n\n1. Tap the heart icon on any listing card or on the property detail page\n2. Access your saved items from Account > Favorites\n3. Tap the heart icon again to remove a listing from your favorites\n'**
+  /// **'Keep track of listings you are interested in:\n\n1. Tap the heart icon on any property, vehicle, or job card to save it\n2. Access all your saved items anytime from Account > Favorites\n3. Saved items update in real time if prices drop, a property or vehicle is sold or rented, or a job vacancy closes\n4. Tap the heart icon again to remove an item from your favorites\n\nSaving favorites allows you to compare options, monitor market trends, and quickly revisit items without searching again.'**
   String get helpAccFavContent;
 
   /// No description provided for @helpAccMsgTitle.
   ///
   /// In en, this message translates to:
-  /// **'Using in-app messaging'**
+  /// **'In-app messaging and contact reveal'**
   String get helpAccMsgTitle;
 
   /// No description provided for @helpAccMsgContent.
   ///
   /// In en, this message translates to:
-  /// **'Wavemart has a built-in messaging system for communicating with property owners and agents:\n\n1. When you express interest in a property, a conversation is automatically created with the agent.\n2. Go to the Account > Messages to view all your conversations\n3. Tap on a conversation to read and send messages\n4. Messages show delivery status with checkmarks (one check = sent, two checks = seen)\n5. You can switch between related conversations using the \"Switch Context\" menu\n\nFor your safety, keep all communication within the app.'**
+  /// **'WaveMart provides direct channels to connect with sellers, agents, and recruiters:\n\n1. In-App Chat: Tap \"Chat\" on any listing to start an instant, secure conversation without sharing your personal number\n2. Delivery Indicators: Single check mark means sent; double check marks indicate delivered and read\n3. Direct Contact Reveal: Tap \"Reveal Contact\" or \"Call\" to view the verified phone number of the seller or employer (uses 1 view from your monthly subscription quota)\n4. Context Switching: Easily track which property, vehicle, or job each discussion refers to via the chat header\n\nFor your personal safety, always keep discussions, agreements, and payment negotiations within the WaveMart app.'**
   String get helpAccMsgContent;
 
   /// No description provided for @helpListCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to post a property listing'**
+  /// **'How to post properties, vehicles, and jobs'**
   String get helpListCreateTitle;
 
   /// No description provided for @helpListCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'To post a property for sale or rent:\n\n1. Tap the \"+\" button in the navigation bar\n2. Choose between \"House\" or \"Land\"\n3. Select if it is for Sale or Rent\n4. Fill in the details: Price, Area (m²), Number of Rooms, etc.\n5. Select the exact location (Region, Zone, Woreda, Kebele)\n6. Upload at least 5 clear photos and a Site Plan document\n7. Accept the terms and tap \"Submit\"\n\nAll listings are reviewed by our moderation team within 24 hours to ensure quality and authenticity.'**
+  /// **'Publishing your listings on WaveMart is quick and guided:\n\n1. Tap the \"+\" button in the center of the bottom navigation bar\n2. Choose your category: Real Estate (House, Apartment, Commercial, Land for Sale or Rent), Vehicles (Car, Truck, Motorcycle, Machinery for Sale or Rent), or Job Opportunity\n3. Fill in the required specifications (price, area, mileage, transmission, fuel type, employment terms, qualifications, and exact location)\n4. Upload high-resolution photos and document scans (such as Site Plans for properties or vehicle inspection details)\n5. Review your information and tap \"Submit Listing\"\n\nAll listings are verified by our moderation team within 24 hours before going live to ensure quality and authenticity.'**
   String get helpListCreateContent;
 
   /// No description provided for @helpListManageTitle.
   ///
   /// In en, this message translates to:
-  /// **'Managing your listings'**
+  /// **'Managing, editing, and renewing listings'**
   String get helpListManageTitle;
 
   /// No description provided for @helpListManageContent.
   ///
   /// In en, this message translates to:
-  /// **'To manage or update your property posts:\n\n1. Navigate to My Account > My Listings\n2. View the status of your listings (Active, Pending, Rejected, or Sold)\n3. Tap on a listing to see its full details\n4. Use the Edit button to update information or the Delete button to remove it\n\nNote: Significant changes to an active listing may trigger a re-review by our team.'**
+  /// **'You maintain complete control over all your published items:\n\n1. Go to Account > My Listings to view all your property, vehicle, and job posts\n2. Check listing statuses: Pending Approval, Active, Sold, Rented, Filled, or Rejected\n3. Tap any listing to open management controls: Edit details, adjust pricing, or mark as Sold or Closed\n4. Boost Visibility: Apply a Featured or VIP upgrade directly from the listing management screen\n5. Delete or Pause: Remove items that are no longer available or temporarily unpublish them\n\nPlease note: Major modifications (such as changing location or core title) will undergo a quick re-review by our moderation team.'**
   String get helpListManageContent;
 
   /// No description provided for @helpListTipsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Tips for better listings'**
+  /// **'Tips for creating high-converting listings'**
   String get helpListTipsTitle;
 
   /// No description provided for @helpListTipsContent.
   ///
   /// In en, this message translates to:
-  /// **'To make your listing stand out:\n\n1. Use clear, well-lit photos (at least 5 images)\n2. Write a detailed description of the property\n3. Include accurate location details\n4. Set a competitive and fair price\n5. Mention nearby amenities and landmarks\n6. Highlight unique features of the property\n7. Respond promptly to buyer inquiries'**
+  /// **'Attract more serious buyers, renters, and top candidates by following these best practices:\n\n1. High-Quality Visuals: Upload at least 5 clear, well-lit photos showing all angles, interior, exterior, and surrounding area\n2. Transparent Pricing: List realistic, market-competitive prices. State clearly whether the price is fixed or negotiable\n3. Comprehensive Details: For real estate, specify area, water/electricity access, and nearby landmarks. For vehicles, state exact year, mileage, engine, transmission, and service history\n4. Clear Job Descriptions: Outline compensation, working hours, required experience, and key responsibilities\n5. Respond Fast: Maintain active engagement in the in-app chat. Fast response times build trust and close deals faster.'**
   String get helpListTipsContent;
 
   /// No description provided for @helpListVideoTitle.
   ///
   /// In en, this message translates to:
-  /// **'Video tours on listings'**
+  /// **'Video walkthroughs and virtual tours'**
   String get helpListVideoTitle;
 
   /// No description provided for @helpListVideoContent.
   ///
   /// In en, this message translates to:
-  /// **'Some property listings include a video tour uploaded by the seller:\n\n1. Look for the \"Video Tour\" section on the property detail page\n2. If the video is still processing, you will see a loading indicator\n3. Once ready, tap the video to play it\n4. You can also view the original video if available\n\nVideo tours help you get a better sense of the property before visiting in person. Viewing videos may require an active subscription.'**
+  /// **'Video walkthroughs give buyers and renters a realistic preview before visiting in person:\n\n1. Uploading: When creating or editing a property or vehicle listing, attach a short video tour (up to 60 seconds)\n2. Cloud Processing: Our background video engine automatically compresses and optimizes your clip for smooth streaming across mobile connections\n3. Processing Status: While processing, the listing will show a video preparation badge; once complete, the playable video appears automatically\n4. Verified Video Badge: Listings featuring real video walkthroughs receive higher visibility and customer engagement\n\nViewing video tours is seamless and supported on standard mobile data connections.'**
   String get helpListVideoContent;
 
   /// No description provided for @helpListInterestTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to express interest in a property'**
+  /// **'Expressing interest and contacting sellers'**
   String get helpListInterestTitle;
 
   /// No description provided for @helpListInterestContent.
   ///
   /// In en, this message translates to:
-  /// **'To let a seller know you are interested in their property:\n\n1. Open the property listing detail page\n2. Tap the \"Contact with Agent\" button\n3. Optionally add a message to the seller\n4. Tap \"Submit Interest\" to send your request\n\nThe seller will be notified and can respond. You can track your interest status under Profile > My Interests. Statuses include Pending (waiting for response), Accepted, or Rejected. Some plans require an upgrade to contact sellers.'**
+  /// **'Connect seamlessly with verified sellers and recruiters:\n\n1. Browse to any property, vehicle, or job detail screen\n2. Direct Contact: Tap \"Reveal Contact\" to instantly view and dial the verified phone number. Each reveal uses one view from your active subscription quota\n3. In-App Chat: Tap \"Chat\" to send inquiries, ask questions, or negotiate terms directly within WaveMart\n4. Job Applications: For job postings, tap \"Apply\" or message the employer directly with your profile\n5. My Interests: View your saved inquiries, conversations, and interaction history anytime from Account > My Interests\n\nDirect contact reveals require an active subscription tier with remaining monthly contact views.'**
   String get helpListInterestContent;
 
   /// No description provided for @helpListStatusTitle.
   ///
   /// In en, this message translates to:
-  /// **'Understanding listing statuses'**
+  /// **'Understanding listing statuses and moderation'**
   String get helpListStatusTitle;
 
   /// No description provided for @helpListStatusContent.
   ///
   /// In en, this message translates to:
-  /// **'Each property listing goes through several statuses:\n\n- Pending: Your listing is under review by our moderation team (usually within 24 hours)\n- Active: Your listing is live and visible to buyers\n- Rejected: The listing did not meet our guidelines. Check the reason and resubmit\n- Sold/Rented: The property has been sold or rented\n- Frozen: The listing is temporarily hidden\n\nYou can view the status of your listings under My Account > My Listings.'**
+  /// **'Every listing on WaveMart moves through defined verification stages:\n\n- Pending Review: Your submission is being examined by our moderation team for authenticity and image quality (usually within 24 hours)\n- Active: Your listing is live, searchable, and receiving views from buyers across Ethiopia\n- Featured / VIP: Your listing is highlighted with high-priority placement on the homepage and search feeds\n- Sold / Rented / Filled: The property has closed, the vehicle is sold, or the job opening has been filled\n- Rejected: The listing did not meet guidelines (e.g., duplicate post, invalid price, unclear photos). Review the specific feedback, make edits, and resubmit\n- Frozen / Inactive: Temporarily hidden by the owner or administrator\n\nCheck the live status of all your items under Account > My Listings.'**
   String get helpListStatusContent;
 
   /// No description provided for @helpOrdCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'What are Property Requests (Orders)?'**
+  /// **'Custom requests for properties, vehicles, and talent'**
   String get helpOrdCreateTitle;
 
   /// No description provided for @helpOrdCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'If you cannot find the exact property you are looking for, you can create a Property Request (Order):\n\n1. Go to the \"Orders\" tab and tap \"Create Order\"\n2. Describe the property you need (Type, Budget, Preferred Location)\n3. Our administrators and agents will look for properties matching your criteria\n4. You will receive suggestions directly in your Orders page\n\nThis feature is ideal for buyers with specific requirements who want a personalized search experience.'**
+  /// **'Can\'t find the exact property, specific vehicle, or skilled professional you need? Create a Custom Request:\n\n1. Navigate to the Requests (Orders) section and tap \"Create Request\"\n2. Choose what you are looking for: Real Estate (buy or rent), Vehicles (make, model, year, budget), or Talent/Hiring requirements\n3. Specify your target budget, desired location, timeline, and exact requirements\n4. Submit your request for automated matching and facilitator assistance\n\nOur system and support team match your request against verified upcoming inventory and alert you the moment a suitable option becomes available.'**
   String get helpOrdCreateContent;
 
   /// No description provided for @helpOrdManageTitle.
   ///
   /// In en, this message translates to:
-  /// **'Handling property suggestions'**
+  /// **'Managing request proposals and matches'**
   String get helpOrdManageTitle;
 
   /// No description provided for @helpOrdManageContent.
   ///
   /// In en, this message translates to:
-  /// **'When an administrator finds a property matching your request:\n\n1. You will receive a notification and a suggestion in your Order details\n2. Review the suggested property details and photos\n3. You can \"Accept\" the suggestion to express interest or \"Decline\" it\n4. Once accepted, you can proceed to contact the owner or agent'**
+  /// **'When suitable properties, vehicles, or candidate profiles match your request:\n\n1. You will receive an instant notification with full details of the matched proposal\n2. Open your request in the Requests tab to review photos, pricing, and specifications\n3. Tap \"Accept\" to connect directly with the owner, dealer, or applicant\n4. If an offer does not meet your expectations, tap \"Decline\" to keep your request open for further proposals\n5. Close or update your request at any time once your goal has been achieved.'**
   String get helpOrdManageContent;
 
   /// No description provided for @helpPayPlansTitle.
   ///
   /// In en, this message translates to:
-  /// **'Membership & Subscription plans'**
+  /// **'Membership plans, listing limits, and contact quotas'**
   String get helpPayPlansTitle;
 
   /// No description provided for @helpPayPlansContent.
   ///
   /// In en, this message translates to:
-  /// **'Wavemart offers packages tailored to various needs:\nFor example, Starter – capable of showing about 60% of property information. This is ideal for beginners and conducting market research.\nBasic – includes all information along with features like viewing video walkthroughs, sending orders, and posting properties for sale.\nThe Professional package additionally includes options to connect with buyers through Wavemart facilitators, and offers sellers a \"Featured\" feature to boost their properties to the forefront.\n\nThe highest package is VIP, which includes full access to contact sellers directly without agents, as well as opportunities to view and buy exclusive VIP properties (properties hidden from regular users).'**
+  /// **'WaveMart offers transparent subscription tiers designed for buyers, sellers, brokers, and recruiters:\n\n- Free / Starter: Browse properties, vehicles, and jobs; save favorites; message via in-app chat\n- Basic: Post listings across categories, view video walkthroughs, and receive monthly quotas to reveal seller and job contact details\n- Professional: Higher listing limits, featured visibility boosts, increased contact view quotas, and priority agent support\n- VIP / Enterprise: Unlimited or maximum contact reveals, exclusive access to unlisted VIP properties and luxury vehicles, VIP badge, and premier placement across the platform\n\nContact quotas reset each billing cycle. You can upgrade or renew your plan at any time from the Subscriptions screen.'**
   String get helpPayPlansContent;
 
   /// No description provided for @helpPayMakeTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to pay for a subscription'**
+  /// **'How to pay using Telebirr, CBEBirr, and Cards via Chapa'**
   String get helpPayMakeTitle;
 
   /// No description provided for @helpPayMakeContent.
   ///
   /// In en, this message translates to:
-  /// **'Wavemart uses Chapa, Ethiopia\'s leading payment gateway, for secure transactions:\n\n1. Select your desired plan from the Subscriptions page\n2. Tap \"Subscribe Now\" or \"Upgrade\"\n3. You will be redirected to the secure Chapa payment page\n4. Pay using Telebirr, CBEBirr, M-Pesa, or any supported bank card\n5. After successful payment, your account features will be updated instantly\n\nAlways ensure you are on the official Chapa payment page before entering any details.'**
+  /// **'Upgrading your subscription or boosting listings is instant and secure through Chapa, Ethiopia\'s premier payment system:\n\n1. Go to Account > Subscriptions and choose your preferred plan\n2. Tap \"Subscribe Now\" or \"Upgrade Plan\"\n3. You will be redirected to the secure Chapa checkout interface\n4. Select your preferred payment method: Telebirr, CBEBirr, M-Pesa, Awash Birr, or any Ethiopian debit/credit card\n5. Follow the quick on-screen prompt to authorize payment on your mobile wallet or banking app\n6. Upon confirmation, your subscription benefits and contact quotas are activated immediately\n\nWaveMart does not charge hidden fees; the price you see is the exact amount charged.'**
   String get helpPayMakeContent;
 
   /// No description provided for @helpPaySecurityTitle.
   ///
   /// In en, this message translates to:
-  /// **'Payment security'**
+  /// **'Payment security and data protection'**
   String get helpPaySecurityTitle;
 
   /// No description provided for @helpPaySecurityContent.
   ///
   /// In en, this message translates to:
-  /// **'All payments on Wavemart are processed securely through Chapa, a trusted Ethiopian payment gateway.\n\nWe do not store your payment card information. All transactions are encrypted.\n\nIf you encounter any payment-related issues, please contact our support team immediately.'**
+  /// **'Your financial security is our highest priority:\n\n1. Bank-Grade Encryption: All payments are processed through Chapa\'s PCI-DSS compliant, end-to-end encrypted infrastructure\n2. No Card Storage: WaveMart never stores, processes, or has access to your banking passwords, card PINs, or wallet credentials\n3. Instant Receipts: Every successful transaction generates a digital receipt with a unique transaction reference code visible in your account\n4. Transaction Assistance: If a payment completes on your wallet or banking app but is not reflected in your account, contact our support team with your transaction reference for immediate verification.'**
   String get helpPaySecurityContent;
 
   /// No description provided for @helpPayVipTitle.
   ///
   /// In en, this message translates to:
-  /// **'VIP & Featured listings'**
+  /// **'VIP badges and Featured listing boosts'**
   String get helpPayVipTitle;
 
   /// No description provided for @helpPayVipContent.
   ///
   /// In en, this message translates to:
-  /// **'Wavemart offers premium visibility options for your listings:\n\n- Featured: Your listing appears in the \"Premium Listings\" section on the home page and stands out in search results for 30 days\n- VIP: Your listing gets a special VIP badge and appears in the \"Premium VIP Properties\" section\n\nTo feature or mark a listing as VIP:\n1. Go to My Account > My Listings\n2. Open your active listing\n3. Tap \"Feature this Listing\" or \"Mark as VIP\"\n4. Confirm your choice\n\nThese features require an active subscription plan that supports them. Upgrade your plan if needed.'**
+  /// **'Maximize views and sell or hire faster with promotional boosts:\n\n- Featured Listing: Positions your property, vehicle, or job post in the high-traffic \"Featured Listings\" banner on the home screen and highlights it in search results for 30 days\n- VIP Listing: Adds an exclusive golden VIP badge, ranks your listing at the very top of buyer feeds, and alerts serious high-intent buyers\n- Unlisted VIP Deals: Subscribers on VIP plans gain access to premium properties and luxury vehicles not visible to standard users\n\nTo promote a listing: Go to Account > My Listings, open the active listing, select \"Boost / Feature\", choose your promotion type, and confirm.'**
   String get helpPayVipContent;
 
   /// No description provided for @helpKycWhyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Why is KYC verification necessary?'**
+  /// **'Why identity verification (KYC) is required'**
   String get helpKycWhyTitle;
 
   /// No description provided for @helpKycWhyContent.
   ///
   /// In en, this message translates to:
-  /// **'KYC (Know Your Customer) is a security standard used to verify the identity of our users.\n\nIt is required to:\n- Post property listings (Preventing fake/fraudulent posts)\n- Ensure a safe marketplace for all users\n- Comply with Ethiopian digital commerce regulations\n\nVerified users have a badge on their profile, which significantly increases trust with potential buyers.'**
+  /// **'WaveMart complies with Ethiopian e-commerce safety regulations to protect every member of our community:\n\n1. Preventing Scams & Fraud: Verifying real identities ensures fake accounts, phantom listings, and identity theft cannot operate on WaveMart\n2. Verified Seller Badge: Successfully verified accounts earn a blue checkmark badge, boosting buyer confidence and increasing inquiries\n3. Unlocking Publishing Privileges: KYC verification is required before you can publish properties for sale or rent, list commercial vehicles, or recruit talent\n4. Safe Payments & Contracts: High-value transactions demand trust and accountability on both sides.'**
   String get helpKycWhyContent;
 
   /// No description provided for @helpKycHowTitle.
   ///
   /// In en, this message translates to:
-  /// **'How to verify your identity'**
+  /// **'Step-by-step identity verification guide'**
   String get helpKycHowTitle;
 
   /// No description provided for @helpKycHowContent.
   ///
   /// In en, this message translates to:
-  /// **'To complete your identity verification:\n\n1. Go to Settings > KYC Verification\n2. Choose \"National ID\" or \"Passport\"\n3. Take a clear photo of the front and back of the document\n4. Take a clear selfie \n5. Submit the documents\n\nOur team will review your submission within 48 hours. Ensure the text on your ID is perfectly readable in the photos.'**
+  /// **'Completing KYC takes less than 2 minutes in the app:\n\n1. Open Account > Verification (KYC)\n2. Choose your document type: Ethiopian National ID (Fayda), Passport, Driver\'s License, or Kebele ID\n3. Take a sharp, well-lit photo of the front and back of your physical card or document\n4. Take a live selfie using your phone\'s camera (make sure your face is clearly visible without sunglasses or hats)\n5. Review your legal name and document number, then tap \"Submit Verification\"\n\nOur automated verification system and verification team review submissions within 24 to 48 hours.'**
   String get helpKycHowContent;
 
   /// No description provided for @helpKycRejectTitle.
   ///
   /// In en, this message translates to:
-  /// **'Why was my KYC rejected?'**
+  /// **'Resolving KYC rejection issues'**
   String get helpKycRejectTitle;
 
   /// No description provided for @helpKycRejectContent.
   ///
   /// In en, this message translates to:
-  /// **'Common reasons for KYC rejection:\n\n1. Blurry or unreadable document photos\n2. Document is expired or invalid\n3. Selfie does not clearly show your face\n4. Document type does not match selection\n5. Cropped or incomplete document images\n\nTo resubmit:\n- Go to KYC Verification\n- Tap \"Resubmit Documents\"\n- Ensure all photos are clear and well-lit\n- Make sure the entire document is visible'**
+  /// **'If your verification was declined, it is usually due to one of these common issues:\n\n1. Blurry or Glared Photos: Details, letters, or photo IDs are unreadable due to low lighting or camera glare\n2. Expired Document: The identification card or passport submitted is past its expiration date\n3. Mismatched Information: The name entered in your profile does not match the legal name printed on the document\n4. Unclear Selfie: The selfie photo is dark, cropped, or does not clearly match the photo on your official ID\n5. Incomplete Images: Corners or edges of the physical document are cropped out\n\nHow to fix: Go to Verification (KYC), tap \"Resubmit Documents\", retake sharp, well-lit photos of the full document, take a new clear selfie, and submit again.'**
   String get helpKycRejectContent;
 
   /// No description provided for @helpSafePrivacyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Privacy Policy'**
+  /// **'Privacy policy and data protection'**
   String get helpSafePrivacyTitle;
 
   /// No description provided for @helpSafePrivacyContent.
   ///
   /// In en, this message translates to:
-  /// **'Wavemart respects your privacy and protects your personal data.\n\nWe collect:\n- Account information (name, phone, email)\n- Listing data you provide\n- Usage analytics to improve the app\n\nWe do not:\n- Sell your personal data\n- Share your information with third parties (except for necessary services like payment processing)\n- Store your payment details\n\nFor full details, visit our website or contact support.'**
+  /// **'WaveMart strictly respects your personal privacy and safeguards your data:\n\n1. Information We Collect: Basic account profile (name, phone number, email), verified listing specifications, and direct customer support logs\n2. Privacy by Default: Your private phone number and email are concealed on public listings until a verified buyer utilizes a contact reveal\n3. Zero Data Selling: We do not sell, rent, or lease your personal information to advertisers or external marketing brokers\n4. Strict Confidentiality: Documents submitted for KYC verification are stored in secure, encrypted storage and accessed exclusively for compliance verification\n\nRead our full Privacy Policy on our website or reach out to support@wavemart.et for data questions.'**
   String get helpSafePrivacyContent;
 
   /// No description provided for @helpSafeReportTitle.
   ///
   /// In en, this message translates to:
-  /// **'Reporting a problem'**
+  /// **'Reporting suspicious activity and getting help'**
   String get helpSafeReportTitle;
 
   /// No description provided for @helpSafeReportContent.
   ///
   /// In en, this message translates to:
-  /// **'If you encounter any issues:\n\n1. Use the in-app Help Center to find solutions\n2. Contact support via email: support@wavemart.et\n3. Call our support line for urgent issues\n4. Report suspicious listings or users through the listing detail page\n\nWe aim to respond to all inquiries within 24 hours.'**
+  /// **'We take marketplace safety seriously and provide immediate tools to keep your experience secure:\n\n1. In-App Reporting: Tap the three dots (menu) or \"Report\" on any property, vehicle, or job detail screen to flag suspicious pricing, fake images, or improper conduct\n2. Never Send Advance Money: Never wire advance deposits, broker commissions, or booking fees to individuals before physically inspecting the property or vehicle\n3. Emergency Support Line: Reach our dedicated customer safety team directly at +251 981 41 81 81\n4. Email Support: Email support@wavemart.et with screenshots and details; our trust & safety team investigates and responds within 24 hours\n\nTogether, we keep WaveMart the safest marketplace in Ethiopia.'**
   String get helpSafeReportContent;
 
   /// No description provided for @profileVerificationKyc.
@@ -5865,6 +5865,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Listing type cannot be changed after creation'**
   String get listingTypeNotEditable;
+
+  /// No description provided for @searchArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Area (m²)'**
+  String get searchArea;
+
+  /// No description provided for @searchAreaMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Min area'**
+  String get searchAreaMin;
+
+  /// No description provided for @searchAreaMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max area'**
+  String get searchAreaMax;
+
+  /// No description provided for @searchPriceMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Min price'**
+  String get searchPriceMin;
+
+  /// No description provided for @searchPriceMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max price'**
+  String get searchPriceMax;
+
+  /// No description provided for @searchCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get searchCustom;
+
+  /// No description provided for @searchSalaryMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum salary (ETB)'**
+  String get searchSalaryMin;
+
+  /// No description provided for @searchSeekersPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search job seekers...'**
+  String get searchSeekersPlaceholder;
+
+  /// No description provided for @searchResultsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No results} =1{1 result} other{{count} results}}'**
+  String searchResultsCount(int count);
+
+  /// No description provided for @searchValidationNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid number'**
+  String get searchValidationNumber;
+
+  /// No description provided for @searchValidationRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum must be less than maximum'**
+  String get searchValidationRange;
+
+  /// No description provided for @transmissionManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get transmissionManual;
+
+  /// No description provided for @transmissionAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get transmissionAutomatic;
+
+  /// No description provided for @transmissionSemiAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Semi-automatic'**
+  String get transmissionSemiAutomatic;
+
+  /// No description provided for @fuelPetrol.
+  ///
+  /// In en, this message translates to:
+  /// **'Petrol'**
+  String get fuelPetrol;
+
+  /// No description provided for @fuelGasoline.
+  ///
+  /// In en, this message translates to:
+  /// **'Gasoline'**
+  String get fuelGasoline;
+
+  /// No description provided for @fuelDiesel.
+  ///
+  /// In en, this message translates to:
+  /// **'Diesel'**
+  String get fuelDiesel;
+
+  /// No description provided for @fuelHybrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Hybrid'**
+  String get fuelHybrid;
+
+  /// No description provided for @fuelElectric.
+  ///
+  /// In en, this message translates to:
+  /// **'Electric'**
+  String get fuelElectric;
+
+  /// No description provided for @rentalPeriodDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get rentalPeriodDay;
+
+  /// No description provided for @rentalPeriodMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get rentalPeriodMonth;
+
+  /// No description provided for @rentalPeriodYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get rentalPeriodYear;
 }
 
 class _AppLocalizationsDelegate
