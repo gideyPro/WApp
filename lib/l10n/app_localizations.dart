@@ -3385,8 +3385,20 @@ abstract class AppLocalizations {
   /// No description provided for @listingErrorMinPrice.
   ///
   /// In en, this message translates to:
-  /// **'Price must be at least 50,000 ETB'**
+  /// **'Please enter a valid price'**
   String get listingErrorMinPrice;
+
+  /// No description provided for @listingPricePerAgreement.
+  ///
+  /// In en, this message translates to:
+  /// **'Per Agreement'**
+  String get listingPricePerAgreement;
+
+  /// No description provided for @listingPriceOnAgreement.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per agreement'**
+  String get listingPriceOnAgreement;
 
   /// No description provided for @listingErrorLeasedYearRequired.
   ///

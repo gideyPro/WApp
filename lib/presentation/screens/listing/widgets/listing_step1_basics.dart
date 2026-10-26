@@ -395,6 +395,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                                 postedForOtherOwner: v == 'sale' ? false : widget.formData.postedForOtherOwner,
                                 ownerName: v == 'sale' ? '' : widget.formData.ownerName,
                                 ownerPhone: v == 'sale' ? '' : widget.formData.ownerPhone,
+                                rentalPeriodUnit: v == 'sale' ? null : 'month',
                               ));
                             },
                     ),
@@ -417,7 +418,10 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                                   );
                                   return;
                                 }
-                                widget.onUpdate(widget.formData.copyWith(listingType: v));
+                                widget.onUpdate(widget.formData.copyWith(
+                                  listingType: v,
+                                  rentalPeriodUnit: 'month',
+                                ));
                               },
                       ),
                     ],
@@ -439,19 +443,6 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                   ),
                 ],
                 if (widget.formData.listingType == 'rental') ...[
-                  const SizedBox(height: 12),
-                  _compactDropdown(
-                    value: widget.formData.rentalPeriodUnit,
-                    items: {
-                      'day': 'Day',
-                      'month': 'Month',
-                      'year': 'Year',
-                    },
-                    label: l10n.listingRentalPeriod,
-                    hintText: l10n.listingSelect,
-                    onChanged: (v) => widget.onUpdate(
-                        widget.formData.copyWith(rentalPeriodUnit: v)),
-                  ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
@@ -499,40 +490,41 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             ),
           ),
 
-          _sectionCard(
-            title: l10n.listingHoldingType,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _compactDropdown(
-                  value: widget.formData.holdingType,
-                  items: {
-                    'Free Hold': l10n.listingFreeHold,
-                    'Lease Hold': l10n.listingLeaseHold,
-                    'Cooperative': l10n.listingCooperative,
-                  },
-                  label: l10n.listingHoldingType,
-                  hintText: l10n.listingSelectHolding,
-                  onChanged: (v) => widget.onUpdate(widget.formData
-                      .copyWith(holdingType: v ?? 'Free Hold')),
-                ),
-                AnimatedSize(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  child: Column(
-                    children: [
-                      if (widget.formData.holdingType == 'Free Hold')
-                        _buildFreeHoldFields(),
-                      if (widget.formData.holdingType == 'Lease Hold')
-                        _buildLeaseHoldFields(),
-                      if (widget.formData.holdingType == 'Cooperative')
-                        _buildCooperativeFields(),
-                    ],
+          if (widget.formData.listingType != 'rental')
+            _sectionCard(
+              title: l10n.listingHoldingType,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _compactDropdown(
+                    value: widget.formData.holdingType,
+                    items: {
+                      'Free Hold': l10n.listingFreeHold,
+                      'Lease Hold': l10n.listingLeaseHold,
+                      'Cooperative': l10n.listingCooperative,
+                    },
+                    label: l10n.listingHoldingType,
+                    hintText: l10n.listingSelectHolding,
+                    onChanged: (v) => widget.onUpdate(widget.formData
+                        .copyWith(holdingType: v ?? 'Free Hold')),
                   ),
-                ),
-              ],
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: Column(
+                      children: [
+                        if (widget.formData.holdingType == 'Free Hold')
+                          _buildFreeHoldFields(),
+                        if (widget.formData.holdingType == 'Lease Hold')
+                          _buildLeaseHoldFields(),
+                        if (widget.formData.holdingType == 'Cooperative')
+                          _buildCooperativeFields(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
 
           _sectionCard(
             title: l10n.listingUseType,
@@ -561,45 +553,94 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildCompactPriceField(),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Checkbox(
-                        value: widget.formData.hasDebtOrEncumbrance,
-                        onChanged: (v) => widget.onUpdate(
-                            widget.formData.copyWith(
-                              hasDebtOrEncumbrance: v ?? false,
-                              debtAmount: (v ?? false) ? widget.formData.debtAmount : null,
-                            )),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                if (widget.formData.listingType == 'rental') ...[
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Checkbox(
+                          value: widget.formData.priceOnAgreement,
+                          onChanged: (v) {
+                            final agreed = v ?? false;
+                            if (agreed) {
+                              _priceController.clear();
+                            }
+                            widget.onUpdate(widget.formData.copyWith(
+                              priceOnAgreement: agreed,
+                              clearPriceFixed: agreed,
+                            ));
+                          },
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () => widget.onUpdate(
-                          widget.formData.copyWith(
-                            hasDebtOrEncumbrance: !widget.formData.hasDebtOrEncumbrance,
-                            debtAmount: !widget.formData.hasDebtOrEncumbrance ? widget.formData.debtAmount : null,
-                          )),
-                      child: Text(l10n.listingHasDebt, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {
+                          final agreed = !widget.formData.priceOnAgreement;
+                          if (agreed) {
+                            _priceController.clear();
+                          }
+                          widget.onUpdate(widget.formData.copyWith(
+                            priceOnAgreement: agreed,
+                            clearPriceFixed: agreed,
+                          ));
+                        },
+                        child: Text(
+                          l10n.listingPricePerAgreement,
+                          style: AppTextStyles.labelMedium.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: context.theme.textSecondary,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                if (!widget.formData.priceOnAgreement)
+                  _buildCompactPriceField(),
+                if (widget.formData.listingType != 'rental') ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Checkbox(
+                          value: widget.formData.hasDebtOrEncumbrance,
+                          onChanged: (v) => widget.onUpdate(
+                              widget.formData.copyWith(
+                                hasDebtOrEncumbrance: v ?? false,
+                                clearDebtAmount: !(v ?? false),
+                              )),
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () => widget.onUpdate(
+                            widget.formData.copyWith(
+                              hasDebtOrEncumbrance: !widget.formData.hasDebtOrEncumbrance,
+                              clearDebtAmount: widget.formData.hasDebtOrEncumbrance,
+                            )),
+                        child: Text(l10n.listingHasDebt, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                      ),
+                    ],
+                  ),
+                  if (widget.formData.hasDebtOrEncumbrance) ...[
+                    const SizedBox(height: 8),
+                    _compactTextField(
+                      label: l10n.listingDebtAmount,
+                      controller: _debtAmountController,
+                      onSubmitted: (v) {
+                        final cleaned = v.replaceAll(',', '');
+                        widget.onUpdate(widget.formData
+                            .copyWith(debtAmount: double.tryParse(cleaned)));
+                      },
                     ),
                   ],
-                ),
-                if (widget.formData.hasDebtOrEncumbrance) ...[
-                  const SizedBox(height: 8),
-                  _compactTextField(
-                    label: l10n.listingDebtAmount,
-                    controller: _debtAmountController,
-                    onSubmitted: (v) {
-                      final cleaned = v.replaceAll(',', '');
-                      widget.onUpdate(widget.formData
-                          .copyWith(debtAmount: double.tryParse(cleaned)));
-                    },
-                  ),
                 ],
               ],
             ),
@@ -693,12 +734,16 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
     final price = widget.formData.priceFixed;
     Color borderColor = context.theme.divider;
     if (price != null) {
-      if (price < 10000) {
-        borderColor = AppColors.error;
-      } else if (price < 100000) {
-        borderColor = AppColors.warning;
+      if (widget.formData.listingType == 'rental') {
+        borderColor = price > 0 ? AppColors.emerald500 : AppColors.error;
       } else {
-        borderColor = AppColors.emerald500;
+        if (price < 10000) {
+          borderColor = AppColors.error;
+        } else if (price < 100000) {
+          borderColor = AppColors.warning;
+        } else {
+          borderColor = AppColors.emerald500;
+        }
       }
     }
     return TextFormField(
@@ -723,6 +768,8 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
         final parsed = double.tryParse(cleaned);
         if (parsed != null && parsed > 0) {
           widget.onUpdate(widget.formData.copyWith(priceFixed: parsed));
+        } else if (cleaned.isEmpty) {
+          widget.onUpdate(widget.formData.copyWith(clearPriceFixed: true));
         }
       },
     );

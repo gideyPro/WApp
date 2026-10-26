@@ -42,7 +42,7 @@ class ListingStep4Review extends StatelessWidget {
               Row(
                 children: [
                   Expanded(child: _summaryCard(context, l10n.listingFinancial,
-                      '${formData.priceFixed != null ? "${_formatPrice(formData.priceFixed!)} ETB" : l10n.listingPriceOnRequest}\n${_getLocalizedHoldingType(formData.holdingType, l10n)}',
+                      _buildFinancialSummary(formData, l10n),
                       icon: Icons.account_balance_wallet_rounded)),
                   const SizedBox(width: 8),
                   Expanded(child: _summaryCard(context, l10n.listingStepMedia,
@@ -241,10 +241,25 @@ class ListingStep4Review extends StatelessWidget {
     );
   }
 
+  String _buildFinancialSummary(ListingFormData data, AppLocalizations l10n) {
+    if (data.isRental) {
+      if (data.priceOnAgreement || data.priceFixed == null) {
+        return l10n.listingPricePerAgreement;
+      }
+      return '${_formatPrice(data.priceFixed!)} ETB / ${l10n.listingPerMonth}';
+    } else {
+      final priceStr = data.priceFixed != null
+          ? '${_formatPrice(data.priceFixed!)} ETB'
+          : l10n.listingPriceOnRequest;
+      final holdingStr = _getLocalizedHoldingType(data.holdingType, l10n);
+      return '$priceStr\n$holdingStr';
+    }
+  }
+
   String _buildMediaSummary(ListingFormData data, AppLocalizations l10n) {
     final imageCount = data.images.length + data.existingImages.length - data.removedImageIds.length;
-    final hasSitePlan = data.sitePlan != null || (data.existingSitePlanUrl != null && !data.removeExistingSitePlan);
-    final hasOwnership = data.ownershipProof != null || data.existingOwnershipProofUrl != null;
+    final hasSitePlan = !data.isRental && (data.sitePlan != null || (data.existingSitePlanUrl != null && !data.removeExistingSitePlan));
+    final hasOwnership = !data.isRental && (data.ownershipProof != null || data.existingOwnershipProofUrl != null);
     final hasVideo = data.videoFile != null || (data.existingVideoUrl != null && !data.deleteVideo);
     final lines = <String>[
       '$imageCount ${imageCount == 1 ? l10n.mediaPicture : l10n.mediaPictures}',

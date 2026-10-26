@@ -12,7 +12,10 @@ class ListingFormData {
   String useType; // 'Residential' | 'Commercial' | 'Mixed' | 'Investment'
   String? specificLocation;
   double? priceFixed;
+  bool priceOnAgreement = false;
   String? rentalPeriodUnit; // 'day' | 'month' | 'year'
+
+  bool get isRental => listingType == 'rental';
 
   // --- Rental owner contact ---
   bool postedForOtherOwner = false;
@@ -103,6 +106,7 @@ class ListingFormData {
     this.useType = 'Residential',
     this.specificLocation,
     this.priceFixed,
+    this.priceOnAgreement = false,
     this.rentalPeriodUnit,
     this.postedForOtherOwner = false,
     this.ownerName = '',
@@ -167,6 +171,7 @@ class ListingFormData {
         'useType': useType,
         'specificLocation': specificLocation,
         'priceFixed': priceFixed,
+        'priceOnAgreement': priceOnAgreement,
         'rentalPeriodUnit': rentalPeriodUnit,
         'postedForOtherOwner': postedForOtherOwner,
         'ownerName': ownerName,
@@ -241,6 +246,7 @@ class ListingFormData {
         useType: data['useType'] ?? 'Residential',
         specificLocation: data['specificLocation'],
         priceFixed: data['priceFixed'],
+        priceOnAgreement: data['priceOnAgreement'] ?? false,
         rentalPeriodUnit: data['rentalPeriodUnit'],
         postedForOtherOwner: data['postedForOtherOwner'] ?? false,
         ownerName: data['ownerName'] ?? '',
@@ -304,6 +310,8 @@ class ListingFormData {
     String? useType,
     String? specificLocation,
     double? priceFixed,
+    bool? priceOnAgreement,
+    bool clearPriceFixed = false,
     String? rentalPeriodUnit,
     bool? postedForOtherOwner,
     String? ownerName,
@@ -342,6 +350,7 @@ class ListingFormData {
     int? addressId,
     bool? hasDebtOrEncumbrance,
     double? debtAmount,
+    bool clearDebtAmount = false,
     String? debtHolder,
     bool? postedByAgent,
     String? agentId,
@@ -365,8 +374,10 @@ class ListingFormData {
       listingType: listingType ?? this.listingType,
       useType: useType ?? this.useType,
       specificLocation: specificLocation ?? this.specificLocation,
-      priceFixed: priceFixed ?? this.priceFixed,
-      rentalPeriodUnit: rentalPeriodUnit ?? this.rentalPeriodUnit,
+      priceFixed: clearPriceFixed ? null : (priceFixed ?? this.priceFixed),
+      priceOnAgreement: priceOnAgreement ?? this.priceOnAgreement,
+      rentalPeriodUnit: rentalPeriodUnit ??
+          ((listingType ?? this.listingType) == 'rental' ? 'month' : this.rentalPeriodUnit),
       postedForOtherOwner: postedForOtherOwner ?? this.postedForOtherOwner,
       ownerName: ownerName ?? this.ownerName,
       ownerPhone: ownerPhone ?? this.ownerPhone,
@@ -404,7 +415,7 @@ class ListingFormData {
       addressKebele: addressKebele ?? this.addressKebele,
       addressId: addressId ?? this.addressId,
       hasDebtOrEncumbrance: hasDebtOrEncumbrance ?? this.hasDebtOrEncumbrance,
-      debtAmount: debtAmount ?? this.debtAmount,
+      debtAmount: clearDebtAmount ? null : (debtAmount ?? this.debtAmount),
       debtHolder: debtHolder ?? this.debtHolder,
       postedByAgent: postedByAgent ?? this.postedByAgent,
       agentId: agentId ?? this.agentId,
@@ -429,7 +440,9 @@ class ListingFormData {
   List<String> validateStep1(AppLocalizations l10n) {
     final errors = <String>[];
     if (type.isEmpty) errors.add(l10n.listingErrorPropertyTypeRequired);
-    if (holdingType.isEmpty) errors.add(l10n.listingErrorHoldingTypeRequired);
+    if (!isRental && holdingType.isEmpty) {
+      errors.add(l10n.listingErrorHoldingTypeRequired);
+    }
     if (listingType.isEmpty) errors.add(l10n.listingErrorListingTypeRequired);
     if (listingType == 'rental' && postedForOtherOwner) {
       if (ownerName.trim().isEmpty) {
@@ -441,48 +454,54 @@ class ListingFormData {
     }
     if (useType.isEmpty) errors.add(l10n.listingErrorUseTypeRequired);
     if (addressId == null) errors.add(l10n.listingErrorAddressRequired);
-    if (priceFixed == null || priceFixed! < 1000) {
-      errors.add(l10n.listingErrorMinPrice);
-    }
-
-    // Holding-specific validation
-    if (holdingType == 'Free Hold') {
-      if (taxPaidUntilYear == null) {
-        errors.add(l10n.listingErrorTaxPaidYearRequired);
-      } else if (taxPaidUntilYear! < 2000 ||
-          taxPaidUntilYear! > DateTime.now().year + 10) {
-        errors.add(l10n.listingErrorTaxYearRange(
-            '2000', (DateTime.now().year + 10).toString()));
-      }
-      if (acquisitionClarification == null ||
-          acquisitionClarification!.trim().isEmpty) {
-        errors.add(l10n.listingErrorAcquisitionClarificationRequired);
-      }
-    } else if (holdingType == 'Lease Hold') {
-      if (leasedYear == null) errors.add(l10n.listingErrorLeasedYearRequired);
-      if (leasePricePerSqm == null || leasePricePerSqm! <= 0) {
-        errors.add(l10n.listingErrorLeasePricePerSqmRequired);
-      }
-      if (buildType == null || buildType!.trim().isEmpty) {
-        errors.add(l10n.listingErrorBuildTypeRequired);
-      }
-      if (annualPayment == null || annualPayment! <= 0) {
-        errors.add(l10n.listingErrorAnnualPaymentRequired);
-      }
-    } else if (holdingType == 'Cooperative') {
-      if (cooperativeName == null || cooperativeName!.trim().isEmpty) {
-        errors.add(l10n.listingErrorCooperativeNameRequired);
-      }
-      if (cooperativeCode == null || cooperativeCode!.trim().isEmpty) {
-        errors.add(l10n.listingErrorCooperativeCodeRequired);
-      }
-      if (buildingStatus == null || buildingStatus!.trim().isEmpty) {
-        errors.add(l10n.listingErrorBuildingStatusRequired);
+    if (isRental && priceOnAgreement) {
+      // Per agreement: no fixed price required
+    } else {
+      if (priceFixed == null || priceFixed! <= 0) {
+        errors.add(l10n.listingErrorMinPrice);
       }
     }
 
-    if (hasDebtOrEncumbrance && (debtAmount == null || debtAmount! <= 0)) {
-      errors.add(l10n.listingErrorDebtAmountRequired);
+    // Holding-specific & debt validation (not required for rentals)
+    if (!isRental) {
+      if (holdingType == 'Free Hold') {
+        if (taxPaidUntilYear == null) {
+          errors.add(l10n.listingErrorTaxPaidYearRequired);
+        } else if (taxPaidUntilYear! < 2000 ||
+            taxPaidUntilYear! > DateTime.now().year + 10) {
+          errors.add(l10n.listingErrorTaxYearRange(
+              '2000', (DateTime.now().year + 10).toString()));
+        }
+        if (acquisitionClarification == null ||
+            acquisitionClarification!.trim().isEmpty) {
+          errors.add(l10n.listingErrorAcquisitionClarificationRequired);
+        }
+      } else if (holdingType == 'Lease Hold') {
+        if (leasedYear == null) errors.add(l10n.listingErrorLeasedYearRequired);
+        if (leasePricePerSqm == null || leasePricePerSqm! <= 0) {
+          errors.add(l10n.listingErrorLeasePricePerSqmRequired);
+        }
+        if (buildType == null || buildType!.trim().isEmpty) {
+          errors.add(l10n.listingErrorBuildTypeRequired);
+        }
+        if (annualPayment == null || annualPayment! <= 0) {
+          errors.add(l10n.listingErrorAnnualPaymentRequired);
+        }
+      } else if (holdingType == 'Cooperative') {
+        if (cooperativeName == null || cooperativeName!.trim().isEmpty) {
+          errors.add(l10n.listingErrorCooperativeNameRequired);
+        }
+        if (cooperativeCode == null || cooperativeCode!.trim().isEmpty) {
+          errors.add(l10n.listingErrorCooperativeCodeRequired);
+        }
+        if (buildingStatus == null || buildingStatus!.trim().isEmpty) {
+          errors.add(l10n.listingErrorBuildingStatusRequired);
+        }
+      }
+
+      if (hasDebtOrEncumbrance && (debtAmount == null || debtAmount! <= 0)) {
+        errors.add(l10n.listingErrorDebtAmountRequired);
+      }
     }
 
     return errors;
@@ -497,15 +516,19 @@ class ListingFormData {
       if (houseType == null || houseType!.isEmpty) {
         errors.add(l10n.listingErrorHouseTypeRequired);
       }
-      if (yearBuilt == null) {
-        errors.add(l10n.listingErrorYearBuiltRequired);
-      } else if (yearBuilt! < 1900 || yearBuilt! > DateTime.now().year) {
-        errors.add(
-            l10n.listingErrorYearBuiltRange('1900', DateTime.now().year.toString()));
+      if (!isRental) {
+        if (yearBuilt == null) {
+          errors.add(l10n.listingErrorYearBuiltRequired);
+        } else if (yearBuilt! < 1900 || yearBuilt! > DateTime.now().year) {
+          errors.add(l10n.listingErrorYearBuiltRange(
+              '1900', DateTime.now().year.toString()));
+        }
       }
     }
-    if (totalSquareMeters == null || totalSquareMeters! <= 0) {
-      errors.add(l10n.listingErrorAreaRequired);
+    if (!isRental) {
+      if (totalSquareMeters == null || totalSquareMeters! <= 0) {
+        errors.add(l10n.listingErrorAreaRequired);
+      }
     }
     if (description == null || description!.trim().isEmpty) {
       errors.add(l10n.listingErrorDescriptionRequired);
@@ -522,18 +545,22 @@ class ListingFormData {
             existingImages.length > removedImageIds.length);
     if (!hasImages) errors.add(l10n.listingErrorImageRequired);
 
-    // Check new site plan OR existing site plan that wasn't removed
-    final hasSitePlan =
-        sitePlan != null || (existingSitePlanUrl != null && !removeExistingSitePlan);
-    if (!hasSitePlan) errors.add(l10n.listingErrorSitePlanRequired);
+    // Site plan - not required for rentals
+    if (!isRental) {
+      final hasSitePlan = sitePlan != null ||
+          (existingSitePlanUrl != null && !removeExistingSitePlan);
+      if (!hasSitePlan) errors.add(l10n.listingErrorSitePlanRequired);
+    }
 
-    // Check new video OR existing video that wasn't deleted
-    final hasVideo =
-        videoFile != null || (existingVideoUrl != null && !deleteVideo);
-    if (!hasVideo) errors.add(l10n.listingErrorVideoRequired);
+    // Video - optional for rentals, required for sales
+    if (!isRental) {
+      final hasVideo =
+          videoFile != null || (existingVideoUrl != null && !deleteVideo);
+      if (!hasVideo) errors.add(l10n.listingErrorVideoRequired);
+    }
 
-    // Ownership proof - check new upload OR existing URL
-    if (holdingType == 'Cooperative') {
+    // Ownership proof - check new upload OR existing URL (not for rentals)
+    if (!isRental && holdingType == 'Cooperative') {
       final hasOwnership =
           ownershipProof != null || existingOwnershipProofUrl != null;
       if (!hasOwnership) {

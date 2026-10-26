@@ -1792,7 +1792,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingErrorAddressRequired => 'Please select a complete address';
 
   @override
-  String get listingErrorMinPrice => 'Price must be at least 50,000 ETB';
+  String get listingErrorMinPrice => 'Please enter a valid price';
+
+  @override
+  String get listingPricePerAgreement => 'Per Agreement';
+
+  @override
+  String get listingPriceOnAgreement => 'Price per agreement';
 
   @override
   String get listingErrorLeasedYearRequired => 'Leased year is required';

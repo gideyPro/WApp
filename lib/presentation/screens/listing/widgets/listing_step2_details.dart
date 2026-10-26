@@ -162,33 +162,35 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
                     hintText: l10n.listingSelectHouseType,
                     onChanged: _onHouseTypeChanged,
                   ),
-                  const SizedBox(height: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _compactTextField(label: l10n.listingYearBuilt, controller: _yearBuiltController, keyboardType: TextInputType.number, onSubmitted: (v) {
-                        final n = int.tryParse(v);
-                        if (n != null) widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
-                      }),
-                      ListenableBuilder(
-                        listenable: _yearBuiltController,
-                        builder: (context, _) {
-                          final year = int.tryParse(_yearBuiltController.text);
-                          if (year == null || year < 1900) return const SizedBox.shrink();
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 2, left: 4),
-                            child: Text(
-                              EthiopianDateHelper.toEthiopianYearSuffix(year),
-                              style: AppTextStyles.bodySmall.copyWith(
-                                fontSize: 9,
-                                color: AppColors.accent600,
+                  if (!widget.formData.isRental) ...[
+                    const SizedBox(height: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _compactTextField(label: l10n.listingYearBuilt, controller: _yearBuiltController, keyboardType: TextInputType.number, onSubmitted: (v) {
+                          final n = int.tryParse(v);
+                          if (n != null) widget.onUpdate(widget.formData.copyWith(yearBuilt: n));
+                        }),
+                        ListenableBuilder(
+                          listenable: _yearBuiltController,
+                          builder: (context, _) {
+                            final year = int.tryParse(_yearBuiltController.text);
+                            if (year == null || year < 1900) return const SizedBox.shrink();
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 2, left: 4),
+                              child: Text(
+                                EthiopianDateHelper.toEthiopianYearSuffix(year),
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  fontSize: 9,
+                                  color: AppColors.accent600,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   Text(l10n.listingAmenities,
                       style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
@@ -206,57 +208,80 @@ class _ListingStep2DetailsState extends State<ListingStep2Details> {
               ),
             ),
 
-          _sectionCard(
-            title: l10n.listingAreaDimensions,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _compactTextField(
-                  label: l10n.listingTotalArea,
-                  controller: _totalAreaController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  readOnly: isAreaReadOnly,
-                  onSubmitted: (v) {
-                    final n = double.tryParse(v);
-                    if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n));
-                  },
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(child: _compactTextField(label: l10n.listingFrontArea, controller: _frontAreaController, keyboardType: const TextInputType.numberWithOptions(decimal: true), onSubmitted: (v) {
+          if (!widget.formData.isRental)
+            _sectionCard(
+              title: l10n.listingAreaDimensions,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _compactTextField(
+                    label: l10n.listingTotalArea,
+                    controller: _totalAreaController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    readOnly: isAreaReadOnly,
+                    onSubmitted: (v) {
                       final n = double.tryParse(v);
-                      if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n));
-                    })),
-                    const SizedBox(width: 8),
-                    Expanded(child: _compactTextField(label: l10n.listingSideArea, controller: _sideAreaController, keyboardType: const TextInputType.numberWithOptions(decimal: true), onSubmitted: (v) {
-                      final n = double.tryParse(v);
-                      if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n));
-                    })),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _compactDropdown(
-                  value: widget.formData.facingDirection,
-                  items: {
-                    'north': l10n.listingNorth,
-                    'south': l10n.listingSouth,
-                    'east': l10n.listingEast,
-                    'west': l10n.listingWest,
-                    'north_east': l10n.listingNorthEast,
-                    'north_west': l10n.listingNorthWest,
-                    'south_east': l10n.listingSouthEast,
-                    'south_west': l10n.listingSouthWest,
-                    'facing_3_directions': l10n.listingFacing3Directions,
-                    'facing_all_directions': l10n.listingFacingAllDirections,
-                  },
-                  label: l10n.listingFacingDirection,
-                  hintText: l10n.listingSelectDirection,
-                  onChanged: (v) => widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
-                ),
-              ],
+                      if (n != null) widget.onUpdate(widget.formData.copyWith(totalSquareMeters: n));
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(child: _compactTextField(label: l10n.listingFrontArea, controller: _frontAreaController, keyboardType: const TextInputType.numberWithOptions(decimal: true), onSubmitted: (v) {
+                        final n = double.tryParse(v);
+                        if (n != null) widget.onUpdate(widget.formData.copyWith(frontAreaSqm: n));
+                      })),
+                      const SizedBox(width: 8),
+                      Expanded(child: _compactTextField(label: l10n.listingSideArea, controller: _sideAreaController, keyboardType: const TextInputType.numberWithOptions(decimal: true), onSubmitted: (v) {
+                        final n = double.tryParse(v);
+                        if (n != null) widget.onUpdate(widget.formData.copyWith(sideAreaSqm: n));
+                      })),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _compactDropdown(
+                    value: widget.formData.facingDirection,
+                    items: {
+                      'north': l10n.listingNorth,
+                      'south': l10n.listingSouth,
+                      'east': l10n.listingEast,
+                      'west': l10n.listingWest,
+                      'north_east': l10n.listingNorthEast,
+                      'north_west': l10n.listingNorthWest,
+                      'south_east': l10n.listingSouthEast,
+                      'south_west': l10n.listingSouthWest,
+                      'facing_3_directions': l10n.listingFacing3Directions,
+                      'facing_all_directions': l10n.listingFacingAllDirections,
+                    },
+                    label: l10n.listingFacingDirection,
+                    hintText: l10n.listingSelectDirection,
+                    onChanged: (v) => widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
+                  ),
+                ],
+              ),
+            )
+          else
+            _sectionCard(
+              title: l10n.listingFacingDirection,
+              child: _compactDropdown(
+                value: widget.formData.facingDirection,
+                items: {
+                  'north': l10n.listingNorth,
+                  'south': l10n.listingSouth,
+                  'east': l10n.listingEast,
+                  'west': l10n.listingWest,
+                  'north_east': l10n.listingNorthEast,
+                  'north_west': l10n.listingNorthWest,
+                  'south_east': l10n.listingSouthEast,
+                  'south_west': l10n.listingSouthWest,
+                  'facing_3_directions': l10n.listingFacing3Directions,
+                  'facing_all_directions': l10n.listingFacingAllDirections,
+                },
+                label: l10n.listingFacingDirection,
+                hintText: l10n.listingSelectDirection,
+                onChanged: (v) => widget.onUpdate(widget.formData.copyWith(facingDirection: v)),
+              ),
             ),
-          ),
 
           _sectionCard(
             title: l10n.listingDescriptionLabel,

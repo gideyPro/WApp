@@ -65,6 +65,7 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       listingType: listing.listingType == ListingType.sale ? 'sale' : 'rental',
       description: listing.description,
       priceFixed: listing.priceFixed,
+      priceOnAgreement: listing.listingType == ListingType.rental && listing.priceFixed == null,
       totalSquareMeters: listing.totalSquareMeters,
       holdingType: listing.holdingType ?? 'Free Hold',
       useType: listing.useType ?? 'Residential',
@@ -93,7 +94,9 @@ class _EditListingScreenState extends ConsumerState<EditListingScreen> {
       sideAreaSqm: listing.sideAreaSqm,
       facingDirection: listing.facingDirection,
       specificLocation: listing.specificLocation,
-      rentalPeriodUnit: listing.rentalPeriodUnit?.toString().split('.').last,
+      rentalPeriodUnit: listing.listingType == ListingType.rental
+          ? 'month'
+          : listing.rentalPeriodUnit?.toString().split('.').last,
       postedForOtherOwner: listing.postedForOtherOwner,
       ownerName: listing.ownerName ?? '',
       ownerPhone: listing.ownerPhone ?? '',

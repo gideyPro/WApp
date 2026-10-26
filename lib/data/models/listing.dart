@@ -955,8 +955,10 @@ class Listing {
   }
 
   String? getLocalizedRentalPeriod(BuildContext context) {
-    if (rentalPeriodUnit == null) return null;
     final l10n = AppLocalizations.of(context);
+    if (rentalPeriodUnit == null) {
+      return listingType == ListingType.rental ? l10n.listingPerMonth : null;
+    }
     switch (rentalPeriodUnit!) {
       case RentalPeriod.day:
         return l10n.listingPerDay;
@@ -972,8 +974,8 @@ class Listing {
   String getLocalizedPrice(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    if (listingType == ListingType.rental && priceFixed == null && priceMin == null && isVehicle) {
-      return l10n.carRentalPriceNegotiable;
+    if (listingType == ListingType.rental && priceFixed == null && priceMin == null) {
+      return l10n.jobSalaryPerAgreement;
     }
 
     final periodSuffix = (listingType == ListingType.rental)

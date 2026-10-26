@@ -1768,7 +1768,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingErrorAddressRequired => 'በጃኹም ምሉእ ኣድራሻ ምረፁ';
 
   @override
-  String get listingErrorMinPrice => 'ዋጋ ብውሑዱ 50,000 ብር ክኸውን ኣለዎ';
+  String get listingErrorMinPrice => 'ትክክለኛ ዋጋ የእትዉ';
+
+  @override
+  String get listingPricePerAgreement => 'ብስምምነት';
+
+  @override
+  String get listingPriceOnAgreement => 'ዋጋ ብስምምነት';
 
   @override
   String get listingErrorLeasedYearRequired => 'ናይ ሊዝ ዓመት የድሊ';

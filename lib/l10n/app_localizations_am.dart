@@ -1769,7 +1769,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingErrorAddressRequired => 'እባክዎ ሙሉ አድራሻ ይምረጡ';
 
   @override
-  String get listingErrorMinPrice => 'ዋጋ ቢያንስ 50,000 ብር መሆን አለበት';
+  String get listingErrorMinPrice => 'ትክክለኛ ዋጋ ያስገቡ';
+
+  @override
+  String get listingPricePerAgreement => 'በስምምነት';
+
+  @override
+  String get listingPriceOnAgreement => 'ዋጋ በስምምነት';
 
   @override
   String get listingErrorLeasedYearRequired => 'የሊዝ ዓመት ያስፈልጋል';

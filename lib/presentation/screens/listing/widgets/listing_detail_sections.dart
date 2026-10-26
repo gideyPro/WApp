@@ -195,7 +195,9 @@ class ListingDetailSections extends ConsumerWidget {
       }
     }
 
-    if (listing.totalSquareMeters != null && listing.totalSquareMeters! > 0) {
+    final isRental = listing.listingType == ListingType.rental;
+
+    if (!isRental && listing.totalSquareMeters != null && listing.totalSquareMeters! > 0) {
       features.add(_buildFeatureChip(context, 
         icon: Icons.square_foot,
         label: l10n.listingUnitM2(smartDecimal(listing.totalSquareMeters!)),
@@ -209,7 +211,7 @@ class ListingDetailSections extends ConsumerWidget {
       ));
     }
 
-    if (listing.holdingType != null) {
+    if (!isRental && listing.holdingType != null) {
       features.add(_buildFeatureChip(context, 
         icon: Icons.folder_copy,
         label: listing.getLocalizedHoldingType(context),
@@ -265,6 +267,7 @@ class ListingDetailSections extends ConsumerWidget {
   }
 
   Widget _buildAmenities(BuildContext context, AppLocalizations l10n) {
+    final isRental = listing.listingType == ListingType.rental;
     final amenities = <Widget>[];
 
     if (listing.electricity) {
@@ -285,7 +288,7 @@ class ListingDetailSections extends ConsumerWidget {
         l10n.listingParking,
       ));
     }
-    if (listing.yearBuilt != null && listing.yearBuilt! > 0) {
+    if (!isRental && listing.yearBuilt != null && listing.yearBuilt! > 0) {
       amenities.add(_buildAmenityChip(context,
         Icons.calendar_today,
         '${l10n.listingYearBuilt}: ${EthiopianDateHelper.formatYear(listing.yearBuilt!)}',
@@ -353,9 +356,10 @@ class ListingDetailSections extends ConsumerWidget {
   }
 
   Widget _buildPropertyDetails(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    final isRental = listing.listingType == ListingType.rental;
     final details = <Map<String, String>>[];
 
-    if (listing.propertyType == PropertyType.land) {
+    if (!isRental && listing.propertyType == PropertyType.land) {
       if ((listing.frontAreaSqm ?? 0) > 0) {
         details.add({
           'label': l10n.listingsFrontArea,
@@ -376,7 +380,7 @@ class ListingDetailSections extends ConsumerWidget {
         'value': listing.getLocalizedUseType(context)
       });
     }
-    if (listing.holdingType != null) {
+    if (!isRental && listing.holdingType != null) {
       details.add({
         'label': l10n.listingsHoldingType,
         'value': listing.getLocalizedHoldingType(context)
@@ -461,7 +465,7 @@ class ListingDetailSections extends ConsumerWidget {
       details.add(
           {'label': l10n.searchPriceRange, 'value': l10n.listingsNegotiable});
     }
-    if (listing.hasDebtOrEncumbrance) {
+    if (!isRental && listing.hasDebtOrEncumbrance) {
       final debtAmount = listing.debtAmount;
       final amount = debtAmount != null
           ? l10n.listingsEncumbranceYes(smartDecimal(debtAmount))

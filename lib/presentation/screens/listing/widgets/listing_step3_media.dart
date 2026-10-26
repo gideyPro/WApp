@@ -115,12 +115,14 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
         children: [
           _buildImagesSection(),
           const SizedBox(height: 16),
-          _buildSitePlanSection(),
-          const SizedBox(height: 16),
-          if (widget.formData.holdingType == 'Cooperative')
-            _buildOwnershipSection(),
-          if (widget.formData.holdingType == 'Cooperative')
+          if (!widget.formData.isRental) ...[
+            _buildSitePlanSection(),
             const SizedBox(height: 16),
+            if (widget.formData.holdingType == 'Cooperative') ...[
+              _buildOwnershipSection(),
+              const SizedBox(height: 16),
+            ],
+          ],
           _buildVideoSection(),
         ],
       ),
@@ -545,13 +547,17 @@ class _ListingStep3MediaState extends State<ListingStep3Media> {
         widget.formData.videoFile == null &&
         !widget.formData.deleteVideo;
     final pickedFile = widget.formData.videoFile;
+    final isRental = widget.formData.isRental;
 
     return _mediaSection(
-      title: '${l10n.listingsVideoTour} *',
+      title: isRental ? l10n.listingsVideoTour : '${l10n.listingsVideoTour} *',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${l10n.listingVideoMaxSize} — ${l10n.orderRequired}',
+          Text(
+              isRental
+                  ? '${l10n.listingVideoMaxSize} — ${l10n.commonOptional}'
+                  : '${l10n.listingVideoMaxSize} — ${l10n.orderRequired}',
               style: AppTextStyles.caption
                   .copyWith(color: context.theme.textMuted)),
           const SizedBox(height: 8),

@@ -306,16 +306,23 @@ class ListingService {
 
   Future<FormData> _buildFormData(ListingFormData formData, {bool isUpdate = false}) async {
     final dioFormData = FormData();
+    final isRental = formData.listingType == 'rental';
 
     // Add text fields
     dioFormData.fields.addAll([
       MapEntry('type', formData.type),
-      MapEntry('holding_type', formData.holdingType),
+      if (!isRental && formData.holdingType.isNotEmpty)
+        MapEntry('holding_type', formData.holdingType),
       MapEntry('listing_type', formData.listingType),
       MapEntry('use_type', formData.useType),
       if (formData.specificLocation != null) MapEntry('specific_location', formData.specificLocation!),
-      if (formData.priceFixed != null) MapEntry('price_fixed', formData.priceFixed.toString()),
-      if (formData.rentalPeriodUnit != null && formData.rentalPeriodUnit!.isNotEmpty) 
+      if (!isRental && formData.priceFixed != null)
+        MapEntry('price_fixed', formData.priceFixed.toString())
+      else if (isRental && !formData.priceOnAgreement && formData.priceFixed != null)
+        MapEntry('price_fixed', formData.priceFixed.toString()),
+      if (isRental)
+        const MapEntry('rental_period_unit', 'month')
+      else if (formData.rentalPeriodUnit != null && formData.rentalPeriodUnit!.isNotEmpty)
         MapEntry('rental_period_unit', formData.rentalPeriodUnit!),
       MapEntry('posted_for_other_owner', formData.postedForOtherOwner ? '1' : '0'),
       if (formData.listingType == 'rental' && formData.postedForOtherOwner) ...[
@@ -328,19 +335,21 @@ class ListingService {
       if (formData.description != null) MapEntry('description', formData.description!),
       if (formData.serviceType != null) MapEntry('service_type', formData.serviceType!),
       if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),
-      MapEntry('has_debt_or_encumbrance', formData.hasDebtOrEncumbrance ? '1' : '0'),
-      if (formData.debtAmount != null) MapEntry('debt_amount', formData.debtAmount.toString()),
-      if (formData.debtHolder != null) MapEntry('debt_holder', formData.debtHolder!),
+      if (!isRental) ...[
+        MapEntry('has_debt_or_encumbrance', formData.hasDebtOrEncumbrance ? '1' : '0'),
+        if (formData.debtAmount != null) MapEntry('debt_amount', formData.debtAmount.toString()),
+        if (formData.debtHolder != null) MapEntry('debt_holder', formData.debtHolder!),
+      ],
       if (formData.postedByAgent) MapEntry('agent_id', formData.agentId),
       MapEntry('electricity', formData.electricity ? '1' : '0'),
       MapEntry('water', formData.water ? '1' : '0'),
       MapEntry('parking_available', formData.parkingAvailable ? '1' : '0'),
-      if (formData.totalSquareMeters != null) ...[
+      if (!isRental && formData.totalSquareMeters != null) ...[
         MapEntry('total_square_meters', formData.totalSquareMeters.toString()),
         MapEntry('area', formData.totalSquareMeters.toString()),
       ],
-      if (formData.frontAreaSqm != null) MapEntry('front_area_sqm', formData.frontAreaSqm.toString()),
-      if (formData.sideAreaSqm != null) MapEntry('side_area_sqm', formData.sideAreaSqm.toString()),
+      if (!isRental && formData.frontAreaSqm != null) MapEntry('front_area_sqm', formData.frontAreaSqm.toString()),
+      if (!isRental && formData.sideAreaSqm != null) MapEntry('side_area_sqm', formData.sideAreaSqm.toString()),
       const MapEntry('terms_accepted', '1'),
     ]);
 
@@ -353,26 +362,28 @@ class ListingService {
       if (formData.salons != null) dioFormData.fields.add(MapEntry('salons', formData.salons.toString()));
       if (formData.floors != null) dioFormData.fields.add(MapEntry('floors', formData.floors.toString()));
       if (formData.houseType != null) dioFormData.fields.add(MapEntry('house_type', formData.houseType!));
-      if (formData.yearBuilt != null) dioFormData.fields.add(MapEntry('year_built', formData.yearBuilt.toString()));
+      if (!isRental && formData.yearBuilt != null) dioFormData.fields.add(MapEntry('year_built', formData.yearBuilt.toString()));
     }
 
-    // Holding-specific fields
-    if (formData.holdingType == 'Free Hold') {
-      if (formData.taxPaidUntilYear != null) dioFormData.fields.add(MapEntry('tax_paid_until_year', formData.taxPaidUntilYear.toString()));
-      if (formData.acquisitionClarification != null) dioFormData.fields.add(MapEntry('acquisition_clarification', formData.acquisitionClarification!));
-    } else if (formData.holdingType == 'Lease Hold') {
-      if (formData.leasedYear != null) dioFormData.fields.add(MapEntry('leased_year', formData.leasedYear.toString()));
-      dioFormData.fields.add(MapEntry('is_transferable', formData.isTransferable ? '1' : '0'));
-      if (formData.leasePricePerSqm != null) {
-        dioFormData.fields.add(MapEntry('lease_price_per_sqm', formData.leasePricePerSqm.toString()));
-        dioFormData.fields.add(MapEntry('price_per_sqm', formData.leasePricePerSqm.toString()));
+    // Holding-specific fields (sales only)
+    if (!isRental) {
+      if (formData.holdingType == 'Free Hold') {
+        if (formData.taxPaidUntilYear != null) dioFormData.fields.add(MapEntry('tax_paid_until_year', formData.taxPaidUntilYear.toString()));
+        if (formData.acquisitionClarification != null) dioFormData.fields.add(MapEntry('acquisition_clarification', formData.acquisitionClarification!));
+      } else if (formData.holdingType == 'Lease Hold') {
+        if (formData.leasedYear != null) dioFormData.fields.add(MapEntry('leased_year', formData.leasedYear.toString()));
+        dioFormData.fields.add(MapEntry('is_transferable', formData.isTransferable ? '1' : '0'));
+        if (formData.leasePricePerSqm != null) {
+          dioFormData.fields.add(MapEntry('lease_price_per_sqm', formData.leasePricePerSqm.toString()));
+          dioFormData.fields.add(MapEntry('price_per_sqm', formData.leasePricePerSqm.toString()));
+        }
+        if (formData.buildType != null) dioFormData.fields.add(MapEntry('build_type', formData.buildType!));
+        if (formData.annualPayment != null) dioFormData.fields.add(MapEntry('annual_payment', formData.annualPayment.toString()));
+      } else if (formData.holdingType == 'Cooperative') {
+        if (formData.cooperativeName != null) dioFormData.fields.add(MapEntry('cooperative_name', formData.cooperativeName!));
+        if (formData.cooperativeCode != null) dioFormData.fields.add(MapEntry('cooperative_code', formData.cooperativeCode!));
+        if (formData.buildingStatus != null) dioFormData.fields.add(MapEntry('building_status', formData.buildingStatus!));
       }
-      if (formData.buildType != null) dioFormData.fields.add(MapEntry('build_type', formData.buildType!));
-      if (formData.annualPayment != null) dioFormData.fields.add(MapEntry('annual_payment', formData.annualPayment.toString()));
-    } else if (formData.holdingType == 'Cooperative') {
-      if (formData.cooperativeName != null) dioFormData.fields.add(MapEntry('cooperative_name', formData.cooperativeName!));
-      if (formData.cooperativeCode != null) dioFormData.fields.add(MapEntry('cooperative_code', formData.cooperativeCode!));
-      if (formData.buildingStatus != null) dioFormData.fields.add(MapEntry('building_status', formData.buildingStatus!));
     }
 
     // VIP option
@@ -389,8 +400,8 @@ class ListingService {
       ));
     }
 
-    // Add site plan
-    if (formData.sitePlan != null) {
+    // Add site plan (sales only)
+    if (!isRental && formData.sitePlan != null) {
       if (isUpdate) {
         // Backend update expects 'site_plan_image' for a single replacement
         dioFormData.files.add(MapEntry(
@@ -408,14 +419,15 @@ class ListingService {
       }
     }
 
-    // Add conditional files
-    if (formData.ownershipProof != null) {
+    // Add conditional files (ownership proof for cooperative sales only)
+    if (!isRental && formData.ownershipProof != null) {
       dioFormData.files.add(MapEntry(
         'ownership_proof[]',
         await MultipartFile.fromFile(formData.ownershipProof!.path, filename: 'ownership_proof.jpg'),
       ));
     }
     
+    // Video file is optional for rentals, required for sales
     if (formData.videoFile != null) {
       dioFormData.files.add(MapEntry(
         'video_file',
