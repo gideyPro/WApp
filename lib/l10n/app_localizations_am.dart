@@ -541,9 +541,6 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingYearBuilt => 'የተገነባበት ዓመት';
 
   @override
-  String get listingRentalPeriod => 'የኪራይ ጊዜ';
-
-  @override
   String get listingPostedForOtherOwner => 'ለሌላ ባለቤት የተለጠፈ';
 
   @override
@@ -1773,9 +1770,6 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get listingPricePerAgreement => 'በስምምነት';
-
-  @override
-  String get listingPriceOnAgreement => 'ዋጋ በስምምነት';
 
   @override
   String get listingErrorLeasedYearRequired => 'የሊዝ ዓመት ያስፈልጋል';

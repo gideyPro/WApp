@@ -1096,12 +1096,6 @@ abstract class AppLocalizations {
   /// **'Year Built'**
   String get listingYearBuilt;
 
-  /// No description provided for @listingRentalPeriod.
-  ///
-  /// In en, this message translates to:
-  /// **'Rental Period'**
-  String get listingRentalPeriod;
-
   /// No description provided for @listingPostedForOtherOwner.
   ///
   /// In en, this message translates to:
@@ -3393,12 +3387,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Per Agreement'**
   String get listingPricePerAgreement;
-
-  /// No description provided for @listingPriceOnAgreement.
-  ///
-  /// In en, this message translates to:
-  /// **'Price per agreement'**
-  String get listingPriceOnAgreement;
 
   /// No description provided for @listingErrorLeasedYearRequired.
   ///

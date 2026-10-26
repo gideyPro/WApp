@@ -551,9 +551,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingYearBuilt => 'Year Built';
 
   @override
-  String get listingRentalPeriod => 'Rental Period';
-
-  @override
   String get listingPostedForOtherOwner => 'Posted for other owner';
 
   @override
@@ -1796,9 +1793,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingPricePerAgreement => 'Per Agreement';
-
-  @override
-  String get listingPriceOnAgreement => 'Price per agreement';
 
   @override
   String get listingErrorLeasedYearRequired => 'Leased year is required';

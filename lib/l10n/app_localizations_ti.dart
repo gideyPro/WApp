@@ -540,9 +540,6 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingYearBuilt => 'ዝተሃነፀሉ ዓመት';
 
   @override
-  String get listingRentalPeriod => 'ናይ ኪራይ ግዘ';
-
-  @override
   String get listingPostedForOtherOwner => 'ንኻልእ ዋና ዝተለጠፈ';
 
   @override
@@ -1772,9 +1769,6 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get listingPricePerAgreement => 'ብስምምነት';
-
-  @override
-  String get listingPriceOnAgreement => 'ዋጋ ብስምምነት';
 
   @override
   String get listingErrorLeasedYearRequired => 'ናይ ሊዝ ዓመት የድሊ';

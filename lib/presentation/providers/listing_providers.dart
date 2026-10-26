@@ -18,17 +18,40 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
   FavoritesNotifier(this._favoriteService, this._ref)
       : super(const FavoritesState.initial());
 
-  Future<void> loadFavorites({int page = 1}) async {
+  Future<void> loadFavorites() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _favoriteService.getFavorites(page: page);
-    if (response.success) {
-      state = FavoritesState.loaded(
-        favorites: response.listings,
-        total: response.total ?? 0,
-      );
-    } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+
+    final favorites = <Listing>[];
+    var page = 1;
+    var totalPages = 1;
+    var total = 0;
+
+    // Favorites must be complete for heart icons and removals to stay in sync.
+    // Fetch every page instead of silently truncating at the first one.
+    while (true) {
+      final response =
+          await _favoriteService.getFavorites(page: page, perPage: 100);
+      if (!response.success) {
+        if (favorites.isEmpty) {
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: response.message,
+          );
+        } else {
+          state = FavoritesState.loaded(favorites: favorites, total: total);
+        }
+        return;
+      }
+
+      favorites.addAll(response.listings);
+      total = response.total ?? favorites.length;
+      totalPages = response.totalPages ?? 1;
+
+      if (page >= totalPages || response.listings.isEmpty) break;
+      page++;
     }
+
+    state = FavoritesState.loaded(favorites: favorites, total: total);
   }
 
   Future<bool> toggleFavorite(int listingId) async {
