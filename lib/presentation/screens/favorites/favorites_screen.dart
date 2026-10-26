@@ -67,7 +67,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
             Padding(
               padding: const EdgeInsets.all(8),
               child: Text(
-                '${state.favorites.length}',
+                '${state.total > 0 ? state.total : state.favorites.length}',
                 style: AppTextStyles.labelMedium.copyWith(
                   color: AppColors.accent600,
                 ),

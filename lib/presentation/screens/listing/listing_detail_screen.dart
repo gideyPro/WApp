@@ -35,6 +35,7 @@ class ListingDetailScreen extends ConsumerStatefulWidget {
 class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   Timer? _videoPollTimer;
   String? _precachedVideoUrl;
+  bool _isFavoriteToggling = false;
 
   @override
   void initState() {
@@ -390,20 +391,29 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       return;
     }
 
-    final success =
-        await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
+    if (_isFavoriteToggling) return;
+    setState(() => _isFavoriteToggling = true);
 
-    if (mounted) {
-      final l10n = AppLocalizations.of(context);
-      final msg = isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded;
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg), backgroundColor: AppColors.success),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg), backgroundColor: AppColors.error),
-        );
+    try {
+      final success =
+          await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
+
+      if (mounted) {
+        final l10n = AppLocalizations.of(context);
+        if (success) {
+          final msg = isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(msg), backgroundColor: AppColors.success),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.commonError), backgroundColor: AppColors.error),
+          );
+        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isFavoriteToggling = false);
       }
     }
   }

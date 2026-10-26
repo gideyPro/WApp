@@ -39,6 +39,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   bool _isRevealingContact = false;
   bool _isFeatureLoading = false;
   bool _isDeleting = false;
+  bool _isFavoriteToggling = false;
 
   @override
   void initState() {
@@ -78,16 +79,34 @@ ${l10n.shareListingTitle}
       return;
     }
 
-    final success = await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
-    if (mounted) {
-      final l10n = AppLocalizations.of(context);
-      final msg = isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(msg),
-          backgroundColor: success ? AppColors.success : AppColors.error,
-        ),
-      );
+    if (_isFavoriteToggling) return;
+    setState(() => _isFavoriteToggling = true);
+
+    try {
+      final success = await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
+      if (mounted) {
+        final l10n = AppLocalizations.of(context);
+        if (success) {
+          final msg = isFavorited ? l10n.favoritesRemoved : l10n.favoritesAdded;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(msg),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.commonError),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isFavoriteToggling = false);
+      }
     }
   }
 

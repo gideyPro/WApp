@@ -395,13 +395,12 @@ class UnifiedFilterValues {
       if (propertyType != null) params['type'] = propertyType;
       if (listingType != null) params['listing_type'] = listingType;
       if (isFeatured) params['is_featured'] = true;
-      if (areaMin != null) params['area_min'] = areaMin;
-      if (areaMax != null) params['area_max'] = areaMax;
+      if (listingType != 'rental') {
+        if (areaMin != null) params['area_min'] = areaMin;
+        if (areaMax != null) params['area_max'] = areaMax;
+      }
       if (bedrooms != null) params['bedrooms'] = bedrooms;
       if (bathrooms != null) params['bathrooms'] = bathrooms;
-      if (listingType == 'rental' && rentalPeriod != null) {
-        params['rental_period_unit'] = rentalPeriod;
-      }
     } else if (category == HomeCategory.jobs) {
       if (jobCategory != null) params['job_category'] = jobCategory;
       if (!forSeekers && jobType != null) params['job_type'] = jobType;
@@ -864,56 +863,43 @@ class _FilterSheetState extends State<FilterSheet> {
           _priceLabel = null;
           _priceMin = null;
           _priceMax = null;
-          if (_listingType != 'rental') {
-            _rentalPeriod = null;
+          _rentalPeriod = null;
+          if (_listingType == 'rental') {
+            _areaMinController.clear();
+            _areaMaxController.clear();
           }
         }),
       ),
       const SizedBox(height: 16),
-      if (_listingType == 'rental') ...[
+      if (_listingType != 'rental') ...[
         Text(
-          l10n.listingRentalPeriod,
+          l10n.searchArea,
           style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 10),
-        _modalChipRow(
-          options: [
-            (l10n.searchFilterAny, null, _rentalPeriod == null),
-            (l10n.rentalPeriodDay, 'day', _rentalPeriod == 'day'),
-            (l10n.rentalPeriodMonth, 'month', _rentalPeriod == 'month'),
-            (l10n.rentalPeriodYear, 'year', _rentalPeriod == 'year'),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _areaMinController,
+                decoration: _inputDecoration(l10n.searchAreaMin),
+                keyboardType: TextInputType.number,
+                style: AppTextStyles.bodyMedium,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextField(
+                controller: _areaMaxController,
+                decoration: _inputDecoration(l10n.searchAreaMax),
+                keyboardType: TextInputType.number,
+                style: AppTextStyles.bodyMedium,
+              ),
+            ),
           ],
-          onSelected: (v) => setState(() => _rentalPeriod = v as String?),
         ),
         const SizedBox(height: 16),
       ],
-      Text(
-        l10n.searchArea,
-        style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600),
-      ),
-      const SizedBox(height: 10),
-      Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _areaMinController,
-              decoration: _inputDecoration(l10n.searchAreaMin),
-              keyboardType: TextInputType.number,
-              style: AppTextStyles.bodyMedium,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: TextField(
-              controller: _areaMaxController,
-              decoration: _inputDecoration(l10n.searchAreaMax),
-              keyboardType: TextInputType.number,
-              style: AppTextStyles.bodyMedium,
-            ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 16),
       Text(
         l10n.listingBedrooms,
         style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600),

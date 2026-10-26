@@ -463,7 +463,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpListCreateContent.
   ///
   /// In en, this message translates to:
-  /// **'Publishing your listings on WaveMart is quick and guided:\n\n1. Tap the \"+\" button in the center of the bottom navigation bar\n2. Choose your category: Real Estate (House, Apartment, Commercial, Land for Sale or Rent), Vehicles (Car, Truck, Motorcycle, Machinery for Sale or Rent), or Job Opportunity\n3. Fill in the required specifications (price, area, mileage, transmission, fuel type, employment terms, qualifications, and exact location)\n4. Upload high-resolution photos and document scans (such as Site Plans for properties or vehicle inspection details)\n5. Review your information and tap \"Submit Listing\"\n\nAll listings are verified by our moderation team within 24 hours before going live to ensure quality and authenticity.'**
+  /// **'Publishing your listings on WaveMart is quick and guided:\n\n1. Tap the \"+\" button in the center of the bottom navigation bar\n2. Choose your category: Real Estate (House, Apartment, Commercial, Land for Sale or Rent), Vehicles (Car, Truck, Motorcycle, Machinery for Sale or Rent), or Job Opportunity\n3. Fill in the required specifications (price, area, mileage, employment terms, qualifications, and exact location)\n4. Upload high-resolution photos and document scans (such as Site Plans for properties or vehicle inspection details)\n5. Review your information and tap \"Submit Listing\"\n\nAll listings are verified by our moderation team within 24 hours before going live to ensure quality and authenticity.'**
   String get helpListCreateContent;
 
   /// No description provided for @helpListManageTitle.
@@ -487,7 +487,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpListTipsContent.
   ///
   /// In en, this message translates to:
-  /// **'Attract more serious buyers, renters, and top candidates by following these best practices:\n\n1. High-Quality Visuals: Upload at least 5 clear, well-lit photos showing all angles, interior, exterior, and surrounding area\n2. Transparent Pricing: List realistic, market-competitive prices. State clearly whether the price is fixed or negotiable\n3. Comprehensive Details: For real estate, specify area, water/electricity access, and nearby landmarks. For vehicles, state exact year, mileage, engine, transmission, and service history\n4. Clear Job Descriptions: Outline compensation, working hours, required experience, and key responsibilities\n5. Respond Fast: Maintain active engagement in the in-app chat. Fast response times build trust and close deals faster.'**
+  /// **'Attract more serious buyers, renters, and top candidates by following these best practices:\n\n1. High-Quality Visuals: Upload at least 5 clear, well-lit photos showing all angles, interior, exterior, and surrounding area\n2. Transparent Pricing: List realistic, market-competitive prices. State clearly whether the price is fixed or negotiable\n3. Comprehensive Details: For real estate, specify area, water/electricity access, and nearby landmarks. For vehicles, state exact year, mileage, engine, and service history\n4. Clear Job Descriptions: Outline compensation, working hours, required experience, and key responsibilities\n5. Respond Fast: Maintain active engagement in the in-app chat. Fast response times build trust and close deals faster.'**
   String get helpListTipsContent;
 
   /// No description provided for @helpListVideoTitle.
@@ -5943,54 +5943,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Minimum must be less than maximum'**
   String get searchValidationRange;
-
-  /// No description provided for @transmissionManual.
-  ///
-  /// In en, this message translates to:
-  /// **'Manual'**
-  String get transmissionManual;
-
-  /// No description provided for @transmissionAutomatic.
-  ///
-  /// In en, this message translates to:
-  /// **'Automatic'**
-  String get transmissionAutomatic;
-
-  /// No description provided for @transmissionSemiAutomatic.
-  ///
-  /// In en, this message translates to:
-  /// **'Semi-automatic'**
-  String get transmissionSemiAutomatic;
-
-  /// No description provided for @fuelPetrol.
-  ///
-  /// In en, this message translates to:
-  /// **'Petrol'**
-  String get fuelPetrol;
-
-  /// No description provided for @fuelGasoline.
-  ///
-  /// In en, this message translates to:
-  /// **'Gasoline'**
-  String get fuelGasoline;
-
-  /// No description provided for @fuelDiesel.
-  ///
-  /// In en, this message translates to:
-  /// **'Diesel'**
-  String get fuelDiesel;
-
-  /// No description provided for @fuelHybrid.
-  ///
-  /// In en, this message translates to:
-  /// **'Hybrid'**
-  String get fuelHybrid;
-
-  /// No description provided for @fuelElectric.
-  ///
-  /// In en, this message translates to:
-  /// **'Electric'**
-  String get fuelElectric;
 
   /// No description provided for @rentalPeriodDay.
   ///

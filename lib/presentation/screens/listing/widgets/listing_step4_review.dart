@@ -246,7 +246,7 @@ class ListingStep4Review extends StatelessWidget {
       if (data.priceOnAgreement || data.priceFixed == null) {
         return l10n.listingPricePerAgreement;
       }
-      return '${_formatPrice(data.priceFixed!)} ETB / ${l10n.listingPerMonth}';
+      return '${_formatPrice(data.priceFixed!)} ETB ${l10n.listingPerMonth}';
     } else {
       final priceStr = data.priceFixed != null
           ? '${_formatPrice(data.priceFixed!)} ETB'

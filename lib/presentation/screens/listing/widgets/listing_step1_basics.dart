@@ -396,6 +396,7 @@ class _ListingStep1BasicsState extends ConsumerState<ListingStep1Basics> {
                                 ownerName: v == 'sale' ? '' : widget.formData.ownerName,
                                 ownerPhone: v == 'sale' ? '' : widget.formData.ownerPhone,
                                 rentalPeriodUnit: v == 'sale' ? null : 'month',
+                                priceOnAgreement: v == 'sale' ? false : widget.formData.priceOnAgreement,
                               ));
                             },
                     ),

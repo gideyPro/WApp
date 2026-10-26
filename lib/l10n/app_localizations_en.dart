@@ -197,7 +197,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpListCreateContent =>
-      'Publishing your listings on WaveMart is quick and guided:\n\n1. Tap the \"+\" button in the center of the bottom navigation bar\n2. Choose your category: Real Estate (House, Apartment, Commercial, Land for Sale or Rent), Vehicles (Car, Truck, Motorcycle, Machinery for Sale or Rent), or Job Opportunity\n3. Fill in the required specifications (price, area, mileage, transmission, fuel type, employment terms, qualifications, and exact location)\n4. Upload high-resolution photos and document scans (such as Site Plans for properties or vehicle inspection details)\n5. Review your information and tap \"Submit Listing\"\n\nAll listings are verified by our moderation team within 24 hours before going live to ensure quality and authenticity.';
+      'Publishing your listings on WaveMart is quick and guided:\n\n1. Tap the \"+\" button in the center of the bottom navigation bar\n2. Choose your category: Real Estate (House, Apartment, Commercial, Land for Sale or Rent), Vehicles (Car, Truck, Motorcycle, Machinery for Sale or Rent), or Job Opportunity\n3. Fill in the required specifications (price, area, mileage, employment terms, qualifications, and exact location)\n4. Upload high-resolution photos and document scans (such as Site Plans for properties or vehicle inspection details)\n5. Review your information and tap \"Submit Listing\"\n\nAll listings are verified by our moderation team within 24 hours before going live to ensure quality and authenticity.';
 
   @override
   String get helpListManageTitle => 'Managing, editing, and renewing listings';
@@ -211,7 +211,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpListTipsContent =>
-      'Attract more serious buyers, renters, and top candidates by following these best practices:\n\n1. High-Quality Visuals: Upload at least 5 clear, well-lit photos showing all angles, interior, exterior, and surrounding area\n2. Transparent Pricing: List realistic, market-competitive prices. State clearly whether the price is fixed or negotiable\n3. Comprehensive Details: For real estate, specify area, water/electricity access, and nearby landmarks. For vehicles, state exact year, mileage, engine, transmission, and service history\n4. Clear Job Descriptions: Outline compensation, working hours, required experience, and key responsibilities\n5. Respond Fast: Maintain active engagement in the in-app chat. Fast response times build trust and close deals faster.';
+      'Attract more serious buyers, renters, and top candidates by following these best practices:\n\n1. High-Quality Visuals: Upload at least 5 clear, well-lit photos showing all angles, interior, exterior, and surrounding area\n2. Transparent Pricing: List realistic, market-competitive prices. State clearly whether the price is fixed or negotiable\n3. Comprehensive Details: For real estate, specify area, water/electricity access, and nearby landmarks. For vehicles, state exact year, mileage, engine, and service history\n4. Clear Job Descriptions: Outline compensation, working hours, required experience, and key responsibilities\n5. Respond Fast: Maintain active engagement in the in-app chat. Fast response times build trust and close deals faster.';
 
   @override
   String get helpListVideoTitle => 'Video walkthroughs and virtual tours';
@@ -3135,30 +3135,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchValidationRange => 'Minimum must be less than maximum';
-
-  @override
-  String get transmissionManual => 'Manual';
-
-  @override
-  String get transmissionAutomatic => 'Automatic';
-
-  @override
-  String get transmissionSemiAutomatic => 'Semi-automatic';
-
-  @override
-  String get fuelPetrol => 'Petrol';
-
-  @override
-  String get fuelGasoline => 'Gasoline';
-
-  @override
-  String get fuelDiesel => 'Diesel';
-
-  @override
-  String get fuelHybrid => 'Hybrid';
-
-  @override
-  String get fuelElectric => 'Electric';
 
   @override
   String get rentalPeriodDay => 'Day';

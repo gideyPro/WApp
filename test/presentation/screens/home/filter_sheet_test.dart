@@ -108,15 +108,14 @@ void main() {
       expect(params['order'], 'asc');
     });
 
-    test('property filters include area, rooms and rental period', () {
+    test('property sale filters include area and rooms', () {
       const filters = UnifiedFilterValues(
         category: HomeCategory.property,
-        listingType: 'rental',
+        listingType: 'sale',
         areaMin: 60,
         areaMax: 180,
         bedrooms: 2,
         bathrooms: 1,
-        rentalPeriod: 'month',
       );
 
       final params = filters.toQueryParams();
@@ -124,7 +123,23 @@ void main() {
       expect(params['area_max'], 180);
       expect(params['bedrooms'], 2);
       expect(params['bathrooms'], 1);
-      expect(params['rental_period_unit'], 'month');
+    });
+
+    test('property rental filters drop area', () {
+      const filters = UnifiedFilterValues(
+        category: HomeCategory.property,
+        listingType: 'rental',
+        areaMin: 60,
+        areaMax: 180,
+        bedrooms: 2,
+        bathrooms: 1,
+      );
+
+      final params = filters.toQueryParams();
+      expect(params.containsKey('area_min'), isFalse);
+      expect(params.containsKey('area_max'), isFalse);
+      expect(params['bedrooms'], 2);
+      expect(params['bathrooms'], 1);
     });
 
     test('rental period is not sent for sale properties', () {

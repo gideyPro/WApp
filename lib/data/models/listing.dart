@@ -975,7 +975,7 @@ class Listing {
     final l10n = AppLocalizations.of(context);
 
     if (listingType == ListingType.rental && priceFixed == null && priceMin == null) {
-      return l10n.jobSalaryPerAgreement;
+      return l10n.listingPricePerAgreement;
     }
 
     final periodSuffix = (listingType == ListingType.rental)

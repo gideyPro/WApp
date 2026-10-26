@@ -695,15 +695,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _clearSearch() {
     _searchController.clear();
-    setState(() {
-      _filterValues = UnifiedFilterValues(
-        category: _selectedCategory,
-        forSeekers: _selectedCategory == HomeCategory.jobs &&
-            _jobsSection == JobsSection.seekers,
-      );
-      _hasSearched = false;
-    });
-    _reloadCurrentFeed();
+    if (_filterValues.hasAnyFilter) {
+      _performSearch();
+    } else {
+      setState(() {
+        _hasSearched = false;
+      });
+      _reloadCurrentFeed();
+    }
   }
 
   void _clearAllFilters() {
