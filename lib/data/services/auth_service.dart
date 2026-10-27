@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
@@ -10,6 +11,30 @@ class AuthService {
 
   AuthService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
+
+  static (bool, int?) _extractLockoutInfo(dynamic responseData, int? statusCode) {
+    bool isLocked = statusCode == 429;
+    int? retryAfter;
+
+    if (responseData is Map) {
+      if (responseData['code'] == 'locked_out') {
+        isLocked = true;
+      }
+      if (responseData['retry_after'] != null) {
+        retryAfter = int.tryParse(responseData['retry_after'].toString());
+      }
+      final dataField = responseData['data'];
+      if (dataField is Map) {
+        if (dataField['locked'] == true) {
+          isLocked = true;
+        }
+        if (dataField['retry_after'] != null) {
+          retryAfter = int.tryParse(dataField['retry_after'].toString());
+        }
+      }
+    }
+    return (isLocked, retryAfter);
+  }
 
   Future<AuthResponse> sendOtp({required String phoneNumber}) async {
     try {
@@ -26,10 +51,22 @@ class AuthService {
         );
       }
 
+      final (isLocked, retryAfter) = _extractLockoutInfo(response.data, response.statusCode);
       return AuthResponse(
         success: false,
         message: ApiEnvelope.extractMessage(response.data, 'Failed to send OTP'),
         destination: ApiEnvelope.extractDestination(response.data),
+        isLocked: isLocked,
+        retryAfter: retryAfter,
+      );
+    } on DioException catch (e) {
+      final (isLocked, retryAfter) = _extractLockoutInfo(e.response?.data, e.response?.statusCode);
+      return AuthResponse(
+        success: false,
+        message: ApiEnvelope.extractMessage(e.response?.data, e.message ?? 'Failed to send OTP'),
+        destination: ApiEnvelope.extractDestination(e.response?.data),
+        isLocked: isLocked,
+        retryAfter: retryAfter,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -63,9 +100,12 @@ class AuthService {
         if (token == null &&
             data['user'] == null &&
             data['data'] == null) {
+          final (isLocked, retryAfter) = _extractLockoutInfo(data, response.statusCode);
           return AuthResponse(
             success: false,
             message: ApiEnvelope.extractMessage(data, 'Login failed'),
+            isLocked: isLocked,
+            retryAfter: retryAfter,
           );
         }
 
@@ -92,9 +132,20 @@ class AuthService {
         );
       }
 
+      final (isLocked, retryAfter) = _extractLockoutInfo(response.data, response.statusCode);
       return AuthResponse(
         success: false,
         message: ApiEnvelope.extractMessage(response.data, 'Login failed'),
+        isLocked: isLocked,
+        retryAfter: retryAfter,
+      );
+    } on DioException catch (e) {
+      final (isLocked, retryAfter) = _extractLockoutInfo(e.response?.data, e.response?.statusCode);
+      return AuthResponse(
+        success: false,
+        message: ApiEnvelope.extractMessage(e.response?.data, e.message ?? 'Login failed'),
+        isLocked: isLocked,
+        retryAfter: retryAfter,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -125,9 +176,20 @@ class AuthService {
         );
       }
 
+      final (isLocked, retryAfter) = _extractLockoutInfo(response.data, response.statusCode);
       return AuthResponse(
         success: false,
         message: ApiEnvelope.extractMessage(response.data, 'OTP verification failed'),
+        isLocked: isLocked,
+        retryAfter: retryAfter,
+      );
+    } on DioException catch (e) {
+      final (isLocked, retryAfter) = _extractLockoutInfo(e.response?.data, e.response?.statusCode);
+      return AuthResponse(
+        success: false,
+        message: ApiEnvelope.extractMessage(e.response?.data, e.message ?? 'OTP verification failed'),
+        isLocked: isLocked,
+        retryAfter: retryAfter,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -153,10 +215,22 @@ class AuthService {
         );
       }
 
+      final (isLocked, retryAfter) = _extractLockoutInfo(response.data, response.statusCode);
       return AuthResponse(
         success: false,
         message: ApiEnvelope.extractMessage(response.data, 'Failed to resend OTP'),
         destination: ApiEnvelope.extractDestination(response.data),
+        isLocked: isLocked,
+        retryAfter: retryAfter,
+      );
+    } on DioException catch (e) {
+      final (isLocked, retryAfter) = _extractLockoutInfo(e.response?.data, e.response?.statusCode);
+      return AuthResponse(
+        success: false,
+        message: ApiEnvelope.extractMessage(e.response?.data, e.message ?? 'Failed to resend OTP'),
+        destination: ApiEnvelope.extractDestination(e.response?.data),
+        isLocked: isLocked,
+        retryAfter: retryAfter,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -229,9 +303,16 @@ class AuthService {
     } catch (e) {
       // Even if API fails, clear local token
     } finally {
-      await _apiClient.clearAuthToken();
-      await _apiClient.clearCachedUser();
+      await clearLocalSession();
     }
+  }
+
+  /// Clear token and cached user without calling the API.
+  ///
+  /// Used when the token is already known to be invalid (401/session expiry),
+  /// so a server-side logout call would only fail again.
+  Future<void> clearLocalSession() async {
+    await _apiClient.clearAuth();
   }
 
   /// If otpCode is null, sends OTP for registration
@@ -336,11 +417,25 @@ class AuthService {
         await _apiClient.cacheUserData(user.toJson());
         return user;
       }
+
+      // ONLY clear the cache when the token has expired/is invalid (401)
+      if (response.statusCode == 401) {
+        await _apiClient.clearAuth();
+        return null;
+      }
+    } on DioException catch (e) {
+      // ONLY clear the cache when the token has expired/is invalid (401)
+      if (e.response?.statusCode == 401) {
+        await _apiClient.clearAuth();
+        return null;
+      }
+      // If internet fails, network connection error, or timeout:
+      // keep cached data intact for offline access
     } catch (_) {
-      // Network error — fall through to cached data
+      // Network error — keep cached data intact for offline access
     }
 
-    // Fall back to cached user data when API fails
+    // Fall back to cached user data when API fails due to network/internet issues
     final cached = await _apiClient.getCachedUserData();
     if (cached != null) {
       return User.fromJson(cached);
@@ -360,6 +455,8 @@ class AuthResponse {
   final User? user;
   final String? token;
   final String? destination;
+  final bool isLocked;
+  final int? retryAfter;
 
   const AuthResponse({
     required this.success,
@@ -367,8 +464,10 @@ class AuthResponse {
     this.user,
     this.token,
     this.destination,
+    this.isLocked = false,
+    this.retryAfter,
   });
 
   @override
-  String toString() => 'AuthResponse(success: $success, message: $message)';
+  String toString() => 'AuthResponse(success: $success, message: $message, isLocked: $isLocked, retryAfter: $retryAfter)';
 }

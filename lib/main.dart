@@ -18,6 +18,7 @@ import 'l10n/app_localizations.dart';
 import 'core/constants/app_colors.dart';
 import 'core/theme/text_styles.dart';
 import 'core/network/local_notification_service.dart';
+import 'core/network/api_client.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart' as cache;
@@ -151,6 +152,31 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
   Timer? _incomingCallTimer;
 
   @override
+  void initState() {
+    super.initState();
+    ApiClient.onSessionExpired = () {
+      ref.read(authStateProvider.notifier).forceLogout();
+      goRouter.go('/login');
+      final ctx = navigatorKey.currentContext;
+      if (ctx != null && ctx.mounted) {
+        ScaffoldMessenger.of(ctx).showSnackBar(
+          const SnackBar(
+            content: Text('Session expired. Please log in again.'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    };
+  }
+
+  @override
+  void dispose() {
+    ApiClient.onSessionExpired = null;
+    _incomingCallTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final localeState = ref.watch(localeProvider);
     final authState = ref.watch(authStateProvider);
@@ -242,12 +268,6 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
         Locale('ti'),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    _incomingCallTimer?.cancel();
-    super.dispose();
   }
 
   Future<void> _checkIncomingCalls() async {

@@ -999,41 +999,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           const SizedBox(height: 16),
           _buildImagesSection(),
           const SizedBox(height: 16),
-          _sectionCard(
-            title: l10n.listingOptions,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 24, height: 24,
-                  child: Checkbox(
-                    value: _formData.isVip,
-                    onChanged: (v) => setState(() => _formData = _formData.copyWith(isVip: v ?? false)),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _formData = _formData.copyWith(isVip: !_formData.isVip)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.diamond, size: 16, color: AppColors.vip),
-                            const SizedBox(width: 4),
-                            Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: AppColors.vip, letterSpacing: 0.3)),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        Text(l10n.carVipSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildVipOption(l10n),
           const SizedBox(height: 16),
           _sectionCard(
             title: l10n.listingPostedByAgent,
@@ -1170,6 +1136,92 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  Widget _buildVipOption(AppLocalizations l10n) {
+    final subState = ref.watch(subscriptionProvider);
+    if (subState.isLoading) {
+      return const SizedBox.shrink();
+    }
+
+    final canManageVip = subState.canViewVip;
+    final isAllowed = canManageVip || widget.listing.isVip;
+
+    if (!isAllowed && _formData.isVip) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _formData = _formData.copyWith(isVip: false));
+      });
+    }
+
+    if (isAllowed) {
+      return _sectionCard(
+        title: l10n.listingOptions,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 24, height: 24,
+              child: Checkbox(
+                value: _formData.isVip,
+                onChanged: (v) => setState(() => _formData = _formData.copyWith(isVip: v ?? false)),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() => _formData = _formData.copyWith(isVip: !_formData.isVip)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.diamond, size: 16, color: AppColors.vip),
+                        const SizedBox(width: 4),
+                        Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: AppColors.vip, letterSpacing: 0.3)),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(l10n.carVipSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return InkWell(
+      onTap: () => context.push('/subscriptions'),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.vip.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.vip.withValues(alpha: 0.2)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.diamond_outlined, size: 20, color: AppColors.vip),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: AppColors.vip)),
+                  Text(
+                    'VIP listings require an active subscription plan.',
+                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 14, color: AppColors.vip),
+          ],
+        ),
       ),
     );
   }

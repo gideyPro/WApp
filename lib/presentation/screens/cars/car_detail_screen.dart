@@ -361,7 +361,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
   Widget _buildActionSection(Listing listing) {
     final l10n = AppLocalizations.of(context);
-    final subState = ref.read(subscriptionProvider);
+    final subState = ref.watch(subscriptionProvider);
     final authState = ref.read(authStateProvider);
     final currentUserId = authState.user?.id;
     final isOwner = currentUserId != null && listing.userId == currentUserId;
@@ -500,7 +500,7 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                   ],
                 ),
               )
-            else
+            else if (subState.canViewVip)
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -513,6 +513,22 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: AppColors.vip),
                     foregroundColor: AppColors.vip,
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => context.push('/subscriptions'),
+                  icon: const Icon(Icons.diamond_outlined, size: 20, color: AppColors.vip),
+                  label: Text(
+                    '${l10n.markAsVip} (Subscription Required)',
+                    style: AppTextStyles.labelMedium.copyWith(color: AppColors.vip),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: BorderSide(color: AppColors.vip.withValues(alpha: 0.5)),
                   ),
                 ),
               ),
@@ -741,6 +757,24 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     }
   }
 
+  void _showActionError(String message, {bool vip = false}) {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.error,
+        action: vip
+            ? SnackBarAction(
+                label: l10n.listingViewPlans,
+                textColor: Colors.white,
+                onPressed: () => context.push('/subscriptions'),
+              )
+            : null,
+      ),
+    );
+  }
+
   Future<void> _vipListing(Listing listing) async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
@@ -765,16 +799,20 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     setState(() => _isVipLoading = true);
     try {
       final msg = await ref.read(carDetailProvider.notifier).vipListing(listing.id);
-      if (mounted) {
+      if (!mounted) return;
+      if (msg != null) {
+        _showActionError(msg, vip: true);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).statusSuccess),
+            backgroundColor: AppColors.success,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     } finally {
       if (mounted) setState(() => _isVipLoading = false);
@@ -805,16 +843,20 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     setState(() => _isVipLoading = true);
     try {
       final msg = await ref.read(carDetailProvider.notifier).unvipListing(listing.id);
-      if (mounted) {
+      if (!mounted) return;
+      if (msg != null) {
+        _showActionError(msg);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).statusSuccess),
+            backgroundColor: AppColors.success,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     } finally {
       if (mounted) setState(() => _isVipLoading = false);
@@ -851,16 +893,20 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     setState(() => _isFeatureLoading = true);
     try {
       final msg = await ref.read(carDetailProvider.notifier).featureListing(listing.id);
-      if (mounted) {
+      if (!mounted) return;
+      if (msg != null) {
+        _showActionError(msg);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).statusSuccess),
+            backgroundColor: AppColors.success,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     } finally {
       if (mounted) setState(() => _isFeatureLoading = false);
@@ -891,16 +937,20 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     setState(() => _isFeatureLoading = true);
     try {
       final msg = await ref.read(carDetailProvider.notifier).unfeatureListing(listing.id);
-      if (mounted) {
+      if (!mounted) return;
+      if (msg != null) {
+        _showActionError(msg);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).statusSuccess),
+            backgroundColor: AppColors.success,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     } finally {
       if (mounted) setState(() => _isFeatureLoading = false);

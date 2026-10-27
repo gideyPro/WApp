@@ -65,13 +65,16 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     super.dispose();
   }
 
-  void _startCountdown() {
+  void _startCountdown([int seconds = 60]) {
     _countdownTimer?.cancel();
-    setState(() => _resendCountdown = 60);
+    setState(() => _resendCountdown = seconds);
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_resendCountdown <= 1) {
         timer.cancel();
         setState(() => _resendCountdown = 0);
+        if (mounted) {
+          ref.read(authStateProvider.notifier).clearLockout();
+        }
       } else {
         setState(() => _resendCountdown--);
       }
@@ -386,9 +389,13 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
   Widget _buildResendOtp() {
     final l10n = AppLocalizations.of(context);
+    final authState = ref.watch(authStateProvider);
     if (_resendCountdown > 0) {
+      final text = _resendCountdown > 60
+          ? 'Try again in ${_resendCountdown ~/ 60}:${(_resendCountdown % 60).toString().padLeft(2, '0')}'
+          : l10n.authResendCountdown(_resendCountdown);
       return Text(
-        l10n.authResendCountdown(_resendCountdown),
+        text,
         style: AppTextStyles.bodyMedium.copyWith(
           color: ThemeColors(context).textSecondary,
         ),
@@ -396,11 +403,13 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
     }
 
     return TextButton(
-      onPressed: _resendOtp,
+      onPressed: authState.isLoading ? null : _resendOtp,
       child: Text(
         AppLocalizations.of(context).authResendOtp,
         style: AppTextStyles.bodyLarge.copyWith(
-          color: AppColors.accent600,
+          color: authState.isLoading
+              ? ThemeColors(context).textSecondary
+              : AppColors.accent600,
           fontWeight: FontWeight.w600,
           decoration: TextDecoration.underline,
           decorationColor: AppColors.accent600,
@@ -506,18 +515,20 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
   }
 
   Widget _buildInlineError(String message) {
+    final isLocked = ref.watch(authStateProvider).isLocked;
+    final color = isLocked ? AppColors.warning : AppColors.error;
     return LiquidGlass(
       borderRadius: 16,
       blur: 16,
       variant: LiquidGlassVariant.regular,
-      tint: AppColors.error,
+      tint: color,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          const Icon(
-            Icons.error_outline,
+          Icon(
+            isLocked ? Icons.lock_clock_rounded : Icons.error_outline,
             size: 20,
-            color: AppColors.error,
+            color: color,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -525,7 +536,8 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               message,
               style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 13,
-                color: AppColors.error,
+                color: color,
+                fontWeight: isLocked ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
           ),
@@ -533,10 +545,10 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
             onTap: () {
               ref.read(authStateProvider.notifier).clearError();
             },
-            child: const Icon(
+            child: Icon(
               Icons.close,
               size: 18,
-              color: AppColors.error,
+              color: color,
             ),
           ),
         ],
@@ -626,9 +638,14 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
     setState(() => _hasUserData = true);
     final fullPhone = '${_selectedCountry.code}$phone';
-    await ref.read(authStateProvider.notifier).sendOtp(fullPhone);
+    final response =
+        await ref.read(authStateProvider.notifier).sendOtp(fullPhone);
     if (mounted) {
-      _startCountdown();
+      if (response.success) {
+        _startCountdown();
+      } else if (response.isLocked) {
+        _startCountdown(response.retryAfter ?? 60);
+      }
     }
   }
 
@@ -647,8 +664,12 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
 
     final response = await ref.read(authStateProvider.notifier).login(_otpCode);
 
-    if (mounted && response.success) {
-      context.go('/');
+    if (mounted) {
+      if (response.success) {
+        context.go('/');
+      } else if (response.isLocked) {
+        _startCountdown(response.retryAfter ?? 60);
+      }
     }
   }
 
@@ -666,6 +687,9 @@ class _OtpLoginScreenState extends ConsumerState<OtpLoginScreen> {
               backgroundColor: AppColors.success),
         );
       } else {
+        if (response.isLocked) {
+          _startCountdown(response.retryAfter ?? 60);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(response.message),

@@ -114,13 +114,16 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     super.dispose();
   }
 
-  void _startCountdown() {
+  void _startCountdown([int seconds = 60]) {
     _countdownTimer?.cancel();
-    setState(() => _resendCountdown = 60);
+    setState(() => _resendCountdown = seconds);
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_resendCountdown <= 1) {
         timer.cancel();
         setState(() => _resendCountdown = 0);
+        if (mounted) {
+          ref.read(authStateProvider.notifier).clearLockout();
+        }
       } else {
         setState(() => _resendCountdown--);
       }
@@ -691,8 +694,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   Widget _buildResendOtp() {
     if (_resendCountdown > 0) {
+      final text = _resendCountdown > 60
+          ? 'Try again in ${_resendCountdown ~/ 60}:${(_resendCountdown % 60).toString().padLeft(2, '0')}'
+          : l10n.authResendCountdown(_resendCountdown);
       return Text(
-        l10n.authResendCountdown(_resendCountdown),
+        text,
         style: AppTextStyles.bodyMedium.copyWith(
           color: ThemeColors(context).textSecondary,
         ),
@@ -700,11 +706,13 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     }
 
     return TextButton(
-      onPressed: _sendRegistrationOtp,
+      onPressed: _isLoading ? null : _sendRegistrationOtp,
       child: Text(
         l10n.authResendOtp,
         style: AppTextStyles.bodyLarge.copyWith(
-          color: AppColors.accent600,
+          color: _isLoading
+              ? ThemeColors(context).textSecondary
+              : AppColors.accent600,
           fontWeight: FontWeight.w600,
           decoration: TextDecoration.underline,
           decorationColor: AppColors.accent600,
@@ -741,18 +749,20 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   }
 
   Widget _buildInlineError(String message) {
+    final isLocked = ref.watch(authStateProvider).isLocked;
+    final color = isLocked ? AppColors.warning : AppColors.error;
     return LiquidGlass(
       borderRadius: 16,
       blur: 16,
       variant: LiquidGlassVariant.regular,
-      tint: AppColors.error,
+      tint: color,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          const Icon(
-            Icons.error_outline,
+          Icon(
+            isLocked ? Icons.lock_clock_rounded : Icons.error_outline,
             size: 20,
-            color: AppColors.error,
+            color: color,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -760,7 +770,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               message,
               style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 13,
-                color: AppColors.error,
+                color: color,
+                fontWeight: isLocked ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
           ),
@@ -768,10 +779,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             onTap: () {
               ref.read(authStateProvider.notifier).clearError();
             },
-            child: const Icon(
+            child: Icon(
               Icons.close,
               size: 18,
-              color: AppColors.error,
+              color: color,
             ),
           ),
         ],
@@ -810,6 +821,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         _startCountdown();
       } else {
         setState(() => _isLoading = false);
+        if (response.isLocked) {
+          _startCountdown(response.retryAfter ?? 60);
+        }
       }
     } catch (e) {
       setState(() => _isLoading = false);
@@ -843,6 +857,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         context.go('/');
       } else if (mounted) {
         setState(() => _isLoading = false);
+        if (response.isLocked) {
+          _startCountdown(response.retryAfter ?? 60);
+        }
         _showErrorSnackBar(response.message);
       }
     } catch (e) {

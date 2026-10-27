@@ -18,6 +18,7 @@ final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthService _authService;
   final Ref _ref;
+  bool _forcingLogout = false;
 
   static const String _googleWebClientId = String.fromEnvironment(
     'GOOGLE_WEB_CLIENT_ID',
@@ -66,9 +67,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
         otpSent: true,
         otpMessage: response.message,
         destination: response.destination,
+        isLocked: false,
+        retryAfter: null,
       );
     } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: response.message,
+        isLocked: response.isLocked,
+        retryAfter: response.retryAfter,
+      );
     }
     return response;
   }
@@ -95,6 +103,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         errorMessage: response.message,
         otpMessage: state.otpMessage,
         destination: state.destination,
+        isLocked: response.isLocked,
+        retryAfter: response.retryAfter,
       );
     }
     return response;
@@ -152,13 +162,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
       otpCode: otpCode,
     );
     if (response.success) {
-      state = state.copyWith(isLoading: false, errorMessage: null);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: null,
+        isLocked: false,
+        retryAfter: null,
+      );
     } else {
       state = state.copyWith(
         isLoading: false,
         errorMessage: response.message,
         otpMessage: state.otpMessage,
         destination: state.destination,
+        isLocked: response.isLocked,
+        retryAfter: response.retryAfter,
       );
     }
     return response;
@@ -175,6 +192,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         isLoading: false,
         otpMessage: response.message,
         destination: response.destination,
+        isLocked: false,
+        retryAfter: null,
       );
     } else {
       state = state.copyWith(
@@ -182,6 +201,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         errorMessage: response.message,
         otpMessage: state.otpMessage,
         destination: state.destination,
+        isLocked: response.isLocked,
+        retryAfter: response.retryAfter,
       );
     }
     return response;
@@ -200,6 +221,41 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = AuthState.unauthenticated();
   }
 
+  /// Force logout on session expiry / token revocation
+  Future<void> forceLogout() async {
+    if (_forcingLogout) return;
+    _forcingLogout = true;
+
+    // Clear the authenticated state synchronously so the router cannot show
+    // the login screen while the app still believes the user is signed in.
+    state = AuthState.unauthenticated();
+
+    try {
+      _ref.read(fcmServiceProvider).cleanup();
+    } catch (_) {}
+    try {
+      await _ref.read(restoreCredentialServiceProvider).clearCredential();
+    } catch (_) {}
+    try {
+      // The token is already invalid, so do not attempt a server logout.
+      await _authService.clearLocalSession();
+    } catch (_) {}
+
+    _forcingLogout = false;
+  }
+
+  /// Clear a stale OTP lockout once its countdown has elapsed.
+  void clearLockout() {
+    if (!state.isLocked && state.retryAfter == null) return;
+
+    state = state.copyWith(
+      clearLockout: true,
+      errorMessage: state.isLocked ? null : state.errorMessage,
+      otpMessage: state.otpMessage,
+      destination: state.destination,
+    );
+  }
+
   /// Clear error message
   void clearError() {
     state = state.copyWith(errorMessage: null);
@@ -207,7 +263,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   /// Go back to phone input step
   void clearOtpSent() {
-    state = state.copyWith(otpSent: false, errorMessage: null);
+    state = state.copyWith(
+      otpSent: false,
+      errorMessage: null,
+      isLocked: false,
+      retryAfter: null,
+    );
   }
 
   /// Reset auth state to initial (used when canceling registration)
@@ -253,6 +314,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
           otpSent: true,
           otpMessage: response.message,
           destination: response.destination,
+          isLocked: false,
+          retryAfter: null,
         );
       } else {
         // Registration complete, user authenticated
@@ -267,7 +330,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
         }
       }
     } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: response.message,
+        isLocked: response.isLocked,
+        retryAfter: response.retryAfter,
+      );
     }
     return response;
   }
@@ -284,6 +352,8 @@ class AuthState {
   final String? otpMessage;
   final String? errorMessage;
   final String? destination;
+  final bool isLocked;
+  final int? retryAfter;
 
   const AuthState({
     required this.isAuthenticated,
@@ -294,12 +364,15 @@ class AuthState {
     this.otpMessage,
     this.errorMessage,
     this.destination,
+    this.isLocked = false,
+    this.retryAfter,
   });
 
   factory AuthState.initial() => const AuthState(
     isAuthenticated: false,
     isLoading: false,
     otpSent: false,
+    isLocked: false,
   );
 
   factory AuthState.authenticated(User user) => AuthState(
@@ -309,6 +382,8 @@ class AuthState {
     user: user,
     phoneNumber: user.phoneNumber,
     errorMessage: null,
+    isLocked: false,
+    retryAfter: null,
   );
 
   factory AuthState.unauthenticated() => const AuthState(
@@ -318,6 +393,8 @@ class AuthState {
     user: null,
     phoneNumber: null,
     errorMessage: null,
+    isLocked: false,
+    retryAfter: null,
   );
 
   AuthState copyWith({
@@ -329,6 +406,9 @@ class AuthState {
     String? otpMessage,
     String? errorMessage,
     String? destination,
+    bool? isLocked,
+    int? retryAfter,
+    bool clearLockout = false,
   }) {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
@@ -339,6 +419,8 @@ class AuthState {
       otpMessage: otpMessage,
       errorMessage: errorMessage,
       destination: destination,
+      isLocked: clearLockout ? false : (isLocked ?? this.isLocked),
+      retryAfter: clearLockout ? null : (retryAfter ?? this.retryAfter),
     );
   }
 }

@@ -4,95 +4,12 @@ import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/payment.dart';
 
-/// Service for Chapa payment processing
+/// Service for Chapa payment history and details
 class PaymentService {
   final ApiClient _apiClient;
 
   PaymentService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
-
-  /// Initialize Chapa payment
-  ///
-  /// [paymentType]: subscription, featured_listing
-  /// [amount]: Amount in ETB
-  /// [relatedId]: ID of related entity (plan ID, listing ID)
-  Future<PaymentResponse> initializePayment({
-    required String paymentType,
-    required double amount,
-    int? relatedId,
-    Map<String, dynamic>? metadata,
-  }) async {
-    try {
-      final response = await _apiClient.dio.post(
-        ApiConstants.initializePayment,
-        data: {
-          'payment_type': paymentType,
-          'amount': amount,
-          if (relatedId != null) 'related_id': relatedId,
-          if (metadata != null) 'metadata': metadata,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final paymentData = ApiEnvelope.extractData(data);
-
-        return PaymentResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(data, 'Payment initialized'),
-          checkoutUrl: paymentData['checkout_url'],
-          payment: paymentData['payment'] != null
-              ? Payment.fromJson(Map<String, dynamic>.from(paymentData['payment'] as Map))
-              : null,
-          txRef: paymentData['tx_ref'],
-        );
-      }
-
-      return PaymentResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to initialize payment'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return PaymentResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
-
-  Future<PaymentResponse> verifyPayment(String txRef) async {
-    try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.verifyPayment,
-        queryParameters: {'tx_ref': txRef},
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final verified = (data is Map) ? (data['verified'] ?? true) : true;
-        final paymentData = ApiEnvelope.extractData(data);
-
-        return PaymentResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(data, 'Payment verified'),
-          verified: verified,
-          payment: paymentData.isNotEmpty ? Payment.fromJson(paymentData) : null,
-        );
-      }
-
-      return PaymentResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Payment verification failed'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return PaymentResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
 
   Future<PaymentHistoryResponse> getPaymentHistory({
     int page = 1,

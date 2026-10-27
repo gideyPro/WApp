@@ -160,7 +160,10 @@ class SubscriptionServiceApi {
         canCreateRentalListing: false,
         canCreateVehicle: false,
         canCreateRentalVehicle: false,
+        canCreateJob: false,
         canFeatureListing: false,
+        canViewVip: false,
+        canCreateOrder: false,
       );
     } catch (e) {
       return const CurrentSubscriptionResponse(
@@ -169,7 +172,10 @@ class SubscriptionServiceApi {
         canCreateRentalListing: false,
         canCreateVehicle: false,
         canCreateRentalVehicle: false,
+        canCreateJob: false,
         canFeatureListing: false,
+        canViewVip: false,
+        canCreateOrder: false,
       );
     }
   }
@@ -491,14 +497,14 @@ class CurrentSubscriptionResponse {
     required this.success,
     this.message = '',
     this.subscription,
-    this.canCreateListing = true,
-    this.canCreateRentalListing = true,
-    this.canCreateVehicle = true,
-    this.canCreateRentalVehicle = true,
-    this.canCreateJob = true,
-    this.canFeatureListing = true,
-    this.canViewVip = true,
-    this.canCreateOrder = true,
+    this.canCreateListing = false,
+    this.canCreateRentalListing = false,
+    this.canCreateVehicle = false,
+    this.canCreateRentalVehicle = false,
+    this.canCreateJob = false,
+    this.canFeatureListing = false,
+    this.canViewVip = false,
+    this.canCreateOrder = false,
     this.hasPaidSubscription = false,
     this.canSeeVideo = false,
     this.canSeeContact = false,

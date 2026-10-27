@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing_form_data.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../providers/payment_providers.dart';
 import '../../../widgets/common/wave_card.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/utils/format_utils.dart';
 
-class ListingStep4Review extends StatelessWidget {
+class ListingStep4Review extends ConsumerWidget {
   final ListingFormData formData;
   final Function(ListingFormData) onUpdate;
   final List<String> stepErrors;
   const ListingStep4Review({super.key, required this.formData, required this.onUpdate, this.stepErrors = const []});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final subState = ref.watch(subscriptionProvider);
+    final canManageVip = subState.canViewVip;
+
+    if (!subState.isLoading && !canManageVip && formData.isVip) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        onUpdate(formData.copyWith(isVip: false));
+      });
+    }
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
@@ -109,44 +120,82 @@ class ListingStep4Review extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              SizedBox(
-                width: 24,
-                height: 24,
-                child: Checkbox(
-                  value: formData.isVip,
-                  onChanged: (v) => onUpdate(formData.copyWith(isVip: v ?? false)),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          if (canManageVip) ...[
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Checkbox(
+                    value: formData.isVip,
+                    onChanged: (v) => onUpdate(formData.copyWith(isVip: v ?? false)),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => onUpdate(formData.copyWith(isVip: !formData.isVip)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                const SizedBox(width: 8),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => onUpdate(formData.copyWith(isVip: !formData.isVip)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.diamond, size: 16, color: AppColors.vip),
+                            const SizedBox(width: 4),
+                            Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.vip,
+                              letterSpacing: 0.3,
+                            )),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(l10n.carVipSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ] else ...[
+            const SizedBox(height: 16),
+            InkWell(
+              onTap: () => context.push('/subscriptions'),
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.vip.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.vip.withValues(alpha: 0.2)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.diamond_outlined, size: 20, color: AppColors.vip),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.diamond, size: 16, color: AppColors.vip),
-                          const SizedBox(width: 4),
                           Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(
                             fontWeight: FontWeight.w700,
                             color: AppColors.vip,
-                            letterSpacing: 0.3,
                           )),
+                          Text(
+                            'VIP listings require an active subscription plan.',
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 2),
-                      Text(l10n.carVipSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
-                    ],
-                  ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios, size: 14, color: AppColors.vip),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
           const SizedBox(height: 16),
           Row(
             children: [

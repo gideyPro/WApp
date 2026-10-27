@@ -187,7 +187,7 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                   ],
                 ),
               )
-            else
+            else if (subState.canViewVip)
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -201,6 +201,23 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
                     side: const BorderSide(color: AppColors.vip),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     foregroundColor: AppColors.vip,
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => context.push('/subscriptions'),
+                  icon: const Icon(Icons.diamond_outlined, size: 20, color: AppColors.vip),
+                  label: Text(
+                    '${l10n.markAsVip} (Subscription Required)',
+                    style: AppTextStyles.labelMedium.copyWith(color: AppColors.vip),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: BorderSide(color: AppColors.vip.withValues(alpha: 0.5)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               ),
@@ -406,11 +423,27 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
       if (result.success && mounted) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     }
+  }
+
+  void _showActionError(String message, {bool vip = false}) {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.error,
+        action: vip
+            ? SnackBarAction(
+                label: l10n.listingViewPlans,
+                textColor: Colors.white,
+                onPressed: () => context.push('/subscriptions'),
+              )
+            : null,
+      ),
+    );
   }
 
   Future<void> _vipListing(Listing listing) async {
@@ -437,16 +470,20 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     setState(() => _isVipLoading = true);
     try {
       final msg = await ref.read(listingDetailProvider.notifier).vipListing(listing.id);
-      if (mounted) {
+      if (!mounted) return;
+      if (msg != null) {
+        _showActionError(msg, vip: true);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).statusSuccess),
+            backgroundColor: AppColors.success,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     } finally {
       if (mounted) setState(() => _isVipLoading = false);
@@ -477,16 +514,20 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     setState(() => _isVipLoading = true);
     try {
       final msg = await ref.read(listingDetailProvider.notifier).unvipListing(listing.id);
-      if (mounted) {
+      if (!mounted) return;
+      if (msg != null) {
+        _showActionError(msg);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).statusSuccess),
+            backgroundColor: AppColors.success,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     } finally {
       if (mounted) setState(() => _isVipLoading = false);
@@ -525,16 +566,20 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     setState(() => _isFeatureLoading = true);
     try {
       final msg = await ref.read(listingDetailProvider.notifier).featureListing(listing.id);
-      if (mounted) {
+      if (!mounted) return;
+      if (msg != null) {
+        _showActionError(msg);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).statusSuccess),
+            backgroundColor: AppColors.success,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     } finally {
       if (mounted) setState(() => _isFeatureLoading = false);
@@ -574,16 +619,20 @@ class _ListingActionButtonsState extends ConsumerState<ListingActionButtons> {
     setState(() => _isFeatureLoading = true);
     try {
       final msg = await ref.read(listingDetailProvider.notifier).unfeatureListing(listing.id);
-      if (mounted) {
+      if (!mounted) return;
+      if (msg != null) {
+        _showActionError(msg);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg ?? 'Success'), backgroundColor: AppColors.success),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).statusSuccess),
+            backgroundColor: AppColors.success,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
-        );
+        _showActionError(AppLocalizations.of(context).commonError);
       }
     } finally {
       if (mounted) setState(() => _isFeatureLoading = false);
