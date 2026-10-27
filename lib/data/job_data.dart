@@ -61,7 +61,7 @@ String jobTypeLabel(String type, AppLocalizations l10n) {
     }
   } else if (lang == 'ti') {
     switch (type) {
-      case 'full_time': return 'ሙሉ ግዜ';
+      case 'full_time': return 'ሙሉእ ግዜ';
       case 'part_time': return 'ናይ ትርፊ ግዜ';
       case 'contract': return 'ኮንትራት';
       case 'temporary': return 'ግዚያዊ';
@@ -147,13 +147,13 @@ String educationLevelLabel(String level, AppLocalizations l10n) {
     }
   } else if (lang == 'ti') {
     switch (level) {
-      case 'none': return 'ዋላ ሓደ';
+      case 'none': return 'የለን';
       case 'high_school': return 'ካልኣይ ብርኪ';
       case 'tvet_diploma': return 'ዲፕሎማ / TVET';
       case 'bachelors': return 'ቀዳማይ ዲግሪ';
       case 'masters': return 'ማስተርስ ዲግሪ';
       case 'phd': return 'ዶክትሬት (PhD)';
-      case 'other': return 'ሓላዕቲ';
+      case 'other': return 'ካልእ';
     }
   }
   switch (level) {
@@ -203,7 +203,7 @@ String salaryTypeLabel(String type, AppLocalizations l10n) {
     switch (type) {
       case 'fixed': return 'ቀዋሚ';
       case 'range': return 'ካብ-ክሳብ';
-      case 'per_agreement': return 'ብስምምነት';
+      case 'per_agreement': return 'ብስምምዕነት';
     }
   }
   switch (type) {
