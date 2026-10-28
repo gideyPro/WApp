@@ -180,10 +180,18 @@ class SubscriptionServiceApi {
     }
   }
 
-  Future<SubscriptionResponse> subscribe(int planId) async {
+  Future<SubscriptionResponse> subscribe(
+    int planId, {
+    String? currency,
+    int billingCycleMonths = 1,
+  }) async {
     try {
       final response = await _apiClient.dio.get(
         '${ApiConstants.subscribeToPlan}/$planId/subscribe',
+        queryParameters: {
+          if (currency != null) 'currency': currency,
+          'billing_cycle_months': billingCycleMonths,
+        },
       );
 
       if (response.statusCode == 200) {
@@ -249,10 +257,16 @@ class SubscriptionServiceApi {
   /// Initiate payment for mobile SDK - gets tx_ref without calling Chapa
   Future<SubscriptionResponse> initiatePayment({
     required int planId,
+    String? currency,
+    int billingCycleMonths = 1,
   }) async {
     try {
       final response = await _apiClient.dio.post(
         '${ApiConstants.initiateSubscriptionPayment}/$planId/initiate-payment',
+        data: {
+          if (currency != null) 'currency': currency,
+          'billing_cycle_months': billingCycleMonths,
+        },
       );
 
       if (response.statusCode == 200) {

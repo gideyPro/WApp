@@ -26,6 +26,56 @@ class PriceInfo {
   bool get isUpgrade => type == 'upgrade';
 }
 
+/// Billing Cycle option for a Subscription Plan (e.g., 1, 3, 6 months)
+class PlanBillingCycle {
+  final int months;
+  final double price;
+  final double priceUsd;
+  final int listingDurationDays;
+  final int discountPercent;
+  final String? badge;
+
+  const PlanBillingCycle({
+    required this.months,
+    required this.price,
+    this.priceUsd = 0.0,
+    required this.listingDurationDays,
+    this.discountPercent = 0,
+    this.badge,
+  });
+
+  factory PlanBillingCycle.fromJson(Map<String, dynamic> json) {
+    return PlanBillingCycle(
+      months: json['months'] is int
+          ? json['months'] as int
+          : int.tryParse(json['months']?.toString() ?? '1') ?? 1,
+      price: SubscriptionPlan._parseDouble(json['price']),
+      priceUsd: SubscriptionPlan._parseDouble(json['price_usd']),
+      listingDurationDays: json['listing_duration_days'] is int
+          ? json['listing_duration_days'] as int
+          : int.tryParse(json['listing_duration_days']?.toString() ?? '30') ?? 30,
+      discountPercent: json['discount_percent'] is int
+          ? json['discount_percent'] as int
+          : int.tryParse(json['discount_percent']?.toString() ?? '0') ?? 0,
+      badge: json['badge']?.toString(),
+    );
+  }
+
+  String getDisplayPrice(String currency) {
+    if (currency == 'USD') return '\$${priceUsd.toStringAsFixed(2)}';
+    return '${price.toStringAsFixed(0)} ETB';
+  }
+
+  Map<String, dynamic> toJson() => {
+    'months': months,
+    'price': price,
+    'price_usd': priceUsd,
+    'listing_duration_days': listingDurationDays,
+    'discount_percent': discountPercent,
+    'badge': badge,
+  };
+}
+
 /// Subscription Plan Model
 class SubscriptionPlan {
   final int id;
@@ -35,6 +85,8 @@ class SubscriptionPlan {
   final double price;
   final double priceUsd;
   final int durationMonths;
+  final int listingDurationDays;
+  final List<PlanBillingCycle> billingCycles;
   final int maxListings;
   final int maxRentalListings;
   final int maxVehicles;
@@ -67,6 +119,8 @@ class SubscriptionPlan {
     required this.price,
     this.priceUsd = 0.0,
     this.durationMonths = 1,
+    this.listingDurationDays = 30,
+    this.billingCycles = const [],
     this.maxListings = 1,
     this.maxRentalListings = 0,
     this.maxVehicles = 0,
@@ -94,6 +148,13 @@ class SubscriptionPlan {
 
   factory SubscriptionPlan.fromJson(Map<String, dynamic> json) {
     final planFeatures = _parsePlanFeatures(json['plan_features']);
+    final durationMonths = json['duration_months'] is int
+        ? json['duration_months'] as int
+        : int.tryParse(json['duration_months']?.toString() ?? '1') ?? 1;
+    final listingDurationDays = json['listing_duration_days'] is int
+        ? json['listing_duration_days'] as int
+        : int.tryParse(json['listing_duration_days']?.toString() ?? '30') ?? 30;
+
     return SubscriptionPlan(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
@@ -101,7 +162,15 @@ class SubscriptionPlan {
       description: json['description'],
       price: _parseDouble(json['price']),
       priceUsd: _parseDouble(json['price_usd']),
-      durationMonths: json['duration_months'] ?? 1,
+      durationMonths: durationMonths,
+      listingDurationDays: listingDurationDays,
+      billingCycles: _parseBillingCycles(
+        json['billing_cycles'],
+        json['price'],
+        json['price_usd'],
+        listingDurationDays,
+        durationMonths,
+      ),
       maxListings: json['max_listings'] ?? 1,
       maxRentalListings: json['max_rental_listings'] ?? 0,
       maxVehicles: json['max_vehicles'] ?? 0,
@@ -226,6 +295,65 @@ class SubscriptionPlan {
     if (value is num) return value.toDouble();
     if (value is String) return double.tryParse(value) ?? 0.0;
     return 0.0;
+  }
+
+  static List<PlanBillingCycle> _parseBillingCycles(
+    dynamic value,
+    dynamic defaultPrice,
+    dynamic defaultPriceUsd,
+    dynamic defaultDuration,
+    int durationMonths,
+  ) {
+    if (value is List && value.isNotEmpty) {
+      return value
+          .whereType<Map>()
+          .map((item) => PlanBillingCycle.fromJson(Map<String, dynamic>.from(item)))
+          .toList();
+    }
+    final p = _parseDouble(defaultPrice);
+    final pUsd = _parseDouble(defaultPriceUsd);
+    final duration = defaultDuration is int
+        ? defaultDuration
+        : int.tryParse(defaultDuration?.toString() ?? '30') ?? 30;
+    if (p == 0 && pUsd == 0) {
+      return [
+        PlanBillingCycle(
+          months: durationMonths > 0 ? durationMonths : 12,
+          price: 0,
+          priceUsd: 0,
+          listingDurationDays: duration > 0 ? duration : 30,
+        ),
+      ];
+    }
+    if (durationMonths > 1) {
+      return [
+        PlanBillingCycle(
+          months: durationMonths,
+          price: p,
+          priceUsd: pUsd,
+          listingDurationDays: duration > 0 ? duration : (30 * durationMonths),
+        ),
+      ];
+    }
+    return [
+      PlanBillingCycle(months: 1, price: p, priceUsd: pUsd, listingDurationDays: duration),
+      PlanBillingCycle(months: 3, price: (p * 3 * 0.9).roundToDouble(), priceUsd: (pUsd * 3 * 0.9), listingDurationDays: duration * 3, discountPercent: 10, badge: 'Popular'),
+      PlanBillingCycle(months: 6, price: (p * 6 * 0.8).roundToDouble(), priceUsd: (pUsd * 6 * 0.8), listingDurationDays: duration * 6, discountPercent: 20, badge: 'Best Value'),
+    ];
+  }
+
+  PlanBillingCycle? getBillingCycle(int months) {
+    if (billingCycles.isEmpty) return null;
+    for (final cycle in billingCycles) {
+      if (cycle.months == months) return cycle;
+    }
+    return billingCycles.first;
+  }
+
+  int getListingDurationForMonths(int months) {
+    final cycle = getBillingCycle(months);
+    if (cycle != null) return cycle.listingDurationDays;
+    return listingDurationDays * (months > 0 ? months : 1);
   }
 
   String get displayPrice => '${price.toStringAsFixed(0)} ETB';
@@ -373,6 +501,8 @@ class Subscription {
   final DateTime? expiredAt;
   final DateTime? trialEndsAt;
   final String? billingLabel;
+  final int billingCycleMonths;
+  final int? listingDurationDays;
   final int listingsUsed;
   final int rentalListingsUsed;
   final int vehiclesUsed;
@@ -395,6 +525,8 @@ class Subscription {
     this.expiredAt,
     this.trialEndsAt,
     this.billingLabel,
+    this.billingCycleMonths = 1,
+    this.listingDurationDays,
     this.listingsUsed = 0,
     this.rentalListingsUsed = 0,
     this.vehiclesUsed = 0,
@@ -427,6 +559,12 @@ class Subscription {
           ? DateTime.parse(json['trial_ends_at'])
           : null,
       billingLabel: json['billing_label']?.toString(),
+      billingCycleMonths: json['billing_cycle_months'] is int
+          ? json['billing_cycle_months'] as int
+          : int.tryParse(json['billing_cycle_months']?.toString() ?? '1') ?? 1,
+      listingDurationDays: json['listing_duration_days'] is int
+          ? json['listing_duration_days'] as int
+          : int.tryParse(json['listing_duration_days']?.toString() ?? ''),
       listingsUsed: json['listings_used'] ?? 0,
       rentalListingsUsed: json['rental_listings_used'] ?? 0,
       vehiclesUsed: json['vehicles_used'] ?? 0,
@@ -454,6 +592,9 @@ class Subscription {
       trialEndsAt != null &&
       isActive &&
       trialEndsAt!.isAfter(DateTime.now());
+
+  int get effectiveListingDurationDays =>
+      listingDurationDays ?? plan?.getListingDurationForMonths(billingCycleMonths) ?? 30;
 
   bool get isExpired => status == 'expired' || (endsAt != null && endsAt!.isBefore(DateTime.now()));
 

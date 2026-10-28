@@ -207,4 +207,204 @@ void main() {
       expect(plan.maxRentalContactsCar, 0);
     });
   });
+
+  group('SubscriptionPlan billing cycles (Option C)', () {
+    test('parses explicit billing_cycles from JSON', () {
+      final json = {
+        'id': 10,
+        'name': 'Basic Plan',
+        'slug': 'basic',
+        'price': 500,
+        'price_usd': 10,
+        'listing_duration_days': 30,
+        'billing_cycles': [
+          {
+            'months': 1,
+            'price': 500,
+            'price_usd': 10,
+            'listing_duration_days': 30,
+            'discount_percent': null,
+            'badge': null,
+          },
+          {
+            'months': 3,
+            'price': 1350,
+            'price_usd': 27,
+            'listing_duration_days': 90,
+            'discount_percent': 10,
+            'badge': 'Popular',
+          },
+          {
+            'months': 6,
+            'price': 2400,
+            'price_usd': 48,
+            'listing_duration_days': 180,
+            'discount_percent': 20,
+            'badge': 'Best Value',
+          },
+        ],
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.billingCycles.length, 3);
+
+      final cycle1 = plan.getBillingCycle(1);
+      expect(cycle1, isNotNull);
+      expect(cycle1!.months, 1);
+      expect(cycle1.price, 500.0);
+      expect(cycle1.priceUsd, 10.0);
+      expect(cycle1.listingDurationDays, 30);
+      expect(cycle1.discountPercent, 0);
+      expect(cycle1.badge, isNull);
+      expect(cycle1.getDisplayPrice('ETB'), '500 ETB');
+      expect(cycle1.getDisplayPrice('USD'), '\$10.00');
+
+      final cycle3 = plan.getBillingCycle(3);
+      expect(cycle3, isNotNull);
+      expect(cycle3!.months, 3);
+      expect(cycle3.price, 1350.0);
+      expect(cycle3.discountPercent, 10);
+      expect(cycle3.badge, 'Popular');
+      expect(cycle3.listingDurationDays, 90);
+
+      final cycle6 = plan.getBillingCycle(6);
+      expect(cycle6, isNotNull);
+      expect(cycle6!.months, 6);
+      expect(cycle6.price, 2400.0);
+      expect(cycle6.discountPercent, 20);
+      expect(cycle6.badge, 'Best Value');
+      expect(cycle6.listingDurationDays, 180);
+
+      expect(plan.getListingDurationForMonths(1), 30);
+      expect(plan.getListingDurationForMonths(3), 90);
+      expect(plan.getListingDurationForMonths(6), 180);
+    });
+
+    test('synthesizes 1/3/6 month cycles with default discounts when billing_cycles omitted', () {
+      final json = {
+        'id': 11,
+        'name': 'Premium',
+        'slug': 'premium',
+        'price': 1000,
+        'price_usd': 20,
+        'listing_duration_days': 30,
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.billingCycles.length, 3);
+      expect(plan.billingCycles[0].months, 1);
+      expect(plan.billingCycles[0].price, 1000.0);
+      expect(plan.billingCycles[0].listingDurationDays, 30);
+
+      expect(plan.billingCycles[1].months, 3);
+      expect(plan.billingCycles[1].price, 2700.0);
+      expect(plan.billingCycles[1].discountPercent, 10);
+      expect(plan.billingCycles[1].badge, 'Popular');
+      expect(plan.billingCycles[1].listingDurationDays, 90);
+
+      expect(plan.billingCycles[2].months, 6);
+      expect(plan.billingCycles[2].price, 4800.0);
+      expect(plan.billingCycles[2].discountPercent, 20);
+      expect(plan.billingCycles[2].badge, 'Best Value');
+      expect(plan.billingCycles[2].listingDurationDays, 180);
+    });
+
+    test('free plan synthesizes single cycle honoring duration_months', () {
+      final json = {
+        'id': 12,
+        'name': 'Free',
+        'slug': 'free',
+        'price': 0,
+        'price_usd': 0,
+        'duration_months': 12,
+        'listing_duration_days': 15,
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.billingCycles.length, 1);
+      expect(plan.billingCycles[0].months, 12);
+      expect(plan.billingCycles[0].price, 0.0);
+      expect(plan.billingCycles[0].listingDurationDays, 15);
+    });
+
+    test('legacy paid plan with duration_months > 1 synthesizes single cycle for full duration', () {
+      final json = {
+        'id': 13,
+        'name': 'Annual Pro',
+        'slug': 'annual-pro',
+        'price': 12000,
+        'price_usd': 240,
+        'duration_months': 12,
+        'listing_duration_days': 30,
+      };
+
+      final plan = SubscriptionPlan.fromJson(json);
+
+      expect(plan.billingCycles.length, 1);
+      expect(plan.billingCycles[0].months, 12);
+      expect(plan.billingCycles[0].price, 12000.0);
+      expect(plan.billingCycles[0].priceUsd, 240.0);
+      expect(plan.billingCycles[0].listingDurationDays, 30);
+    });
+  });
+
+  group('Subscription billing cycle and listing duration snapshot', () {
+    test('parses billing_cycle_months and listing_duration_days', () {
+      final json = {
+        'id': 20,
+        'user_id': 1,
+        'plan_id': 10,
+        'status': 'active',
+        'starts_at': '2026-10-28T00:00:00.000Z',
+        'billing_cycle_months': 3,
+        'listing_duration_days': 90,
+      };
+
+      final sub = Subscription.fromJson(json);
+
+      expect(sub.billingCycleMonths, 3);
+      expect(sub.listingDurationDays, 90);
+      expect(sub.effectiveListingDurationDays, 90);
+    });
+
+    test('effectiveListingDurationDays falls back to plan or default 30', () {
+      final jsonWithoutDuration = {
+        'id': 21,
+        'user_id': 1,
+        'plan_id': 10,
+        'status': 'active',
+        'starts_at': '2026-10-28T00:00:00.000Z',
+        'billing_cycle_months': 6,
+      };
+
+      final subNoPlan = Subscription.fromJson(jsonWithoutDuration);
+      expect(subNoPlan.listingDurationDays, isNull);
+      expect(subNoPlan.effectiveListingDurationDays, 30);
+
+      final jsonWithPlan = {
+        'id': 22,
+        'user_id': 1,
+        'plan_id': 10,
+        'status': 'active',
+        'starts_at': '2026-10-28T00:00:00.000Z',
+        'billing_cycle_months': 3,
+        'plan': {
+          'id': 10,
+          'name': 'Basic',
+          'slug': 'basic',
+          'price': 500,
+          'listing_duration_days': 30,
+          'billing_cycles': [
+            {'months': 3, 'price': 1350, 'listing_duration_days': 75},
+          ],
+        },
+      };
+
+      final subWithPlan = Subscription.fromJson(jsonWithPlan);
+      expect(subWithPlan.effectiveListingDurationDays, 75);
+    });
+  });
 }

@@ -231,7 +231,7 @@ class _SubscriptionPlansScreenState
                         isFeatured: plan == featuredPlan,
                         isLoading: _processingPlanId == plan.id,
                         selectedCurrency: _selectedCurrency,
-                        onSelect: () => _selectPlan(plan),
+                        onSelect: (cycleMonths) => _selectPlan(plan, billingCycleMonths: cycleMonths),
                         onStartTrial: plan.canStartTrial ? () => _startTrial(plan) : null,
                       )),
                 ],
@@ -904,7 +904,7 @@ class _SubscriptionPlansScreenState
     }
   }
 
-  Future<void> _selectPlan(SubscriptionPlan plan) async {
+  Future<void> _selectPlan(SubscriptionPlan plan, {int billingCycleMonths = 1}) async {
     if (_processingPlanId != null) return;
 
     final navigator = Navigator.of(context);
@@ -923,7 +923,11 @@ class _SubscriptionPlansScreenState
       setState(() => _processingPlanId = plan.id);
       try {
         // Backend handles free plan activation in the subscribe method
-        final response = await _subscriptionService.subscribe(plan.id);
+        final response = await _subscriptionService.subscribe(
+          plan.id,
+          currency: _selectedCurrency,
+          billingCycleMonths: billingCycleMonths,
+        );
         if (mounted) {
           if (response.success) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionsFreeSuccess), backgroundColor: AppColors.success));
@@ -953,6 +957,7 @@ class _SubscriptionPlansScreenState
         paymentData: {
           'payment_method': 'chapa',
           'currency': _selectedCurrency,
+          'billing_cycle_months': billingCycleMonths,
         },
       );
 
@@ -1105,13 +1110,13 @@ class _SubscriptionPlansScreenState
 }
 
 /// Plan Card Widget
-class _PlanCard extends StatelessWidget {
+class _PlanCard extends StatefulWidget {
   final SubscriptionPlan plan;
   final bool isCurrentPlan;
   final bool isFeatured;
   final bool isLoading;
   final String selectedCurrency;
-  final VoidCallback onSelect;
+  final void Function(int billingCycleMonths) onSelect;
   final VoidCallback? onStartTrial;
 
   const _PlanCard({
@@ -1124,15 +1129,41 @@ class _PlanCard extends StatelessWidget {
     this.onStartTrial,
   });
 
-  bool get _isFree => plan.isFree;
-  bool get _hasDiscount => plan.priceInfo?.hasDiscount ?? false;
+  @override
+  State<_PlanCard> createState() => _PlanCardState();
+}
 
-  String _discountLabel(AppLocalizations l10n) {
-    final pct = plan.priceInfo?.discountPercentage?.toInt() ?? 0;
-    if (plan.priceInfo?.isUpgrade == true) {
-      return l10n.subscriptionsUpgradeOff(pct);
+class _PlanCardState extends State<_PlanCard> {
+  late int _selectedCycleMonths;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCycleMonths = widget.plan.billingCycles.isNotEmpty
+        ? widget.plan.billingCycles.first.months
+        : 1;
+  }
+
+  @override
+  void didUpdateWidget(covariant _PlanCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.plan.id != widget.plan.id) {
+      _selectedCycleMonths = widget.plan.billingCycles.isNotEmpty
+          ? widget.plan.billingCycles.first.months
+          : 1;
     }
-    return l10n.subscriptionsPromoOff(pct);
+  }
+
+  bool get _isFree => widget.plan.isFree;
+
+  PlanBillingCycle get _currentCycle {
+    return widget.plan.getBillingCycle(_selectedCycleMonths) ??
+        PlanBillingCycle(
+          months: 1,
+          price: widget.plan.price,
+          priceUsd: widget.plan.priceUsd,
+          listingDurationDays: widget.plan.listingDurationDays,
+        );
   }
 
   @override
@@ -1149,12 +1180,12 @@ class _PlanCard extends StatelessWidget {
       child: LiquidGlass(
         borderRadius: 16,
         blur: 24,
-        variant: isFeatured || isCurrentPlan
+        variant: widget.isFeatured || widget.isCurrentPlan
             ? LiquidGlassVariant.prominent
             : LiquidGlassVariant.regular,
-        tint: isFeatured
+        tint: widget.isFeatured
             ? AppColors.accent500
-            : isCurrentPlan
+            : widget.isCurrentPlan
                 ? AppColors.accent300
                 : null,
         child: Column(
@@ -1170,21 +1201,22 @@ class _PlanCard extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context, bool isDark, AppLocalizations l10n) {
     final colors = context.theme;
-    final textColor = isFeatured ? Colors.white : colors.textPrimary;
-    final mutedColor = isFeatured ? Colors.white70 : colors.textSecondary;
-    final isFeaturedOrCurrent = isFeatured || isCurrentPlan;
+    final textColor = widget.isFeatured ? Colors.white : colors.textPrimary;
+    final mutedColor = widget.isFeatured ? Colors.white70 : colors.textSecondary;
+    final isFeaturedOrCurrent = widget.isFeatured || widget.isCurrentPlan;
+    final cycles = widget.plan.billingCycles;
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       decoration: BoxDecoration(
-        gradient: isFeatured ? AppColors.gradientAccent : null,
-        color: isFeatured
+        gradient: widget.isFeatured ? AppColors.gradientAccent : null,
+        color: widget.isFeatured
             ? null
-            : isCurrentPlan
+            : widget.isCurrentPlan
                 ? (isDark ? AppColors.accent500.withValues(alpha: 0.15) : AppColors.accent50)
                 : null,
-        border: !isFeatured
+        border: !widget.isFeatured
             ? Border(
                 bottom: BorderSide(
                   color: isDark ? AppColors.cardNavyLight : AppColors.primary100,
@@ -1196,12 +1228,23 @@ class _PlanCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (isCurrentPlan)
-            _buildOutlineBadge(l10n.subscriptionsCurrentPlan,
-                isFeatured ? Colors.white : AppColors.accent700)
-          else if (isFeatured)
-            _buildOutlineBadge('RECOMMENDED', Colors.white),
-          if (isFeaturedOrCurrent) const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (widget.isCurrentPlan)
+                _buildOutlineBadge(l10n.subscriptionsCurrentPlan,
+                    widget.isFeatured ? Colors.white : AppColors.accent700)
+              else if (widget.isFeatured)
+                _buildOutlineBadge('RECOMMENDED', Colors.white)
+              else
+                const SizedBox.shrink(),
+
+              // Segmented selector [ 1 | 3 | 6 ] matching f.png
+              if (cycles.length > 1)
+                _buildCycleSelector(cycles, isDark, colors),
+            ],
+          ),
+          if (isFeaturedOrCurrent || cycles.length > 1) const SizedBox(height: 12),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1210,7 +1253,7 @@ class _PlanCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      plan.name,
+                      widget.plan.name,
                       style: AppTextStyles.headline3.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -1218,12 +1261,12 @@ class _PlanCard extends StatelessWidget {
                         color: textColor,
                       ),
                     ),
-                    if (plan.description != null &&
-                        plan.description!.isNotEmpty)
+                    if (widget.plan.description != null &&
+                        widget.plan.description!.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
-                          plan.description!,
+                          widget.plan.description!,
                           style: AppTextStyles.bodySmall.copyWith(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
@@ -1234,6 +1277,17 @@ class _PlanCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Listings active for ${_currentCycle.listingDurationDays > 0 ? _currentCycle.listingDurationDays : (widget.plan.listingDurationDays > 0 ? widget.plan.listingDurationDays : 30)} days',
+                      style: AppTextStyles.caption.copyWith(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: widget.isFeatured
+                            ? Colors.white.withValues(alpha: 0.95)
+                            : (isDark ? AppColors.accent300 : AppColors.accent700),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -1242,6 +1296,62 @@ class _PlanCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCycleSelector(List<PlanBillingCycle> cycles, bool isDark, ThemeColors colors) {
+    return Container(
+      padding: const EdgeInsets.all(2.5),
+      decoration: BoxDecoration(
+        color: widget.isFeatured
+            ? Colors.black.withValues(alpha: 0.18)
+            : (isDark ? AppColors.cardNavyLight : AppColors.stone200.withValues(alpha: 0.7)),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: cycles.map((cycle) {
+          final isSelected = cycle.months == _selectedCycleMonths;
+          return GestureDetector(
+            onTap: widget.isLoading ? null : () {
+              setState(() {
+                _selectedCycleMonths = cycle.months;
+              });
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? (widget.isFeatured
+                        ? Colors.white
+                        : (isDark ? AppColors.accent400 : AppColors.primary700))
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(7),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.12),
+                          blurRadius: 3,
+                          offset: const Offset(0, 1),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Text(
+                '${cycle.months}',
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  color: isSelected
+                      ? (widget.isFeatured ? AppColors.primary900 : Colors.white)
+                      : (widget.isFeatured ? Colors.white70 : (isDark ? AppColors.stone300 : AppColors.stone600)),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -1269,55 +1379,70 @@ class _PlanCard extends StatelessWidget {
   }
 
   Widget _buildPriceBlock(Color textColor, Color mutedColor, AppLocalizations l10n) {
+    final cycle = _currentCycle;
+    final priceStr = cycle.getDisplayPrice(widget.selectedCurrency);
+    final hasCycleDiscount = cycle.discountPercent > 0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (_hasDiscount)
-          Text(
-            plan.getDisplayPrice(selectedCurrency),
-            style: AppTextStyles.bodySmall.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              decoration: TextDecoration.lineThrough,
-              color: mutedColor,
+        if (cycle.badge != null && cycle.badge!.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.only(bottom: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+            decoration: BoxDecoration(
+              color: widget.isFeatured
+                  ? Colors.white.withValues(alpha: 0.25)
+                  : AppColors.warning.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: widget.isFeatured ? Colors.white54 : AppColors.warning,
+                width: 0.8,
+              ),
+            ),
+            child: Text(
+              cycle.badge!,
+              style: AppTextStyles.badge.copyWith(
+                fontSize: 9,
+                fontWeight: FontWeight.w800,
+                color: widget.isFeatured ? Colors.white : AppColors.warning,
+              ),
             ),
           ),
         Text(
-          _hasDiscount
-              ? _formatDiscountedPrice()
-              : plan.getDisplayPrice(selectedCurrency),
+          priceStr,
           style: AppTextStyles.priceLarge.copyWith(
-            fontSize: 24,
+            fontSize: 22,
             fontWeight: FontWeight.w800,
             height: 1.15,
             color: textColor,
           ),
         ),
         Text(
-          plan.durationLabel,
+          '/ ${cycle.months} ${cycle.months == 1 ? 'Month' : 'Months'}',
           style: AppTextStyles.caption.copyWith(
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: FontWeight.w500,
             color: mutedColor,
           ),
         ),
-        if (_hasDiscount) ...[
-          const SizedBox(height: 6),
+        if (hasCycleDiscount) ...[
+          const SizedBox(height: 4),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: plan.priceInfo!.isUpgrade
+              color: widget.isFeatured
                   ? Colors.white.withValues(alpha: 0.25)
                   : AppColors.success,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              _discountLabel(l10n),
+              'Save ${cycle.discountPercent}%',
               style: AppTextStyles.badge.copyWith(
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
-                letterSpacing: 0.3,
+                letterSpacing: 0.2,
               ),
             ),
           ),
@@ -1326,16 +1451,12 @@ class _PlanCard extends StatelessWidget {
     );
   }
 
-  String _formatDiscountedPrice() {
-    final priceInfo = plan.priceInfo;
-    if (priceInfo == null) return plan.getDisplayPrice(selectedCurrency);
-    final price = priceInfo.discounted;
-    if (selectedCurrency == 'USD') return '\$${price.toStringAsFixed(2)}';
-    return 'ETB ${price.toStringAsFixed(0)}';
-  }
-
   Widget _buildBody(BuildContext context, bool isDark, AppLocalizations l10n) {
     final colors = context.theme;
+    final plan = widget.plan;
+    final isCurrentPlan = widget.isCurrentPlan;
+    final isLoading = widget.isLoading;
+    final onStartTrial = widget.onStartTrial;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       child: Column(
@@ -1426,7 +1547,7 @@ class _PlanCard extends StatelessWidget {
               // from the current end date, so no remaining days are lost.
               // The auto-assigned free plan has nothing to renew.
               isLoading: isLoading,
-              onPressed: isCurrentPlan && _isFree ? null : onSelect,
+              onPressed: isCurrentPlan && _isFree ? null : () => widget.onSelect(_selectedCycleMonths),
               variant:
                   isCurrentPlan ? ButtonVariant.outline : ButtonVariant.primary,
             ),
