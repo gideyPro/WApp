@@ -35,6 +35,18 @@ class PlanBillingCycle {
   final int discountPercent;
   final String? badge;
 
+  /// Price after upgrade/promo rules, when the API provides it.
+  final double? effectivePrice;
+  final double? effectivePriceUsd;
+
+  /// Stored list price before upgrade/promo rules.
+  final double? originalPrice;
+  final double? originalPriceUsd;
+
+  /// Extra discount applied on top of the cycle price (0 when none).
+  final int appliedDiscountPercent;
+  final String? appliedDiscountType; // 'upgrade' or 'overall'
+
   const PlanBillingCycle({
     required this.months,
     required this.price,
@@ -42,9 +54,21 @@ class PlanBillingCycle {
     required this.listingDurationDays,
     this.discountPercent = 0,
     this.badge,
+    this.effectivePrice,
+    this.effectivePriceUsd,
+    this.originalPrice,
+    this.originalPriceUsd,
+    this.appliedDiscountPercent = 0,
+    this.appliedDiscountType,
   });
 
+  bool get hasAppliedDiscount => appliedDiscountPercent > 0;
+  bool get isUpgradeDiscount => appliedDiscountType == 'upgrade';
+
   factory PlanBillingCycle.fromJson(Map<String, dynamic> json) {
+    double? optionalDouble(String key) =>
+        json[key] == null ? null : SubscriptionPlan._parseDouble(json[key]);
+
     return PlanBillingCycle(
       months: json['months'] is int
           ? json['months'] as int
@@ -58,12 +82,36 @@ class PlanBillingCycle {
           ? json['discount_percent'] as int
           : int.tryParse(json['discount_percent']?.toString() ?? '0') ?? 0,
       badge: json['badge']?.toString(),
+      effectivePrice: optionalDouble('effective_price'),
+      effectivePriceUsd: optionalDouble('effective_price_usd'),
+      originalPrice: optionalDouble('original_price'),
+      originalPriceUsd: optionalDouble('original_price_usd'),
+      appliedDiscountPercent: json['applied_discount_percent'] is int
+          ? json['applied_discount_percent'] as int
+          : int.tryParse(json['applied_discount_percent']?.toString() ?? '0') ??
+              0,
+      appliedDiscountType: json['applied_discount_type']?.toString(),
     );
   }
 
+  double effectivePriceFor(String currency) => currency == 'USD'
+      ? (effectivePriceUsd ?? priceUsd)
+      : (effectivePrice ?? price);
+
+  double originalPriceFor(String currency) => currency == 'USD'
+      ? (originalPriceUsd ?? priceUsd)
+      : (originalPrice ?? price);
+
   String getDisplayPrice(String currency) {
-    if (currency == 'USD') return '\$${priceUsd.toStringAsFixed(2)}';
-    return '${price.toStringAsFixed(0)} ETB';
+    final value = effectivePriceFor(currency);
+    if (currency == 'USD') return '\$${value.toStringAsFixed(2)}';
+    return '${value.toStringAsFixed(0)} ETB';
+  }
+
+  String getOriginalDisplayPrice(String currency) {
+    final value = originalPriceFor(currency);
+    if (currency == 'USD') return '\$${value.toStringAsFixed(2)}';
+    return '${value.toStringAsFixed(0)} ETB';
   }
 
   Map<String, dynamic> toJson() => {
@@ -73,6 +121,12 @@ class PlanBillingCycle {
     'listing_duration_days': listingDurationDays,
     'discount_percent': discountPercent,
     'badge': badge,
+    'effective_price': effectivePrice,
+    'effective_price_usd': effectivePriceUsd,
+    'original_price': originalPrice,
+    'original_price_usd': originalPriceUsd,
+    'applied_discount_percent': appliedDiscountPercent,
+    'applied_discount_type': appliedDiscountType,
   };
 }
 

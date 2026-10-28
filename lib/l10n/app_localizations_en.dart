@@ -1570,6 +1570,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsVipAccess => 'VIP Access';
 
   @override
+  String subscriptionsListingsActiveDays(Object count) {
+    return 'Listings active for $count days';
+  }
+
+  @override
+  String get subscriptionsPerMonth => '/ Month';
+
+  @override
+  String subscriptionsPerMonths(Object count) {
+    return '/ $count Months';
+  }
+
+  @override
+  String subscriptionsSavePercent(Object percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String get subscriptionsRecommended => 'RECOMMENDED';
+
+  @override
   String get notificationsEmpty => 'No notifications yet';
 
   @override

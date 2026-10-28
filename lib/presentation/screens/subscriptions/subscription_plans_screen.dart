@@ -1235,7 +1235,7 @@ class _PlanCardState extends State<_PlanCard> {
                 _buildOutlineBadge(l10n.subscriptionsCurrentPlan,
                     widget.isFeatured ? Colors.white : AppColors.accent700)
               else if (widget.isFeatured)
-                _buildOutlineBadge('RECOMMENDED', Colors.white)
+                _buildOutlineBadge(l10n.subscriptionsRecommended, Colors.white)
               else
                 const SizedBox.shrink(),
 
@@ -1279,7 +1279,13 @@ class _PlanCardState extends State<_PlanCard> {
                       ),
                     const SizedBox(height: 6),
                     Text(
-                      'Listings active for ${_currentCycle.listingDurationDays > 0 ? _currentCycle.listingDurationDays : (widget.plan.listingDurationDays > 0 ? widget.plan.listingDurationDays : 30)} days',
+                      l10n.subscriptionsListingsActiveDays(
+                        _currentCycle.listingDurationDays > 0
+                            ? _currentCycle.listingDurationDays
+                            : (widget.plan.listingDurationDays > 0
+                                ? widget.plan.listingDurationDays
+                                : 30),
+                      ),
                       style: AppTextStyles.caption.copyWith(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -1409,6 +1415,16 @@ class _PlanCardState extends State<_PlanCard> {
               ),
             ),
           ),
+        if (cycle.hasAppliedDiscount)
+          Text(
+            cycle.getOriginalDisplayPrice(widget.selectedCurrency),
+            style: AppTextStyles.caption.copyWith(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: mutedColor,
+              decoration: TextDecoration.lineThrough,
+            ),
+          ),
         Text(
           priceStr,
           style: AppTextStyles.priceLarge.copyWith(
@@ -1419,13 +1435,41 @@ class _PlanCardState extends State<_PlanCard> {
           ),
         ),
         Text(
-          '/ ${cycle.months} ${cycle.months == 1 ? 'Month' : 'Months'}',
+          cycle.months == 1
+              ? l10n.subscriptionsPerMonth
+              : l10n.subscriptionsPerMonths(cycle.months),
           style: AppTextStyles.caption.copyWith(
             fontSize: 11,
             fontWeight: FontWeight.w500,
             color: mutedColor,
           ),
         ),
+        if (cycle.hasAppliedDiscount) ...[
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: widget.isFeatured
+                  ? Colors.white.withValues(alpha: 0.25)
+                  : AppColors.warning.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: widget.isFeatured ? Colors.white54 : AppColors.warning,
+                width: 0.8,
+              ),
+            ),
+            child: Text(
+              cycle.isUpgradeDiscount
+                  ? l10n.subscriptionsUpgradeOff(cycle.appliedDiscountPercent)
+                  : l10n.subscriptionsPromoOff(cycle.appliedDiscountPercent),
+              style: AppTextStyles.badge.copyWith(
+                fontSize: 9,
+                fontWeight: FontWeight.w800,
+                color: widget.isFeatured ? Colors.white : AppColors.warning,
+              ),
+            ),
+          ),
+        ],
         if (hasCycleDiscount) ...[
           const SizedBox(height: 4),
           Container(
@@ -1437,7 +1481,7 @@ class _PlanCardState extends State<_PlanCard> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              'Save ${cycle.discountPercent}%',
+              l10n.subscriptionsSavePercent(cycle.discountPercent),
               style: AppTextStyles.badge.copyWith(
                 fontSize: 9,
                 fontWeight: FontWeight.w800,

@@ -349,6 +349,45 @@ void main() {
       expect(plan.billingCycles[0].priceUsd, 240.0);
       expect(plan.billingCycles[0].listingDurationDays, 30);
     });
+
+    test('uses effective promo prices when the API provides them', () {
+      final cycle = PlanBillingCycle.fromJson({
+        'months': 3,
+        'price': 1350,
+        'price_usd': 27,
+        'listing_duration_days': 90,
+        'discount_percent': 10,
+        'badge': 'Popular',
+        'original_price': 1350,
+        'original_price_usd': 27,
+        'effective_price': 1215,
+        'effective_price_usd': 24.3,
+        'applied_discount_percent': 10,
+        'applied_discount_type': 'overall',
+      });
+
+      expect(cycle.getDisplayPrice('ETB'), '1215 ETB');
+      expect(cycle.getDisplayPrice('USD'), '\$24.30');
+      expect(cycle.getOriginalDisplayPrice('ETB'), '1350 ETB');
+      expect(cycle.getOriginalDisplayPrice('USD'), '\$27.00');
+      expect(cycle.hasAppliedDiscount, isTrue);
+      expect(cycle.isUpgradeDiscount, isFalse);
+    });
+
+    test('falls back to the stored price without effective fields', () {
+      final cycle = PlanBillingCycle.fromJson({
+        'months': 1,
+        'price': 500,
+        'price_usd': 10,
+        'listing_duration_days': 30,
+      });
+
+      expect(cycle.effectivePrice, isNull);
+      expect(cycle.appliedDiscountPercent, 0);
+      expect(cycle.hasAppliedDiscount, isFalse);
+      expect(cycle.getDisplayPrice('ETB'), '500 ETB');
+      expect(cycle.getDisplayPrice('USD'), '\$10.00');
+    });
   });
 
   group('Subscription billing cycle and listing duration snapshot', () {

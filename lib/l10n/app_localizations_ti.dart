@@ -1549,6 +1549,27 @@ class AppLocalizationsTi extends AppLocalizations {
   String get subscriptionsVipAccess => 'ናይ VIP መዳረሻ';
 
   @override
+  String subscriptionsListingsActiveDays(Object count) {
+    return 'ንብረታት ን$count መዓልታት ንጡፋት ይጸንሑ';
+  }
+
+  @override
+  String get subscriptionsPerMonth => '/ ወርሒ';
+
+  @override
+  String subscriptionsPerMonths(Object count) {
+    return '/ $count ኣዋርሕ';
+  }
+
+  @override
+  String subscriptionsSavePercent(Object percent) {
+    return '$percent% ቅናሽ';
+  }
+
+  @override
+  String get subscriptionsRecommended => 'ዝምከር';
+
+  @override
   String get notificationsEmpty => 'ሓድሽ ሓበሬታ የለን';
 
   @override

@@ -2974,6 +2974,36 @@ abstract class AppLocalizations {
   /// **'VIP Access'**
   String get subscriptionsVipAccess;
 
+  /// No description provided for @subscriptionsListingsActiveDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Listings active for {count} days'**
+  String subscriptionsListingsActiveDays(Object count);
+
+  /// No description provided for @subscriptionsPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'/ Month'**
+  String get subscriptionsPerMonth;
+
+  /// No description provided for @subscriptionsPerMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'/ {count} Months'**
+  String subscriptionsPerMonths(Object count);
+
+  /// No description provided for @subscriptionsSavePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String subscriptionsSavePercent(Object percent);
+
+  /// No description provided for @subscriptionsRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'RECOMMENDED'**
+  String get subscriptionsRecommended;
+
   /// No description provided for @notificationsEmpty.
   ///
   /// In en, this message translates to:

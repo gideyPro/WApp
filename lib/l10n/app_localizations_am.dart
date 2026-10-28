@@ -1550,6 +1550,27 @@ class AppLocalizationsAm extends AppLocalizations {
   String get subscriptionsVipAccess => 'የ VIP መዳረሻ';
 
   @override
+  String subscriptionsListingsActiveDays(Object count) {
+    return 'ንብረቶች ለ$count ቀናት ንቁ ይሆናሉ';
+  }
+
+  @override
+  String get subscriptionsPerMonth => '/ ወር';
+
+  @override
+  String subscriptionsPerMonths(Object count) {
+    return '/ $count ወራት';
+  }
+
+  @override
+  String subscriptionsSavePercent(Object percent) {
+    return '$percent% ቅናሽ';
+  }
+
+  @override
+  String get subscriptionsRecommended => 'የሚመከር';
+
+  @override
   String get notificationsEmpty => 'ምንም ማስታወቂያ የለም';
 
   @override
