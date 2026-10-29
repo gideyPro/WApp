@@ -4,6 +4,7 @@ import '../../core/network/v2/api_v2_client.dart';
 import '../../core/network/v2/api_v2_error.dart';
 import '../../data/models/v2/app_config.dart';
 import '../../data/models/v2/home_feed.dart';
+import '../../data/models/v2/listing_detail.dart';
 import '../../data/models/v2/listing_summary.dart';
 import '../../data/models/v2/owner_listing.dart';
 import '../../data/models/v2/subscription_state.dart';
@@ -402,4 +403,13 @@ final appConfigProvider = FutureProvider<AppConfig>((ref) {
 final subscriptionOverviewProvider =
     FutureProvider<SubscriptionOverview>((ref) {
   return ref.watch(subscriptionV2ServiceProvider).fetchOverview();
+});
+
+/// Single listing detail from `/v2/listings/{id}`.
+///
+/// Owner viewers receive moderation state and affordances; public viewers
+/// never see moderation fields.
+final listingDetailV2Provider =
+    FutureProvider.family<ListingDetail, int>((ref, listingId) async {
+  return ref.watch(catalogServiceProvider).fetchListing(listingId);
 });
