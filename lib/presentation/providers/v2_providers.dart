@@ -2,10 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/network/v2/api_v2_client.dart';
 import '../../data/models/v2/app_config.dart';
+import '../../data/services/v2/address_service.dart';
 import '../../data/services/v2/app_config_service.dart';
 import '../../data/services/v2/auth_service.dart';
 import '../../data/services/v2/catalog_service.dart';
+import '../../data/services/v2/favorite_service.dart';
 import '../../data/services/v2/home_service.dart';
+import '../../data/services/v2/notification_service.dart';
 import '../../data/services/v2/plan_service.dart';
 import '../../data/services/v2/profile_service.dart';
 import 'app_providers.dart';
@@ -34,6 +37,18 @@ final authV2ServiceProvider = Provider<AuthServiceV2>((ref) {
 
 final profileV2ServiceProvider = Provider<ProfileServiceV2>((ref) {
   return ProfileServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final favoriteV2ServiceProvider = Provider<FavoriteServiceV2>((ref) {
+  return FavoriteServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final notificationV2ServiceProvider = Provider<NotificationServiceV2>((ref) {
+  return NotificationServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final addressV2ServiceProvider = Provider<AddressServiceV2>((ref) {
+  return AddressServiceV2(client: ref.watch(apiV2ClientProvider));
 });
 
 final homeServiceProvider = Provider<HomeService>((ref) {

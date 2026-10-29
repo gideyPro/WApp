@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "id": 321,
+      "type": "listing_update",
+      "title": "Your listing is live",
+      "message": "Spacious 4-bedroom villa in Bole is now visible to buyers.",
+      "data": {
+        "listing_id": 4821
+      },
+      "action_url": "https://wavemart.et/listings/4821",
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-10-29T09:00:00Z"
+    }
+  ],
+  "meta": {
+    "next_cursor": null,
+    "has_more": false,
+    "per_page": 20
+  }
+}

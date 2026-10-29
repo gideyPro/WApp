@@ -27,6 +27,17 @@ class ApiV2Constants {
   static const String authLogout = '$apiBase/auth/logout';
   static const String me = '$apiBase/me';
 
+  static const String favorites = '$apiBase/favorites';
+
+  static const String notifications = '$apiBase/notifications';
+  static const String notificationsUnreadCount = '$notifications/unread-count';
+  static const String notificationsReadAll = '$notifications/read-all';
+
+  static const String addressRegions = '$apiBase/addresses/regions';
+  static const String addressZones = '$apiBase/addresses/zones';
+  static const String addressWoredas = '$apiBase/addresses/woredas';
+  static const String addressKebeles = '$apiBase/addresses/kebeles';
+
   static const String listings = '$apiBase/listings';
   static const String listingsFeatured = '$apiBase/listings/featured';
   static const String cars = '$apiBase/cars';
@@ -37,4 +48,9 @@ class ApiV2Constants {
   static String listing(int id) => '$listings/$id';
   static String car(int id) => '$cars/$id';
   static String job(int id) => '$jobs/$id';
+
+  static String favorite(int listingId) => '$favorites/$listingId';
+
+  static String notification(int id) => '$notifications/$id';
+  static String notificationRead(int id) => '$notifications/$id/read';
 }
