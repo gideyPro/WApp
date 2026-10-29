@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
+
+import '../../data/services/v2/app_config_service.dart';
+import 'v2_providers.dart';
 
 enum UpdateType { none, blocking, nonBlocking }
 
@@ -29,68 +29,55 @@ class VersionState {
         whatsNew = '';
 }
 
+/// Applies the `/v2/app-config` update policy for the build that is running.
+///
+/// A blocking update is only shown when the current build is below
+/// `min_supported_build`; a non-blocking prompt only when a newer build exists.
+/// If the config cannot be loaded the app starts normally — an offline launch
+/// must never be locked out by the update gate.
 class VersionNotifier extends StateNotifier<VersionState> {
-  VersionNotifier() : super(const VersionState.initial()) {
+  VersionNotifier(this._service) : super(const VersionState.initial()) {
     checkForUpdate();
   }
+
+  final AppConfigService _service;
 
   Future<void> checkForUpdate() async {
     try {
       final info = await PackageInfo.fromPlatform();
       final currentBuild = int.tryParse(info.buildNumber) ?? 0;
+      final config = await _service.fetch();
 
-      final response = await ApiClient()
-          .dio
-          .get('${ApiConstants.apiBase}/settings');
-      final data = ApiEnvelope.extractData(response.data);
-
-      final updateCheckEnabled = data['update_check_enabled'] as bool? ?? true;
-      if (!updateCheckEnabled) {
-        state = const VersionState(
+      if (config.isUpdateRequired(currentBuild)) {
+        state = VersionState(
           isLoading: false,
-          updateType: UpdateType.none,
+          updateType: UpdateType.blocking,
+          latestVersion: config.latestVersion,
+          updateUrl: config.updateUrl,
+          whatsNew: config.whatsNew,
         );
         return;
       }
 
-      final latestVersionCode = (data['latest_app_version_code'] ?? 0) as int;
-
-      // Only check if a newer version exists
-      if (currentBuild >= latestVersionCode) {
-        state = const VersionState(
+      if (config.isUpdateRecommended(currentBuild)) {
+        state = VersionState(
           isLoading: false,
-          updateType: UpdateType.none,
+          updateType: UpdateType.nonBlocking,
+          latestVersion: config.latestVersion,
+          updateUrl: config.updateUrl,
+          whatsNew: config.whatsNew,
         );
         return;
       }
 
-      const updateTypeMap = {
-        'none': UpdateType.none,
-        'non_blocking': UpdateType.nonBlocking,
-        'blocking': UpdateType.blocking,
-      };
-      final updateType = updateTypeMap[
-            data['update_type'] as String? ?? 'none'
-          ] ??
-          UpdateType.none;
-
-      state = VersionState(
-        isLoading: false,
-        updateType: updateType,
-        latestVersion: data['latest_app_version'] as String? ?? '',
-        updateUrl: data['app_update_url'] as String? ?? '',
-        whatsNew: data['whats_new'] as String? ?? '',
-      );
+      state = const VersionState(isLoading: false);
     } catch (_) {
-      state = const VersionState(
-        isLoading: false,
-        updateType: UpdateType.none,
-      );
+      state = const VersionState(isLoading: false);
     }
   }
 }
 
 final versionProvider =
     StateNotifierProvider<VersionNotifier, VersionState>((ref) {
-  return VersionNotifier();
+  return VersionNotifier(ref.watch(appConfigServiceProvider));
 });
