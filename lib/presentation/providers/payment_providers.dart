@@ -1,163 +1,194 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/payment.dart';
-import '../../data/services/payment_service.dart';
-import '../../data/services/subscription_service.dart';
-import '../../data/models/subscription.dart';
 
-/// Payment Provider
-final paymentServiceProvider =
-    Provider<PaymentService>((ref) => PaymentService());
+import '../../core/network/v2/api_v2_error.dart';
+import '../../data/models/v2/payment_state.dart';
+import '../../data/models/v2/plan.dart';
+import '../../data/models/v2/subscription_state.dart' as v2_sub;
+import '../../data/services/v2/payment_service.dart';
+import '../../data/services/v2/plan_service.dart';
+import '../../data/services/v2/subscription_service.dart';
+import 'v2_providers.dart';
+
+/// Payment Provider backed by V2
+final paymentServiceProvider = Provider<PaymentServiceV2>((ref) {
+  return ref.watch(paymentV2ServiceProvider);
+});
+
 final paymentHistoryProvider =
     StateNotifierProvider<PaymentHistoryNotifier, PaymentHistoryState>((ref) {
-  return PaymentHistoryNotifier(ref.watch(paymentServiceProvider));
+  return PaymentHistoryNotifier(ref.watch(paymentV2ServiceProvider));
 });
 
 class PaymentHistoryNotifier extends StateNotifier<PaymentHistoryState> {
-  final PaymentService _paymentService;
-  PaymentHistoryNotifier(this._paymentService)
+  final PaymentServiceV2 _service;
+
+  PaymentHistoryNotifier(this._service)
       : super(const PaymentHistoryState.initial());
 
-  Future<void> loadPayments({int page = 1}) async {
+  Future<void> loadPayments() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _paymentService.getPaymentHistory(page: page);
-    if (response.success) {
+
+    try {
+      final page = await _service.fetch();
       state = PaymentHistoryState.loaded(
-          payments: response.payments, total: response.total ?? 0);
-    } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+        payments: page.items,
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+      );
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(isLoading: false, errorMessage: error.message);
+    } catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Could not load payment history',
+      );
+    }
+  }
+
+  Future<void> loadMore() async {
+    final cursor = state.nextCursor;
+
+    if (state.isLoading ||
+        state.isLoadingMore ||
+        !state.hasMore ||
+        cursor == null) {
+      return;
+    }
+
+    state = state.copyWith(isLoadingMore: true);
+
+    try {
+      final page = await _service.fetch(cursor: cursor);
+      state = state.copyWith(
+        payments: [...state.payments, ...page.items],
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+        isLoadingMore: false,
+      );
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: error.message,
+      );
+    } catch (_) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: 'Could not load more payments',
+      );
     }
   }
 }
 
 class PaymentHistoryState {
   final bool isLoading;
-  final List<Payment> payments;
-  final int total;
+  final bool isLoadingMore;
+  final List<PaymentState> payments;
+  final String? nextCursor;
+  final bool hasMore;
   final String? errorMessage;
-  const PaymentHistoryState(
-      {required this.isLoading,
-      this.payments = const [],
-      this.total = 0,
-      this.errorMessage});
+
+  const PaymentHistoryState({
+    required this.isLoading,
+    this.isLoadingMore = false,
+    this.payments = const [],
+    this.nextCursor,
+    this.hasMore = false,
+    this.errorMessage,
+  });
+
   const PaymentHistoryState.initial()
       : isLoading = true,
+        isLoadingMore = false,
         payments = const [],
-        total = 0,
+        nextCursor = null,
+        hasMore = false,
         errorMessage = null;
-  const PaymentHistoryState.loaded({required this.payments, this.total = 0})
-      : isLoading = false,
+
+  const PaymentHistoryState.loaded({
+    required this.payments,
+    this.nextCursor,
+    this.hasMore = false,
+  })  : isLoading = false,
+        isLoadingMore = false,
         errorMessage = null;
-  PaymentHistoryState copyWith(
-      {bool? isLoading,
-      List<Payment>? payments,
-      int? total,
-      String? errorMessage}) {
+
+  int get total => payments.length;
+
+  PaymentHistoryState copyWith({
+    bool? isLoading,
+    bool? isLoadingMore,
+    List<PaymentState>? payments,
+    String? nextCursor,
+    bool? hasMore,
+    String? errorMessage,
+  }) {
     return PaymentHistoryState(
-        isLoading: isLoading ?? this.isLoading,
-        payments: payments ?? this.payments,
-        total: total ?? this.total,
-        errorMessage: errorMessage);
+      isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      payments: payments ?? this.payments,
+      nextCursor: nextCursor ?? this.nextCursor,
+      hasMore: hasMore ?? this.hasMore,
+      errorMessage: errorMessage,
+    );
   }
 }
 
 /// Subscription Providers
-final subscriptionServiceProvider =
-    Provider<SubscriptionServiceApi>((ref) => SubscriptionServiceApi());
+final subscriptionServiceProvider = Provider<SubscriptionServiceV2>((ref) {
+  return ref.watch(subscriptionV2ServiceProvider);
+});
 
 final subscriptionProvider =
     StateNotifierProvider<SubscriptionNotifier, SubscriptionState>((ref) {
-  return SubscriptionNotifier(ref.watch(subscriptionServiceProvider));
+  return SubscriptionNotifier(
+    ref.watch(subscriptionV2ServiceProvider),
+    ref.watch(planServiceProvider),
+  );
 });
 
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
-  final SubscriptionServiceApi _subscriptionService;
-  SubscriptionNotifier(this._subscriptionService)
+  final SubscriptionServiceV2 _subscriptionService;
+  final PlanService _planService;
+
+  SubscriptionNotifier(this._subscriptionService, this._planService)
       : super(const SubscriptionState.initial()) {
     _initialRefresh();
   }
 
-  /// Deferred initial fetch so the auth token can be resolved first.
   Future<void> _initialRefresh() async {
-    state = const SubscriptionState.initial();
-    for (int attempt = 0; attempt < 3; attempt++) {
-      if (attempt > 0) {
-        await Future.delayed(Duration(seconds: attempt));
-      }
-      try {
-        final data = await _subscriptionService.getFullData();
-        if (data.success) {
-          state = SubscriptionState.loaded(
-            plans: data.plans,
-            subscription: data.subscription,
-            canCreateListing: data.canCreateListing,
-            canCreateRentalListing: data.canCreateRentalListing,
-            canCreateVehicle: data.canCreateVehicle,
-            canCreateRentalVehicle: data.canCreateRentalVehicle,
-            canCreateJob: data.canCreateJob,
-            canFeatureListing: data.canFeatureListing,
-            canViewVip: data.canViewVip,
-            canCreateOrder: data.canCreateOrder,
-            hasPaidSubscription: data.hasPaidSubscription,
-            canSeeVideo: data.canSeeVideo,
-            canSeeContact: data.canSeeContact,
-            canSeeFullAddress: data.canSeeFullAddress,
-            contactViewsUsed: data.contactViewsUsed,
-            contactViewsRemaining: data.contactViewsRemaining,
-            rentalContactViewsUsed: data.rentalContactViewsUsed,
-            rentalContactViewsRemaining: data.rentalContactViewsRemaining,
-            carContactViewsUsed: data.carContactViewsUsed,
-            carContactViewsRemaining: data.carContactViewsRemaining,
-            carRentalContactViewsUsed: data.carRentalContactViewsUsed,
-            carRentalContactViewsRemaining: data.carRentalContactViewsRemaining,
-            jobContactViewsUsed: data.jobContactViewsUsed,
-            jobContactViewsRemaining: data.jobContactViewsRemaining,
-          );
-          return;
-        }
-      } catch (_) {}
-    }
-    // All retries exhausted — go to idle so UI doesn't hang forever.
-    state = state.copyWith(isLoading: false);
+    refresh();
   }
 
   Future<void> refresh({String currency = 'ETB'}) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final data = await _subscriptionService.getFullData(currency: currency);
+      final overview = await _subscriptionService.fetchOverview();
+      final plans = await _planService.fetchPlans();
+      final caps = overview.capabilities;
 
-      if (data.success) {
-        state = SubscriptionState.loaded(
-          plans: data.plans,
-          subscription: data.subscription,
-          canCreateListing: data.canCreateListing,
-          canCreateRentalListing: data.canCreateRentalListing,
-          canCreateVehicle: data.canCreateVehicle,
-          canCreateRentalVehicle: data.canCreateRentalVehicle,
-          canCreateJob: data.canCreateJob,
-          canFeatureListing: data.canFeatureListing,
-          canViewVip: data.canViewVip,
-          canCreateOrder: data.canCreateOrder,
-          hasPaidSubscription: data.hasPaidSubscription,
-          canSeeVideo: data.canSeeVideo,
-          canSeeContact: data.canSeeContact,
-          canSeeFullAddress: data.canSeeFullAddress,
-          contactViewsUsed: data.contactViewsUsed,
-          contactViewsRemaining: data.contactViewsRemaining,
-          rentalContactViewsUsed: data.rentalContactViewsUsed,
-          rentalContactViewsRemaining: data.rentalContactViewsRemaining,
-          carContactViewsUsed: data.carContactViewsUsed,
-          carContactViewsRemaining: data.carContactViewsRemaining,
-          carRentalContactViewsUsed: data.carRentalContactViewsUsed,
-          carRentalContactViewsRemaining: data.carRentalContactViewsRemaining,
-          jobContactViewsUsed: data.jobContactViewsUsed,
-          jobContactViewsRemaining: data.jobContactViewsRemaining,
-        );
-      } else {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: data.message,
-        );
-      }
+      state = SubscriptionState.loaded(
+        plans: plans,
+        subscription: overview.subscription,
+        canCreateListing: caps['max_listings']?.hasCapacity ?? false,
+        canCreateRentalListing:
+            caps['max_rental_listings']?.hasCapacity ?? false,
+        canCreateVehicle: caps['max_vehicles']?.hasCapacity ?? false,
+        canCreateRentalVehicle:
+            caps['max_rental_vehicles']?.hasCapacity ?? false,
+        canCreateJob: caps['max_jobs']?.hasCapacity ?? false,
+        canFeatureListing: caps['max_featured_listings']?.hasCapacity ?? false,
+        canViewVip: caps.canViewVip,
+        canCreateOrder: caps['max_orders']?.hasCapacity ?? false,
+        hasPaidSubscription: overview.subscription?.isActive == true &&
+            overview.subscription?.plan?.slug != 'free',
+        canSeeVideo: caps.canViewVideo,
+        canSeeContact: caps.canAccessContact,
+        canSeeFullAddress: caps['access_full_address']?.allowed ?? false,
+        contactViewsUsed: caps['max_contacts']?.used ?? 0,
+        contactViewsRemaining: caps['max_contacts']?.remaining ?? 0,
+      );
+    } on ApiV2Exception catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.message);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
@@ -166,8 +197,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
 class SubscriptionState {
   final bool isLoading;
-  final List<SubscriptionPlan> plans;
-  final Subscription? subscription;
+  final List<Plan> plans;
+  final v2_sub.SubscriptionState? subscription;
   final bool canCreateListing;
   final bool canCreateRentalListing;
   final bool canCreateVehicle;
@@ -279,8 +310,8 @@ class SubscriptionState {
 
   SubscriptionState copyWith({
     bool? isLoading,
-    List<SubscriptionPlan>? plans,
-    Subscription? subscription,
+    List<Plan>? plans,
+    v2_sub.SubscriptionState? subscription,
     bool? canCreateListing,
     bool? canCreateRentalListing,
     bool? canCreateVehicle,
@@ -310,9 +341,11 @@ class SubscriptionState {
       plans: plans ?? this.plans,
       subscription: subscription ?? this.subscription,
       canCreateListing: canCreateListing ?? this.canCreateListing,
-      canCreateRentalListing: canCreateRentalListing ?? this.canCreateRentalListing,
+      canCreateRentalListing:
+          canCreateRentalListing ?? this.canCreateRentalListing,
       canCreateVehicle: canCreateVehicle ?? this.canCreateVehicle,
-      canCreateRentalVehicle: canCreateRentalVehicle ?? this.canCreateRentalVehicle,
+      canCreateRentalVehicle:
+          canCreateRentalVehicle ?? this.canCreateRentalVehicle,
       canCreateJob: canCreateJob ?? this.canCreateJob,
       canFeatureListing: canFeatureListing ?? this.canFeatureListing,
       canViewVip: canViewVip ?? this.canViewVip,
@@ -322,15 +355,22 @@ class SubscriptionState {
       canSeeContact: canSeeContact ?? this.canSeeContact,
       canSeeFullAddress: canSeeFullAddress ?? this.canSeeFullAddress,
       contactViewsUsed: contactViewsUsed ?? this.contactViewsUsed,
-      contactViewsRemaining: contactViewsRemaining ?? this.contactViewsRemaining,
-      rentalContactViewsUsed: rentalContactViewsUsed ?? this.rentalContactViewsUsed,
-      rentalContactViewsRemaining: rentalContactViewsRemaining ?? this.rentalContactViewsRemaining,
+      contactViewsRemaining:
+          contactViewsRemaining ?? this.contactViewsRemaining,
+      rentalContactViewsUsed:
+          rentalContactViewsUsed ?? this.rentalContactViewsUsed,
+      rentalContactViewsRemaining:
+          rentalContactViewsRemaining ?? this.rentalContactViewsRemaining,
       carContactViewsUsed: carContactViewsUsed ?? this.carContactViewsUsed,
-      carContactViewsRemaining: carContactViewsRemaining ?? this.carContactViewsRemaining,
-      carRentalContactViewsUsed: carRentalContactViewsUsed ?? this.carRentalContactViewsUsed,
-      carRentalContactViewsRemaining: carRentalContactViewsRemaining ?? this.carRentalContactViewsRemaining,
+      carContactViewsRemaining:
+          carContactViewsRemaining ?? this.carContactViewsRemaining,
+      carRentalContactViewsUsed:
+          carRentalContactViewsUsed ?? this.carRentalContactViewsUsed,
+      carRentalContactViewsRemaining:
+          carRentalContactViewsRemaining ?? this.carRentalContactViewsRemaining,
       jobContactViewsUsed: jobContactViewsUsed ?? this.jobContactViewsUsed,
-      jobContactViewsRemaining: jobContactViewsRemaining ?? this.jobContactViewsRemaining,
+      jobContactViewsRemaining:
+          jobContactViewsRemaining ?? this.jobContactViewsRemaining,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

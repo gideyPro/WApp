@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/services/subscription_service.dart';
-import 'payment_providers.dart';
+import '../../data/services/v2/payment_service.dart';
+import 'v2_providers.dart';
 
 class PendingTransaction {
   final int planId;
@@ -17,9 +17,9 @@ class PendingTransaction {
 }
 
 class TransactionTracker extends StateNotifier<List<PendingTransaction>> {
-  final SubscriptionServiceApi _subscriptionService;
+  final PaymentServiceV2 _paymentService;
 
-  TransactionTracker(this._subscriptionService) : super([]);
+  TransactionTracker(this._paymentService) : super([]);
 
   void track(int planId, {String? txRef}) {
     state = [
@@ -33,10 +33,11 @@ class TransactionTracker extends StateNotifier<List<PendingTransaction>> {
   }
 
   void resolve(int planId, {String? txRef}) {
-    state = state.where((t) {
-      if (txRef != null && t.txRef == txRef) return false;
-      if (t.planId == planId && txRef == null) return false;
-      return true;
+    state = state.where((tx) {
+      if (txRef != null && tx.txRef != null) {
+        return tx.txRef != txRef;
+      }
+      return tx.planId != planId;
     }).toList();
   }
 
@@ -44,7 +45,12 @@ class TransactionTracker extends StateNotifier<List<PendingTransaction>> {
     if (state.isEmpty) return null;
     final latest = state.last;
     if (latest.txRef != null) {
-      return _subscriptionService.checkPaymentStatus(latest.txRef!);
+      try {
+        final payment = await _paymentService.fetchOne(latest.txRef!);
+        return payment.status.wireValue;
+      } catch (_) {
+        return null;
+      }
     }
     return null;
   }
@@ -52,6 +58,7 @@ class TransactionTracker extends StateNotifier<List<PendingTransaction>> {
   void clear() => state = [];
 }
 
-final transactionTrackerProvider = StateNotifierProvider<TransactionTracker, List<PendingTransaction>>((ref) {
-  return TransactionTracker(ref.watch(subscriptionServiceProvider));
+final transactionTrackerProvider =
+    StateNotifierProvider<TransactionTracker, List<PendingTransaction>>((ref) {
+  return TransactionTracker(ref.watch(paymentV2ServiceProvider));
 });

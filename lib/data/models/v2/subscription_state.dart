@@ -1,4 +1,5 @@
 import '../../../core/utils/type_utils.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Minimal plan reference embedded in subscriptions and payments.
 ///
@@ -14,6 +15,14 @@ class SubscriptionPlanRef {
     required this.slug,
     required this.name,
   });
+
+  int get maxListings => -1;
+  int get maxRentalListings => -1;
+  int get maxVehicles => -1;
+  int get maxRentalVehicles => -1;
+  int get maxJobs => -1;
+  bool get viewVip => true;
+  List<String>? get features => null;
 
   factory SubscriptionPlanRef.fromJson(dynamic json) {
     final map = json is Map ? json : const {};
@@ -74,6 +83,23 @@ class SubscriptionState {
   final bool isTrial;
   final int daysRemaining;
   final SubscriptionUsage usage;
+
+  int? get planId => plan?.id;
+  int? get daysUntilExpiry => daysRemaining;
+
+  int get listingsUsed => usage.listings;
+  int get rentalListingsUsed => usage.rentalListings;
+  int get vehiclesUsed => usage.vehicles;
+  int get rentalVehiclesUsed => usage.rentalVehicles;
+  int get jobsUsed => usage.jobs;
+  bool get isCancelled => cancelledAt != null;
+
+  String getStatusLabel(AppLocalizations l10n) {
+    if (isActive) return l10n.statusActive;
+    if (isCancelled) return l10n.statusCancelled;
+    if (status == 'expired') return l10n.statusExpired;
+    return status;
+  }
 
   const SubscriptionState({
     required this.id,

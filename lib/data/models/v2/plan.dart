@@ -26,10 +26,11 @@ class BillingCycle {
 
   bool get isFree => price <= 0;
 
-  bool get hasDiscount =>
-      discountPercent > 0 || originalPrice > price;
+  bool get hasDiscount => discountPercent > 0 || originalPrice > price;
 
   double get monthlyPrice => months <= 0 ? price : price / months;
+
+  int? get listingDurationDays => listingDays;
 
   factory BillingCycle.fromJson(Map<String, dynamic> json) {
     final months = TypeUtils.safeInt(json['months']) ?? 1;
@@ -37,10 +38,8 @@ class BillingCycle {
       months: months < 1 ? 1 : months,
       price: TypeUtils.safeDouble(json['price']) ?? 0,
       priceUsd: TypeUtils.safeDouble(json['price_usd']) ?? 0,
-      originalPrice:
-          TypeUtils.safeDouble(json['original_price']) ?? 0,
-      originalPriceUsd:
-          TypeUtils.safeDouble(json['original_price_usd']) ?? 0,
+      originalPrice: TypeUtils.safeDouble(json['original_price']) ?? 0,
+      originalPriceUsd: TypeUtils.safeDouble(json['original_price_usd']) ?? 0,
       discountPercent: TypeUtils.safeInt(json['discount_percent']) ?? 0,
       listingDays: TypeUtils.safeInt(json['listing_days']),
       badge: _text(json['badge']),
@@ -134,6 +133,18 @@ class Plan {
     return null;
   }
 
+  List<BillingCycle> get billingCycles => cycles;
+
+  BillingCycle? getBillingCycle(int months) => cycleForMonths(months);
+
+  bool get isActive => true;
+
+  double get price => defaultCycle?.price ?? 0;
+
+  double get priceUsd => defaultCycle?.priceUsd ?? 0;
+
+  int? get listingDurationDays => defaultCycle?.listingDays;
+
   factory Plan.fromJson(Map<String, dynamic> json) {
     final rawCycles = json['cycles'];
     final rawFeatures = json['features'];
@@ -154,7 +165,9 @@ class Plan {
           : const [],
       limits: PlanLimits.fromJson(json['limits']),
       features: rawFeatures is List
-          ? rawFeatures.map((feature) => feature.toString()).toList(growable: false)
+          ? rawFeatures
+              .map((feature) => feature.toString())
+              .toList(growable: false)
           : const [],
       trialDays: TypeUtils.safeInt(json['trial_days']) ?? 0,
       canStartTrial: TypeUtils.safeBool(json['can_start_trial']),

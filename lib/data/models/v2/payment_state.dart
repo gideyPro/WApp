@@ -1,4 +1,5 @@
 import '../../../core/utils/type_utils.dart';
+import '../../../l10n/app_localizations.dart';
 import 'subscription_state.dart';
 
 /// Payment lifecycle reported by v2.
@@ -68,7 +69,32 @@ class PaymentState {
 
   bool get isSuccessful => status == PaymentStatusV2.success;
 
+  bool get isSuccess => isSuccessful;
+
+  bool get isFailed => status == PaymentStatusV2.failed;
+
+  bool get isCancelled => status == PaymentStatusV2.cancelled;
+
   bool get isActivated => activatedAt != null;
+
+  String get transactionReference => txRef;
+
+  String get displayAmount =>
+      '${amount.toStringAsFixed(amount.truncateToDouble() == amount ? 0 : 2)} $currency';
+
+  String getStatusLabel(AppLocalizations l10n) {
+    switch (status) {
+      case PaymentStatusV2.success:
+        return l10n.statusSuccess;
+      case PaymentStatusV2.failed:
+        return l10n.statusFailed;
+      case PaymentStatusV2.cancelled:
+        return l10n.statusCancelled;
+      case PaymentStatusV2.pending:
+      default:
+        return l10n.statusPending;
+    }
+  }
 
   factory PaymentState.fromJson(dynamic json) {
     final map = json is Map ? json : const {};
@@ -142,6 +168,8 @@ class PaymentVerification {
   bool get isPending => status == PaymentStatusV2.pending;
 
   bool get activatedSubscription => isSuccess && subscription?.isActive == true;
+
+  bool get isActivated => isSuccess || activatedSubscription;
 
   factory PaymentVerification.fromJson(dynamic json) {
     final map = json is Map ? json : const {};

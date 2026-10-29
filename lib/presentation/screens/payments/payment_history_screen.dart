@@ -3,16 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/utils/ethiopian_date_helper.dart';
+import '../../../../data/models/v2/payment_state.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
-import '../../../core/constants/app_spacing.dart';
 
-/// Payment History Screen
+/// Payment History Screen backed by V2 `/v2/payments`
 class PaymentHistoryScreen extends ConsumerStatefulWidget {
   const PaymentHistoryScreen({super.key});
 
@@ -37,9 +38,10 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
     final state = ref.read(paymentHistoryProvider);
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200 &&
-        !state.isLoading) {
-      final nextPage = (state.payments.length ~/ 15) + 1;
-      ref.read(paymentHistoryProvider.notifier).loadPayments(page: nextPage);
+        !state.isLoading &&
+        !state.isLoadingMore &&
+        state.hasMore) {
+      ref.read(paymentHistoryProvider.notifier).loadMore();
     }
   }
 
@@ -95,7 +97,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
       child: ListView.builder(
         controller: _scrollController,
         padding: AppSpacing.paddingLg,
-        itemCount: state.payments.length + (state.isLoading ? 1 : 0),
+        itemCount: state.payments.length + (state.isLoadingMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= state.payments.length) {
             return const Padding(
@@ -109,7 +111,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
             padding: const EdgeInsets.only(bottom: 12),
             child: GestureDetector(
               onTap: () {
-                context.push('/payments/${payment.id}');
+                context.push('/payments/${payment.txRef}');
               },
               child: WaveGlass(
                 child: _PaymentTile(payment: payment),
@@ -134,7 +136,8 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
             child: Row(
               children: [
                 Container(
-                  width: 48, height: 48,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: context.shimmerBase,
                     borderRadius: BorderRadius.circular(12),
@@ -145,23 +148,31 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(height: 14, width: 140, color: context.shimmerBase),
+                      Container(
+                          height: 14, width: 140, color: context.shimmerBase),
                       const SizedBox(height: 8),
-                      Container(height: 12, width: 200, color: context.shimmerBase),
+                      Container(
+                          height: 12, width: 200, color: context.shimmerBase),
                       const SizedBox(height: 4),
-                      Container(height: 12, width: 100, color: context.shimmerBase),
+                      Container(
+                          height: 12, width: 100, color: context.shimmerBase),
                     ],
                   ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Container(height: 16, width: 80, color: context.shimmerBase),
+                    Container(
+                        height: 16, width: 80, color: context.shimmerBase),
                     const SizedBox(height: 6),
-                    Container(height: 18, width: 60, decoration: BoxDecoration(
-                      color: context.shimmerBase,
-                      borderRadius: BorderRadius.circular(8),
-                    )),
+                    Container(
+                      height: 18,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: context.shimmerBase,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -174,7 +185,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
 }
 
 class _PaymentTile extends StatelessWidget {
-  final dynamic payment;
+  final PaymentState payment;
 
   const _PaymentTile({required this.payment});
 
@@ -192,10 +203,16 @@ class _PaymentTile extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               color: payment.isSuccess
-                  ? (isDark ? AppColors.emerald500.withValues(alpha: 0.15) : AppColors.emerald50)
+                  ? (isDark
+                      ? AppColors.emerald500.withValues(alpha: 0.15)
+                      : AppColors.emerald50)
                   : payment.isFailed
-                      ? (isDark ? AppColors.error.withValues(alpha: 0.15) : AppColors.errorLight)
-                      : (isDark ? AppColors.accent500.withValues(alpha: 0.15) : AppColors.accent50),
+                      ? (isDark
+                          ? AppColors.error.withValues(alpha: 0.15)
+                          : AppColors.errorLight)
+                      : (isDark
+                          ? AppColors.accent500.withValues(alpha: 0.15)
+                          : AppColors.accent50),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -226,8 +243,9 @@ class _PaymentTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${l10n.paymentsRef}: ${payment.transactionReference ?? l10n.commonNA}',
-                  style: AppTextStyles.caption.copyWith(color: context.textSecondary),
+                  '${l10n.paymentsRef}: ${payment.txRef.isNotEmpty ? payment.txRef : l10n.commonNA}',
+                  style: AppTextStyles.caption
+                      .copyWith(color: context.textSecondary),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -253,7 +271,8 @@ class _PaymentTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: _statusColor(payment, isDark).withValues(alpha: isDark ? 0.2 : 0.1),
+                  color: _statusColor(payment, isDark)
+                      .withValues(alpha: isDark ? 0.2 : 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -271,35 +290,37 @@ class _PaymentTile extends StatelessWidget {
     );
   }
 
-  String _paymentTitle(dynamic payment, BuildContext context) {
+  String _paymentTitle(PaymentState payment, BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final type = payment.paymentType.toString().split('.').last;
-    switch (type) {
+    switch (payment.type) {
       case 'subscription':
         return l10n.paymentsSubscription;
+      case 'feature':
+      case 'featured':
       case 'featuredListing':
         return l10n.paymentsFeatured;
-      case 'directPayment':
-        return l10n.paymentsDirect;
       default:
         return l10n.paymentsGeneral;
     }
   }
 
-  String _formatDate(dynamic date, BuildContext context) {
+  String _formatDate(DateTime? date, BuildContext context) {
     final l10n = AppLocalizations.of(context);
     if (date == null) return l10n.paymentsUnknownDate;
-    if (date is DateTime) {
-      final locale = Localizations.localeOf(context).languageCode;
-      return '${EthiopianDateHelper.formatDual(date, locale)} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-    }
-    return date.toString();
+    final locale = Localizations.localeOf(context).languageCode;
+    return '${EthiopianDateHelper.formatDual(date, locale)} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
   }
 
-  Color _statusColor(dynamic payment, bool isDark) {
-    if (payment.isSuccess) return isDark ? AppColors.emerald400 : AppColors.emerald600;
-    if (payment.isFailed) return isDark ? Colors.red.shade300 : AppColors.error;
-    if (payment.isCancelled) return isDark ? AppColors.stone400 : AppColors.stone500;
+  Color _statusColor(PaymentState payment, bool isDark) {
+    if (payment.isSuccess) {
+      return isDark ? AppColors.emerald400 : AppColors.emerald600;
+    }
+    if (payment.isFailed) {
+      return isDark ? Colors.red.shade300 : AppColors.error;
+    }
+    if (payment.isCancelled) {
+      return isDark ? AppColors.stone400 : AppColors.stone500;
+    }
     return isDark ? AppColors.accent400 : AppColors.accent600;
   }
 }

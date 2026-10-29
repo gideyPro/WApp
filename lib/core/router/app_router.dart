@@ -232,8 +232,8 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/payments/:id',
       pageBuilder: (_, state) {
-        final id = int.tryParse(state.pathParameters['id'] ?? '');
-        if (id == null) {
+        final id = state.pathParameters['id'] ?? '';
+        if (id.isEmpty) {
           return _buildPageTransition(
             key: state.pageKey,
             child: const _InvalidRouteScreen(),
@@ -241,7 +241,7 @@ final goRouter = GoRouter(
         }
         return _buildPageTransition(
           key: state.pageKey,
-          child: PaymentDetailScreen(paymentId: id),
+          child: PaymentDetailScreen(txRef: id),
         );
       },
     ),
