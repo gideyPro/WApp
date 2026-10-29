@@ -1,0 +1,75 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "status": "scheduled",
+            "is_video": false,
+            "listing": {
+                "id": 1,
+                "type": "house",
+                "listing_type": "sale",
+                "title": "Spacious family house",
+                "price": {
+                    "amount": 100000,
+                    "currency": "ETB",
+                    "period": null,
+                    "negotiable": false
+                },
+                "location": {
+                    "region": "New Jeromyshire",
+                    "zone": "view",
+                    "woreda": null,
+                    "kebele": null,
+                    "specific_location": "Subscribe to see exact location",
+                    "full_address": "New Jeromyshire, view, Pfeffer Viaduct, 7956 Gus Junctions Apt. 417, Subscribe to see exact location",
+                    "is_masked": true,
+                    "region_localized": null,
+                    "zone_localized": null,
+                    "woreda_localized": null,
+                    "kebele_localized": null
+                },
+                "cover_image": null,
+                "images_count": 0,
+                "is_featured": false,
+                "is_vip": false,
+                "is_favorite": false,
+                "created_at": "2026-10-29T09:58:31Z"
+            },
+            "host": {
+                "id": 1,
+                "first_name": "Abebe",
+                "last_name": "Kebede",
+                "name": "Abebe Kebede",
+                "initials": "AK",
+                "avatar_url": null,
+                "role": "host",
+                "is_host": true,
+                "joined": false,
+                "joined_at": null,
+                "left_at": null,
+                "duration_seconds": 0
+            },
+            "participant_count": 3,
+            "viewer": {
+                "role": "buyer",
+                "is_host": false,
+                "joined": false,
+                "can_join": false,
+                "can_start": false,
+                "can_end": false,
+                "can_cancel": false
+            },
+            "scheduled_at": "2026-10-30T09:58:31Z",
+            "started_at": null,
+            "ended_at": null,
+            "duration_seconds": 0,
+            "created_at": "2026-10-29T09:58:31Z",
+            "updated_at": "2026-10-29T09:58:31Z"
+        }
+    ],
+    "meta": {
+        "next_cursor": null,
+        "has_more": false,
+        "per_page": 20
+    }
+}

@@ -116,4 +116,14 @@ class ApiV2Constants {
   static String conversation(int id) => '$conversations/$id';
   static String conversationMessages(int id) => '${conversation(id)}/messages';
   static String conversationRead(int id) => '${conversation(id)}/read';
+
+  static const String conferences = '$apiBase/conferences';
+  static const String conferencesIncoming = '$conferences/incoming';
+  static const String conferencesDirect = '$conferences/direct';
+
+  static String conference(int id) => '$conferences/$id';
+  static String conferenceJoin(int id) => '${conference(id)}/join';
+  static String conferenceLeave(int id) => '${conference(id)}/leave';
+  static String conferenceEnd(int id) => '${conference(id)}/end';
+  static String conferenceCancel(int id) => '${conference(id)}/cancel';
 }
