@@ -1,0 +1,31 @@
+{
+  "data": {
+    "id": 1204,
+    "type": "house",
+    "listing_type": "sale",
+    "status": "active",
+    "description": "Looking for a family house near schools in Bole.",
+    "budget": {
+      "min": 1000000,
+      "max": 5000000
+    },
+    "area": {
+      "min": 120,
+      "max": 400
+    },
+    "holding_type": "Free Hold",
+    "facing_direction": "north",
+    "address": {
+      "id": 15,
+      "region": "Addis Ababa",
+      "zone": "Bole",
+      "woreda": "Woreda 03",
+      "kebele": "Kebele 05",
+      "full_address": "Addis Ababa, Bole, Woreda 03, Kebele 05"
+    },
+    "suggestions_count": 2,
+    "unread_suggestions_count": 1,
+    "created_at": "2026-10-29T08:00:00Z",
+    "updated_at": "2026-10-29T08:00:00Z"
+  }
+}

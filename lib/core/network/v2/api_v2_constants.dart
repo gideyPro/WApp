@@ -98,4 +98,16 @@ class ApiV2Constants {
       '${helpTicket(ticketNumber)}/messages';
   static String helpTicketRating(String ticketNumber) =>
       '${helpTicket(ticketNumber)}/rating';
+
+  static const String orders = '$apiBase/orders';
+
+  static String order(int id) => '$orders/$id';
+  static String orderCancel(int id) => '${order(id)}/cancel';
+  static String orderSuggestions(int id) => '${order(id)}/suggestions';
+  static String orderSuggestion(int orderId, int suggestionId) =>
+      '${orderSuggestions(orderId)}/$suggestionId';
+  static String orderSuggestionAccept(int orderId, int suggestionId) =>
+      '${orderSuggestion(orderId, suggestionId)}/accept';
+  static String orderSuggestionDecline(int orderId, int suggestionId) =>
+      '${orderSuggestion(orderId, suggestionId)}/decline';
 }

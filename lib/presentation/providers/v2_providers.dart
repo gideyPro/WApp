@@ -12,6 +12,7 @@ import '../../data/services/v2/home_service.dart';
 import '../../data/services/v2/kyc_service.dart';
 import '../../data/services/v2/listing_media_service.dart';
 import '../../data/services/v2/notification_service.dart';
+import '../../data/services/v2/order_service.dart';
 import '../../data/services/v2/owner_listing_service.dart';
 import '../../data/services/v2/payment_service.dart';
 import '../../data/services/v2/plan_service.dart';
@@ -52,6 +53,10 @@ final kycV2ServiceProvider = Provider<KycServiceV2>((ref) {
 
 final helpV2ServiceProvider = Provider<HelpServiceV2>((ref) {
   return HelpServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final orderV2ServiceProvider = Provider<OrderServiceV2>((ref) {
+  return OrderServiceV2(client: ref.watch(apiV2ClientProvider));
 });
 
 final authV2ServiceProvider = Provider<AuthServiceV2>((ref) {
