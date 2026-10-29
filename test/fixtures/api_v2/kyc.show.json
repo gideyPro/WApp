@@ -1,0 +1,15 @@
+{
+    "data": {
+        "verified": false,
+        "status": "pending",
+        "can_submit": false,
+        "verification": {
+            "id": 7,
+            "document_type": "national_id",
+            "status": "pending",
+            "rejection_reason": null,
+            "submitted_at": "2026-10-29T09:00:00Z",
+            "verified_at": null
+        }
+    }
+}

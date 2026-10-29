@@ -77,4 +77,8 @@ class ApiV2Constants {
       '$payments/${Uri.encodeComponent(txRef)}';
   static String paymentVerify(String txRef) => '${payment(txRef)}/verify';
   static String paymentCancel(String txRef) => '${payment(txRef)}/cancel';
+
+  static const String kyc = '$apiBase/kyc';
+  static const String kycPhoneSendOtp = '$kyc/phone/send-otp';
+  static const String kycPhoneVerify = '$kyc/phone/verify';
 }
