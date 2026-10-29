@@ -1,0 +1,79 @@
+{
+  "data": [
+    {
+      "id": 4821,
+      "type": "house",
+      "listing_type": "sale",
+      "title": "Spacious 4-bedroom villa in Bole",
+      "price": {
+        "amount": 8500000,
+        "currency": "ETB",
+        "period": null,
+        "negotiable": false
+      },
+      "location": {
+        "region": "Addis Ababa",
+        "zone": "Bole",
+        "woreda": null,
+        "kebele": null,
+        "specific_location": "Subscribe to see exact location",
+        "full_address": "Addis Ababa, Bole, Subscribe to see exact location",
+        "is_masked": true,
+        "region_localized": "አዲስ አበባ",
+        "zone_localized": "ቦሌ",
+        "woreda_localized": null,
+        "kebele_localized": null
+      },
+      "cover_image": {
+        "id": 91021,
+        "url": "https://wavemart.et/storage/houses/cover-4821.jpg",
+        "is_primary": true
+      },
+      "images_count": 6,
+      "is_featured": true,
+      "is_vip": false,
+      "is_favorite": false,
+      "created_at": "2026-10-21T08:15:00Z"
+    },
+    {
+      "id": 4790,
+      "type": "land",
+      "listing_type": "sale",
+      "title": "500 sqm residential plot near Ayat",
+      "price": {
+        "amount": null,
+        "currency": "ETB",
+        "period": null,
+        "negotiable": true
+      },
+      "location": {
+        "region": "Addis Ababa",
+        "zone": "Bole",
+        "woreda": null,
+        "kebele": null,
+        "specific_location": "Subscribe to see exact location",
+        "full_address": "Addis Ababa, Bole, Subscribe to see exact location",
+        "is_masked": true,
+        "region_localized": "አዲስ አበባ",
+        "zone_localized": "ቦሌ",
+        "woreda_localized": null,
+        "kebele_localized": null
+      },
+      "cover_image": {
+        "id": 90980,
+        "url": "https://wavemart.et/storage/lands/cover-4790.jpg",
+        "is_primary": true
+      },
+      "images_count": 3,
+      "is_featured": false,
+      "is_vip": false,
+      "is_favorite": false,
+      "created_at": "2026-10-20T13:42:00Z"
+    }
+  ],
+  "meta": {
+    "next_cursor": "eyJpZCI6NDc5MCwiX3BvaW50c1RvTmV4dEl0ZW1zIjp0cnVlfQ",
+    "has_more": true,
+    "per_page": 2
+  }
+}

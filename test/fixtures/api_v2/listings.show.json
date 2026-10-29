@@ -1,0 +1,143 @@
+{
+  "data": {
+    "id": 4821,
+    "type": "house",
+    "listing_type": "sale",
+    "title": "Spacious 4-bedroom villa in Bole",
+    "price": {
+      "amount": 8500000,
+      "currency": "ETB",
+      "period": null,
+      "negotiable": false
+    },
+    "location": {
+      "region": "Addis Ababa",
+      "zone": "Bole",
+      "woreda": "Woreda 03",
+      "kebele": "Kebele 05",
+      "specific_location": "House No. 214, near Bole Medhanialem Church",
+      "full_address": "Addis Ababa, Bole, Woreda 03, Kebele 05, House No. 214, near Bole Medhanialem Church",
+      "is_masked": false,
+      "region_localized": "አዲስ አበባ",
+      "zone_localized": "ቦሌ",
+      "woreda_localized": "ወረዳ 03",
+      "kebele_localized": "ቀበሌ 05"
+    },
+    "cover_image": {
+      "id": 91021,
+      "url": "https://wavemart.et/storage/houses/cover-4821.jpg",
+      "is_primary": true
+    },
+    "images_count": 6,
+    "is_featured": true,
+    "is_vip": false,
+    "is_favorite": true,
+    "created_at": "2026-10-21T08:15:00Z",
+    "description": "A bright four-bedroom villa with a private garden, two parking spaces, and a maid's room. Walking distance to schools and Bole Medhanialem Church.",
+    "images": [
+      {
+        "id": 91021,
+        "url": "https://wavemart.et/storage/houses/cover-4821.jpg",
+        "is_primary": true
+      },
+      {
+        "id": 91022,
+        "url": "https://wavemart.et/storage/houses/living-room-4821.jpg",
+        "is_primary": false
+      },
+      {
+        "id": 91023,
+        "url": "https://wavemart.et/storage/houses/kitchen-4821.jpg",
+        "is_primary": false
+      }
+    ],
+    "attributes": {
+      "specific_location": "House No. 214, near Bole Medhanialem Church",
+      "use_type": "Residential",
+      "facing_direction": "East",
+      "total_square_meters": 420,
+      "front_area_sqm": 18,
+      "has_debt_or_encumbrance": false,
+      "debt_amount": 0,
+      "price_revision_possible": true,
+      "holding_type": "Free Hold"
+    },
+    "details": {
+      "bedrooms": 4,
+      "bathrooms": 4,
+      "kitchens": 1,
+      "area_sqm": 420,
+      "house_type": "villa",
+      "year_built": 2019,
+      "parking_available": true,
+      "electricity": true,
+      "water": true
+    },
+    "holding_details": {
+      "private": {
+        "tax_paid_until_year": 2027,
+        "acquisition_clarification": "Inherited from family, title deed available."
+      },
+      "lease": null,
+      "cooperative": null
+    },
+    "video": {
+      "url": "https://wavemart.et/storage/houses/video-4821.mp4",
+      "blocked": false
+    },
+    "seller": {
+      "name": "Abebe Kebede",
+      "phone": "+251911234567",
+      "hidden": false
+    },
+    "viewer": {
+      "is_owner": false,
+      "is_favorite": true,
+      "contact_allowed": true,
+      "contact_revealed": true,
+      "contacts_remaining": 47,
+      "contacts_max": 50,
+      "video_allowed": true,
+      "vip_blocked": false,
+      "interest_status": "contacted",
+      "interest_id": 991
+    },
+    "similar": [
+      {
+        "id": 4802,
+        "type": "house",
+        "listing_type": "sale",
+        "title": "Modern 3-bedroom duplex in CMC",
+        "price": {
+          "amount": 6200000,
+          "currency": "ETB",
+          "period": null,
+          "negotiable": true
+        },
+        "location": {
+          "region": "Addis Ababa",
+          "zone": "Bole",
+          "woreda": null,
+          "kebele": null,
+          "specific_location": "Subscribe to see exact location",
+          "full_address": "Addis Ababa, Bole, Subscribe to see exact location",
+          "is_masked": true,
+          "region_localized": "አዲስ አበባ",
+          "zone_localized": "ቦሌ",
+          "woreda_localized": null,
+          "kebele_localized": null
+        },
+        "cover_image": {
+          "id": 90841,
+          "url": "https://wavemart.et/storage/houses/cover-4802.jpg",
+          "is_primary": true
+        },
+        "images_count": 4,
+        "is_featured": false,
+        "is_vip": false,
+        "is_favorite": false,
+        "created_at": "2026-10-18T10:05:00Z"
+      }
+    ]
+  }
+}

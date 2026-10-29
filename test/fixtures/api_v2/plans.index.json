@@ -1,0 +1,164 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "slug": "free",
+      "name": "Free",
+      "description": "Discovery access to explore WaveMart",
+      "is_free": true,
+      "currency": "ETB",
+      "cycles": [
+        {
+          "months": 12,
+          "price": 0,
+          "price_usd": 0,
+          "original_price": 0,
+          "original_price_usd": 0,
+          "discount_percent": 0,
+          "listing_days": 30,
+          "badge": null
+        }
+      ],
+      "limits": {
+        "listings": 0,
+        "rental_listings": 0,
+        "vehicles": 0,
+        "rental_vehicles": 0,
+        "jobs": 0,
+        "featured_listings": 0,
+        "orders": 0,
+        "contacts": 0
+      },
+      "features": [
+        "Browse all listings",
+        "Fuzzy address (Zone level)",
+        "No listing creation",
+        "No contact details"
+      ],
+      "trial_days": 0,
+      "can_start_trial": false,
+      "sort_order": 0
+    },
+    {
+      "id": 2,
+      "slug": "basic",
+      "name": "Basic",
+      "description": "Perfect for individual sellers",
+      "is_free": false,
+      "currency": "ETB",
+      "cycles": [
+        {
+          "months": 1,
+          "price": 500,
+          "price_usd": 10,
+          "original_price": 500,
+          "original_price_usd": 10,
+          "discount_percent": 0,
+          "listing_days": 30,
+          "badge": null
+        },
+        {
+          "months": 3,
+          "price": 1350,
+          "price_usd": 27,
+          "original_price": 1350,
+          "original_price_usd": 27,
+          "discount_percent": 0,
+          "listing_days": 90,
+          "badge": "Popular"
+        },
+        {
+          "months": 6,
+          "price": 2400,
+          "price_usd": 48,
+          "original_price": 2400,
+          "original_price_usd": 48,
+          "discount_percent": 0,
+          "listing_days": 180,
+          "badge": "Best Value"
+        }
+      ],
+      "limits": {
+        "listings": 5,
+        "rental_listings": 5,
+        "vehicles": 5,
+        "rental_vehicles": 5,
+        "jobs": 5,
+        "featured_listings": 1,
+        "orders": 5,
+        "contacts": 0
+      },
+      "features": [
+        "Up to 5 active listings",
+        "No seller contact details",
+        "1 featured listing",
+        "Full address details",
+        "No property videos"
+      ],
+      "trial_days": 0,
+      "can_start_trial": false,
+      "sort_order": 1
+    },
+    {
+      "id": 3,
+      "slug": "premium",
+      "name": "Premium",
+      "description": "Best for professional agents",
+      "is_free": false,
+      "currency": "ETB",
+      "cycles": [
+        {
+          "months": 1,
+          "price": 1350,
+          "price_usd": 22.5,
+          "original_price": 1500,
+          "original_price_usd": 25,
+          "discount_percent": 10,
+          "listing_days": 60,
+          "badge": null
+        },
+        {
+          "months": 3,
+          "price": 3645,
+          "price_usd": 61.2,
+          "original_price": 4050,
+          "original_price_usd": 68,
+          "discount_percent": 10,
+          "listing_days": 180,
+          "badge": "Popular"
+        },
+        {
+          "months": 6,
+          "price": 6480,
+          "price_usd": 108,
+          "original_price": 7200,
+          "original_price_usd": 120,
+          "discount_percent": 10,
+          "listing_days": 360,
+          "badge": "Best Value"
+        }
+      ],
+      "limits": {
+        "listings": 50,
+        "rental_listings": 50,
+        "vehicles": 50,
+        "rental_vehicles": 50,
+        "jobs": 50,
+        "featured_listings": 10,
+        "orders": 50,
+        "contacts": 50
+      },
+      "features": [
+        "Up to 50 active listings",
+        "50 seller contacts per month",
+        "10 featured listings",
+        "View VIP listings",
+        "Full detail access (Videos + Contact)",
+        "Priority support"
+      ],
+      "trial_days": 0,
+      "can_start_trial": false,
+      "sort_order": 2
+    }
+  ]
+}

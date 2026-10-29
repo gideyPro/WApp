@@ -1,0 +1,151 @@
+{
+  "data": {
+    "featured": [
+      {
+        "id": 4821,
+        "type": "house",
+        "listing_type": "sale",
+        "title": "Spacious 4-bedroom villa in Bole",
+        "price": {
+          "amount": 8500000,
+          "currency": "ETB",
+          "period": null,
+          "negotiable": false
+        },
+        "location": {
+          "region": "Addis Ababa",
+          "zone": "Bole",
+          "woreda": null,
+          "kebele": null,
+          "specific_location": "Subscribe to see exact location",
+          "full_address": "Addis Ababa, Bole, Subscribe to see exact location",
+          "is_masked": true,
+          "region_localized": "አዲስ አበባ",
+          "zone_localized": "ቦሌ",
+          "woreda_localized": null,
+          "kebele_localized": null
+        },
+        "cover_image": {
+          "id": 91021,
+          "url": "https://wavemart.et/storage/houses/cover-4821.jpg",
+          "is_primary": true
+        },
+        "images_count": 6,
+        "is_featured": true,
+        "is_vip": false,
+        "is_favorite": false,
+        "created_at": "2026-10-21T08:15:00Z"
+      }
+    ],
+    "listings": [
+      {
+        "id": 4790,
+        "type": "land",
+        "listing_type": "sale",
+        "title": "500 sqm residential plot near Ayat",
+        "price": {
+          "amount": null,
+          "currency": "ETB",
+          "period": null,
+          "negotiable": true
+        },
+        "location": {
+          "region": "Addis Ababa",
+          "zone": "Bole",
+          "woreda": null,
+          "kebele": null,
+          "specific_location": "Subscribe to see exact location",
+          "full_address": "Addis Ababa, Bole, Subscribe to see exact location",
+          "is_masked": true,
+          "region_localized": "አዲስ አበባ",
+          "zone_localized": "ቦሌ",
+          "woreda_localized": null,
+          "kebele_localized": null
+        },
+        "cover_image": {
+          "id": 90980,
+          "url": "https://wavemart.et/storage/lands/cover-4790.jpg",
+          "is_primary": true
+        },
+        "images_count": 3,
+        "is_featured": false,
+        "is_vip": false,
+        "is_favorite": false,
+        "created_at": "2026-10-20T13:42:00Z"
+      }
+    ],
+    "cars": [
+      {
+        "id": 1207,
+        "type": "car",
+        "listing_type": "sale",
+        "title": "2020 Toyota Corolla",
+        "price": {
+          "amount": 1200000,
+          "currency": "ETB",
+          "period": null,
+          "negotiable": true
+        },
+        "location": {
+          "region": "Addis Ababa",
+          "zone": "Yeka",
+          "woreda": null,
+          "kebele": null,
+          "specific_location": "Subscribe to see exact location",
+          "full_address": "Addis Ababa, Yeka, Subscribe to see exact location",
+          "is_masked": true,
+          "region_localized": "አዲስ አበባ",
+          "zone_localized": "የካ",
+          "woreda_localized": null,
+          "kebele_localized": null
+        },
+        "cover_image": {
+          "id": 76010,
+          "url": "https://wavemart.et/storage/cars/cover-1207.jpg",
+          "is_primary": true
+        },
+        "images_count": 5,
+        "is_featured": false,
+        "is_vip": false,
+        "is_favorite": false,
+        "created_at": "2026-10-19T09:30:00Z"
+      }
+    ],
+    "jobs": [
+      {
+        "id": 640,
+        "type": "job",
+        "listing_type": "sale",
+        "title": "Senior Accountant",
+        "price": {
+          "amount": null,
+          "currency": "ETB",
+          "period": null,
+          "negotiable": true
+        },
+        "location": {
+          "region": "Addis Ababa",
+          "zone": "Kirkos",
+          "woreda": null,
+          "kebele": null,
+          "specific_location": "Subscribe to see exact location",
+          "full_address": "Addis Ababa, Kirkos, Subscribe to see exact location",
+          "is_masked": true,
+          "region_localized": "አዲስ አበባ",
+          "zone_localized": "ቂርቆስ",
+          "woreda_localized": null,
+          "kebele_localized": null
+        },
+        "cover_image": null,
+        "images_count": 0,
+        "is_featured": false,
+        "is_vip": false,
+        "is_favorite": false,
+        "created_at": "2026-10-22T07:00:00Z"
+      }
+    ]
+  },
+  "meta": {
+    "generated_at": "2026-10-28T09:00:00Z"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "error": {
+    "code": "VALIDATION_FAILED",
+    "message": "The given data was invalid.",
+    "fields": {
+      "limit": [
+        "The limit field must not be greater than 50."
+      ]
+    }
+  }
+}

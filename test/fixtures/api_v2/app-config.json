@@ -1,0 +1,14 @@
+{
+  "data": {
+    "api_version": 2,
+    "min_supported_build": 42,
+    "latest_build": 45,
+    "latest_version": "2.0.0",
+    "update_type": "blocking",
+    "update_url": "https://wavemart.et/app/download",
+    "whats_new": "Faster listings, one-tap contact reveal, and job alerts.",
+    "subscription_enabled": true,
+    "rental_enabled": true,
+    "currency": "ETB"
+  }
+}
