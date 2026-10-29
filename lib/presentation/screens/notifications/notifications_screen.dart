@@ -6,13 +6,13 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../data/models/notification.dart' as app;
+import '../../../../data/models/v2/app_notification.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../../core/constants/app_spacing.dart';
 
-/// Notifications Screen - Wired to notificationsProvider
+/// Notifications Screen - wired to the v2 notification feed.
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -40,21 +40,18 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     super.didChangeDependencies();
     ref.listenManual(selectedTabProvider, (prev, next) {
       if (prev != next && next == 3 && mounted) {
-        ref.read(notificationsProvider.notifier).loadNotifications();
+        ref
+            .read(notificationsProvider.notifier)
+            .loadNotifications(silent: true);
         ref.read(unreadCountProvider.notifier).refresh();
       }
     });
   }
 
   void _onScroll() {
-    final state = ref.read(notificationsProvider);
     if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200 &&
-        !state.isLoading) {
-      final nextPage = (state.notifications.length ~/ 10) + 1;
-      ref
-          .read(notificationsProvider.notifier)
-          .loadNotifications(page: nextPage);
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(notificationsProvider.notifier).loadMore();
     }
   }
 
@@ -67,7 +64,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(notificationsProvider);
-    final unreadCount = ref.watch(unreadCountProvider);
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
@@ -92,11 +88,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             ),
         ],
       ),
-      body: _buildBody(state, unreadCount),
+      body: _buildBody(state),
     );
   }
 
-  Widget _buildBody(NotificationState state, int unreadCount) {
+  Widget _buildBody(NotificationState state) {
     if (state.isLoading && state.notifications.isEmpty) {
       return _buildSkeletonList();
     }
@@ -131,7 +127,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       child: ListView.builder(
         controller: _scrollController,
         padding: AppSpacing.paddingLg,
-        itemCount: state.notifications.length + (state.isLoading ? 1 : 0),
+        itemCount: state.notifications.length + (state.isLoadingMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= state.notifications.length) {
             return const Padding(
@@ -157,147 +153,98 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
   }
 
-  Future<void> _handleNotificationTap(app.Notification notification) async {
+  Future<void> _handleNotificationTap(AppNotification notification) async {
     if (!notification.isRead) {
-      try {
-        await ref
-            .read(notificationsProvider.notifier)
-            .markAsRead(notification.id);
-      } catch (_) {}
+      await ref
+          .read(notificationsProvider.notifier)
+          .markAsRead(notification.id);
     }
 
     if (!mounted) return;
 
-    // Prefer actionUrl if provided (deep link from backend)
-    if (notification.actionUrl != null && notification.actionUrl!.isNotEmpty) {
-      _navigateByUrl(notification.actionUrl!);
+    // Prefer a relative action URL (deep link from the backend). Web URLs are
+    // not openable by the app, so fall through to the type/data routing.
+    final actionUrl = notification.actionUrl;
+    if (actionUrl != null && actionUrl.startsWith('/')) {
+      context.push(actionUrl);
       return;
     }
 
-    // Navigate based on notification type + relatedType
     switch (notification.type) {
-      case app.NotificationType.listingApproved:
-      case app.NotificationType.listingRejected:
-      case app.NotificationType.newInterest:
-      case app.NotificationType.favorite:
-        _navigateRelated(notification, '/listings/');
-        break;
-
-      case app.NotificationType.suggestion:
-        _navigateRelated(notification, '/orders/');
-        break;
-
-      case app.NotificationType.paymentSuccess:
-      case app.NotificationType.paymentFailed:
-        {
-          final paymentId = _extractId(notification, 'payment_id');
-          if (paymentId != null) {
-            context.push('/payments/$paymentId');
-          } else {
-            context.push('/payments');
-          }
+      case 'listing_approved':
+      case 'listing_published':
+      case 'listing_update':
+      case 'listing_featured':
+      case 'listing_rejected':
+      case 'listing_expired':
+      case 'favorite':
+      case 'inquiry':
+      case 'new_interest':
+        final listingId = _extractId(notification, 'listing_id');
+        if (listingId != null) {
+          context.push('/listings/$listingId');
         }
         break;
 
-      case app.NotificationType.subscriptionActivated:
-        {
-          final paymentId = _extractId(notification, 'payment_id');
-          if (paymentId != null) {
-            context.push('/payments/$paymentId');
-          } else {
-            context.push('/subscriptions');
-          }
+      case 'suggestion':
+        final orderId = _extractId(notification, 'order_id');
+        if (orderId != null) {
+          context.push('/orders/$orderId');
         }
         break;
 
-      case app.NotificationType.subscriptionExpired:
+      case 'payment_success':
+      case 'payment_failed':
+        final paymentId = _extractId(notification, 'payment_id');
+        context.push(paymentId != null ? '/payments/$paymentId' : '/payments');
+        break;
+
+      case 'subscription_activated':
+        final paymentId = _extractId(notification, 'payment_id');
+        context.push(
+          paymentId != null ? '/payments/$paymentId' : '/subscriptions',
+        );
+        break;
+
+      case 'subscription_expired':
         context.push('/subscriptions');
         break;
 
-      case app.NotificationType.kycUpdate:
+      case 'kyc_update':
+      case 'kyc_submitted':
         context.push('/kyc');
         break;
 
-      case app.NotificationType.conferenceInvite:
-      case app.NotificationType.conferenceUpdate:
-      case app.NotificationType.incomingCall:
-        {
-          final confId = _extractId(notification, 'conference_id');
-          if (confId != null) {
-            final isVideo = notification.data?['is_video'] == '1';
-            context.push('/call/$confId', extra: {'is_video': isVideo});
-          }
+      case 'conference_invite':
+      case 'conference_update':
+      case 'incoming_call':
+        final conferenceId = _extractId(notification, 'conference_id');
+        if (conferenceId != null) {
+          final rawVideo = notification.data['is_video'];
+          final isVideo = rawVideo == true || rawVideo == '1' || rawVideo == 1;
+          context.push('/call/$conferenceId', extra: {'is_video': isVideo});
         }
         break;
 
-      case app.NotificationType.systemAnnouncement:
+      case 'message':
+        final conversationId = _extractId(notification, 'conversation_id');
+        if (conversationId != null) {
+          context.push('/chat/$conversationId');
+        } else {
+          context.push('/messages');
+        }
+        break;
+
+      default:
         break;
     }
   }
 
-  int? _extractId(app.Notification notification, String key) {
-    return notification.relatedId ??
-        (notification.data?[key] as int?) ??
-        (notification.data?[key] is num
-            ? (notification.data![key] as num).toInt()
-            : null);
-  }
-
-  void _navigateRelated(app.Notification notification, String basePath) {
-    final id = notification.relatedId;
-    if (id != null) {
-      context.push('$basePath$id');
-      return;
-    }
-
-    // Fallback: use relatedType to determine destination
-    final rt = notification.relatedType;
-    if (rt == 'order' || rt == 'orders') {
-      final orderId = _extractId(notification, 'order_id');
-      if (orderId != null) {
-        context.push('/orders/$orderId');
-        return;
-      }
-    }
-    if (rt == 'listing' || rt == 'listings') {
-      final listingId = _extractId(notification, 'listing_id');
-      if (listingId != null) {
-        context.push('/listings/$listingId');
-        return;
-      }
-    }
-    if (rt == 'payment' || rt == 'payments') {
-      final paymentId = _extractId(notification, 'payment_id');
-      if (paymentId != null) {
-        context.push('/payments/$paymentId');
-        return;
-      }
-    }
-    if (rt == 'subscription') {
-      context.push('/subscriptions');
-      return;
-    }
-    if (rt == 'kyc') {
-      context.push('/kyc');
-      return;
-    }
-    if (rt == 'message' || rt == 'conversation') {
-      final convoId = _extractId(notification, 'conversation_id') ??
-          _extractId(notification, 'chat_id');
-      if (convoId != null) {
-        context.push('/chat/$convoId');
-        return;
-      }
-      context.push('/messages');
-    }
-  }
-
-  void _navigateByUrl(String url) {
-    // actionUrl from backend can be a relative path like /orders/42
-    // or an absolute URL — treat as path
-    if (url.startsWith('/')) {
-      context.push(url);
-    }
+  int? _extractId(AppNotification notification, String key) {
+    final value = notification.data[key];
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 
   Widget _buildSkeletonList() {
@@ -350,7 +297,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
 /// Notification Tile Widget
 class _NotificationTile extends StatelessWidget {
-  final app.Notification notification;
+  final AppNotification notification;
 
   const _NotificationTile({
     required this.notification,
@@ -378,7 +325,7 @@ class _NotificationTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
-              notification.icon,
+              _iconForType(notification.type),
               size: 24,
               color: notification.isRead
                   ? context.theme.textSecondary
@@ -402,7 +349,7 @@ class _NotificationTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  notification.body,
+                  notification.message,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: context.theme.textSecondary,
                   ),
@@ -411,7 +358,7 @@ class _NotificationTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  notification.getDisplayTime(l10n),
+                  _displayTime(notification.createdAt, l10n),
                   style: AppTextStyles.caption.copyWith(
                     color: context.theme.textMuted,
                   ),
@@ -431,5 +378,57 @@ class _NotificationTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _displayTime(DateTime? createdAt, AppLocalizations l10n) {
+    if (createdAt == null) return '';
+
+    final diff = DateTime.now().difference(createdAt);
+    if (diff.inMinutes < 1) return l10n.notificationJustNow;
+    if (diff.inHours < 1) return '${diff.inMinutes}m ago';
+    if (diff.inDays < 1) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+
+    return '${createdAt.day}/${createdAt.month}';
+  }
+
+  IconData _iconForType(String type) {
+    switch (type) {
+      case 'listing_approved':
+      case 'listing_published':
+      case 'listing_update':
+      case 'listing_featured':
+        return Icons.check_circle_outline;
+      case 'listing_rejected':
+      case 'listing_expired':
+      case 'payment_failed':
+        return Icons.error_outline;
+      case 'favorite':
+        return Icons.favorite_border;
+      case 'inquiry':
+      case 'new_interest':
+        return Icons.interests_outlined;
+      case 'payment_success':
+        return Icons.payment_outlined;
+      case 'subscription_activated':
+        return Icons.star_outline;
+      case 'subscription_expired':
+        return Icons.timer_off_outlined;
+      case 'kyc_update':
+      case 'kyc_submitted':
+        return Icons.verified_outlined;
+      case 'conference_invite':
+        return Icons.videocam_outlined;
+      case 'conference_update':
+        return Icons.info_outline;
+      case 'incoming_call':
+        return Icons.phone_in_talk_outlined;
+      case 'suggestion':
+        return Icons.auto_awesome;
+      case 'message':
+        return Icons.chat_bubble_outline;
+      default:
+        return Icons.campaign_outlined;
+    }
   }
 }
