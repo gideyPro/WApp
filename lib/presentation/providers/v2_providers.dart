@@ -4,6 +4,8 @@ import '../../core/network/v2/api_v2_client.dart';
 import '../../core/network/v2/api_v2_error.dart';
 import '../../data/models/v2/app_config.dart';
 import '../../data/models/v2/home_feed.dart';
+import '../../data/models/v2/listing_summary.dart';
+import '../../data/models/v2/owner_listing.dart';
 import '../../data/models/v2/subscription_state.dart';
 import '../../data/services/v2/address_service.dart';
 import '../../data/services/v2/app_config_service.dart';
@@ -95,6 +97,220 @@ final addressV2ServiceProvider = Provider<AddressServiceV2>((ref) {
 final ownerListingServiceProvider = Provider<OwnerListingService>((ref) {
   return OwnerListingService(client: ref.watch(apiV2ClientProvider));
 });
+
+/// Cursor-paginated owner listings for the my-listings screen.
+///
+/// Filtered by [ListingKind] and [OwnerListingStatus]; exposes moderation
+/// state and owner affordances (edit/submit/delete/promote).
+final myListingsV2Provider = StateNotifierProvider.family<MyListingsV2Notifier,
+    MyListingsV2State, OwnerListingStatusFilter>((ref, filter) {
+  return MyListingsV2Notifier(
+    ref.watch(ownerListingServiceProvider),
+    filter,
+  );
+});
+
+class MyListingsV2Notifier extends StateNotifier<MyListingsV2State> {
+  final OwnerListingService _service;
+  final OwnerListingStatusFilter _filter;
+
+  MyListingsV2Notifier(this._service, this._filter)
+      : super(const MyListingsV2State.initial());
+
+  Future<void> loadMyListings() async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+
+    try {
+      final page = await _service.fetch(
+        cursor: null,
+        type: _filter.type,
+        status: _filter.status,
+      );
+      state = MyListingsV2State.loaded(
+        listings: page.items,
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+      );
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(isLoading: false, errorMessage: error.message);
+    } catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Could not load your listings',
+      );
+    }
+  }
+
+  Future<void> loadMore() async {
+    final cursor = state.nextCursor;
+
+    if (state.isLoading ||
+        state.isLoadingMore ||
+        !state.hasMore ||
+        cursor == null) {
+      return;
+    }
+
+    state = state.copyWith(isLoadingMore: true);
+
+    try {
+      final page = await _service.fetch(
+        cursor: cursor,
+        type: _filter.type,
+        status: _filter.status,
+      );
+      state = state.copyWith(
+        listings: [...state.listings, ...page.items],
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+        isLoadingMore: false,
+      );
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: error.message,
+      );
+    } catch (_) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: 'Could not load more listings',
+      );
+    }
+  }
+
+  /// Submit a listing for moderation. On success, refreshes the feed.
+  Future<bool> submit(int listingId) async {
+    try {
+      await _service.submit(listingId);
+      await loadMyListings();
+      return true;
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(errorMessage: error.message);
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Delete a listing. On success, removes it from the feed.
+  Future<bool> delete(int listingId) async {
+    try {
+      await _service.delete(listingId);
+      state = state.copyWith(
+        listings:
+            state.listings.where((listing) => listing.id != listingId).toList(),
+      );
+      return true;
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(errorMessage: error.message);
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Replace one row with updated server state (e.g. after edit/submit).
+  void refreshListing(OwnerListing updated) {
+    state = state.copyWith(
+      listings: state.listings
+          .map((listing) => listing.id == updated.id ? updated : listing)
+          .toList(),
+    );
+  }
+}
+
+/// Filter combination for my-listings tabs.
+class OwnerListingStatusFilter {
+  final ListingKind? type;
+  final OwnerListingStatus? status;
+
+  const OwnerListingStatusFilter({
+    this.type,
+    this.status,
+  });
+
+  factory OwnerListingStatusFilter.all() => const OwnerListingStatusFilter();
+  factory OwnerListingStatusFilter.active() =>
+      const OwnerListingStatusFilter(status: OwnerListingStatus.active);
+  factory OwnerListingStatusFilter.pending() =>
+      const OwnerListingStatusFilter(status: OwnerListingStatus.pending);
+  factory OwnerListingStatusFilter.frozen() =>
+      const OwnerListingStatusFilter(status: OwnerListingStatus.frozen);
+  factory OwnerListingStatusFilter.rejected() =>
+      const OwnerListingStatusFilter(status: OwnerListingStatus.rejected);
+  factory OwnerListingStatusFilter.draft() =>
+      const OwnerListingStatusFilter(status: OwnerListingStatus.draft);
+
+  factory OwnerListingStatusFilter.cars({OwnerListingStatus? status}) =>
+      OwnerListingStatusFilter(type: ListingKind.car, status: status);
+  factory OwnerListingStatusFilter.jobs({OwnerListingStatus? status}) =>
+      OwnerListingStatusFilter(type: ListingKind.job, status: status);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is OwnerListingStatusFilter &&
+        other.type == type &&
+        other.status == status;
+  }
+
+  @override
+  int get hashCode => Object.hash(type, status);
+}
+
+class MyListingsV2State {
+  final bool isLoading;
+  final bool isLoadingMore;
+  final List<OwnerListing> listings;
+  final String? nextCursor;
+  final bool hasMore;
+  final String? errorMessage;
+
+  const MyListingsV2State({
+    required this.isLoading,
+    this.isLoadingMore = false,
+    this.listings = const [],
+    this.nextCursor,
+    this.hasMore = false,
+    this.errorMessage,
+  });
+
+  const MyListingsV2State.initial()
+      : isLoading = true,
+        isLoadingMore = false,
+        listings = const [],
+        nextCursor = null,
+        hasMore = false,
+        errorMessage = null;
+
+  const MyListingsV2State.loaded({
+    required this.listings,
+    this.nextCursor,
+    this.hasMore = false,
+  })  : isLoading = false,
+        isLoadingMore = false,
+        errorMessage = null;
+
+  int get total => listings.length;
+
+  MyListingsV2State copyWith({
+    bool? isLoading,
+    bool? isLoadingMore,
+    List<OwnerListing>? listings,
+    String? nextCursor,
+    bool? hasMore,
+    String? errorMessage,
+  }) {
+    return MyListingsV2State(
+      isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      listings: listings ?? this.listings,
+      nextCursor: nextCursor ?? this.nextCursor,
+      hasMore: hasMore ?? this.hasMore,
+      errorMessage: errorMessage,
+    );
+  }
+}
 
 final listingMediaV2ServiceProvider = Provider<ListingMediaServiceV2>((ref) {
   return ListingMediaServiceV2(client: ref.watch(apiV2ClientProvider));
