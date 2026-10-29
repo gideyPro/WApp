@@ -127,6 +127,28 @@ class ChatConversation {
 
   bool get hasListing => listing != null;
 
+  /// Used by the feed after a read receipt or a new message changes the row
+  /// without re-fetching the whole page.
+  ChatConversation copyWith({
+    ListingSummary? listing,
+    ConversationParticipant? otherParticipant,
+    ChatMessage? lastMessage,
+    int? unreadCount,
+    DateTime? lastMessageAt,
+  }) {
+    return ChatConversation(
+      id: id,
+      type: type,
+      listing: listing ?? this.listing,
+      otherParticipant: otherParticipant ?? this.otherParticipant,
+      lastMessage: lastMessage ?? this.lastMessage,
+      unreadCount: unreadCount ?? this.unreadCount,
+      lastMessageAt: lastMessageAt ?? this.lastMessageAt,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
   String get title {
     final participant = otherParticipant?.displayName;
     if (participant != null && participant.isNotEmpty) return participant;

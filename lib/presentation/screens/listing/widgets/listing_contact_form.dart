@@ -6,7 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../data/models/listing.dart';
-import '../../../../data/services/message_service.dart';
+import '../../../../core/network/v2/api_v2_error.dart';
+import '../../../providers/v2_providers.dart';
 import '../../../providers/app_providers.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_upgrade_card.dart';
@@ -23,8 +24,7 @@ class ListingContactForm extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ListingContactForm> createState() =>
-      _ListingContactFormState();
+  ConsumerState<ListingContactForm> createState() => _ListingContactFormState();
 }
 
 class _ListingContactFormState extends ConsumerState<ListingContactForm> {
@@ -40,7 +40,10 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
 
     return Column(
       children: [
-        if (!widget.isOwner && !listing.contactRevealed && !listing.interestBlocked && !listing.contactModerated) ...[
+        if (!widget.isOwner &&
+            !listing.contactRevealed &&
+            !listing.interestBlocked &&
+            !listing.contactModerated) ...[
           const SizedBox(height: 12),
           if (listing.userContactHidden)
             _buildContactUpgradeSection(l10n)
@@ -65,11 +68,13 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
         children: [
           const Icon(Icons.lock_outline, size: 28, color: AppColors.accent600),
           const SizedBox(height: 8),
-          Text(l10n.listingsRevealContact, style: AppTextStyles.title.copyWith(fontSize: 14)),
+          Text(l10n.listingsRevealContact,
+              style: AppTextStyles.title.copyWith(fontSize: 14)),
           if (widget.listing.contactMax > 0) ...[
             const SizedBox(height: 4),
             Text(
-              l10n.listingsContactViewsRemaining(widget.listing.contactRemaining, widget.listing.contactMax),
+              l10n.listingsContactViewsRemaining(
+                  widget.listing.contactRemaining, widget.listing.contactMax),
               style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
               textAlign: TextAlign.center,
             ),
@@ -78,16 +83,25 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _isRevealingContact ? null : () => _revealContact(widget.listing.id),
+              onPressed: _isRevealingContact
+                  ? null
+                  : () => _revealContact(widget.listing.id),
               icon: _isRevealingContact
-                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white))
                   : const Icon(Icons.visibility_outlined, size: 18),
-              label: Text(_isRevealingContact ? l10n.listingsRevealing : l10n.listingsRevealContact),
+              label: Text(_isRevealingContact
+                  ? l10n.listingsRevealing
+                  : l10n.listingsRevealContact),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.accent500,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ),
@@ -119,18 +133,23 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const Icon(Icons.check_circle_outline, size: 28, color: AppColors.success),
+          const Icon(Icons.check_circle_outline,
+              size: 28, color: AppColors.success),
           const SizedBox(height: 8),
           Text(
-            displayName?.isNotEmpty == true ? displayName! : l10n.listingsSeller,
-            style: AppTextStyles.title.copyWith(fontSize: 14, color: AppColors.success),
+            displayName?.isNotEmpty == true
+                ? displayName!
+                : l10n.listingsSeller,
+            style: AppTextStyles.title
+                .copyWith(fontSize: 14, color: AppColors.success),
           ),
           const SizedBox(height: 8),
           if (contact.isNotEmpty) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.phone_outlined, size: 16, color: AppColors.stone500),
+                const Icon(Icons.phone_outlined,
+                    size: 16, color: AppColors.stone500),
                 const SizedBox(width: 6),
                 SelectableText(
                   contact,
@@ -151,26 +170,32 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
                 _ContactActionButton.svg(
                   assetPath: 'assets/icons/whatsapp.svg',
                   color: const Color(0xFF25D366),
-                  onTap: () => _launchUrl('https://wa.me/${contact.replaceAll('+', '').replaceAll(' ', '')}'),
+                  onTap: () => _launchUrl(
+                      'https://wa.me/${contact.replaceAll('+', '').replaceAll(' ', '')}'),
                 ),
                 const SizedBox(width: 16),
                 _ContactActionButton.svg(
                   assetPath: 'assets/icons/telegram.svg',
                   color: const Color(0xFF0088CC),
-                  onTap: () => _launchUrl('https://t.me/+${contact.replaceAll('+', '').replaceAll(' ', '')}'),
+                  onTap: () => _launchUrl(
+                      'https://t.me/+${contact.replaceAll('+', '').replaceAll(' ', '')}'),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             const Divider(height: 1),
             const SizedBox(height: 12),
-            Text(l10n.listingWaveMartOptions, style: AppTextStyles.caption.copyWith(color: AppColors.stone500)),
+            Text(l10n.listingWaveMartOptions,
+                style:
+                    AppTextStyles.caption.copyWith(color: AppColors.stone500)),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _ContactActionButton(
-                  icon: _isActionLoading ? Icons.hourglass_empty : Icons.message_outlined,
+                  icon: _isActionLoading
+                      ? Icons.hourglass_empty
+                      : Icons.message_outlined,
                   color: AppColors.accent500,
                   onTap: () {
                     if (!_isActionLoading) _startChat();
@@ -186,7 +211,8 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
                 ),
                 const SizedBox(width: 16),
                 _ContactActionButton(
-                  icon: _isActionLoading ? Icons.hourglass_empty : Icons.videocam,
+                  icon:
+                      _isActionLoading ? Icons.hourglass_empty : Icons.videocam,
                   color: AppColors.accent500,
                   onTap: () {
                     if (!_isActionLoading) _startCall(isVideo: true);
@@ -203,22 +229,28 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
   Future<void> _startChat() async {
     setState(() => _isActionLoading = true);
     try {
-      final l10n = AppLocalizations.of(context);
-      final service = MessageService();
-      final result = await service.startConversationFromListing(
-        listingId: widget.listing.id,
-      );
-      if (result.success && result.conversation != null && mounted) {
-        context.push('/chat/${result.conversation!.id}', extra: result.conversation);
-      } else if (mounted) {
+      final conversation = await ref.read(conversationV2ServiceProvider).start(
+            listingId: widget.listing.id,
+          );
+      if (mounted) {
+        context.push('/chat/${conversation.id}', extra: conversation);
+      }
+    } on ApiV2Exception catch (error) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message.isNotEmpty ? result.message : l10n.commonError), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text(error.message),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).commonError),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     } finally {
@@ -230,34 +262,41 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
     setState(() => _isActionLoading = true);
     try {
       final l10n = AppLocalizations.of(context);
-      final messageService = MessageService();
-      final convResult = await messageService.startConversationFromListing(
-        listingId: widget.listing.id,
-      );
-      if (!convResult.success || convResult.conversation == null) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(convResult.message.isNotEmpty ? convResult.message : l10n.commonError), backgroundColor: AppColors.error),
+      final conversation = await ref.read(conversationV2ServiceProvider).start(
+            listingId: widget.listing.id,
           );
-        }
-        return;
-      }
       final conferenceService = ref.read(conferenceServiceProvider);
       final callResult = await conferenceService.startDirectCall(
-        conversationId: convResult.conversation!.id,
+        conversationId: conversation.id,
         isVideo: isVideo,
       );
       if (callResult.success && callResult.conference != null && mounted) {
-        context.push('/call/${callResult.conference!.id}', extra: {'is_video': isVideo});
+        context.push('/call/${callResult.conference!.id}',
+            extra: {'is_video': isVideo});
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(callResult.message.isNotEmpty ? callResult.message : l10n.commonError), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(callResult.message.isNotEmpty
+                  ? callResult.message
+                  : l10n.commonError),
+              backgroundColor: AppColors.error),
+        );
+      }
+    } on ApiV2Exception catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.message),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(AppLocalizations.of(context).commonError),
+              backgroundColor: AppColors.error),
         );
       }
     } finally {
@@ -275,7 +314,9 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
   Future<void> _revealContact(int listingId) async {
     setState(() => _isRevealingContact = true);
     try {
-      final result = await ref.read(listingDetailProvider.notifier).revealContact(listingId);
+      final result = await ref
+          .read(listingDetailProvider.notifier)
+          .revealContact(listingId);
       if (result != null && result['success'] == true && mounted) {
         setState(() {
           _revealedContact = result['contact'] as String?;
@@ -283,13 +324,17 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
         });
       } else if (result != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result['message'] as String? ?? ''), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(result['message'] as String? ?? ''),
+              backgroundColor: AppColors.error),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(AppLocalizations.of(context).commonError),
+              backgroundColor: AppColors.error),
         );
       }
     } finally {

@@ -8,10 +8,11 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/v2_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
-import '../../../data/models/message.dart' as msg;
+import '../../../data/models/v2/conversation.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
 
@@ -27,7 +28,7 @@ String _formatTime(DateTime? dt, AppLocalizations l10n) {
   return '${dt.day}/${dt.month}';
 }
 
-/// Messages Screen - Conversations list with auto-refresh on tab visibility
+/// Messages Screen - cursor-paginated v2 conversations list.
 class MessagesScreen extends ConsumerStatefulWidget {
   const MessagesScreen({super.key});
 
@@ -36,7 +37,7 @@ class MessagesScreen extends ConsumerStatefulWidget {
 }
 
 class _MessagesScreenState extends ConsumerState<MessagesScreen>
-    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -45,49 +46,32 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authState = ref.read(authStateProvider);
-      ref.read(conversationsProvider.notifier).loadConversations(
-            currentUserId: authState.user?.id,
-          );
+      ref.read(conversationsProvider.notifier).loadConversations();
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (ModalRoute.of(context)?.isCurrent == true) {
-      _refreshIfNeeded();
+    // Refresh on returning from a chat, but not before the first load.
+    if (ModalRoute.of(context)?.isCurrent == true &&
+        ref.read(conversationsProvider).conversations.isNotEmpty) {
+      ref.read(conversationsProvider.notifier).refreshConversations();
     }
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     super.dispose();
   }
 
-  void _refreshIfNeeded() {
-    final authState = ref.read(authStateProvider);
-    ref.read(conversationsProvider.notifier).refreshConversations(
-          currentUserId: authState.user?.id,
-        );
-  }
-
   void _onScroll() {
-    final state = ref.read(conversationsProvider);
     if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200 &&
-        !state.isLoading) {
-      final nextPage = (state.conversations.length ~/ 10) + 1;
-      final authState = ref.read(authStateProvider);
-      ref.read(conversationsProvider.notifier).loadConversations(
-            page: nextPage,
-            currentUserId: authState.user?.id,
-          );
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(conversationsProvider.notifier).loadMore();
     }
   }
 
@@ -122,10 +106,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       );
     }
 
-    final List<msg.Conversation> conversations =
-        state.conversations.cast<msg.Conversation>().toList();
-
-    if (conversations.isEmpty) {
+    if (state.conversations.isEmpty) {
       return WaveEmptyState(
         icon: Icons.chat_bubble_outline_rounded,
         title: l10n.messagesEmpty,
@@ -138,25 +119,21 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     }
 
     return RefreshIndicator(
-      onRefresh: () async {
-        final authState = ref.read(authStateProvider);
-        await ref.read(conversationsProvider.notifier).loadConversations(
-              currentUserId: authState.user?.id,
-            );
-      },
+      onRefresh: () =>
+          ref.read(conversationsProvider.notifier).loadConversations(),
       child: ListView.builder(
         controller: _scrollController,
         padding: AppSpacing.paddingLg,
-        itemCount: conversations.length + (state.isLoading ? 1 : 0),
+        itemCount: state.conversations.length + (state.isLoadingMore ? 1 : 0),
         itemBuilder: (context, index) {
-          if (index >= conversations.length) {
+          if (index >= state.conversations.length) {
             return const Padding(
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Center(child: CircularProgressIndicator()),
             );
           }
 
-          final conversation = conversations[index];
+          final conversation = state.conversations[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: WaveGlass(
@@ -167,16 +144,13 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                     extra: conversation,
                   );
                   if (mounted) {
-                    final authState = ref.read(authStateProvider);
-                    ref.read(conversationsProvider.notifier).refreshConversations(
-                          currentUserId: authState.user?.id,
-                        );
+                    ref
+                        .read(conversationsProvider.notifier)
+                        .refreshConversations();
                   }
                 },
                 borderRadius: BorderRadius.circular(12),
-                child: _ConversationTile(
-                  conversation: conversation,
-                ),
+                child: _ConversationTile(conversation: conversation),
               ),
             ),
           );
@@ -213,41 +187,34 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
 }
 
 /// Conversation Tile Widget - WhatsApp-like with actual user initials
-class _ConversationTile extends ConsumerWidget {
-  final msg.Conversation conversation;
+class _ConversationTile extends StatelessWidget {
+  final ChatConversation conversation;
 
-  const _ConversationTile({
-    required this.conversation,
-  });
+  const _ConversationTile({required this.conversation});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
-    final currentUserId = authState.user?.id;
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    final initials = currentUserId != null ? conversation.getInitials(currentUserId) : '??';
-    final avatarUrl = conversation.otherParticipantAvatar;
-    final displayName = currentUserId != null ? conversation.getDisplayTitle(currentUserId) : (conversation.subject ?? conversation.listingTitle ?? 'Conversation');
+    final participant = conversation.otherParticipant;
+    final initials =
+        participant?.initials.isNotEmpty == true ? participant!.initials : '?';
+    final avatarUrl = participant?.avatarUrl;
+    final displayName =
+        conversation.title.isNotEmpty ? conversation.title : l10n.messagesTitle;
 
-    final isAssetChat =
-        conversation.isAssetChat || conversation.listingId != null;
-    final listingTitle = conversation.listingTitle;
+    final listingTitle = conversation.listing?.title;
+    final hasUnread = conversation.hasUnread;
 
-    final hasUnread =
-        conversation.unreadCount != null && conversation.unreadCount! > 0;
+    final lastMessage = conversation.lastMessage;
+    var previewText = lastMessage != null && lastMessage.body.isNotEmpty
+        ? lastMessage.body
+        : l10n.messagesEmpty;
 
-    String previewText =
-        conversation.lastMessage != null && conversation.lastMessage!.isNotEmpty
-            ? conversation.lastMessage!
-            : l10n.messagesEmpty;
-
-    if (conversation.lastMessage != null &&
-        conversation.lastMessage!.isNotEmpty) {
-      final isOwnLastMessage = currentUserId != null && conversation.isLastMessageFromMe(currentUserId);
-      if (isOwnLastMessage) {
-        previewText = '${l10n.commonYou}: $previewText';
-      }
+    if (lastMessage != null &&
+        lastMessage.body.isNotEmpty &&
+        lastMessage.isMine) {
+      previewText = '${l10n.commonYou}: $previewText';
     }
 
     return Padding(
@@ -259,27 +226,31 @@ class _ConversationTile extends ConsumerWidget {
               Container(
                 width: 50,
                 height: 50,
-              decoration: BoxDecoration(
-                image: avatarUrl != null
-                    ? DecorationImage(
-                        image: ResizeImage(
-                          CachedNetworkImageProvider(avatarUrl),
-                          width: 100,
-                          height: 100,
+                decoration: BoxDecoration(
+                  image: avatarUrl != null
+                      ? DecorationImage(
+                          image: ResizeImage(
+                            CachedNetworkImageProvider(avatarUrl),
+                            width: 100,
+                            height: 100,
+                          ),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                  gradient: avatarUrl != null
+                      ? null
+                      : LinearGradient(
+                          colors: hasUnread
+                              ? [AppColors.accent500, AppColors.accent600]
+                              : [
+                                  context.isDarkMode
+                                      ? AppColors.primary700
+                                      : AppColors.primary400,
+                                  context.isDarkMode
+                                      ? AppColors.primary800
+                                      : AppColors.primary600,
+                                ],
                         ),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
-                gradient: avatarUrl != null
-                    ? null
-                    : LinearGradient(
-                        colors: hasUnread
-                            ? [AppColors.accent500, AppColors.accent600]
-                            : [
-                                context.isDarkMode ? AppColors.primary700 : AppColors.primary400,
-                                context.isDarkMode ? AppColors.primary800 : AppColors.primary600,
-                              ],
-                      ),
                   borderRadius: BorderRadius.circular(25),
                 ),
                 child: avatarUrl != null
@@ -307,10 +278,11 @@ class _ConversationTile extends ConsumerWidget {
                       color: AppColors.error,
                       shape: BoxShape.circle,
                     ),
-                    constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                    constraints:
+                        const BoxConstraints(minWidth: 18, minHeight: 18),
                     child: Center(
                       child: Text(
-                        conversation.unreadCount! > 99
+                        conversation.unreadCount > 99
                             ? '99+'
                             : '${conversation.unreadCount}',
                         style: AppTextStyles.caption.copyWith(
@@ -343,13 +315,13 @@ class _ConversationTile extends ConsumerWidget {
                 const SizedBox(height: 2),
                 Row(
                   children: [
-                    if (isAssetChat) ...[
+                    if (listingTitle != null) ...[
                       Icon(Icons.home_outlined,
                           size: 12, color: context.theme.iconSecondary),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
-                          listingTitle ?? l10n.listingsTitle,
+                          listingTitle,
                           style: AppTextStyles.bodySmall
                               .copyWith(color: context.theme.textSecondary),
                           maxLines: 1,
@@ -366,9 +338,12 @@ class _ConversationTile extends ConsumerWidget {
                       child: Text(
                         previewText,
                         style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight:
+                              hasUnread ? FontWeight.w700 : FontWeight.w500,
                           color: hasUnread
-                              ? (context.isDarkMode ? Colors.white : AppColors.primary800)
+                              ? (context.isDarkMode
+                                  ? Colors.white
+                                  : AppColors.primary800)
                               : context.theme.textSecondary,
                         ),
                         maxLines: 1,
@@ -399,13 +374,16 @@ class _ConversationTile extends ConsumerWidget {
   }
 }
 
-/// Chat Screen - Individual conversation with full messaging
+/// Chat Screen - individual conversation backed by `/v2/conversations/{id}`.
 class ChatScreen extends ConsumerStatefulWidget {
   final int conversationId;
-  final msg.Conversation conversation;
+  final ChatConversation? conversation;
 
-  const ChatScreen(
-      {super.key, required this.conversationId, required this.conversation});
+  const ChatScreen({
+    super.key,
+    required this.conversationId,
+    this.conversation,
+  });
 
   @override
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
@@ -417,12 +395,53 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   bool _isSending = false;
   bool _hasScrolledToUnread = false;
   bool _contextDropdownOpen = false;
+  ChatConversation? _conversation;
+
+  @override
+  void initState() {
+    super.initState();
+    _conversation = widget.conversation;
+    _listScrollController.addListener(_onMessagesScroll);
+
+    // Opened from a notification or deep link: no list row was passed.
+    if (_conversation == null) {
+      _loadConversation();
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (ref.read(conversationsProvider).conversations.isEmpty) {
+        ref
+            .read(conversationsProvider.notifier)
+            .loadConversations(silent: true);
+      }
+    });
+  }
 
   @override
   void dispose() {
     _messageController.dispose();
     _listScrollController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadConversation() async {
+    try {
+      final conversation = await ref
+          .read(conversationV2ServiceProvider)
+          .fetchConversation(widget.conversationId);
+      if (mounted) setState(() => _conversation = conversation);
+    } catch (_) {
+      // The thread still renders; the app bar falls back to the id.
+    }
+  }
+
+  void _onMessagesScroll() {
+    if (!_listScrollController.hasClients) return;
+    if (_listScrollController.position.pixels <= 120) {
+      ref
+          .read(chatMessagesProvider(widget.conversationId).notifier)
+          .loadOlder();
+    }
   }
 
   void _toggleContextDropdown() {
@@ -440,9 +459,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Future<void> _startCall({required bool isVideo}) async {
     final l10n = AppLocalizations.of(context);
     final result = await ref.read(conferenceServiceProvider).startDirectCall(
-      conversationId: widget.conversationId,
-      isVideo: isVideo,
-    );
+          conversationId: widget.conversationId,
+          isVideo: isVideo,
+        );
     if (result.success && result.conference != null) {
       if (mounted) {
         context.push('/call/${result.conference!.id}', extra: {
@@ -453,7 +472,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result.message.isNotEmpty ? result.message : l10n.commonError),
+            content: Text(
+              result.message.isNotEmpty ? result.message : l10n.commonError,
+            ),
             backgroundColor: AppColors.error,
           ),
         );
@@ -478,7 +499,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         _scrollToBottom();
       } else {
         final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.commonError), backgroundColor: AppColors.error));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.commonError),
+            backgroundColor: AppColors.error,
+          ),
+        );
       }
     }
   }
@@ -495,14 +521,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
-  void _scrollToFirstUnread(List<msg.Message> messages, int currentUserId) {
+  void _scrollToFirstUnread(List<ChatMessage> messages) {
     if (_hasScrolledToUnread || messages.isEmpty) return;
 
-    // Find index of first unread message (not from me, not read)
     int firstUnreadIndex = -1;
     for (int i = 0; i < messages.length; i++) {
-      final msg = messages[i];
-      if (msg.senderId != currentUserId && !msg.isRead && msg.readAt == null) {
+      final message = messages[i];
+      if (!message.isMine && !message.isRead) {
         firstUnreadIndex = i;
         break;
       }
@@ -514,7 +539,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (!_listScrollController.hasClients) return;
 
       if (firstUnreadIndex >= 0) {
-        // Scroll to the unread message
         final double offset = firstUnreadIndex * 80.0;
         _listScrollController.animateTo(
           offset.clamp(0, _listScrollController.position.maxScrollExtent),
@@ -522,14 +546,31 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           curve: Curves.easeOut,
         );
       } else {
-        // No unread - scroll to bottom
         _scrollToBottom();
       }
     });
   }
 
-  Widget _buildContextDropdown(BuildContext context, AppLocalizations l10n,
-      bool isDark, List<msg.Conversation> relatedConversations) {
+  /// Threads about the same listing are switchable from the app bar.
+  List<ChatConversation> _relatedConversations(ConversationsState state) {
+    final listingId = _conversation?.listing?.id;
+    if (listingId == null) return const [];
+
+    return state.conversations
+        .where(
+          (conversation) =>
+              conversation.id != widget.conversationId &&
+              conversation.listing?.id == listingId,
+        )
+        .toList();
+  }
+
+  Widget _buildContextDropdown(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isDark,
+    List<ChatConversation> relatedConversations,
+  ) {
     return GestureDetector(
       onTap: _closeContextDropdown,
       child: ConstrainedBox(
@@ -538,61 +579,73 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           borderRadius: 16,
           blur: 24,
           variant: LiquidGlassVariant.prominent,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: context.isDarkMode
-                    ? AppColors.primary900
-                    : context.theme.textMuted,
-                child: Text(
-                  l10n.messagesSwitchContext,
-                  style: AppTextStyles.caption.copyWith(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 0.5,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  color: context.isDarkMode
+                      ? AppColors.primary900
+                      : context.theme.textMuted,
+                  child: Text(
+                    l10n.messagesSwitchContext,
+                    style: AppTextStyles.caption.copyWith(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
-              ),
-              // Conversation list
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  itemCount: relatedConversations.length,
-                  itemBuilder: (context, index) {
-                    final conv = relatedConversations[index];
-                    final isSelected = conv.id == widget.conversationId;
-                    return _buildContextItem(conv, isSelected, l10n, isDark);
-                  },
+                // Conversation list
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemCount: relatedConversations.length,
+                    itemBuilder: (context, index) {
+                      final conversation = relatedConversations[index];
+                      final isSelected =
+                          conversation.id == widget.conversationId;
+                      return _buildContextItem(
+                        conversation,
+                        isSelected,
+                        l10n,
+                        isDark,
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }
 
-  Widget _buildContextItem(msg.Conversation conv, bool isSelected,
-      AppLocalizations l10n, bool isDark) {
+  Widget _buildContextItem(
+    ChatConversation conversation,
+    bool isSelected,
+    AppLocalizations l10n,
+    bool isDark,
+  ) {
+    final imageUrl = conversation.listing?.coverImage?.url;
+    final isAssetChat = conversation.hasListing;
+
     return InkWell(
       onTap: () {
         _closeContextDropdown();
-        if (conv.id != widget.conversationId) {
-          // Navigate to the selected conversation
+        if (conversation.id != widget.conversationId) {
           context.pushReplacement(
-            '/chat/${conv.id}',
-            extra: conv,
+            '/chat/${conversation.id}',
+            extra: conversation,
           );
         }
       },
@@ -603,35 +656,34 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             : null,
         child: Row(
           children: [
-            // Icon/Image
             Container(
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: conv.isAssetChat
+                color: isAssetChat
                     ? (isDark ? AppColors.primary700 : AppColors.primary100)
                     : (isDark ? AppColors.stone700 : AppColors.stone100),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: conv.listingImageUrl != null
+              child: imageUrl != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        conv.listingImageUrl!,
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(
-                          conv.isAssetChat ? Icons.home : Icons.chat,
+                        memCacheWidth: 72,
+                        memCacheHeight: 72,
+                        errorWidget: (_, __, ___) => Icon(
+                          isAssetChat ? Icons.home : Icons.chat,
                           size: 18,
-                          color: conv.isAssetChat
-                              ? context.theme.textPrimary
-                              : context.theme.textSecondary,
+                          color: ThemeColors(context).textPrimary,
                         ),
                       ),
                     )
                   : Icon(
-                      conv.isAssetChat ? Icons.home : Icons.chat,
+                      isAssetChat ? Icons.home : Icons.chat,
                       size: 18,
-                      color: conv.isAssetChat
+                      color: isAssetChat
                           ? ThemeColors(context).textPrimary
                           : AppColors.stone500,
                     ),
@@ -643,7 +695,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    conv.contextDisplayTitle,
+                    conversation.title.isNotEmpty
+                        ? conversation.title
+                        : l10n.messagesTitle,
                     style: AppTextStyles.bodySmall.copyWith(
                       fontSize: 13,
                       fontWeight:
@@ -656,18 +710,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   const SizedBox(height: 2),
                   Row(
                     children: [
-                      if (conv.unreadCount != null && conv.unreadCount! > 0)
+                      if (conversation.hasUnread)
                         Text(
-                          '${conv.unreadCount} ${l10n.messagesUnread}',
+                          '${conversation.unreadCount} ${l10n.messagesUnread}',
                           style: AppTextStyles.caption.copyWith(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                             color: AppColors.error,
                           ),
                         )
-                      else if (conv.lastMessageAt != null)
+                      else if (conversation.lastMessageAt != null)
                         Text(
-                          _formatRelativeTime(conv.lastMessageAt!),
+                          _formatRelativeTime(conversation.lastMessageAt!),
                           style: AppTextStyles.caption.copyWith(
                             fontSize: 10,
                             color: context.theme.textMuted,
@@ -698,28 +752,50 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return '${dateTime.day}/${dateTime.month}';
   }
 
-  Widget _buildMessagesList(List<msg.Message> messages, int currentUserId,
-      AppLocalizations l10n, int? listingOwnerId) {
+  Widget _buildMessagesList(
+    ChatMessagesState state,
+    AppLocalizations l10n,
+  ) {
+    final messages = state.messages;
+
     // Trigger scroll to first unread on first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToFirstUnread(messages, currentUserId);
+      _scrollToFirstUnread(messages);
     });
 
     int firstUnreadIndex = -1;
     for (int i = 0; i < messages.length; i++) {
-      final msg = messages[i];
-      if (msg.senderId != currentUserId && !msg.isRead && msg.readAt == null) {
+      final message = messages[i];
+      if (!message.isMine && !message.isRead) {
         firstUnreadIndex = i;
         break;
       }
     }
 
+    final headerCount = state.isLoadingMore ? 1 : 0;
+
     return ListView.builder(
       controller: _listScrollController,
       padding: const EdgeInsets.all(12),
-      itemCount: messages.length,
+      itemCount: messages.length + headerCount,
       itemBuilder: (context, index) {
-        if (index == firstUnreadIndex && firstUnreadIndex >= 0) {
+        if (headerCount == 1 && index == 0) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          );
+        }
+
+        final messageIndex = index - headerCount;
+        final message = messages[messageIndex];
+
+        if (messageIndex == firstUnreadIndex) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -741,13 +817,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                 ),
               ),
-              _MessageBubble(
-                  message: messages[index], listingOwnerId: listingOwnerId),
+              _MessageBubble(message: message),
             ],
           );
         }
-        return _MessageBubble(
-            message: messages[index], listingOwnerId: listingOwnerId);
+
+        return _MessageBubble(message: message);
       },
     );
   }
@@ -755,14 +830,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final chatState = ref.watch(chatMessagesProvider(widget.conversationId));
-    final authState = ref.watch(authStateProvider);
-    final currentUserId = authState.user?.id ?? 0;
+    final conversationsState = ref.watch(conversationsProvider);
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    String title = widget.conversation.contextDisplayTitle;
-    String otherUserName = widget.conversation.getDisplayTitle(currentUserId);
-    final relatedConversations = chatState.relatedConversations;
+    final conversation = _conversation;
+    final otherName = conversation?.otherParticipant?.displayName ?? '';
+    final listingTitle = conversation?.listing?.title;
+    final title = listingTitle?.isNotEmpty == true
+        ? listingTitle!
+        : (otherName.isNotEmpty ? otherName : '#${widget.conversationId}');
+    final showSubtitle =
+        listingTitle?.isNotEmpty == true && otherName.isNotEmpty;
+
+    final relatedConversations = _relatedConversations(conversationsState);
 
     return Scaffold(
       appBar: WaveAppBar(
@@ -803,19 +884,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ],
                 ],
               ),
-              Text(
-                l10n.messagesWith(otherUserName),
-                style: AppTextStyles.caption.copyWith(
-                  fontSize: 11,
-                  color: context.theme.textMuted,
-                  fontWeight: FontWeight.w500,
+              if (showSubtitle)
+                Text(
+                  l10n.messagesWith(otherName),
+                  style: AppTextStyles.caption.copyWith(
+                    fontSize: 11,
+                    color: context.theme.textMuted,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
         actions: [
-          if (widget.conversation.isAssetChat && widget.conversation.contactRevealed) ...[
+          if (conversation?.otherParticipant != null) ...[
             IconButton(
               icon: const Icon(Icons.call, size: 22),
               tooltip: 'Audio Call',
@@ -837,14 +919,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               Expanded(
                 child: chatState.isLoading && chatState.messages.isEmpty
                     ? _buildMessagesSkeleton()
-                    : chatState.errorMessage != null && chatState.messages.isEmpty
+                    : chatState.errorMessage != null &&
+                            chatState.messages.isEmpty
                         ? WaveMessageScreen.error(
                             isEmbedded: true,
                             title: l10n.errorLoadingMessages,
                             subtitle: chatState.errorMessage!,
                             onRetry: () {
                               ref
-                                  .read(chatMessagesProvider(widget.conversationId)
+                                  .read(chatMessagesProvider(
+                                          widget.conversationId)
                                       .notifier)
                                   .loadMessages();
                             },
@@ -860,19 +944,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     const SizedBox(height: 16),
                                     Text(l10n.messagesEmpty,
                                         style: AppTextStyles.bodyLarge.copyWith(
-                                            color: context.theme.iconSecondary)),
+                                            color:
+                                                context.theme.iconSecondary)),
                                   ],
                                 ),
                               )
-                            : _buildMessagesList(chatState.messages, currentUserId,
-                                l10n, widget.conversation.listingOwnerId),
+                            : _buildMessagesList(chatState, l10n),
               ),
 
               // Message input
               Container(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                 decoration: BoxDecoration(
-                  color: context.isDarkMode ? AppColors.primary900 : AppColors.surface,
+                  color: context.isDarkMode
+                      ? AppColors.primary900
+                      : AppColors.surface,
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primary950.withValues(alpha: 0.05),
@@ -918,7 +1004,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                       valueColor: AlwaysStoppedAnimation<Color>(
                                           AppColors.surface)),
                                 )
-                              : const Icon(Icons.send, color: AppColors.surface),
+                              : const Icon(Icons.send,
+                                  color: AppColors.surface),
                           onPressed: _isSending ? null : _sendMessage,
                         ),
                       ),
@@ -941,7 +1028,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: _buildContextDropdown(
-                    context, l10n, isDark, relatedConversations),
+                  context,
+                  l10n,
+                  isDark,
+                  relatedConversations,
+                ),
               ),
             ),
           ],
@@ -1010,25 +1101,36 @@ Widget _buildMessagesSkeleton() {
   );
 }
 
+String _displayTime(DateTime? dt, AppLocalizations l10n) {
+  if (dt == null) return '';
+  final diff = DateTime.now().difference(dt);
+  if (diff.inMinutes < 1) return l10n.notificationJustNow;
+  if (diff.inHours < 1) return '${diff.inMinutes}m ago';
+  if (diff.inDays < 1) return '${diff.inHours}h ago';
+  if (diff.inDays < 7) return '${diff.inDays}d ago';
+  return '${dt.day}/${dt.month}/${dt.year}';
+}
+
 /// Message Bubble Widget - WhatsApp-like with actual user initials
 class _MessageBubble extends ConsumerWidget {
-  final msg.Message message;
-  final int? listingOwnerId;
+  final ChatMessage message;
 
-  const _MessageBubble({required this.message, this.listingOwnerId});
+  const _MessageBubble({required this.message});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
-    final currentUserId = authState.user?.id;
-    final isOwn = currentUserId != null && message.senderId == currentUserId;
-    final isSeen = message.readAt != null;
-    final initials = message.senderInitials;
-    final avatarUrl = message.senderAvatar;
-    final myAvatarUrl = authState.user?.googleAvatar;
+    final isOwn = message.isMine;
+    final isSeen = message.isRead || message.readAt != null;
+    final sender = message.sender;
+    final authUser = authState.user;
+
+    final avatarUrl =
+        sender?.avatarUrl ?? (isOwn ? authUser?.googleAvatar : null);
+    final initials = sender?.initials.isNotEmpty == true
+        ? sender!.initials
+        : (isOwn && authUser != null ? authUser.initials : '?');
     final l10n = AppLocalizations.of(context);
-    final isListingOwner =
-        listingOwnerId != null && message.senderId == listingOwnerId;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -1056,12 +1158,10 @@ class _MessageBubble extends ConsumerWidget {
                 gradient: avatarUrl != null
                     ? null
                     : LinearGradient(
-                        colors: isListingOwner
-                            ? [AppColors.accent400, AppColors.accent600]
-                            : [
-                                Theme.of(context).colorScheme.secondaryContainer,
-                                Theme.of(context).colorScheme.secondaryContainer
-                              ],
+                        colors: [
+                          Theme.of(context).colorScheme.secondaryContainer,
+                          Theme.of(context).colorScheme.secondaryContainer
+                        ],
                       ),
                 shape: BoxShape.circle,
               ),
@@ -1087,18 +1187,6 @@ class _MessageBubble extends ConsumerWidget {
               crossAxisAlignment:
                   isOwn ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
-                if (!isOwn && isListingOwner)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4, bottom: 2),
-                    child: Text(
-                      '(Owner)',
-                      style: AppTextStyles.caption.copyWith(
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.accent500,
-                      ),
-                    ),
-                  ),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -1136,7 +1224,7 @@ class _MessageBubble extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            message.getDisplayTime(l10n),
+                            _displayTime(message.createdAt, l10n),
                             style: AppTextStyles.caption.copyWith(
                               fontSize: 10,
                               color: isOwn
@@ -1169,24 +1257,24 @@ class _MessageBubble extends ConsumerWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                image: myAvatarUrl != null
+                image: avatarUrl != null
                     ? DecorationImage(
                         image: ResizeImage(
-                          CachedNetworkImageProvider(myAvatarUrl),
+                          CachedNetworkImageProvider(avatarUrl),
                           width: 64,
                           height: 64,
                         ),
                         fit: BoxFit.cover,
                       )
                     : null,
-                gradient: myAvatarUrl != null
+                gradient: avatarUrl != null
                     ? null
                     : const LinearGradient(
                         colors: [AppColors.accent400, AppColors.accent600],
                       ),
                 shape: BoxShape.circle,
               ),
-              child: myAvatarUrl != null
+              child: avatarUrl != null
                   ? null
                   : Center(
                       child: Text(

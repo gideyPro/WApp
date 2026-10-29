@@ -12,6 +12,7 @@ import '../../presentation/screens/orders/order_details_screen.dart';
 import '../../presentation/screens/favorites/favorites_screen.dart';
 import '../../presentation/screens/interests/my_interests_screen.dart';
 import '../../presentation/screens/messages/messages_screen.dart';
+import '../../data/models/v2/conversation.dart';
 import '../../presentation/screens/listing/create_listing_screen.dart';
 import '../../presentation/screens/listing/edit_listing_screen.dart';
 import '../../presentation/screens/listing/listing_detail_screen.dart';
@@ -80,7 +81,8 @@ final goRouter = GoRouter(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.link_off_rounded, size: 64, color: AppColors.stone400),
+              const Icon(Icons.link_off_rounded,
+                  size: 64, color: AppColors.stone400),
               const SizedBox(height: 16),
               Text(
                 AppLocalizations.of(context).routerInvalidRoute,
@@ -190,7 +192,9 @@ final goRouter = GoRouter(
           key: state.pageKey,
           child: ChatScreen(
             conversationId: id,
-            conversation: state.extra as dynamic,
+            conversation: state.extra is ChatConversation
+                ? state.extra as ChatConversation
+                : null,
           ),
         );
       },

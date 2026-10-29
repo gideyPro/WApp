@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../../data/services/message_service.dart';
+import '../../../../core/network/v2/api_v2_error.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../providers/v2_providers.dart';
 
 /// Starts an in-app conversation for a listing.
 ///
@@ -35,24 +36,21 @@ class _ListingMessageButtonState extends ConsumerState<ListingMessageButton> {
     setState(() => _isStarting = true);
 
     try {
-      final l10n = AppLocalizations.of(context);
-      final result = await MessageService().startConversationFromListing(
-        listingId: widget.listingId,
-      );
+      final conversation = await ref.read(conversationV2ServiceProvider).start(
+            listingId: widget.listingId,
+          );
 
       if (!mounted) return;
 
-      if (result.success && result.conversation != null) {
-        context.push(
-          '/chat/${result.conversation!.id}',
-          extra: result.conversation,
-        );
-      } else {
+      context.push(
+        '/chat/${conversation.id}',
+        extra: conversation,
+      );
+    } on ApiV2Exception catch (error) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              result.message.isNotEmpty ? result.message : l10n.commonError,
-            ),
+            content: Text(error.message),
             backgroundColor: AppColors.error,
           ),
         );
