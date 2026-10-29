@@ -1,0 +1,53 @@
+{
+    "data": {
+        "enabled": true,
+        "subscription": {
+            "id": 12,
+            "status": "active",
+            "plan": {
+                "id": 1,
+                "slug": "free",
+                "name": "Free"
+            },
+            "billing_cycle_months": 12,
+            "listing_duration_days": 30,
+            "starts_at": "2026-10-29T08:00:00Z",
+            "ends_at": "2027-10-29T08:00:00Z",
+            "trial_ends_at": null,
+            "cancelled_at": null,
+            "is_active": true,
+            "is_trial": false,
+            "days_remaining": 365,
+            "usage": {
+                "listings": 0,
+                "rental_listings": 0,
+                "vehicles": 0,
+                "rental_vehicles": 0,
+                "jobs": 0,
+                "featured_listings": 0,
+                "orders": 0
+            }
+        },
+        "capabilities": {
+            "max_listings": {"allowed": true, "used": 0, "max": 0},
+            "max_rental_listings": {"allowed": true, "used": 0, "max": 0},
+            "max_vehicles": {"allowed": true, "used": 0, "max": 0},
+            "max_rental_vehicles": {"allowed": true, "used": 0, "max": 0},
+            "max_jobs": {"allowed": true, "used": 0, "max": 0},
+            "max_featured_listings": {"allowed": true, "used": 0, "max": 0},
+            "max_orders": {"allowed": true, "used": 0, "max": 0},
+            "max_contacts": {"allowed": true, "used": 0, "max": 0},
+            "max_rental_contacts": {"allowed": true, "used": 0, "max": 0},
+            "max_contacts_car": {"allowed": true, "used": 0, "max": 0},
+            "max_rental_contacts_car": {"allowed": true, "used": 0, "max": 0},
+            "max_contacts_job": {"allowed": true, "used": 0, "max": 0},
+            "listing_duration_days": {"allowed": true, "used": 0, "max": 0},
+            "view_vip": {"allowed": false},
+            "access_video": {"allowed": false},
+            "access_contact": {"allowed": false},
+            "details_access": {"value": "discovery"},
+            "details_access_car": {"value": "discovery"},
+            "details_access_job": {"value": "discovery"}
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "data": [
+        {
+            "id": 31,
+            "tx_ref": "wm-sub-20261029-abc123",
+            "type": "subscription",
+            "status": "success",
+            "amount": 1350,
+            "currency": "ETB",
+            "plan": {
+                "id": 2,
+                "slug": "basic",
+                "name": "Basic"
+            },
+            "payment_method": "telebirr",
+            "paid_at": "2026-10-29T09:05:00Z",
+            "activated_at": "2026-10-29T09:05:10Z",
+            "created_at": "2026-10-29T09:00:00Z"
+        }
+    ],
+    "meta": {
+        "next_cursor": null,
+        "has_more": false,
+        "per_page": 20
+    }
+}

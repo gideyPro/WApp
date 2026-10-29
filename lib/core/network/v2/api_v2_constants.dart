@@ -18,6 +18,8 @@ class ApiV2Constants {
   static const String appConfig = '$apiBase/app-config';
   static const String home = '$apiBase/home';
   static const String plans = '$apiBase/plans';
+  static const String subscription = '$apiBase/subscription';
+  static const String payments = '$apiBase/payments';
 
   static const String authSendOtp = '$apiBase/auth/send-otp';
   static const String authRegisterSendOtp = '$apiBase/auth/register/send-otp';
@@ -66,4 +68,13 @@ class ApiV2Constants {
 
   static String notification(int id) => '$notifications/$id';
   static String notificationRead(int id) => '$notifications/$id/read';
+
+  static String planCheckout(int planId) =>
+      '$apiBase/subscriptions/$planId/checkout';
+  static String planTrial(int planId) => '$apiBase/subscriptions/$planId/trial';
+
+  static String payment(String txRef) =>
+      '$payments/${Uri.encodeComponent(txRef)}';
+  static String paymentVerify(String txRef) => '${payment(txRef)}/verify';
+  static String paymentCancel(String txRef) => '${payment(txRef)}/cancel';
 }

@@ -11,9 +11,11 @@ import '../../data/services/v2/home_service.dart';
 import '../../data/services/v2/listing_media_service.dart';
 import '../../data/services/v2/notification_service.dart';
 import '../../data/services/v2/owner_listing_service.dart';
+import '../../data/services/v2/payment_service.dart';
 import '../../data/services/v2/plan_service.dart';
 import '../../data/services/v2/profile_service.dart';
 import '../../data/services/v2/promotion_service.dart';
+import '../../data/services/v2/subscription_service.dart';
 import 'app_providers.dart';
 
 /// Transport shared by every v2 service. Reuses [apiClientProvider] so v1 and
@@ -32,6 +34,14 @@ final catalogServiceProvider = Provider<CatalogService>((ref) {
 
 final planServiceProvider = Provider<PlanService>((ref) {
   return PlanService(client: ref.watch(apiV2ClientProvider));
+});
+
+final subscriptionV2ServiceProvider = Provider<SubscriptionServiceV2>((ref) {
+  return SubscriptionServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final paymentV2ServiceProvider = Provider<PaymentServiceV2>((ref) {
+  return PaymentServiceV2(client: ref.watch(apiV2ClientProvider));
 });
 
 final authV2ServiceProvider = Provider<AuthServiceV2>((ref) {
