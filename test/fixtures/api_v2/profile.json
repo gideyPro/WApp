@@ -1,0 +1,29 @@
+{
+  "data": {
+    "user": {
+      "id": 1,
+      "first_name": "Abebe",
+      "last_name": "Kebede",
+      "name": "Abebe Kebede",
+      "username": null,
+      "email": "abebe@example.com",
+      "phone_number": "+251911234567",
+      "gender": "male",
+      "role": "user",
+      "avatar_url": null,
+      "auth_provider": null,
+      "phone_verified": true,
+      "kyc": {
+        "verified": false,
+        "status": null
+      },
+      "created_at": "2026-10-29T09:00:00Z"
+    },
+    "stats": {
+      "listings": 3,
+      "favorites": 5,
+      "interests": 2,
+      "unread_messages": 0
+    }
+  }
+}

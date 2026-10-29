@@ -19,6 +19,14 @@ class ApiV2Constants {
   static const String home = '$apiBase/home';
   static const String plans = '$apiBase/plans';
 
+  static const String authSendOtp = '$apiBase/auth/send-otp';
+  static const String authRegisterSendOtp = '$apiBase/auth/register/send-otp';
+  static const String authResendOtp = '$apiBase/auth/resend-otp';
+  static const String authLogin = '$apiBase/auth/login';
+  static const String authRegister = '$apiBase/auth/register';
+  static const String authLogout = '$apiBase/auth/logout';
+  static const String me = '$apiBase/me';
+
   static const String listings = '$apiBase/listings';
   static const String listingsFeatured = '$apiBase/listings/featured';
   static const String cars = '$apiBase/cars';

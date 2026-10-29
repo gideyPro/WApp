@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/v2/api_v2_client.dart';
 import '../../data/models/v2/app_config.dart';
 import '../../data/services/v2/app_config_service.dart';
+import '../../data/services/v2/auth_service.dart';
 import '../../data/services/v2/catalog_service.dart';
 import '../../data/services/v2/home_service.dart';
 import '../../data/services/v2/plan_service.dart';
+import '../../data/services/v2/profile_service.dart';
 import 'app_providers.dart';
 
 /// Transport shared by every v2 service. Reuses [apiClientProvider] so v1 and
@@ -24,6 +26,14 @@ final catalogServiceProvider = Provider<CatalogService>((ref) {
 
 final planServiceProvider = Provider<PlanService>((ref) {
   return PlanService(client: ref.watch(apiV2ClientProvider));
+});
+
+final authV2ServiceProvider = Provider<AuthServiceV2>((ref) {
+  return AuthServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final profileV2ServiceProvider = Provider<ProfileServiceV2>((ref) {
+  return ProfileServiceV2(client: ref.watch(apiV2ClientProvider));
 });
 
 final homeServiceProvider = Provider<HomeService>((ref) {
