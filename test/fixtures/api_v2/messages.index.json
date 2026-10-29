@@ -1,0 +1,27 @@
+{
+  "data": [
+    {
+      "id": 772,
+      "conversation_id": 88,
+      "body": "Yes, it is still available.",
+      "sender_id": 502,
+      "sender": {
+        "id": 502,
+        "first_name": "Sara",
+        "last_name": "Tesfaye",
+        "name": "Sara Tesfaye",
+        "initials": "ST",
+        "avatar_url": null
+      },
+      "is_mine": false,
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-10-29T10:20:00Z"
+    }
+  ],
+  "meta": {
+    "next_cursor": "eyJpZCI6NzcyfQ",
+    "has_more": false,
+    "per_page": 20
+  }
+}

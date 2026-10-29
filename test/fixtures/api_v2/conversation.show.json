@@ -1,0 +1,71 @@
+{
+  "data": {
+    "id": 88,
+    "type": "listing",
+    "listing": {
+      "id": 4821,
+      "type": "house",
+      "listing_type": "sale",
+      "title": "Spacious 4-bedroom villa in Bole",
+      "price": {
+        "amount": 8500000,
+        "currency": "ETB",
+        "period": null,
+        "negotiable": false
+      },
+      "location": {
+        "region": "Addis Ababa",
+        "zone": "Bole",
+        "woreda": null,
+        "kebele": null,
+        "specific_location": "Subscribe to see exact location",
+        "full_address": "Addis Ababa, Bole, Subscribe to see exact location",
+        "is_masked": true,
+        "region_localized": "አዲስ አበባ",
+        "zone_localized": "ቦሌ",
+        "woreda_localized": null,
+        "kebele_localized": null
+      },
+      "cover_image": {
+        "id": 91021,
+        "url": "https://wavemart.et/storage/houses/cover-4821.jpg",
+        "is_primary": true
+      },
+      "images_count": 6,
+      "is_featured": true,
+      "is_vip": false,
+      "is_favorite": false,
+      "created_at": "2026-10-21T08:15:00Z"
+    },
+    "other_participant": {
+      "id": 502,
+      "first_name": "Sara",
+      "last_name": "Tesfaye",
+      "name": "Sara Tesfaye",
+      "initials": "ST",
+      "avatar_url": null
+    },
+    "last_message": {
+      "id": 772,
+      "conversation_id": 88,
+      "body": "Yes, it is still available.",
+      "sender_id": 502,
+      "sender": {
+        "id": 502,
+        "first_name": "Sara",
+        "last_name": "Tesfaye",
+        "name": "Sara Tesfaye",
+        "initials": "ST",
+        "avatar_url": null
+      },
+      "is_mine": false,
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-10-29T10:20:00Z"
+    },
+    "unread_count": 1,
+    "last_message_at": "2026-10-29T10:20:00Z",
+    "created_at": "2026-10-28T09:00:00Z",
+    "updated_at": "2026-10-29T10:20:00Z"
+  }
+}

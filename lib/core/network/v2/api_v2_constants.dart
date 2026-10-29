@@ -110,4 +110,10 @@ class ApiV2Constants {
       '${orderSuggestion(orderId, suggestionId)}/accept';
   static String orderSuggestionDecline(int orderId, int suggestionId) =>
       '${orderSuggestion(orderId, suggestionId)}/decline';
+
+  static const String conversations = '$apiBase/conversations';
+
+  static String conversation(int id) => '$conversations/$id';
+  static String conversationMessages(int id) => '${conversation(id)}/messages';
+  static String conversationRead(int id) => '${conversation(id)}/read';
 }

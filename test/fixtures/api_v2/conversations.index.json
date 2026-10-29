@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "id": 88,
+      "type": "direct",
+      "listing": null,
+      "other_participant": {
+        "id": 502,
+        "first_name": "Sara",
+        "last_name": "Tesfaye",
+        "name": "Sara Tesfaye",
+        "initials": "ST",
+        "avatar_url": null
+      },
+      "last_message": {
+        "id": 771,
+        "conversation_id": 88,
+        "body": "Is the house still available?",
+        "sender_id": 501,
+        "sender": {
+          "id": 501,
+          "first_name": "Abebe",
+          "last_name": "Kebede",
+          "name": "Abebe Kebede",
+          "initials": "AK",
+          "avatar_url": null
+        },
+        "is_mine": true,
+        "is_read": false,
+        "read_at": null,
+        "created_at": "2026-10-29T10:15:00Z"
+      },
+      "unread_count": 2,
+      "last_message_at": "2026-10-29T10:15:00Z",
+      "created_at": "2026-10-28T09:00:00Z",
+      "updated_at": "2026-10-29T10:15:00Z"
+    }
+  ],
+  "meta": {
+    "next_cursor": null,
+    "has_more": false,
+    "per_page": 20
+  }
+}

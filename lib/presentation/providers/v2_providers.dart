@@ -6,6 +6,7 @@ import '../../data/services/v2/address_service.dart';
 import '../../data/services/v2/app_config_service.dart';
 import '../../data/services/v2/auth_service.dart';
 import '../../data/services/v2/catalog_service.dart';
+import '../../data/services/v2/conversation_service.dart';
 import '../../data/services/v2/favorite_service.dart';
 import '../../data/services/v2/help_service.dart';
 import '../../data/services/v2/home_service.dart';
@@ -57,6 +58,10 @@ final helpV2ServiceProvider = Provider<HelpServiceV2>((ref) {
 
 final orderV2ServiceProvider = Provider<OrderServiceV2>((ref) {
   return OrderServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final conversationV2ServiceProvider = Provider<ConversationServiceV2>((ref) {
+  return ConversationServiceV2(client: ref.watch(apiV2ClientProvider));
 });
 
 final authV2ServiceProvider = Provider<AuthServiceV2>((ref) {
