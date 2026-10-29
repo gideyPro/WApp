@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/network/v2/api_v2_client.dart';
 import '../../data/models/v2/app_config.dart';
+import '../../data/models/v2/subscription_state.dart';
 import '../../data/services/v2/address_service.dart';
 import '../../data/services/v2/app_config_service.dart';
 import '../../data/services/v2/auth_service.dart';
@@ -111,4 +112,13 @@ final homeServiceProvider = Provider<HomeService>((ref) {
 /// force-update gate.
 final appConfigProvider = FutureProvider<AppConfig>((ref) {
   return ref.watch(appConfigServiceProvider).fetch();
+});
+
+/// The viewer's subscription and resolved feature capabilities.
+///
+/// Invalidate this after actions that consume a quota (creating an order,
+/// publishing a listing) so gates and counters update on the next read.
+final subscriptionOverviewProvider =
+    FutureProvider<SubscriptionOverview>((ref) {
+  return ref.watch(subscriptionV2ServiceProvider).fetchOverview();
 });
