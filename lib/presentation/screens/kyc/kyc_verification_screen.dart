@@ -7,11 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import '../listing/widgets/create_listing_sheet.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/countries.dart';
+import '../../../../core/network/v2/api_v2_error.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
-import '../../../../data/services/kyc_service.dart';
 import '../../../../data/services/listing_media_manager.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/v2_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
@@ -36,7 +37,6 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   File? _selfieImage;
   bool _isSubmitting = false;
   final ImagePicker _picker = ImagePicker();
-  KycService get _kycService => ref.read(kycServiceProvider);
   final List<String> _persistedPaths = [];
 
   bool _showFormManually = false;
@@ -53,7 +53,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   Timer? _resendTimer;
   final TextEditingController _otpController = TextEditingController();
 
-  String get _fullPhone => '${_selectedCountry.code}${_phoneController.text.trim()}';
+  String get _fullPhone =>
+      '${_selectedCountry.code}${_phoneController.text.trim()}';
 
   void _cleanPersistedFiles() {
     for (final path in _persistedPaths) {
@@ -108,7 +109,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycError(e.toString())), backgroundColor: AppColors.error));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(l10n.kycError(e.toString())),
+            backgroundColor: AppColors.error));
       }
     }
   }
@@ -134,7 +137,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ListTile(
               leading: Icon(Icons.camera_alt, color: theme.textPrimary),
               title: Text(l10n.kycTakePhoto,
-                  style: AppTextStyles.bodyMedium.copyWith(color: theme.textPrimary)),
+                  style: AppTextStyles.bodyMedium
+                      .copyWith(color: theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 _pickImage(ImageSource.camera, type);
@@ -143,7 +147,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
             ListTile(
               leading: Icon(Icons.photo_library, color: theme.textPrimary),
               title: Text(l10n.kycChooseGallery,
-                  style: AppTextStyles.bodyMedium.copyWith(color: theme.textPrimary)),
+                  style: AppTextStyles.bodyMedium
+                      .copyWith(color: theme.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 _pickImage(ImageSource.gallery, type);
@@ -172,22 +177,32 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       _otpError = '';
     });
 
-    final response = await _kycService.sendOtp(
-      phoneNumber: phone,
-      countryCode: _selectedCountry.code,
-    );
-
-    if (mounted) {
-      setState(() {
-        _otpLoading = false;
-        if (response.success) {
+    final fullPhone = '${_selectedCountry.code}$phone';
+    try {
+      final dispatch =
+          await ref.read(kycV2ServiceProvider).sendPhoneOtp(fullPhone);
+      if (mounted) {
+        setState(() {
+          _otpLoading = false;
           _kycStep = _KycStep.otp;
-          _otpDestination = response.destination ?? 'phone';
+          _otpDestination = dispatch.destination;
           _startResendCooldown();
-        } else {
-          _otpError = response.message;
-        }
-      });
+        });
+      }
+    } on ApiV2Exception catch (e) {
+      if (mounted) {
+        setState(() {
+          _otpLoading = false;
+          _otpError = e.message;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _otpLoading = false;
+          _otpError = 'Failed to send OTP';
+        });
+      }
     }
   }
 
@@ -200,22 +215,34 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
       _otpError = '';
     });
 
-    final response = await _kycService.verifyOtp(
-      phoneNumber: _phoneController.text.trim(),
-      countryCode: _selectedCountry.code,
-      otpCode: otp,
-    );
-
-    if (mounted) {
-      setState(() {
-        _otpVerifyLoading = false;
-        if (response.success) {
+    final fullPhone = '${_selectedCountry.code}${_phoneController.text.trim()}';
+    try {
+      await ref.read(kycV2ServiceProvider).verifyPhoneOtp(
+            phoneNumber: fullPhone,
+            otpCode: otp,
+          );
+      if (mounted) {
+        setState(() {
+          _otpVerifyLoading = false;
           _kycStep = _KycStep.documents;
           _resendTimer?.cancel();
-        } else {
-          _otpError = response.message;
-        }
-      });
+        });
+        ref.read(profileProvider.notifier).loadProfile();
+      }
+    } on ApiV2Exception catch (e) {
+      if (mounted) {
+        setState(() {
+          _otpVerifyLoading = false;
+          _otpError = e.message;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _otpVerifyLoading = false;
+          _otpError = 'Verification failed';
+        });
+      }
     }
   }
 
@@ -223,7 +250,10 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     _resendCooldown = 60;
     _resendTimer?.cancel();
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) { timer.cancel(); return; }
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
       setState(() {
         _resendCooldown--;
         if (_resendCooldown <= 0) {
@@ -245,35 +275,72 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   Future<void> _submitKyc() async {
     final l10n = AppLocalizations.of(context);
     if (_documentType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycSelectDocumentType), backgroundColor: AppColors.error));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l10n.kycSelectDocumentType),
+          backgroundColor: AppColors.error));
       return;
     }
 
     if (_frontImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycUploadFront), backgroundColor: AppColors.error));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l10n.kycUploadFront),
+          backgroundColor: AppColors.error));
+      return;
+    }
+
+    if (_selfieImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please take a selfie photo'),
+            backgroundColor: AppColors.error),
+      );
+      return;
+    }
+
+    if (_documentType == 'national_id' && _backImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please upload back image'),
+            backgroundColor: AppColors.error),
+      );
       return;
     }
 
     setState(() => _isSubmitting = true);
 
-    final response = await _kycService.submitKyc(
-      documentType: _documentType!,
-      frontImage: _frontImage!,
-      backImage: _backImage,
-      selfieImage: _selfieImage,
-    );
-
-    setState(() => _isSubmitting = false);
-
-    if (mounted) {
-      if (response.success) {
-        _cleanPersistedFiles();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.kycSuccess), backgroundColor: AppColors.success));
+    try {
+      await ref.read(kycV2ServiceProvider).submit(
+            documentType: _documentType!,
+            frontImage: _frontImage!,
+            backImage: _backImage,
+            selfieImage: _selfieImage!,
+          );
+      _cleanPersistedFiles();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(l10n.kycSuccess),
+              backgroundColor: AppColors.success),
+        );
         ref.read(kycStatusProvider.notifier).loadKycStatus();
         ref.read(profileProvider.notifier).loadProfile();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
       }
+    } on ApiV2Exception catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: AppColors.error),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(l10n.commonError),
+              backgroundColor: AppColors.error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -325,7 +392,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
     return _buildMultiStepForm(state, l10n, needsPhone);
   }
 
-  Widget _buildMultiStepForm(KycStatusState state, AppLocalizations l10n, bool needsPhone) {
+  Widget _buildMultiStepForm(
+      KycStatusState state, AppLocalizations l10n, bool needsPhone) {
     return SingleChildScrollView(
       padding: AppSpacing.paddingLg,
       child: Column(
@@ -333,11 +401,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
         children: [
           if (needsPhone) ...[
             _buildPhoneStep(l10n),
-            if (_kycStep == _KycStep.otp)
-              _buildOtpStep(l10n),
+            if (_kycStep == _KycStep.otp) _buildOtpStep(l10n),
             const SizedBox(height: 24),
           ],
-
           if (_kycStep == _KycStep.documents || !needsPhone)
             _buildDocumentsStep(state, l10n),
         ],
@@ -346,7 +412,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
   }
 
   Widget _buildPhoneStep(AppLocalizations l10n) {
-    if (_kycStep == _KycStep.otp || _kycStep == _KycStep.documents) return const SizedBox.shrink();
+    if (_kycStep == _KycStep.otp || _kycStep == _KycStep.documents) {
+      return const SizedBox.shrink();
+    }
 
     return LiquidGlass(
       borderRadius: 16,
@@ -358,7 +426,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.phone_android_rounded, size: 18, color: AppColors.primary600),
+              const Icon(Icons.phone_android_rounded,
+                  size: 18, color: AppColors.primary600),
               const SizedBox(width: 8),
               Text(
                 l10n.authVerifyPhone,
@@ -400,16 +469,19 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                     controller: _phoneController,
                     decoration: InputDecoration(
                       hintText: _selectedCountry.example,
-                      hintStyle: AppTextStyles.bodySmall.copyWith(color: context.textMuted),
+                      hintStyle: AppTextStyles.bodySmall
+                          .copyWith(color: context.textMuted),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 14),
                     ),
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                       LengthLimitingTextInputFormatter(15),
                     ],
-                    style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary),
+                    style: AppTextStyles.bodySmall
+                        .copyWith(color: context.textPrimary),
                     onChanged: (_) {
                       if (_otpError.isNotEmpty) setState(() => _otpError = '');
                     },
@@ -451,7 +523,9 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
           Row(
             children: [
               Icon(
-                _otpDestination == 'phone' ? Icons.phone_android_rounded : Icons.email_rounded,
+                _otpDestination == 'phone'
+                    ? Icons.phone_android_rounded
+                    : Icons.email_rounded,
                 size: 16,
                 color: AppColors.primary600,
               ),
@@ -462,7 +536,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                   children: [
                     Text(
                       l10n.authOtpSentMessage(_fullPhone),
-                      style: AppTextStyles.caption.copyWith(color: context.textMuted),
+                      style: AppTextStyles.caption
+                          .copyWith(color: context.textMuted),
                     ),
                   ],
                 ),
@@ -905,7 +980,8 @@ class _KycVerificationScreenState extends ConsumerState<KycVerificationScreen> {
                 color: AppColors.stone100,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, size: 28, color: ThemeColors(context).textMuted),
+              child:
+                  Icon(icon, size: 28, color: ThemeColors(context).textMuted),
             ),
           const SizedBox(width: 16),
           Expanded(
@@ -970,14 +1046,16 @@ class _DocumentTypeChip extends StatelessWidget {
             Icon(
               icon,
               size: 28,
-              color: isSelected ? AppColors.accent600 : ThemeColors(context).textMuted,
+              color: isSelected
+                  ? AppColors.accent600
+                  : ThemeColors(context).textMuted,
             ),
             const SizedBox(height: 8),
             Text(
               label,
               style: AppTextStyles.labelMedium.copyWith(
                 color: isSelected ? AppColors.accent700 : AppColors.primary600,
-                fontWeight:           isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),
