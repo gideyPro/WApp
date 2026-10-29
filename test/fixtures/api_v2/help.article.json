@@ -1,0 +1,49 @@
+{
+    "data": {
+        "id": 10,
+        "slug": "what-is-wavemart",
+        "title": "What is WaveMart?",
+        "summary": "WaveMart connects buyers, sellers, landlords and renters across Ethiopia.",
+        "category": {
+            "id": 1,
+            "name": "Getting Started",
+            "slug": "general",
+            "description": "Learn the basics of buying, selling and renting on WaveMart.",
+            "icon": "fa-circle-question",
+            "sort_order": 1,
+            "articles_count": 4
+        },
+        "is_featured": true,
+        "tags": ["getting-started"],
+        "views": 129,
+        "helpful_count": 22,
+        "not_helpful_count": 1,
+        "updated_at": "2026-10-20T08:00:00Z",
+        "content": "<p>WaveMart is Ethiopia's marketplace for houses, land, cars and jobs.</p>",
+        "formatted_content": "<p>WaveMart is Ethiopia's marketplace for houses, land, cars and jobs.</p>",
+        "has_provided_feedback": false,
+        "related_articles": [
+            {
+                "id": 11,
+                "slug": "how-to-create-listing",
+                "title": "How to create a listing",
+                "summary": "Step-by-step instructions for publishing your first property.",
+                "category": {
+                    "id": 1,
+                    "name": "Getting Started",
+                    "slug": "general",
+                    "description": "Learn the basics of buying, selling and renting on WaveMart.",
+                    "icon": "fa-circle-question",
+                    "sort_order": 1,
+                    "articles_count": 4
+                },
+                "is_featured": false,
+                "tags": ["listings"],
+                "views": 54,
+                "helpful_count": 9,
+                "not_helpful_count": 0,
+                "updated_at": "2026-10-25T08:00:00Z"
+            }
+        ]
+    }
+}

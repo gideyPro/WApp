@@ -1,0 +1,38 @@
+{
+    "data": [
+        {
+            "ticket_number": "WM-2026-00001",
+            "subject": "Cannot upload listing photos",
+            "status": "in_progress",
+            "priority": "high",
+            "category": {
+                "id": 2,
+                "name": "Listings",
+                "slug": "listings",
+                "description": "Creating, editing and promoting your listings.",
+                "icon": "fa-house",
+                "sort_order": 2,
+                "articles_count": 6
+            },
+            "rating": null,
+            "unread_messages": 1,
+            "last_message": {
+                "id": 52,
+                "body": "We are checking the upload service now.",
+                "is_staff": true,
+                "attachments": [],
+                "is_read": false,
+                "created_at": "2026-10-29T09:30:00Z"
+            },
+            "created_at": "2026-10-29T09:00:00Z",
+            "updated_at": "2026-10-29T09:30:00Z",
+            "resolved_at": null,
+            "closed_at": null
+        }
+    ],
+    "meta": {
+        "next_cursor": null,
+        "has_more": false,
+        "per_page": 20
+    }
+}

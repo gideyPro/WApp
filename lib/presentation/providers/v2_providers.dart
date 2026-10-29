@@ -7,6 +7,7 @@ import '../../data/services/v2/app_config_service.dart';
 import '../../data/services/v2/auth_service.dart';
 import '../../data/services/v2/catalog_service.dart';
 import '../../data/services/v2/favorite_service.dart';
+import '../../data/services/v2/help_service.dart';
 import '../../data/services/v2/home_service.dart';
 import '../../data/services/v2/kyc_service.dart';
 import '../../data/services/v2/listing_media_service.dart';
@@ -47,6 +48,10 @@ final paymentV2ServiceProvider = Provider<PaymentServiceV2>((ref) {
 
 final kycV2ServiceProvider = Provider<KycServiceV2>((ref) {
   return KycServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final helpV2ServiceProvider = Provider<HelpServiceV2>((ref) {
+  return HelpServiceV2(client: ref.watch(apiV2ClientProvider));
 });
 
 final authV2ServiceProvider = Provider<AuthServiceV2>((ref) {

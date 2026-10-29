@@ -81,4 +81,21 @@ class ApiV2Constants {
   static const String kyc = '$apiBase/kyc';
   static const String kycPhoneSendOtp = '$kyc/phone/send-otp';
   static const String kycPhoneVerify = '$kyc/phone/verify';
+
+  static const String help = '$apiBase/help';
+  static const String helpArticles = '$help/articles';
+  static const String helpTickets = '$help/tickets';
+
+  static String helpCategory(String slug) =>
+      '$help/categories/${Uri.encodeComponent(slug)}';
+  static String helpArticle(String slug) =>
+      '$helpArticles/${Uri.encodeComponent(slug)}';
+  static String helpArticleFeedback(String slug) =>
+      '${helpArticle(slug)}/feedback';
+  static String helpTicket(String ticketNumber) =>
+      '$helpTickets/${Uri.encodeComponent(ticketNumber)}';
+  static String helpTicketMessages(String ticketNumber) =>
+      '${helpTicket(ticketNumber)}/messages';
+  static String helpTicketRating(String ticketNumber) =>
+      '${helpTicket(ticketNumber)}/rating';
 }
