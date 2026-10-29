@@ -1,0 +1,56 @@
+{
+    "data": [
+        {
+            "id": 101,
+            "type": "house",
+            "listing_type": "sale",
+            "title": "Spacious family house",
+            "price": {
+                "amount": 8500000,
+                "currency": "ETB",
+                "period": null,
+                "negotiable": false
+            },
+            "location": {
+                "region": "Addis Ababa",
+                "zone": "Bole",
+                "woreda": "Woreda 03",
+                "kebele": "Kebele 08",
+                "specific_location": "House No. 214",
+                "full_address": "Addis Ababa, Bole, Woreda 03, Kebele 08, House No. 214",
+                "is_masked": false,
+                "region_localized": "አዲስ አበባ",
+                "zone_localized": "ቦሌ",
+                "woreda_localized": null,
+                "kebele_localized": null
+            },
+            "cover_image": null,
+            "images_count": 4,
+            "status": "active",
+            "rejection_reason": null,
+            "is_featured": false,
+            "featured_until": null,
+            "is_vip": false,
+            "expires_at": "2026-11-28T00:00:00Z",
+            "created_at": "2026-10-29T08:00:00Z",
+            "updated_at": "2026-10-29T08:00:00Z",
+            "next_edit_at": "2026-11-12T08:00:00Z",
+            "can_edit": false,
+            "can_edit_media": false,
+            "can_submit": false,
+            "can_delete": true,
+            "video": {
+                "status": "none",
+                "url": null,
+                "thumbnail_url": null,
+                "error_message": null,
+                "uploaded_at": null
+            }
+        }
+    ],
+    "meta": {
+        "next_cursor": null,
+        "has_more": false,
+        "per_page": 20
+    }
+}

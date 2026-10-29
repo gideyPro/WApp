@@ -8,6 +8,7 @@ class ListingAttributes {
   final String? facingDirection;
   final double? totalSquareMeters;
   final double? frontAreaSqm;
+  final double? sideAreaSqm;
   final bool hasDebtOrEncumbrance;
   final double? debtAmount;
   final bool priceRevisionPossible;
@@ -19,6 +20,7 @@ class ListingAttributes {
     this.facingDirection,
     this.totalSquareMeters,
     this.frontAreaSqm,
+    this.sideAreaSqm,
     this.hasDebtOrEncumbrance = false,
     this.debtAmount,
     this.priceRevisionPossible = false,
@@ -33,11 +35,10 @@ class ListingAttributes {
       facingDirection: _text(map['facing_direction']),
       totalSquareMeters: TypeUtils.safeDouble(map['total_square_meters']),
       frontAreaSqm: TypeUtils.safeDouble(map['front_area_sqm']),
-      hasDebtOrEncumbrance:
-          TypeUtils.safeBool(map['has_debt_or_encumbrance']),
+      sideAreaSqm: TypeUtils.safeDouble(map['side_area_sqm']),
+      hasDebtOrEncumbrance: TypeUtils.safeBool(map['has_debt_or_encumbrance']),
       debtAmount: TypeUtils.safeDouble(map['debt_amount']),
-      priceRevisionPossible:
-          TypeUtils.safeBool(map['price_revision_possible']),
+      priceRevisionPossible: TypeUtils.safeBool(map['price_revision_possible']),
       holdingType: _text(map['holding_type']),
     );
   }
@@ -132,8 +133,9 @@ class ListingDetails {
   bool get hasSalaryRange => salaryMin != null || salaryMax != null;
 
   factory ListingDetails.fromJson(dynamic json) {
-    final map =
-        json is Map ? Map<String, dynamic>.from(json) : const <String, dynamic>{};
+    final map = json is Map
+        ? Map<String, dynamic>.from(json)
+        : const <String, dynamic>{};
     return ListingDetails(
       raw: map,
       bedrooms: TypeUtils.safeInt(map['bedrooms']),
@@ -247,8 +249,7 @@ class HoldingDetails {
     this.cooperative,
   });
 
-  bool get isEmpty =>
-      private == null && lease == null && cooperative == null;
+  bool get isEmpty => private == null && lease == null && cooperative == null;
 
   factory HoldingDetails.fromJson(dynamic json) {
     final map = json is Map ? json : const {};

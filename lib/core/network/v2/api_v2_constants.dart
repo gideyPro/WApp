@@ -26,6 +26,7 @@ class ApiV2Constants {
   static const String authRegister = '$apiBase/auth/register';
   static const String authLogout = '$apiBase/auth/logout';
   static const String me = '$apiBase/me';
+  static const String meListings = '$apiBase/me/listings';
 
   static const String favorites = '$apiBase/favorites';
 
@@ -48,6 +49,18 @@ class ApiV2Constants {
   static String listing(int id) => '$listings/$id';
   static String car(int id) => '$cars/$id';
   static String job(int id) => '$jobs/$id';
+
+  static String listingSubmit(int id) => '$listings/$id/submit';
+  static String listingImages(int id) => '$listings/$id/images';
+  static String listingImage(int id, int imageId) =>
+      '$listings/$id/images/$imageId';
+  static String listingVideo(int id) => '$listings/$id/video';
+  static String listingSitePlan(int id) => '$listings/$id/site-plan';
+  static String listingDebtDocument(int id) => '$listings/$id/debt-document';
+  static String listingOwnershipProof(int id) =>
+      '$listings/$id/ownership-proof';
+  static String listingFeature(int id) => '$listings/$id/feature';
+  static String listingVip(int id) => '$listings/$id/vip';
 
   static String favorite(int listingId) => '$favorites/$listingId';
 

@@ -8,9 +8,12 @@ import '../../data/services/v2/auth_service.dart';
 import '../../data/services/v2/catalog_service.dart';
 import '../../data/services/v2/favorite_service.dart';
 import '../../data/services/v2/home_service.dart';
+import '../../data/services/v2/listing_media_service.dart';
 import '../../data/services/v2/notification_service.dart';
+import '../../data/services/v2/owner_listing_service.dart';
 import '../../data/services/v2/plan_service.dart';
 import '../../data/services/v2/profile_service.dart';
+import '../../data/services/v2/promotion_service.dart';
 import 'app_providers.dart';
 
 /// Transport shared by every v2 service. Reuses [apiClientProvider] so v1 and
@@ -49,6 +52,18 @@ final notificationV2ServiceProvider = Provider<NotificationServiceV2>((ref) {
 
 final addressV2ServiceProvider = Provider<AddressServiceV2>((ref) {
   return AddressServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final ownerListingServiceProvider = Provider<OwnerListingService>((ref) {
+  return OwnerListingService(client: ref.watch(apiV2ClientProvider));
+});
+
+final listingMediaV2ServiceProvider = Provider<ListingMediaServiceV2>((ref) {
+  return ListingMediaServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final promotionV2ServiceProvider = Provider<PromotionServiceV2>((ref) {
+  return PromotionServiceV2(client: ref.watch(apiV2ClientProvider));
 });
 
 final homeServiceProvider = Provider<HomeService>((ref) {

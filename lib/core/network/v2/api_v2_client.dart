@@ -34,11 +34,18 @@ class ApiV2Document {
 /// Authentication, locale headers and 401 session handling stay in the
 /// existing [ApiClient] interceptors, so v1 and v2 share one login state.
 class ApiV2Client {
-  final ApiClient _apiClient;
+  final Dio _dio;
 
-  ApiV2Client({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient();
+  /// Production callers share [ApiClient] so v1 and v2 reuse one Dio with the
+  /// auth/locale interceptors. Tests inject a bare [Dio] instead.
+  ApiV2Client({ApiClient? apiClient, Dio? dio})
+      : assert(
+          apiClient == null || dio == null,
+          'Pass either apiClient or dio, not both',
+        ),
+        _dio = dio ?? (apiClient ?? ApiClient()).dio;
 
-  Dio get dio => _apiClient.dio;
+  Dio get dio => _dio;
 
   /// Fetch a raw document. A 304 is returned instead of thrown so callers can
   /// reuse a cached payload.
@@ -213,6 +220,99 @@ class ApiV2Client {
     return Map<String, dynamic>.from(data);
   }
 
+  /// Send a multipart form (file upload) and return the raw document.
+  Future<ApiV2Document> sendForm(
+    String path, {
+    required FormData formData,
+    String method = 'POST',
+    Map<String, dynamic>? query,
+    CancelToken? cancelToken,
+  }) async {
+    final response = await _execute(
+      () => dio.request<dynamic>(
+        path,
+        data: formData,
+        queryParameters: query,
+        cancelToken: cancelToken,
+        options: Options(method: method),
+      ),
+    );
+
+    final statusCode = response.statusCode ?? 0;
+
+    if (statusCode < 200 || statusCode >= 300) {
+      throw _exceptionFrom(response);
+    }
+
+    if (statusCode == HttpStatus.noContent || response.data == null) {
+      return ApiV2Document(statusCode: statusCode, data: const {});
+    }
+
+    return ApiV2Document(
+      statusCode: statusCode,
+      data: _asJsonMap(response.data),
+      etag: response.headers.value(HttpHeaders.etagHeader),
+    );
+  }
+
+  /// Send a multipart form that returns `{ data: { ... } }`.
+  Future<Map<String, dynamic>> sendFormItem(
+    String path, {
+    required FormData formData,
+    String method = 'POST',
+    Map<String, dynamic>? query,
+    CancelToken? cancelToken,
+  }) async {
+    final document = await sendForm(
+      path,
+      formData: formData,
+      method: method,
+      query: query,
+      cancelToken: cancelToken,
+    );
+    final data = document.data['data'];
+
+    if (data is! Map) {
+      throw ApiV2Exception.unexpected(
+        'Expected an object at data for $path',
+        statusCode: document.statusCode,
+      );
+    }
+
+    return Map<String, dynamic>.from(data);
+  }
+
+  /// Send a multipart form that returns `{ data: [ ... ] }`.
+  Future<List<T>> sendFormList<T>(
+    String path, {
+    required FormData formData,
+    required T Function(Map<String, dynamic> item) parse,
+    String method = 'POST',
+    Map<String, dynamic>? query,
+    CancelToken? cancelToken,
+  }) async {
+    final document = await sendForm(
+      path,
+      formData: formData,
+      method: method,
+      query: query,
+      cancelToken: cancelToken,
+    );
+    final data = document.data['data'];
+
+    if (data is! List) {
+      throw ApiV2Exception.unexpected(
+        'Expected a list at data for $path',
+        statusCode: document.statusCode,
+      );
+    }
+
+    return data
+        .whereType<Map>()
+        .map((item) => parse(Map<String, dynamic>.from(item)))
+        .toList(growable: false);
+  }
+
   Future<Response<dynamic>> _execute(
     Future<Response<dynamic>> Function() request,
   ) async {
@@ -238,7 +338,8 @@ class ApiV2Client {
         if (response != null) return _exceptionFrom(response);
         return ApiV2Exception.unexpected(error.message ?? 'Bad response');
       case DioExceptionType.badCertificate:
-        return ApiV2Exception.network('Could not verify the server certificate');
+        return ApiV2Exception.network(
+            'Could not verify the server certificate');
       case DioExceptionType.unknown:
         if (error.error is SocketException) {
           return ApiV2Exception.network();
@@ -281,9 +382,7 @@ class ApiV2Client {
     final raw = query?['limit'];
     final limit = raw is int ? raw : int.tryParse(raw?.toString() ?? '');
     if (limit == null || limit <= 0) return ApiV2Constants.defaultLimit;
-    return limit > ApiV2Constants.maxLimit
-        ? ApiV2Constants.maxLimit
-        : limit;
+    return limit > ApiV2Constants.maxLimit ? ApiV2Constants.maxLimit : limit;
   }
 
   static Duration? _retryAfter(Response<dynamic> response) {
