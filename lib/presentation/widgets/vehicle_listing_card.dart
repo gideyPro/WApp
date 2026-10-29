@@ -341,7 +341,6 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
       style: AppTextStyles.priceMedium.copyWith(
         fontSize: 26,
         fontWeight: FontWeight.w800,
-        letterSpacing: -0.5,
         color: AppColors.emerald600,
       ),
       maxLines: 1,

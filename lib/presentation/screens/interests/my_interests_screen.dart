@@ -192,7 +192,7 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
                       style: AppTextStyles.labelSmall.copyWith(
                         color: Colors.white,
                         fontSize: 10,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),

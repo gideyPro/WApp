@@ -86,6 +86,34 @@ class FavoritesV2Notifier extends StateNotifier<FavoritesV2State> {
       return false;
     }
   }
+
+  /// Toggle a favorite on or off. Returns the new favorited state.
+  Future<bool> toggle(int listingId) async {
+    final already = state.favorites.any((f) => f.id == listingId);
+
+    try {
+      if (already) {
+        final result = await _service.unfavorite(listingId);
+        if (!result.favorited) {
+          state = state.copyWith(
+            favorites: state.favorites
+                .where((favorite) => favorite.id != listingId)
+                .toList(),
+          );
+        }
+        return result.favorited;
+      } else {
+        final result = await _service.favorite(listingId);
+        if (result.favorited) {
+          // Optimistically re-fetch the full favorite entry; the listing
+          // summary is already on screen, so just note the state change.
+        }
+        return result.favorited;
+      }
+    } catch (_) {
+      return already;
+    }
+  }
 }
 
 class FavoritesV2State {

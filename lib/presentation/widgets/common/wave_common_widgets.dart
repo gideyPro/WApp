@@ -428,10 +428,9 @@ class WaveMessageScreen extends StatelessWidget {
           Text(
             effectiveTitle,
             style: (isEmbedded ? AppTextStyles.title : AppTextStyles.headline4).copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: context.textPrimary,
-              letterSpacing: -0.5,
-              height: 1.2,
+              height: 1.3,
             ),
             textAlign: TextAlign.center,
           ),

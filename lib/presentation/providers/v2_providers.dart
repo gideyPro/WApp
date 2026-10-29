@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/network/v2/api_v2_client.dart';
+import '../../core/network/v2/api_v2_error.dart';
 import '../../data/models/v2/app_config.dart';
+import '../../data/models/v2/home_feed.dart';
 import '../../data/models/v2/subscription_state.dart';
 import '../../data/services/v2/address_service.dart';
 import '../../data/services/v2/app_config_service.dart';
@@ -107,6 +109,69 @@ final homeServiceProvider = Provider<HomeService>((ref) {
   ref.onDispose(service.clearCache);
   return service;
 });
+
+/// The combined V2 home feed from `/v2/home`.
+///
+/// Cached 60s with ETag for anonymous non-VIP viewers via [HomeService].
+final homeV2Provider =
+    StateNotifierProvider<HomeV2Notifier, HomeV2State>((ref) {
+  return HomeV2Notifier(ref.watch(homeServiceProvider));
+});
+
+class HomeV2Notifier extends StateNotifier<HomeV2State> {
+  final HomeService _service;
+
+  HomeV2Notifier(this._service) : super(const HomeV2State.initial());
+
+  Future<void> loadHome() async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+
+    try {
+      final feed = await _service.fetch();
+      state = HomeV2State.loaded(feed: feed);
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(isLoading: false, errorMessage: error.message);
+    } catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Could not load the home feed',
+      );
+    }
+  }
+}
+
+class HomeV2State {
+  final bool isLoading;
+  final HomeFeed? feed;
+  final String? errorMessage;
+
+  const HomeV2State({
+    required this.isLoading,
+    this.feed,
+    this.errorMessage,
+  });
+
+  const HomeV2State.initial()
+      : isLoading = true,
+        feed = null,
+        errorMessage = null;
+
+  const HomeV2State.loaded({required this.feed})
+      : isLoading = false,
+        errorMessage = null;
+
+  HomeV2State copyWith({
+    bool? isLoading,
+    HomeFeed? feed,
+    String? errorMessage,
+  }) {
+    return HomeV2State(
+      isLoading: isLoading ?? this.isLoading,
+      feed: feed ?? this.feed,
+      errorMessage: errorMessage,
+    );
+  }
+}
 
 /// Boot-time config. Widgets watch this to apply feature flags and the
 /// force-update gate.
