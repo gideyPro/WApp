@@ -15,6 +15,9 @@ class ProfileStats {
     this.unreadMessages = 0,
   });
 
+  int get totalListings => listings;
+  int get totalFavorites => favorites;
+
   factory ProfileStats.fromJson(dynamic json) {
     final map = json is Map ? json : const {};
     return ProfileStats(

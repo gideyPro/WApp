@@ -1,4 +1,5 @@
 import '../../../core/utils/type_utils.dart';
+import '../user.dart';
 
 /// KYC state as exposed by the v2 user projection.
 class UserKyc {
@@ -61,6 +62,23 @@ class AccountUser {
     final first = firstName.isNotEmpty ? firstName[0] : '';
     final last = lastName.isNotEmpty ? lastName[0] : '';
     return (first + last).toUpperCase();
+  }
+
+  User toUser() {
+    return User(
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      username: username,
+      email: email,
+      phoneNumber: phoneNumber,
+      role: role,
+      gender: gender,
+      isPhoneVerified: phoneVerified,
+      isKycVerified: isKycVerified,
+      googleAvatar: avatarUrl,
+      createdAt: createdAt,
+    );
   }
 
   factory AccountUser.fromJson(Map<String, dynamic> json) {

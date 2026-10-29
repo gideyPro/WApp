@@ -1,22 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../core/network/api_client.dart';
+import '../../core/network/v2/api_v2_error.dart';
+import '../../data/models/user.dart';
 import '../../data/services/auth_service.dart';
 import '../../data/services/fcm_service.dart';
 import '../../data/services/restore_credential_service.dart';
-import '../../data/models/user.dart';
-
-/// Auth Service Provider
-final authServiceProvider = Provider<AuthService>((ref) {
-  return AuthService();
-});
+import '../../data/services/v2/auth_service.dart';
+import '../../data/services/v2/profile_service.dart';
+import 'app_providers.dart';
+import 'v2_providers.dart';
 
 /// Auth State - Current authenticated user
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(ref.watch(authServiceProvider), ref);
+  return AuthNotifier(
+    ref.watch(authV2ServiceProvider),
+    ref.watch(profileV2ServiceProvider),
+    ref.watch(apiClientProvider),
+    ref,
+  );
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthService _authService;
+  final AuthServiceV2 _authService;
+  final ProfileServiceV2 _profileService;
+  final ApiClient _apiClient;
   final Ref _ref;
   bool _forcingLogout = false;
 
@@ -25,7 +33,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     defaultValue: '',
   );
 
-  AuthNotifier(this._authService, this._ref) : super(AuthState.initial());
+  AuthNotifier(
+    this._authService,
+    this._profileService,
+    this._apiClient,
+    this._ref,
+  ) : super(const AuthState.initial());
 
   /// Set authenticated user directly (used during Zero-Tap Sign-In)
   void setAuthenticatedUser(User user) {
@@ -34,10 +47,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   /// Check if user is authenticated
   Future<void> checkAuth() async {
-
-    final isAuthenticated = await _authService.isAuthenticated();
-    if (isAuthenticated) {
+    final token = await _apiClient.getAuthToken();
+    if (token != null && token.isNotEmpty) {
       await loadUser();
+    } else {
+      state = const AuthState.unauthenticated();
     }
   }
 
@@ -45,69 +59,103 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> loadUser() async {
     state = state.copyWith(isLoading: true);
     try {
-      final user = await _authService.getCurrentUser();
-      if (user != null) {
-        state = AuthState.authenticated(user);
+      final profile = await _profileService.fetch();
+      state = AuthState.authenticated(profile.user.toUser());
+    } catch (_) {
+      final token = await _apiClient.getAuthToken();
+      if (token == null) {
+        state = const AuthState.unauthenticated();
       } else {
-        state = AuthState.unauthenticated();
+        state = state.copyWith(isLoading: false);
       }
-    } catch (e) {
-      state = state.copyWith(isLoading: false);
     }
   }
 
   /// Send OTP to phone number
   Future<AuthResponse> sendOtp(String phoneNumber) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _authService.sendOtp(phoneNumber: phoneNumber);
-    if (response.success) {
+    try {
+      final dispatch = await _authService.sendLoginOtp(phoneNumber);
       state = state.copyWith(
         isLoading: false,
         phoneNumber: phoneNumber,
         otpSent: true,
-        otpMessage: response.message,
-        destination: response.destination,
+        otpMessage: 'OTP sent to ${dispatch.destination}',
+        destination: dispatch.destination,
         isLocked: false,
         retryAfter: null,
       );
-    } else {
+      return AuthResponse(
+        success: true,
+        message: 'OTP sent to ${dispatch.destination}',
+        destination: dispatch.destination,
+      );
+    } on ApiV2Exception catch (e) {
+      final isLocked = e.isRateLimited;
+      final retryAfter = e.retryAfter?.inSeconds;
       state = state.copyWith(
         isLoading: false,
-        errorMessage: response.message,
-        isLocked: response.isLocked,
-        retryAfter: response.retryAfter,
+        errorMessage: e.message,
+        isLocked: isLocked,
+        retryAfter: retryAfter,
       );
+      return AuthResponse(
+        success: false,
+        message: e.message,
+        isLocked: isLocked,
+        retryAfter: retryAfter,
+      );
+    } catch (_) {
+      state =
+          state.copyWith(isLoading: false, errorMessage: 'Failed to send OTP');
+      return const AuthResponse(success: false, message: 'Failed to send OTP');
     }
-    return response;
   }
 
   /// Login with OTP
   Future<AuthResponse> login(String otpCode) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _authService.login(
-      phoneNumber: state.phoneNumber ?? '',
-      otpCode: otpCode,
-    );
-    if (response.success && response.user != null) {
-      // Register restore credential with Android CredentialManager for Zero-Tap Sign-In
+    try {
+      final session = await _authService.login(
+        phoneNumber: state.phoneNumber ?? '',
+        otpCode: otpCode,
+      );
+      await _apiClient.setAuthToken(session.token);
+      final user = session.user.toUser();
       try {
         final restoreService = _ref.read(restoreCredentialServiceProvider);
         await restoreService.registerCredential(
           deviceName: await _getDeviceName(),
         );
       } catch (_) {}
-      state = AuthState.authenticated(response.user!);
-    } else {
+      state = AuthState.authenticated(user);
+      return AuthResponse(
+        success: true,
+        message: 'Login successful',
+        user: user,
+        token: session.token,
+      );
+    } on ApiV2Exception catch (e) {
+      final isLocked = e.isRateLimited;
+      final retryAfter = e.retryAfter?.inSeconds;
       state = state.copyWith(
         isLoading: false,
-        errorMessage: response.message,
+        errorMessage: e.message,
         otpMessage: state.otpMessage,
         destination: state.destination,
-        isLocked: response.isLocked,
-        retryAfter: response.retryAfter,
+        isLocked: isLocked,
+        retryAfter: retryAfter,
       );
+      return AuthResponse(
+        success: false,
+        message: e.message,
+        isLocked: isLocked,
+        retryAfter: retryAfter,
+      );
+    } catch (_) {
+      state = state.copyWith(isLoading: false, errorMessage: 'Login failed');
+      return const AuthResponse(success: false, message: 'Login failed');
     }
-    return response;
   }
 
   Future<AuthResponse> loginWithGoogle() async {
@@ -122,7 +170,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final GoogleSignInAccount? account = await googleSignIn.signIn();
       if (account == null) {
         state = state.copyWith(isLoading: false);
-        return const AuthResponse(success: false, message: 'Google Sign-In cancelled');
+        return const AuthResponse(
+            success: false, message: 'Google Sign-In cancelled');
       }
 
       final GoogleSignInAuthentication auth = await account.authentication;
@@ -133,9 +182,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         return const AuthResponse(success: false, message: msg);
       }
 
-      final response = await _authService.googleLogin(idToken: idToken);
+      final response = await AuthService(apiClient: _apiClient)
+          .googleLogin(idToken: idToken);
       if (response.success && response.user != null) {
-        // Register restore credential with Android CredentialManager for Zero-Tap Sign-In
         try {
           final restoreService = _ref.read(restoreCredentialServiceProvider);
           await restoreService.registerCredential(
@@ -144,8 +193,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         } catch (_) {}
         state = AuthState.authenticated(response.user!);
       } else {
-
-        state = state.copyWith(isLoading: false, errorMessage: response.message);
+        state =
+            state.copyWith(isLoading: false, errorMessage: response.message);
       }
       return response;
     } catch (e) {
@@ -156,69 +205,64 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   /// Verify OTP
   Future<AuthResponse> verifyOtp(String otpCode) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _authService.verifyOtp(
-      phoneNumber: state.phoneNumber ?? '',
-      otpCode: otpCode,
-    );
-    if (response.success) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: null,
-        isLocked: false,
-        retryAfter: null,
-      );
-    } else {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: response.message,
-        otpMessage: state.otpMessage,
-        destination: state.destination,
-        isLocked: response.isLocked,
-        retryAfter: response.retryAfter,
-      );
-    }
-    return response;
+    return login(otpCode);
   }
 
   /// Resend OTP
   Future<AuthResponse> resendOtp() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _authService.resendOtp(
-      phoneNumber: state.phoneNumber ?? '',
-    );
-    if (response.success) {
+    try {
+      final dispatch = await _authService.resendOtp(state.phoneNumber ?? '');
       state = state.copyWith(
         isLoading: false,
-        otpMessage: response.message,
-        destination: response.destination,
+        otpMessage: 'OTP resent to ${dispatch.destination}',
+        destination: dispatch.destination,
         isLocked: false,
         retryAfter: null,
       );
-    } else {
+      return AuthResponse(
+        success: true,
+        message: 'OTP resent to ${dispatch.destination}',
+        destination: dispatch.destination,
+      );
+    } on ApiV2Exception catch (e) {
+      final isLocked = e.isRateLimited;
+      final retryAfter = e.retryAfter?.inSeconds;
       state = state.copyWith(
         isLoading: false,
-        errorMessage: response.message,
+        errorMessage: e.message,
         otpMessage: state.otpMessage,
         destination: state.destination,
-        isLocked: response.isLocked,
-        retryAfter: response.retryAfter,
+        isLocked: isLocked,
+        retryAfter: retryAfter,
       );
+      return AuthResponse(
+        success: false,
+        message: e.message,
+        isLocked: isLocked,
+        retryAfter: retryAfter,
+      );
+    } catch (_) {
+      state = state.copyWith(
+          isLoading: false, errorMessage: 'Failed to resend OTP');
+      return const AuthResponse(
+          success: false, message: 'Failed to resend OTP');
     }
-    return response;
   }
 
   /// Logout
   Future<void> logout() async {
-    // Clean up FCM token before logging out to stop receiving pushes
     try {
       _ref.read(fcmServiceProvider).cleanup();
     } catch (_) {}
     try {
       await _ref.read(restoreCredentialServiceProvider).clearCredential();
     } catch (_) {}
-    await _authService.logout();
-    state = AuthState.unauthenticated();
+    try {
+      await _authService.logout();
+    } catch (_) {}
+    await _apiClient.clearAuthToken();
+    state = const AuthState.unauthenticated();
   }
 
   /// Force logout on session expiry / token revocation
@@ -226,9 +270,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (_forcingLogout) return;
     _forcingLogout = true;
 
-    // Clear the authenticated state synchronously so the router cannot show
-    // the login screen while the app still believes the user is signed in.
-    state = AuthState.unauthenticated();
+    state = const AuthState.unauthenticated();
 
     try {
       _ref.read(fcmServiceProvider).cleanup();
@@ -237,8 +279,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await _ref.read(restoreCredentialServiceProvider).clearCredential();
     } catch (_) {}
     try {
-      // The token is already invalid, so do not attempt a server logout.
-      await _authService.clearLocalSession();
+      await _apiClient.clearAuthToken();
     } catch (_) {}
 
     _forcingLogout = false;
@@ -273,14 +314,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   /// Reset auth state to initial (used when canceling registration)
   void resetState() {
-    state = AuthState.initial();
+    state = const AuthState.initial();
   }
 
   /// Get device name for restore credential
   Future<String> _getDeviceName() async {
     try {
-      // Try to get device info using platform channel or package
-      // For now, return a generic name
       return 'Android Device';
     } catch (_) {
       return 'Unknown Device';
@@ -297,49 +336,72 @@ class AuthNotifier extends StateNotifier<AuthState> {
     String? otpCode,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _authService.register(
-      firstName: firstName,
-      lastName: lastName,
-      phoneNumber: phoneNumber,
-      gender: gender,
-      email: email,
-      otpCode: otpCode,
-    );
-    if (response.success) {
+    try {
       if (otpCode == null) {
-        // OTP sent successfully
+        final dispatch = await _authService.sendRegistrationOtp(
+          phoneNumber,
+          email: email,
+        );
         state = state.copyWith(
           isLoading: false,
           phoneNumber: phoneNumber,
           otpSent: true,
-          otpMessage: response.message,
-          destination: response.destination,
+          otpMessage: 'OTP sent to ${dispatch.destination}',
+          destination: dispatch.destination,
           isLocked: false,
           retryAfter: null,
         );
+        return AuthResponse(
+          success: true,
+          message: 'OTP sent to ${dispatch.destination}',
+          destination: dispatch.destination,
+        );
       } else {
-        // Registration complete, user authenticated
-        if (response.user != null) {
-          try {
-            final restoreService = _ref.read(restoreCredentialServiceProvider);
-            await restoreService.registerCredential(
-              deviceName: await _getDeviceName(),
-            );
-          } catch (_) {}
-          state = AuthState.authenticated(response.user!);
-        }
+        final session = await _authService.register(
+          firstName: firstName,
+          lastName: lastName,
+          phoneNumber: phoneNumber,
+          gender: gender,
+          otpCode: otpCode,
+          email: email,
+        );
+        await _apiClient.setAuthToken(session.token);
+        final user = session.user.toUser();
+        try {
+          final restoreService = _ref.read(restoreCredentialServiceProvider);
+          await restoreService.registerCredential(
+            deviceName: await _getDeviceName(),
+          );
+        } catch (_) {}
+        state = AuthState.authenticated(user);
+        return AuthResponse(
+          success: true,
+          message: 'Registration successful',
+          user: user,
+          token: session.token,
+        );
       }
-    } else {
+    } on ApiV2Exception catch (e) {
+      final isLocked = e.isRateLimited;
+      final retryAfter = e.retryAfter?.inSeconds;
       state = state.copyWith(
         isLoading: false,
-        errorMessage: response.message,
-        isLocked: response.isLocked,
-        retryAfter: response.retryAfter,
+        errorMessage: e.message,
+        isLocked: isLocked,
+        retryAfter: retryAfter,
       );
+      return AuthResponse(
+        success: false,
+        message: e.message,
+        isLocked: isLocked,
+        retryAfter: retryAfter,
+      );
+    } catch (_) {
+      state =
+          state.copyWith(isLoading: false, errorMessage: 'Registration failed');
+      return const AuthResponse(success: false, message: 'Registration failed');
     }
-    return response;
   }
-
 }
 
 /// Auth State
@@ -347,80 +409,86 @@ class AuthState {
   final bool isAuthenticated;
   final bool isLoading;
   final bool otpSent;
-  final User? user;
   final String? phoneNumber;
-  final String? otpMessage;
   final String? errorMessage;
+  final String? otpMessage;
   final String? destination;
   final bool isLocked;
   final int? retryAfter;
+  final User? user;
 
   const AuthState({
     required this.isAuthenticated,
-    this.isLoading = false,
+    required this.isLoading,
     this.otpSent = false,
-    this.user,
     this.phoneNumber,
-    this.otpMessage,
     this.errorMessage,
+    this.otpMessage,
     this.destination,
     this.isLocked = false,
     this.retryAfter,
+    this.user,
   });
 
-  factory AuthState.initial() => const AuthState(
-    isAuthenticated: false,
-    isLoading: false,
-    otpSent: false,
-    isLocked: false,
-  );
+  const AuthState.initial()
+      : isAuthenticated = false,
+        isLoading = false,
+        otpSent = false,
+        phoneNumber = null,
+        errorMessage = null,
+        otpMessage = null,
+        destination = null,
+        isLocked = false,
+        retryAfter = null,
+        user = null;
 
-  factory AuthState.authenticated(User user) => AuthState(
-    isAuthenticated: true,
-    isLoading: false,
-    otpSent: false,
-    user: user,
-    phoneNumber: user.phoneNumber,
-    errorMessage: null,
-    isLocked: false,
-    retryAfter: null,
-  );
+  const AuthState.authenticated(this.user)
+      : isAuthenticated = true,
+        isLoading = false,
+        otpSent = false,
+        phoneNumber = null,
+        errorMessage = null,
+        otpMessage = null,
+        destination = null,
+        isLocked = false,
+        retryAfter = null;
 
-  factory AuthState.unauthenticated() => const AuthState(
-    isAuthenticated: false,
-    isLoading: false,
-    otpSent: false,
-    user: null,
-    phoneNumber: null,
-    errorMessage: null,
-    isLocked: false,
-    retryAfter: null,
-  );
+  const AuthState.unauthenticated()
+      : isAuthenticated = false,
+        isLoading = false,
+        otpSent = false,
+        phoneNumber = null,
+        errorMessage = null,
+        otpMessage = null,
+        destination = null,
+        isLocked = false,
+        retryAfter = null,
+        user = null;
 
   AuthState copyWith({
     bool? isAuthenticated,
     bool? isLoading,
     bool? otpSent,
-    User? user,
     String? phoneNumber,
-    String? otpMessage,
     String? errorMessage,
+    String? otpMessage,
     String? destination,
     bool? isLocked,
     int? retryAfter,
     bool clearLockout = false,
+    User? user,
   }) {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       isLoading: isLoading ?? this.isLoading,
       otpSent: otpSent ?? this.otpSent,
-      user: user ?? this.user,
       phoneNumber: phoneNumber ?? this.phoneNumber,
-      otpMessage: otpMessage,
       errorMessage: errorMessage,
+      otpMessage: otpMessage,
       destination: destination,
       isLocked: clearLockout ? false : (isLocked ?? this.isLocked),
       retryAfter: clearLockout ? null : (retryAfter ?? this.retryAfter),
+      user: user ?? this.user,
     );
   }
 }

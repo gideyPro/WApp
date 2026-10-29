@@ -1,37 +1,64 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/services/profile_service.dart';
+import '../../core/network/v2/api_v2_error.dart';
+import '../../data/models/v2/profile.dart';
+import '../../data/services/v2/profile_service.dart';
+import 'v2_providers.dart';
 
-/// Profile Provider
-final profileServiceProvider =
-    Provider<ProfileService>((ref) => ProfileService());
+/// Profile Provider backed by `/v2/me`
 final profileProvider =
     StateNotifierProvider<ProfileNotifier, ProfileState>((ref) {
-  return ProfileNotifier(ref.watch(profileServiceProvider));
+  return ProfileNotifier(ref.watch(profileV2ServiceProvider));
 });
 
 class ProfileNotifier extends StateNotifier<ProfileState> {
-  final ProfileService _profileService;
+  final ProfileServiceV2 _profileService;
   ProfileNotifier(this._profileService) : super(const ProfileState.initial());
 
   Future<void> loadProfile() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _profileService.getProfile();
-    if (response.success && response.user != null) {
-      state = ProfileState.loaded(response.user!, stats: response.stats);
-    } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+    try {
+      final profile = await _profileService.fetch();
+      state = ProfileState.loaded(profile.user.toUser(), stats: profile.stats);
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(isLoading: false, errorMessage: error.message);
+    } catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Could not load profile',
+      );
     }
   }
 
   Future<bool> updateProfile(Map<String, dynamic> data) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final response = await _profileService.updateProfile(data);
-    if (response.success && response.user != null) {
-      state = ProfileState.loaded(response.user!, stats: state.stats);
-    } else {
-      state = state.copyWith(isLoading: false, errorMessage: response.message);
+    try {
+      final updatedUser = await _profileService.update(
+        firstName: data['first_name'] as String?,
+        lastName: data['last_name'] as String?,
+        email: data['email'] as String?,
+        gender: data['gender'] as String?,
+      );
+      state = ProfileState.loaded(updatedUser.toUser(), stats: state.stats);
+      return true;
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(isLoading: false, errorMessage: error.message);
+      return false;
+    } catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Could not update profile',
+      );
+      return false;
     }
-    return response.success;
+  }
+
+  Future<bool> deleteAccount() async {
+    try {
+      await _profileService.deleteAccount();
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 }
 
