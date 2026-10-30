@@ -15,6 +15,7 @@ import '../../widgets/common/wave_liquid_glass.dart';
 import '../../../data/models/v2/conversation.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/network/v2/api_v2_error.dart';
 
 /// Format a DateTime into a human-readable time string
 String _formatTime(DateTime? dt, AppLocalizations l10n) {
@@ -458,23 +459,34 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   Future<void> _startCall({required bool isVideo}) async {
     final l10n = AppLocalizations.of(context);
-    final result = await ref.read(conferenceServiceProvider).startDirectCall(
-          conversationId: widget.conversationId,
-          isVideo: isVideo,
-        );
-    if (result.success && result.conference != null) {
+    try {
+      final conf = await ref.read(conferenceV2ServiceProvider).startDirect(
+            conversationId: widget.conversationId,
+            isVideo: isVideo,
+          );
+      final joinResult =
+          await ref.read(conferenceV2ServiceProvider).join(conf.id);
       if (mounted) {
-        context.push('/call/${result.conference!.id}', extra: {
+        context.push('/call/${conf.id}', extra: {
+          'url': joinResult.credentials.url,
+          'token': joinResult.credentials.token,
           'is_video': isVideo,
         });
       }
-    } else {
+    } on ApiV2Exception catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              result.message.isNotEmpty ? result.message : l10n.commonError,
-            ),
+            content: Text(e.message),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.commonError),
             backgroundColor: AppColors.error,
           ),
         );

@@ -780,18 +780,34 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                     child: ElevatedButton(
                       onPressed: () async {
                         Navigator.pop(dialogContext);
-                        const url = '${ApiConstants.baseUrl}/account/deletion';
-                        final uri = Uri.parse(url);
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(uri,
-                              mode: LaunchMode.externalApplication);
-                        } else if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text(AppLocalizations.of(context)
-                                    .settingsBrowserErrorMessage(url)),
-                                backgroundColor: AppColors.error),
-                          );
+                        try {
+                          await ref
+                              .read(profileV2ServiceProvider)
+                              .deleteAccount();
+                          await ref.read(authStateProvider.notifier).logout();
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Account deleted successfully'),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                          }
+                        } catch (_) {
+                          const url =
+                              '${ApiConstants.baseUrl}/account/deletion';
+                          final uri = Uri.parse(url);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri,
+                                mode: LaunchMode.externalApplication);
+                          } else if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(AppLocalizations.of(context)
+                                      .settingsBrowserErrorMessage(url)),
+                                  backgroundColor: AppColors.error),
+                            );
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(

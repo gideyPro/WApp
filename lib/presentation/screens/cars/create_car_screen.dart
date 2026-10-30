@@ -21,7 +21,6 @@ import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
-import '../../providers/car_providers.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/v2_providers.dart';
 import '../../../core/utils/ethiopian_date_helper.dart';
@@ -460,7 +459,6 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       // Submit for moderation
       await ref.read(ownerListingServiceProvider).submit(draft.id);
 
-      _submittedSuccessfully = true;
       ref.invalidate(subscriptionOverviewProvider);
       unawaited(ref.read(subscriptionProvider.notifier).refresh());
       await _cleanupImages();

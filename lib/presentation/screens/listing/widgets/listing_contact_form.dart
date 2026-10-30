@@ -260,27 +260,23 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
 
   Future<void> _startCall({required bool isVideo}) async {
     setState(() => _isActionLoading = true);
+    final l10n = AppLocalizations.of(context);
     try {
-      final l10n = AppLocalizations.of(context);
       final conversation = await ref.read(conversationV2ServiceProvider).start(
             listingId: widget.listing.id,
           );
-      final conferenceService = ref.read(conferenceServiceProvider);
-      final callResult = await conferenceService.startDirectCall(
-        conversationId: conversation.id,
-        isVideo: isVideo,
-      );
-      if (callResult.success && callResult.conference != null && mounted) {
-        context.push('/call/${callResult.conference!.id}',
-            extra: {'is_video': isVideo});
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(callResult.message.isNotEmpty
-                  ? callResult.message
-                  : l10n.commonError),
-              backgroundColor: AppColors.error),
-        );
+      final conf = await ref.read(conferenceV2ServiceProvider).startDirect(
+            conversationId: conversation.id,
+            isVideo: isVideo,
+          );
+      final joinResult =
+          await ref.read(conferenceV2ServiceProvider).join(conf.id);
+      if (mounted) {
+        context.push('/call/${conf.id}', extra: {
+          'url': joinResult.credentials.url,
+          'token': joinResult.credentials.token,
+          'is_video': isVideo,
+        });
       }
     } on ApiV2Exception catch (error) {
       if (mounted) {
@@ -295,7 +291,7 @@ class _ListingContactFormState extends ConsumerState<ListingContactForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(AppLocalizations.of(context).commonError),
+              content: Text(l10n.commonError),
               backgroundColor: AppColors.error),
         );
       }

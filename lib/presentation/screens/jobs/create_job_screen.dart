@@ -19,7 +19,6 @@ import '../../../data/services/address_service.dart';
 import '../../../data/services/listing_media_manager.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_spacing.dart';
-import '../../providers/job_providers.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/v2_providers.dart';
 import '../listing/widgets/submission_overlay.dart';

@@ -155,6 +155,10 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
   }
 
   Future<String> _getConferenceUrl() async {
+    if (widget.jitsiUrl != null && widget.jitsiUrl!.isNotEmpty) {
+      _conferenceUrl = widget.jitsiUrl!;
+      return widget.jitsiUrl!;
+    }
     final apiClient = ref.read(apiClientProvider);
     final token = await apiClient.getAuthToken();
     final uri = Uri.parse(
@@ -172,11 +176,12 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
       final incoming = Uri.parse(url);
       final conference = Uri.parse(_conferenceUrl!);
 
-      // We strictly only allow the exact conference join path on our domain.
+      // We strictly only allow the exact conference join path on our domain or Jitsi host.
       // If Jitsi redirects to / (home) or any other path after the call,
       // this will return false and trigger the screen to close.
       return incoming.host == conference.host &&
-          incoming.path == conference.path;
+          (incoming.path == conference.path ||
+              incoming.path.startsWith(conference.path));
     } catch (_) {
       return false;
     }

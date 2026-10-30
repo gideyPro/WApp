@@ -45,16 +45,16 @@ class FcmService {
 
       final type = message.data['type'];
       final notification = message.notification;
-      
+
       // Update Providers
       if (type == 'incoming_call') {
         _handleIncomingCall(message.data);
       } else if (type == 'message') {
         _ref.read(unreadMessagesCountProvider.notifier).refresh();
-        
+
         // Instant List Update: Refresh the conversations list so the snippet update is visible
         _ref.read(conversationsProvider.notifier).loadConversations();
-        
+
         // Phase 2: Refresh chat messages if we are in a conversation
         final conversationIdStr = message.data['conversation_id'];
         if (conversationIdStr != null) {
@@ -67,7 +67,7 @@ class FcmService {
       } else {
         // General Notification
         _ref.read(unreadCountProvider.notifier).refresh();
-        
+
         // Refresh the notifications list if the user is on that screen
         _ref.read(notificationsProvider.notifier).loadNotifications();
       }
@@ -76,9 +76,12 @@ class FcmService {
       if (notification != null && type != 'incoming_call') {
         // Suppress notification if user is already on the relevant chat page
         final activeConvId = _ref.read(activeConversationIdProvider);
-        final msgConvId = int.tryParse(message.data['conversation_id']?.toString() ?? '');
-        
-        if (type == 'message' && activeConvId != null && activeConvId == msgConvId) {
+        final msgConvId =
+            int.tryParse(message.data['conversation_id']?.toString() ?? '');
+
+        if (type == 'message' &&
+            activeConvId != null &&
+            activeConvId == msgConvId) {
           log('Suppressing duplicate notification for active chat: $msgConvId');
           return;
         }
@@ -88,7 +91,9 @@ class FcmService {
           id: localId,
           title: notification.title ?? 'Wavemart',
           body: notification.body ?? '',
-          payload: type == 'message' ? message.data['conversation_id']?.toString() : null,
+          payload: type == 'message'
+              ? message.data['conversation_id']?.toString()
+              : null,
         );
 
         final notifIdStr = message.data['notification_id'];
@@ -105,7 +110,7 @@ class FcmService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       log('App opened from notification!');
       final type = message.data['type'];
-      
+
       if (type == 'incoming_call') {
         _handleIncomingCall(message.data);
       } else if (type == 'message') {
@@ -136,13 +141,15 @@ class FcmService {
 
   void _handleIncomingCall(Map<String, dynamic> data) {
     _ref.read(incomingCallProvider.notifier).setIncomingCall(IncomingCall(
-      conferenceId: int.tryParse(data['conference_id'].toString()) ?? 0,
-      callerName: data['caller_name'] ?? 'Unknown',
-      callerAvatar: data['caller_avatar'],
-      callerInitials: data['caller_initials'],
-      listingTitle: data['listing_title'],
-      isVideo: data['is_video'] == '1',
-    ));
+          conferenceId: int.tryParse(data['conference_id'].toString()) ?? 0,
+          callerName: data['caller_name'] ?? 'Unknown',
+          callerAvatar: data['caller_avatar'],
+          callerInitials: data['caller_initials'],
+          listingTitle: data['listing_title'],
+          isVideo: data['is_video'] == '1' ||
+              data['is_video'] == true ||
+              data['is_video'] == 'true',
+        ));
   }
 
   /// Clean up FCM on logout — delete token so logged-out user stops receiving pushes

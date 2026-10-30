@@ -7,8 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../core/network/v2/api_v2_error.dart';
+import '../../../data/models/image.dart';
 import '../../../data/models/listing.dart';
 import '../../../data/models/car_form_data.dart';
+import '../../../data/models/v2/listing_detail.dart';
+import '../../../data/models/v2/owner_listing.dart';
 import '../../../data/car_data.dart';
 import '../../../data/services/address_service.dart';
 import '../../../data/services/listing_media_manager.dart';
@@ -18,15 +22,14 @@ import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
-import '../../providers/car_providers.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/v2_providers.dart';
 import '../../../core/utils/ethiopian_date_helper.dart';
 import '../../../core/utils/format_utils.dart';
 import '../listing/widgets/submission_overlay.dart';
 
-
 class EditCarScreen extends ConsumerStatefulWidget {
-  final Listing listing;
+  final dynamic listing;
   const EditCarScreen({super.key, required this.listing});
 
   @override
@@ -44,7 +47,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
   AppLocalizations get l10n => AppLocalizations.of(context);
 
-  List<String> get _availableModels => modelsForCategoryMake(_formData.vehicleCategory, _formData.make);
+  List<String> get _availableModels =>
+      modelsForCategoryMake(_formData.vehicleCategory, _formData.make);
 
   AddressService get _addressService => ref.read(addressServiceProvider);
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
@@ -64,34 +68,80 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     super.initState();
     final l = widget.listing;
 
-    _formData = CarFormData(
-      vehicleCategory: l.carVehicleCategory ?? 'car',
-      make: l.carMake ?? '',
-      model: l.carModel ?? '',
-      year: l.carYear?.toString() ?? '',
-      mileageKm: l.carMileageKm?.toString() ?? '',
-      bodyType: l.carBodyType ?? '',
-      color: l.carColor ?? '',
-      condition: l.carCondition ?? '',
-      vin: l.carVin ?? '',
-      features: l.carFeatures ?? [],
-      isForRent: l.listingType == ListingType.rental,
-      rentalPeriodUnit: l.rentalPeriodUnit?.toString().split('.').last ?? '',
-      priceFixed: l.priceFixed,
-      addressId: l.addressId,
-      specificLocation: l.specificLocation ?? '',
-      description: l.description ?? '',
-      existingImages: l.images,
-      isVip: l.isVip,
-      postedByAgent: l.postedByAgent,
-      agentId: l.agentId?.toString() ?? '',
-      termsAccepted: true,
-    );
+    if (l is ListingDetail) {
+      final images = l.images
+          .where((img) => img.url != null)
+          .map((img) => ImageModel(
+                id: img.id ?? 0,
+                imagePath: img.url!,
+              ))
+          .toList();
+      _formData = CarFormData(
+        vehicleCategory: l.details.vehicleCategory ?? 'car',
+        make: l.details.make ?? '',
+        model: l.details.model ?? '',
+        year: l.details.year?.toString() ?? '',
+        mileageKm: l.details.mileageKm?.toString() ?? '',
+        bodyType: l.details.bodyType ?? '',
+        color: l.details.color ?? '',
+        condition: l.details.condition ?? '',
+        vin: l.details.raw['vin']?.toString() ?? '',
+        isForRent: l.listingType == 'rental',
+        rentalPeriodUnit: l.price.period ?? '',
+        priceFixed: l.price.amount,
+        specificLocation: l.attributes.specificLocation ?? '',
+        description: l.description ?? '',
+        existingImages: images,
+        isVip: l.isVip,
+        termsAccepted: true,
+      );
+    } else if (l is OwnerListing) {
+      _formData = CarFormData(
+        vehicleCategory: 'car',
+        make: '',
+        model: '',
+        isForRent: l.listingType == 'rental',
+        priceFixed: l.price.amount,
+        isVip: l.isVip,
+        termsAccepted: true,
+      );
+    } else if (l is Listing) {
+      _formData = CarFormData(
+        vehicleCategory: l.carVehicleCategory ?? 'car',
+        make: l.carMake ?? '',
+        model: l.carModel ?? '',
+        year: l.carYear?.toString() ?? '',
+        mileageKm: l.carMileageKm?.toString() ?? '',
+        bodyType: l.carBodyType ?? '',
+        color: l.carColor ?? '',
+        condition: l.carCondition ?? '',
+        vin: l.carVin ?? '',
+        features: l.carFeatures ?? [],
+        isForRent: l.listingType == ListingType.rental,
+        rentalPeriodUnit: l.rentalPeriodUnit?.toString().split('.').last ?? '',
+        priceFixed: l.priceFixed,
+        addressId: l.addressId,
+        specificLocation: l.specificLocation ?? '',
+        description: l.description ?? '',
+        existingImages: l.images,
+        isVip: l.isVip,
+        postedByAgent: l.postedByAgent,
+        agentId: l.agentId?.toString() ?? '',
+        termsAccepted: true,
+      );
+    } else {
+      _formData = CarFormData(termsAccepted: true);
+    }
 
-    _specificLocationController = TextEditingController(text: l.specificLocation ?? '');
+    _specificLocationController =
+        TextEditingController(text: l.specificLocation ?? '');
     _yearController = TextEditingController(text: _formData.year)
-      ..addListener(() => _formData = _formData.copyWith(year: _yearController.text));
-    _priceController = TextEditingController(text: _formData.priceFixed != null ? smartDecimal(_formData.priceFixed!) : '')
+      ..addListener(
+          () => _formData = _formData.copyWith(year: _yearController.text));
+    _priceController = TextEditingController(
+        text: _formData.priceFixed != null
+            ? smartDecimal(_formData.priceFixed!)
+            : '')
       ..addListener(() {
         if (_formatting) return;
         _formatting = true;
@@ -109,11 +159,16 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       });
     final existingMakes = makesForCategory(l.carVehicleCategory ?? 'car');
     _customMakeController = TextEditingController(
-      text: (l.carMake != null && !existingMakes.contains(l.carMake!)) ? l.carMake! : '',
+      text: (l.carMake != null && !existingMakes.contains(l.carMake!))
+          ? l.carMake!
+          : '',
     );
-    final existingModels = modelsForCategoryMake(l.carVehicleCategory ?? 'car', l.carMake ?? '');
+    final existingModels =
+        modelsForCategoryMake(l.carVehicleCategory ?? 'car', l.carMake ?? '');
     _customModelController = TextEditingController(
-      text: (l.carModel != null && !existingModels.contains(l.carModel!)) ? l.carModel! : '',
+      text: (l.carModel != null && !existingModels.contains(l.carModel!))
+          ? l.carModel!
+          : '',
     );
     _selectedRegion = l.address?.region;
     _selectedZone = l.address?.zone;
@@ -142,7 +197,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
   void _goToStep(int step) {
     setState(() => _currentStep = step);
-    _pageController.animateToPage(step, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    _pageController.animateToPage(step,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
   void _nextStep() {
@@ -163,23 +219,40 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     final errors = <String>[];
     switch (_currentStep) {
       case 0:
-        if (_formData.make.isEmpty || (_formData.make == '__other__' && _customMakeController.text.isEmpty)) errors.add('${l10n.listingMake} ${l10n.commonIsRequired}');
-        if (_formData.model.isEmpty || (_formData.model == '__other__' && _customModelController.text.isEmpty)) errors.add('${l10n.listingModel} ${l10n.commonIsRequired}');
-        if (_formData.vehicleCategory != 'bicycle' && _formData.year.isEmpty) errors.add('${l10n.listingYear} ${l10n.commonIsRequired}');
-        if (_formData.condition.isEmpty) errors.add('${l10n.listingCondition} ${l10n.commonIsRequired}');
-        if (_formData.color.isEmpty) errors.add('${l10n.listingColor} ${l10n.commonIsRequired}');
-        if (_formData.vehicleCategory != 'bicycle' && _formData.mileageKm.isEmpty) errors.add('${l10n.listingMileage} ${l10n.commonIsRequired}');
-        if ((_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') && _formData.bodyType.isEmpty) errors.add('${l10n.listingBodyType} ${l10n.commonIsRequired}');
+        if (_formData.make.isEmpty ||
+            (_formData.make == '__other__' &&
+                _customMakeController.text.isEmpty))
+          errors.add('${l10n.listingMake} ${l10n.commonIsRequired}');
+        if (_formData.model.isEmpty ||
+            (_formData.model == '__other__' &&
+                _customModelController.text.isEmpty))
+          errors.add('${l10n.listingModel} ${l10n.commonIsRequired}');
+        if (_formData.vehicleCategory != 'bicycle' && _formData.year.isEmpty)
+          errors.add('${l10n.listingYear} ${l10n.commonIsRequired}');
+        if (_formData.condition.isEmpty)
+          errors.add('${l10n.listingCondition} ${l10n.commonIsRequired}');
+        if (_formData.color.isEmpty)
+          errors.add('${l10n.listingColor} ${l10n.commonIsRequired}');
+        if (_formData.vehicleCategory != 'bicycle' &&
+            _formData.mileageKm.isEmpty)
+          errors.add('${l10n.listingMileage} ${l10n.commonIsRequired}');
+        if ((_formData.vehicleCategory == 'car' ||
+                _formData.vehicleCategory == 'construction_equipment') &&
+            _formData.bodyType.isEmpty)
+          errors.add('${l10n.listingBodyType} ${l10n.commonIsRequired}');
         break;
       case 1:
-        if (!_formData.isForRent && _formData.priceFixed == null) errors.add('${l10n.listingPriceEtb} ${l10n.commonIsRequired}');
+        if (!_formData.isForRent && _formData.priceFixed == null)
+          errors.add('${l10n.listingPriceEtb} ${l10n.commonIsRequired}');
         if (_formData.addressId == null) errors.add(l10n.carLocationRequired);
         break;
       case 2:
         final totalImages = _formData.images.length +
             _formData.existingImages.length -
             _formData.removedImageIds.length;
-        if (_formData.description.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
+        if (_formData.description.isEmpty)
+          errors
+              .add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
         if (totalImages == 0) errors.add(l10n.listingErrorImageRequired);
         if (_formData.postedByAgent && _formData.agentId.trim().isEmpty) {
           errors.add(l10n.agentIdRequired);
@@ -194,7 +267,10 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     try {
       final response = await _addressService.getRegions(locale: locale);
       if (mounted && response.success) {
-        setState(() => _regions = response.regions.map((r) => r.region ?? '').where((s) => s.isNotEmpty).toList());
+        setState(() => _regions = response.regions
+            .map((r) => r.region ?? '')
+            .where((s) => s.isNotEmpty)
+            .toList());
       }
     } catch (_) {
       if (mounted) setState(() => _regions = []);
@@ -206,9 +282,13 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     setState(() => _loadingZones = true);
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getZones(region: _selectedRegion!, locale: locale);
+      final response = await _addressService.getZones(
+          region: _selectedRegion!, locale: locale);
       if (mounted && response.success) {
-        setState(() => _zones = response.zones.map((z) => z.zone ?? '').where((s) => s.isNotEmpty).toList());
+        setState(() => _zones = response.zones
+            .map((z) => z.zone ?? '')
+            .where((s) => s.isNotEmpty)
+            .toList());
       }
     } catch (_) {
       if (mounted) setState(() => _zones = []);
@@ -222,9 +302,13 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     setState(() => _loadingWoredas = true);
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getWoredas(region: _selectedRegion!, zone: _selectedZone!, locale: locale);
+      final response = await _addressService.getWoredas(
+          region: _selectedRegion!, zone: _selectedZone!, locale: locale);
       if (mounted && response.success) {
-        setState(() => _woredas = response.woredas.map((w) => w.woreda ?? '').where((s) => s.isNotEmpty).toList());
+        setState(() => _woredas = response.woredas
+            .map((w) => w.woreda ?? '')
+            .where((s) => s.isNotEmpty)
+            .toList());
       }
     } catch (_) {
       if (mounted) setState(() => _woredas = []);
@@ -234,16 +318,27 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   }
 
   Future<void> _loadKebeles() async {
-    if (_selectedRegion == null || _selectedZone == null || _selectedWoreda == null) return;
+    if (_selectedRegion == null ||
+        _selectedZone == null ||
+        _selectedWoreda == null) return;
     setState(() => _loadingKebeles = true);
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getKebeles(region: _selectedRegion!, zone: _selectedZone!, woreda: _selectedWoreda!, locale: locale);
+      final response = await _addressService.getKebeles(
+          region: _selectedRegion!,
+          zone: _selectedZone!,
+          woreda: _selectedWoreda!,
+          locale: locale);
       if (mounted && response.success) {
         _kebeleIds.clear();
-        final kebeles = response.kebeles.map((k) => k.kebele).where((s) => s != null && s.isNotEmpty).cast<String>().toList();
+        final kebeles = response.kebeles
+            .map((k) => k.kebele)
+            .where((s) => s != null && s.isNotEmpty)
+            .cast<String>()
+            .toList();
         for (final k in response.kebeles) {
-          if (k.kebele != null && k.kebele!.isNotEmpty) _kebeleIds[k.kebele!] = k.id;
+          if (k.kebele != null && k.kebele!.isNotEmpty)
+            _kebeleIds[k.kebele!] = k.id;
         }
         setState(() => _kebeles = kebeles);
       }
@@ -257,16 +352,25 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   Future<void> _onRegionSelected(String? region) async {
     setState(() {
       _selectedRegion = region;
-      _selectedZone = null; _selectedWoreda = null; _selectedKebele = null; _addressId = null;
-      _zones = []; _woredas = []; _kebeles = [];
+      _selectedZone = null;
+      _selectedWoreda = null;
+      _selectedKebele = null;
+      _addressId = null;
+      _zones = [];
+      _woredas = [];
+      _kebeles = [];
     });
     if (region == null) return;
     setState(() => _loadingZones = true);
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getZones(region: region, locale: locale);
+      final response =
+          await _addressService.getZones(region: region, locale: locale);
       if (mounted && response.success) {
-        setState(() => _zones = response.zones.map((z) => z.zone ?? '').where((s) => s.isNotEmpty).toList());
+        setState(() => _zones = response.zones
+            .map((z) => z.zone ?? '')
+            .where((s) => s.isNotEmpty)
+            .toList());
       }
     } catch (_) {
       if (mounted) setState(() => _zones = []);
@@ -278,16 +382,24 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
   Future<void> _onZoneSelected(String? zone) async {
     setState(() {
-      _selectedZone = zone; _selectedWoreda = null; _selectedKebele = null; _addressId = null;
-      _woredas = []; _kebeles = [];
+      _selectedZone = zone;
+      _selectedWoreda = null;
+      _selectedKebele = null;
+      _addressId = null;
+      _woredas = [];
+      _kebeles = [];
     });
     if (zone == null || _selectedRegion == null) return;
     setState(() => _loadingWoredas = true);
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getWoredas(region: _selectedRegion!, zone: zone, locale: locale);
+      final response = await _addressService.getWoredas(
+          region: _selectedRegion!, zone: zone, locale: locale);
       if (mounted && response.success) {
-        setState(() => _woredas = response.woredas.map((w) => w.woreda ?? '').where((s) => s.isNotEmpty).toList());
+        setState(() => _woredas = response.woredas
+            .map((w) => w.woreda ?? '')
+            .where((s) => s.isNotEmpty)
+            .toList());
       }
     } catch (_) {
       if (mounted) setState(() => _woredas = []);
@@ -299,19 +411,31 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
   Future<void> _onWoredaSelected(String? woreda) async {
     setState(() {
-      _selectedWoreda = woreda; _selectedKebele = null; _addressId = null;
+      _selectedWoreda = woreda;
+      _selectedKebele = null;
+      _addressId = null;
       _kebeles = [];
     });
-    if (woreda == null || _selectedRegion == null || _selectedZone == null) return;
+    if (woreda == null || _selectedRegion == null || _selectedZone == null)
+      return;
     setState(() => _loadingKebeles = true);
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getKebeles(region: _selectedRegion!, zone: _selectedZone!, woreda: woreda, locale: locale);
+      final response = await _addressService.getKebeles(
+          region: _selectedRegion!,
+          zone: _selectedZone!,
+          woreda: woreda,
+          locale: locale);
       if (mounted && response.success) {
         _kebeleIds.clear();
-        final kebeles = response.kebeles.map((k) => k.kebele).where((s) => s != null && s.isNotEmpty).cast<String>().toList();
+        final kebeles = response.kebeles
+            .map((k) => k.kebele)
+            .where((s) => s != null && s.isNotEmpty)
+            .cast<String>()
+            .toList();
         for (final k in response.kebeles) {
-          if (k.kebele != null && k.kebele!.isNotEmpty) _kebeleIds[k.kebele!] = k.id;
+          if (k.kebele != null && k.kebele!.isNotEmpty)
+            _kebeleIds[k.kebele!] = k.id;
         }
         setState(() => _kebeles = kebeles);
       }
@@ -345,7 +469,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   }
 
   Future<void> _pickImages() async {
-    final files = await ImagePicker().pickMultiImage(imageQuality: 85, maxWidth: 1920);
+    final files =
+        await ImagePicker().pickMultiImage(imageQuality: 85, maxWidth: 1920);
     if (files.isEmpty) return;
     for (final f in files) {
       if (await f.length() > 10 * 1024 * 1024) {
@@ -359,7 +484,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       }
     }
     final persisted = await ListingMediaManager.persistFiles(files);
-    setState(() => _formData = _formData.copyWith(images: [..._formData.images, ...persisted]));
+    setState(() => _formData =
+        _formData.copyWith(images: [..._formData.images, ...persisted]));
   }
 
   Future<void> _submit() async {
@@ -391,27 +517,63 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
       _startUploadProgressSimulation();
 
-      final submitData = _formData.copyWith(
-        make: makesForCategory(_formData.vehicleCategory).contains(_formData.make)
-            ? _formData.make
-            : _customMakeController.text,
-        model: _availableModels.contains(_formData.model)
-            ? _formData.model
-            : _customModelController.text,
-      );
-      final response = await ref.read(carServiceProvider).updateListing(
-        listingId: widget.listing.id,
-        formData: submitData,
-        onProgress: (progress) {
-          if (!mounted) return;
-          _stopUploadProgressSimulation();
-          _submissionNotifier!.value = SubmissionState.submitting(
-            phase: SubmissionPhase.uploading,
-            label: l10n.submissionUploading,
-            progress: 0.2 + progress * 0.7,
-          );
-        },
-      );
+      final l = widget.listing;
+      final int id = l is ListingDetail
+          ? l.id
+          : l is OwnerListing
+              ? l.id
+              : l is Listing
+                  ? l.id
+                  : 0;
+
+      final make =
+          makesForCategory(_formData.vehicleCategory).contains(_formData.make)
+              ? _formData.make
+              : _customMakeController.text.trim();
+      final model = _availableModels.contains(_formData.model)
+          ? _formData.model
+          : _customModelController.text.trim();
+
+      final payload = <String, dynamic>{
+        'listing_type': _formData.isForRent ? 'rental' : 'sale',
+        if (_formData.priceFixed != null) 'price': _formData.priceFixed,
+        if (_formData.isForRent && _formData.rentalPeriodUnit.isNotEmpty)
+          'rental_period': _formData.rentalPeriodUnit,
+        if (_formData.addressId != null) 'address_id': _formData.addressId,
+        if (_formData.specificLocation.isNotEmpty)
+          'specific_location': _formData.specificLocation,
+        if (_formData.vehicleCategory.isNotEmpty)
+          'vehicle_category': _formData.vehicleCategory,
+        if (make.isNotEmpty) 'make': make,
+        if (model.isNotEmpty) 'model': model,
+        if (_formData.year.isNotEmpty) 'year': int.tryParse(_formData.year),
+        if (_formData.mileageKm.isNotEmpty)
+          'mileage_km': double.tryParse(_formData.mileageKm),
+        if (_formData.bodyType.isNotEmpty) 'body_type': _formData.bodyType,
+        if (_formData.color.isNotEmpty) 'color': _formData.color,
+        if (_formData.condition.isNotEmpty) 'condition': _formData.condition,
+        if (_formData.vin.isNotEmpty) 'vin': _formData.vin,
+        if (_formData.features.isNotEmpty) 'features': _formData.features,
+        if (_formData.description.isNotEmpty)
+          'description': _formData.description,
+      };
+
+      await ref.read(ownerListingServiceProvider).updateCar(id, payload);
+
+      for (final imageId in _formData.removedImageIds) {
+        try {
+          await ref
+              .read(listingMediaV2ServiceProvider)
+              .deleteImage(id, imageId);
+        } catch (_) {}
+      }
+
+      final imageFiles = _formData.images.map((img) => File(img.path)).toList();
+      if (imageFiles.isNotEmpty) {
+        await ref
+            .read(listingMediaV2ServiceProvider)
+            .uploadImages(id, imageFiles);
+      }
 
       _stopUploadProgressSimulation();
 
@@ -421,30 +583,22 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         label: l10n.submissionSaving,
         progress: 0.9,
       );
-      await Future.delayed(const Duration(milliseconds: 300));
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.submitting(
-        phase: SubmissionPhase.saving,
-        label: l10n.submissionSaving,
-        progress: 1.0,
-      );
 
+      ref.invalidate(catalogItemDetailV2Provider);
+      ref.invalidate(myListingsV2Provider);
+      ref.invalidate(homeV2Provider);
       if (!mounted) return;
-      if (response.success) {
-        ref.read(carDetailProvider.notifier).refreshListing(widget.listing.id);
-        if (!mounted) return;
-        _submissionNotifier!.value = SubmissionState.success(
-          message: l10n.submissionUpdatedMessage,
-          isEdit: true,
-        );
-      } else {
-        _submissionNotifier!.value = SubmissionState.error(
-          message: response.message.isNotEmpty
-              ? response.message
-              : l10n.submissionErrorDefault,
-          onRetry: _retrySubmission,
-        );
-      }
+      _submissionNotifier!.value = SubmissionState.success(
+        message: l10n.submissionUpdatedMessage,
+        isEdit: true,
+      );
+    } on ApiV2Exception catch (e) {
+      _stopUploadProgressSimulation();
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.error(
+        message: e.message,
+        onRetry: _retrySubmission,
+      );
     } catch (e) {
       _stopUploadProgressSimulation();
       if (!mounted) return;
@@ -484,85 +638,7 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   }
 
   Future<void> _retrySubmission() async {
-    if (!mounted) return;
-    _submissionNotifier!.value = SubmissionState.submitting(
-      phase: SubmissionPhase.validating,
-      label: l10n.submissionValidating,
-      progress: 0.2,
-    );
-
-    try {
-      await Future.delayed(const Duration(milliseconds: 400));
-
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.submitting(
-        phase: SubmissionPhase.uploading,
-        label: l10n.submissionUploading,
-      );
-
-      _startUploadProgressSimulation();
-
-      final retryData = _formData.copyWith(
-        make: makesForCategory(_formData.vehicleCategory).contains(_formData.make)
-            ? _formData.make
-            : _customMakeController.text,
-        model: _availableModels.contains(_formData.model)
-            ? _formData.model
-            : _customModelController.text,
-      );
-      final response = await ref.read(carServiceProvider).updateListing(
-        listingId: widget.listing.id,
-        formData: retryData,
-        onProgress: (progress) {
-          if (!mounted) return;
-          _stopUploadProgressSimulation();
-          _submissionNotifier!.value = SubmissionState.submitting(
-            phase: SubmissionPhase.uploading,
-            label: l10n.submissionUploading,
-            progress: 0.2 + progress * 0.7,
-          );
-        },
-      );
-
-      _stopUploadProgressSimulation();
-
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.submitting(
-        phase: SubmissionPhase.saving,
-        label: l10n.submissionSaving,
-        progress: 0.9,
-      );
-      await Future.delayed(const Duration(milliseconds: 300));
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.submitting(
-        phase: SubmissionPhase.saving,
-        label: l10n.submissionSaving,
-        progress: 1.0,
-      );
-
-      if (!mounted) return;
-      if (response.success) {
-        ref.read(carDetailProvider.notifier).refreshListing(widget.listing.id);
-        if (!mounted) return;
-        _submissionNotifier!.value = SubmissionState.success(
-          message: l10n.submissionUpdatedMessage,
-          isEdit: true,
-        );
-      } else {
-        _submissionNotifier!.value = SubmissionState.error(
-          message: response.message.isNotEmpty
-              ? response.message
-              : l10n.submissionErrorDefault,
-          onRetry: _retrySubmission,
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.error(
-        message: _friendlyErrorMessage(e),
-        onRetry: _retrySubmission,
-      );
-    }
+    await _submit();
   }
 
   String _friendlyErrorMessage(Object error) {
@@ -603,7 +679,11 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final stepLabels = [l10n.listingStepDetails, l10n.listingPricing, l10n.listingDescriptionLabel];
+    final stepLabels = [
+      l10n.listingStepDetails,
+      l10n.listingPricing,
+      l10n.listingDescriptionLabel
+    ];
     return PopScope(
       canPop: true,
       child: Scaffold(
@@ -614,14 +694,18 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                   icon: const Icon(Icons.arrow_back_rounded),
                   onPressed: _prevStep,
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
+                  constraints:
+                      const BoxConstraints(minWidth: 32, minHeight: 48),
                 )
               : null,
           title: Text(l10n.listingEditTitle),
           actions: [
             TextButton(
-              onPressed: _isSubmitting ? null : (_currentStep == 2 ? _submit : _nextStep),
-              child: Text(_currentStep == 2 ? l10n.updateListing : l10n.listingNext),
+              onPressed: _isSubmitting
+                  ? null
+                  : (_currentStep == 2 ? _submit : _nextStep),
+              child: Text(
+                  _currentStep == 2 ? l10n.updateListing : l10n.listingNext),
             ),
           ],
         ),
@@ -640,7 +724,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                 ],
               ),
             ),
-            if (_stepErrors[_currentStep] != null && _stepErrors[_currentStep]!.isNotEmpty)
+            if (_stepErrors[_currentStep] != null &&
+                _stepErrors[_currentStep]!.isNotEmpty)
               _buildErrorBanner(_stepErrors[_currentStep]!),
           ],
         ),
@@ -657,7 +742,9 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           LinearProgressIndicator(
             value: (_currentStep + 1) / 3,
             backgroundColor: context.divider,
-            valueColor: AlwaysStoppedAnimation<Color>(context.isDarkMode ? AppColors.accent400 : AppColors.primary950),
+            valueColor: AlwaysStoppedAnimation<Color>(context.isDarkMode
+                ? AppColors.accent400
+                : AppColors.primary950),
             minHeight: 6,
             borderRadius: BorderRadius.circular(12),
           ),
@@ -672,23 +759,37 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 28, height: 28,
+                      width: 28,
+                      height: 28,
                       decoration: BoxDecoration(
-                        color: isCompleted || isCurrent ? Theme.of(context).colorScheme.primary : context.divider,
+                        color: isCompleted || isCurrent
+                            ? Theme.of(context).colorScheme.primary
+                            : context.divider,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
                         child: isCompleted
-                            ? const Icon(Icons.check, size: 16, color: Colors.white)
-                            : Text('${i + 1}', style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold, color: isCurrent ? Colors.white : context.theme.textMuted)),
+                            ? const Icon(Icons.check,
+                                size: 16, color: Colors.white)
+                            : Text('${i + 1}',
+                                style: AppTextStyles.labelSmall.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: isCurrent
+                                        ? Colors.white
+                                        : context.theme.textMuted)),
                       ),
                     ),
                     const SizedBox(width: 4),
                     Flexible(
-                      child: Text(steps[i], style: AppTextStyles.labelSmall.copyWith(
-                        fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w600,
-                        color: isCurrent ? Theme.of(context).colorScheme.primary : context.theme.textMuted,
-                      ), overflow: TextOverflow.ellipsis),
+                      child: Text(steps[i],
+                          style: AppTextStyles.labelSmall.copyWith(
+                            fontWeight:
+                                isCurrent ? FontWeight.w700 : FontWeight.w600,
+                            color: isCurrent
+                                ? Theme.of(context).colorScheme.primary
+                                : context.theme.textMuted,
+                          ),
+                          overflow: TextOverflow.ellipsis),
                     ),
                   ],
                 ),
@@ -705,21 +806,30 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${l10n.listingMake} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+        Text('${l10n.listingMake} *',
+            style: AppTextStyles.bodySmall
+                .copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
           key: ValueKey('make_dropdown_${_formData.vehicleCategory}'),
-          initialValue: _formData.make.isEmpty ? null : (makes.contains(_formData.make) ? _formData.make : '__other__'),
-          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+          initialValue: _formData.make.isEmpty
+              ? null
+              : (makes.contains(_formData.make) ? _formData.make : '__other__'),
+          style: AppTextStyles.bodySmall
+              .copyWith(color: context.theme.textPrimary),
           decoration: InputDecoration(
             hintText: l10n.listingSelect,
-            hintStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            hintStyle: AppTextStyles.bodySmall
+                .copyWith(color: context.theme.textMuted),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           ),
           dropdownColor: context.sheetBg,
           items: [
-            ...makes.map((m) => DropdownMenuItem(value: m, child: Text(makeLabel(m, l10n)))),
-            DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
+            ...makes.map((m) =>
+                DropdownMenuItem(value: m, child: Text(makeLabel(m, l10n)))),
+            DropdownMenuItem(
+                value: '__other__', child: Text(l10n.listingOther)),
           ],
           onChanged: (v) {
             if (v == null) return;
@@ -733,11 +843,14 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           const SizedBox(height: 8),
           TextFormField(
             controller: _customMakeController,
-            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+            style: AppTextStyles.bodySmall
+                .copyWith(color: context.theme.textPrimary),
             decoration: InputDecoration(
               labelText: '* ${l10n.listingMake}',
-              labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              labelStyle: AppTextStyles.bodySmall
+                  .copyWith(color: context.theme.textMuted),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             ),
           ),
         ],
@@ -750,22 +863,34 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${l10n.listingModel} *', style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+        Text('${l10n.listingModel} *',
+            style: AppTextStyles.bodySmall
+                .copyWith(color: context.theme.textMuted)),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
-          key: ValueKey('model_dropdown_${_formData.vehicleCategory}_${_formData.make}'),
-          initialValue: _formData.model.isEmpty ? null : (models.contains(_formData.model) ? _formData.model : '__other__'),
-          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+          key: ValueKey(
+              'model_dropdown_${_formData.vehicleCategory}_${_formData.make}'),
+          initialValue: _formData.model.isEmpty
+              ? null
+              : (models.contains(_formData.model)
+                  ? _formData.model
+                  : '__other__'),
+          style: AppTextStyles.bodySmall
+              .copyWith(color: context.theme.textPrimary),
           decoration: InputDecoration(
             hintText: l10n.listingSelect,
-            hintStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            hintStyle: AppTextStyles.bodySmall
+                .copyWith(color: context.theme.textMuted),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           ),
           dropdownColor: context.sheetBg,
           items: [
-            ...models.map((m) => DropdownMenuItem(value: m, child: Text(modelLabel(m, l10n)))),
+            ...models.map((m) =>
+                DropdownMenuItem(value: m, child: Text(modelLabel(m, l10n)))),
             if (_formData.make.isNotEmpty)
-              DropdownMenuItem(value: '__other__', child: Text(l10n.listingOther)),
+              DropdownMenuItem(
+                  value: '__other__', child: Text(l10n.listingOther)),
           ],
           onChanged: (v) {
             if (v == null) return;
@@ -775,15 +900,19 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
           },
           isExpanded: true,
         ),
-        if (_formData.model.isNotEmpty && !models.contains(_formData.model)) ...[
+        if (_formData.model.isNotEmpty &&
+            !models.contains(_formData.model)) ...[
           const SizedBox(height: 8),
           TextFormField(
             controller: _customModelController,
-            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+            style: AppTextStyles.bodySmall
+                .copyWith(color: context.theme.textPrimary),
             decoration: InputDecoration(
               labelText: '* ${l10n.listingModel}',
-              labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              labelStyle: AppTextStyles.bodySmall
+                  .copyWith(color: context.theme.textMuted),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             ),
           ),
         ],
@@ -800,14 +929,32 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             title: l10n.listingVehicleCategory,
             child: Column(
               children: [
-                _buildCompactDropdown(label: '${l10n.listingVehicleCategory} *', value: _formData.vehicleCategory, options: vehicleCategories, onChanged: (v) => _formData = _formData.copyWith(vehicleCategory: v, bodyType: ''), displayBuilder: (c) => vehicleCategoryLabel(c, l10n)),
-                if (_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') ...[
+                _buildCompactDropdown(
+                    label: '${l10n.listingVehicleCategory} *',
+                    value: _formData.vehicleCategory,
+                    options: vehicleCategories,
+                    onChanged: (v) => _formData =
+                        _formData.copyWith(vehicleCategory: v, bodyType: ''),
+                    displayBuilder: (c) => vehicleCategoryLabel(c, l10n)),
+                if (_formData.vehicleCategory == 'car' ||
+                    _formData.vehicleCategory == 'construction_equipment') ...[
                   const SizedBox(height: 12),
-                  _buildCompactDropdown(label: '${l10n.listingBodyType} *', value: _formData.bodyType, options: bodyTypesByCategory[_formData.vehicleCategory] ?? [], onChanged: (v) => _formData = _formData.copyWith(bodyType: v), displayBuilder: (bt) => bodyTypeLabel(bt, l10n)),
+                  _buildCompactDropdown(
+                      label: '${l10n.listingBodyType} *',
+                      value: _formData.bodyType,
+                      options:
+                          bodyTypesByCategory[_formData.vehicleCategory] ?? [],
+                      onChanged: (v) =>
+                          _formData = _formData.copyWith(bodyType: v),
+                      displayBuilder: (bt) => bodyTypeLabel(bt, l10n)),
                 ],
-                if (_formData.vehicleCategory == 'car' || _formData.vehicleCategory == 'construction_equipment') ...[
+                if (_formData.vehicleCategory == 'car' ||
+                    _formData.vehicleCategory == 'construction_equipment') ...[
                   const SizedBox(height: 12),
-                  _buildCompactField(label: l10n.listingVin, value: _formData.vin, onChanged: (v) => _formData = _formData.copyWith(vin: v)),
+                  _buildCompactField(
+                      label: l10n.listingVin,
+                      value: _formData.vin,
+                      onChanged: (v) => _formData = _formData.copyWith(vin: v)),
                 ],
               ],
             ),
@@ -834,7 +981,14 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                       Expanded(child: _buildYearField(l10n)),
                       if (_formData.vehicleCategory != 'bicycle') ...[
                         const SizedBox(width: 12),
-                        Expanded(child: _buildCompactField(label: '${l10n.listingMileage} (${mileageUnitByCategory[_formData.vehicleCategory] ?? 'km'}) *', value: _formData.mileageKm, onChanged: (v) => _formData = _formData.copyWith(mileageKm: v), keyboardType: TextInputType.number)),
+                        Expanded(
+                            child: _buildCompactField(
+                                label:
+                                    '${l10n.listingMileage} (${mileageUnitByCategory[_formData.vehicleCategory] ?? 'km'}) *',
+                                value: _formData.mileageKm,
+                                onChanged: (v) => _formData =
+                                    _formData.copyWith(mileageKm: v),
+                                keyboardType: TextInputType.number)),
                       ],
                     ],
                   ),
@@ -842,9 +996,23 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                 ],
                 Row(
                   children: [
-                    Expanded(child: _buildCompactDropdown(label: '${l10n.listingColor} *', value: _formData.color, options: vehicleColors, onChanged: (v) => _formData = _formData.copyWith(color: v), displayBuilder: (c) => colorLabel(c, l10n))),
+                    Expanded(
+                        child: _buildCompactDropdown(
+                            label: '${l10n.listingColor} *',
+                            value: _formData.color,
+                            options: vehicleColors,
+                            onChanged: (v) =>
+                                _formData = _formData.copyWith(color: v),
+                            displayBuilder: (c) => colorLabel(c, l10n))),
                     const SizedBox(width: 12),
-                    Expanded(child: _buildCompactDropdown(label: '${l10n.listingCondition} *', value: _formData.condition, options: carConditions, onChanged: (v) => _formData = _formData.copyWith(condition: v), displayBuilder: (c) => conditionLabel(c, l10n))),
+                    Expanded(
+                        child: _buildCompactDropdown(
+                            label: '${l10n.listingCondition} *',
+                            value: _formData.condition,
+                            options: carConditions,
+                            onChanged: (v) =>
+                                _formData = _formData.copyWith(condition: v),
+                            displayBuilder: (c) => conditionLabel(c, l10n))),
                   ],
                 ),
               ],
@@ -893,12 +1061,14 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.info_outline, size: 14, color: context.theme.textMuted),
+                    Icon(Icons.info_outline,
+                        size: 14, color: context.theme.textMuted),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         l10n.listingTypeNotEditable,
-                        style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
+                        style: AppTextStyles.caption
+                            .copyWith(color: context.theme.textMuted),
                       ),
                     ),
                   ],
@@ -914,29 +1084,37 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline, size: 18, color: context.theme.textMuted),
+                        Icon(Icons.info_outline,
+                            size: 18, color: context.theme.textMuted),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(l10n.carRentalPriceNegotiable, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                          child: Text(l10n.carRentalPriceNegotiable,
+                              style: AppTextStyles.bodySmall
+                                  .copyWith(color: context.theme.textMuted)),
                         ),
                       ],
                     ),
                   )
                 : TextFormField(
                     controller: _priceController,
-                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                    style: AppTextStyles.bodySmall
+                        .copyWith(color: context.theme.textPrimary),
                     decoration: InputDecoration(
                       labelText: '${l10n.listingPriceEtb} (ETB) *',
-                      labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      labelStyle: AppTextStyles.bodySmall
+                          .copyWith(color: context.theme.textMuted),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                   ),
           ),
           const SizedBox(height: 16),
           _sectionCard(
             title: l10n.listingLocation,
-            subtitle: '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
+            subtitle:
+                '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
             child: _buildAddressDropdowns(),
           ),
           const SizedBox(height: 40),
@@ -954,10 +1132,12 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             title: '${l10n.listingDescriptionLabel} *',
             child: TextFormField(
               initialValue: _formData.description,
-              style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+              style: AppTextStyles.bodySmall
+                  .copyWith(color: context.theme.textPrimary),
               decoration: InputDecoration(
                 hintText: l10n.listingDescriptionLabel,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               ),
               maxLines: 4,
               onChanged: (v) => _formData = _formData.copyWith(description: v),
@@ -970,28 +1150,41 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Wrap(
-                  spacing: 8, runSpacing: 4,
-                  children: featureOptionsForCategory(_formData.vehicleCategory).map((f) => FilterChip(
-                    label: Text(featureLabel(f, l10n), style: AppTextStyles.labelSmall),
-                    selected: _formData.features.contains(f),
-                    onSelected: (selected) {
-                      setState(() {
-                        final updated = List<String>.from(_formData.features);
-                        if (selected) { updated.add(f); } else { updated.remove(f); }
-                        _formData = _formData.copyWith(features: updated);
-                      });
-                    },
-                  )).toList(),
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: featureOptionsForCategory(_formData.vehicleCategory)
+                      .map((f) => FilterChip(
+                            label: Text(featureLabel(f, l10n),
+                                style: AppTextStyles.labelSmall),
+                            selected: _formData.features.contains(f),
+                            onSelected: (selected) {
+                              setState(() {
+                                final updated =
+                                    List<String>.from(_formData.features);
+                                if (selected) {
+                                  updated.add(f);
+                                } else {
+                                  updated.remove(f);
+                                }
+                                _formData =
+                                    _formData.copyWith(features: updated);
+                              });
+                            },
+                          ))
+                      .toList(),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   initialValue: _formData.customFeatures,
-                  style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                  style: AppTextStyles.bodySmall
+                      .copyWith(color: context.theme.textPrimary),
                   decoration: InputDecoration(
                     hintText: l10n.carCustomFeatures,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   ),
-                  onChanged: (v) => _formData = _formData.copyWith(customFeatures: v),
+                  onChanged: (v) =>
+                      _formData = _formData.copyWith(customFeatures: v),
                 ),
               ],
             ),
@@ -1009,24 +1202,33 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                 Row(
                   children: [
                     SizedBox(
-                      width: 24, height: 24,
+                      width: 24,
+                      height: 24,
                       child: Checkbox(
                         value: _formData.postedByAgent,
-                        onChanged: (v) => setState(() => _formData = _formData.copyWith(
-                          postedByAgent: v ?? false,
-                          agentId: (v ?? false) ? _formData.agentId : '',
-                        )),
+                        onChanged: (v) =>
+                            setState(() => _formData = _formData.copyWith(
+                                  postedByAgent: v ?? false,
+                                  agentId:
+                                      (v ?? false) ? _formData.agentId : '',
+                                )),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                     ),
                     const SizedBox(width: 8),
                     GestureDetector(
-                      onTap: () => setState(() => _formData = _formData.copyWith(
-                        postedByAgent: !_formData.postedByAgent,
-                        agentId: !_formData.postedByAgent ? _formData.agentId : '',
-                      )),
-                        child: Text(l10n.listingPostedByAgentLabel,
-                          style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                      onTap: () =>
+                          setState(() => _formData = _formData.copyWith(
+                                postedByAgent: !_formData.postedByAgent,
+                                agentId: !_formData.postedByAgent
+                                    ? _formData.agentId
+                                    : '',
+                              )),
+                      child: Text(l10n.listingPostedByAgentLabel,
+                          style: AppTextStyles.labelMedium.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: context.theme.textSecondary,
+                              letterSpacing: 0.3)),
                     ),
                   ],
                 ),
@@ -1034,13 +1236,17 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                   const SizedBox(height: 8),
                   TextFormField(
                     initialValue: _formData.agentId,
-                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                    style: AppTextStyles.bodySmall
+                        .copyWith(color: context.theme.textPrimary),
                     decoration: InputDecoration(
                       labelText: l10n.agentIdLabel,
-                      labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      labelStyle: AppTextStyles.bodySmall
+                          .copyWith(color: context.theme.textMuted),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
                     ),
-                    onChanged: (v) => _formData = _formData.copyWith(agentId: v),
+                    onChanged: (v) =>
+                        _formData = _formData.copyWith(agentId: v),
                   ),
                 ],
               ],
@@ -1064,7 +1270,9 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
   Widget _buildImagesSection() {
     final newImages = _formData.images;
     final existingImages = _formData.existingImages;
-    final totalCount = existingImages.length - _formData.removedImageIds.length + newImages.length;
+    final totalCount = existingImages.length -
+        _formData.removedImageIds.length +
+        newImages.length;
 
     return _sectionCard(
       title: '${l10n.photos} *',
@@ -1078,11 +1286,16 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
             child: Column(
               children: [
-                Icon(Icons.add_photo_alternate_outlined, size: 36, color: context.theme.iconSecondary),
+                Icon(Icons.add_photo_alternate_outlined,
+                    size: 36, color: context.theme.iconSecondary),
                 const SizedBox(height: 10),
-                Text(l10n.carAddPhoto, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
+                Text(l10n.carAddPhoto,
+                    style: AppTextStyles.bodyMedium
+                        .copyWith(color: context.theme.textPrimary)),
                 const SizedBox(height: 4),
-                Text(l10n.carPhotoFormatHint, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+                Text(l10n.carPhotoFormatHint,
+                    style: AppTextStyles.caption
+                        .copyWith(color: context.theme.textMuted)),
               ],
             ),
           ),
@@ -1094,35 +1307,46 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   ...existingImages
-                      .where((img) => !_formData.removedImageIds.contains(img.id))
+                      .where(
+                          (img) => !_formData.removedImageIds.contains(img.id))
                       .map((img) => _ImageThumb(
-                        url: img.imageUrl,
+                            url: img.imageUrl,
+                            onRemove: () {
+                              final removedIds =
+                                  List<int>.from(_formData.removedImageIds)
+                                    ..add(img.id);
+                              setState(() => _formData = _formData.copyWith(
+                                  removedImageIds: removedIds));
+                            },
+                          )),
+                  ...newImages.map((file) => _ImageThumb(
+                        file: File(file.path),
                         onRemove: () {
-                          final removedIds = List<int>.from(_formData.removedImageIds)..add(img.id);
-                          setState(() => _formData = _formData.copyWith(removedImageIds: removedIds));
+                          final updated = List<XFile>.from(newImages)
+                            ..remove(file);
+                          setState(() =>
+                              _formData = _formData.copyWith(images: updated));
                         },
                       )),
-                  ...newImages.map((file) => _ImageThumb(
-                    file: File(file.path),
-                    onRemove: () {
-                      final updated = List<XFile>.from(newImages)..remove(file);
-                      setState(() => _formData = _formData.copyWith(images: updated));
-                    },
-                  )),
                   const SizedBox(width: 8),
                   SizedBox(
-                    width: 100, height: 100,
+                    width: 100,
+                    height: 100,
                     child: LiquidGlass(
-                      borderRadius: AppSpacing.borderRadiusMd, blur: 20,
+                      borderRadius: AppSpacing.borderRadiusMd,
+                      blur: 20,
                       interactive: true,
                       onTap: _pickImages,
                       padding: EdgeInsets.zero,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.add, size: 28, color: context.theme.iconSecondary),
+                          Icon(Icons.add,
+                              size: 28, color: context.theme.iconSecondary),
                           const SizedBox(height: 4),
-                          Text(l10n.carAddPhoto, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+                          Text(l10n.carAddPhoto,
+                              style: AppTextStyles.caption
+                                  .copyWith(color: context.theme.textMuted)),
                         ],
                       ),
                     ),
@@ -1132,7 +1356,9 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 6),
-              child: Text(l10n.listingImagesSelected(totalCount), style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
+              child: Text(l10n.listingImagesSelected(totalCount),
+                  style: AppTextStyles.caption
+                      .copyWith(color: context.theme.textMuted)),
             ),
           ],
         ],
@@ -1151,7 +1377,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
 
     if (!isAllowed && _formData.isVip) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _formData = _formData.copyWith(isVip: false));
+        if (mounted)
+          setState(() => _formData = _formData.copyWith(isVip: false));
       });
     }
 
@@ -1161,29 +1388,39 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         child: Row(
           children: [
             SizedBox(
-              width: 24, height: 24,
+              width: 24,
+              height: 24,
               child: Checkbox(
                 value: _formData.isVip,
-                onChanged: (v) => setState(() => _formData = _formData.copyWith(isVip: v ?? false)),
+                onChanged: (v) => setState(
+                    () => _formData = _formData.copyWith(isVip: v ?? false)),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: GestureDetector(
-                onTap: () => setState(() => _formData = _formData.copyWith(isVip: !_formData.isVip)),
+                onTap: () => setState(() =>
+                    _formData = _formData.copyWith(isVip: !_formData.isVip)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.diamond, size: 16, color: AppColors.vip),
+                        const Icon(Icons.diamond,
+                            size: 16, color: AppColors.vip),
                         const SizedBox(width: 4),
-                        Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: AppColors.vip, letterSpacing: 0.3)),
+                        Text(l10n.markAsVip,
+                            style: AppTextStyles.labelMedium.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.vip,
+                                letterSpacing: 0.3)),
                       ],
                     ),
                     const SizedBox(height: 2),
-                    Text(l10n.carVipSubtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+                    Text(l10n.carVipSubtitle,
+                        style: AppTextStyles.bodySmall
+                            .copyWith(color: context.theme.textMuted)),
                   ],
                 ),
               ),
@@ -1211,10 +1448,13 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.markAsVip, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: AppColors.vip)),
+                  Text(l10n.markAsVip,
+                      style: AppTextStyles.labelMedium.copyWith(
+                          fontWeight: FontWeight.w700, color: AppColors.vip)),
                   Text(
                     'VIP listings require an active subscription plan.',
-                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                    style: AppTextStyles.bodySmall
+                        .copyWith(color: context.theme.textMuted),
                   ),
                 ],
               ),
@@ -1226,16 +1466,25 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     );
   }
 
-  Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
+  Widget _sectionCard(
+      {required String title, String? subtitle, required Widget child}) {
     return WaveCard(
-      useLiquidGlass: true, isGlass: true, padding: const EdgeInsets.all(14),
+      useLiquidGlass: true,
+      isGlass: true,
+      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+          Text(title,
+              style: AppTextStyles.labelMedium.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: context.theme.textSecondary,
+                  letterSpacing: 0.3)),
           if (subtitle != null) ...[
             const SizedBox(height: 4),
-            Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
+            Text(subtitle,
+                style: AppTextStyles.bodySmall
+                    .copyWith(color: context.theme.textMuted)),
           ],
           const SizedBox(height: 10),
           child,
@@ -1257,11 +1506,14 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       children: [
         TextFormField(
           controller: _yearController,
-          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+          style: AppTextStyles.bodySmall
+              .copyWith(color: context.theme.textPrimary),
           decoration: InputDecoration(
             labelText: '${l10n.listingYear} *',
-            labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            labelStyle: AppTextStyles.bodySmall
+                .copyWith(color: context.theme.textMuted),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           ),
           keyboardType: TextInputType.number,
         ),
@@ -1274,7 +1526,8 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
               padding: const EdgeInsets.only(top: 2, left: 4),
               child: Text(
                 EthiopianDateHelper.toEthiopianYearSuffix(year),
-                style: AppTextStyles.bodySmall.copyWith(fontSize: 9, color: AppColors.accent600),
+                style: AppTextStyles.bodySmall
+                    .copyWith(fontSize: 9, color: AppColors.accent600),
               ),
             );
           },
@@ -1283,14 +1536,19 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     );
   }
 
-  Widget _buildCompactField({required String label, required String value, required ValueChanged<String> onChanged, TextInputType? keyboardType}) {
+  Widget _buildCompactField(
+      {required String label,
+      required String value,
+      required ValueChanged<String> onChanged,
+      TextInputType? keyboardType}) {
     return TextFormField(
       key: ValueKey('compact_field_${label}_$value'),
       initialValue: value,
       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+        labelStyle:
+            AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
       keyboardType: keyboardType,
@@ -1298,24 +1556,43 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     );
   }
 
-  Widget _buildCompactDropdown({required String label, required String value, required List<String> options, required ValueChanged<String> onChanged, String Function(String)? displayBuilder}) {
+  Widget _buildCompactDropdown(
+      {required String label,
+      required String value,
+      required List<String> options,
+      required ValueChanged<String> onChanged,
+      String Function(String)? displayBuilder}) {
     return DropdownButtonFormField<String>(
       key: ValueKey('compact_dropdown_${label}_$value'),
       initialValue: value.isEmpty ? null : value,
       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+        labelStyle:
+            AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
       dropdownColor: context.sheetBg,
-      items: options.map((o) => DropdownMenuItem(value: o, child: Text(displayBuilder != null ? displayBuilder(o) : o, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))).toList(),
-      onChanged: (v) { if (v != null) setState(() => onChanged(v)); },
+      items: options
+          .map((o) => DropdownMenuItem(
+              value: o,
+              child: Text(displayBuilder != null ? displayBuilder(o) : o,
+                  style: AppTextStyles.bodySmall
+                      .copyWith(color: context.theme.textPrimary))))
+          .toList(),
+      onChanged: (v) {
+        if (v != null) setState(() => onChanged(v));
+      },
       isExpanded: true,
     );
   }
 
-  Widget _compactDropdownField({String? value, required List<String> items, required String label, required Function(String?) onChanged, bool isLoading = false}) {
+  Widget _compactDropdownField(
+      {String? value,
+      required List<String> items,
+      required String label,
+      required Function(String?) onChanged,
+      bool isLoading = false}) {
     final loc = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
       initialValue: items.contains(value) ? value : null,
@@ -1324,12 +1601,26 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
         labelText: label,
         labelStyle: AppTextStyles.bodySmall,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        suffixIcon: isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : null,
+        suffixIcon: isLoading
+            ? const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2))
+            : null,
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [DropdownMenuItem(value: null, child: Text(loc.listingSelect, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)))]
-          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
+          ? [
+              DropdownMenuItem(
+                  value: null,
+                  child: Text(loc.listingSelect,
+                      style: AppTextStyles.bodySmall
+                          .copyWith(color: context.textMuted)))
+            ]
+          : items
+              .map((e) => DropdownMenuItem(
+                  value: e, child: Text(e, style: AppTextStyles.bodySmall)))
+              .toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
     );
@@ -1341,27 +1632,52 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       children: [
         Row(
           children: [
-            Expanded(child: _compactDropdownField(value: _selectedRegion, items: _regions, label: l10n.listingRegion, onChanged: _onRegionSelected)),
+            Expanded(
+                child: _compactDropdownField(
+                    value: _selectedRegion,
+                    items: _regions,
+                    label: l10n.listingRegion,
+                    onChanged: _onRegionSelected)),
             const SizedBox(width: 8),
-            Expanded(child: _compactDropdownField(value: _selectedZone, items: _zones, label: l10n.listingZone, onChanged: _onZoneSelected, isLoading: _loadingZones)),
+            Expanded(
+                child: _compactDropdownField(
+                    value: _selectedZone,
+                    items: _zones,
+                    label: l10n.listingZone,
+                    onChanged: _onZoneSelected,
+                    isLoading: _loadingZones)),
           ],
         ),
         const SizedBox(height: 8),
         Row(
           children: [
-            Expanded(child: _compactDropdownField(value: _selectedWoreda, items: _woredas, label: l10n.listingWoreda, onChanged: _onWoredaSelected, isLoading: _loadingWoredas)),
+            Expanded(
+                child: _compactDropdownField(
+                    value: _selectedWoreda,
+                    items: _woredas,
+                    label: l10n.listingWoreda,
+                    onChanged: _onWoredaSelected,
+                    isLoading: _loadingWoredas)),
             const SizedBox(width: 8),
-            Expanded(child: _compactDropdownField(value: _selectedKebele, items: _kebeles, label: l10n.listingKebele, onChanged: _onKebeleSelected, isLoading: _loadingKebeles)),
+            Expanded(
+                child: _compactDropdownField(
+                    value: _selectedKebele,
+                    items: _kebeles,
+                    label: l10n.listingKebele,
+                    onChanged: _onKebeleSelected,
+                    isLoading: _loadingKebeles)),
           ],
         ),
         const SizedBox(height: 8),
         TextFormField(
           controller: _specificLocationController,
-          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+          style: AppTextStyles.bodySmall
+              .copyWith(color: context.theme.textPrimary),
           decoration: InputDecoration(
             labelText: l10n.listingSpecificLocation,
             labelStyle: AppTextStyles.bodySmall,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           ),
           onChanged: (_) => _syncAddress(),
         ),
@@ -1369,20 +1685,36 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
     );
   }
 
-  Widget _typeChoiceChip({required bool selected, required String label, required IconData icon, VoidCallback? onTap}) {
+  Widget _typeChoiceChip(
+      {required bool selected,
+      required String label,
+      required IconData icon,
+      VoidCallback? onTap}) {
     return Expanded(
       child: LiquidGlass(
-        borderRadius: 16, blur: selected ? 20 : 16,
-        variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
+        borderRadius: 16,
+        blur: selected ? 20 : 16,
+        variant: selected
+            ? LiquidGlassVariant.prominent
+            : LiquidGlassVariant.regular,
         tint: selected ? AppColors.accent500 : null,
-        interactive: onTap != null, onTap: onTap,
+        interactive: onTap != null,
+        onTap: onTap,
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 16, color: selected ? AppColors.accent500 : context.theme.textMuted),
+            Icon(icon,
+                size: 16,
+                color:
+                    selected ? AppColors.accent500 : context.theme.textMuted),
             const SizedBox(width: 6),
-            Text(label, style: AppTextStyles.bodySmall.copyWith(fontWeight: selected ? FontWeight.w800 : FontWeight.w600, color: selected ? AppColors.accent500 : context.theme.textSecondary)),
+            Text(label,
+                style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                    color: selected
+                        ? AppColors.accent500
+                        : context.theme.textSecondary)),
           ],
         ),
       ),
@@ -1397,16 +1729,22 @@ class _EditCarScreenState extends ConsumerState<EditCarScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: errors.map((e) => Padding(
-          padding: const EdgeInsets.only(bottom: 2),
-          child: Row(
-            children: [
-              const Icon(Icons.error_outline, size: 14, color: AppColors.error),
-              const SizedBox(width: 6),
-              Expanded(child: Text(e, style: AppTextStyles.bodySmall.copyWith(color: AppColors.error))),
-            ],
-          ),
-        )).toList(),
+        children: errors
+            .map((e) => Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline,
+                          size: 14, color: AppColors.error),
+                      const SizedBox(width: 6),
+                      Expanded(
+                          child: Text(e,
+                              style: AppTextStyles.bodySmall
+                                  .copyWith(color: AppColors.error))),
+                    ],
+                  ),
+                ))
+            .toList(),
       ),
     );
   }
@@ -1425,16 +1763,21 @@ class _ImageThumb extends StatelessWidget {
       barrierColor: Colors.black87,
       builder: (ctx) => Stack(
         children: [
-          Center(child: InteractiveViewer(
-            child: url != null ? Image.network(url!, fit: BoxFit.contain) : Image.file(file!, fit: BoxFit.contain),
+          Center(
+              child: InteractiveViewer(
+            child: url != null
+                ? Image.network(url!, fit: BoxFit.contain)
+                : Image.file(file!, fit: BoxFit.contain),
           )),
           Positioned(
-            top: 40, right: 16,
+            top: 40,
+            right: 16,
             child: GestureDetector(
               onTap: () => Navigator.of(ctx).pop(),
               child: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                decoration: const BoxDecoration(
+                    color: Colors.black54, shape: BoxShape.circle),
                 child: const Icon(Icons.close, size: 24, color: Colors.white),
               ),
             ),
@@ -1453,24 +1796,30 @@ class _ImageThumb extends StatelessWidget {
         child: Stack(
           children: [
             SizedBox(
-              width: 100, height: 100,
+              width: 100,
+              height: 100,
               child: LiquidGlass(
-                borderRadius: 10, blur: 12,
+                borderRadius: 10,
+                blur: 12,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(9),
                   child: url != null
-                      ? Image.network(url!, width: 100, height: 100, fit: BoxFit.cover)
-                      : Image.file(file!, width: 100, height: 100, fit: BoxFit.cover),
+                      ? Image.network(url!,
+                          width: 100, height: 100, fit: BoxFit.cover)
+                      : Image.file(file!,
+                          width: 100, height: 100, fit: BoxFit.cover),
                 ),
               ),
             ),
             Positioned(
-              top: 4, right: 4,
+              top: 4,
+              right: 4,
               child: GestureDetector(
                 onTap: onRemove,
                 child: Container(
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle),
+                  decoration: const BoxDecoration(
+                      color: AppColors.error, shape: BoxShape.circle),
                   child: const Icon(Icons.close, size: 14, color: Colors.white),
                 ),
               ),
