@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/network/v2/api_v2_error.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/listing_form_data.dart';
@@ -15,14 +17,17 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/v2_providers.dart';
 import 'widgets/listing_form_steps.dart';
 import 'widgets/submission_overlay.dart';
+
 /// Create Listing Screen - 4-step wizard matching web version
 class CreateListingScreen extends ConsumerStatefulWidget {
   const CreateListingScreen({super.key});
 
   @override
-  ConsumerState<CreateListingScreen> createState() => _CreateListingScreenState();
+  ConsumerState<CreateListingScreen> createState() =>
+      _CreateListingScreenState();
 }
 
 class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
@@ -61,7 +66,11 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       orElse: () => false,
     );
     final subState = ref.read(subscriptionProvider);
-    if (rentalEnabled && subscriptionEnabled && !subState.canCreateListing && subState.canCreateRentalListing && _formData.listingType == 'sale') {
+    if (rentalEnabled &&
+        subscriptionEnabled &&
+        !subState.canCreateListing &&
+        subState.canCreateRentalListing &&
+        _formData.listingType == 'sale') {
       setState(() {
         _formData.listingType = 'rental';
       });
@@ -118,7 +127,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     );
     final subState = ref.read(subscriptionProvider);
     if (subscriptionEnabled) {
-      if (_formData.listingType == 'rental' && !subState.canCreateRentalListing) {
+      if (_formData.listingType == 'rental' &&
+          !subState.canCreateRentalListing) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.subscriptionLimitReachedRental),
@@ -184,7 +194,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     if (!mounted) return;
     setState(() => _isSubmitting = true);
 
-    _currentSubmissionKey = _generateSubmissionKey();
+    _currentSubmissionKey ??= _generateSubmissionKey();
     final (:notifier, :dismissed) = SubmissionOverlay.show(context);
     _submissionNotifier = notifier;
     unawaited(dismissed.then(_handleSubmissionResult));
@@ -195,29 +205,114 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
     );
 
     try {
-      await Future.delayed(const Duration(milliseconds: 400));
+      await Future.delayed(const Duration(milliseconds: 300));
 
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.submitting(
         phase: SubmissionPhase.uploading,
         label: l10n.submissionUploading,
+        progress: 0.3,
       );
 
       _startUploadProgressSimulation();
 
-      final response = await ref.read(listingServiceProvider).createListing(
-        formData: _formData,
-        submissionKey: _currentSubmissionKey,
-        onProgress: (progress) {
-          if (!mounted) return;
-          _stopUploadProgressSimulation();
-          _submissionNotifier!.value = SubmissionState.submitting(
-            phase: SubmissionPhase.uploading,
-            label: l10n.submissionUploading,
-            progress: 0.2 + progress * 0.7,
-          );
+      final payload = <String, dynamic>{
+        'type': _formData.type,
+        'submission_key': _currentSubmissionKey,
+        'listing_type': _formData.listingType,
+        if (_formData.priceFixed != null) 'price': _formData.priceFixed,
+        if (_formData.isRental && _formData.rentalPeriodUnit != null)
+          'rental_period': _formData.rentalPeriodUnit,
+        if (_formData.addressId != null) 'address_id': _formData.addressId,
+        if (_formData.specificLocation != null &&
+            _formData.specificLocation!.isNotEmpty)
+          'specific_location': _formData.specificLocation,
+        if (_formData.description != null && _formData.description!.isNotEmpty)
+          'description': _formData.description,
+        'attributes': {
+          if (_formData.useType.isNotEmpty) 'use_type': _formData.useType,
+          if (_formData.facingDirection != null)
+            'facing_direction': _formData.facingDirection,
+          if (_formData.totalSquareMeters != null)
+            'total_square_meters': _formData.totalSquareMeters,
+          if (_formData.frontAreaSqm != null)
+            'front_area_sqm': _formData.frontAreaSqm,
+          if (_formData.sideAreaSqm != null)
+            'side_area_sqm': _formData.sideAreaSqm,
+          if (_formData.hasDebtOrEncumbrance) 'has_debt_or_encumbrance': true,
+          if (_formData.hasDebtOrEncumbrance && _formData.debtAmount != null)
+            'debt_amount': _formData.debtAmount,
         },
-      );
+        if (_formData.type == 'house')
+          'details': {
+            if (_formData.totalRooms != null)
+              'total_rooms': _formData.totalRooms,
+            if (_formData.bedrooms != null) 'bedrooms': _formData.bedrooms,
+            if (_formData.bathrooms != null) 'bathrooms': _formData.bathrooms,
+            if (_formData.kitchens != null) 'kitchens': _formData.kitchens,
+            if (_formData.salons != null) 'salons': _formData.salons,
+            if (_formData.floors != null) 'floors': _formData.floors,
+            if (_formData.yearBuilt != null) 'year_built': _formData.yearBuilt,
+            if (_formData.houseType != null) 'house_type': _formData.houseType,
+            'electricity': _formData.electricity,
+            'water': _formData.water,
+            'parking_available': _formData.parkingAvailable,
+          },
+        'holding': {
+          'type': _formData.holdingType,
+          if (_formData.holdingType == 'Free Hold')
+            'private': {
+              if (_formData.taxPaidUntilYear != null)
+                'tax_paid_until_year': _formData.taxPaidUntilYear,
+              if (_formData.acquisitionClarification != null)
+                'acquisition_clarification': _formData.acquisitionClarification,
+            },
+          if (_formData.holdingType == 'Lease Hold')
+            'lease': {
+              if (_formData.leasedYear != null)
+                'leased_year': _formData.leasedYear,
+              if (_formData.leasePricePerSqm != null)
+                'lease_price_per_sqm': _formData.leasePricePerSqm,
+              if (_formData.buildType != null)
+                'build_type': _formData.buildType,
+              if (_formData.annualPayment != null)
+                'annual_payment': _formData.annualPayment,
+              'is_transferable': _formData.isTransferable,
+            },
+          if (_formData.holdingType == 'Cooperative')
+            'cooperative': {
+              if (_formData.cooperativeName != null)
+                'cooperative_name': _formData.cooperativeName,
+              if (_formData.cooperativeCode != null)
+                'cooperative_code': _formData.cooperativeCode,
+              if (_formData.buildingStatus != null)
+                'building_status': _formData.buildingStatus,
+            },
+        },
+      };
+
+      final draft =
+          await ref.read(ownerListingServiceProvider).createProperty(payload);
+
+      // Upload media
+      final imageFiles = _formData.images.map((img) => File(img.path)).toList();
+      if (imageFiles.isNotEmpty) {
+        await ref
+            .read(listingMediaV2ServiceProvider)
+            .uploadImages(draft.id, imageFiles);
+      }
+
+      if (_formData.videoFile != null) {
+        await ref
+            .read(listingMediaV2ServiceProvider)
+            .uploadVideo(draft.id, File(_formData.videoFile!.path));
+      }
+
+      if (_formData.sitePlan != null) {
+        await ref
+            .read(listingMediaV2ServiceProvider)
+            .uploadSitePlan(draft.id, File(_formData.sitePlan!.path));
+      }
 
       _stopUploadProgressSimulation();
 
@@ -227,33 +322,27 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         label: l10n.submissionSaving,
         progress: 0.9,
       );
-      await Future.delayed(const Duration(milliseconds: 300));
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.submitting(
-        phase: SubmissionPhase.saving,
-        label: l10n.submissionSaving,
-        progress: 1.0,
-      );
 
+      // Submit for moderation
+      await ref.read(ownerListingServiceProvider).submit(draft.id);
+
+      _submittedSuccessfully = true;
+      ref.invalidate(subscriptionOverviewProvider);
+      unawaited(ref.read(subscriptionProvider.notifier).refresh());
+      await _clearDraft();
+      await ListingMediaManager.cleanFormDataFiles(_formData);
       if (!mounted) return;
-      if (response.success) {
-        _submittedSuccessfully = true;
-        unawaited(ref.read(subscriptionProvider.notifier).refresh());
-        await _clearDraft();
-        await ListingMediaManager.cleanFormDataFiles(_formData);
-        if (!mounted) return;
-        _submissionNotifier!.value = SubmissionState.success(
-          message: l10n.submissionCreatedMessage,
-        );
-      } else {
-        _submissionNotifier!.value = SubmissionState.error(
-          message: response.message.isNotEmpty
-              ? response.message
-              : l10n.submissionErrorDefault,
-          onRetry: _retrySubmission,
-          canSaveDraft: true,
-        );
-      }
+      _submissionNotifier!.value = SubmissionState.success(
+        message: l10n.submissionCreatedMessage,
+      );
+    } on ApiV2Exception catch (e) {
+      _stopUploadProgressSimulation();
+      if (!mounted) return;
+      _submissionNotifier!.value = SubmissionState.error(
+        message: e.message,
+        onRetry: _retrySubmission,
+        canSaveDraft: true,
+      );
     } catch (e) {
       _stopUploadProgressSimulation();
       if (!mounted) return;
@@ -294,100 +383,7 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
   }
 
   Future<void> _retrySubmission() async {
-    if (!mounted) return;
-
-    // First check if the listing was actually created despite the error
-    if (_currentSubmissionKey != null) {
-      final listingId = await ref.read(listingServiceProvider).checkSubmissionKey(_currentSubmissionKey!);
-      if (listingId != null) {
-        // Listing was already created — show success
-        _submittedSuccessfully = true;
-        unawaited(ref.read(subscriptionProvider.notifier).refresh());
-        await _clearDraft();
-        await ListingMediaManager.cleanFormDataFiles(_formData);
-        if (!mounted) return;
-        _submissionNotifier!.value = SubmissionState.success(
-          message: l10n.submissionCreatedMessage,
-        );
-        return;
-      }
-    }
-
-    // Normal retry — re-submit
-    _submissionNotifier!.value = SubmissionState.submitting(
-      phase: SubmissionPhase.validating,
-      label: l10n.submissionValidating,
-      progress: 0.2,
-    );
-
-    try {
-      await Future.delayed(const Duration(milliseconds: 400));
-
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.submitting(
-        phase: SubmissionPhase.uploading,
-        label: l10n.submissionUploading,
-      );
-
-      _startUploadProgressSimulation();
-
-      final response = await ref.read(listingServiceProvider).createListing(
-        formData: _formData,
-        submissionKey: _currentSubmissionKey,
-        onProgress: (progress) {
-          if (!mounted) return;
-          _stopUploadProgressSimulation();
-          _submissionNotifier!.value = SubmissionState.submitting(
-            phase: SubmissionPhase.uploading,
-            label: l10n.submissionUploading,
-            progress: 0.2 + progress * 0.7,
-          );
-        },
-      );
-
-      _stopUploadProgressSimulation();
-
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.submitting(
-        phase: SubmissionPhase.saving,
-        label: l10n.submissionSaving,
-        progress: 0.9,
-      );
-      await Future.delayed(const Duration(milliseconds: 300));
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.submitting(
-        phase: SubmissionPhase.saving,
-        label: l10n.submissionSaving,
-        progress: 1.0,
-      );
-
-      if (!mounted) return;
-      if (response.success) {
-        _submittedSuccessfully = true;
-        unawaited(ref.read(subscriptionProvider.notifier).refresh());
-        await _clearDraft();
-        await ListingMediaManager.cleanFormDataFiles(_formData);
-        if (!mounted) return;
-        _submissionNotifier!.value = SubmissionState.success(
-          message: l10n.submissionCreatedMessage,
-        );
-      } else {
-        _submissionNotifier!.value = SubmissionState.error(
-          message: response.message.isNotEmpty
-              ? response.message
-              : l10n.submissionErrorDefault,
-          onRetry: _retrySubmission,
-          canSaveDraft: true,
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.error(
-        message: _friendlyErrorMessage(e),
-        onRetry: _retrySubmission,
-        canSaveDraft: true,
-      );
-    }
+    await _submitListing();
   }
 
   String _friendlyErrorMessage(Object error) {
@@ -443,7 +439,8 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       );
     }
     final plan = subState.subscription?.plan;
-    if (plan == null || (plan.maxListings == 0 && plan.maxRentalListings == 0)) {
+    if (plan == null ||
+        (plan.maxListings == 0 && plan.maxRentalListings == 0)) {
       return (
         title: l10n.subscriptionPlanNotSupportedListing,
         subtitle: l10n.subscriptionPlanNotSupportedListingSubtitle,
@@ -547,7 +544,11 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       final settings = ref.read(appSettingsProvider).valueOrNull;
       final rentEnabled = settings?['rental_enabled'] == true;
       final subEnabled = settings?['subscription_enabled'] == true;
-      if (rentEnabled && subEnabled && !next.canCreateListing && next.canCreateRentalListing && _formData.listingType == 'sale') {
+      if (rentEnabled &&
+          subEnabled &&
+          !next.canCreateListing &&
+          next.canCreateRentalListing &&
+          _formData.listingType == 'sale') {
         setState(() {
           _formData.listingType = 'rental';
         });
@@ -583,21 +584,19 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
         appBar: WaveAppBar(title: Text(l10n.listingsCreate)),
         icon: Icons.verified_outlined,
         iconColor: AppColors.accent500,
-        title: kycState.isPending
-            ? l10n.kycPendingTitle
-            : l10n.kycRequiredTitle,
+        title:
+            kycState.isPending ? l10n.kycPendingTitle : l10n.kycRequiredTitle,
         subtitle: kycState.isPending
             ? l10n.kycPendingSubtitleReview
             : l10n.kycRequiredSubtitlePost,
         buttonLabel: kycState.isPending ? '' : l10n.kycVerifyNow,
-        onButtonTap: kycState.isPending
-            ? null
-            : () => context.push('/kyc'),
+        onButtonTap: kycState.isPending ? null : () => context.push('/kyc'),
       );
     }
 
     // Subscription gate — full page matching listing detail error view
-    final canCreateAny = subState.canCreateListing || (rentalEnabled && subState.canCreateRentalListing);
+    final canCreateAny = subState.canCreateListing ||
+        (rentalEnabled && subState.canCreateRentalListing);
     if (subscriptionEnabled && !canCreateAny) {
       final (:title, :subtitle) = _listingGateMessage(subState, l10n);
       return WaveFullPageUpgrade(
@@ -621,16 +620,16 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
                   icon: const Icon(Icons.arrow_back_rounded),
                   onPressed: _prevStep,
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
+                  constraints:
+                      const BoxConstraints(minWidth: 32, minHeight: 48),
                 )
               : null,
           title: Text(l10n.listingsCreate),
           actions: [
             TextButton(
               onPressed: _isSubmitting ? null : _nextStep,
-              child: Text(_currentStep == 3
-                  ? l10n.listingSubmit
-                  : l10n.listingNext),
+              child: Text(
+                  _currentStep == 3 ? l10n.listingSubmit : l10n.listingNext),
             ),
           ],
         ),
@@ -648,16 +647,23 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
                       onUpdate: _updateFormData,
                       addressService: _addressService,
                       stepErrors: _stepErrors[_currentStep] ?? []),
-                  ListingStep2Details(formData: _formData, onUpdate: _updateFormData,
+                  ListingStep2Details(
+                      formData: _formData,
+                      onUpdate: _updateFormData,
                       stepErrors: _stepErrors[_currentStep] ?? []),
-                  ListingStep3Media(formData: _formData, onUpdate: _updateFormData,
+                  ListingStep3Media(
+                      formData: _formData,
+                      onUpdate: _updateFormData,
                       stepErrors: _stepErrors[_currentStep] ?? []),
-                  ListingStep4Review(formData: _formData, onUpdate: _updateFormData,
+                  ListingStep4Review(
+                      formData: _formData,
+                      onUpdate: _updateFormData,
                       stepErrors: _stepErrors[_currentStep] ?? []),
                 ],
               ),
             ),
-            if (_stepErrors[_currentStep] != null && _stepErrors[_currentStep]!.isNotEmpty)
+            if (_stepErrors[_currentStep] != null &&
+                _stepErrors[_currentStep]!.isNotEmpty)
               _buildErrorBanner(_stepErrors[_currentStep]!),
           ],
         ),
@@ -673,18 +679,23 @@ class _CreateListingScreenState extends ConsumerState<CreateListingScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: errors.map((e) => Padding(
-          padding: const EdgeInsets.only(bottom: 2),
-          child: Row(
-            children: [
-              const Icon(Icons.error_outline, size: 14, color: AppColors.error),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(e, style: AppTextStyles.bodySmall.copyWith(color: AppColors.error)),
-              ),
-            ],
-          ),
-        )).toList(),
+        children: errors
+            .map((e) => Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline,
+                          size: 14, color: AppColors.error),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(e,
+                            style: AppTextStyles.bodySmall
+                                .copyWith(color: AppColors.error)),
+                      ),
+                    ],
+                  ),
+                ))
+            .toList(),
       ),
     );
   }
