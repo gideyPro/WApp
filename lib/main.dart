@@ -12,6 +12,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'presentation/providers/app_providers.dart';
 import 'presentation/providers/auth_provider.dart';
 import 'presentation/providers/theme_provider.dart';
+import 'presentation/providers/v2_providers.dart';
 import 'presentation/providers/version_provider.dart';
 import 'presentation/screens/calls/incoming_call_screen.dart';
 import 'l10n/app_localizations.dart';
@@ -34,9 +35,9 @@ import 'firebase_options.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Initialize Firebase if needed (it might already be initialized by the system)
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  
+
   log("Handling a background message: ${message.messageId}");
-  // Note: Most logic for background messages (like showing a notification) 
+  // Note: Most logic for background messages (like showing a notification)
   // is handled automatically by Firebase if the payload contains a 'notification' block.
   // For 'data' only messages, you would handle them here.
 }
@@ -49,7 +50,7 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    
+
     // Set background message handler
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   } catch (e) {
@@ -79,8 +80,10 @@ void main() async {
   );
 
   // Global ImageCache optimization for Google Play bad behavior thresholds (< 200 MB in background)
-  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50 MB max
-  PaintingBinding.instance.imageCache.maximumSize = 100; // max 100 decoded images in memory
+  PaintingBinding.instance.imageCache.maximumSizeBytes =
+      50 * 1024 * 1024; // 50 MB max
+  PaintingBinding.instance.imageCache.maximumSize =
+      100; // max 100 decoded images in memory
 
   // Evict non-visible in-memory bitmaps whenever app is paused or hidden
   AppLifecycleListener(
@@ -93,13 +96,13 @@ void main() async {
   );
 
   // Handle native Android onTrimMemory signals
-  const MethodChannel('et.wavemart.app/memory').setMethodCallHandler((call) async {
+  const MethodChannel('et.wavemart.app/memory')
+      .setMethodCallHandler((call) async {
     if (call.method == 'onTrimMemory') {
       PaintingBinding.instance.imageCache.clear();
       PaintingBinding.instance.imageCache.clearLiveImages();
     }
   });
-
 
   // Global error handler for crash logging
   FlutterError.onError = (details) {
@@ -183,7 +186,7 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
     final incomingCall = ref.watch(incomingCallProvider);
     final themeMode = ref.watch(themeModeProvider);
     final versionState = ref.watch(versionProvider);
-    
+
     // Activate lifecycle listener for real-time sync on app resume
     ref.watch(appLifecycleProvider);
 
@@ -209,7 +212,8 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
     }
 
     // Show non-blocking update dialog once per app lifecycle
-    if (versionState.updateType == UpdateType.nonBlocking && !_nonBlockingDialogShown) {
+    if (versionState.updateType == UpdateType.nonBlocking &&
+        !_nonBlockingDialogShown) {
       _nonBlockingDialogShown = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showUpdateDialog(context, versionState);
@@ -258,9 +262,12 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        _TigrinyaFallbackDelegate<MaterialLocalizations>(GlobalMaterialLocalizations.delegate),
-        _TigrinyaFallbackDelegate<WidgetsLocalizations>(GlobalWidgetsLocalizations.delegate),
-        _TigrinyaFallbackDelegate<CupertinoLocalizations>(GlobalCupertinoLocalizations.delegate),
+        _TigrinyaFallbackDelegate<MaterialLocalizations>(
+            GlobalMaterialLocalizations.delegate),
+        _TigrinyaFallbackDelegate<WidgetsLocalizations>(
+            GlobalWidgetsLocalizations.delegate),
+        _TigrinyaFallbackDelegate<CupertinoLocalizations>(
+            GlobalCupertinoLocalizations.delegate),
       ],
       supportedLocales: const [
         Locale('en'),
@@ -274,17 +281,20 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
     if (ref.read(incomingCallProvider) != null) return;
 
     try {
-      final result = await ref.read(conferenceServiceProvider).checkIncomingCall();
-      if (result.hasIncoming && result.callData != null) {
-        final data = result.callData!;
+      final state = await ref.read(conferenceV2ServiceProvider).incoming();
+      if (state.hasIncoming && state.conference != null) {
+        final conf = state.conference!;
+        final caller = conf.host;
         ref.read(incomingCallProvider.notifier).setIncomingCall(IncomingCall(
-          conferenceId: data['conference_id'] as int,
-          callerName: data['caller_name'] as String? ?? 'Unknown',
-          callerAvatar: data['caller_avatar']?.toString(),
-          callerInitials: data['caller_initials']?.toString(),
-          listingTitle: data['listing_title']?.toString(),
-          isVideo: data['is_video'] == true,
-        ));
+              conferenceId: conf.id,
+              callerName: caller?.displayName.isNotEmpty == true
+                  ? caller!.displayName
+                  : 'Unknown',
+              callerAvatar: caller?.avatarUrl,
+              callerInitials: caller?.initials,
+              listingTitle: conf.listing?.title,
+              isVideo: conf.isVideo,
+            ));
       }
     } catch (_) {}
   }
@@ -298,11 +308,16 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
       builder: (ctx) => PopScope(
         canPop: !isBlocking,
         child: AlertDialog(
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12))),
           title: Row(
             children: [
-              Icon(isBlocking ? Icons.warning_amber_rounded : Icons.system_update,
-                   color: AppColors.amber, size: 28),
+              Icon(
+                  isBlocking
+                      ? Icons.warning_amber_rounded
+                      : Icons.system_update,
+                  color: AppColors.amber,
+                  size: 28),
               const SizedBox(width: 8),
               Text(isBlocking ? l10n.updateRequired : l10n.updateAvailable),
             ],
@@ -315,21 +330,29 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
                 isBlocking
                     ? l10n.updateBlockingMessage
                     : l10n.updateAvailableMessage(
-                        state.latestVersion.isNotEmpty ? ' (${state.latestVersion})' : '',
+                        state.latestVersion.isNotEmpty
+                            ? ' (${state.latestVersion})'
+                            : '',
                       ),
               ),
               if (state.whatsNew.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Text(l10n.updateWhatsNew, style: AppTextStyles.titleSmall),
                 const SizedBox(height: 4),
-                Text(state.whatsNew, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700])),
+                Text(state.whatsNew,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.grey[700])),
               ],
               if (state.latestVersion.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: Row(
                     children: [
-                      Text(l10n.updateVersionLabel, style: AppTextStyles.subtitle.copyWith(fontWeight: FontWeight.w600)),
+                      Text(l10n.updateVersionLabel,
+                          style: AppTextStyles.subtitle
+                              .copyWith(fontWeight: FontWeight.w600)),
                       Text(state.latestVersion),
                     ],
                   ),
@@ -345,10 +368,12 @@ class _WavemartAppState extends ConsumerState<WavemartApp> {
             ElevatedButton(
               onPressed: () => _openUpdateUrl(state.updateUrl, ctx),
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 backgroundColor: AppColors.amber,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: Text(l10n.updateNow),
             ),
@@ -382,31 +407,49 @@ class _BlockingUpdateOverlay extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.system_update, size: 64, color: AppColors.amber),
+                const Icon(Icons.system_update,
+                    size: 64, color: AppColors.amber),
                 const SizedBox(height: 24),
                 Text(
                   'Update Required',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium
+                      ?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   'This version of the app is no longer supported. Please update to continue using Wavemart.',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.grey[600]),
                 ),
                 if (state.whatsNew.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  Text("What's New", style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                  Text("What's New",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 4),
-                  Text(state.whatsNew, textAlign: TextAlign.center,
-                       style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700])),
+                  Text(state.whatsNew,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: Colors.grey[700])),
                 ],
                 if (state.latestVersion.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       'Version: ${state.latestVersion}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
                 const SizedBox(height: 32),
@@ -416,16 +459,20 @@ class _BlockingUpdateOverlay extends StatelessWidget {
                     onPressed: () async {
                       if (state.updateUrl.isEmpty) return;
                       if (await canLaunchUrl(Uri.parse(state.updateUrl))) {
-                        await launchUrl(Uri.parse(state.updateUrl), mode: LaunchMode.externalApplication);
+                        await launchUrl(Uri.parse(state.updateUrl),
+                            mode: LaunchMode.externalApplication);
                       }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       backgroundColor: AppColors.amber,
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: Text('Update Now', style: AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w700)),
+                    child: Text('Update Now',
+                        style: AppTextStyles.buttonMedium
+                            .copyWith(fontWeight: FontWeight.w700)),
                   ),
                 ),
               ],
