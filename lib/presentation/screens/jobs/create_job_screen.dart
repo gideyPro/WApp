@@ -12,6 +12,8 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/network/v2/api_v2_error.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../core/theme/text_styles.dart';
+import '../../../core/utils/ethiopian_date_helper.dart';
+import '../../widgets/common/app_date_picker.dart';
 import '../../../data/models/job_form_data.dart';
 import '../../../data/models/job_requirement_item.dart';
 import '../../../data/job_data.dart';
@@ -130,12 +132,15 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     final errors = <String>[];
     switch (_currentStep) {
       case 0:
-        if (_titleController.text.trim().isEmpty)
+        if (_titleController.text.trim().isEmpty) {
           errors.add('${l10n.jobJobTitle} ${l10n.commonIsRequired}');
-        if (_formData.jobCategory.isEmpty)
+        }
+        if (_formData.jobCategory.isEmpty) {
           errors.add('${l10n.jobJobCategory} ${l10n.commonIsRequired}');
-        if (_formData.jobType.isEmpty)
+        }
+        if (_formData.jobType.isEmpty) {
           errors.add('${l10n.jobJobType} ${l10n.commonIsRequired}');
+        }
         if (_postedAsCompany && _companyController.text.trim().isEmpty) {
           errors.add('${l10n.jobCompanyName} ${l10n.commonIsRequired}');
         }
@@ -148,17 +153,21 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
         }
         break;
       case 1:
-        if (_formData.salaryType == 'fixed' && _formData.salaryMin == null)
+        if (_formData.salaryType == 'fixed' && _formData.salaryMin == null) {
           errors.add('${l10n.jobSalaryMin} ${l10n.commonIsRequired}');
-        if (_formData.addressId == null)
+        }
+        if (_formData.addressId == null) {
           errors.add('${l10n.jobLocation} ${l10n.commonIsRequired}');
+        }
         break;
       case 2:
-        if (_formData.description == null || _formData.description!.isEmpty)
+        if (_formData.description == null || _formData.description!.isEmpty) {
           errors
               .add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
-        if (!_formData.termsAccepted)
+        }
+        if (!_formData.termsAccepted) {
           errors.add(l10n.listingErrorTermsRequired);
+        }
         break;
     }
     return errors;
@@ -205,11 +214,12 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     try {
       final response =
           await _addressService.getZones(region: region, locale: locale);
-      if (mounted && response.success)
+      if (mounted && response.success) {
         setState(() => _zones = response.zones
             .map((z) => z.zone ?? '')
             .where((s) => s.isNotEmpty)
             .toList());
+      }
     } catch (_) {}
     if (mounted) setState(() => _loadingZones = false);
     _syncAddress();
@@ -230,11 +240,12 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     try {
       final response = await _addressService.getWoredas(
           region: _selectedRegion!, zone: zone, locale: locale);
-      if (mounted && response.success)
+      if (mounted && response.success) {
         setState(() => _woredas = response.woredas
             .map((w) => w.woreda ?? '')
             .where((s) => s.isNotEmpty)
             .toList());
+      }
     } catch (_) {}
     if (mounted) setState(() => _loadingWoredas = false);
     _syncAddress();
@@ -248,8 +259,9 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
       _kebeles = [];
       if (woreda != null) _loadingKebeles = true;
     });
-    if (woreda == null || _selectedRegion == null || _selectedZone == null)
+    if (woreda == null || _selectedRegion == null || _selectedZone == null) {
       return;
+    }
     final locale = Localizations.localeOf(context).languageCode;
     try {
       final response = await _addressService.getKebeles(
@@ -330,11 +342,12 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     if (initialDate.isBefore(today)) initialDate = today;
     if (initialDate.isAfter(lastDate)) initialDate = lastDate;
 
-    final picked = await showDatePicker(
+    final picked = await AppDatePicker.show(
       context: context,
       initialDate: initialDate,
       firstDate: today,
       lastDate: lastDate,
+      locale: Localizations.localeOf(context).languageCode,
     );
     if (picked != null) {
       setState(() => _formData = _formData.copyWith(deadline: picked));
@@ -390,8 +403,9 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
                     counterText: '',
                   ),
                   onChanged: (_) {
-                    if (customError != null)
+                    if (customError != null) {
                       setDialogState(() => customError = null);
+                    }
                   },
                 ),
               ],
@@ -405,8 +419,9 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
                   errorText: fieldError,
                 ),
                 onChanged: (_) {
-                  if (fieldError != null)
+                  if (fieldError != null) {
                     setDialogState(() => fieldError = null);
+                  }
                 },
               ),
             ],
@@ -476,8 +491,9 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
                   errorText: titleError,
                 ),
                 onChanged: (_) {
-                  if (titleError != null)
+                  if (titleError != null) {
                     setDialogState(() => titleError = null);
+                  }
                 },
               ),
               const SizedBox(height: 12),
@@ -490,8 +506,9 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
                   errorText: yearsError,
                 ),
                 onChanged: (_) {
-                  if (yearsError != null)
+                  if (yearsError != null) {
                     setDialogState(() => yearsError = null);
+                  }
                 },
               ),
             ],
@@ -860,7 +877,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
                 const Icon(Icons.event_outlined, color: AppColors.accent600),
             title: Text(
               _formData.deadline != null
-                  ? '${l10n.jobDeadline}: ${_formData.deadline!.year}-${_formData.deadline!.month.toString().padLeft(2, '0')}-${_formData.deadline!.day.toString().padLeft(2, '0')}'
+                  ? '${l10n.jobDeadline}: ${EthiopianDateHelper.formatDual(_formData.deadline!, Localizations.localeOf(context).languageCode)}'
                   : '${l10n.jobDeadline} *',
               style: AppTextStyles.bodyMedium
                   .copyWith(color: context.theme.textPrimary),

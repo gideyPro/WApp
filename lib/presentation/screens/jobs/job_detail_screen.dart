@@ -53,8 +53,10 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     final l10n = AppLocalizations.of(context);
     final title = listing.resolvedJobTitle ?? l10n.jobJob;
     final company = listing.jobCompanyName?.trim();
-    final companyText = (company != null && company.isNotEmpty) ? ' ($company)' : '';
-    final salaryText = listing.jobSalaryType == 'fixed' && listing.jobSalaryMin != null
+    final companyText =
+        (company != null && company.isNotEmpty) ? ' ($company)' : '';
+    final salaryText = listing.jobSalaryType == 'fixed' &&
+            listing.jobSalaryMin != null
         ? '${listing.jobSalaryCurrency ?? 'ETB'} ${smartDecimal(listing.jobSalaryMin!)}'
         : l10n.jobSalaryPerAgreement;
 
@@ -83,7 +85,8 @@ ${l10n.shareListingTitle}
     setState(() => _isFavoriteToggling = true);
 
     try {
-      final success = await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
+      final success =
+          await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
       if (mounted) {
         final l10n = AppLocalizations.of(context);
         if (success) {
@@ -127,7 +130,8 @@ ${l10n.shareListingTitle}
     }
     setState(() => _isFeatureLoading = true);
     try {
-      final error = await ref.read(jobDetailProvider.notifier).featureListing(listing.id);
+      final error =
+          await ref.read(jobDetailProvider.notifier).featureListing(listing.id);
       if (mounted) {
         if (error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -135,7 +139,9 @@ ${l10n.shareListingTitle}
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context).statusSuccess), backgroundColor: AppColors.success),
+            SnackBar(
+                content: Text(AppLocalizations.of(context).statusSuccess),
+                backgroundColor: AppColors.success),
           );
         }
       }
@@ -167,7 +173,9 @@ ${l10n.shareListingTitle}
 
     setState(() => _isFeatureLoading = true);
     try {
-      final error = await ref.read(jobDetailProvider.notifier).unfeatureListing(listing.id);
+      final error = await ref
+          .read(jobDetailProvider.notifier)
+          .unfeatureListing(listing.id);
       if (mounted) {
         if (error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -175,7 +183,9 @@ ${l10n.shareListingTitle}
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context).statusSuccess), backgroundColor: AppColors.success),
+            SnackBar(
+                content: Text(AppLocalizations.of(context).statusSuccess),
+                backgroundColor: AppColors.success),
           );
         }
       }
@@ -208,7 +218,9 @@ ${l10n.shareListingTitle}
     if (confirmed == true && mounted) {
       setState(() => _isDeleting = true);
       try {
-        final error = await ref.read(jobDetailProvider.notifier).deleteListing(listing.id);
+        final error = await ref
+            .read(jobDetailProvider.notifier)
+            .deleteListing(listing.id);
         if (mounted) {
           if (error != null) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -216,7 +228,9 @@ ${l10n.shareListingTitle}
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.statusSuccess), backgroundColor: AppColors.success),
+              SnackBar(
+                  content: Text(l10n.statusSuccess),
+                  backgroundColor: AppColors.success),
             );
             Navigator.of(context).pop();
           }
@@ -235,7 +249,9 @@ ${l10n.shareListingTitle}
       if (mounted) {
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.settingsWebOpenError(url)), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(l10n.settingsWebOpenError(url)),
+              backgroundColor: AppColors.error),
         );
       }
     }
@@ -249,7 +265,8 @@ ${l10n.shareListingTitle}
     }
     setState(() => _isRevealingContact = true);
     try {
-      final result = await ref.read(jobDetailProvider.notifier).revealContact(listingId);
+      final result =
+          await ref.read(jobDetailProvider.notifier).revealContact(listingId);
       if (result != null && mounted) {
         if (result.containsKey('error') && result['error'] != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -259,7 +276,8 @@ ${l10n.shareListingTitle}
             ),
           );
         } else {
-          final message = result['message'] as String? ?? AppLocalizations.of(context).statusSuccess;
+          final message = result['message'] as String? ??
+              AppLocalizations.of(context).statusSuccess;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(message),
@@ -305,7 +323,9 @@ ${l10n.shareListingTitle}
           isEmbedded: true,
           title: l10n.listingsLoadError,
           subtitle: state.errorMessage,
-          onRetry: () => ref.read(jobDetailProvider.notifier).loadListing(widget.listingId),
+          onRetry: () => ref
+              .read(jobDetailProvider.notifier)
+              .loadListing(widget.listingId),
         ),
       );
     }
@@ -355,16 +375,12 @@ ${l10n.shareListingTitle}
               _buildImageGallery(listing),
               const SizedBox(height: 16),
             ],
-
             _buildHeader(listing, l10n),
             const SizedBox(height: 16),
-
             _buildOverviewCards(listing, l10n),
             const SizedBox(height: 20),
-
             _buildRequirementsSection(listing, l10n),
             const SizedBox(height: 20),
-
             if (listing.jobDescriptionBody.isNotEmpty) ...[
               _buildSection(
                 title: l10n.listingDescriptionLabel,
@@ -378,15 +394,13 @@ ${l10n.shareListingTitle}
               ),
               const SizedBox(height: 20),
             ],
-
-            if (listing.address != null || (listing.specificLocation?.isNotEmpty ?? false)) ...[
+            if (listing.address != null ||
+                (listing.specificLocation?.isNotEmpty ?? false)) ...[
               _buildLocationSection(listing, l10n),
               const SizedBox(height: 20),
             ],
-
             _buildActionSection(listing, isOwner, l10n),
             const SizedBox(height: 32),
-
             _buildSimilarJobs(listing, l10n),
             const SizedBox(height: 40),
           ],
@@ -597,7 +611,8 @@ ${l10n.shareListingTitle}
         const SizedBox(height: 6),
         Row(
           children: [
-            Icon(Icons.business_outlined, size: 16, color: context.textSecondary),
+            Icon(Icons.business_outlined,
+                size: 16, color: context.textSecondary),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
@@ -613,11 +628,13 @@ ${l10n.shareListingTitle}
         const SizedBox(height: 8),
         Row(
           children: [
-            Icon(Icons.calendar_today_outlined, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
+            Icon(Icons.calendar_today_outlined,
+                size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
             const SizedBox(width: 4),
             Text(
               DateFormat('MMM d, yyyy').format(listing.createdAt),
-              style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7)),
+              style: AppTextStyles.labelSmall.copyWith(
+                  color: context.textSecondary.withValues(alpha: 0.7)),
             ),
           ],
         ),
@@ -648,8 +665,11 @@ ${l10n.shareListingTitle}
     final currency = listing.jobSalaryCurrency ?? 'ETB';
     if (listing.jobSalaryType == 'fixed' && listing.jobSalaryMin != null) {
       salaryText = '$currency ${smartDecimal(listing.jobSalaryMin!)}';
-    } else if (listing.jobSalaryType == 'range' && listing.jobSalaryMin != null && listing.jobSalaryMax != null) {
-      salaryText = '$currency ${smartDecimal(listing.jobSalaryMin!)} - ${smartDecimal(listing.jobSalaryMax!)}';
+    } else if (listing.jobSalaryType == 'range' &&
+        listing.jobSalaryMin != null &&
+        listing.jobSalaryMax != null) {
+      salaryText =
+          '$currency ${smartDecimal(listing.jobSalaryMin!)} - ${smartDecimal(listing.jobSalaryMax!)}';
     }
 
     String deadlineText = l10n.jobNoDeadline;
@@ -672,11 +692,13 @@ ${l10n.shareListingTitle}
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.payments_outlined, size: 18, color: AppColors.emerald600),
+                    const Icon(Icons.payments_outlined,
+                        size: 18, color: AppColors.emerald600),
                     const SizedBox(width: 6),
                     Text(
                       l10n.jobSalaryType,
-                      style: AppTextStyles.caption.copyWith(color: context.textSecondary),
+                      style: AppTextStyles.caption
+                          .copyWith(color: context.textSecondary),
                     ),
                   ],
                 ),
@@ -714,7 +736,8 @@ ${l10n.shareListingTitle}
                     const SizedBox(width: 6),
                     Text(
                       l10n.jobDeadline,
-                      style: AppTextStyles.caption.copyWith(color: context.textSecondary),
+                      style: AppTextStyles.caption
+                          .copyWith(color: context.textSecondary),
                     ),
                   ],
                 ),
@@ -737,13 +760,23 @@ ${l10n.shareListingTitle}
   }
 
   Widget _buildRequirementsSection(Listing listing, AppLocalizations l10n) {
-    final hasEducations = listing.jobReqEducations != null && listing.jobReqEducations!.isNotEmpty;
-    final hasExperiences = listing.jobReqExperiences != null && listing.jobReqExperiences!.isNotEmpty;
-    final hasLegacyEducation = listing.jobReqEducation != null && listing.jobReqEducation!.isNotEmpty;
-    final hasLegacyExperience = listing.jobReqExperience != null && listing.jobReqExperience!.isNotEmpty;
-    final hasGender = listing.jobReqGender != null && listing.jobReqGender!.isNotEmpty && listing.jobReqGender != 'any';
+    final hasEducations = listing.jobReqEducations != null &&
+        listing.jobReqEducations!.isNotEmpty;
+    final hasExperiences = listing.jobReqExperiences != null &&
+        listing.jobReqExperiences!.isNotEmpty;
+    final hasLegacyEducation =
+        listing.jobReqEducation != null && listing.jobReqEducation!.isNotEmpty;
+    final hasLegacyExperience = listing.jobReqExperience != null &&
+        listing.jobReqExperience!.isNotEmpty;
+    final hasGender = listing.jobReqGender != null &&
+        listing.jobReqGender!.isNotEmpty &&
+        listing.jobReqGender != 'any';
 
-    if (!hasEducations && !hasExperiences && !hasLegacyEducation && !hasLegacyExperience && !hasGender) {
+    if (!hasEducations &&
+        !hasExperiences &&
+        !hasLegacyEducation &&
+        !hasLegacyExperience &&
+        !hasGender) {
       return const SizedBox.shrink();
     }
 
@@ -761,15 +794,19 @@ ${l10n.shareListingTitle}
               _buildReqHeader(Icons.school_outlined, l10n.jobEducationLevel),
               const SizedBox(height: 6),
               ...listing.jobReqEducations!.map((edu) => Padding(
-                padding: const EdgeInsets.only(left: 24, bottom: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('• ', style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
-                    Expanded(child: Text(edu.displayLabel(l10n), style: AppTextStyles.bodyMedium)),
-                  ],
-                ),
-              )),
+                    padding: const EdgeInsets.only(left: 24, bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('• ',
+                            style: AppTextStyles.bodyMedium
+                                .copyWith(fontWeight: FontWeight.bold)),
+                        Expanded(
+                            child: Text(edu.displayLabel(l10n),
+                                style: AppTextStyles.bodyMedium)),
+                      ],
+                    ),
+                  )),
               const SizedBox(height: 12),
             ] else if (hasLegacyEducation) ...[
               _buildReqRow(
@@ -779,20 +816,23 @@ ${l10n.shareListingTitle}
               ),
               const SizedBox(height: 12),
             ],
-
             if (hasExperiences) ...[
               _buildReqHeader(Icons.work_outline, l10n.seekerExperience),
               const SizedBox(height: 6),
               ...listing.jobReqExperiences!.map((exp) => Padding(
-                padding: const EdgeInsets.only(left: 24, bottom: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('• ', style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
-                    Expanded(child: Text(exp.displayRequirementLabel(), style: AppTextStyles.bodyMedium)),
-                  ],
-                ),
-              )),
+                    padding: const EdgeInsets.only(left: 24, bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('• ',
+                            style: AppTextStyles.bodyMedium
+                                .copyWith(fontWeight: FontWeight.bold)),
+                        Expanded(
+                            child: Text(exp.displayRequirementLabel(),
+                                style: AppTextStyles.bodyMedium)),
+                      ],
+                    ),
+                  )),
               const SizedBox(height: 12),
             ] else if (hasLegacyExperience) ...[
               _buildReqRow(
@@ -802,7 +842,6 @@ ${l10n.shareListingTitle}
               ),
               const SizedBox(height: 12),
             ],
-
             if (hasGender) ...[
               _buildReqRow(
                 Icons.people_outline,
@@ -821,7 +860,9 @@ ${l10n.shareListingTitle}
       children: [
         Icon(icon, size: 18, color: AppColors.accent600),
         const SizedBox(width: 6),
-        Text(title, style: AppTextStyles.labelLarge.copyWith(color: context.textPrimary, fontWeight: FontWeight.w600)),
+        Text(title,
+            style: AppTextStyles.labelLarge.copyWith(
+                color: context.textPrimary, fontWeight: FontWeight.w600)),
       ],
     );
   }
@@ -832,7 +873,9 @@ ${l10n.shareListingTitle}
       children: [
         Icon(icon, size: 18, color: AppColors.accent600),
         const SizedBox(width: 8),
-        Text('$title: ', style: AppTextStyles.labelLarge.copyWith(color: context.textPrimary, fontWeight: FontWeight.w600)),
+        Text('$title: ',
+            style: AppTextStyles.labelLarge.copyWith(
+                color: context.textPrimary, fontWeight: FontWeight.w600)),
         Expanded(child: Text(value, style: AppTextStyles.bodyMedium)),
       ],
     );
@@ -841,14 +884,23 @@ ${l10n.shareListingTitle}
   Widget _buildLocationSection(Listing listing, AppLocalizations l10n) {
     final addr = listing.address;
     final parts = <String>[];
-    if (addr?.region != null && addr!.region!.isNotEmpty) parts.add(addr.region!);
+    if (addr?.region != null && addr!.region!.isNotEmpty) {
+      parts.add(addr.region!);
+    }
     if (addr?.zone != null && addr!.zone!.isNotEmpty) parts.add(addr.zone!);
-    if (addr?.woreda != null && addr!.woreda!.isNotEmpty) parts.add(addr.woreda!);
-    if (addr?.kebele != null && addr!.kebele!.isNotEmpty) parts.add('Kebele ${addr.kebele!}');
+    if (addr?.woreda != null && addr!.woreda!.isNotEmpty) {
+      parts.add(addr.woreda!);
+    }
+    if (addr?.kebele != null && addr!.kebele!.isNotEmpty) {
+      parts.add('Kebele ${addr.kebele!}');
+    }
 
     String locationText = parts.join(', ');
-    if (listing.specificLocation != null && listing.specificLocation!.isNotEmpty) {
-      locationText = locationText.isNotEmpty ? '$locationText (${listing.specificLocation})' : listing.specificLocation!;
+    if (listing.specificLocation != null &&
+        listing.specificLocation!.isNotEmpty) {
+      locationText = locationText.isNotEmpty
+          ? '$locationText (${listing.specificLocation})'
+          : listing.specificLocation!;
     }
 
     return _buildSection(
@@ -856,12 +908,14 @@ ${l10n.shareListingTitle}
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.location_on_outlined, size: 20, color: AppColors.accent600),
+          const Icon(Icons.location_on_outlined,
+              size: 20, color: AppColors.accent600),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               locationText.isNotEmpty ? locationText : 'Ethiopia',
-              style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary),
+              style:
+                  AppTextStyles.bodyMedium.copyWith(color: context.textPrimary),
             ),
           ),
         ],
@@ -869,7 +923,8 @@ ${l10n.shareListingTitle}
     );
   }
 
-  Widget _buildActionSection(Listing listing, bool isOwner, AppLocalizations l10n) {
+  Widget _buildActionSection(
+      Listing listing, bool isOwner, AppLocalizations l10n) {
     final subState = ref.watch(subscriptionProvider);
 
     return WaveCard(
@@ -886,29 +941,39 @@ ${l10n.shareListingTitle}
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () => context.push('/jobs/${widget.listingId}/edit', extra: listing),
+                    onPressed: () => context
+                        .push('/jobs/${widget.listingId}/edit', extra: listing),
                     icon: const Icon(Icons.edit, size: 20),
                     label: Text(l10n.commonEdit),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: BorderSide(color: context.theme.divider),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      foregroundColor: context.isDarkMode ? AppColors.primary300 : AppColors.primary600,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      foregroundColor: context.isDarkMode
+                          ? AppColors.primary300
+                          : AppColors.primary600,
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: _isDeleting ? null : () => _deleteListing(listing),
+                    onPressed:
+                        _isDeleting ? null : () => _deleteListing(listing),
                     icon: _isDeleting
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.error))
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: AppColors.error))
                         : const Icon(Icons.delete_outline, size: 20),
                     label: Text(l10n.commonDelete),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.error),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       foregroundColor: AppColors.error,
                     ),
                   ),
@@ -921,10 +986,12 @@ ${l10n.shareListingTitle}
                 borderRadius: 12,
                 blur: 20,
                 tint: AppColors.success,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Row(
                   children: [
-                    const Icon(Icons.check_circle, size: 18, color: AppColors.success),
+                    const Icon(Icons.check_circle,
+                        size: 18, color: AppColors.success),
                     const SizedBox(width: 8),
                     Text(
                       l10n.jobFeatured,
@@ -935,17 +1002,24 @@ ${l10n.shareListingTitle}
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: _isFeatureLoading ? null : () => _unfeatureListing(listing),
+                      onPressed: _isFeatureLoading
+                          ? null
+                          : () => _unfeatureListing(listing),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         minimumSize: const Size(48, 48),
                         foregroundColor: AppColors.stone500,
                       ),
                       child: _isFeatureLoading
-                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2))
                           : Text(
                               l10n.listingUnfeature,
-                              style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone500),
+                              style: AppTextStyles.labelSmall
+                                  .copyWith(color: AppColors.stone500),
                             ),
                     ),
                   ],
@@ -956,15 +1030,24 @@ ${l10n.shareListingTitle}
                   ? SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: _isFeatureLoading ? null : () => _featureListing(listing),
+                        onPressed: _isFeatureLoading
+                            ? null
+                            : () => _featureListing(listing),
                         icon: _isFeatureLoading
-                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                            : const Icon(Icons.workspace_premium_outlined, size: 20),
-                        label: Text(_isFeatureLoading ? '' : l10n.listingFeatureThis),
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.workspace_premium_outlined,
+                                size: 20),
+                        label: Text(
+                            _isFeatureLoading ? '' : l10n.listingFeatureThis),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           side: const BorderSide(color: AppColors.accent500),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           foregroundColor: AppColors.accent500,
                         ),
                       ),
@@ -1016,12 +1099,15 @@ ${l10n.shareListingTitle}
         children: [
           const Icon(Icons.lock_outline, size: 28, color: AppColors.accent600),
           const SizedBox(height: 8),
-          Text(l10n.listingsRevealContact, style: AppTextStyles.title.copyWith(fontSize: 14)),
+          Text(l10n.listingsRevealContact,
+              style: AppTextStyles.title.copyWith(fontSize: 14)),
           if (listing.contactMax > 0) ...[
             const SizedBox(height: 4),
             Text(
-              l10n.listingsContactViewsRemaining(listing.contactRemaining, listing.contactMax),
-              style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
+              l10n.listingsContactViewsRemaining(
+                  listing.contactRemaining, listing.contactMax),
+              style: AppTextStyles.caption
+                  .copyWith(color: context.theme.textMuted),
               textAlign: TextAlign.center,
             ),
           ],
@@ -1029,16 +1115,24 @@ ${l10n.shareListingTitle}
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _isRevealingContact ? null : () => _revealContact(listing.id),
+              onPressed:
+                  _isRevealingContact ? null : () => _revealContact(listing.id),
               icon: _isRevealingContact
-                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white))
                   : const Icon(Icons.visibility_outlined, size: 18),
-              label: Text(_isRevealingContact ? l10n.listingsRevealing : l10n.listingsRevealContact),
+              label: Text(_isRevealingContact
+                  ? l10n.listingsRevealing
+                  : l10n.listingsRevealContact),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.accent500,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ),
@@ -1064,14 +1158,18 @@ ${l10n.shareListingTitle}
         ? listing.revealedName!
         : ((listing.sellerName?.isNotEmpty ?? false)
             ? listing.sellerName!
-            : ((company != null && company.isNotEmpty) ? company : l10n.jobIndividualPoster));
+            : ((company != null && company.isNotEmpty)
+                ? company
+                : l10n.jobIndividualPoster));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(l10n.jobContactEmployer, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
+          child: Text(l10n.jobContactEmployer,
+              style: AppTextStyles.titleSmall
+                  .copyWith(color: context.textPrimary)),
         ),
         WaveCard(
           useLiquidGlass: true,
@@ -1088,7 +1186,9 @@ ${l10n.shareListingTitle}
                     backgroundColor: context.theme.cardBg,
                     child: Text(
                       name.isNotEmpty ? name[0].toUpperCase() : 'E',
-                      style: AppTextStyles.titleSmall.copyWith(color: AppColors.accent600, fontWeight: FontWeight.w700),
+                      style: AppTextStyles.titleSmall.copyWith(
+                          color: AppColors.accent600,
+                          fontWeight: FontWeight.w700),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -1098,7 +1198,9 @@ ${l10n.shareListingTitle}
                       children: [
                         Text(
                           name,
-                          style: AppTextStyles.labelLarge.copyWith(fontWeight: FontWeight.w600, color: context.textPrimary),
+                          style: AppTextStyles.labelLarge.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: context.textPrimary),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -1106,7 +1208,8 @@ ${l10n.shareListingTitle}
                           const SizedBox(height: 2),
                           Text(
                             phone,
-                            style: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary),
+                            style: AppTextStyles.bodyMedium
+                                .copyWith(color: context.textSecondary),
                           ),
                         ],
                       ],
@@ -1134,7 +1237,8 @@ ${l10n.shareListingTitle}
                         label: l10n.jobWhatsapp,
                         hint: l10n.jobWhatsappHint,
                         color: const Color(0xFF25D366),
-                        onTap: () => _launchUrl('https://wa.me/${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
+                        onTap: () => _launchUrl(
+                            'https://wa.me/${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -1144,7 +1248,8 @@ ${l10n.shareListingTitle}
                         label: l10n.jobTelegram,
                         hint: l10n.jobTelegramHint,
                         color: const Color(0xFF0088CC),
-                        onTap: () => _launchUrl('https://t.me/+${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
+                        onTap: () => _launchUrl(
+                            'https://t.me/+${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                       ),
                     ),
                   ],
@@ -1266,7 +1371,9 @@ class _ContactButton extends StatelessWidget {
               children: [
                 Icon(icon, color: color, size: 24),
                 const SizedBox(height: 4),
-                Text(label, style: AppTextStyles.labelSmall.copyWith(color: color, fontWeight: FontWeight.w600)),
+                Text(label,
+                    style: AppTextStyles.labelSmall
+                        .copyWith(color: color, fontWeight: FontWeight.w600)),
               ],
             ),
           ),

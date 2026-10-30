@@ -221,6 +221,53 @@ class AppTheme {
         subtitleTextStyle:
             AppTextStyles.bodySmall.copyWith(color: AppColors.stone600),
       ),
+
+      // Date Picker Theme (Material 3)
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: Colors.white,
+        elevation: 3,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: const BorderSide(color: AppColors.stone200, width: 0.8),
+        ),
+        headerBackgroundColor: AppColors.primary900,
+        headerForegroundColor: Colors.white,
+        headerHeadlineStyle: AppTextStyles.headline4.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+        ),
+        headerHelpStyle: AppTextStyles.labelSmall.copyWith(
+          color: AppColors.primary200,
+        ),
+        weekdayStyle: AppTextStyles.labelSmall.copyWith(
+          color: AppColors.stone600,
+          fontWeight: FontWeight.w600,
+        ),
+        dayStyle: AppTextStyles.bodyMedium.copyWith(
+          fontWeight: FontWeight.w500,
+        ),
+        todayBorder: const BorderSide(color: AppColors.accent500, width: 1.5),
+        todayForegroundColor: WidgetStateProperty.all(AppColors.accent700),
+        dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return AppColors.primary900;
+          return null;
+        }),
+        dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return Colors.white;
+          if (states.contains(WidgetState.disabled)) return AppColors.stone400;
+          return AppColors.stone900;
+        }),
+        cancelButtonStyle: TextButton.styleFrom(
+          foregroundColor: AppColors.stone600,
+          textStyle: AppTextStyles.buttonMedium,
+        ),
+        confirmButtonStyle: TextButton.styleFrom(
+          foregroundColor: AppColors.primary900,
+          textStyle:
+              AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ),
     );
   }
 
@@ -471,6 +518,53 @@ class AppTheme {
         titleTextStyle: AppTextStyles.bodyLarge.copyWith(color: Colors.white),
         subtitleTextStyle:
             AppTextStyles.bodySmall.copyWith(color: AppColors.primary300),
+      ),
+
+      // Date Picker Theme (Material 3 Dark)
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: AppColors.cardNavyDark,
+        elevation: 3,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+        ),
+        headerBackgroundColor: AppColors.oceanicNavyDark,
+        headerForegroundColor: Colors.white,
+        headerHeadlineStyle: AppTextStyles.headline4.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+        ),
+        headerHelpStyle: AppTextStyles.labelSmall.copyWith(
+          color: AppColors.primary300,
+        ),
+        weekdayStyle: AppTextStyles.labelSmall.copyWith(
+          color: AppColors.primary200,
+          fontWeight: FontWeight.w600,
+        ),
+        dayStyle: AppTextStyles.bodyMedium.copyWith(
+          fontWeight: FontWeight.w500,
+        ),
+        todayBorder: const BorderSide(color: AppColors.accent400, width: 1.5),
+        todayForegroundColor: WidgetStateProperty.all(AppColors.accent400),
+        dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return AppColors.accent500;
+          return null;
+        }),
+        dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return Colors.black;
+          if (states.contains(WidgetState.disabled)) return Colors.white30;
+          return Colors.white;
+        }),
+        cancelButtonStyle: TextButton.styleFrom(
+          foregroundColor: AppColors.primary200,
+          textStyle: AppTextStyles.buttonMedium,
+        ),
+        confirmButtonStyle: TextButton.styleFrom(
+          foregroundColor: AppColors.accent400,
+          textStyle:
+              AppTextStyles.buttonMedium.copyWith(fontWeight: FontWeight.w700),
+        ),
       ),
     );
   }

@@ -26,8 +26,6 @@ import '../listing/widgets/listing_message_button.dart';
 import '../listing/widgets/listing_report_sheet.dart';
 import '../../../data/services/listing_service.dart';
 
-
-
 class CarDetailScreen extends ConsumerStatefulWidget {
   final int listingId;
 
@@ -51,7 +49,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     }
     setState(() => _isRevealingContact = true);
     try {
-      final result = await ref.read(carDetailProvider.notifier).revealContact(listingId);
+      final result =
+          await ref.read(carDetailProvider.notifier).revealContact(listingId);
       if (result != null && mounted) {
         if (result.containsKey('error') && result['error'] != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +60,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
             ),
           );
         } else {
-          final message = result['message'] as String? ?? AppLocalizations.of(context).statusSuccess;
+          final message = result['message'] as String? ??
+              AppLocalizations.of(context).statusSuccess;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(message),
@@ -92,7 +92,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     }
 
     if (state.errorMessage != null) {
-      return _buildErrorView(state.errorMessage!, isSubscriptionGate: state.requiresSubscription);
+      return _buildErrorView(state.errorMessage!,
+          isSubscriptionGate: state.requiresSubscription);
     }
 
     if (state.listing == null) {
@@ -131,20 +132,52 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(height: 28, width: 200, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(6))),
+                    Container(
+                        height: 28,
+                        width: 200,
+                        decoration: BoxDecoration(
+                            color: context.shimmerHighlight,
+                            borderRadius: BorderRadius.circular(6))),
                     const SizedBox(height: 12),
-                    Container(height: 28, width: 140, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(6))),
+                    Container(
+                        height: 28,
+                        width: 140,
+                        decoration: BoxDecoration(
+                            color: context.shimmerHighlight,
+                            borderRadius: BorderRadius.circular(6))),
                     const SizedBox(height: 16),
-                    Container(height: 18, width: double.infinity, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(12))),
+                    Container(
+                        height: 18,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: context.shimmerHighlight,
+                            borderRadius: BorderRadius.circular(12))),
                     const SizedBox(height: 8),
-                    Container(height: 14, width: 180, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(12))),
+                    Container(
+                        height: 14,
+                        width: 180,
+                        decoration: BoxDecoration(
+                            color: context.shimmerHighlight,
+                            borderRadius: BorderRadius.circular(12))),
                     const SizedBox(height: 24),
-                    Container(height: 16, width: 120, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(12))),
+                    Container(
+                        height: 16,
+                        width: 120,
+                        decoration: BoxDecoration(
+                            color: context.shimmerHighlight,
+                            borderRadius: BorderRadius.circular(12))),
                     const SizedBox(height: 12),
-                    ...List.generate(5, (_) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Container(height: 14, width: double.infinity, decoration: BoxDecoration(color: context.shimmerHighlight, borderRadius: BorderRadius.circular(12))),
-                    )),
+                    ...List.generate(
+                        5,
+                        (_) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Container(
+                                  height: 14,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: context.shimmerHighlight,
+                                      borderRadius: BorderRadius.circular(12))),
+                            )),
                   ],
                 ),
               ),
@@ -180,7 +213,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
         isEmbedded: true,
         title: l10n.listingsLoadError,
         subtitle: message,
-        onRetry: () => ref.read(carDetailProvider.notifier).loadListing(widget.listingId),
+        onRetry: () =>
+            ref.read(carDetailProvider.notifier).loadListing(widget.listingId),
       ),
     );
   }
@@ -276,10 +310,13 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
               const SizedBox(height: 24),
               _buildSection(
                 title: l10n.listingDescriptionLabel,
-                child: Text(listing.carDescriptionBody, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textTertiary, height: 1.6)),
+                child: Text(listing.carDescriptionBody,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                        color: context.theme.textTertiary, height: 1.6)),
               ),
             ],
-            if (listing.carFeatures != null && listing.carFeatures!.isNotEmpty) ...[
+            if (listing.carFeatures != null &&
+                listing.carFeatures!.isNotEmpty) ...[
               const SizedBox(height: 24),
               _buildSection(
                 title: l10n.listingsKeyFeatures,
@@ -327,11 +364,14 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.location_on_outlined, size: 16, color: context.textSecondary),
+              Icon(Icons.location_on_outlined,
+                  size: 16, color: context.textSecondary),
               const SizedBox(width: 4),
-              Expanded(child: Text(
+              Expanded(
+                  child: Text(
                 _formatAddress(listing.address!),
-                style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary),
+                style: AppTextStyles.bodySmall
+                    .copyWith(color: context.textSecondary),
               )),
             ],
           ),
@@ -339,9 +379,12 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
         const SizedBox(height: 8),
         Row(
           children: [
-            Icon(Icons.calendar_today, size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
+            Icon(Icons.calendar_today,
+                size: 14, color: context.textSecondary.withValues(alpha: 0.7)),
             const SizedBox(width: 4),
-            Text(DateFormat('MMM d, yyyy').format(listing.createdAt), style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary.withValues(alpha: 0.7))),
+            Text(DateFormat('MMM d, yyyy').format(listing.createdAt),
+                style: AppTextStyles.labelSmall.copyWith(
+                    color: context.textSecondary.withValues(alpha: 0.7))),
           ],
         ),
       ],
@@ -385,7 +428,9 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: BorderSide(color: context.theme.divider),
-                      foregroundColor: context.isDarkMode ? AppColors.primary300 : AppColors.primary600,
+                      foregroundColor: context.isDarkMode
+                          ? AppColors.primary300
+                          : AppColors.primary600,
                     ),
                   ),
                 ),
@@ -410,13 +455,16 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                 borderRadius: 8,
                 blur: 20,
                 tint: AppColors.success,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Row(
                   children: [
-                    const Icon(Icons.check_circle, size: 18, color: AppColors.success),
+                    const Icon(Icons.check_circle,
+                        size: 18, color: AppColors.success),
                     const SizedBox(width: 8),
                     Text(
-                      l10n.listingUpgradeToFeature.replaceFirst('Feature', 'Featured'),
+                      l10n.listingUpgradeToFeature
+                          .replaceFirst('Feature', 'Featured'),
                       style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.success,
                         fontWeight: FontWeight.w600,
@@ -424,17 +472,24 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: _isFeatureLoading ? null : () => _unfeatureListing(listing),
+                      onPressed: _isFeatureLoading
+                          ? null
+                          : () => _unfeatureListing(listing),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         minimumSize: const Size(48, 48),
                         foregroundColor: AppColors.stone500,
                       ),
                       child: _isFeatureLoading
-                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2))
                           : Text(
                               l10n.listingUnfeature,
-                              style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone500),
+                              style: AppTextStyles.labelSmall
+                                  .copyWith(color: AppColors.stone500),
                             ),
                     ),
                   ],
@@ -445,11 +500,19 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                   ? SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: _isFeatureLoading ? null : () => _featureListing(listing),
+                        onPressed: _isFeatureLoading
+                            ? null
+                            : () => _featureListing(listing),
                         icon: _isFeatureLoading
-                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                            : const Icon(Icons.workspace_premium_outlined, size: 20),
-                        label: Text(_isFeatureLoading ? '' : l10n.listingFeatureThis),
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.workspace_premium_outlined,
+                                size: 20),
+                        label: Text(
+                            _isFeatureLoading ? '' : l10n.listingFeatureThis),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           side: const BorderSide(color: AppColors.accent500),
@@ -469,10 +532,12 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                 borderRadius: 8,
                 blur: 20,
                 tint: AppColors.vip,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Row(
                   children: [
-                    const Icon(Icons.check_circle, size: 18, color: AppColors.vip),
+                    const Icon(Icons.check_circle,
+                        size: 18, color: AppColors.vip),
                     const SizedBox(width: 8),
                     Text(
                       l10n.markAsVip,
@@ -483,7 +548,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: _isVipLoading ? null : () => _unvipListing(listing),
+                      onPressed:
+                          _isVipLoading ? null : () => _unvipListing(listing),
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         minimumSize: Size.zero,
@@ -491,10 +557,14 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                         foregroundColor: AppColors.stone500,
                       ),
                       child: _isVipLoading
-                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2))
                           : Text(
                               'Un-VIP',
-                              style: AppTextStyles.labelSmall.copyWith(color: AppColors.stone500),
+                              style: AppTextStyles.labelSmall
+                                  .copyWith(color: AppColors.stone500),
                             ),
                     ),
                   ],
@@ -506,7 +576,10 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                 child: OutlinedButton.icon(
                   onPressed: _isVipLoading ? null : () => _vipListing(listing),
                   icon: _isVipLoading
-                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2))
                       : const Icon(Icons.diamond_outlined, size: 20),
                   label: Text(_isVipLoading ? '' : l10n.markAsVip),
                   style: OutlinedButton.styleFrom(
@@ -521,14 +594,17 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: () => context.push('/subscriptions'),
-                  icon: const Icon(Icons.diamond_outlined, size: 20, color: AppColors.vip),
+                  icon: const Icon(Icons.diamond_outlined,
+                      size: 20, color: AppColors.vip),
                   label: Text(
                     '${l10n.markAsVip} (Subscription Required)',
-                    style: AppTextStyles.labelMedium.copyWith(color: AppColors.vip),
+                    style: AppTextStyles.labelMedium
+                        .copyWith(color: AppColors.vip),
                   ),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    side: BorderSide(color: AppColors.vip.withValues(alpha: 0.5)),
+                    side:
+                        BorderSide(color: AppColors.vip.withValues(alpha: 0.5)),
                   ),
                 ),
               ),
@@ -575,11 +651,13 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
         children: [
           const Icon(Icons.lock_outline, size: 28, color: AppColors.accent600),
           const SizedBox(height: 8),
-          Text(l10n.listingsRevealContact, style: AppTextStyles.title.copyWith(fontSize: 14)),
+          Text(l10n.listingsRevealContact,
+              style: AppTextStyles.title.copyWith(fontSize: 14)),
           if (listing.contactMax > 0) ...[
             const SizedBox(height: 4),
             Text(
-              l10n.listingsContactViewsRemaining(listing.contactRemaining, listing.contactMax),
+              l10n.listingsContactViewsRemaining(
+                  listing.contactRemaining, listing.contactMax),
               style: AppTextStyles.caption.copyWith(color: AppColors.stone500),
               textAlign: TextAlign.center,
             ),
@@ -588,16 +666,24 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _isRevealingContact ? null : () => _revealContact(listing.id),
+              onPressed:
+                  _isRevealingContact ? null : () => _revealContact(listing.id),
               icon: _isRevealingContact
-                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white))
                   : const Icon(Icons.visibility_outlined, size: 18),
-              label: Text(_isRevealingContact ? l10n.listingsRevealing : l10n.listingsRevealContact),
+              label: Text(_isRevealingContact
+                  ? l10n.listingsRevealing
+                  : l10n.listingsRevealContact),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.accent500,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ),
@@ -627,7 +713,9 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(l10n.carContactSeller, style: AppTextStyles.titleSmall.copyWith(color: context.textPrimary)),
+          child: Text(l10n.carContactSeller,
+              style: AppTextStyles.titleSmall
+                  .copyWith(color: context.textPrimary)),
         ),
         WaveCard(
           useLiquidGlass: true,
@@ -644,7 +732,9 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                     backgroundColor: context.theme.cardBg,
                     child: Text(
                       name.isNotEmpty ? name[0].toUpperCase() : 'S',
-                      style: AppTextStyles.titleSmall.copyWith(color: AppColors.accent600, fontWeight: FontWeight.w700),
+                      style: AppTextStyles.titleSmall.copyWith(
+                          color: AppColors.accent600,
+                          fontWeight: FontWeight.w700),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -652,8 +742,13 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name, style: AppTextStyles.bodySmall.copyWith(color: context.textPrimary, fontWeight: FontWeight.w600)),
-                        Text(phone, style: AppTextStyles.labelSmall.copyWith(color: context.textSecondary)),
+                        Text(name,
+                            style: AppTextStyles.bodySmall.copyWith(
+                                color: context.textPrimary,
+                                fontWeight: FontWeight.w600)),
+                        Text(phone,
+                            style: AppTextStyles.labelSmall
+                                .copyWith(color: context.textSecondary)),
                       ],
                     ),
                   ),
@@ -678,7 +773,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                       label: l10n.carWhatsapp,
                       hint: l10n.carWhatsappHint,
                       color: const Color(0xFF25D366),
-                      onTap: () => _launchUrl('https://wa.me/${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
+                      onTap: () => _launchUrl(
+                          'https://wa.me/${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -688,7 +784,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                       label: l10n.carTelegram,
                       hint: l10n.carTelegramHint,
                       color: const Color(0xFF0088CC),
-                      onTap: () => _launchUrl('https://t.me/+${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
+                      onTap: () => _launchUrl(
+                          'https://t.me/+${phone.replaceAll(RegExp(r'[^0-9]'), '')}'),
                     ),
                   ),
                 ],
@@ -751,7 +848,9 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).commonError), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text(AppLocalizations.of(context).commonError),
+              backgroundColor: AppColors.error),
         );
       }
     }
@@ -798,7 +897,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
     setState(() => _isVipLoading = true);
     try {
-      final msg = await ref.read(carDetailProvider.notifier).vipListing(listing.id);
+      final msg =
+          await ref.read(carDetailProvider.notifier).vipListing(listing.id);
       if (!mounted) return;
       if (msg != null) {
         _showActionError(msg, vip: true);
@@ -825,7 +925,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Remove VIP Status?'),
-        content: const Text('Your listing will no longer be a VIP listing. You can mark it as VIP again later.'),
+        content: const Text(
+            'Your listing will no longer be a VIP listing. You can mark it as VIP again later.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -842,7 +943,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
     setState(() => _isVipLoading = true);
     try {
-      final msg = await ref.read(carDetailProvider.notifier).unvipListing(listing.id);
+      final msg =
+          await ref.read(carDetailProvider.notifier).unvipListing(listing.id);
       if (!mounted) return;
       if (msg != null) {
         _showActionError(msg);
@@ -875,7 +977,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('${l10n.listingFeatureThis}?'),
-        content: const Text('Your listing will be featured on the home page and search results for 30 days.'),
+        content: const Text(
+            'Your listing will be featured on the home page and search results for 30 days.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -892,7 +995,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
     setState(() => _isFeatureLoading = true);
     try {
-      final msg = await ref.read(carDetailProvider.notifier).featureListing(listing.id);
+      final msg =
+          await ref.read(carDetailProvider.notifier).featureListing(listing.id);
       if (!mounted) return;
       if (msg != null) {
         _showActionError(msg);
@@ -936,7 +1040,9 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
     setState(() => _isFeatureLoading = true);
     try {
-      final msg = await ref.read(carDetailProvider.notifier).unfeatureListing(listing.id);
+      final msg = await ref
+          .read(carDetailProvider.notifier)
+          .unfeatureListing(listing.id);
       if (!mounted) return;
       if (msg != null) {
         _showActionError(msg);
@@ -980,28 +1086,33 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: features.map((f) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: context.cardBg,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: context.divider.withValues(alpha: 0.5)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.check_circle_outline, size: 16, color: AppColors.accent500),
-            const SizedBox(width: 6),
-            Text(
-              featureLabel(f, l10n),
-              style: AppTextStyles.labelMedium.copyWith(
-                color: context.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      )).toList(),
+      children: features
+          .map((f) => Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: context.cardBg,
+                  borderRadius: BorderRadius.circular(12),
+                  border:
+                      Border.all(color: context.divider.withValues(alpha: 0.5)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.check_circle_outline,
+                        size: 16, color: AppColors.accent500),
+                    const SizedBox(width: 6),
+                    Text(
+                      featureLabel(f, l10n),
+                      style: AppTextStyles.labelMedium.copyWith(
+                        color: context.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ))
+          .toList(),
     );
   }
 
@@ -1011,22 +1122,39 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
     void add(String label, String? value) {
       if (value != null && value.isNotEmpty) specs.add(MapEntry(label, value));
     }
+
     final cat = listing.carVehicleCategory;
-    add(l10n.listingVehicleCategory, cat != null ? vehicleCategoryLabel(cat, l10n) : null);
-    add(l10n.listingMake, listing.carMake != null ? makeLabel(listing.carMake!, l10n) : null);
-    add(l10n.listingModel, listing.carModel != null ? modelLabel(listing.carModel!, l10n) : null);
+    add(l10n.listingVehicleCategory,
+        cat != null ? vehicleCategoryLabel(cat, l10n) : null);
+    add(l10n.listingMake,
+        listing.carMake != null ? makeLabel(listing.carMake!, l10n) : null);
+    add(l10n.listingModel,
+        listing.carModel != null ? modelLabel(listing.carModel!, l10n) : null);
     if (cat != 'bicycle') {
       add(l10n.listingYear, listing.carYear?.toString());
     }
     if (cat != 'bicycle') {
       final unit = cat == 'construction_equipment' ? 'Hours' : 'km';
-      add('${l10n.listingMileage} ($unit)', listing.carMileageKm != null ? NumberFormat("#,###").format(listing.carMileageKm!.toInt()) : null);
+      add(
+          '${l10n.listingMileage} ($unit)',
+          listing.carMileageKm != null
+              ? NumberFormat("#,###").format(listing.carMileageKm!.toInt())
+              : null);
     }
     if (cat == 'car' || cat == 'construction_equipment') {
-      add(l10n.listingBodyType, listing.carBodyType != null ? bodyTypeLabel(listing.carBodyType!, l10n) : null);
+      add(
+          l10n.listingBodyType,
+          listing.carBodyType != null
+              ? bodyTypeLabel(listing.carBodyType!, l10n)
+              : null);
     }
-    add(l10n.listingColor, listing.carColor != null ? colorLabel(listing.carColor!, l10n) : null);
-    add(l10n.listingCondition, listing.carCondition != null ? conditionLabel(listing.carCondition!, l10n) : null);
+    add(l10n.listingColor,
+        listing.carColor != null ? colorLabel(listing.carColor!, l10n) : null);
+    add(
+        l10n.listingCondition,
+        listing.carCondition != null
+            ? conditionLabel(listing.carCondition!, l10n)
+            : null);
     if (cat == 'car' || cat == 'construction_equipment') {
       add(l10n.listingVin, listing.carVin);
     }
@@ -1092,7 +1220,9 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           children: [
             const Divider(height: 1),
             const SizedBox(height: 24),
-            Text(l10n.listingsSimilarListings, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
+            Text(l10n.listingsSimilarListings,
+                style:
+                    AppTextStyles.title.copyWith(color: context.textPrimary)),
             const SizedBox(height: 12),
             SizedBox(
               height: 220,
@@ -1118,9 +1248,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
   }
 
   Widget _buildSimilarCard(Listing similar) {
-    final imageUrl = similar.images.isNotEmpty
-        ? similar.images.first.imageUrl
-        : '';
+    final imageUrl =
+        similar.images.isNotEmpty ? similar.images.first.imageUrl : '';
     return GestureDetector(
       onTap: () {
         context.pushReplacement('/cars/${similar.id}');
@@ -1142,12 +1271,16 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                       memCacheWidth: 600,
                       memCacheHeight: 450,
                       errorWidget: (_, __, ___) => Container(
-                        color: context.isDarkMode ? AppColors.cardNavyLight : AppColors.stone200,
+                        color: context.isDarkMode
+                            ? AppColors.cardNavyLight
+                            : AppColors.stone200,
                         child: const Icon(Icons.image_not_supported),
                       ),
                     )
                   : Container(
-                      color: context.isDarkMode ? AppColors.cardNavyLight : AppColors.stone200,
+                      color: context.isDarkMode
+                          ? AppColors.cardNavyLight
+                          : AppColors.stone200,
                       child: const Icon(Icons.image_not_supported),
                     ),
             ),
@@ -1162,7 +1295,9 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                       similar.carTitle,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w600, color: context.textPrimary),
+                      style: AppTextStyles.labelMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: context.textPrimary),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -1176,7 +1311,8 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                     if (similar.carYear != null || similar.carMileageKm != null)
                       Text(
                         '${similar.carYear ?? ''}${similar.carYear != null && similar.carMileageKm != null ? ' · ' : ''}${similar.carMileageKm != null ? '${similar.carMileageKm!.toInt()} km' : ''}',
-                        style: AppTextStyles.caption.copyWith(color: context.textSecondary),
+                        style: AppTextStyles.caption
+                            .copyWith(color: context.textSecondary),
                       ),
                   ],
                 ),
@@ -1220,7 +1356,9 @@ ${l10n.shareListingTitle}
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open: $url'), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text('Could not open: $url'),
+              backgroundColor: AppColors.error),
         );
       }
     }
@@ -1262,7 +1400,9 @@ class _ContactButton extends StatelessWidget {
               children: [
                 Icon(icon, color: color, size: 24),
                 const SizedBox(height: 4),
-                Text(label, style: AppTextStyles.labelSmall.copyWith(color: color, fontWeight: FontWeight.w600)),
+                Text(label,
+                    style: AppTextStyles.labelSmall
+                        .copyWith(color: color, fontWeight: FontWeight.w600)),
               ],
             ),
           ),

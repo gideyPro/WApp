@@ -153,29 +153,37 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       case 0:
         if (_formData.make.isEmpty ||
             (_formData.make == '__other__' &&
-                _customMakeController.text.isEmpty))
+                _customMakeController.text.isEmpty)) {
           errors.add('${l10n.listingMake} ${l10n.commonIsRequired}');
+        }
         if (_formData.model.isEmpty ||
             (_formData.model == '__other__' &&
-                _customModelController.text.isEmpty))
+                _customModelController.text.isEmpty)) {
           errors.add('${l10n.listingModel} ${l10n.commonIsRequired}');
-        if (_formData.vehicleCategory != 'bicycle' && _formData.year.isEmpty)
+        }
+        if (_formData.vehicleCategory != 'bicycle' && _formData.year.isEmpty) {
           errors.add('${l10n.listingYear} ${l10n.commonIsRequired}');
-        if (_formData.condition.isEmpty)
+        }
+        if (_formData.condition.isEmpty) {
           errors.add('${l10n.listingCondition} ${l10n.commonIsRequired}');
-        if (_formData.color.isEmpty)
+        }
+        if (_formData.color.isEmpty) {
           errors.add('${l10n.listingColor} ${l10n.commonIsRequired}');
+        }
         if (_formData.vehicleCategory != 'bicycle' &&
-            _formData.mileageKm.isEmpty)
+            _formData.mileageKm.isEmpty) {
           errors.add('${l10n.listingMileage} ${l10n.commonIsRequired}');
+        }
         if ((_formData.vehicleCategory == 'car' ||
                 _formData.vehicleCategory == 'construction_equipment') &&
-            _formData.bodyType.isEmpty)
+            _formData.bodyType.isEmpty) {
           errors.add('${l10n.listingBodyType} ${l10n.commonIsRequired}');
+        }
         break;
       case 1:
-        if (!_formData.isForRent && _formData.priceFixed == null)
+        if (!_formData.isForRent && _formData.priceFixed == null) {
           errors.add('${l10n.listingPriceEtb} ${l10n.commonIsRequired}');
+        }
         if (_formData.addressId == null) errors.add(l10n.carLocationRequired);
         final settingsAsync = ref.read(appSettingsProvider);
         final rentalEnabled = settingsAsync.maybeWhen(
@@ -197,11 +205,13 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
         }
         break;
       case 2:
-        if (_formData.images.isEmpty)
+        if (_formData.images.isEmpty) {
           errors.add(l10n.listingErrorImageRequired);
-        if (_formData.description.isEmpty)
+        }
+        if (_formData.description.isEmpty) {
           errors
               .add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
+        }
         if (!_formData.termsAccepted) errors.add(l10n.carTermsRequired);
         if (_formData.postedByAgent && _formData.agentId.trim().isEmpty) {
           errors.add(l10n.agentIdRequired);
@@ -293,8 +303,9 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
       _addressId = null;
       _kebeles = [];
     });
-    if (woreda == null || _selectedRegion == null || _selectedZone == null)
+    if (woreda == null || _selectedRegion == null || _selectedZone == null) {
       return;
+    }
     setState(() => _loadingKebeles = true);
     final locale = Localizations.localeOf(context).languageCode;
     try {
@@ -311,8 +322,9 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
             .cast<String>()
             .toList();
         for (final k in response.kebeles) {
-          if (k.kebele != null && k.kebele!.isNotEmpty)
+          if (k.kebele != null && k.kebele!.isNotEmpty) {
             _kebeleIds[k.kebele!] = k.id;
+          }
         }
         setState(() => _kebeles = kebeles);
       }
@@ -1351,8 +1363,9 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
     final canManageVip = subState.canViewVip;
     if (!canManageVip && _formData.isVip) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted)
+        if (mounted) {
           setState(() => _formData = _formData.copyWith(isVip: false));
+        }
       });
     }
 
