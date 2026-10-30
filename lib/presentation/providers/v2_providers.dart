@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/v2/api_v2_client.dart';
 import '../../core/network/v2/api_v2_error.dart';
 import '../../data/models/v2/app_config.dart';
+import '../../data/models/v2/help_content.dart';
 import '../../data/models/v2/home_feed.dart';
 import '../../data/models/v2/listing_detail.dart';
 import '../../data/models/v2/listing_summary.dart';
@@ -412,4 +413,9 @@ final subscriptionOverviewProvider =
 final listingDetailV2Provider =
     FutureProvider.family<ListingDetail, int>((ref, listingId) async {
   return ref.watch(catalogServiceProvider).fetchListing(listingId);
+});
+
+/// Help home feed from `/v2/help`.
+final helpHomeProvider = FutureProvider<HelpHome>((ref) {
+  return ref.watch(helpV2ServiceProvider).fetchHome();
 });

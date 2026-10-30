@@ -1,74 +1,100 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/network/v2/api_v2_error.dart';
+import '../../../../core/network/v2/paginated.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
-import '../../widgets/common/wave_common_widgets.dart';
-import '../../widgets/common/wave_liquid_glass.dart';
+import '../../../../data/models/v2/help_content.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../core/constants/app_spacing.dart';
+import '../../providers/v2_providers.dart';
+import '../../widgets/common/wave_common_widgets.dart';
 
-/// Help Center Screen - Browse FAQs and guides
-class HelpCenterScreen extends StatefulWidget {
+/// Help Center Screen backed by V2 `/v2/help`
+class HelpCenterScreen extends ConsumerStatefulWidget {
   const HelpCenterScreen({super.key});
 
   @override
-  State<HelpCenterScreen> createState() => _HelpCenterScreenState();
+  ConsumerState<HelpCenterScreen> createState() => _HelpCenterScreenState();
 }
 
-class _HelpCenterScreenState extends State<HelpCenterScreen> {
+class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<_HelpArticle> _filteredArticles = [];
-  List<_HelpArticle> _allArticles = [];
+  List<HelpArticleSummary> _searchResults = [];
   bool _isSearching = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _allArticles = _getLocalizedArticles(AppLocalizations.of(context));
-    if (!_isSearching) {
-      _filteredArticles = _allArticles;
-    } else {
-      _onSearchChanged();
-    }
-  }
+  bool _isLoadingSearch = false;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_onSearchChanged);
+    _searchController.addListener(_onSearchInputChanged);
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
+    _debounceTimer?.cancel();
+    _searchController.removeListener(_onSearchInputChanged);
     _searchController.dispose();
     super.dispose();
   }
 
-  void _onSearchChanged() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _isSearching = query.isNotEmpty;
-      if (query.isEmpty) {
-        _filteredArticles = _allArticles;
-      } else {
-        _filteredArticles = _allArticles
-            .where((article) =>
-                article.title.toLowerCase().contains(query) ||
-                article.content.toLowerCase().contains(query) ||
-                article.category.toLowerCase().contains(query))
-            .toList();
-      }
+  void _onSearchInputChanged() {
+    _debounceTimer?.cancel();
+    final query = _searchController.text.trim();
+    if (query.isEmpty) {
+      setState(() {
+        _isSearching = false;
+        _searchResults = [];
+        _isLoadingSearch = false;
+      });
+      return;
+    }
+
+    _debounceTimer = Timer(const Duration(milliseconds: 350), () {
+      _performSearch(query);
     });
+  }
+
+  Future<void> _performSearch(String query) async {
+    setState(() {
+      _isSearching = true;
+      _isLoadingSearch = true;
+    });
+
+    try {
+      final page =
+          await ref.read(helpV2ServiceProvider).fetchArticles(query: query);
+      if (mounted) {
+        setState(() {
+          _searchResults = page.items;
+          _isLoadingSearch = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _searchResults = [];
+          _isLoadingSearch = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final homeAsync = ref.watch(helpHomeProvider);
+
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
-        title: Text(AppLocalizations.of(context).profileHelp),
+        title: Text(l10n.profileHelp),
       ),
       body: Column(
         children: [
@@ -78,13 +104,20 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context).helpSearchHint,
-                hintStyle: AppTextStyles.bodyMedium.copyWith(color: context.textSecondary),
+                hintText: l10n.helpSearchHint,
+                hintStyle: AppTextStyles.bodyMedium
+                    .copyWith(color: context.textSecondary),
                 prefixIcon: Icon(Icons.search, color: context.textSecondary),
                 suffixIcon: _isSearching
                     ? IconButton(
                         icon: Icon(Icons.clear, color: context.textSecondary),
-                        onPressed: () => _searchController.clear(),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _isSearching = false;
+                            _searchResults = [];
+                          });
+                        },
                       )
                     : null,
                 border: OutlineInputBorder(
@@ -97,7 +130,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.accent500, width: 1.5),
+                  borderSide:
+                      const BorderSide(color: AppColors.accent500, width: 1.5),
                 ),
                 filled: true,
                 fillColor: context.theme.inputBg,
@@ -110,126 +144,33 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
 
           // Content
           Expanded(
-            child: _isSearching ? _buildSearchResults() : _buildCategories(),
+            child: _isSearching
+                ? _buildSearchResults(l10n)
+                : homeAsync.when(
+                    data: (home) => _buildHome(home, l10n),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (error, _) => WaveMessageScreen.error(
+                      title: l10n.commonError,
+                      subtitle: error is ApiV2Exception
+                          ? error.message
+                          : 'Could not load help center',
+                      onRetry: () => ref.invalidate(helpHomeProvider),
+                      isEmbedded: true,
+                    ),
+                  ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCategories() {
-    final l10n = AppLocalizations.of(context);
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      children: [
-        _buildCategorySection(
-          icon: Icons.account_circle_outlined,
-          title: l10n.helpCategoryAccount,
-          articles: _allArticles.where((a) => a.category == l10n.helpCategoryAccount).toList(),
-        ),
-        const SizedBox(height: 24),
-        _buildCategorySection(
-          icon: Icons.home_outlined,
-          title: l10n.helpCategoryListings,
-          articles:
-              _allArticles.where((a) => a.category == l10n.helpCategoryListings).toList(),
-        ),
-        const SizedBox(height: 24),
-        _buildCategorySection(
-          icon: Icons.shopping_cart_outlined,
-          title: l10n.helpCategoryOrders,
-          articles: _allArticles.where((a) => a.category == l10n.helpCategoryOrders).toList(),
-        ),
-        const SizedBox(height: 24),
-        _buildCategorySection(
-          icon: Icons.payment_outlined,
-          title: l10n.helpCategoryPayments,
-          articles:
-              _allArticles.where((a) => a.category == l10n.helpCategoryPayments).toList(),
-        ),
-        const SizedBox(height: 24),
-        _buildCategorySection(
-          icon: Icons.verified_user_outlined,
-          title: l10n.helpCategoryKyc,
-          articles: _allArticles.where((a) => a.category == l10n.helpCategoryKyc).toList(),
-        ),
-        const SizedBox(height: 24),
-        _buildCategorySection(
-          icon: Icons.security_outlined,
-          title: l10n.helpCategorySafety,
-          articles: _allArticles.where((a) => a.category == l10n.helpCategorySafety).toList(),
-        ),
-        const SizedBox(height: 32),
+  Widget _buildSearchResults(AppLocalizations l10n) {
+    if (_isLoadingSearch) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-        // YouTube banner
-        _buildYoutubeBanner(),
-        const SizedBox(height: 20),
-
-        // Contact support
-        _buildContactSupport(),
-        const SizedBox(height: 32),
-      ],
-    );
-  }
-
-  Widget _buildCategorySection({
-    required IconData icon,
-    required String title,
-    required List<_HelpArticle> articles,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 20, color: AppColors.accent600),
-            const SizedBox(width: 8),
-            Text(title, style: AppTextStyles.titleSmall),
-          ],
-        ),
-        const SizedBox(height: 12),
-        LiquidGlass(
-          borderRadius: 16,
-          blur: 20,
-          variant: LiquidGlassVariant.regular,
-          child: Column(
-            children: articles.asMap().entries.map((entry) {
-              final index = entry.key;
-              final article = entry.value;
-              return Column(
-                children: [
-                  ListTile(
-                    leading: Icon(
-                      Icons.article_outlined,
-                      size: 20,
-                      color: ThemeColors(context).iconSecondary,
-                    ),
-                    title: Text(
-                      article.title,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: context.theme.textPrimary,
-                      ),
-                    ),
-                    trailing: Icon(
-                      Icons.chevron_right,
-                      color: ThemeColors(context).textSecondary,
-                    ),
-                    onTap: () => _showArticleDetail(article),
-                  ),
-                  if (index < articles.length - 1) const Divider(height: 1),
-                ],
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSearchResults() {
-    final l10n = AppLocalizations.of(context);
-    if (_filteredArticles.isEmpty) {
+    if (_searchResults.isEmpty) {
       return WaveEmptyState(
         icon: Icons.search_off,
         title: l10n.helpNoResultsTitle,
@@ -239,10 +180,10 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
 
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: _filteredArticles.length,
+      itemCount: _searchResults.length,
       separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
-        final article = _filteredArticles[index];
+        final article = _searchResults[index];
         return ListTile(
           leading: Container(
             width: 40,
@@ -256,7 +197,9 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             child: Icon(
               Icons.article_outlined,
               size: 20,
-              color: context.theme.isDark ? AppColors.accent400 : AppColors.accent600,
+              color: context.theme.isDark
+                  ? AppColors.accent400
+                  : AppColors.accent600,
             ),
           ),
           title: Text(
@@ -266,21 +209,357 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               color: context.theme.textPrimary,
             ),
           ),
-          subtitle: Text(
-            article.category,
-            style: AppTextStyles.caption.copyWith(
-              color: context.theme.textSecondary,
-            ),
-          ),
-          trailing: Icon(Icons.chevron_right_rounded, color: context.theme.textMuted),
-          onTap: () => _showArticleDetail(article),
+          subtitle: article.category != null
+              ? Text(
+                  article.category!.name,
+                  style: AppTextStyles.caption.copyWith(
+                    color: context.theme.textSecondary,
+                  ),
+                )
+              : null,
+          trailing:
+              Icon(Icons.chevron_right_rounded, color: context.theme.textMuted),
+          onTap: () => _showArticleDetail(article.slug, article.title),
         );
       },
     );
   }
 
-  Widget _buildContactSupport() {
-    final l10n = AppLocalizations.of(context);
+  Widget _buildHome(HelpHome home, AppLocalizations l10n) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(helpHomeProvider);
+      },
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          // Categories
+          if (home.categories.isNotEmpty) ...[
+            Text(
+              'Categories',
+              style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            ...home.categories.map((category) => _buildCategoryTile(category)),
+            const SizedBox(height: 24),
+          ],
+
+          // Featured articles
+          if (home.featuredArticles.isNotEmpty) ...[
+            Text(
+              'Featured Articles',
+              style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            ...home.featuredArticles.map(
+              (article) => ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.star_outline,
+                    color: AppColors.accent500, size: 20),
+                title: Text(
+                  article.title,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.theme.textPrimary,
+                  ),
+                ),
+                trailing: const Icon(Icons.chevron_right_rounded, size: 18),
+                onTap: () => _showArticleDetail(article.slug, article.title),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+
+          // Contact support
+          _buildContactSupport(l10n),
+          const SizedBox(height: 20),
+
+          // YouTube banner
+          _buildYoutubeBanner(l10n),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryTile(HelpCategory category) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.divider.withValues(alpha: 0.5)),
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: AppColors.accent500.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(Icons.folder_outlined,
+              color: AppColors.accent500, size: 20),
+        ),
+        title: Text(
+          category.name,
+          style: AppTextStyles.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: context.theme.textPrimary,
+          ),
+        ),
+        subtitle: category.description != null
+            ? Text(
+                category.description!,
+                style: AppTextStyles.caption
+                    .copyWith(color: context.theme.textSecondary),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              )
+            : null,
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: context.theme.divider.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            '${category.articlesCount}',
+            style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w700),
+          ),
+        ),
+        onTap: () => _showCategoryArticles(category),
+      ),
+    );
+  }
+
+  void _showCategoryArticles(HelpCategory category) async {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (_, scrollController) =>
+            FutureBuilder<Paginated<HelpArticleSummary>>(
+          future: ref
+              .read(helpV2ServiceProvider)
+              .fetchArticles(category: category.slug),
+          builder: (context, snapshot) {
+            return Container(
+              decoration: BoxDecoration(
+                color: context.scaffoldBg,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: context.theme.divider,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            category.name,
+                            style: AppTextStyles.title
+                                .copyWith(color: context.theme.textPrimary),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(ctx),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: snapshot.connectionState == ConnectionState.waiting
+                        ? const Center(child: CircularProgressIndicator())
+                        : (snapshot.data?.items.isEmpty ?? true)
+                            ? const Center(child: Text('No articles found'))
+                            : ListView.separated(
+                                controller: scrollController,
+                                padding: const EdgeInsets.all(16),
+                                itemCount: snapshot.data!.items.length,
+                                separatorBuilder: (_, __) =>
+                                    const Divider(height: 1),
+                                itemBuilder: (context, i) {
+                                  final item = snapshot.data!.items[i];
+                                  return ListTile(
+                                    title: Text(item.title),
+                                    trailing: const Icon(
+                                        Icons.chevron_right_rounded,
+                                        size: 18),
+                                    onTap: () {
+                                      Navigator.pop(ctx);
+                                      _showArticleDetail(item.slug, item.title);
+                                    },
+                                  );
+                                },
+                              ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showArticleDetail(String slug, String title) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.75,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (_, controller) => FutureBuilder<HelpArticle>(
+          future: ref.read(helpV2ServiceProvider).fetchArticle(slug),
+          builder: (context, snapshot) {
+            final article = snapshot.data;
+            return Container(
+              decoration: BoxDecoration(
+                color: context.scaffoldBg,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: context.theme.divider,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            article?.title ?? title,
+                            style: AppTextStyles.title
+                                .copyWith(color: context.theme.textPrimary),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close, color: context.textSecondary),
+                          onPressed: () => Navigator.pop(ctx),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: snapshot.connectionState == ConnectionState.waiting
+                        ? const Center(child: CircularProgressIndicator())
+                        : snapshot.hasError
+                            ? const Center(
+                                child: Text('Failed to load article content'))
+                            : ListView(
+                                controller: controller,
+                                padding: const EdgeInsets.all(20),
+                                children: [
+                                  Text(
+                                    article!.content.isNotEmpty
+                                        ? article.content
+                                        : article.formattedContent,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      height: 1.8,
+                                      color: context.textSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 32),
+                                  const Divider(),
+                                  const SizedBox(height: 16),
+                                  _buildFeedbackSection(slug),
+                                  const SizedBox(height: 24),
+                                ],
+                              ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeedbackSection(String slug) {
+    bool voted = false;
+    return StatefulBuilder(
+      builder: (context, setLocalState) {
+        if (voted) {
+          return const Center(
+            child: Text(
+              'Thank you for your feedback!',
+              style: TextStyle(
+                  color: AppColors.success, fontWeight: FontWeight.w600),
+            ),
+          );
+        }
+
+        return Column(
+          children: [
+            const Text(
+              'Was this article helpful?',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    try {
+                      await ref
+                          .read(helpV2ServiceProvider)
+                          .submitArticleFeedback(slug, isHelpful: true);
+                      setLocalState(() => voted = true);
+                    } catch (_) {}
+                  },
+                  icon: const Icon(Icons.thumb_up_outlined, size: 16),
+                  label: const Text('Yes'),
+                ),
+                const SizedBox(width: 16),
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    try {
+                      await ref
+                          .read(helpV2ServiceProvider)
+                          .submitArticleFeedback(slug, isHelpful: false);
+                      setLocalState(() => voted = true);
+                    } catch (_) {}
+                  },
+                  icon: const Icon(Icons.thumb_down_outlined, size: 16),
+                  label: const Text('No'),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildContactSupport(AppLocalizations l10n) {
     return Container(
       padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
@@ -313,7 +592,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => _launchEmail(),
+                  onPressed: _launchEmail,
                   icon: const Icon(Icons.email_outlined, size: 18),
                   label: Text(l10n.helpEmail),
                   style: OutlinedButton.styleFrom(
@@ -326,10 +605,10 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => _launchPhone(),
+                  onPressed: _launchPhone,
                   icon: const Icon(Icons.phone_outlined, size: 18),
                   label: Text(l10n.helpCall),
                   style: OutlinedButton.styleFrom(
@@ -344,13 +623,115 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _showCreateTicketDialog,
+              icon: const Icon(Icons.confirmation_number_outlined, size: 18),
+              label: const Text('Submit Support Ticket'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColors.primary900,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildYoutubeBanner() {
-    final l10n = AppLocalizations.of(context);
+  void _showCreateTicketDialog() {
+    final subjectCtrl = TextEditingController();
+    final messageCtrl = TextEditingController();
+    bool isSubmitting = false;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('New Support Ticket'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: subjectCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Subject',
+                    hintText: 'Brief summary of the issue',
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: messageCtrl,
+                  maxLines: 4,
+                  decoration: const InputDecoration(
+                    labelText: 'Message',
+                    hintText: 'Describe your issue in detail',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: isSubmitting
+                  ? null
+                  : () async {
+                      final subject = subjectCtrl.text.trim();
+                      final message = messageCtrl.text.trim();
+                      if (subject.isEmpty || message.isEmpty) return;
+
+                      final messenger = ScaffoldMessenger.of(context);
+                      final navigator = Navigator.of(ctx);
+                      setDialogState(() => isSubmitting = true);
+                      try {
+                        await ref.read(helpV2ServiceProvider).createTicket(
+                              subject: subject,
+                              message: message,
+                            );
+                        navigator.pop();
+                        messenger.showSnackBar(
+                          const SnackBar(
+                            content: Text('Support ticket created!'),
+                            backgroundColor: AppColors.success,
+                          ),
+                        );
+                        ref.invalidate(helpHomeProvider);
+                      } catch (e) {
+                        setDialogState(() => isSubmitting = false);
+                        messenger.showSnackBar(
+                          const SnackBar(
+                            content: Text('Failed to submit ticket'),
+                            backgroundColor: AppColors.error,
+                          ),
+                        );
+                      }
+                    },
+              child: isSubmitting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Submit'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildYoutubeBanner(AppLocalizations l10n) {
     return GestureDetector(
       onTap: _launchYoutube,
       child: Container(
@@ -383,7 +764,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 8,
-                    offset: const Offset(0, 4),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -425,7 +806,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.subscriptions, color: Colors.white, size: 16),
+                  const Icon(Icons.subscriptions,
+                      color: Colors.white, size: 16),
                   const SizedBox(width: 6),
                   Text(
                     l10n.helpYoutubeSubscribe,
@@ -443,80 +825,15 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
     );
   }
 
-  void _showArticleDetail(_HelpArticle article) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.7,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        builder: (_, controller) => Container(
-          decoration: BoxDecoration(
-            color: context.scaffoldBg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              // Handle
-              Container(
-                margin: const EdgeInsets.only(top: 12),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: context.theme.divider,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              // Header
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        article.title,
-                        style: AppTextStyles.title.copyWith(color: context.theme.textPrimary),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close, color: context.textSecondary),
-                      onPressed: () => Navigator.pop(ctx),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(height: 1),
-              // Content
-              Expanded(
-                child: ListView(
-                  controller: controller,
-                  padding: const EdgeInsets.all(20),
-                  children: [
-                    Text(
-                      article.content,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        height: 1.8,
-                        color: context.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Future<void> _launchEmail() async {
     final uri = Uri.parse('mailto:support@wavemart.et');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).helpErrorEmail), backgroundColor: AppColors.error));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context).helpErrorEmail),
+            backgroundColor: AppColors.error));
       }
     }
   }
@@ -527,7 +844,9 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       await launchUrl(uri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).helpErrorPhone), backgroundColor: AppColors.error));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context).helpErrorPhone),
+            backgroundColor: AppColors.error));
       }
     }
   }
@@ -538,130 +857,10 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).helpErrorYoutube), backgroundColor: AppColors.error));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context).helpErrorYoutube),
+            backgroundColor: AppColors.error));
       }
     }
   }
 }
-
-class _HelpArticle {
-  final String title;
-  final String content;
-  final String category;
-
-  _HelpArticle(
-      {required this.title, required this.content, required this.category});
-}
-
-List<_HelpArticle> _getLocalizedArticles(AppLocalizations l10n) => [
-      // Account
-      _HelpArticle(
-        title: l10n.helpAccCreateTitle,
-        content: l10n.helpAccCreateContent,
-        category: l10n.helpCategoryAccount,
-      ),
-      _HelpArticle(
-        title: l10n.helpAccFavTitle,
-        content: l10n.helpAccFavContent,
-        category: l10n.helpCategoryAccount,
-      ),
-      _HelpArticle(
-        title: l10n.helpAccMsgTitle,
-        content: l10n.helpAccMsgContent,
-        category: l10n.helpCategoryAccount,
-      ),
-      // Listings
-      _HelpArticle(
-        title: l10n.helpListCreateTitle,
-        content: l10n.helpListCreateContent,
-        category: l10n.helpCategoryListings,
-      ),
-      _HelpArticle(
-        title: l10n.helpListManageTitle,
-        content: l10n.helpListManageContent,
-        category: l10n.helpCategoryListings,
-      ),
-      _HelpArticle(
-        title: l10n.helpListTipsTitle,
-        content: l10n.helpListTipsContent,
-        category: l10n.helpCategoryListings,
-      ),
-      _HelpArticle(
-        title: l10n.helpListVideoTitle,
-        content: l10n.helpListVideoContent,
-        category: l10n.helpCategoryListings,
-      ),
-      _HelpArticle(
-        title: l10n.helpListInterestTitle,
-        content: l10n.helpListInterestContent,
-        category: l10n.helpCategoryListings,
-      ),
-      _HelpArticle(
-        title: l10n.helpListStatusTitle,
-        content: l10n.helpListStatusContent,
-        category: l10n.helpCategoryListings,
-      ),
-
-      // Orders
-      _HelpArticle(
-        title: l10n.helpOrdCreateTitle,
-        content: l10n.helpOrdCreateContent,
-        category: l10n.helpCategoryOrders,
-      ),
-      _HelpArticle(
-        title: l10n.helpOrdManageTitle,
-        content: l10n.helpOrdManageContent,
-        category: l10n.helpCategoryOrders,
-      ),
-
-      // Payments
-      _HelpArticle(
-        title: l10n.helpPayPlansTitle,
-        content: l10n.helpPayPlansContent,
-        category: l10n.helpCategoryPayments,
-      ),
-      _HelpArticle(
-        title: l10n.helpPayMakeTitle,
-        content: l10n.helpPayMakeContent,
-        category: l10n.helpCategoryPayments,
-      ),
-      _HelpArticle(
-        title: l10n.helpPaySecurityTitle,
-        content: l10n.helpPaySecurityContent,
-        category: l10n.helpCategoryPayments,
-      ),
-      _HelpArticle(
-        title: l10n.helpPayVipTitle,
-        content: l10n.helpPayVipContent,
-        category: l10n.helpCategoryPayments,
-      ),
-
-      // KYC
-      _HelpArticle(
-        title: l10n.helpKycWhyTitle,
-        content: l10n.helpKycWhyContent,
-        category: l10n.helpCategoryKyc,
-      ),
-      _HelpArticle(
-        title: l10n.helpKycHowTitle,
-        content: l10n.helpKycHowContent,
-        category: l10n.helpCategoryKyc,
-      ),
-      _HelpArticle(
-        title: l10n.helpKycRejectTitle,
-        content: l10n.helpKycRejectContent,
-        category: l10n.helpCategoryKyc,
-      ),
-
-      // Safety
-      _HelpArticle(
-        title: l10n.helpSafePrivacyTitle,
-        content: l10n.helpSafePrivacyContent,
-        category: l10n.helpCategorySafety,
-      ),
-      _HelpArticle(
-        title: l10n.helpSafeReportTitle,
-        content: l10n.helpSafeReportContent,
-        category: l10n.helpCategorySafety,
-      ),
-    ];
