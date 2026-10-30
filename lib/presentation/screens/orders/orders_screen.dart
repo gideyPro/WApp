@@ -5,14 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../providers/v2_order_provider.dart';
+import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../widgets/status_helpers.dart';
 
 import '../../../core/constants/app_spacing.dart';
 
-/// Buyer requests ("orders") wired to the cursor-paginated v2 feed.
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
 
@@ -22,28 +21,13 @@ class OrdersScreen extends ConsumerStatefulWidget {
 
 class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   bool _isCreatingOrder = false;
-  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(ordersV2Provider.notifier).loadOrders();
+      ref.read(ordersProvider.notifier).loadOrders();
     });
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      ref.read(ordersV2Provider.notifier).loadMore();
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   /// Navigate to Create Order — inline gate handled inside the screen
@@ -52,7 +36,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     try {
       if (mounted) {
         await context.push('/orders/create');
-        if (mounted) ref.read(ordersV2Provider.notifier).loadOrders();
+        if (mounted) ref.read(ordersProvider.notifier).loadOrders();
       }
     } finally {
       if (mounted) setState(() => _isCreatingOrder = false);
@@ -61,7 +45,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(ordersV2Provider);
+    final state = ref.watch(ordersProvider);
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
@@ -85,11 +69,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         actions: [
           IconButton(
             icon: _isCreatingOrder
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
-                  )
+                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5))
                 : const Icon(Icons.add_rounded),
             onPressed: _isCreatingOrder ? null : _onCreateOrderTap,
           ),
@@ -99,17 +79,18 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     );
   }
 
-  Widget _buildBody(OrdersV2State state, AppLocalizations l10n) {
-    if (state.isLoading && state.orders.isEmpty) {
+  Widget _buildBody(OrdersState state, AppLocalizations l10n) {
+    final cache = ref.watch(addressCacheProvider);
+    if (state.isLoading) {
       return _buildSkeletonList(5);
     }
 
-    if (state.errorMessage != null && state.orders.isEmpty) {
+    if (state.errorMessage != null) {
       return WaveMessageScreen.error(
         title: l10n.commonError,
         subtitle: state.errorMessage!,
         onRetry: () {
-          ref.read(ordersV2Provider.notifier).loadOrders();
+          ref.read(ordersProvider.notifier).loadOrders();
         },
         isEmbedded: true,
       );
@@ -126,19 +107,11 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => ref.read(ordersV2Provider.notifier).loadOrders(),
+      onRefresh: () => ref.read(ordersProvider.notifier).loadOrders(),
       child: ListView.builder(
-        controller: _scrollController,
         padding: AppSpacing.paddingLg,
-        itemCount: state.orders.length + (state.isLoadingMore ? 1 : 0),
+        itemCount: state.orders.length,
         itemBuilder: (context, index) {
-          if (index >= state.orders.length) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-
           final order = state.orders[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
@@ -157,30 +130,23 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                       Row(
                         children: [
                           _buildBadge(
-                            typeLabel(order.type.name, l10n),
-                            typeColor(order.type.name),
+                            typeLabel(order.type, l10n),
+                            typeColor(order.type),
                             Colors.white,
                           ),
                           if (order.holdingType != null) ...[
                             const SizedBox(width: 6),
-                            Flexible(
-                              child: _buildBadge(
-                                order.holdingType!,
-                                context.isDarkMode
-                                    ? AppColors.cardNavyLight
-                                    : AppColors.stone100,
-                                context.isDarkMode
-                                    ? AppColors.accent300
-                                    : AppColors.primary800,
-                              ),
+                            _buildBadge(
+                              order.getLocalizedHoldingType(context),
+                              context.isDarkMode ? AppColors.cardNavyLight : AppColors.stone100,
+                              context.isDarkMode ? AppColors.accent300 : AppColors.primary800,
                             ),
                           ],
                           const Spacer(),
                           _buildBadge(
-                            statusLabel(order.status.wireValue, l10n),
-                            statusColor(order.status.wireValue)
-                                .withValues(alpha: 0.15),
-                            statusColor(order.status.wireValue),
+                            statusLabel(order.status, l10n),
+                            statusColor(order.status).withValues(alpha: 0.15),
+                            statusColor(order.status),
                           ),
                         ],
                       ),
@@ -195,45 +161,36 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          if (!order.budget.isEmpty)
+                          if (order.minBudget != null ||
+                              order.maxBudget != null)
                             _infoChip(
                               Icons.monetization_on_outlined,
-                              formatRange(order.budget.min, order.budget.max,
-                                  'ETB', l10n),
+                              formatRange(
+                                  order.minBudget, order.maxBudget, 'ETB', l10n),
                             ),
-                          if (!order.budget.isEmpty && !order.area.isEmpty)
+                          if ((order.minBudget != null ||
+                                  order.maxBudget != null) &&
+                              (order.minArea != null || order.maxArea != null))
                             const SizedBox(width: 12),
-                          if (!order.area.isEmpty)
+                          if (order.minArea != null || order.maxArea != null)
                             _infoChip(
                               Icons.square_foot,
-                              formatRange(
-                                  order.area.min, order.area.max, 'm²', l10n),
+                              formatRange(order.minArea, order.maxArea, 'm²', l10n),
                             ),
-                          if (order.hasUnreadSuggestions) ...[
-                            const Spacer(),
-                            _infoChip(
-                              Icons.auto_awesome,
-                              l10n.ordersSuggestions,
-                              color: AppColors.accent600,
-                            ),
-                          ],
                         ],
                       ),
-                      if (order.hasAddress) ...[
+                      if (order.address != null) ...[
                         const SizedBox(height: 6),
                         Row(
                           children: [
                             Icon(Icons.location_on_outlined,
-                                size: 14,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant),
+                                size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                order.address!.displayAddress,
-                                style: AppTextStyles.caption.copyWith(
-                                    color: ThemeColors(context).textMuted),
+                                order.address!.getLocalizedAddress(context, cache),
+                                style: AppTextStyles.caption
+                                    .copyWith(color: ThemeColors(context).textMuted),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -322,24 +279,22 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           fontWeight: FontWeight.w700,
           fontSize: 11,
         ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
       ),
     );
   }
 
-  Widget _infoChip(IconData icon, String text, {Color? color}) {
+  Widget _infoChip(IconData icon, String text) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 13, color: color ?? AppColors.primary400),
+        Icon(icon, size: 13, color: AppColors.primary400),
         const SizedBox(width: 3),
         Text(
           text,
-          style: AppTextStyles.caption
-              .copyWith(color: color ?? ThemeColors(context).textSecondary),
+          style: AppTextStyles.caption.copyWith(color: ThemeColors(context).textSecondary),
         ),
       ],
     );
   }
+
 }

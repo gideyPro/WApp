@@ -10,11 +10,10 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../data/job_data.dart';
 import '../../../data/models/job_requirement_item.dart';
 import '../../../data/models/job_seeker_profile.dart';
-import '../../../core/network/v2/api_v2_error.dart';
+import '../../../data/services/message_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/job_seeker_providers.dart';
-import '../../providers/v2_providers.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 
@@ -23,8 +22,7 @@ class JobSeekerDetailScreen extends ConsumerStatefulWidget {
   const JobSeekerDetailScreen({super.key, required this.profileId});
 
   @override
-  ConsumerState<JobSeekerDetailScreen> createState() =>
-      _JobSeekerDetailScreenState();
+  ConsumerState<JobSeekerDetailScreen> createState() => _JobSeekerDetailScreenState();
 }
 
 class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
@@ -39,17 +37,14 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
 
     setState(() => _isActionLoading = true);
     try {
-      final conversation = await ref.read(conversationV2ServiceProvider).start(
-            userId: userId,
-          );
-      if (mounted) {
-        context.push('/chat/${conversation.id}', extra: conversation);
-      }
-    } on ApiV2Exception catch (error) {
-      if (mounted) {
+      final l10n = AppLocalizations.of(context);
+      final result = await MessageService().startDirectConversation(userId: userId);
+      if (result.success && result.conversation != null && mounted) {
+        context.push('/chat/${result.conversation!.id}', extra: result.conversation);
+      } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error.message),
+            content: Text(result.message.isNotEmpty ? result.message : l10n.commonError),
             backgroundColor: AppColors.error,
           ),
         );
@@ -71,8 +66,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
   }
 
   Future<void> _openCv(String cv) async {
-    final url =
-        cv.startsWith('http') ? cv : '${ApiConstants.baseUrl}/storage/$cv';
+    final url = cv.startsWith('http') ? cv : '${ApiConstants.baseUrl}/storage/$cv';
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -81,12 +75,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
 
   Widget _buildAvatarFallback(JobSeekerProfile profile) {
     final initials = profile.fullName.trim().isNotEmpty
-        ? profile.fullName
-            .trim()
-            .split(' ')
-            .map((e) => e.isNotEmpty ? e[0] : '')
-            .take(2)
-            .join()
+        ? profile.fullName.trim().split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join()
         : '?';
     return Container(
       width: 100,
@@ -142,9 +131,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                      color: AppColors.accent500.withValues(alpha: 0.35),
-                      width: 3),
+                  border: Border.all(color: AppColors.accent500.withValues(alpha: 0.35), width: 3),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.08),
@@ -161,8 +148,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
-                          errorWidget: (_, __, ___) =>
-                              _buildAvatarFallback(profile),
+                          errorWidget: (_, __, ___) => _buildAvatarFallback(profile),
                         )
                       : _buildAvatarFallback(profile),
                 ),
@@ -182,8 +168,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
           const SizedBox(height: 16),
           Text(
             profile.fullName,
-            style:
-                AppTextStyles.headline3.copyWith(fontWeight: FontWeight.bold),
+            style: AppTextStyles.headline3.copyWith(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
@@ -219,10 +204,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                   icon: Icons.timeline_outlined,
                   label: l10n.seekerYearsExp(
                     profile.totalExperienceYears.toStringAsFixed(
-                        profile.totalExperienceYears.truncateToDouble() ==
-                                profile.totalExperienceYears
-                            ? 0
-                            : 1),
+                        profile.totalExperienceYears.truncateToDouble() == profile.totalExperienceYears ? 0 : 1),
                   ),
                   bgColor: AppColors.cta100.withValues(alpha: 0.7),
                   textColor: AppColors.cta900,
@@ -234,8 +216,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
     );
   }
 
-  Widget _buildWaveMartContactCard(
-      JobSeekerProfile profile, bool isOwnProfile, AppLocalizations l10n) {
+  Widget _buildWaveMartContactCard(JobSeekerProfile profile, bool isOwnProfile, AppLocalizations l10n) {
     return WaveCard(
       useLiquidGlass: true,
       tint: AppColors.accent500,
@@ -252,22 +233,18 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                   color: AppColors.accent500.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.chat_bubble_outline,
-                    size: 20, color: AppColors.accent600),
+                child: const Icon(Icons.chat_bubble_outline, size: 20, color: AppColors.accent600),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.seekerWaveMartOptions,
-                        style: AppTextStyles.titleSmall
-                            .copyWith(color: context.theme.textPrimary)),
+                    Text(l10n.seekerWaveMartOptions, style: AppTextStyles.titleSmall.copyWith(color: context.theme.textPrimary)),
                     const SizedBox(height: 2),
                     Text(
                       l10n.seekerContactOptionsSubtitle,
-                      style: AppTextStyles.caption
-                          .copyWith(color: context.theme.textMuted),
+                      style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
                     ),
                   ],
                 ),
@@ -289,8 +266,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                       foregroundColor: context.theme.primary,
                       side: BorderSide(color: context.theme.border),
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                 ),
@@ -300,14 +276,12 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed:
-                    _isActionLoading ? null : () => _startChat(profile.userId),
+                onPressed: _isActionLoading ? null : () => _startChat(profile.userId),
                 icon: _isActionLoading
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
                     : const Icon(Icons.chat_bubble_outline, size: 18),
                 label: Text(l10n.jobSeekerMessage),
@@ -315,8 +289,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                   backgroundColor: AppColors.accent600,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 13),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   elevation: 0,
                 ),
               ),
@@ -338,16 +311,13 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
             children: [
               Icon(Icons.person_outline, size: 20, color: context.theme.icon),
               const SizedBox(width: 8),
-              Text(l10n.seekerAboutBio,
-                  style: AppTextStyles.titleSmall
-                      .copyWith(fontWeight: FontWeight.bold)),
+              Text(l10n.seekerAboutBio, style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 12),
           Text(
             description?.isNotEmpty == true ? description! : l10n.seekerNoBio,
-            style: AppTextStyles.bodyMedium
-                .copyWith(color: context.theme.textPrimary, height: 1.6),
+            style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary, height: 1.6),
           ),
         ],
       ),
@@ -375,8 +345,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: context.theme.border),
               ),
-              child: const Icon(Icons.work_outline,
-                  size: 18, color: AppColors.accent600),
+              child: const Icon(Icons.work_outline, size: 18, color: AppColors.accent600),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -385,15 +354,12 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                 children: [
                   Text(
                     exp.jobTitle ?? '',
-                    style: AppTextStyles.bodyMedium.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.theme.textPrimary),
+                    style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold, color: context.theme.textPrimary),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     exp.company ?? '',
-                    style: AppTextStyles.caption
-                        .copyWith(color: context.theme.textMuted),
+                    style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
                   ),
                 ],
               ),
@@ -408,9 +374,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                 ),
                 child: Text(
                   '${exp.years!.toStringAsFixed(exp.years!.truncateToDouble() == exp.years! ? 0 : 1)} yrs',
-                  style: AppTextStyles.caption.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: context.theme.textSecondary),
+                  style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600, color: context.theme.textSecondary),
                 ),
               ),
           ],
@@ -428,54 +392,37 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.business_center_outlined,
-                  size: 20, color: context.theme.icon),
+              Icon(Icons.business_center_outlined, size: 20, color: context.theme.icon),
               const SizedBox(width: 8),
-              Text(l10n.seekerExperience,
-                  style: AppTextStyles.titleSmall
-                      .copyWith(fontWeight: FontWeight.bold)),
+              Text(l10n.seekerExperience, style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.bold)),
               const Spacer(),
               if (profile.totalExperienceYears > 0)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: context.theme.iconBg,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    l10n.seekerYearsTotal(profile.totalExperienceYears
-                        .toStringAsFixed(
-                            profile.totalExperienceYears.truncateToDouble() ==
-                                    profile.totalExperienceYears
-                                ? 0
-                                : 1)),
-                    style: AppTextStyles.caption.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.theme.textPrimary),
+                    l10n.seekerYearsTotal(
+                        profile.totalExperienceYears.toStringAsFixed(profile.totalExperienceYears.truncateToDouble() == profile.totalExperienceYears ? 0 : 1)),
+                    style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.bold, color: context.theme.textPrimary),
                   ),
                 ),
             ],
           ),
           const SizedBox(height: 14),
-          if (profile.experiences != null &&
-              profile.experiences!.isNotEmpty) ...[
+          if (profile.experiences != null && profile.experiences!.isNotEmpty) ...[
             ...profile.experiences!.asMap().entries.map((entry) {
               final index = entry.key;
               final exp = entry.value;
               final isLast = index == profile.experiences!.length - 1;
               return _buildExperienceItem(exp, isLast);
             }),
-          ] else if (profile.experience != null &&
-              profile.experience!.isNotEmpty) ...[
-            Text(profile.experience!,
-                style: AppTextStyles.bodyMedium
-                    .copyWith(color: context.theme.textPrimary, height: 1.5)),
+          ] else if (profile.experience != null && profile.experience!.isNotEmpty) ...[
+            Text(profile.experience!, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary, height: 1.5)),
           ] else ...[
-            Text(l10n.seekerNoWorkExperience,
-                style: AppTextStyles.caption.copyWith(
-                    color: context.theme.textMuted,
-                    fontStyle: FontStyle.italic)),
+            Text(l10n.seekerNoWorkExperience, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted, fontStyle: FontStyle.italic)),
           ],
         ],
       ),
@@ -493,9 +440,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
             children: [
               Icon(Icons.school_outlined, size: 20, color: context.theme.icon),
               const SizedBox(width: 8),
-              Text(l10n.jobCategoryEducation,
-                  style: AppTextStyles.titleSmall
-                      .copyWith(fontWeight: FontWeight.bold)),
+              Text(l10n.jobCategoryEducation, style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 14),
@@ -519,8 +464,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: AppColors.accent200),
                           ),
-                          child: const Icon(Icons.school,
-                              size: 18, color: AppColors.accent600),
+                          child: const Icon(Icons.school, size: 18, color: AppColors.accent600),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -529,17 +473,13 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                             children: [
                               Text(
                                 educationLevelLabel(edu.educationLevel, l10n),
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: context.theme.textPrimary),
+                                style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold, color: context.theme.textPrimary),
                               ),
-                              if (edu.fieldOfStudy != null &&
-                                  edu.fieldOfStudy!.isNotEmpty) ...[
+                              if (edu.fieldOfStudy != null && edu.fieldOfStudy!.isNotEmpty) ...[
                                 const SizedBox(height: 2),
                                 Text(
                                   edu.fieldOfStudy!,
-                                  style: AppTextStyles.caption
-                                      .copyWith(color: context.theme.textMuted),
+                                  style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
                                 ),
                               ],
                             ],
@@ -567,16 +507,13 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: AppColors.accent200),
                     ),
-                    child: const Icon(Icons.school,
-                        size: 18, color: AppColors.accent600),
+                    child: const Icon(Icons.school, size: 18, color: AppColors.accent600),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       educationLevelLabel(profile.educationLevel, l10n),
-                      style: AppTextStyles.bodyMedium.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: context.theme.textPrimary),
+                      style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold, color: context.theme.textPrimary),
                     ),
                   ),
                 ],
@@ -601,20 +538,16 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
               color: Colors.red.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child:
-                const Icon(Icons.picture_as_pdf, color: Colors.red, size: 24),
+            child: const Icon(Icons.picture_as_pdf, color: Colors.red, size: 24),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.seekerCv,
-                    style: AppTextStyles.titleSmall.copyWith(fontSize: 14)),
+                Text(l10n.seekerCv, style: AppTextStyles.titleSmall.copyWith(fontSize: 14)),
                 const SizedBox(height: 2),
-                Text(l10n.seekerPdfDocument,
-                    style: AppTextStyles.caption
-                        .copyWith(color: context.theme.textMuted)),
+                Text(l10n.seekerPdfDocument, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
               ],
             ),
           ),
@@ -626,8 +559,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
               backgroundColor: AppColors.accent600,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               elevation: 0,
             ),
           ),
@@ -649,8 +581,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
       ),
       body: profileAsync.when(
         data: (profile) {
-          final isOwnProfile =
-              currentUserId != null && profile.userId == currentUserId;
+          final isOwnProfile = currentUserId != null && profile.userId == currentUserId;
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             child: Column(
@@ -680,8 +611,7 @@ class _JobSeekerDetailScreenState extends ConsumerState<JobSeekerDetailScreen> {
         error: (e, _) => WaveMessageScreen.error(
           isEmbedded: true,
           subtitle: e.toString(),
-          onRetry: () =>
-              ref.invalidate(jobSeekerDetailProvider(widget.profileId)),
+          onRetry: () => ref.invalidate(jobSeekerDetailProvider(widget.profileId)),
         ),
       ),
     );

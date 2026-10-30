@@ -43,42 +43,11 @@ String formatPrice(double? value) {
   return formatter.format(value);
 }
 
-String formatRange(
-    double? min, double? max, String unit, AppLocalizations l10n) {
+String formatRange(double? min, double? max, String unit, AppLocalizations l10n) {
   if (min != null && max != null) {
     return '${formatPrice(min)} - ${formatPrice(max)} $unit';
   }
   if (min != null) return '${formatPrice(min)}+ $unit';
   if (max != null) return l10n.orderUpTo(formatPrice(max), unit);
   return '';
-}
-
-/// Localizes the raw `facing_direction` wire value used by v2 payloads.
-String facingDirectionLabel(String? direction, AppLocalizations l10n) {
-  if (direction == null || direction.isEmpty) return '';
-
-  switch (direction.toLowerCase()) {
-    case 'north':
-      return l10n.listingNorth;
-    case 'south':
-      return l10n.listingSouth;
-    case 'east':
-      return l10n.listingEast;
-    case 'west':
-      return l10n.listingWest;
-    case 'north_east':
-      return l10n.listingNorthEast;
-    case 'north_west':
-      return l10n.listingNorthWest;
-    case 'south_east':
-      return l10n.listingSouthEast;
-    case 'south_west':
-      return l10n.listingSouthWest;
-    case 'facing_3_directions':
-      return l10n.listingFacing3Directions;
-    case 'facing_all_directions':
-      return l10n.listingFacingAllDirections;
-    default:
-      return direction;
-  }
 }

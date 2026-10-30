@@ -7,10 +7,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/network/v2/api_v2_error.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
-import '../../providers/v2_providers.dart';
+import '../../../data/services/conference_service.dart';
 
 class IncomingCallScreen extends ConsumerStatefulWidget {
   final int conferenceId;
@@ -110,51 +109,38 @@ class _IncomingCallScreenState extends ConsumerState<IncomingCallScreen>
     setState(() => _isConnecting = true);
 
     try {
-      final result =
-          await ref.read(conferenceV2ServiceProvider).join(widget.conferenceId);
-
+      final response = await ref.read(conferenceServiceProvider).joinConference(widget.conferenceId);
+      
       if (!mounted) return;
       ref.read(incomingCallProvider.notifier).clearIncomingCall();
 
-      GoRouter.of(navigatorKey.currentContext!).push(
-        '/call/${widget.conferenceId}',
-        extra: {
-          'url': result.credentials.url,
-          'token': result.credentials.token,
-          'is_video': result.credentials.isVideo,
-        },
-      );
-    } on ApiV2Exception catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message), backgroundColor: AppColors.error),
-        );
+      if (response.success && response.jitsiRoomUrl != null) {
+        _navigateToJitsi(response);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message.isNotEmpty ? response.message : AppLocalizations.of(context).errorJoinCallGeneric), backgroundColor: AppColors.error));
         setState(() => _isConnecting = false);
         _startRinging();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:
-                Text(AppLocalizations.of(context).errorJoinCall(e.toString())),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).errorJoinCall(e.toString())), backgroundColor: AppColors.error));
         setState(() => _isConnecting = false);
         _startRinging();
       }
     }
   }
 
+  void _navigateToJitsi(ConferenceResponse response) {
+    GoRouter.of(navigatorKey.currentContext!).push(
+      '/call/${widget.conferenceId}',
+      extra: {'url': response.jitsiRoomUrl, 'token': response.jitsiToken},
+    );
+  }
+
   Future<void> _declineCall() async {
     _stopRinging();
 
     ref.read(incomingCallProvider.notifier).markDeclined(widget.conferenceId);
-
-    try {
-      await ref.read(conferenceV2ServiceProvider).leave(widget.conferenceId);
-    } catch (_) {}
 
     if (mounted) {
       ref.read(incomingCallProvider.notifier).clearIncomingCall();

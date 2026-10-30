@@ -12,8 +12,6 @@ import '../../presentation/screens/orders/order_details_screen.dart';
 import '../../presentation/screens/favorites/favorites_screen.dart';
 import '../../presentation/screens/interests/my_interests_screen.dart';
 import '../../presentation/screens/messages/messages_screen.dart';
-import '../../data/models/v2/conversation.dart';
-import '../../data/models/v2/listing_summary.dart';
 import '../../presentation/screens/listing/create_listing_screen.dart';
 import '../../presentation/screens/listing/edit_listing_screen.dart';
 import '../../presentation/screens/listing/listing_detail_screen.dart';
@@ -27,12 +25,14 @@ import '../../presentation/screens/calls/webview_jitsi_screen.dart';
 import '../../presentation/screens/video/full_screen_video_screen.dart';
 import '../../presentation/screens/listing/widgets/listing_step3_media.dart';
 import '../../presentation/screens/cars/car_list_screen.dart';
+import '../../presentation/screens/cars/car_detail_screen.dart';
 import '../../presentation/screens/cars/create_car_screen.dart';
 import '../../presentation/screens/cars/edit_car_screen.dart';
 import '../../presentation/screens/notifications/notifications_screen.dart';
 
 import '../../presentation/screens/jobs/job_list_screen.dart';
 import '../../presentation/screens/jobs/create_job_screen.dart';
+import '../../presentation/screens/jobs/job_detail_screen.dart';
 import '../../presentation/screens/jobs/edit_job_screen.dart';
 import '../../presentation/screens/job_seekers/job_seekers_screen.dart';
 import '../../presentation/screens/job_seekers/job_seeker_detail_screen.dart';
@@ -80,8 +80,7 @@ final goRouter = GoRouter(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.link_off_rounded,
-                  size: 64, color: AppColors.stone400),
+              const Icon(Icons.link_off_rounded, size: 64, color: AppColors.stone400),
               const SizedBox(height: 16),
               Text(
                 AppLocalizations.of(context).routerInvalidRoute,
@@ -191,9 +190,7 @@ final goRouter = GoRouter(
           key: state.pageKey,
           child: ChatScreen(
             conversationId: id,
-            conversation: state.extra is ChatConversation
-                ? state.extra as ChatConversation
-                : null,
+            conversation: state.extra as dynamic,
           ),
         );
       },
@@ -231,8 +228,8 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/payments/:id',
       pageBuilder: (_, state) {
-        final id = state.pathParameters['id'] ?? '';
-        if (id.isEmpty) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
           return _buildPageTransition(
             key: state.pageKey,
             child: const _InvalidRouteScreen(),
@@ -240,7 +237,7 @@ final goRouter = GoRouter(
         }
         return _buildPageTransition(
           key: state.pageKey,
-          child: PaymentDetailScreen(txRef: id),
+          child: PaymentDetailScreen(paymentId: id),
         );
       },
     ),
@@ -336,7 +333,7 @@ final goRouter = GoRouter(
         }
         return _buildPageTransition(
           key: state.pageKey,
-          child: ListingDetailScreen(listingId: id, kind: ListingKind.car),
+          child: CarDetailScreen(listingId: id),
         );
       },
     ),
@@ -375,7 +372,7 @@ final goRouter = GoRouter(
         }
         return _buildPageTransition(
           key: state.pageKey,
-          child: ListingDetailScreen(listingId: id, kind: ListingKind.job),
+          child: JobDetailScreen(listingId: id),
         );
       },
     ),

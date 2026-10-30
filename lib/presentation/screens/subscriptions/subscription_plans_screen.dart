@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
-import '../../../../core/network/v2/api_v2_error.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/utils/ethiopian_date_helper.dart';
+import '../../../../data/services/subscription_service.dart';
+import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/transaction_tracker.dart';
-import '../../providers/v2_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_webview_page.dart';
@@ -29,6 +29,7 @@ class SubscriptionPlansScreen extends ConsumerStatefulWidget {
 
 class _SubscriptionPlansScreenState
     extends ConsumerState<SubscriptionPlansScreen> with RouteAware {
+  final SubscriptionServiceApi _subscriptionService = SubscriptionServiceApi();
   int? _processingPlanId;
   String _selectedCurrency = 'ETB';
   final GlobalKey _plansKey = GlobalKey();
@@ -41,12 +42,9 @@ class _SubscriptionPlansScreenState
     super.initState();
     final authState = ref.read(authStateProvider);
     final phone = authState.user?.phoneNumber ?? authState.phoneNumber ?? '';
-    _selectedCurrency =
-        (phone.isEmpty || phone.startsWith('+251')) ? 'ETB' : 'USD';
+    _selectedCurrency = (phone.isEmpty || phone.startsWith('+251')) ? 'ETB' : 'USD';
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(subscriptionProvider.notifier)
-          .refresh(currency: _selectedCurrency);
+      ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
     });
   }
 
@@ -113,8 +111,7 @@ class _SubscriptionPlansScreenState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.info_outline,
-                    size: 64, color: Theme.of(context).colorScheme.primary),
+                Icon(Icons.info_outline, size: 64, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(height: 16),
                 Text(
                   'Subscriptions are not required at this time.',
@@ -162,11 +159,11 @@ class _SubscriptionPlansScreenState
     final subscription = state.subscription;
     final isActiveSub = subscription != null && subscription.isActive;
 
-    dynamic featuredPlan;
+    SubscriptionPlan? featuredPlan;
     if (activePlans.any((p) => !p.isFree)) {
       featuredPlan = activePlans.where((p) => !p.isFree).reduce((a, b) {
-        final aOrder = a.sortOrder;
-        final bOrder = b.sortOrder;
+        final aOrder = a.sortOrder ?? a.price.toInt();
+        final bOrder = b.sortOrder ?? b.price.toInt();
         return aOrder >= bOrder ? a : b;
       });
     }
@@ -178,24 +175,23 @@ class _SubscriptionPlansScreenState
         children: [
           // Current subscription banner (if any)
           if (subscription != null) ...[
-            if (isActiveSub)
-              _buildCurrentSubscriptionBanner(
-                subscription,
-                state.canCreateListing,
-                state.canFeatureListing,
-                state.canViewVip,
-                contactViewsUsed: state.contactViewsUsed,
-                contactViewsRemaining: state.contactViewsRemaining,
-                rentalContactViewsUsed: state.rentalContactViewsUsed,
-                rentalContactViewsRemaining: state.rentalContactViewsRemaining,
-                carContactViewsUsed: state.carContactViewsUsed,
-                carContactViewsRemaining: state.carContactViewsRemaining,
-                carRentalContactViewsUsed: state.carRentalContactViewsUsed,
-                carRentalContactViewsRemaining:
-                    state.carRentalContactViewsRemaining,
-                jobContactViewsUsed: state.jobContactViewsUsed,
-                jobContactViewsRemaining: state.jobContactViewsRemaining,
-              )
+              if (isActiveSub)
+                _buildCurrentSubscriptionBanner(
+                  subscription,
+                  state.canCreateListing,
+                  state.canFeatureListing,
+                  state.canViewVip,
+                  contactViewsUsed: state.contactViewsUsed,
+                  contactViewsRemaining: state.contactViewsRemaining,
+                  rentalContactViewsUsed: state.rentalContactViewsUsed,
+                  rentalContactViewsRemaining: state.rentalContactViewsRemaining,
+                  carContactViewsUsed: state.carContactViewsUsed,
+                  carContactViewsRemaining: state.carContactViewsRemaining,
+                  carRentalContactViewsUsed: state.carRentalContactViewsUsed,
+                  carRentalContactViewsRemaining: state.carRentalContactViewsRemaining,
+                  jobContactViewsUsed: state.jobContactViewsUsed,
+                  jobContactViewsRemaining: state.jobContactViewsRemaining,
+                )
             else
               _buildInactiveSubscriptionBanner(
                 subscription,
@@ -228,17 +224,15 @@ class _SubscriptionPlansScreenState
               key: _plansKey,
               child: Column(
                 children: [
-                  ...activePlans.map((plan) => _PlanCard(
+                  ...activePlans.map((SubscriptionPlan plan) => _PlanCard(
                         plan: plan,
                         isCurrentPlan: subscription?.planId == plan.id &&
                             (subscription?.isActive ?? false),
                         isFeatured: plan == featuredPlan,
                         isLoading: _processingPlanId == plan.id,
                         selectedCurrency: _selectedCurrency,
-                        onSelect: (cycleMonths) =>
-                            _selectPlan(plan, billingCycleMonths: cycleMonths),
-                        onStartTrial:
-                            plan.canStartTrial ? () => _startTrial(plan) : null,
+                        onSelect: (cycleMonths) => _selectPlan(plan, billingCycleMonths: cycleMonths),
+                        onStartTrial: plan.canStartTrial ? () => _startTrial(plan) : null,
                       )),
                 ],
               ),
@@ -248,8 +242,8 @@ class _SubscriptionPlansScreenState
             Center(
               child: Text(
                 l10n.subscriptionsNoPlansAvailable,
-                style: AppTextStyles.bodyMedium
-                    .copyWith(color: AppColors.stone500),
+                style:
+                    AppTextStyles.bodyMedium.copyWith(color: AppColors.stone500),
               ),
             ),
           ],
@@ -259,7 +253,7 @@ class _SubscriptionPlansScreenState
   }
 
   Widget _buildCurrentSubscriptionBanner(
-    dynamic sub,
+    Subscription sub,
     bool canCreateListing,
     bool canFeatureListing,
     bool canViewVip, {
@@ -280,36 +274,30 @@ class _SubscriptionPlansScreenState
     final showDaysLeft = sub.daysRemaining < 999;
     final isUrgent = sub.daysRemaining <= 7;
     final hasVip = localPlan.viewVip;
-    final hasFeatures =
-        localPlan.features != null && localPlan.features!.isNotEmpty;
+    final hasFeatures = localPlan.features != null && localPlan.features!.isNotEmpty;
     final showContactBar = contactViewsUsed + contactViewsRemaining > 0;
-    final showRentalContactBar =
-        rentalContactViewsUsed + rentalContactViewsRemaining > 0;
-    final showCarContactBar =
-        carContactViewsUsed + carContactViewsRemaining > 0;
-    final showCarRentalContactBar =
-        carRentalContactViewsUsed + carRentalContactViewsRemaining > 0;
-    final showJobContactBar =
-        jobContactViewsUsed + jobContactViewsRemaining > 0;
+    final showRentalContactBar = rentalContactViewsUsed + rentalContactViewsRemaining > 0;
+    final showCarContactBar = carContactViewsUsed + carContactViewsRemaining > 0;
+    final showCarRentalContactBar = carRentalContactViewsUsed + carRentalContactViewsRemaining > 0;
+    final showJobContactBar = jobContactViewsUsed + jobContactViewsRemaining > 0;
 
-    final atLimit = (localPlan.maxListings > 0 &&
-            sub.listingsUsed >= localPlan.maxListings) ||
-        (localPlan.maxRentalListings > 0 &&
-            sub.rentalListingsUsed >= localPlan.maxRentalListings) ||
-        (localPlan.maxFeaturedListings > 0 &&
-            sub.featuredListingsUsed >= localPlan.maxFeaturedListings) ||
-        (localPlan.maxOrders > 0 && sub.ordersUsed >= localPlan.maxOrders) ||
-        (localPlan.maxVehicles > 0 &&
-            sub.vehiclesUsed >= localPlan.maxVehicles) ||
-        (localPlan.maxRentalVehicles > 0 &&
-            sub.rentalVehiclesUsed >= localPlan.maxRentalVehicles) ||
-        (localPlan.maxJobs > 0 && sub.jobsUsed >= localPlan.maxJobs) ||
-        (localPlan.maxContacts > 0 &&
-            contactViewsRemaining <= 0 &&
-            contactViewsUsed > 0) ||
-        (localPlan.maxRentalContacts > 0 &&
-            rentalContactViewsRemaining <= 0 &&
-            rentalContactViewsUsed > 0);
+    final atLimit =
+        (localPlan.maxListings > 0 && sub.listingsUsed >= localPlan.maxListings) ||
+            (localPlan.maxRentalListings > 0 &&
+                sub.rentalListingsUsed >= localPlan.maxRentalListings) ||
+            (localPlan.maxFeaturedListings > 0 &&
+                sub.featuredListingsUsed >= localPlan.maxFeaturedListings) ||
+            (localPlan.maxOrders > 0 && sub.ordersUsed >= localPlan.maxOrders) ||
+            (localPlan.maxVehicles > 0 && sub.vehiclesUsed >= localPlan.maxVehicles) ||
+            (localPlan.maxRentalVehicles > 0 &&
+                sub.rentalVehiclesUsed >= localPlan.maxRentalVehicles) ||
+            (localPlan.maxJobs > 0 && sub.jobsUsed >= localPlan.maxJobs) ||
+            (localPlan.maxContacts > 0 &&
+                contactViewsRemaining <= 0 &&
+                contactViewsUsed > 0) ||
+            (localPlan.maxRentalContacts > 0 &&
+                rentalContactViewsRemaining <= 0 &&
+                rentalContactViewsUsed > 0);
     final showRenewCta = (isUrgent || atLimit) && !localPlan.isFree;
 
     return Container(
@@ -354,8 +342,8 @@ class _SubscriptionPlansScreenState
               ),
               if (showDaysLeft)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: isUrgent
                         ? Colors.white
@@ -420,8 +408,7 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxRentalListings,
               icon: Icons.key_rounded,
             ),
-          if ((localPlan.maxListings > 0 || localPlan.maxRentalListings > 0) &&
-              localPlan.maxFeaturedListings > 0)
+          if ((localPlan.maxListings > 0 || localPlan.maxRentalListings > 0) && localPlan.maxFeaturedListings > 0)
             const SizedBox(height: 12),
           if (localPlan.maxFeaturedListings > 0)
             _buildUsageBar(
@@ -439,8 +426,7 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxOrders,
               icon: Icons.receipt_long_outlined,
             ),
-          if ((localPlan.maxOrders > 0) &&
-              (showContactBar || showRentalContactBar))
+          if ((localPlan.maxOrders > 0) && (showContactBar || showRentalContactBar))
             const SizedBox(height: 12),
           if (showContactBar)
             _buildUsageBar(
@@ -458,13 +444,7 @@ class _SubscriptionPlansScreenState
               max: rentalContactViewsUsed + rentalContactViewsRemaining,
               icon: Icons.key_rounded,
             ),
-          if ((showContactBar ||
-                  showRentalContactBar ||
-                  localPlan.maxOrders > 0) &&
-              (localPlan.maxVehicles > 0 ||
-                  localPlan.maxRentalVehicles > 0 ||
-                  showCarContactBar ||
-                  showCarRentalContactBar))
+          if ((showContactBar || showRentalContactBar || localPlan.maxOrders > 0) && (localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0 || showCarContactBar || showCarRentalContactBar))
             const SizedBox(height: 12),
           if (localPlan.maxVehicles > 0)
             _buildUsageBar(
@@ -482,13 +462,11 @@ class _SubscriptionPlansScreenState
               max: localPlan.maxRentalVehicles,
               icon: Icons.car_rental,
             ),
-          if ((localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0) &&
-              showCarContactBar)
+          if ((localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0) && showCarContactBar)
             const SizedBox(height: 12),
           if (showCarContactBar)
             _buildUsageBar(
-              label:
-                  '${l10n.listingCarPlural} ${l10n.subscriptionsContactViews} (${l10n.listingSale})',
+              label: '${l10n.listingCarPlural} ${l10n.subscriptionsContactViews} (${l10n.listingSale})',
               used: carContactViewsUsed,
               max: carContactViewsUsed + carContactViewsRemaining,
               icon: Icons.visibility_outlined,
@@ -497,8 +475,7 @@ class _SubscriptionPlansScreenState
             const SizedBox(height: 12),
           if (showCarRentalContactBar)
             _buildUsageBar(
-              label:
-                  '${l10n.listingCarPlural} ${l10n.subscriptionsContactViews} (${l10n.listingRent})',
+              label: '${l10n.listingCarPlural} ${l10n.subscriptionsContactViews} (${l10n.listingRent})',
               used: carRentalContactViewsUsed,
               max: carRentalContactViewsUsed + carRentalContactViewsRemaining,
               icon: Icons.car_rental,
@@ -512,8 +489,7 @@ class _SubscriptionPlansScreenState
               icon: Icons.contact_phone_outlined,
             ),
           ],
-          if ((localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0) &&
-              localPlan.maxJobs > 0)
+          if ((localPlan.maxVehicles > 0 || localPlan.maxRentalVehicles > 0) && localPlan.maxJobs > 0)
             const SizedBox(height: 12),
           if (localPlan.maxJobs > 0)
             _buildUsageBar(
@@ -541,7 +517,8 @@ class _SubscriptionPlansScreenState
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    side: const BorderSide(color: Colors.white, width: 1.5),
+                    side: const BorderSide(
+                        color: Colors.white, width: 1.5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -705,7 +682,7 @@ class _SubscriptionPlansScreenState
   }
 
   Widget _buildInactiveSubscriptionBanner(
-    dynamic sub,
+    Subscription sub,
     bool canCreateListing,
     bool canFeatureListing,
     bool canViewVip,
@@ -759,8 +736,7 @@ class _SubscriptionPlansScreenState
               text: l10n.subscriptionsSubscribe,
               icon: Icons.refresh,
               variant: ButtonVariant.primary,
-              isLoading: _processingPlanId != null &&
-                  _processingPlanId == localPlan.id,
+              isLoading: _processingPlanId != null && _processingPlanId == localPlan.id,
               onPressed: () => _selectPlan(localPlan),
             ),
           ),
@@ -864,7 +840,7 @@ class _SubscriptionPlansScreenState
     return result ?? false;
   }
 
-  Future<void> _startTrial(dynamic plan) async {
+  Future<void> _startTrial(SubscriptionPlan plan) async {
     if (_processingPlanId != null) return;
     final confirmed = await showDialog<bool>(
       context: context,
@@ -893,26 +869,24 @@ class _SubscriptionPlansScreenState
 
     setState(() => _processingPlanId = plan.id);
     try {
-      await ref.read(subscriptionV2ServiceProvider).startTrial(plan.id);
+      final response = await _subscriptionService.startTrial(plan.id);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Trial started successfully!'),
-            backgroundColor: AppColors.success,
-          ),
-        );
-        ref
-            .read(subscriptionProvider.notifier)
-            .refresh(currency: _selectedCurrency);
-      }
-    } on ApiV2Exception catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        if (response.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message),
+              backgroundColor: AppColors.success,
+            ),
+          );
+          ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -930,7 +904,7 @@ class _SubscriptionPlansScreenState
     }
   }
 
-  Future<void> _selectPlan(dynamic plan, {int billingCycleMonths = 1}) async {
+  Future<void> _selectPlan(SubscriptionPlan plan, {int billingCycleMonths = 1}) async {
     if (_processingPlanId != null) return;
 
     final navigator = Navigator.of(context);
@@ -948,29 +922,23 @@ class _SubscriptionPlansScreenState
     if (plan.isFree) {
       setState(() => _processingPlanId = plan.id);
       try {
-        final result = await ref.read(subscriptionV2ServiceProvider).checkout(
-              plan.id,
-              cycleMonths: billingCycleMonths,
-              currency: _selectedCurrency,
-            );
+        // Backend handles free plan activation in the subscribe method
+        final response = await _subscriptionService.subscribe(
+          plan.id,
+          currency: _selectedCurrency,
+          billingCycleMonths: billingCycleMonths,
+        );
         if (mounted) {
-          if (result.activated) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(l10n.subscriptionsFreeSuccess),
-                backgroundColor: AppColors.success));
+          if (response.success) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionsFreeSuccess), backgroundColor: AppColors.success));
             ref.read(subscriptionProvider.notifier).refresh();
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
           }
-        }
-      } on ApiV2Exception catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(e.message), backgroundColor: AppColors.error));
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(l10n.subscriptionUnexpectedError(e.toString())),
-              backgroundColor: AppColors.error));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionUnexpectedError(e.toString())), backgroundColor: AppColors.error));
         }
       } finally {
         if (mounted) {
@@ -983,28 +951,33 @@ class _SubscriptionPlansScreenState
     setState(() => _processingPlanId = plan.id);
 
     try {
-      final checkoutFuture = ref.read(subscriptionV2ServiceProvider).checkout(
-            plan.id,
-            cycleMonths: billingCycleMonths,
-            currency: _selectedCurrency,
-          );
+      // 1. Start the payment API call (Chapa initialize — takes 1-3s)
+      final paymentFuture = _subscriptionService.processPayment(
+        planId: plan.id,
+        paymentData: {
+          'payment_method': 'chapa',
+          'currency': _selectedCurrency,
+          'billing_cycle_months': billingCycleMonths,
+        },
+      );
 
+      // Completer so the poll timer can trigger activation inside the WebView
       final activateCompleter = Completer<String>();
 
+      // 2. Open WebView IMMEDIATELY with urlFuture — no waiting for Chapa
       final webViewFuture = navigator.push(
         MaterialPageRoute(
           builder: (context) => WaveWebViewPage(
-            urlFuture: checkoutFuture.then((r) {
-              if (!r.hasCheckoutUrl) {
-                throw Exception('Checkout URL not available');
+            urlFuture: paymentFuture.then((r) {
+              if (!r.success || r.checkoutUrl == null) {
+                throw Exception(r.message);
               }
               return r.checkoutUrl!;
             }),
             title: l10n.subscriptionsSubscribe,
             onActivate: (txRef) async {
-              final verification =
-                  await ref.read(paymentV2ServiceProvider).verify(txRef);
-              if (verification.isActivated) {
+              final response = await _subscriptionService.activateSubscription(txRef: txRef);
+              if (response.success) {
                 ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
               }
             },
@@ -1013,25 +986,26 @@ class _SubscriptionPlansScreenState
         ),
       );
 
+      // 3. Wait for payment response to get txRef
       String? resolvedTxRef;
       try {
-        final checkoutResult = await checkoutFuture;
-        resolvedTxRef = checkoutResult.payment?.txRef;
+        final paymentResponse = await paymentFuture;
+        resolvedTxRef = paymentResponse.txRef;
         if (resolvedTxRef != null) {
-          ref
-              .read(transactionTrackerProvider.notifier)
-              .track(plan.id, txRef: resolvedTxRef);
+          ref.read(transactionTrackerProvider.notifier).track(plan.id, txRef: resolvedTxRef);
         }
-      } catch (_) {}
+      } catch (_) {
+        // Payment init failed — WebView handles it via urlFuture rejection
+      }
 
       if (!mounted) {
         _paymentPollTimer?.cancel();
         return;
       }
 
+      // 4. Poll every 1s while WebView is open
       bool webViewClosed = false;
-      _paymentPollTimer =
-          Timer.periodic(const Duration(seconds: 1), (timer) async {
+      _paymentPollTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
         if (!mounted || webViewClosed) {
           timer.cancel();
           return;
@@ -1039,22 +1013,29 @@ class _SubscriptionPlansScreenState
 
         if (resolvedTxRef == null) return;
 
-        try {
-          final verification =
-              await ref.read(paymentV2ServiceProvider).verify(resolvedTxRef);
-          if (!mounted || webViewClosed) {
-            timer.cancel();
-            return;
-          }
+        final rawStatus = await _subscriptionService.verifyPaymentStatus(resolvedTxRef);
+        if (!mounted || webViewClosed) {
+          timer.cancel();
+          return;
+        }
 
-          if (verification.isActivated) {
-            timer.cancel();
-            webViewClosed = true;
-            if (!activateCompleter.isCompleted) {
-              activateCompleter.complete(resolvedTxRef);
-            }
+        final status = rawStatus?.toLowerCase() ?? 'pending';
+
+        if (status == 'success') {
+          timer.cancel();
+          webViewClosed = true;
+          // Tell WebView to show "Activating..." and activate before closing
+          if (!activateCompleter.isCompleted) {
+            activateCompleter.complete(resolvedTxRef);
           }
-        } catch (_) {}
+        } else if (status.contains('fail') || status.contains('cancel') || status == 'abandoned' || status == 'voided') {
+          timer.cancel();
+          webViewClosed = true;
+          // Don't pop if URL redirect already triggered activation
+          if (!activateCompleter.isCompleted && mounted) {
+            Navigator.of(context).pop('failed');
+          }
+        }
       });
 
       // 5. Wait for WebView to close
@@ -1067,9 +1048,7 @@ class _SubscriptionPlansScreenState
       if (!mounted) return;
 
       // Resolve completer if WebView closed before poll triggered it
-      if (result == 'success' &&
-          resolvedTxRef != null &&
-          !activateCompleter.isCompleted) {
+      if (result == 'success' && resolvedTxRef != null && !activateCompleter.isCompleted) {
         ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
       }
 
@@ -1100,10 +1079,7 @@ class _SubscriptionPlansScreenState
         return;
       }
 
-      if (result == null ||
-          result == 'cancelled' ||
-          result == 'closed' ||
-          result == 'done') {
+      if (result == null || result == 'cancelled' || result == 'closed' || result == 'done') {
         // User closed WebView before payment completed
         ref.read(transactionTrackerProvider.notifier).resolve(plan.id);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1117,19 +1093,13 @@ class _SubscriptionPlansScreenState
       }
 
       // result is 'success' — activation already done inside WebView via onActivate
-      ref
-          .read(subscriptionProvider.notifier)
-          .refresh(currency: _selectedCurrency);
+      ref.read(subscriptionProvider.notifier).refresh(currency: _selectedCurrency);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(l10n.subscriptionPaymentSuccess),
-            backgroundColor: AppColors.success));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionPaymentSuccess), backgroundColor: AppColors.success));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(l10n.subscriptionUnexpectedError(e.toString())),
-            backgroundColor: AppColors.error));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionUnexpectedError(e.toString())), backgroundColor: AppColors.error));
       }
     } finally {
       if (mounted) {
@@ -1141,7 +1111,7 @@ class _SubscriptionPlansScreenState
 
 /// Plan Card Widget
 class _PlanCard extends StatefulWidget {
-  final dynamic plan;
+  final SubscriptionPlan plan;
   final bool isCurrentPlan;
   final bool isFeatured;
   final bool isLoading;
@@ -1186,9 +1156,14 @@ class _PlanCardState extends State<_PlanCard> {
 
   bool get _isFree => widget.plan.isFree;
 
-  dynamic get _currentCycle {
+  PlanBillingCycle get _currentCycle {
     return widget.plan.getBillingCycle(_selectedCycleMonths) ??
-        widget.plan.defaultCycle;
+        PlanBillingCycle(
+          months: 1,
+          price: widget.plan.price,
+          priceUsd: widget.plan.priceUsd,
+          listingDurationDays: widget.plan.listingDurationDays,
+        );
   }
 
   @override
@@ -1224,12 +1199,10 @@ class _PlanCardState extends State<_PlanCard> {
     );
   }
 
-  Widget _buildHeader(
-      BuildContext context, bool isDark, AppLocalizations l10n) {
+  Widget _buildHeader(BuildContext context, bool isDark, AppLocalizations l10n) {
     final colors = context.theme;
     final textColor = widget.isFeatured ? Colors.white : colors.textPrimary;
-    final mutedColor =
-        widget.isFeatured ? Colors.white70 : colors.textSecondary;
+    final mutedColor = widget.isFeatured ? Colors.white70 : colors.textSecondary;
     final isFeaturedOrCurrent = widget.isFeatured || widget.isCurrentPlan;
     final cycles = widget.plan.billingCycles;
 
@@ -1241,15 +1214,12 @@ class _PlanCardState extends State<_PlanCard> {
         color: widget.isFeatured
             ? null
             : widget.isCurrentPlan
-                ? (isDark
-                    ? AppColors.accent500.withValues(alpha: 0.15)
-                    : AppColors.accent50)
+                ? (isDark ? AppColors.accent500.withValues(alpha: 0.15) : AppColors.accent50)
                 : null,
         border: !widget.isFeatured
             ? Border(
                 bottom: BorderSide(
-                  color:
-                      isDark ? AppColors.cardNavyLight : AppColors.primary100,
+                  color: isDark ? AppColors.cardNavyLight : AppColors.primary100,
                   width: 1,
                 ),
               )
@@ -1274,8 +1244,7 @@ class _PlanCardState extends State<_PlanCard> {
                 _buildCycleSelector(cycles, isDark, colors),
             ],
           ),
-          if (isFeaturedOrCurrent || cycles.length > 1)
-            const SizedBox(height: 12),
+          if (isFeaturedOrCurrent || cycles.length > 1) const SizedBox(height: 12),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1311,10 +1280,10 @@ class _PlanCardState extends State<_PlanCard> {
                     const SizedBox(height: 6),
                     Text(
                       l10n.subscriptionsListingsActiveDays(
-                        (_currentCycle?.listingDurationDays ?? 0) > 0
-                            ? _currentCycle!.listingDurationDays!
-                            : ((widget.plan.listingDurationDays ?? 0) > 0
-                                ? widget.plan.listingDurationDays!
+                        _currentCycle.listingDurationDays > 0
+                            ? _currentCycle.listingDurationDays
+                            : (widget.plan.listingDurationDays > 0
+                                ? widget.plan.listingDurationDays
                                 : 30),
                       ),
                       style: AppTextStyles.caption.copyWith(
@@ -1322,9 +1291,7 @@ class _PlanCardState extends State<_PlanCard> {
                         fontWeight: FontWeight.w600,
                         color: widget.isFeatured
                             ? Colors.white.withValues(alpha: 0.95)
-                            : (isDark
-                                ? AppColors.accent300
-                                : AppColors.accent700),
+                            : (isDark ? AppColors.accent300 : AppColors.accent700),
                       ),
                     ),
                   ],
@@ -1339,16 +1306,13 @@ class _PlanCardState extends State<_PlanCard> {
     );
   }
 
-  Widget _buildCycleSelector(
-      List<dynamic> cycles, bool isDark, ThemeColors colors) {
+  Widget _buildCycleSelector(List<PlanBillingCycle> cycles, bool isDark, ThemeColors colors) {
     return Container(
       padding: const EdgeInsets.all(2.5),
       decoration: BoxDecoration(
         color: widget.isFeatured
             ? Colors.black.withValues(alpha: 0.18)
-            : (isDark
-                ? AppColors.cardNavyLight
-                : AppColors.stone200.withValues(alpha: 0.7)),
+            : (isDark ? AppColors.cardNavyLight : AppColors.stone200.withValues(alpha: 0.7)),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -1356,13 +1320,11 @@ class _PlanCardState extends State<_PlanCard> {
         children: cycles.map((cycle) {
           final isSelected = cycle.months == _selectedCycleMonths;
           return GestureDetector(
-            onTap: widget.isLoading
-                ? null
-                : () {
-                    setState(() {
-                      _selectedCycleMonths = cycle.months;
-                    });
-                  },
+            onTap: widget.isLoading ? null : () {
+              setState(() {
+                _selectedCycleMonths = cycle.months;
+              });
+            },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -1389,12 +1351,8 @@ class _PlanCardState extends State<_PlanCard> {
                   fontSize: 12,
                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                   color: isSelected
-                      ? (widget.isFeatured
-                          ? AppColors.primary900
-                          : Colors.white)
-                      : (widget.isFeatured
-                          ? Colors.white70
-                          : (isDark ? AppColors.stone300 : AppColors.stone600)),
+                      ? (widget.isFeatured ? AppColors.primary900 : Colors.white)
+                      : (widget.isFeatured ? Colors.white70 : (isDark ? AppColors.stone300 : AppColors.stone600)),
                 ),
               ),
             ),
@@ -1426,8 +1384,7 @@ class _PlanCardState extends State<_PlanCard> {
     );
   }
 
-  Widget _buildPriceBlock(
-      Color textColor, Color mutedColor, AppLocalizations l10n) {
+  Widget _buildPriceBlock(Color textColor, Color mutedColor, AppLocalizations l10n) {
     final cycle = _currentCycle;
     final priceStr = cycle.getDisplayPrice(widget.selectedCurrency);
     final hasCycleDiscount = cycle.discountPercent > 0;
@@ -1579,8 +1536,8 @@ class _PlanCardState extends State<_PlanCard> {
           ],
           if (plan.maxJobs > 0) ...[
             _buildDivider(),
-            _buildComparisonRow(context, l10n.homeJobs, '${plan.maxJobs}',
-                Icons.work_outline, true),
+            _buildComparisonRow(context, l10n.homeJobs,
+                '${plan.maxJobs}', Icons.work_outline, true),
           ],
           if (plan.maxOrders > 0) ...[
             _buildDivider(),
@@ -1589,21 +1546,13 @@ class _PlanCardState extends State<_PlanCard> {
           ],
           if (plan.maxContacts > 0) ...[
             _buildDivider(),
-            _buildComparisonRow(
-                context,
-                '${l10n.subscriptionsContactViews} (${l10n.listingSale})',
-                '${plan.maxContacts}',
-                Icons.contact_phone_outlined,
-                true),
+            _buildComparisonRow(context, '${l10n.subscriptionsContactViews} (${l10n.listingSale})',
+                '${plan.maxContacts}', Icons.contact_phone_outlined, true),
           ],
           if (plan.maxRentalContacts > 0) ...[
             _buildDivider(),
-            _buildComparisonRow(
-                context,
-                '${l10n.subscriptionsContactViews} (${l10n.listingRent})',
-                '${plan.maxRentalContacts}',
-                Icons.key_rounded,
-                true),
+            _buildComparisonRow(context, '${l10n.subscriptionsContactViews} (${l10n.listingRent})',
+                '${plan.maxRentalContacts}', Icons.key_rounded, true),
           ],
           if (plan.features != null && plan.features!.isNotEmpty) ...[
             const SizedBox(height: 16),
@@ -1642,9 +1591,7 @@ class _PlanCardState extends State<_PlanCard> {
               // from the current end date, so no remaining days are lost.
               // The auto-assigned free plan has nothing to renew.
               isLoading: isLoading,
-              onPressed: isCurrentPlan && _isFree
-                  ? null
-                  : () => widget.onSelect(_selectedCycleMonths),
+              onPressed: isCurrentPlan && _isFree ? null : () => widget.onSelect(_selectedCycleMonths),
               variant:
                   isCurrentPlan ? ButtonVariant.outline : ButtonVariant.primary,
             ),
@@ -1654,8 +1601,7 @@ class _PlanCardState extends State<_PlanCard> {
             SizedBox(
               width: double.infinity,
               child: WaveButton(
-                text: l10n.subscriptionsStartTrialDaysButton(
-                    (plan.trialDays ?? 0).toString()),
+                text: l10n.subscriptionsStartTrialDaysButton((plan.trialDays ?? 0).toString()),
                 icon: Icons.flash_on,
                 isLoading: isLoading,
                 onPressed: onStartTrial,
@@ -1747,7 +1693,8 @@ class _PlanCardState extends State<_PlanCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(Icons.lock_outline,
-            size: 12, color: AppColors.primary500.withValues(alpha: 0.7)),
+            size: 12,
+            color: AppColors.primary500.withValues(alpha: 0.7)),
         const SizedBox(width: 4),
         Text(
           message,

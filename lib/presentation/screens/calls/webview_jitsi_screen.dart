@@ -10,7 +10,6 @@ import '../../../core/network/api_constants.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../providers/app_providers.dart';
-import '../../providers/v2_providers.dart';
 
 /// WebView-based Jitsi call screen that properly handles authentication
 /// by pre-injecting session cookies to avoid login page redirect
@@ -97,7 +96,8 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
           final cookieData = sessionResponse.data['data'];
           await _injectSessionCookie(cookieData);
         }
-      } catch (_) {}
+      } catch (_) {
+      }
 
       setState(() {
         _isLoading = false;
@@ -130,7 +130,8 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
 
       // Force secure=true for HTTPS sites — the backend config may not
       // reflect the actual deployment scheme
-      final baseUrlIsHttps = Uri.parse(ApiConstants.baseUrl).scheme == 'https';
+      final baseUrlIsHttps =
+          Uri.parse(ApiConstants.baseUrl).scheme == 'https';
       final isSecure = baseUrlIsHttps || (cookieData['secure'] == true);
 
       await _cookieManager.setCookie(
@@ -142,7 +143,9 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
         isSecure: isSecure,
         isHttpOnly: cookieData['http_only'] ?? true,
       );
-    } catch (_) {}
+
+    } catch (_) {
+    }
   }
 
   String _extractDomain(String url) {
@@ -155,17 +158,15 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
   }
 
   Future<String> _getConferenceUrl() async {
-    if (widget.jitsiUrl != null && widget.jitsiUrl!.isNotEmpty) {
-      _conferenceUrl = widget.jitsiUrl!;
-      return widget.jitsiUrl!;
-    }
     final apiClient = ref.read(apiClientProvider);
     final token = await apiClient.getAuthToken();
-    final uri = Uri.parse(
-        '${ApiConstants.baseUrl}/conferences/${widget.conferenceId}/join');
-    final url = uri.replace(queryParameters: {
-      'token': token ?? '',
-    }).toString();
+    final uri =
+        Uri.parse('${ApiConstants.baseUrl}/conferences/${widget.conferenceId}/join');
+    final url = uri
+        .replace(queryParameters: {
+          'token': token ?? '',
+        })
+        .toString();
     _conferenceUrl = url;
     return url;
   }
@@ -175,13 +176,11 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
     try {
       final incoming = Uri.parse(url);
       final conference = Uri.parse(_conferenceUrl!);
-
-      // We strictly only allow the exact conference join path on our domain or Jitsi host.
-      // If Jitsi redirects to / (home) or any other path after the call,
+      
+      // We strictly only allow the exact conference join path on our domain.
+      // If Jitsi redirects to / (home) or any other path after the call, 
       // this will return false and trigger the screen to close.
-      return incoming.host == conference.host &&
-          (incoming.path == conference.path ||
-              incoming.path.startsWith(conference.path));
+      return incoming.host == conference.host && incoming.path == conference.path;
     } catch (_) {
       return false;
     }
@@ -190,10 +189,6 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
   void _leaveCall() {
     if (_hasLeft) return;
     _hasLeft = true;
-
-    try {
-      ref.read(conferenceV2ServiceProvider).leave(widget.conferenceId);
-    } catch (_) {}
 
     if (mounted) {
       Navigator.of(context).pop();
@@ -222,9 +217,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
           children: [
             Icon(widget.isVideo ? Icons.videocam : Icons.phone, size: 20),
             const SizedBox(width: 8),
-            Text(widget.isVideo
-                ? 'Video Call'
-                : AppLocalizations.of(context).jitsiCallTitle),
+            Text(widget.isVideo ? 'Video Call' : AppLocalizations.of(context).jitsiCallTitle),
           ],
         ),
         leading: IconButton(
@@ -292,52 +285,53 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
 
         return Stack(
           children: [
-            InAppWebView(
-              initialUrlRequest: URLRequest(url: WebUri(url)),
-              initialSettings: InAppWebViewSettings(
-                useShouldOverrideUrlLoading: true,
-                mediaPlaybackRequiresUserGesture: false,
-                allowsInlineMediaPlayback: true,
-                iframeAllow: "camera; microphone",
-                iframeAllowFullscreen: true,
-                javaScriptEnabled: true,
-                domStorageEnabled: true,
-                useHybridComposition: true,
-                supportMultipleWindows: false,
-                thirdPartyCookiesEnabled: true,
-                javaScriptCanOpenWindowsAutomatically: true,
-                cacheMode: CacheMode.LOAD_DEFAULT,
-              ),
-              onWebViewCreated: (controller) {
-                _webViewController = controller;
-                controller.addJavaScriptHandler(
-                  handlerName: 'onJitsiLeave',
-                  callback: (args) {
-                    _leaveCall();
-                  },
-                );
+        InAppWebView(
+          initialUrlRequest: URLRequest(url: WebUri(url)),
+          initialSettings: InAppWebViewSettings(
+            useShouldOverrideUrlLoading: true,
+            mediaPlaybackRequiresUserGesture: false,
+            allowsInlineMediaPlayback: true,
+            iframeAllow: "camera; microphone",
+            iframeAllowFullscreen: true,
+            javaScriptEnabled: true,
+            domStorageEnabled: true,
+            useHybridComposition: true,
+            supportMultipleWindows: false,
+            thirdPartyCookiesEnabled: true,
+            javaScriptCanOpenWindowsAutomatically: true,
+            cacheMode: CacheMode.LOAD_DEFAULT,
+          ),
+          onWebViewCreated: (controller) {
+            _webViewController = controller;
+            controller.addJavaScriptHandler(
+              handlerName: 'onJitsiLeave',
+              callback: (args) {
+                _leaveCall();
               },
-              onPermissionRequest: (controller, request) async {
-                return PermissionResponse(
-                  resources: request.resources,
-                  action: PermissionResponseAction.GRANT,
-                );
-              },
-              onProgressChanged: (controller, progress) {
-                setState(() {
-                  _progress = progress / 100;
-                });
-              },
-              onLoadStart: (controller, url) {},
-              onLoadStop: (controller, url) async {
-                if (!_isConferenceUrl(url?.toString())) {
-                  _leaveCall();
-                  return;
-                }
-                setState(() {
-                  _isLoading = false;
-                });
-                await controller.evaluateJavascript(source: '''
+            );
+          },
+          onPermissionRequest: (controller, request) async {
+            return PermissionResponse(
+              resources: request.resources,
+              action: PermissionResponseAction.GRANT,
+            );
+          },
+          onProgressChanged: (controller, progress) {
+            setState(() {
+              _progress = progress / 100;
+            });
+          },
+          onLoadStart: (controller, url) {
+          },
+          onLoadStop: (controller, url) async {
+            if (!_isConferenceUrl(url?.toString())) {
+              _leaveCall();
+              return;
+            }
+            setState(() {
+              _isLoading = false;
+            });
+            await controller.evaluateJavascript(source: '''
               (function() {
                 var observer = new MutationObserver(function() {
                   var leaveBtn = document.querySelector('.dismiss-button, .icon-default, [aria-label="Leave"], [data-testid="leave"], button[title="Leave"], .toolbox-button[aria-label="Leave call"]');
@@ -352,29 +346,29 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
                 observer.observe(document.body, { childList: true, subtree: true });
               })();
             ''');
-              },
-              onReceivedError: (controller, request, error) {
-                if (!_hasLeft && request.isForMainFrame == true) {
-                  setState(() {
-                    _hasError = true;
-                    _errorMessage = 'Failed to load: ${error.description}';
-                  });
-                }
-              },
-              shouldOverrideUrlLoading: (controller, navigationAction) async {
-                final uri = navigationAction.request.url;
-                if (uri != null) {
-                  if (!_isConferenceUrl(uri.toString())) {
-                    _leaveCall();
-                    return NavigationActionPolicy.CANCEL;
-                  }
-                }
-                return NavigationActionPolicy.ALLOW;
-              },
-              onCloseWindow: (controller) {
+          },
+          onReceivedError: (controller, request, error) {
+            if (!_hasLeft && request.isForMainFrame == true) {
+              setState(() {
+                _hasError = true;
+                _errorMessage = 'Failed to load: ${error.description}';
+              });
+            }
+          },
+          shouldOverrideUrlLoading: (controller, navigationAction) async {
+            final uri = navigationAction.request.url;
+            if (uri != null) {
+              if (!_isConferenceUrl(uri.toString())) {
                 _leaveCall();
-              },
-            ),
+                return NavigationActionPolicy.CANCEL;
+              }
+            }
+            return NavigationActionPolicy.ALLOW;
+          },
+          onCloseWindow: (controller) {
+            _leaveCall();
+          },
+        ),
             if (_isLoading && _progress < 0.1)
               const Center(
                 child: CircularProgressIndicator(),

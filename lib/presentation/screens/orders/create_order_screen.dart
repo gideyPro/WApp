@@ -1,26 +1,24 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/network/v2/api_v2_error.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../data/models/v2/address_option.dart';
-import '../../../data/models/v2/subscription_state.dart';
+import '../../../data/services/address_service.dart';
+import '../../../data/models/address.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 
-import '../../providers/v2_providers.dart';
+import '../../providers/app_providers.dart';
+import '../../../core/network/api_constants.dart';
+import '../../../core/network/api_envelope.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 
-/// Buyer request form backed by the v2 nested payload.
 class CreateOrderScreen extends ConsumerStatefulWidget {
   const CreateOrderScreen({super.key});
 
@@ -43,24 +41,25 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   final _maxAreaCtrl = TextEditingController();
   final _descriptionCtrl = TextEditingController();
 
-  /// One key per form instance so a retry after a network error reuses the
-  /// order instead of consuming another quota slot.
-  late final String _submissionKey;
-
   // Address picker
+  AddressService get _addressService => ref.read(addressServiceProvider);
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
   List<String> _regions = [], _zones = [], _woredas = [];
-  List<AddressOption> _kebeles = [];
+  List<Address> _kebeles = [];
   int? _kebeleId;
   bool _loadingZones = false, _loadingWoredas = false, _loadingKebeles = false;
 
+  bool _postedByAgent = false;
+  final _agentIdCtrl = TextEditingController();
+
   bool _formatting = false;
+  bool _rentalEnabled = false;
 
   @override
   void initState() {
     super.initState();
-    _submissionKey = _newSubmissionKey();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadRegions());
+    _loadRegions();
+    _loadSettings();
   }
 
   @override
@@ -70,16 +69,9 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     _minAreaCtrl.dispose();
     _maxAreaCtrl.dispose();
     _descriptionCtrl.dispose();
+    _agentIdCtrl.dispose();
     super.dispose();
   }
-
-  static String _newSubmissionKey() {
-    final random = Random();
-    final suffix = random.nextInt(0x7fffffff).toRadixString(36);
-    return 'ord-${DateTime.now().microsecondsSinceEpoch}-$suffix';
-  }
-
-  String get _locale => Localizations.localeOf(context).languageCode;
 
   String _formatNumber(String raw) {
     if (raw.isEmpty) return '';
@@ -103,19 +95,30 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   }
 
   Future<void> _loadRegions() async {
-    if (!mounted) return;
-    try {
-      final regions = await ref.read(addressV2ServiceProvider).regions(
-            locale: _locale,
-          );
-      if (mounted) {
-        setState(() {
-          _regions = regions.map((option) => option.name).toList();
-        });
-      }
-    } catch (_) {
-      // The picker is optional; a failed load leaves it empty.
+    final locale = Localizations.localeOf(context).languageCode;
+    final response = await _addressService.getRegions(locale: locale);
+    if (mounted && response.success) {
+      setState(() {
+        _regions = response.regions
+            .map((a) => a.region ?? '')
+            .where((n) => n.isNotEmpty)
+            .toList();
+      });
     }
+  }
+
+  Future<void> _loadSettings() async {
+    try {
+      final response = await ref.read(apiClientProvider).dio.get('${ApiConstants.apiBase}/settings');
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = ApiEnvelope.extractData(response.data);
+        if (data.isNotEmpty && mounted) {
+          setState(() {
+            _rentalEnabled = data['rental_enabled'] == true;
+          });
+        }
+      }
+    } catch (_) {}
   }
 
   Future<void> _onRegionSelected(String? region) async {
@@ -124,25 +127,21 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       _selectedZone = null;
       _selectedWoreda = null;
       _selectedKebele = null;
-      _kebeleId = null;
       _zones = [];
       _woredas = [];
       _kebeles = [];
     });
     if (region == null) return;
     setState(() => _loadingZones = true);
-    try {
-      final zones = await ref.read(addressV2ServiceProvider).zones(
-            region,
-            locale: _locale,
-          );
-      if (mounted) {
-        setState(() {
-          _zones = zones.map((option) => option.name).toList();
-        });
-      }
-    } finally {
-      if (mounted) setState(() => _loadingZones = false);
+    final locale = Localizations.localeOf(context).languageCode;
+    final response = await _addressService.getZones(region: region, locale: locale);
+    if (mounted) {
+      setState(() {
+        _loadingZones = false;
+        if (response.success) {
+          _zones = response.zones.map((a) => a.zone ?? '').where((n) => n.isNotEmpty).toList();
+        }
+      });
     }
   }
 
@@ -151,25 +150,20 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       _selectedZone = zone;
       _selectedWoreda = null;
       _selectedKebele = null;
-      _kebeleId = null;
       _woredas = [];
       _kebeles = [];
     });
     if (zone == null || _selectedRegion == null) return;
     setState(() => _loadingWoredas = true);
-    try {
-      final woredas = await ref.read(addressV2ServiceProvider).woredas(
-            _selectedRegion!,
-            zone,
-            locale: _locale,
-          );
-      if (mounted) {
-        setState(() {
-          _woredas = woredas.map((option) => option.name).toList();
-        });
-      }
-    } finally {
-      if (mounted) setState(() => _loadingWoredas = false);
+    final locale = Localizations.localeOf(context).languageCode;
+    final response = await _addressService.getWoredas(region: _selectedRegion!, zone: zone, locale: locale);
+    if (mounted) {
+      setState(() {
+        _loadingWoredas = false;
+        if (response.success) {
+          _woredas = response.woredas.map((a) => a.woreda ?? '').where((n) => n.isNotEmpty).toList();
+        }
+      });
     }
   }
 
@@ -177,32 +171,30 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     setState(() {
       _selectedWoreda = woreda;
       _selectedKebele = null;
-      _kebeleId = null;
       _kebeles = [];
+      _kebeleId = null;
     });
-    if (woreda == null || _selectedRegion == null || _selectedZone == null) {
-      return;
-    }
+    if (woreda == null || _selectedRegion == null || _selectedZone == null) return;
     setState(() => _loadingKebeles = true);
-    try {
-      final kebeles = await ref.read(addressV2ServiceProvider).kebeles(
-            _selectedRegion!,
-            _selectedZone!,
-            woreda,
-            locale: _locale,
-          );
-      if (mounted) {
-        setState(() {
-          _kebeles = kebeles.where((option) => option.name.isNotEmpty).toList();
-        });
-      }
-    } finally {
-      if (mounted) setState(() => _loadingKebeles = false);
+    final locale = Localizations.localeOf(context).languageCode;
+    final response = await _addressService.getKebeles(
+      region: _selectedRegion!,
+      zone: _selectedZone!,
+      woreda: woreda,
+      locale: locale,
+    );
+    if (mounted) {
+      setState(() {
+        _loadingKebeles = false;
+        if (response.success) {
+          _kebeles = response.kebeles.where((a) => a.kebele != null && a.kebele!.isNotEmpty).toList();
+        }
+      });
     }
   }
 
   void _onKebeleSelected(String? kebele) {
-    final match = _kebeles.where((option) => option.name == kebele).firstOrNull;
+    final match = _kebeles.where((a) => a.kebele == kebele).firstOrNull;
     setState(() {
       _selectedKebele = kebele;
       _kebeleId = match?.id;
@@ -212,121 +204,69 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    if (_postedByAgent && _agentIdCtrl.text.trim().isEmpty) {
+      final l10n = AppLocalizations.of(context);
+      setState(() => _submitting = false);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(l10n.agentIdRequired),
+        backgroundColor: AppColors.error,
+      ));
+      return;
+    }
+
     setState(() => _submitting = true);
 
-    final budget = <String, dynamic>{
-      if (_minBudgetCtrl.text.isNotEmpty)
-        'min': double.tryParse(_minBudgetCtrl.text.replaceAll(',', '')),
-      if (_maxBudgetCtrl.text.isNotEmpty)
-        'max': double.tryParse(_maxBudgetCtrl.text.replaceAll(',', '')),
-    }..removeWhere((_, value) => value == null);
-
-    final area = <String, dynamic>{
-      if (_minAreaCtrl.text.isNotEmpty)
-        'min': double.tryParse(_minAreaCtrl.text.replaceAll(',', '')),
-      if (_maxAreaCtrl.text.isNotEmpty)
-        'max': double.tryParse(_maxAreaCtrl.text.replaceAll(',', '')),
-    }..removeWhere((_, value) => value == null);
-
-    final attributes = <String, dynamic>{
-      if (_holdingType != null) 'holding_type': _holdingType,
-      if (_facingDirection != null) 'facing_direction': _facingDirection,
-    };
-
     final data = <String, dynamic>{
-      'submission_key': _submissionKey,
       'type': _type,
       'listing_type': _listingType,
       'description': _descriptionCtrl.text.trim(),
-      if (_kebeleId != null) 'address_id': _kebeleId,
-      if (budget.isNotEmpty) 'budget': budget,
-      if (area.isNotEmpty) 'area': area,
-      if (attributes.isNotEmpty) 'attributes': attributes,
     };
+    if (_holdingType != null) data['holding_type'] = _holdingType;
+    if (_facingDirection != null) data['facing_direction'] = _facingDirection;
+    if (_kebeleId != null) data['address_id'] = _kebeleId;
+    if (_minBudgetCtrl.text.isNotEmpty) data['min_budget'] = _minBudgetCtrl.text.replaceAll(',', '');
+    if (_maxBudgetCtrl.text.isNotEmpty) data['max_budget'] = _maxBudgetCtrl.text.replaceAll(',', '');
+    if (_minAreaCtrl.text.isNotEmpty) data['min_area'] = _minAreaCtrl.text.replaceAll(',', '');
+    if (_maxAreaCtrl.text.isNotEmpty) data['max_area'] = _maxAreaCtrl.text.replaceAll(',', '');
+    if (_postedByAgent && _agentIdCtrl.text.isNotEmpty) data['agent_id'] = _agentIdCtrl.text;
 
-    final l10n = AppLocalizations.of(context);
+    final response = await ref.read(orderServiceProvider).createOrder(data);
 
-    try {
-      await ref.read(orderV2ServiceProvider).create(data);
-
-      // Quota usage changed; refresh the gate for the next visit.
-      ref.invalidate(subscriptionOverviewProvider);
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.ordersCreated),
-          backgroundColor: AppColors.success,
-        ),
-      );
-      Navigator.of(context).pop(true);
-    } on ApiV2Exception catch (error) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.message),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.commonError),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _submitting = false);
+    if (mounted) {
+      setState(() => _submitting = false);
+      if (response.success) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).ordersCreated), backgroundColor: AppColors.success));
+        Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
+      }
     }
   }
 
   String? _requiredValidator(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return AppLocalizations.of(context).orderRequired;
-    }
+    if (value == null || value.trim().isEmpty) return AppLocalizations.of(context).orderRequired;
     return null;
   }
 
-  /// Returns the upgrade copy when the plan cannot create another order.
-  ({String title, String subtitle})? _orderGate(
-    SubscriptionOverview overview,
-    AppLocalizations l10n,
-  ) {
-    if (!overview.hasActiveSubscription) {
+  ({String title, String subtitle}) _orderGateMessage(
+      SubscriptionState subState, AppLocalizations l10n) {
+    if (!subState.hasPaidSubscription) {
       return (
         title: l10n.subscriptionRequiredTitle,
         subtitle: l10n.subscriptionRequiredOrderSubtitle,
       );
     }
-
-    final capability = overview.capabilities.maxOrders;
-
-    // No reported quota means the server decides; do not block locally.
-    if (capability == null) return null;
-
-    if (!capability.allowed) {
-      return (
-        title: l10n.subscriptionRequiredTitle,
-        subtitle: l10n.subscriptionRequiredOrderSubtitle,
-      );
-    }
-
-    if (capability.max == 0) {
+    final plan = subState.subscription?.plan;
+    if (plan == null || plan.maxOrders == 0) {
       return (
         title: l10n.subscriptionPlanNotSupportedOrder,
         subtitle: l10n.subscriptionPlanNotSupportedOrderSubtitle,
       );
     }
-
-    if (!capability.hasCapacity) {
-      return (
-        title: l10n.ordersLimitTitle,
-        subtitle: l10n.ordersLimitMessage,
-      );
-    }
-
-    return null;
+    return (
+      title: l10n.ordersLimitTitle,
+      subtitle: l10n.ordersLimitMessage,
+    );
   }
 
   Widget _buildSkeleton() {
@@ -408,39 +348,39 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final overviewAsync = ref.watch(subscriptionOverviewProvider);
-    final configAsync = ref.watch(appConfigProvider);
-    final rentalEnabled = configAsync.maybeWhen(
-        data: (config) => config.rentalEnabled, orElse: () => false);
+    final subState = ref.watch(subscriptionProvider);
+    final settingsAsync = ref.watch(appSettingsProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
+      orElse: () => false,
+    );
 
-    // Loading state — wait for the overview before gating.
-    if (overviewAsync.isLoading) {
+    // Loading state — wait for data before gating
+    if (subState.isLoading) {
       return _buildSkeleton();
     }
 
-    if (overviewAsync.hasError) {
+    // Subscription network error — full screen with retry
+    if (subState.hasError) {
       return WaveMessageScreen.error(
         title: l10n.errorSubscription,
-        subtitle: l10n.commonError,
-        onRetry: () => ref.invalidate(subscriptionOverviewProvider),
+        subtitle: subState.errorMessage!,
+        onRetry: () => ref.read(subscriptionProvider.notifier).refresh(),
       );
     }
 
-    final overview = overviewAsync.value;
-    if (overview != null && overview.enabled) {
-      final gate = _orderGate(overview, l10n);
-      if (gate != null) {
-        return WaveFullPageUpgrade(
-          appBar: WaveAppBar(
-            centerTitle: false,
-            title: Text(l10n.ordersCreate),
-          ),
-          icon: Icons.receipt_long_outlined,
-          iconColor: AppColors.accent500,
-          title: gate.title,
-          subtitle: gate.subtitle,
-        );
-      }
+    if (subscriptionEnabled && !subState.canCreateOrder) {
+      final (:title, :subtitle) = _orderGateMessage(subState, l10n);
+      return WaveFullPageUpgrade(
+        appBar: WaveAppBar(
+          centerTitle: false,
+          title: Text(l10n.ordersCreate),
+        ),
+        icon: Icons.receipt_long_outlined,
+        iconColor: AppColors.accent500,
+        title: title,
+        subtitle: subtitle,
+      );
     }
 
     return Scaffold(
@@ -462,21 +402,18 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 children: [
                   _typeChip('house', l10n.ordersTypeHouse, Icons.home_outlined),
                   const SizedBox(width: 12),
-                  _typeChip(
-                    'land',
-                    l10n.ordersTypeLand,
-                    Icons.landscape_outlined,
-                  ),
+                  _typeChip('land', l10n.ordersTypeLand, Icons.landscape_outlined),
                 ],
               ),
             ),
+
             _sectionCard(
               title: l10n.ordersListingType,
               subtitle: l10n.orderBudgetAreaSubtitle,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (rentalEnabled) ...[
+                  if (_rentalEnabled) ...[
                     Row(
                       children: [
                         _listingTypeChip('sale', l10n.ordersBuy),
@@ -486,23 +423,15 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                     ),
                     const SizedBox(height: 16),
                   ],
-                  Text(
-                    l10n.ordersBudget,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: context.theme.textSecondary,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
+                  Text(l10n.ordersBudget,
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         child: TextFormField(
                           controller: _minBudgetCtrl,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: context.theme.textPrimary,
-                          ),
+                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                           decoration: _inputDecoration(label: l10n.ordersMin),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_minBudgetCtrl, v),
@@ -512,9 +441,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _maxBudgetCtrl,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: context.theme.textPrimary,
-                          ),
+                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                           decoration: _inputDecoration(label: l10n.ordersMax),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_maxBudgetCtrl, v),
@@ -523,23 +450,15 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    l10n.ordersArea,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: context.theme.textSecondary,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
+                  Text(l10n.ordersArea,
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         child: TextFormField(
                           controller: _minAreaCtrl,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: context.theme.textPrimary,
-                          ),
+                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                           decoration: _inputDecoration(label: l10n.ordersMin),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_minAreaCtrl, v),
@@ -549,9 +468,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _maxAreaCtrl,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: context.theme.textPrimary,
-                          ),
+                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                           decoration: _inputDecoration(label: l10n.ordersMax),
                           keyboardType: TextInputType.number,
                           onChanged: (v) => _onNumberChanged(_maxAreaCtrl, v),
@@ -562,6 +479,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 ],
               ),
             ),
+
             _sectionCard(
               title: l10n.ordersHoldingType,
               subtitle: l10n.orderHoldingFacingSubtitle,
@@ -570,163 +488,48 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 children: [
                   DropdownButtonFormField<String>(
                     initialValue: _holdingType,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: context.theme.textPrimary,
-                    ),
+                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     dropdownColor: context.sheetBg,
                     items: [
-                      DropdownMenuItem(
-                        value: null,
-                        child: Text(
-                          l10n.ordersSelect,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textMuted),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Free Hold',
-                        child: Text(
-                          l10n.listingFreeHold,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Lease Hold',
-                        child: Text(
-                          l10n.listingLeaseHold,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Cooperative',
-                        child: Text(
-                          l10n.listingCooperative,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
+                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted))),
+                      DropdownMenuItem(value: 'Free Hold', child: Text(l10n.listingFreeHold, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'Lease Hold', child: Text(l10n.listingLeaseHold, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'Cooperative', child: Text(l10n.listingCooperative, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
                     ],
                     onChanged: (v) => setState(() => _holdingType = v),
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    l10n.ordersFacing,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: context.theme.textSecondary,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
+                  Text(l10n.ordersFacing,
+                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     initialValue: _facingDirection,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: context.theme.textPrimary,
-                    ),
+                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                     decoration: _inputDecoration(label: l10n.ordersSelect),
                     dropdownColor: context.sheetBg,
                     items: [
-                      DropdownMenuItem(
-                        value: null,
-                        child: Text(
-                          l10n.ordersSelect,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textMuted),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'north',
-                        child: Text(
-                          l10n.listingNorth,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'south',
-                        child: Text(
-                          l10n.listingSouth,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'east',
-                        child: Text(
-                          l10n.listingEast,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'west',
-                        child: Text(
-                          l10n.listingWest,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'north_east',
-                        child: Text(
-                          l10n.listingNorthEast,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'north_west',
-                        child: Text(
-                          l10n.listingNorthWest,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'south_east',
-                        child: Text(
-                          l10n.listingSouthEast,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'south_west',
-                        child: Text(
-                          l10n.listingSouthWest,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'facing_3_directions',
-                        child: Text(
-                          l10n.listingFacing3Directions,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'facing_all_directions',
-                        child: Text(
-                          l10n.listingFacingAllDirections,
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: context.theme.textPrimary),
-                        ),
-                      ),
+                      DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted))),
+                      DropdownMenuItem(value: 'north', child: Text(l10n.listingNorth, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'south', child: Text(l10n.listingSouth, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'east', child: Text(l10n.listingEast, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'west', child: Text(l10n.listingWest, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'north_east', child: Text(l10n.listingNorthEast, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'north_west', child: Text(l10n.listingNorthWest, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'south_east', child: Text(l10n.listingSouthEast, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'south_west', child: Text(l10n.listingSouthWest, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'facing_3_directions', child: Text(l10n.listingFacing3Directions, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
+                      DropdownMenuItem(value: 'facing_all_directions', child: Text(l10n.listingFacingAllDirections, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary))),
                     ],
                     onChanged: (v) => setState(() => _facingDirection = v),
                   ),
                 ],
               ),
             ),
+
             _sectionCard(
               title: l10n.listingLocation,
-              subtitle:
-                  '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
+              subtitle: '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -769,7 +572,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       Expanded(
                         child: _compactDropdownField(
                           value: _selectedKebele,
-                          items: _kebeles.map((option) => option.name).toList(),
+                          items: _kebeles.map((a) => a.kebele ?? '').where((n) => n.isNotEmpty).toList(),
                           label: l10n.listingKebele,
                           onChanged: _onKebeleSelected,
                           isLoading: _loadingKebeles,
@@ -780,20 +583,70 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 ],
               ),
             ),
+
             _sectionCard(
               title: l10n.ordersDescription,
               subtitle: l10n.orderDescriptionSubtitle,
               child: TextFormField(
                 controller: _descriptionCtrl,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: context.theme.textPrimary,
-                ),
+                style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                 decoration: _inputDecoration(hint: l10n.ordersDescriptionHint),
                 maxLines: 4,
                 validator: _requiredValidator,
               ),
             ),
+
             const SizedBox(height: 8),
+
+            _sectionCard(
+              title: l10n.listingPostedByAgent,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 24, height: 24,
+                        child: Checkbox(
+                          value: _postedByAgent,
+                          onChanged: (v) => setState(() {
+                            _postedByAgent = v ?? false;
+                            if (!_postedByAgent) _agentIdCtrl.clear();
+                          }),
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () => setState(() {
+                          _postedByAgent = !_postedByAgent;
+                          if (!_postedByAgent) _agentIdCtrl.clear();
+                        }),
+                        child: Text(l10n.orderPostedByAgentLabel,
+                            style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                      ),
+                    ],
+                  ),
+                  if (_postedByAgent) ...[
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _agentIdCtrl,
+                      style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                      decoration: _inputDecoration(label: l10n.agentIdLabel),
+                      validator: (v) {
+                        if (_postedByAgent && (v == null || v.trim().isEmpty)) {
+                          return l10n.agentIdEmpty;
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
             WaveButton(
               text: l10n.ordersSubmit,
               icon: Icons.add,
@@ -815,9 +668,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       child: LiquidGlass(
         borderRadius: 16,
         blur: selected ? 20 : 16,
-        variant: selected
-            ? LiquidGlassVariant.prominent
-            : LiquidGlassVariant.regular,
+        variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
         tint: selected ? AppColors.accent500 : null,
         interactive: true,
         onTap: () => setState(() => _type = value),
@@ -825,21 +676,15 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 16,
-              color: selected ? AppColors.accent500 : context.theme.textMuted,
-            ),
+            Icon(icon,
+                size: 16,
+                color: selected ? AppColors.accent500 : context.theme.textMuted),
             const SizedBox(width: 6),
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                color: selected
-                    ? AppColors.accent500
-                    : context.theme.textSecondary,
-              ),
-            ),
+            Text(label,
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  color: selected ? AppColors.accent500 : context.theme.textSecondary,
+                )),
           ],
         ),
       ),
@@ -852,9 +697,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       child: LiquidGlass(
         borderRadius: 16,
         blur: selected ? 20 : 16,
-        variant: selected
-            ? LiquidGlassVariant.prominent
-            : LiquidGlassVariant.regular,
+        variant: selected ? LiquidGlassVariant.prominent : LiquidGlassVariant.regular,
         tint: selected ? AppColors.accent500 : null,
         interactive: true,
         onTap: () => setState(() => _listingType = value),
@@ -868,15 +711,11 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
               color: selected ? AppColors.accent500 : context.theme.textMuted,
             ),
             const SizedBox(width: 6),
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                color: selected
-                    ? AppColors.accent500
-                    : context.theme.textSecondary,
-              ),
-            ),
+            Text(label,
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  color: selected ? AppColors.accent500 : context.theme.textSecondary,
+                )),
           ],
         ),
       ),
@@ -896,42 +735,16 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle:
-            AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+        labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         suffixIcon: isLoading
-            ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
+            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
             : null,
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [
-              DropdownMenuItem(
-                value: null,
-                child: Text(
-                  l10n.ordersSelect,
-                  style: AppTextStyles.bodySmall
-                      .copyWith(color: context.theme.textMuted),
-                ),
-              ),
-            ]
-          : items
-              .map(
-                (e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(
-                    e,
-                    style: AppTextStyles.bodySmall
-                        .copyWith(color: context.theme.textPrimary),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              )
-              .toList(),
+          ? [DropdownMenuItem(value: null, child: Text(l10n.ordersSelect, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)))]
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary)))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
     );
@@ -940,20 +753,14 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   InputDecoration _inputDecoration({String? label, String? hint}) {
     return InputDecoration(
       labelText: label,
-      labelStyle:
-          AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+      labelStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
       hintText: hint,
-      hintStyle:
-          AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+      hintStyle: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     );
   }
 
-  Widget _sectionCard({
-    required String title,
-    String? subtitle,
-    required Widget child,
-  }) {
+  Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
     return WaveCard(
       useLiquidGlass: true,
       isGlass: true,
@@ -962,21 +769,14 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: AppTextStyles.labelMedium.copyWith(
-              fontWeight: FontWeight.w700,
-              color: context.theme.textSecondary,
-              letterSpacing: 0.3,
-            ),
-          ),
+          Text(title, style: AppTextStyles.labelMedium.copyWith(
+            fontWeight: FontWeight.w700,
+            color: context.theme.textSecondary,
+            letterSpacing: 0.3,
+          )),
           if (subtitle != null) ...[
             const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: AppTextStyles.bodySmall
-                  .copyWith(color: context.theme.textMuted),
-            ),
+            Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
           ],
           const SizedBox(height: 10),
           child,

@@ -2,15 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import '../../data/services/kyc_service.dart';
+import '../../data/services/address_service.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
-import '../../core/network/v2/api_v2_error.dart';
-import '../../data/models/v2/kyc_state.dart';
-import '../../data/services/address_service.dart';
-import '../../data/services/v2/kyc_service.dart';
 import 'theme_provider.dart';
-import 'v2_providers.dart';
 
 final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
   try {
@@ -23,41 +20,37 @@ final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
   return {'subscription_enabled': true};
 });
 
-/// KYC Provider backed by V2
-final kycServiceProvider = Provider<KycServiceV2>((ref) {
-  return ref.watch(kycV2ServiceProvider);
-});
-
+/// KYC Provider
+final kycServiceProvider = Provider<KycService>((ref) => KycService());
 final kycStatusProvider =
     StateNotifierProvider<KycStatusNotifier, KycStatusState>((ref) {
-  return KycStatusNotifier(ref.watch(kycV2ServiceProvider));
+  return KycStatusNotifier(ref.watch(kycServiceProvider));
 });
 
 class KycStatusNotifier extends StateNotifier<KycStatusState> {
-  final KycServiceV2 _kycService;
+  final KycService _kycService;
   KycStatusNotifier(this._kycService) : super(const KycStatusState.initial());
 
   Future<void> loadKycStatus() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    // Only set loading if not already loading to avoid flicker
+    if (state.isLoading && state.status == 'none') {
+      // Already in initial loading state
+    } else {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+    }
 
-    try {
-      final overview = await _kycService.fetchStatus();
+    final response = await _kycService.getKycStatus();
+    if (response.success) {
       state = KycStatusState.loaded(
-        status: overview.status.wireValue,
-        isVerified: overview.verified,
-        rejectionReason: overview.verification?.rejectionReason,
-        submittedAt: overview.verification?.submittedAt?.toIso8601String(),
-        overview: overview,
+        status: response.status,
+        isVerified: response.isVerified,
+        rejectionReason: response.rejectionReason,
       );
-    } on ApiV2Exception catch (error) {
+    } else {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: error.message,
-      );
-    } catch (_) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: 'Could not load KYC status',
+        errorMessage: response.errorMessage ?? response.status,
+        status: response.status,
       );
     }
   }
@@ -70,54 +63,41 @@ class KycStatusState {
   final String? rejectionReason;
   final String? submittedAt;
   final String? errorMessage;
-  final KycOverview? overview;
-
-  const KycStatusState({
-    required this.isLoading,
-    this.status = 'none',
-    this.isVerified = false,
-    this.rejectionReason,
-    this.submittedAt,
-    this.errorMessage,
-    this.overview,
-  });
-
+  const KycStatusState(
+      {required this.isLoading,
+      this.status = 'none',
+      this.isVerified = false,
+      this.rejectionReason,
+      this.submittedAt,
+      this.errorMessage});
   const KycStatusState.initial()
       : isLoading = false,
         status = 'none',
         isVerified = false,
         rejectionReason = null,
         submittedAt = null,
-        errorMessage = null,
-        overview = null;
-
-  const KycStatusState.loaded({
-    this.status = 'none',
-    this.isVerified = false,
-    this.rejectionReason,
-    this.submittedAt,
-    this.overview,
-  })  : isLoading = false,
         errorMessage = null;
-
-  KycStatusState copyWith({
-    bool? isLoading,
-    String? status,
-    bool? isVerified,
-    String? rejectionReason,
-    String? submittedAt,
-    String? errorMessage,
-    KycOverview? overview,
-  }) {
+  const KycStatusState.loaded(
+      {this.status = 'none',
+      this.isVerified = false,
+      this.rejectionReason,
+      this.submittedAt})
+      : isLoading = false,
+        errorMessage = null;
+  KycStatusState copyWith(
+      {bool? isLoading,
+      String? status,
+      bool? isVerified,
+      String? rejectionReason,
+      String? submittedAt,
+      String? errorMessage}) {
     return KycStatusState(
-      isLoading: isLoading ?? this.isLoading,
-      status: status ?? this.status,
-      isVerified: isVerified ?? this.isVerified,
-      rejectionReason: rejectionReason ?? this.rejectionReason,
-      submittedAt: submittedAt ?? this.submittedAt,
-      errorMessage: errorMessage,
-      overview: overview ?? this.overview,
-    );
+        isLoading: isLoading ?? this.isLoading,
+        status: status ?? this.status,
+        isVerified: isVerified ?? this.isVerified,
+        rejectionReason: rejectionReason ?? this.rejectionReason,
+        submittedAt: submittedAt ?? this.submittedAt,
+        errorMessage: errorMessage);
   }
 
   bool get isPending => status == 'pending';
@@ -210,17 +190,16 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
 
     try {
       final service = _ref.read(addressServiceProvider);
-
+      
       // 1. Fetch Regions
       final regResp = await service.getRegions(locale: 'en'); // Get EN keys
-      final locRegResp =
-          await service.getRegions(locale: locale); // Get Loc keys
-
+      final locRegResp = await service.getRegions(locale: locale); // Get Loc keys
+      
       if (regResp.success && locRegResp.success) {
         final cache = {..._ref.read(addressCacheProvider)};
         final enNames = regResp.regions.map((r) => r.region).toList();
         final locNames = locRegResp.regions.map((r) => r.region).toList();
-
+        
         for (int i = 0; i < enNames.length && i < locNames.length; i++) {
           if (enNames[i] != null && locNames[i] != null) {
             cache[enNames[i]!] = locNames[i]!;
@@ -229,7 +208,7 @@ class LocaleNotifier extends StateNotifier<LocaleState> {
 
         // 2. Fetch common Zones (optional but helpful for speed)
         // For brevity, we focus on regions first as they are most visible
-
+        
         _ref.read(addressCacheProvider.notifier).state = cache;
       }
     } catch (_) {}

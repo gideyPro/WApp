@@ -6,11 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/car_providers.dart';
+import '../../providers/job_providers.dart';
 import '../home/home_screen.dart';
 import '../orders/orders_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../account/account_screen.dart';
-import '../../providers/v2_providers.dart';
 import '../../../l10n/app_localizations.dart';
 
 class MainNavigationShell extends ConsumerStatefulWidget {
@@ -61,9 +62,11 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
   Future<void> _showCreateListingSheet() async {
     final created = await showCreateListingSheet(context);
     if (created == true && mounted) {
-      ref.read(homeV2Provider.notifier).loadHome();
-      ref.invalidate(myListingsV2Provider);
-      ref.invalidate(subscriptionOverviewProvider);
+      ref.read(listingsProvider.notifier).loadListings();
+      ref.read(carListingsProvider.notifier).loadListings();
+      ref.read(homeCarListingsProvider.notifier).loadListings();
+      ref.read(jobListingsProvider.notifier).loadListings();
+      ref.read(homeJobListingsProvider.notifier).loadListings();
       ref.read(subscriptionProvider.notifier).refresh();
     }
   }

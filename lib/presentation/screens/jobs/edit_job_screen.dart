@@ -5,17 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/network/v2/api_v2_error.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/utils/ethiopian_date_helper.dart';
 import '../../widgets/common/app_date_picker.dart';
-import '../../../data/models/image.dart';
 import '../../../data/models/listing.dart';
 import '../../../data/models/job_form_data.dart';
 import '../../../data/models/job_requirement_item.dart';
-import '../../../data/models/v2/listing_detail.dart';
-import '../../../data/models/v2/owner_listing.dart';
 import '../../../data/job_data.dart';
 import '../../../data/services/address_service.dart';
 import '../../../data/services/listing_media_manager.dart';
@@ -24,12 +20,12 @@ import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_card.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
+import '../../providers/job_providers.dart';
 import '../../providers/app_providers.dart';
-import '../../providers/v2_providers.dart';
 import '../listing/widgets/submission_overlay.dart';
 
 class EditJobScreen extends ConsumerStatefulWidget {
-  final dynamic listing;
+  final Listing listing;
   const EditJobScreen({super.key, required this.listing});
 
   @override
@@ -64,92 +60,41 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
   late TextEditingController _specificLocationController;
   final _educationCustomController = TextEditingController();
 
-  bool get _canModifyMedia {
-    final l = widget.listing;
-    if (l is OwnerListing) return l.canEdit;
-    if (l is ListingDetail) return l.viewer.isOwner;
-    if (l is Listing) return l.status == ListingStatus.rejected;
-    return true;
-  }
+  bool get _canModifyMedia => widget.listing.status == ListingStatus.rejected;
 
   @override
   void initState() {
     super.initState();
     final l = widget.listing;
-    if (l is ListingDetail) {
-      final images = l.images
-          .where((img) => img.url != null)
-          .map((img) => ImageModel(
-                id: img.id ?? 0,
-                imagePath: img.url!,
-              ))
-          .toList();
-      _formData = JobFormData(
-        title: l.title,
-        companyName: l.details.companyName,
-        jobType: l.details.jobType ?? 'full_time',
-        jobCategory: l.details.jobCategory ?? '',
-        positionsCount: l.details.positionsCount ?? 1,
-        salaryType: l.details.salaryType ?? 'per_agreement',
-        salaryMin: l.details.salaryMin,
-        salaryMax: l.details.salaryMax,
-        salaryCurrency: l.details.salaryCurrency ?? 'ETB',
-        reqEducation: l.details.education,
-        description: l.description,
-        deadline: l.details.deadline,
-        specificLocation: l.attributes.specificLocation,
-        images: images,
-        termsAccepted: true,
-      );
-      _postedAsCompany =
-          l.details.companyName != null && l.details.companyName!.isNotEmpty;
-    } else if (l is OwnerListing) {
-      _formData = JobFormData(
-        title: l.title,
-        jobType: 'full_time',
-        termsAccepted: true,
-      );
-      _postedAsCompany = false;
-    } else if (l is Listing) {
-      _formData = JobFormData(
-        title: l.jobTitle ?? l.resolvedJobTitle,
-        companyName: l.jobCompanyName,
-        jobType: l.jobType ?? 'full_time',
-        jobCategory: l.jobCategory ?? '',
-        positionsCount: l.jobPositionsCount ?? 1,
-        salaryType: l.jobSalaryType ?? 'per_agreement',
-        salaryMin: l.jobSalaryMin,
-        salaryMax: l.jobSalaryMax,
-        salaryCurrency: l.jobSalaryCurrency ?? 'ETB',
-        reqEducation: l.jobReqEducation,
-        reqEducations: List<EducationItem>.from(l.jobReqEducations ?? []),
-        reqExperience: l.jobReqExperience,
-        reqExperiences: List<ExperienceItem>.from(l.jobReqExperiences ?? []),
-        reqGender: l.jobReqGender ?? 'any',
-        description: l.jobDescriptionBody.isNotEmpty
-            ? l.jobDescriptionBody
-            : l.description,
-        deadline: l.jobDeadline,
-        specificLocation: l.specificLocation,
-        addressId: l.addressId,
-        termsAccepted: true,
-      );
-      _postedAsCompany =
-          l.jobCompanyName != null && l.jobCompanyName!.isNotEmpty;
-    } else {
-      _formData = JobFormData(termsAccepted: true);
-    }
+    _formData = JobFormData(
+      title: l.jobTitle ?? l.resolvedJobTitle,
+      companyName: l.jobCompanyName,
+      jobType: l.jobType ?? 'full_time',
+      jobCategory: l.jobCategory ?? '',
+      positionsCount: l.jobPositionsCount ?? 1,
+      salaryType: l.jobSalaryType ?? 'per_agreement',
+      salaryMin: l.jobSalaryMin,
+      salaryMax: l.jobSalaryMax,
+      salaryCurrency: l.jobSalaryCurrency ?? 'ETB',
+      reqEducation: l.jobReqEducation,
+      reqEducations: List<EducationItem>.from(l.jobReqEducations ?? []),
+      reqExperience: l.jobReqExperience,
+      reqExperiences: List<ExperienceItem>.from(l.jobReqExperiences ?? []),
+      reqGender: l.jobReqGender ?? 'any',
+      description: l.jobDescriptionBody.isNotEmpty ? l.jobDescriptionBody : l.description,
+      deadline: l.jobDeadline,
+      specificLocation: l.specificLocation,
+      addressId: l.addressId,
+      termsAccepted: true,
+    );
+    _postedAsCompany = l.jobCompanyName != null && l.jobCompanyName!.isNotEmpty;
 
     // A stored custom education value maps to the "Other" option + its text.
     final storedEdu = _formData.reqEducation;
-    if (storedEdu != null &&
-        storedEdu.isNotEmpty &&
-        storedEdu != 'other' &&
-        !educationLevels.contains(storedEdu)) {
+    if (storedEdu != null && storedEdu.isNotEmpty && storedEdu != 'other' && !educationLevels.contains(storedEdu)) {
       _educationCustomController.text = storedEdu;
       _formData = _formData.copyWith(reqEducation: 'other');
-      if (_formData.reqEducations.isNotEmpty &&
-          _formData.reqEducations.first.educationLevel == 'other') {
+      if (_formData.reqEducations.isNotEmpty && _formData.reqEducations.first.educationLevel == 'other') {
         final items = List<EducationItem>.from(_formData.reqEducations);
         items[0] = items[0].copyWith(customText: storedEdu);
         _formData = _formData.copyWith(reqEducations: items);
@@ -157,35 +102,21 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     }
 
     _titleController = TextEditingController(text: _formData.title)
-      ..addListener(
-          () => _formData = _formData.copyWith(title: _titleController.text));
+      ..addListener(() => _formData = _formData.copyWith(title: _titleController.text));
     _companyController = TextEditingController(text: _formData.companyName)
-      ..addListener(() =>
-          _formData = _formData.copyWith(companyName: _companyController.text));
-    _positionsController =
-        TextEditingController(text: _formData.positionsCount.toString())
-          ..addListener(() => _formData = _formData.copyWith(
-              positionsCount: int.tryParse(_positionsController.text) ?? 1));
+      ..addListener(() => _formData = _formData.copyWith(companyName: _companyController.text));
+    _positionsController = TextEditingController(text: _formData.positionsCount.toString())
+      ..addListener(() => _formData = _formData.copyWith(positionsCount: int.tryParse(_positionsController.text) ?? 1));
     _experienceController = TextEditingController(text: _formData.reqExperience)
-      ..addListener(() => _formData =
-          _formData.copyWith(reqExperience: _experienceController.text));
-    _salaryMinController = TextEditingController(
-        text: _formData.salaryMin?.toString() ?? '')
-      ..addListener(() => _formData = _formData.copyWith(
-          salaryMin:
-              double.tryParse(_salaryMinController.text.replaceAll(',', ''))));
-    _salaryMaxController = TextEditingController(
-        text: _formData.salaryMax?.toString() ?? '')
-      ..addListener(() => _formData = _formData.copyWith(
-          salaryMax:
-              double.tryParse(_salaryMaxController.text.replaceAll(',', ''))));
+      ..addListener(() => _formData = _formData.copyWith(reqExperience: _experienceController.text));
+    _salaryMinController = TextEditingController(text: _formData.salaryMin?.toString() ?? '')
+      ..addListener(() => _formData = _formData.copyWith(salaryMin: double.tryParse(_salaryMinController.text.replaceAll(',', ''))));
+    _salaryMaxController = TextEditingController(text: _formData.salaryMax?.toString() ?? '')
+      ..addListener(() => _formData = _formData.copyWith(salaryMax: double.tryParse(_salaryMaxController.text.replaceAll(',', ''))));
     _descriptionController = TextEditingController(text: _formData.description)
-      ..addListener(() => _formData =
-          _formData.copyWith(description: _descriptionController.text));
-    _specificLocationController =
-        TextEditingController(text: _formData.specificLocation)
-          ..addListener(() => _formData = _formData.copyWith(
-              specificLocation: _specificLocationController.text));
+      ..addListener(() => _formData = _formData.copyWith(description: _descriptionController.text));
+    _specificLocationController = TextEditingController(text: _formData.specificLocation)
+      ..addListener(() => _formData = _formData.copyWith(specificLocation: _specificLocationController.text));
 
     _selectedRegion = l.address?.region;
     _selectedZone = l.address?.zone;
@@ -217,8 +148,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
 
   void _goToStep(int step) {
     setState(() => _currentStep = step);
-    _pageController.animateToPage(step,
-        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    _pageController.animateToPage(step, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
   void _nextStep() {
@@ -239,15 +169,9 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     final errors = <String>[];
     switch (_currentStep) {
       case 0:
-        if (_titleController.text.trim().isEmpty) {
-          errors.add('${l10n.jobJobTitle} ${l10n.commonIsRequired}');
-        }
-        if (_formData.jobCategory.isEmpty) {
-          errors.add('${l10n.jobJobCategory} ${l10n.commonIsRequired}');
-        }
-        if (_formData.jobType.isEmpty) {
-          errors.add('${l10n.jobJobType} ${l10n.commonIsRequired}');
-        }
+        if (_titleController.text.trim().isEmpty) errors.add('${l10n.jobJobTitle} ${l10n.commonIsRequired}');
+        if (_formData.jobCategory.isEmpty) errors.add('${l10n.jobJobCategory} ${l10n.commonIsRequired}');
+        if (_formData.jobType.isEmpty) errors.add('${l10n.jobJobType} ${l10n.commonIsRequired}');
         if (_postedAsCompany && _companyController.text.trim().isEmpty) {
           errors.add('${l10n.jobCompanyName} ${l10n.commonIsRequired}');
         }
@@ -260,18 +184,11 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
         }
         break;
       case 1:
-        if (_formData.salaryType == 'fixed' && _formData.salaryMin == null) {
-          errors.add('${l10n.jobSalaryMin} ${l10n.commonIsRequired}');
-        }
-        if (_formData.addressId == null) {
-          errors.add('${l10n.jobLocation} ${l10n.commonIsRequired}');
-        }
+        if (_formData.salaryType == 'fixed' && _formData.salaryMin == null) errors.add('${l10n.jobSalaryMin} ${l10n.commonIsRequired}');
+        if (_formData.addressId == null) errors.add('${l10n.jobLocation} ${l10n.commonIsRequired}');
         break;
       case 2:
-        if (_formData.description == null || _formData.description!.isEmpty) {
-          errors
-              .add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
-        }
+        if (_formData.description == null || _formData.description!.isEmpty) errors.add('${l10n.listingDescriptionLabel} ${l10n.commonIsRequired}');
         break;
     }
     return errors;
@@ -293,10 +210,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     try {
       final response = await _addressService.getRegions(locale: locale);
       if (mounted && response.success) {
-        setState(() => _regions = response.regions
-            .map((r) => r.region ?? '')
-            .where((s) => s.isNotEmpty)
-            .toList());
+        setState(() => _regions = response.regions.map((r) => r.region ?? '').where((s) => s.isNotEmpty).toList());
       }
     } catch (_) {}
   }
@@ -305,14 +219,8 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     if (_selectedRegion == null) return;
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getZones(
-          region: _selectedRegion!, locale: locale);
-      if (mounted && response.success) {
-        setState(() => _zones = response.zones
-            .map((z) => z.zone ?? '')
-            .where((s) => s.isNotEmpty)
-            .toList());
-      }
+      final response = await _addressService.getZones(region: _selectedRegion!, locale: locale);
+      if (mounted && response.success) setState(() => _zones = response.zones.map((z) => z.zone ?? '').where((s) => s.isNotEmpty).toList());
     } catch (_) {}
   }
 
@@ -320,37 +228,19 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     if (_selectedRegion == null || _selectedZone == null) return;
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getWoredas(
-          region: _selectedRegion!, zone: _selectedZone!, locale: locale);
-      if (mounted && response.success) {
-        setState(() => _woredas = response.woredas
-            .map((w) => w.woreda ?? '')
-            .where((s) => s.isNotEmpty)
-            .toList());
-      }
+      final response = await _addressService.getWoredas(region: _selectedRegion!, zone: _selectedZone!, locale: locale);
+      if (mounted && response.success) setState(() => _woredas = response.woredas.map((w) => w.woreda ?? '').where((s) => s.isNotEmpty).toList());
     } catch (_) {}
   }
 
   Future<void> _loadKebeles() async {
-    if (_selectedRegion == null ||
-        _selectedZone == null ||
-        _selectedWoreda == null) {
-      return;
-    }
+    if (_selectedRegion == null || _selectedZone == null || _selectedWoreda == null) return;
     final locale = Localizations.localeOf(context).languageCode;
     try {
-      final response = await _addressService.getKebeles(
-          region: _selectedRegion!,
-          zone: _selectedZone!,
-          woreda: _selectedWoreda!,
-          locale: locale);
+      final response = await _addressService.getKebeles(region: _selectedRegion!, zone: _selectedZone!, woreda: _selectedWoreda!, locale: locale);
       if (mounted && response.success) {
         _kebeleIds.clear();
-        final kebeles = response.kebeles
-            .map((k) => k.kebele)
-            .where((s) => s != null && s.isNotEmpty)
-            .cast<String>()
-            .toList();
+        final kebeles = response.kebeles.map((k) => k.kebele).where((s) => s != null && s.isNotEmpty).cast<String>().toList();
         for (final k in response.kebeles) {
           if (k.kebele != null && k.kebele!.isNotEmpty) {
             _kebeleIds[k.kebele!] = k.id;
@@ -364,13 +254,8 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
   Future<void> _onRegionSelected(String? region) async {
     setState(() {
       _selectedRegion = region;
-      _selectedZone = null;
-      _selectedWoreda = null;
-      _selectedKebele = null;
-      _addressId = null;
-      _zones = [];
-      _woredas = [];
-      _kebeles = [];
+      _selectedZone = null; _selectedWoreda = null; _selectedKebele = null; _addressId = null;
+      _zones = []; _woredas = []; _kebeles = [];
       if (region != null) _loadingZones = true;
     });
     if (region != null) await _loadZones();
@@ -380,12 +265,8 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
 
   Future<void> _onZoneSelected(String? zone) async {
     setState(() {
-      _selectedZone = zone;
-      _selectedWoreda = null;
-      _selectedKebele = null;
-      _addressId = null;
-      _woredas = [];
-      _kebeles = [];
+      _selectedZone = zone; _selectedWoreda = null; _selectedKebele = null; _addressId = null;
+      _woredas = []; _kebeles = [];
       if (zone != null) _loadingWoredas = true;
     });
     if (zone != null) await _loadWoredas();
@@ -395,9 +276,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
 
   Future<void> _onWoredaSelected(String? woreda) async {
     setState(() {
-      _selectedWoreda = woreda;
-      _selectedKebele = null;
-      _addressId = null;
+      _selectedWoreda = woreda; _selectedKebele = null; _addressId = null;
       _kebeles = [];
       if (woreda != null) _loadingKebeles = true;
     });
@@ -428,8 +307,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
   }
 
   Future<void> _pickImages() async {
-    final files =
-        await ImagePicker().pickMultiImage(imageQuality: 85, maxWidth: 1920);
+    final files = await ImagePicker().pickMultiImage(imageQuality: 85, maxWidth: 1920);
     if (files.isEmpty) return;
     final valid = <XFile>[];
     String? oversized;
@@ -448,8 +326,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     }
     if (valid.isEmpty) return;
     final persisted = await ListingMediaManager.persistFiles(valid);
-    setState(() => _formData =
-        _formData.copyWith(images: [..._formData.images, ...persisted]));
+    setState(() => _formData = _formData.copyWith(images: [..._formData.images, ...persisted]));
   }
 
   Future<void> _pickDeadline() async {
@@ -521,9 +398,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                     counterText: '',
                   ),
                   onChanged: (_) {
-                    if (customError != null) {
-                      setDialogState(() => customError = null);
-                    }
+                    if (customError != null) setDialogState(() => customError = null);
                   },
                 ),
               ],
@@ -537,9 +412,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                   errorText: fieldError,
                 ),
                 onChanged: (_) {
-                  if (fieldError != null) {
-                    setDialogState(() => fieldError = null);
-                  }
+                  if (fieldError != null) setDialogState(() => fieldError = null);
                 },
               ),
             ],
@@ -554,13 +427,11 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                 final field = fieldController.text.trim();
                 final custom = customController.text.trim();
                 if (selectedLevel == 'other' && custom.isEmpty) {
-                  setDialogState(() => customError =
-                      '${l10n.jobEducationLevel} ${l10n.commonIsRequired}');
+                  setDialogState(() => customError = '${l10n.jobEducationLevel} ${l10n.commonIsRequired}');
                   return;
                 }
                 if (!noFieldRequired.contains(selectedLevel) && field.isEmpty) {
-                  setDialogState(() => fieldError =
-                      '${l10n.jobFieldOfStudy} ${l10n.commonIsRequired}');
+                  setDialogState(() => fieldError = '${l10n.jobFieldOfStudy} ${l10n.commonIsRequired}');
                   return;
                 }
                 final newItem = EducationItem(
@@ -568,9 +439,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                   fieldOfStudy: field.isNotEmpty ? field : null,
                   customText: selectedLevel == 'other' ? custom : null,
                 );
-                final updated =
-                    List<EducationItem>.from(_formData.reqEducations)
-                      ..add(newItem);
+                final updated = List<EducationItem>.from(_formData.reqEducations)..add(newItem);
                 setState(() {
                   _formData = _formData.copyWith(
                     reqEducations: updated,
@@ -609,24 +478,19 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                   errorText: titleError,
                 ),
                 onChanged: (_) {
-                  if (titleError != null) {
-                    setDialogState(() => titleError = null);
-                  }
+                  if (titleError != null) setDialogState(() => titleError = null);
                 },
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: yearsController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
                   labelText: '${l10n.jobYearsOfExperience} *',
                   errorText: yearsError,
                 ),
                 onChanged: (_) {
-                  if (yearsError != null) {
-                    setDialogState(() => yearsError = null);
-                  }
+                  if (yearsError != null) setDialogState(() => yearsError = null);
                 },
               ),
             ],
@@ -661,15 +525,11 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                   jobTitle: title,
                   years: yrs,
                 );
-                final updated =
-                    List<ExperienceItem>.from(_formData.reqExperiences)
-                      ..add(newItem);
+                final updated = List<ExperienceItem>.from(_formData.reqExperiences)..add(newItem);
                 setState(() {
                   _formData = _formData.copyWith(
                     reqExperiences: updated,
-                    reqExperience: updated
-                        .map((e) => e.displayRequirementLabel())
-                        .join(', '),
+                    reqExperience: updated.map((e) => e.displayRequirementLabel()).join(', '),
                   );
                 });
                 Navigator.pop(ctx);
@@ -703,72 +563,30 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     );
 
     try {
-      final l = widget.listing;
-      final int id = l is ListingDetail
-          ? l.id
-          : l is OwnerListing
-              ? l.id
-              : l is Listing
-                  ? l.id
-                  : 0;
-
-      final firstItem = _formData.reqEducations.isNotEmpty
-          ? _formData.reqEducations.first
-          : null;
-      final effectiveEdu =
-          firstItem?.educationLevel ?? (_formData.reqEducation ?? 'none');
-
-      final payload = <String, dynamic>{
-        if (_formData.title != null && _formData.title!.isNotEmpty)
-          'title': _formData.title,
-        if (_formData.companyName != null && _formData.companyName!.isNotEmpty)
-          'company_name': _formData.companyName,
-        'job_type': _formData.jobType,
-        if (_formData.jobCategory.isNotEmpty)
-          'job_category': _formData.jobCategory,
-        'positions_count': _formData.positionsCount,
-        'salary_type': _formData.salaryType,
-        if (_formData.salaryMin != null) 'salary_min': _formData.salaryMin,
-        if (_formData.salaryMax != null) 'salary_max': _formData.salaryMax,
-        'salary_currency': _formData.salaryCurrency,
-        if (effectiveEdu != 'none') 'req_education': effectiveEdu,
-        if (_formData.reqExperience != null)
-          'req_experience': _formData.reqExperience,
-        'req_gender': _formData.reqGender,
-        if (_formData.description != null && _formData.description!.isNotEmpty)
-          'description': _formData.description,
-        if (_formData.deadline != null)
-          'deadline': _formData.deadline!.toIso8601String().split('T').first,
-        if (_formData.addressId != null) 'address_id': _formData.addressId,
-        if (_formData.specificLocation != null &&
-            _formData.specificLocation!.isNotEmpty)
-          'specific_location': _formData.specificLocation,
-      };
-
-      await ref.read(ownerListingServiceProvider).updateJob(id, payload);
-
-      final imageFiles = _formData.images
-          .where((img) => img is File || img is XFile)
-          .map((img) => img is File ? img : File((img as XFile).path))
-          .toList();
-      if (imageFiles.isNotEmpty) {
-        await ref
-            .read(listingMediaV2ServiceProvider)
-            .uploadImages(id, imageFiles);
-      }
-
-      ref.invalidate(catalogItemDetailV2Provider);
-      ref.invalidate(myListingsV2Provider);
-      ref.invalidate(homeV2Provider);
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.success(
-          message: l10n.submissionUpdatedMessage, isEdit: true);
-    } on ApiV2Exception catch (e) {
-      if (!mounted) return;
-      _submissionNotifier!.value = SubmissionState.error(
-        message: e.message,
-        onRetry: () => _submit(isRetry: true),
+      final firstItem = _formData.reqEducations.isNotEmpty ? _formData.reqEducations.first : null;
+      final effectiveEdu = firstItem?.educationLevel ?? (_formData.reqEducation ?? 'none');
+      final itemCustom = (firstItem?.customText ?? '').trim();
+      final customEdu = itemCustom.isNotEmpty ? itemCustom : _educationCustomController.text.trim();
+      final formData = _formData.copyWith(
+        reqEducation: effectiveEdu,
+        reqEducationCustom: effectiveEdu == 'other' && customEdu.isNotEmpty ? customEdu : null,
       );
+      final response = await ref.read(jobServiceProvider).updateListing(
+        id: widget.listing.id,
+        formData: formData,
+        onProgress: (p) {},
+      );
+
+      if (!mounted) return;
+      if (response.success) {
+        ref.read(jobDetailProvider.notifier).refreshListing(widget.listing.id);
+        _submissionNotifier!.value = SubmissionState.success(message: l10n.submissionUpdatedMessage, isEdit: true);
+      } else {
+        _submissionNotifier!.value = SubmissionState.error(
+          message: response.message,
+          onRetry: () => _submit(isRetry: true),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       _submissionNotifier!.value = SubmissionState.error(
@@ -809,18 +627,13 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
       backgroundColor: context.scaffoldBg,
       appBar: WaveAppBar(
         leading: _currentStep > 0
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back_rounded),
-                onPressed: _prevStep)
+            ? IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: _prevStep)
             : null,
         title: Text(l10n.jobEditTitle),
         actions: [
           TextButton(
-            onPressed: _isSubmitting
-                ? null
-                : (_currentStep == 2 ? () => _submit() : _nextStep),
-            child:
-                Text(_currentStep == 2 ? l10n.updateListing : l10n.listingNext),
+            onPressed: _isSubmitting ? null : (_currentStep == 2 ? () => _submit() : _nextStep),
+            child: Text(_currentStep == 2 ? l10n.updateListing : l10n.listingNext),
           ),
         ],
       ),
@@ -841,18 +654,14 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               ],
             ),
           ),
-          if (_stepErrors[_currentStep] != null &&
-              _stepErrors[_currentStep]!.isNotEmpty)
+          if (_stepErrors[_currentStep] != null && _stepErrors[_currentStep]!.isNotEmpty)
             Container(
               padding: const EdgeInsets.all(8),
-              color: AppColors.error
-                  .withValues(alpha: context.isDarkMode ? 0.15 : 0.1),
+              color: AppColors.error.withValues(alpha: context.isDarkMode ? 0.15 : 0.1),
               child: Text(
                 _stepErrors[_currentStep]!.join('\n'),
                 style: AppTextStyles.bodySmall.copyWith(
-                  color: context.isDarkMode
-                      ? AppColors.errorLight
-                      : AppColors.error,
+                  color: context.isDarkMode ? AppColors.errorLight : AppColors.error,
                 ),
               ),
             )
@@ -873,42 +682,28 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            initialValue:
-                _formData.jobCategory.isEmpty ? null : _formData.jobCategory,
+            initialValue: _formData.jobCategory.isEmpty ? null : _formData.jobCategory,
             decoration: InputDecoration(labelText: '${l10n.jobJobCategory} *'),
-            items: jobCategories
-                .map((c) => DropdownMenuItem(
-                    value: c, child: Text(jobCategoryLabel(c, l10n))))
-                .toList(),
-            onChanged: (v) => setState(
-                () => _formData = _formData.copyWith(jobCategory: v ?? '')),
+            items: jobCategories.map((c) => DropdownMenuItem(value: c, child: Text(jobCategoryLabel(c, l10n)))).toList(),
+            onChanged: (v) => setState(() => _formData = _formData.copyWith(jobCategory: v ?? '')),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _formData.jobType.isEmpty ? null : _formData.jobType,
             decoration: InputDecoration(labelText: '${l10n.jobJobType} *'),
-            items: jobTypes
-                .map((c) => DropdownMenuItem(
-                    value: c, child: Text(jobTypeLabel(c, l10n))))
-                .toList(),
-            onChanged: (v) => setState(
-                () => _formData = _formData.copyWith(jobType: v ?? '')),
+            items: jobTypes.map((c) => DropdownMenuItem(value: c, child: Text(jobTypeLabel(c, l10n)))).toList(),
+            onChanged: (v) => setState(() => _formData = _formData.copyWith(jobType: v ?? '')),
           ),
           const SizedBox(height: 8),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             secondary: Icon(
-              _postedAsCompany
-                  ? Icons.business_rounded
-                  : Icons.person_outline_rounded,
-              color: _postedAsCompany
-                  ? AppColors.accent600
-                  : context.theme.iconSecondary,
+              _postedAsCompany ? Icons.business_rounded : Icons.person_outline_rounded,
+              color: _postedAsCompany ? AppColors.accent600 : context.theme.iconSecondary,
             ),
             title: Text(
               l10n.jobPostingAsCompany,
-              style: AppTextStyles.labelLarge
-                  .copyWith(color: context.theme.textPrimary),
+              style: AppTextStyles.labelLarge.copyWith(color: context.theme.textPrimary),
             ),
             value: _postedAsCompany,
             activeThumbColor: AppColors.accent600,
@@ -917,8 +712,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           if (_postedAsCompany) ...[
             TextFormField(
               controller: _companyController,
-              decoration:
-                  InputDecoration(labelText: '${l10n.jobCompanyName} *'),
+              decoration: InputDecoration(labelText: '${l10n.jobCompanyName} *'),
             ),
             const SizedBox(height: 16),
           ],
@@ -931,24 +725,18 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           DropdownButtonFormField<String>(
             initialValue: _formData.reqGender,
             decoration: InputDecoration(labelText: l10n.jobRequiredGender),
-            items: genderOptions
-                .map((c) => DropdownMenuItem(
-                    value: c, child: Text(genderOptionLabel(c, l10n))))
-                .toList(),
-            onChanged: (v) => setState(
-                () => _formData = _formData.copyWith(reqGender: v ?? 'any')),
+            items: genderOptions.map((c) => DropdownMenuItem(value: c, child: Text(genderOptionLabel(c, l10n)))).toList(),
+            onChanged: (v) => setState(() => _formData = _formData.copyWith(reqGender: v ?? 'any')),
           ),
           const SizedBox(height: 16),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            leading:
-                const Icon(Icons.event_outlined, color: AppColors.accent600),
+            leading: const Icon(Icons.event_outlined, color: AppColors.accent600),
             title: Text(
               _formData.deadline != null
                   ? '${l10n.jobDeadline}: ${EthiopianDateHelper.formatDual(_formData.deadline!, Localizations.localeOf(context).languageCode)}'
                   : '${l10n.jobDeadline} *',
-              style: AppTextStyles.bodyMedium
-                  .copyWith(color: context.theme.textPrimary),
+              style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary),
             ),
             trailing: _formData.deadline != null
                 ? IconButton(
@@ -963,9 +751,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.jobEducationLevel,
-                  style: AppTextStyles.labelLarge
-                      .copyWith(color: context.theme.textPrimary)),
+              Text(l10n.jobEducationLevel, style: AppTextStyles.labelLarge.copyWith(color: context.theme.textPrimary)),
               TextButton.icon(
                 onPressed: _showAddEducationDialog,
                 icon: const Icon(Icons.add, size: 18),
@@ -978,8 +764,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Text(
                 l10n.jobNoEducationAdded,
-                style: AppTextStyles.caption
-                    .copyWith(color: context.theme.textMuted),
+                style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
               ),
             )
           else
@@ -990,22 +775,16 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                 margin: const EdgeInsets.only(bottom: 8),
                 child: ListTile(
                   dense: true,
-                  leading: const Icon(Icons.school,
-                      size: 20, color: AppColors.accent600),
+                  leading: const Icon(Icons.school, size: 20, color: AppColors.accent600),
                   title: Text(edu.displayLabel(l10n)),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline,
-                        size: 20, color: AppColors.error),
+                    icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
                     onPressed: () {
-                      final updated =
-                          List<EducationItem>.from(_formData.reqEducations)
-                            ..removeAt(idx);
+                      final updated = List<EducationItem>.from(_formData.reqEducations)..removeAt(idx);
                       setState(() {
                         _formData = _formData.copyWith(
                           reqEducations: updated,
-                          reqEducation: updated.isNotEmpty
-                              ? updated.first.educationLevel
-                              : null,
+                          reqEducation: updated.isNotEmpty ? updated.first.educationLevel : null,
                         );
                       });
                     },
@@ -1018,9 +797,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.seekerExperience,
-                  style: AppTextStyles.labelLarge
-                      .copyWith(color: context.theme.textPrimary)),
+              Text(l10n.seekerExperience, style: AppTextStyles.labelLarge.copyWith(color: context.theme.textPrimary)),
               TextButton.icon(
                 onPressed: _showAddExperienceDialog,
                 icon: const Icon(Icons.add, size: 18),
@@ -1033,8 +810,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Text(
                 l10n.jobNoExperienceAdded,
-                style: AppTextStyles.caption
-                    .copyWith(color: context.theme.textMuted),
+                style: AppTextStyles.caption.copyWith(color: context.theme.textMuted),
               ),
             )
           else
@@ -1045,24 +821,16 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
                 margin: const EdgeInsets.only(bottom: 8),
                 child: ListTile(
                   dense: true,
-                  leading: const Icon(Icons.work,
-                      size: 20, color: AppColors.accent600),
+                  leading: const Icon(Icons.work, size: 20, color: AppColors.accent600),
                   title: Text(exp.displayRequirementLabel()),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline,
-                        size: 20, color: AppColors.error),
+                    icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
                     onPressed: () {
-                      final updated =
-                          List<ExperienceItem>.from(_formData.reqExperiences)
-                            ..removeAt(idx);
+                      final updated = List<ExperienceItem>.from(_formData.reqExperiences)..removeAt(idx);
                       setState(() {
                         _formData = _formData.copyWith(
                           reqExperiences: updated,
-                          reqExperience: updated.isNotEmpty
-                              ? updated
-                                  .map((e) => e.displayRequirementLabel())
-                                  .join(', ')
-                              : null,
+                          reqExperience: updated.isNotEmpty ? updated.map((e) => e.displayRequirementLabel()).join(', ') : null,
                         );
                       });
                     },
@@ -1084,39 +852,24 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           DropdownButtonFormField<String>(
             initialValue: _formData.salaryType,
             decoration: InputDecoration(labelText: '${l10n.jobSalaryType} *'),
-            items: salaryTypes
-                .map((c) => DropdownMenuItem(
-                    value: c, child: Text(salaryTypeLabel(c, l10n))))
-                .toList(),
-            onChanged: (v) => setState(() => _formData =
-                _formData.copyWith(salaryType: v ?? 'per_agreement')),
+            items: salaryTypes.map((c) => DropdownMenuItem(value: c, child: Text(salaryTypeLabel(c, l10n)))).toList(),
+            onChanged: (v) => setState(() => _formData = _formData.copyWith(salaryType: v ?? 'per_agreement')),
           ),
           if (_formData.salaryType != 'per_agreement') ...[
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(
-                    child: TextFormField(
-                        controller: _salaryMinController,
-                        decoration:
-                            InputDecoration(labelText: l10n.jobSalaryMin),
-                        keyboardType: TextInputType.number)),
+                Expanded(child: TextFormField(controller: _salaryMinController, decoration: InputDecoration(labelText: l10n.jobSalaryMin), keyboardType: TextInputType.number)),
                 const SizedBox(width: 16),
                 if (_formData.salaryType == 'range')
-                  Expanded(
-                      child: TextFormField(
-                          controller: _salaryMaxController,
-                          decoration:
-                              InputDecoration(labelText: l10n.jobSalaryMax),
-                          keyboardType: TextInputType.number)),
+                  Expanded(child: TextFormField(controller: _salaryMaxController, decoration: InputDecoration(labelText: l10n.jobSalaryMax), keyboardType: TextInputType.number)),
               ],
             ),
           ],
           const SizedBox(height: 24),
           _sectionCard(
             title: l10n.jobLocation,
-            subtitle:
-                '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
+            subtitle: '${l10n.listingKebele}, ${l10n.listingWoreda}, ${l10n.listingZone}, ${l10n.listingRegion}',
             child: _buildAddressDropdowns(),
           ),
           const SizedBox(height: 40),
@@ -1141,17 +894,14 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               title: l10n.jobImages,
               child: Text(
                 l10n.mediaImagesLocked,
-                style: AppTextStyles.bodySmall
-                    .copyWith(color: context.theme.textMuted),
+                style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
               ),
             ),
             const SizedBox(height: 16),
           ],
           TextFormField(
             controller: _descriptionController,
-            decoration: InputDecoration(
-                labelText: '${l10n.listingDescriptionLabel} *',
-                alignLabelWithHint: true),
+            decoration: InputDecoration(labelText: '${l10n.listingDescriptionLabel} *', alignLabelWithHint: true),
             maxLines: 5,
           ),
         ],
@@ -1171,16 +921,11 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
           child: Column(
             children: [
-              Icon(Icons.add_photo_alternate_outlined,
-                  size: 36, color: context.theme.iconSecondary),
+              Icon(Icons.add_photo_alternate_outlined, size: 36, color: context.theme.iconSecondary),
               const SizedBox(height: 10),
-              Text(l10n.listingTapToAdd,
-                  style: AppTextStyles.bodyMedium
-                      .copyWith(color: context.theme.textPrimary)),
+              Text(l10n.listingTapToAdd, style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textPrimary)),
               const SizedBox(height: 4),
-              Text(l10n.mediaImageFormatHint,
-                  style: AppTextStyles.caption
-                      .copyWith(color: context.theme.textMuted)),
+              Text(l10n.mediaImageFormatHint, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
             ],
           ),
         ),
@@ -1192,32 +937,26 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
               scrollDirection: Axis.horizontal,
               children: [
                 ...images.map((file) => _ImageThumb(
-                      file: File(file.path),
-                      onRemove: () {
-                        final updated = List<XFile>.from(images)..remove(file);
-                        setState(() =>
-                            _formData = _formData.copyWith(images: updated));
-                      },
-                    )),
+                  file: File(file.path),
+                  onRemove: () {
+                    final updated = List<XFile>.from(images)..remove(file);
+                    setState(() => _formData = _formData.copyWith(images: updated));
+                  },
+                )),
                 const SizedBox(width: 8),
                 SizedBox(
-                  width: 100,
-                  height: 100,
+                  width: 100, height: 100,
                   child: LiquidGlass(
-                    borderRadius: AppSpacing.borderRadiusMd,
-                    blur: 20,
+                    borderRadius: AppSpacing.borderRadiusMd, blur: 20,
                     interactive: true,
                     onTap: _pickImages,
                     padding: EdgeInsets.zero,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add,
-                            size: 28, color: context.theme.iconSecondary),
+                        Icon(Icons.add, size: 28, color: context.theme.iconSecondary),
                         const SizedBox(height: 4),
-                        Text(l10n.carAddPhoto,
-                            style: AppTextStyles.caption
-                                .copyWith(color: context.theme.textMuted)),
+                        Text(l10n.carAddPhoto, style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
                       ],
                     ),
                   ),
@@ -1227,9 +966,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6),
-            child: Text(l10n.listingImagesSelected(images.length),
-                style: AppTextStyles.caption
-                    .copyWith(color: context.theme.textMuted)),
+            child: Text(l10n.listingImagesSelected(images.length), style: AppTextStyles.caption.copyWith(color: context.theme.textMuted)),
           ),
         ],
       ],
@@ -1241,52 +978,27 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
       children: [
         Row(
           children: [
-            Expanded(
-                child: _compactDropdownField(
-                    value: _selectedRegion,
-                    items: _regions,
-                    label: '${l10n.listingRegion} *',
-                    onChanged: _onRegionSelected)),
+            Expanded(child: _compactDropdownField(value: _selectedRegion, items: _regions, label: '${l10n.listingRegion} *', onChanged: _onRegionSelected)),
             const SizedBox(width: 8),
-            Expanded(
-                child: _compactDropdownField(
-                    value: _selectedZone,
-                    items: _zones,
-                    label: l10n.listingZone,
-                    onChanged: _onZoneSelected,
-                    isLoading: _loadingZones)),
+            Expanded(child: _compactDropdownField(value: _selectedZone, items: _zones, label: l10n.listingZone, onChanged: _onZoneSelected, isLoading: _loadingZones)),
           ],
         ),
         const SizedBox(height: 8),
         Row(
           children: [
-            Expanded(
-                child: _compactDropdownField(
-                    value: _selectedWoreda,
-                    items: _woredas,
-                    label: l10n.listingWoreda,
-                    onChanged: _onWoredaSelected,
-                    isLoading: _loadingWoredas)),
+            Expanded(child: _compactDropdownField(value: _selectedWoreda, items: _woredas, label: l10n.listingWoreda, onChanged: _onWoredaSelected, isLoading: _loadingWoredas)),
             const SizedBox(width: 8),
-            Expanded(
-                child: _compactDropdownField(
-                    value: _selectedKebele,
-                    items: _kebeles,
-                    label: l10n.listingKebele,
-                    onChanged: _onKebeleSelected,
-                    isLoading: _loadingKebeles)),
+            Expanded(child: _compactDropdownField(value: _selectedKebele, items: _kebeles, label: l10n.listingKebele, onChanged: _onKebeleSelected, isLoading: _loadingKebeles)),
           ],
         ),
         const SizedBox(height: 8),
         TextFormField(
           controller: _specificLocationController,
-          style: AppTextStyles.bodySmall
-              .copyWith(color: context.theme.textPrimary),
+          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
           decoration: InputDecoration(
             labelText: l10n.jobSpecificLocation,
             labelStyle: AppTextStyles.bodySmall,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           ),
           onChanged: (_) => _syncAddress(),
         ),
@@ -1294,12 +1006,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
     );
   }
 
-  Widget _compactDropdownField(
-      {String? value,
-      required List<String> items,
-      required String label,
-      required Function(String?) onChanged,
-      bool isLoading = false}) {
+  Widget _compactDropdownField({String? value, required List<String> items, required String label, required Function(String?) onChanged, bool isLoading = false}) {
     return DropdownButtonFormField<String>(
       initialValue: items.contains(value) ? value : null,
       style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
@@ -1307,50 +1014,27 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
         labelText: label,
         labelStyle: AppTextStyles.bodySmall,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        suffixIcon: isLoading
-            ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2))
-            : null,
+        suffixIcon: isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : null,
       ),
       dropdownColor: context.sheetBg,
       items: items.isEmpty
-          ? [
-              DropdownMenuItem(
-                  value: null,
-                  child: Text(l10n.listingSelect,
-                      style: AppTextStyles.bodySmall
-                          .copyWith(color: context.textMuted)))
-            ]
-          : items
-              .map((e) => DropdownMenuItem(
-                  value: e, child: Text(e, style: AppTextStyles.bodySmall)))
-              .toList(),
+          ? [DropdownMenuItem(value: null, child: Text(l10n.listingSelect, style: AppTextStyles.bodySmall.copyWith(color: context.textMuted)))]
+          : items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: AppTextStyles.bodySmall))).toList(),
       onChanged: items.isEmpty ? null : onChanged,
       isExpanded: true,
     );
   }
 
-  Widget _sectionCard(
-      {required String title, String? subtitle, required Widget child}) {
+  Widget _sectionCard({required String title, String? subtitle, required Widget child}) {
     return WaveCard(
-      useLiquidGlass: true,
-      isGlass: true,
-      padding: const EdgeInsets.all(14),
+      useLiquidGlass: true, isGlass: true, padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: AppTextStyles.labelMedium.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: context.theme.textSecondary,
-                  letterSpacing: 0.3)),
+          Text(title, style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
           if (subtitle != null) ...[
             const SizedBox(height: 4),
-            Text(subtitle,
-                style: AppTextStyles.bodySmall
-                    .copyWith(color: context.theme.textMuted)),
+            Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted)),
           ],
           const SizedBox(height: 10),
           child,
@@ -1372,19 +1056,16 @@ class _ImageThumb extends StatelessWidget {
       barrierColor: Colors.black87,
       builder: (ctx) => Stack(
         children: [
-          Center(
-              child: InteractiveViewer(
+          Center(child: InteractiveViewer(
             child: Image.file(file, fit: BoxFit.contain),
           )),
           Positioned(
-            top: 40,
-            right: 16,
+            top: 40, right: 16,
             child: GestureDetector(
               onTap: () => Navigator.of(ctx).pop(),
               child: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                    color: Colors.black54, shape: BoxShape.circle),
+                decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
                 child: const Icon(Icons.close, size: 24, color: Colors.white),
               ),
             ),
@@ -1403,27 +1084,22 @@ class _ImageThumb extends StatelessWidget {
         child: Stack(
           children: [
             SizedBox(
-              width: 100,
-              height: 100,
+              width: 100, height: 100,
               child: LiquidGlass(
-                borderRadius: 10,
-                blur: 12,
+                borderRadius: 10, blur: 12,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(9),
-                  child: Image.file(file,
-                      width: 100, height: 100, fit: BoxFit.cover),
+                  child: Image.file(file, width: 100, height: 100, fit: BoxFit.cover),
                 ),
               ),
             ),
             Positioned(
-              top: 4,
-              right: 4,
+              top: 4, right: 4,
               child: GestureDetector(
                 onTap: onRemove,
                 child: Container(
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                      color: AppColors.error, shape: BoxShape.circle),
+                  decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle),
                   child: const Icon(Icons.close, size: 14, color: Colors.white),
                 ),
               ),

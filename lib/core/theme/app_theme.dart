@@ -137,11 +137,11 @@ class AppTheme {
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.stone400),
         labelStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.stone700,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w900,
         ),
         floatingLabelStyle: AppTextStyles.bodySmall.copyWith(
           color: AppColors.primary900,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w900,
         ),
       ),
 
@@ -153,10 +153,10 @@ class AppTheme {
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return AppTextStyles.navActive
-                .copyWith(fontWeight: FontWeight.w700);
+                .copyWith(fontWeight: FontWeight.w900);
           }
           return AppTextStyles.navInactive
-              .copyWith(fontWeight: FontWeight.w600);
+              .copyWith(fontWeight: FontWeight.w700);
         }),
       ),
 
@@ -427,11 +427,11 @@ class AppTheme {
         ),
         labelStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.primary300,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w900,
         ),
         floatingLabelStyle: AppTextStyles.bodySmall.copyWith(
           color: AppColors.accent400,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w900,
         ),
       ),
 
@@ -444,12 +444,12 @@ class AppTheme {
           if (states.contains(WidgetState.selected)) {
             return AppTextStyles.navActive.copyWith(
               color: AppColors.accent400,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w900,
             );
           }
           return AppTextStyles.navInactive.copyWith(
             color: AppColors.primary300,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           );
         }),
       ),

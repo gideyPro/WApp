@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_spacing.dart';
-import '../../../../core/network/v2/api_v2_error.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/utils/ethiopian_date_helper.dart';
-import '../../../../data/models/v2/payment_state.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../providers/v2_providers.dart';
+import '../../../../data/models/payment.dart';
+import '../../../../data/services/payment_service.dart';
+import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
+import '../../../core/constants/app_spacing.dart';
 
 class PaymentDetailScreen extends ConsumerStatefulWidget {
-  final String txRef;
+  final int paymentId;
 
-  const PaymentDetailScreen({super.key, required this.txRef});
+  const PaymentDetailScreen({super.key, required this.paymentId});
 
   @override
   ConsumerState<PaymentDetailScreen> createState() =>
@@ -23,9 +23,9 @@ class PaymentDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
-  PaymentState? _payment;
+  PaymentService get _paymentService => ref.read(paymentServiceProvider);
+  Payment? _payment;
   bool _isLoading = true;
-  bool _isVerifying = false;
   String? _error;
 
   @override
@@ -40,58 +40,18 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
       _error = null;
     });
 
-    try {
-      final payment =
-          await ref.read(paymentV2ServiceProvider).fetchOne(widget.txRef);
-      if (mounted) {
-        setState(() {
-          _payment = payment;
-          _isLoading = false;
-        });
-      }
-    } on ApiV2Exception catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = e.message;
-          _isLoading = false;
-        });
-      }
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _error = 'Could not load payment details';
-          _isLoading = false;
-        });
-      }
-    }
-  }
+    final result = await _paymentService.getPaymentDetail(widget.paymentId);
 
-  Future<void> _verifyPayment() async {
-    setState(() => _isVerifying = true);
-    try {
-      final receipt =
-          await ref.read(paymentV2ServiceProvider).verify(widget.txRef);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(receipt.isActivated
-                ? 'Subscription activated!'
-                : 'Payment verified'),
-            backgroundColor: AppColors.success,
-          ),
-        );
-        ref.invalidate(subscriptionOverviewProvider);
-        _loadPayment();
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = false;
+      if (result.success) {
+        _payment = result.payment;
+      } else {
+        _error = result.message;
       }
-    } on ApiV2Exception catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message), backgroundColor: AppColors.error),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isVerifying = false);
-    }
+    });
   }
 
   @override
@@ -139,37 +99,12 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
             const SizedBox(height: 20),
             _buildTimestampCard(payment, l10n),
           ],
-          if (payment.isPending) ...[
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isVerifying ? null : _verifyPayment,
-                icon: _isVerifying
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Icon(Icons.refresh, size: 18),
-                label: const Text('Verify Payment Status'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent500,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-              ),
-            ),
-          ],
         ],
       ),
     );
   }
 
-  Widget _buildStatusBanner(PaymentState payment, AppLocalizations l10n) {
+  Widget _buildStatusBanner(Payment payment, AppLocalizations l10n) {
     final isDark = context.theme.isDark;
     Color bgColor;
     Color iconColor;
@@ -177,16 +112,12 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
     IconData icon;
 
     if (payment.isSuccess) {
-      bgColor = isDark
-          ? AppColors.emerald500.withValues(alpha: 0.15)
-          : AppColors.emerald50;
+      bgColor = isDark ? AppColors.emerald500.withValues(alpha: 0.15) : AppColors.emerald50;
       iconColor = isDark ? AppColors.emerald400 : AppColors.emerald600;
       textColor = isDark ? AppColors.emerald300 : AppColors.emerald800;
       icon = Icons.check_circle;
     } else if (payment.isFailed) {
-      bgColor = isDark
-          ? AppColors.error.withValues(alpha: 0.15)
-          : AppColors.errorLight;
+      bgColor = isDark ? AppColors.error.withValues(alpha: 0.15) : AppColors.errorLight;
       iconColor = isDark ? Colors.red.shade300 : AppColors.error;
       textColor = isDark ? Colors.red.shade200 : Colors.red.shade800;
       icon = Icons.cancel_outlined;
@@ -196,9 +127,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
       textColor = isDark ? AppColors.stone300 : AppColors.stone600;
       icon = Icons.cancel_outlined;
     } else {
-      bgColor = isDark
-          ? AppColors.accent500.withValues(alpha: 0.15)
-          : AppColors.accent50;
+      bgColor = isDark ? AppColors.accent500.withValues(alpha: 0.15) : AppColors.accent50;
       iconColor = isDark ? AppColors.accent400 : AppColors.accent600;
       textColor = isDark ? AppColors.accent300 : AppColors.warning;
       icon = Icons.pending;
@@ -242,7 +171,7 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
     );
   }
 
-  Widget _buildDetailCard(PaymentState payment, AppLocalizations l10n) {
+  Widget _buildDetailCard(Payment payment, AppLocalizations l10n) {
     return LiquidGlass(
       borderRadius: 16,
       blur: 20,
@@ -261,16 +190,17 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
           _detailRow('Amount', payment.displayAmount),
           _detailRow('Type', _paymentTypeLabel(payment, l10n)),
           _detailRow('Method', payment.paymentMethod ?? 'Chapa'),
-          _detailRow('Transaction Ref', payment.txRef),
+          _detailRow('Transaction Ref', payment.transactionReference),
+          if (payment.chapaTransactionId != null)
+            _detailRow('Chapa Ref', payment.chapaTransactionId!),
           _detailRow('Status', payment.getStatusLabel(l10n)),
-          if (payment.createdAt != null)
-            _detailRow('Date', _formatDate(payment.createdAt!)),
+          _detailRow('Date', _formatDate(payment.createdAt)),
         ],
       ),
     );
   }
 
-  Widget _buildTimestampCard(PaymentState payment, AppLocalizations l10n) {
+  Widget _buildTimestampCard(Payment payment, AppLocalizations l10n) {
     return LiquidGlass(
       borderRadius: 16,
       blur: 20,
@@ -286,20 +216,17 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          if (payment.createdAt != null)
-            _timelineRow(
-              icon: Icons.receipt_long,
-              label: 'Created',
-              value: _formatDate(payment.createdAt!),
-            ),
-          if (payment.paidAt != null) ...[
-            const SizedBox(height: 12),
-            _timelineRow(
-              icon: Icons.check_circle_outline,
-              label: 'Paid At',
-              value: _formatDate(payment.paidAt!),
-            ),
-          ],
+          _timelineRow(
+            icon: Icons.receipt_long,
+            label: 'Created',
+            value: _formatDate(payment.createdAt),
+          ),
+          const SizedBox(height: 12),
+          _timelineRow(
+            icon: Icons.check_circle_outline,
+            label: 'Paid At',
+            value: _formatDate(payment.paidAt!),
+          ),
         ],
       ),
     );
@@ -350,41 +277,33 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
             color: isDark ? AppColors.cardNavyLight : AppColors.primary50,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, size: 16, color: context.theme.textSecondary),
+          child: Icon(icon, size: 16, color: isDark ? AppColors.accent400 : AppColors.primary600),
         ),
         const SizedBox(width: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: AppTextStyles.caption.copyWith(
-                color: context.textSecondary,
-              ),
-            ),
-            Text(
-              value,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: FontWeight.w600,
-                color: context.theme.textPrimary,
-              ),
-            ),
+            Text(label, style: AppTextStyles.caption.copyWith(
+              color: context.textSecondary,
+            )),
+            Text(value, style: AppTextStyles.bodySmall.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.theme.textPrimary,
+            )),
           ],
         ),
       ],
     );
   }
 
-  String _paymentTypeLabel(PaymentState payment, AppLocalizations l10n) {
-    switch (payment.type) {
-      case 'subscription':
+  String _paymentTypeLabel(Payment payment, AppLocalizations l10n) {
+    switch (payment.paymentType) {
+      case PaymentType.subscription:
         return l10n.paymentsSubscription;
-      case 'feature':
-      case 'featured':
-      case 'featuredListing':
+      case PaymentType.featuredListing:
         return l10n.paymentsFeatured;
-      default:
-        return l10n.paymentsGeneral;
+      case PaymentType.directPayment:
+        return l10n.paymentsDirect;
     }
   }
 

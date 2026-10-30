@@ -12,7 +12,6 @@ import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/provider_utils.dart';
 import '../../providers/theme_provider.dart';
-import '../../providers/v2_providers.dart';
 import '../../widgets/common/wave_glass.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 
@@ -58,9 +57,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     final profileState = ref.watch(profileProvider);
     final authState = ref.watch(authStateProvider);
     final kycState = ref.watch(kycStatusProvider);
-    final configAsync = ref.watch(appConfigProvider);
-    final subscriptionEnabled = configAsync.maybeWhen(
-      data: (config) => config.subscriptionEnabled,
+    final settingsAsync = ref.watch(appSettingsProvider);
+    final subscriptionEnabled = settingsAsync.maybeWhen(
+      data: (data) => data['subscription_enabled'] == true,
       orElse: () => false,
     );
     final l10n = AppLocalizations.of(context);
@@ -70,17 +69,16 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
         ? user!.initials
         : l10n.commonAppInitials;
     final avatarUrl = user?.googleAvatar;
-    final fullName =
-        (user?.fullName.isNotEmpty ?? false) ? user!.fullName : l10n.commonUser;
+    final fullName = (user?.fullName.isNotEmpty ?? false)
+        ? user!.fullName
+        : l10n.commonUser;
     final phone = (user?.phoneNumber.isNotEmpty ?? false)
         ? user!.phoneNumber
         : (user?.email ?? l10n.commonNA);
 
     String kycLabel = l10n.settingsKycRequired;
     Color kycColor = AppColors.warning;
-    if (user?.isKycVerified == true ||
-        kycState.isVerified ||
-        kycState.isApproved) {
+    if (user?.isKycVerified == true || kycState.isVerified || kycState.isApproved) {
       kycLabel = l10n.settingsKycVerified;
       kycColor = AppColors.emerald600;
     } else if (kycState.isPending) {
@@ -95,7 +93,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
       body: RefreshIndicator(
         onRefresh: () async {
           await ref.read(profileProvider.notifier).loadProfile();
-          ref.invalidate(appConfigProvider);
+          ref.invalidate(appSettingsProvider);
         },
         child: CustomScrollView(
           slivers: [
@@ -186,8 +184,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                                       image: avatarUrl != null
                                           ? DecorationImage(
                                               image: ResizeImage(
-                                                CachedNetworkImageProvider(
-                                                    avatarUrl),
+                                                CachedNetworkImageProvider(avatarUrl),
                                                 width: 300,
                                                 height: 300,
                                               ),
@@ -198,8 +195,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                                           ? null
                                           : AppColors.gradientHero,
                                       border: Border.all(
-                                        color:
-                                            Colors.white.withValues(alpha: 0.2),
+                                        color: Colors.white.withValues(alpha: 0.2),
                                         width: 2,
                                       ),
                                     ),
@@ -208,8 +204,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                                         : Center(
                                             child: Text(
                                               initials,
-                                              style: AppTextStyles.headline3
-                                                  .copyWith(
+                                              style: AppTextStyles.headline3.copyWith(
                                                 color: Colors.white,
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.w800,
@@ -306,8 +301,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                       _buildStatItem(
                         context,
                         icon: Icons.home_work_outlined,
-                        value:
-                            profileState.stats?.totalListings.toString() ?? '0',
+                        value: profileState.stats?.totalListings.toString() ?? '0',
                         label: l10n.profileStatsListings,
                         valueColor: context.textPrimary,
                         onTap: () => context.push('/my-listings'),
@@ -320,8 +314,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                       _buildStatItem(
                         context,
                         icon: Icons.favorite_border_rounded,
-                        value: profileState.stats?.totalFavorites.toString() ??
-                            '0',
+                        value: profileState.stats?.totalFavorites.toString() ?? '0',
                         label: l10n.profileStatsFavorites,
                         valueColor: context.textPrimary,
                         onTap: () => context.push('/favorites'),
@@ -392,11 +385,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                             subtitle: l10n.settingsSubscriptionsSubtitle,
                             onTap: () async {
                               await context.push('/subscriptions');
-                              if (mounted) {
-                                ref
-                                    .read(subscriptionProvider.notifier)
-                                    .refresh();
-                              }
+                              if (mounted) ref.read(subscriptionProvider.notifier).refresh();
                             },
                           ),
                           _MenuItemData(
@@ -421,22 +410,17 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         _MenuItemData(
                           icon: Icons.language,
                           title: l10n.settingsLanguage,
-                          onTap: () =>
-                              _showLanguageSelectionDialog(context, ref),
+                          onTap: () => _showLanguageSelectionDialog(context, ref),
                         ),
                         _MenuItemData(
-                          icon: isDark
-                              ? Icons.light_mode_outlined
-                              : Icons.dark_mode_outlined,
+                          icon: isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
                           title: l10n.settingsDarkMode,
                           trailing: Switch.adaptive(
                             value: isDark,
-                            onChanged: (val) =>
-                                ref.read(themeModeProvider.notifier).toggle(),
+                            onChanged: (val) => ref.read(themeModeProvider.notifier).toggle(),
                             activeThumbColor: AppColors.accent500,
                           ),
-                          onTap: () =>
-                              ref.read(themeModeProvider.notifier).toggle(),
+                          onTap: () => ref.read(themeModeProvider.notifier).toggle(),
                         ),
                       ],
                     ),
@@ -453,18 +437,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                         _MenuItemData(
                           icon: Icons.privacy_tip_outlined,
                           title: l10n.settingsPrivacyPolicy,
-                          onTap: () => _openWebPage(
-                              context,
-                              'https://wavemart.et/privacy',
-                              l10n.settingsPrivacyPolicy),
+                          onTap: () => _openWebPage(context, 'https://wavemart.et/privacy', l10n.settingsPrivacyPolicy),
                         ),
                         _MenuItemData(
                           icon: Icons.description_outlined,
                           title: l10n.settingsTermsOfService,
-                          onTap: () => _openWebPage(
-                              context,
-                              'https://wavemart.et/terms',
-                              l10n.settingsTermsOfService),
+                          onTap: () => _openWebPage(context, 'https://wavemart.et/terms', l10n.settingsTermsOfService),
                         ),
                       ],
                     ),
@@ -483,13 +461,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                           icon: Icons.delete_forever_outlined,
                           title: l10n.settingsDeleteAccount,
                           textColor: AppColors.error,
-                          onTap: () =>
-                              _showDeleteAccountConfirmation(context, ref),
+                          onTap: () => _showDeleteAccountConfirmation(context, ref),
                         ),
                       ],
                     ),
-                    SizedBox(
-                        height: MediaQuery.of(context).padding.bottom + 80),
+                    SizedBox(height: MediaQuery.of(context).padding.bottom + 80),
                   ],
                 ),
               ),
@@ -569,8 +545,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
             children: items.asMap().entries.map((entry) {
               final index = entry.key;
               final item = entry.value;
-              return _buildMenuItem(item,
-                  showDivider: index < items.length - 1);
+              return _buildMenuItem(item, showDivider: index < items.length - 1);
             }).toList(),
           ),
         ),
@@ -582,15 +557,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     return Column(
       children: [
         ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           leading: Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: context.theme.isDark
-                  ? AppColors.cardNavyLight
-                  : AppColors.primary50,
+              color: context.theme.isDark ? AppColors.cardNavyLight : AppColors.primary50,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
@@ -607,12 +579,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
             ),
           ),
           subtitle: item.subtitle != null
-              ? Text(item.subtitle!,
-                  style: AppTextStyles.caption
-                      .copyWith(color: context.textSecondary))
+              ? Text(item.subtitle!, style: AppTextStyles.caption.copyWith(color: context.textSecondary))
               : null,
-          trailing: item.trailing ??
-              Icon(Icons.chevron_right_rounded, color: context.theme.textMuted),
+          trailing: item.trailing ?? Icon(Icons.chevron_right_rounded, color: context.theme.textMuted),
           onTap: item.onTap,
         ),
         if (showDivider) const Divider(height: 1),
@@ -620,8 +589,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     );
   }
 
-  Future<void> _showLogoutConfirmation(
-      BuildContext context, WidgetRef ref) async {
+  Future<void> _showLogoutConfirmation(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
@@ -639,21 +607,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                   color: AppColors.error.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child:
-                    const Icon(Icons.logout, size: 32, color: AppColors.error),
+                child: const Icon(Icons.logout, size: 32, color: AppColors.error),
               ),
               const SizedBox(height: 16),
               Text(
                 l10n.authLogout,
-                style:
-                    AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 l10n.authLogoutConfirm,
-                style: AppTextStyles.bodyMedium
-                    .copyWith(color: context.theme.textSecondary),
+                style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -701,8 +666,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     );
   }
 
-  Future<void> _showDeleteAccountConfirmation(
-      BuildContext context, WidgetRef ref) async {
+  Future<void> _showDeleteAccountConfirmation(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
@@ -720,21 +684,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                   color: AppColors.error.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.delete_forever_rounded,
-                    size: 32, color: AppColors.error),
+                child: const Icon(Icons.delete_forever_rounded, size: 32, color: AppColors.error),
               ),
               const SizedBox(height: 16),
               Text(
                 l10n.settingsDeleteAccount,
-                style:
-                    AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
+                style: AppTextStyles.title.copyWith(fontWeight: FontWeight.w800),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 l10n.settingsDeleteAccountConfirm,
-                style: AppTextStyles.bodyMedium
-                    .copyWith(color: context.theme.textSecondary),
+                style: AppTextStyles.bodyMedium.copyWith(color: context.theme.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
@@ -746,8 +707,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.open_in_browser,
-                        size: 18, color: AppColors.info),
+                    const Icon(Icons.open_in_browser, size: 18, color: AppColors.info),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -780,34 +740,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                     child: ElevatedButton(
                       onPressed: () async {
                         Navigator.pop(dialogContext);
-                        try {
-                          await ref
-                              .read(profileV2ServiceProvider)
-                              .deleteAccount();
-                          await ref.read(authStateProvider.notifier).logout();
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Account deleted successfully'),
-                                backgroundColor: AppColors.success,
-                              ),
-                            );
-                          }
-                        } catch (_) {
-                          const url =
-                              '${ApiConstants.baseUrl}/account/deletion';
-                          final uri = Uri.parse(url);
-                          if (await canLaunchUrl(uri)) {
-                            await launchUrl(uri,
-                                mode: LaunchMode.externalApplication);
-                          } else if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(AppLocalizations.of(context)
-                                      .settingsBrowserErrorMessage(url)),
-                                  backgroundColor: AppColors.error),
-                            );
-                          }
+                        const url = '${ApiConstants.baseUrl}/account/deletion';
+                        final uri = Uri.parse(url);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        } else if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(AppLocalizations.of(context).settingsBrowserErrorMessage( url)), backgroundColor: AppColors.error),
+                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -830,16 +770,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     );
   }
 
-  Future<void> _openWebPage(
-      BuildContext context, String url, String title) async {
+  Future<void> _openWebPage(BuildContext context, String url, String title) async {
     final uri = Uri.parse(url);
     final l10n = AppLocalizations.of(context);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l10n.settingsWebOpenError(title)),
-          backgroundColor: AppColors.error));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.settingsWebOpenError(title)), backgroundColor: AppColors.error));
     }
   }
 
@@ -848,30 +785,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     showModalBottomSheet(
       context: context,
       backgroundColor: context.sheetBg,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context).languageTitle,
-                style:
-                    AppTextStyles.title.copyWith(color: context.textPrimary)),
+            Text(AppLocalizations.of(context).languageTitle, style: AppTextStyles.title.copyWith(color: context.textPrimary)),
             const SizedBox(height: 24),
-            _buildLanguageOption(context, ref,
-                languageCode: 'en',
-                languageName: AppLocalizations.of(context).languageEnglish,
-                currentLocale: currentLocale),
-            _buildLanguageOption(context, ref,
-                languageCode: 'am',
-                languageName: AppLocalizations.of(context).languageAmharic,
-                currentLocale: currentLocale),
-            _buildLanguageOption(context, ref,
-                languageCode: 'ti',
-                languageName: AppLocalizations.of(context).languageTigrinya,
-                currentLocale: currentLocale),
+            _buildLanguageOption(context, ref, languageCode: 'en', languageName: AppLocalizations.of(context).languageEnglish, currentLocale: currentLocale),
+            _buildLanguageOption(context, ref, languageCode: 'am', languageName: AppLocalizations.of(context).languageAmharic, currentLocale: currentLocale),
+            _buildLanguageOption(context, ref, languageCode: 'ti', languageName: AppLocalizations.of(context).languageTigrinya, currentLocale: currentLocale),
             const SizedBox(height: 16),
           ],
         ),
@@ -879,25 +804,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
     );
   }
 
-  Widget _buildLanguageOption(BuildContext context, WidgetRef ref,
-      {required String languageCode,
-      required String languageName,
-      required String currentLocale}) {
+  Widget _buildLanguageOption(BuildContext context, WidgetRef ref, {required String languageCode, required String languageName, required String currentLocale}) {
     final isSelected = currentLocale == languageCode;
     return ListTile(
       onTap: () async {
         await ref.read(localeProvider.notifier).setLocale(Locale(languageCode));
         if (context.mounted) Navigator.pop(context);
       },
-      leading: isSelected
-          ? const Icon(Icons.check_circle, color: AppColors.accent500)
-          : const Icon(Icons.radio_button_unchecked),
-      title: Text(languageName,
-          style: AppTextStyles.bodyMedium.copyWith(
-              color: context.textPrimary,
-              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
+      leading: isSelected ? const Icon(Icons.check_circle, color: AppColors.accent500) : const Icon(Icons.radio_button_unchecked),
+      title: Text(languageName, style: AppTextStyles.bodyMedium.copyWith(color: context.textPrimary, fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600)),
     );
   }
+
 }
 
 class _MenuItemData {
