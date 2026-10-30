@@ -1,12 +1,11 @@
 import 'dart:io';
 import '../../core/network/api_client.dart';
+import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../../core/network/v2/api_v2_client.dart';
-import '../../core/network/v2/api_v2_constants.dart';
 import '../models/listing.dart';
 import '../models/listing_form_data.dart';
-import '../models/v2/listing_summary.dart';
 import '../models/v2/owner_listing.dart';
 import '../models/v2/v2_legacy_adapters.dart';
 import 'v2/catalog_filters.dart';
@@ -17,14 +16,14 @@ import 'v2/promotion_service.dart';
 
 /// Service for managing property listings backed by V2 API.
 class ListingService {
-  final ApiV2Client _v2Client;
+  final ApiClient _apiClient;
   final CatalogService _catalog;
   final OwnerListingService _owner;
   final ListingMediaServiceV2 _media;
   final PromotionServiceV2 _promo;
 
   ListingService({ApiClient? apiClient})
-      : _v2Client = ApiV2Client(apiClient: apiClient),
+      : _apiClient = apiClient ?? ApiClient(),
         _catalog = CatalogService(client: ApiV2Client(apiClient: apiClient)),
         _owner = OwnerListingService(client: ApiV2Client(apiClient: apiClient)),
         _media = ListingMediaServiceV2(client: ApiV2Client(apiClient: apiClient)),
@@ -188,15 +187,31 @@ class ListingService {
 
   Future<ListingResponse> getSimilarListings(int listingId) async {
     try {
-      final result = await _v2Client.getCollection(
-        '${ApiV2Constants.listings}/$listingId/similar',
-        parse: ListingSummary.fromJson,
+      // V2 backend does not expose /listings/{id}/similar — fall back to V1.
+      final response = await _apiClient.dio.get(
+        '${ApiConstants.similarListings}/$listingId/similar',
       );
-      final listings = result.items.map((s) => s.toListing()).toList();
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final dataList = ApiEnvelope.extractList(
+          data,
+          itemKeys: const ['listings', 'items'],
+        );
+        final listings = dataList
+            .whereType<Map>()
+            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
+            .toList();
+
+        return ListingResponse(
+          success: true,
+          listings: listings,
+        );
+      }
 
       return ListingResponse(
-        success: true,
-        listings: listings,
+        success: false,
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch similar listings'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -311,17 +326,25 @@ class ListingService {
 
   Future<ContactRevealResponse> revealContact(int listingId) async {
     try {
-      final data = await _v2Client.sendItem(
-        '${ApiV2Constants.listings}/$listingId/reveal-contact',
-        method: 'POST',
+      // V2 backend does not expose /listings/{id}/reveal-contact — fall back to V1.
+      final response = await _apiClient.dio.post(
+        '${ApiConstants.revealContact}/$listingId/reveal-contact',
       );
 
+      if (response.statusCode == 200) {
+        final data = ApiEnvelope.extractData(response.data);
+        return ContactRevealResponse(
+          success: true,
+          contact: data['contact']?.toString() ?? '',
+          name: data['name']?.toString() ?? '',
+          email: data['email']?.toString() ?? '',
+          alreadyRevealed: data['already_revealed'] ?? false,
+        );
+      }
+
       return ContactRevealResponse(
-        success: true,
-        contact: data['contact']?.toString() ?? data['phone']?.toString() ?? '',
-        name: data['name']?.toString() ?? '',
-        email: data['email']?.toString() ?? '',
-        alreadyRevealed: data['already_revealed'] ?? false,
+        success: false,
+        message: ApiEnvelope.extractMessage(response.data, 'Failed to reveal contact'),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);

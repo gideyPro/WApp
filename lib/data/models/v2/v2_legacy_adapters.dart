@@ -116,6 +116,13 @@ extension ListingDetailLegacyAdapter on ListingDetail {
         status: VideoProcessingStatus.ready,
         processedUrl: video.url,
       );
+    } else if (!video.blocked) {
+      // Video may be processing — set pending so the screen starts polling
+      // the /listings/{id}/video endpoint for status updates.
+      vp = const VideoProcessing(
+        status: VideoProcessingStatus.pending,
+        processedUrl: null,
+      );
     }
 
     return Listing(
