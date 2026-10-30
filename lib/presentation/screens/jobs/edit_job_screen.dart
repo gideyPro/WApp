@@ -572,7 +572,7 @@ class _EditJobScreenState extends ConsumerState<EditJobScreen> {
         reqEducationCustom: effectiveEdu == 'other' && customEdu.isNotEmpty ? customEdu : null,
       );
       final response = await ref.read(jobServiceProvider).updateListing(
-        id: widget.listing.id,
+        listingId: widget.listing.id,
         formData: formData,
         onProgress: (p) {},
       );

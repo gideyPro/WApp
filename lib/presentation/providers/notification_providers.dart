@@ -43,7 +43,7 @@ class UnreadNotifCountNotifier extends StateNotifier<int> {
     try {
       final response = await _notificationService.getNotifications(filter: 'unread', page: 1);
       if (response.success) {
-        state = response.unreadCount;
+        state = response.unreadCount ?? 0;
       }
     } catch (e) {
       // Handle error silently for background polling

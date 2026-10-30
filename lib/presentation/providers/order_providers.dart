@@ -29,10 +29,10 @@ class OrdersNotifier extends StateNotifier<OrdersState> {
 
   Future<bool> cancelOrder(int orderId) async {
     final response = await _orderService.cancelOrder(orderId);
-    if (response.success) {
+    if (response) {
       await loadOrders();
     }
-    return response.success;
+    return response;
   }
 }
 

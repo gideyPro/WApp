@@ -1,65 +1,45 @@
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/notification.dart' as app;
+import '../models/v2/app_notification.dart';
+import '../models/v2/v2_legacy_adapters.dart';
+import 'v2/notification_service.dart';
 
-/// Service for managing notifications
+/// Service for managing notifications backed by V2 API.
 class NotificationService {
-  final ApiClient _apiClient;
+  final NotificationServiceV2 _v2;
 
-  NotificationService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+  NotificationService({ApiClient? apiClient, NotificationServiceV2? v2Service})
+      : _v2 = v2Service ?? NotificationServiceV2();
 
   Future<NotificationResponse> getNotifications({
     int page = 1,
-    String filter = 'all', // 'all', 'unread', 'read'
+    String filter = 'all',
   }) async {
     try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.notifications,
-        queryParameters: {
-          'page': page,
-          'filter': filter == 'all' ? 'all' : filter,
-        },
-      );
+      final nFilter = switch (filter) {
+        'unread' => NotificationFilter.unread,
+        'read' => NotificationFilter.read,
+        _ => NotificationFilter.all,
+      };
 
-      if (response.statusCode == 200) {
-        final responseData = response.data;
+      final result = await _v2.fetch(filter: nFilter, limit: 30);
+      final notifications =
+          result.items.map((n) => n.toLegacyNotification()).toList();
 
-        List<dynamic> notifList = ApiEnvelope.extractList(
-          responseData,
-          itemKeys: const ['notifications', 'items'],
-        );
-
-        final pagination = ApiEnvelope.extractPagination(responseData, fallbackPage: page);
-
-        int unreadCount = 0;
-        if (responseData is Map) {
-          final dataField = responseData['data'];
-          if (dataField is Map) {
-            unreadCount = ApiEnvelope.safeIntOr(dataField['unread_count'], 0);
-          }
-        }
-
-        final notifications = notifList
-            .whereType<Map>()
-            .map((json) => app.Notification.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return NotificationResponse(
-          success: true,
-          notifications: notifications,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-          unreadCount: unreadCount,
-        );
-      }
+      int unread = 0;
+      try {
+        final counters = await _v2.unreadCount();
+        unread = counters.notifications;
+      } catch (_) {}
 
       return NotificationResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch notifications'),
+        success: true,
+        notifications: notifications,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: notifications.length,
+        unreadCount: unread,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -72,58 +52,22 @@ class NotificationService {
 
   Future<NotificationCountResponse> getUnreadCount() async {
     try {
-      final response = await _apiClient.dio.get(ApiConstants.unreadCount);
-
-      if (response.statusCode == 200) {
-        final responseData = response.data;
-        int count = 0;
-
-        if (responseData is Map) {
-          // Try top-level keys first, then nested under 'data'
-          count = ApiEnvelope.safeIntOr(
-            responseData['unread_count'] ?? responseData['count'],
-            0,
-          );
-          if (count == 0 && responseData['data'] is Map) {
-            final data = responseData['data'] as Map;
-            count = ApiEnvelope.safeIntOr(
-              data['unread_count'] ?? data['count'],
-              0,
-            );
-          }
-        }
-
-        return NotificationCountResponse(
-          success: true,
-          count: count,
-        );
-      }
-
-      return const NotificationCountResponse(
-        success: false,
-        count: 0,
+      final counters = await _v2.unreadCount();
+      return NotificationCountResponse(
+        success: true,
+        count: counters.notifications,
       );
-    } catch (e) {
+    } catch (_) {
       return const NotificationCountResponse(success: false, count: 0);
     }
   }
 
   Future<NotificationResponse> markAsRead(int notificationId) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.markAsRead}/$notificationId/read',
-      );
-
-      if (response.statusCode == 200) {
-        return NotificationResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Marked as read'),
-        );
-      }
-
-      return NotificationResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to mark as read'),
+      await _v2.markRead(notificationId);
+      return const NotificationResponse(
+        success: true,
+        message: 'Marked as read',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -136,18 +80,10 @@ class NotificationService {
 
   Future<NotificationResponse> markAllAsRead() async {
     try {
-      final response = await _apiClient.dio.post(ApiConstants.markAllAsRead);
-
-      if (response.statusCode == 200) {
-        return NotificationResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'All marked as read'),
-        );
-      }
-
-      return NotificationResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to mark all as read'),
+      await _v2.markAllRead();
+      return const NotificationResponse(
+        success: true,
+        message: 'All notifications marked as read',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -160,20 +96,10 @@ class NotificationService {
 
   Future<NotificationResponse> deleteNotification(int notificationId) async {
     try {
-      final response = await _apiClient.dio.delete(
-        '${ApiConstants.deleteNotification}/$notificationId',
-      );
-
-      if (response.statusCode == 200) {
-        return NotificationResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Notification deleted'),
-        );
-      }
-
-      return NotificationResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to delete notification'),
+      await _v2.delete(notificationId);
+      return const NotificationResponse(
+        success: true,
+        message: 'Notification deleted',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -192,7 +118,7 @@ class NotificationResponse {
   final int? currentPage;
   final int? totalPages;
   final int? total;
-  final int unreadCount;
+  final int? unreadCount;
 
   const NotificationResponse({
     required this.success,
@@ -201,8 +127,12 @@ class NotificationResponse {
     this.currentPage,
     this.totalPages,
     this.total,
-    this.unreadCount = 0,
+    this.unreadCount,
   });
+
+  @override
+  String toString() =>
+      'NotificationResponse(success: $success, notifications: ${notifications.length})';
 }
 
 class NotificationCountResponse {

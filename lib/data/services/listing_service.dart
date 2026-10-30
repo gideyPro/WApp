@@ -1,18 +1,34 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
+import '../../core/network/v2/api_v2_client.dart';
+import '../../core/network/v2/api_v2_constants.dart';
 import '../models/listing.dart';
 import '../models/listing_form_data.dart';
+import '../models/v2/listing_summary.dart';
+import '../models/v2/owner_listing.dart';
+import '../models/v2/v2_legacy_adapters.dart';
+import 'v2/catalog_filters.dart';
+import 'v2/catalog_service.dart';
+import 'v2/listing_media_service.dart';
+import 'v2/owner_listing_service.dart';
+import 'v2/promotion_service.dart';
 
-/// Service for managing property listings
+/// Service for managing property listings backed by V2 API.
 class ListingService {
-  final ApiClient _apiClient;
+  final ApiV2Client _v2Client;
+  final CatalogService _catalog;
+  final OwnerListingService _owner;
+  final ListingMediaServiceV2 _media;
+  final PromotionServiceV2 _promo;
 
   ListingService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+      : _v2Client = ApiV2Client(apiClient: apiClient),
+        _catalog = CatalogService(client: ApiV2Client(apiClient: apiClient)),
+        _owner = OwnerListingService(client: ApiV2Client(apiClient: apiClient)),
+        _media = ListingMediaServiceV2(client: ApiV2Client(apiClient: apiClient)),
+        _promo = PromotionServiceV2(client: ApiV2Client(apiClient: apiClient));
 
   Future<ListingResponse> getListings({
     int page = 1,
@@ -20,43 +36,32 @@ class ListingService {
     Map<String, dynamic>? filters,
   }) async {
     try {
-      final queryParams = {
-        'page': page,
-        'per_page': perPage,
-        if (filters != null) ...filters,
-      };
-
-      final response = await _apiClient.dio.get(
-        ApiConstants.listings,
-        queryParameters: queryParams,
+      final listingFilters = ListingFilters(
+        type: filters?['type']?.toString(),
+        listingType: filters?['listing_type']?.toString(),
+        rentalPeriodUnit: filters?['rental_period_unit']?.toString(),
+        location: filters?['location']?.toString() ?? filters?['city']?.toString(),
+        priceMin: filters?['price_min'] is num ? (filters!['price_min'] as num).toDouble() : null,
+        priceMax: filters?['price_max'] is num ? (filters!['price_max'] as num).toDouble() : null,
+        areaMin: filters?['area_min'] is num ? (filters!['area_min'] as num).toDouble() : null,
+        areaMax: filters?['area_max'] is num ? (filters!['area_max'] as num).toDouble() : null,
+        minBedrooms: filters?['bedrooms'] is num ? (filters!['bedrooms'] as num).toInt() : null,
+        minBathrooms: filters?['bathrooms'] is num ? (filters!['bathrooms'] as num).toInt() : null,
       );
 
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['listings', 'items'],
-        );
+      final result = await _catalog.fetchListings(
+        limit: perPage,
+        filters: listingFilters,
+      );
 
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
-
-        return ListingResponse(
-          success: true,
-          listings: listings,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final listings = result.items.map((s) => s.toListing()).toList();
 
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch listings'),
+        success: true,
+        listings: listings,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: listings.length,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -73,44 +78,28 @@ class ListingService {
     String? status,
   }) async {
     try {
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'per_page': perPage,
+      final oStatus = switch (status?.toLowerCase()) {
+        'active' => OwnerListingStatus.active,
+        'pending' => OwnerListingStatus.pending,
+        'rejected' => OwnerListingStatus.rejected,
+        'frozen' => OwnerListingStatus.frozen,
+        'draft' => OwnerListingStatus.draft,
+        _ => null,
       };
-      if (status != null && status.isNotEmpty) {
-        queryParams['status'] = status;
-      }
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.listings}/my-listings',
-        queryParameters: queryParams,
+
+      final result = await _owner.fetch(
+        limit: perPage,
+        status: oStatus,
       );
 
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['listings', 'items'],
-        );
-
-        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
-
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return ListingResponse(
-          success: true,
-          listings: listings,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final listings = result.items.map((s) => s.toListing()).toList();
 
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch your listings'),
+        success: true,
+        listings: listings,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: listings.length,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -121,44 +110,21 @@ class ListingService {
     }
   }
 
-  Future<ListingResponse> getVipListings({
-    int page = 1,
-    int perPage = 12,
-  }) async {
+  Future<ListingResponse> getVipListings({int limit = 10}) async {
     try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.vipListings,
-        queryParameters: {
-          'page': page,
-          'per_page': perPage,
-        },
+      final result = await _catalog.fetchListings(
+        limit: limit,
+        filters: const ListingFilters(sort: CatalogSort.newest),
       );
 
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['listings', 'items'],
-        );
-        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
-
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return ListingResponse(
-          success: true,
-          listings: listings,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final listings = result.items
+          .where((s) => s.isVip)
+          .map((s) => s.toListing())
+          .toList();
 
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch VIP listings'),
+        success: true,
+        listings: listings,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -169,44 +135,14 @@ class ListingService {
     }
   }
 
-  Future<ListingResponse> getFeaturedListings({
-    int page = 1,
-    int perPage = 12,
-  }) async {
+  Future<ListingResponse> getFeaturedListings({int page = 1, int limit = 10}) async {
     try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.featuredListings,
-        queryParameters: {
-          'page': page,
-          'per_page': perPage,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['listings', 'items'],
-        );
-        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
-
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return ListingResponse(
-          success: true,
-          listings: listings,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final items = await _catalog.fetchFeaturedListings(limit: limit);
+      final listings = items.map((s) => s.toListing()).toList();
 
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch featured listings'),
+        success: true,
+        listings: listings,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -219,30 +155,12 @@ class ListingService {
 
   Future<ListingDetailResponse> getListingDetail(int listingId) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.listingDetail}/$listingId',
-      );
+      final detail = await _catalog.fetchListing(listingId);
+      final listing = detail.toListing();
 
-      if (response.statusCode == 200) {
-        final listingJson = ApiEnvelope.extractData(response.data);
-        if (listingJson.isNotEmpty) {
-          final listing = Listing.fromJson(listingJson);
-          return ListingDetailResponse(success: true, listing: listing);
-        }
-      }
-
-      if (response.statusCode == 401) {
-        return const ListingDetailResponse(
-          success: false,
-          message: 'Please log in to view property details.',
-        );
-      }
-
-      final gate = ApiEnvelope.extractSubscriptionGate(response.data);
       return ListingDetailResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Listing not found'),
-        subscriptionGate: gate.required ? gate : null,
+        success: true,
+        listing: listing,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -253,19 +171,16 @@ class ListingService {
     }
   }
 
-  /// Lightweight poll: get only video processing status for a listing
   Future<VideoProcessing?> getVideoStatus(int listingId) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.listingDetail}/$listingId/video-status',
-      );
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map<String, dynamic>;
-        if (data['status'] != null) {
-          return VideoProcessing.fromJson(data);
-        }
-      }
-      return null;
+      final v = await _media.fetchVideo(listingId);
+      final status = switch (v.status) {
+        VideoStateStatus.ready => VideoProcessingStatus.ready,
+        VideoStateStatus.processing => VideoProcessingStatus.processing,
+        VideoStateStatus.failed => VideoProcessingStatus.failed,
+        _ => VideoProcessingStatus.pending,
+      };
+      return VideoProcessing(status: status, processedUrl: v.url);
     } catch (_) {
       return null;
     }
@@ -273,26 +188,15 @@ class ListingService {
 
   Future<ListingResponse> getSimilarListings(int listingId) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.similarListings}/$listingId/similar',
+      final result = await _v2Client.getCollection(
+        '${ApiV2Constants.listings}/$listingId/similar',
+        parse: ListingSummary.fromJson,
       );
-
-      if (response.statusCode == 200) {
-        final dataList = ApiEnvelope.extractList(
-          response.data,
-          itemKeys: const ['listings', 'items'],
-        );
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return ListingResponse(success: true, listings: listings);
-      }
+      final listings = result.items.map((s) => s.toListing()).toList();
 
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch similar listings'),
+        success: true,
+        listings: listings,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -303,227 +207,36 @@ class ListingService {
     }
   }
 
-
-  Future<FormData> _buildFormData(ListingFormData formData, {bool isUpdate = false}) async {
-    final dioFormData = FormData();
-    final isRental = formData.listingType == 'rental';
-
-    // Add text fields
-    dioFormData.fields.addAll([
-      MapEntry('type', formData.type),
-      if (!isRental && formData.holdingType.isNotEmpty)
-        MapEntry('holding_type', formData.holdingType),
-      MapEntry('listing_type', formData.listingType),
-      MapEntry('use_type', formData.useType),
-      if (formData.specificLocation != null) MapEntry('specific_location', formData.specificLocation!),
-      if (!isRental && formData.priceFixed != null)
-        MapEntry('price_fixed', formData.priceFixed.toString())
-      else if (isRental && !formData.priceOnAgreement && formData.priceFixed != null)
-        MapEntry('price_fixed', formData.priceFixed.toString()),
-      if (isRental)
-        const MapEntry('rental_period_unit', 'month')
-      else if (formData.rentalPeriodUnit != null && formData.rentalPeriodUnit!.isNotEmpty)
-        MapEntry('rental_period_unit', formData.rentalPeriodUnit!),
-      MapEntry('posted_for_other_owner', formData.postedForOtherOwner ? '1' : '0'),
-      if (formData.listingType == 'rental' && formData.postedForOtherOwner) ...[
-        if (formData.ownerName.trim().isNotEmpty)
-          MapEntry('owner_name', formData.ownerName.trim()),
-        if (formData.ownerPhone.trim().isNotEmpty)
-          MapEntry('owner_phone', formData.ownerPhone.trim()),
-      ],
-      if (formData.facingDirection != null) MapEntry('facing_direction', formData.facingDirection!),
-      if (formData.description != null) MapEntry('description', formData.description!),
-      if (formData.serviceType != null) MapEntry('service_type', formData.serviceType!),
-      if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),
-      if (!isRental) ...[
-        MapEntry('has_debt_or_encumbrance', formData.hasDebtOrEncumbrance ? '1' : '0'),
-        if (formData.debtAmount != null) MapEntry('debt_amount', formData.debtAmount.toString()),
-        if (formData.debtHolder != null) MapEntry('debt_holder', formData.debtHolder!),
-      ],
-      if (formData.postedByAgent) MapEntry('agent_id', formData.agentId),
-      MapEntry('electricity', formData.electricity ? '1' : '0'),
-      MapEntry('water', formData.water ? '1' : '0'),
-      MapEntry('parking_available', formData.parkingAvailable ? '1' : '0'),
-      if (!isRental && formData.totalSquareMeters != null) ...[
-        MapEntry('total_square_meters', formData.totalSquareMeters.toString()),
-        MapEntry('area', formData.totalSquareMeters.toString()),
-      ],
-      if (!isRental && formData.frontAreaSqm != null) MapEntry('front_area_sqm', formData.frontAreaSqm.toString()),
-      if (!isRental && formData.sideAreaSqm != null) MapEntry('side_area_sqm', formData.sideAreaSqm.toString()),
-      const MapEntry('terms_accepted', '1'),
-    ]);
-
-    // House-specific fields
-    if (formData.type == 'house') {
-      if (formData.totalRooms != null) dioFormData.fields.add(MapEntry('total_rooms', formData.totalRooms.toString()));
-      if (formData.bedrooms != null) dioFormData.fields.add(MapEntry('bedrooms', formData.bedrooms.toString()));
-      if (formData.bathrooms != null) dioFormData.fields.add(MapEntry('bathrooms', formData.bathrooms.toString()));
-      if (formData.kitchens != null) dioFormData.fields.add(MapEntry('kitchens', formData.kitchens.toString()));
-      if (formData.salons != null) dioFormData.fields.add(MapEntry('salons', formData.salons.toString()));
-      if (formData.floors != null) dioFormData.fields.add(MapEntry('floors', formData.floors.toString()));
-      if (formData.houseType != null) dioFormData.fields.add(MapEntry('house_type', formData.houseType!));
-      if (!isRental && formData.yearBuilt != null) dioFormData.fields.add(MapEntry('year_built', formData.yearBuilt.toString()));
-    }
-
-    // Holding-specific fields (sales only)
-    if (!isRental) {
-      if (formData.holdingType == 'Free Hold') {
-        if (formData.taxPaidUntilYear != null) dioFormData.fields.add(MapEntry('tax_paid_until_year', formData.taxPaidUntilYear.toString()));
-        if (formData.acquisitionClarification != null) dioFormData.fields.add(MapEntry('acquisition_clarification', formData.acquisitionClarification!));
-      } else if (formData.holdingType == 'Lease Hold') {
-        if (formData.leasedYear != null) dioFormData.fields.add(MapEntry('leased_year', formData.leasedYear.toString()));
-        dioFormData.fields.add(MapEntry('is_transferable', formData.isTransferable ? '1' : '0'));
-        if (formData.leasePricePerSqm != null) {
-          dioFormData.fields.add(MapEntry('lease_price_per_sqm', formData.leasePricePerSqm.toString()));
-          dioFormData.fields.add(MapEntry('price_per_sqm', formData.leasePricePerSqm.toString()));
-        }
-        if (formData.buildType != null) dioFormData.fields.add(MapEntry('build_type', formData.buildType!));
-        if (formData.annualPayment != null) dioFormData.fields.add(MapEntry('annual_payment', formData.annualPayment.toString()));
-      } else if (formData.holdingType == 'Cooperative') {
-        if (formData.cooperativeName != null) dioFormData.fields.add(MapEntry('cooperative_name', formData.cooperativeName!));
-        if (formData.cooperativeCode != null) dioFormData.fields.add(MapEntry('cooperative_code', formData.cooperativeCode!));
-        if (formData.buildingStatus != null) dioFormData.fields.add(MapEntry('building_status', formData.buildingStatus!));
-      }
-    }
-
-    // VIP option
-    if (formData.isVip) {
-      dioFormData.fields.add(const MapEntry('is_vip', '1'));
-    }
-
-    // Add new images
-    for (int i = 0; i < formData.images.length; i++) {
-      final file = formData.images[i];
-      dioFormData.files.add(MapEntry(
-        'images[]',
-        await MultipartFile.fromFile(file.path, filename: 'image_$i.jpg'),
-      ));
-    }
-
-    // Add site plan (sales only)
-    if (!isRental && formData.sitePlan != null) {
-      if (isUpdate) {
-        // Backend update expects 'site_plan_image' for a single replacement
-        dioFormData.files.add(MapEntry(
-          'site_plan_image',
-          await MultipartFile.fromFile(formData.sitePlan!.path,
-              filename: 'site_plan_update.jpg'),
-        ));
-      } else {
-        // Backend store expects 'site_plans[]' array
-        dioFormData.files.add(MapEntry(
-          'site_plans[]',
-          await MultipartFile.fromFile(formData.sitePlan!.path,
-              filename: 'site_plan.jpg'),
-        ));
-      }
-    }
-
-    // Add conditional files (ownership proof for cooperative sales only)
-    if (!isRental && formData.ownershipProof != null) {
-      dioFormData.files.add(MapEntry(
-        'ownership_proof[]',
-        await MultipartFile.fromFile(formData.ownershipProof!.path, filename: 'ownership_proof.jpg'),
-      ));
-    }
-    
-    // Video file is optional for rentals, required for sales
-    if (formData.videoFile != null) {
-      dioFormData.files.add(MapEntry(
-        'video_file',
-        await MultipartFile.fromFile(formData.videoFile!.path, filename: 'video.mp4'),
-      ));
-    }
-
-    // Update-specific fields
-    if (isUpdate) {
-      dioFormData.fields.add(const MapEntry('_method', 'PUT'));
-      
-      // Sync with backend parameter names: delete_images instead of removed_image_ids
-      for (final id in formData.removedImageIds) {
-        dioFormData.fields.add(MapEntry('delete_images[]', id.toString()));
-      }
-      
-      if (formData.removeExistingSitePlan) {
-        dioFormData.fields.add(const MapEntry('delete_site_plans[]', '0'));
-        // I use '0' as a marker to delete the main site_plan_image_link too in backend.
-      }
-      
-      if (formData.deleteVideo) {
-        dioFormData.fields.add(const MapEntry('delete_video', '1'));
-      }
-    }
-
-    return dioFormData;
-  }
-
-  Future<int> _calculateTotalSize(ListingFormData formData) async {
-    int totalSize = 0;
-    
-    for (final file in formData.images) {
-      final f = File(file.path);
-      if (await f.exists()) totalSize += await f.length();
-    }
-    if (formData.sitePlan != null) {
-      final f = File(formData.sitePlan!.path);
-      if (await f.exists()) totalSize += await f.length();
-    }
-    if (formData.ownershipProof != null) {
-      final f = File(formData.ownershipProof!.path);
-      if (await f.exists()) totalSize += await f.length();
-    }
-    if (formData.videoFile != null) {
-      final f = File(formData.videoFile!.path);
-      if (await f.exists()) totalSize += await f.length();
-    }
-    
-    return totalSize;
-  }
-
   Future<ListingResponse> createListing({
     required ListingFormData formData,
     String? submissionKey,
-    void Function(double progress)? onProgress,
+    void Function(double)? onProgress,
   }) async {
     try {
-      // Validate total upload size (150MB limit)
-      final totalSize = await _calculateTotalSize(formData);
-      if (totalSize > 150 * 1024 * 1024) {
-        return const ListingResponse(
-          success: false, 
-          message: 'Total upload size exceeds 150MB limit. Please reduce file sizes.'
-        );
-      }
+      onProgress?.call(0.1);
+      final key = submissionKey ?? 'sub-${DateTime.now().microsecondsSinceEpoch}';
+      final payload = formData.toV2Payload(key);
 
-      final dioFormData = await _buildFormData(formData);
-      final headers = <String, dynamic>{};
-      if (submissionKey != null) {
-        headers['X-Submission-Key'] = submissionKey;
-      }
-      final response = await _apiClient.dio.post(
-        ApiConstants.createListing,
-        data: dioFormData,
-        options: Options(
-          sendTimeout: const Duration(seconds: 300),
-          headers: headers.isNotEmpty ? headers : null,
-        ),
-        onSendProgress: onProgress != null
-            ? (sent, total) {
-                if (total > 0) onProgress(sent / total);
-              }
-            : null,
-      );
+      final draft = await _owner.createProperty(payload);
+      onProgress?.call(0.4);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return ListingResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Listing created successfully'),
-        );
+      if (formData.images.isNotEmpty) {
+        final imageFiles = formData.images.map((f) => File(f.path)).toList();
+        await _media.uploadImages(draft.id, imageFiles);
       }
+      onProgress?.call(0.7);
 
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to create listing'),
+      if (formData.videoFile != null) {
+        await _media.uploadVideo(draft.id, File(formData.videoFile!.path));
+      }
+      onProgress?.call(0.9);
+
+      await _owner.submit(draft.id);
+      onProgress?.call(1.0);
+
+      return const ListingResponse(
+        success: true,
+        message: 'Listing submitted successfully for review',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -536,51 +249,24 @@ class ListingService {
 
   Future<ListingResponse> updateListing({
     required int listingId,
-    Map<String, dynamic>? listingData,
-    ListingFormData? formData,
-    void Function(double progress)? onProgress,
+    required ListingFormData formData,
+    void Function(double)? onProgress,
   }) async {
     try {
-      dynamic data = listingData;
-      String method = 'PUT';
-      String url = '${ApiConstants.updateListing}/$listingId';
+      onProgress?.call(0.2);
+      final payload = formData.toV2Payload('');
+      await _owner.updateProperty(listingId, payload);
+      onProgress?.call(0.6);
 
-      if (formData != null) {
-        // Validate total upload size (150MB limit)
-        final totalSize = await _calculateTotalSize(formData);
-        if (totalSize > 150 * 1024 * 1024) {
-          return const ListingResponse(
-            success: false, 
-            message: 'Total upload size exceeds 150MB limit. Please reduce file sizes.'
-          );
-        }
-
-        // If we have files, we must use POST with _method=PUT
-        data = await _buildFormData(formData, isUpdate: true);
-        method = 'POST';
+      if (formData.images.isNotEmpty) {
+        final imageFiles = formData.images.map((f) => File(f.path)).toList();
+        await _media.uploadImages(listingId, imageFiles);
       }
+      onProgress?.call(1.0);
 
-      final response = await _apiClient.dio.request(
-        url,
-        data: data,
-        options: Options(method: method, sendTimeout: const Duration(seconds: 300)),
-        onSendProgress: onProgress != null
-            ? (sent, total) {
-                if (total > 0) onProgress(sent / total);
-              }
-            : null,
-      );
-
-      if (response.statusCode == 200) {
-        return ListingResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Listing updated successfully'),
-        );
-      }
-
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to update listing'),
+      return const ListingResponse(
+        success: true,
+        message: 'Listing updated successfully',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -593,17 +279,10 @@ class ListingService {
 
   Future<ListingResponse> deleteListing(int listingId) async {
     try {
-      final response = await _apiClient.dio.delete(
-        '${ApiConstants.deleteListing}/$listingId',
-      );
-
-      if (response.statusCode == 200) {
-        return const ListingResponse(success: true, message: 'Listing deleted successfully');
-      }
-
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to delete listing'),
+      await _owner.delete(listingId);
+      return const ListingResponse(
+        success: true,
+        message: 'Listing deleted successfully',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -616,13 +295,10 @@ class ListingService {
 
   Future<ListingResponse> vipListing(int listingId) async {
     try {
-      final response = await _apiClient.dio.post('${ApiConstants.vipListing}/$listingId/vip');
-      if (response.statusCode == 200) {
-        return const ListingResponse(success: true, message: 'Listing marked as VIP successfully');
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to mark listing as VIP'),
+      await _promo.vip(listingId);
+      return const ListingResponse(
+        success: true,
+        message: 'Listing marked as VIP successfully',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -635,20 +311,17 @@ class ListingService {
 
   Future<ContactRevealResponse> revealContact(int listingId) async {
     try {
-      final response = await _apiClient.dio.post('${ApiConstants.revealContact}/$listingId/reveal-contact');
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
-        return ContactRevealResponse(
-          success: true,
-          contact: data['contact']?.toString() ?? '',
-          name: data['name']?.toString() ?? '',
-          email: data['email']?.toString() ?? '',
-          alreadyRevealed: data['already_revealed'] ?? false,
-        );
-      }
+      final data = await _v2Client.sendItem(
+        '${ApiV2Constants.listings}/$listingId/reveal-contact',
+        method: 'POST',
+      );
+
       return ContactRevealResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to reveal contact'),
+        success: true,
+        contact: data['contact']?.toString() ?? data['phone']?.toString() ?? '',
+        name: data['name']?.toString() ?? '',
+        email: data['email']?.toString() ?? '',
+        alreadyRevealed: data['already_revealed'] ?? false,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -661,13 +334,10 @@ class ListingService {
 
   Future<ListingResponse> featureListing(int listingId) async {
     try {
-      final response = await _apiClient.dio.post('${ApiConstants.featureListing}/$listingId/feature');
-      if (response.statusCode == 200) {
-        return const ListingResponse(success: true, message: 'Listing featured successfully');
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to feature listing'),
+      await _promo.feature(listingId);
+      return const ListingResponse(
+        success: true,
+        message: 'Listing featured successfully',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -680,13 +350,10 @@ class ListingService {
 
   Future<ListingResponse> unfeatureListing(int listingId) async {
     try {
-      final response = await _apiClient.dio.post('${ApiConstants.featureListing}/$listingId/unfeature');
-      if (response.statusCode == 200) {
-        return const ListingResponse(success: true, message: 'Featured status removed');
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to remove featured status'),
+      await _promo.unfeature(listingId);
+      return const ListingResponse(
+        success: true,
+        message: 'Listing unfeatured successfully',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -699,13 +366,10 @@ class ListingService {
 
   Future<ListingResponse> unvipListing(int listingId) async {
     try {
-      final response = await _apiClient.dio.post('${ApiConstants.vipListing}/$listingId/unvip');
-      if (response.statusCode == 200) {
-        return const ListingResponse(success: true, message: 'VIP status removed');
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to remove VIP status'),
+      await _promo.unvip(listingId);
+      return const ListingResponse(
+        success: true,
+        message: 'VIP status removed successfully',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -717,20 +381,7 @@ class ListingService {
   }
 
   Future<int?> checkSubmissionKey(String submissionKey) async {
-    try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.checkSubmissionKey}/$submissionKey',
-      );
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map<String, dynamic>;
-        if (data['found'] == true && data['listing_id'] != null) {
-          return data['listing_id'] as int;
-        }
-      }
-      return null;
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 }
 
@@ -752,7 +403,8 @@ class ListingResponse {
   });
 
   @override
-  String toString() => 'ListingResponse(success: $success, listings: ${listings.length})';
+  String toString() =>
+      'ListingResponse(success: $success, listings: ${listings.length})';
 }
 
 class ListingDetailResponse {

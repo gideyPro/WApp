@@ -1,10 +1,11 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../../l10n/app_localizations.dart';
 import '../models/address.dart';
+import '../models/v2/v2_legacy_adapters.dart';
+import 'v2/order_service.dart';
 
 double? _parseDouble(dynamic value) {
   if (value == null) return null;
@@ -67,10 +68,6 @@ class Order {
           : null,
     );
   }
-
-  bool get isActive => status == 'active';
-  bool get isFulfilled => status == 'fulfilled';
-  bool get isCancelled => status == 'cancelled';
 
   String getLocalizedHoldingType(BuildContext context) {
     if (holdingType == null) return '';
@@ -135,46 +132,24 @@ class OrderResponse {
   });
 }
 
+/// Service for managing buyer orders backed by V2 API.
 class OrderService {
-  final ApiClient _apiClient;
-  static const String _basePath = '${ApiConstants.apiBase}/orders';
+  final OrderServiceV2 _v2;
 
-  OrderService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+  OrderService({ApiClient? apiClient, OrderServiceV2? v2Service})
+      : _v2 = v2Service ?? OrderServiceV2();
 
   Future<OrderResponse> getOrders({int page = 1, int perPage = 20}) async {
     try {
-      final response = await _apiClient.dio.get(
-        _basePath,
-        queryParameters: {'page': page, 'per_page': perPage},
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-
-        final dataList = ApiEnvelope.extractList(
-          data,
-          itemKeys: const ['orders', 'items'],
-        );
-        final orders = dataList
-            .whereType<Map>()
-            .map((j) => Order.fromJson(j as Map<String, dynamic>))
-            .toList();
-
-        final pagination = ApiEnvelope.extractPagination(data, fallbackPage: page);
-
-        return OrderResponse(
-          success: true,
-          orders: orders,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final result = await _v2.fetch(limit: perPage);
+      final orders = result.items.map((o) => o.toLegacyOrder()).toList();
 
       return OrderResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch orders'),
+        success: true,
+        orders: orders,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: orders.length,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -187,17 +162,10 @@ class OrderService {
 
   Future<OrderResponse> getOrder(int id) async {
     try {
-      final response = await _apiClient.dio.get('$_basePath/$id');
-      if (response.statusCode == 200) {
-        final orderData = ApiEnvelope.extractData(response.data);
-        return OrderResponse(
-          success: true,
-          orders: [Order.fromJson(orderData)],
-        );
-      }
+      final order = await _v2.fetchOrder(id);
       return OrderResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch order'),
+        success: true,
+        orders: [order.toLegacyOrder()],
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -210,19 +178,39 @@ class OrderService {
 
   Future<OrderResponse> createOrder(Map<String, dynamic> data) async {
     try {
-      final response = await _apiClient.dio.post(_basePath, data: data);
-      if (response.statusCode == 201) {
-        final orderData = ApiEnvelope.extractData(response.data);
+      final random = Random();
+      final suffix = random.nextInt(0x7fffffff).toRadixString(36);
+      final subKey = data['submission_key']?.toString() ??
+          'ord-${DateTime.now().microsecondsSinceEpoch}-$suffix';
 
-        return OrderResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Order created'),
-          orders: [Order.fromJson(orderData)],
-        );
-      }
+      final payload = <String, dynamic>{
+        'submission_key': subKey,
+        'type': data['type'] ?? 'house',
+        'listing_type': data['listing_type'] ?? 'sale',
+        if (data['address_id'] != null) 'address_id': data['address_id'],
+        'attributes': {
+          if (data['holding_type'] != null)
+            'holding_type': data['holding_type'],
+          if (data['facing_direction'] != null)
+            'facing_direction': data['facing_direction'],
+        },
+        'budget': {
+          if (data['min_budget'] != null) 'min': data['min_budget'],
+          if (data['max_budget'] != null) 'max': data['max_budget'],
+        },
+        'area': {
+          if (data['min_area'] != null) 'min': data['min_area'],
+          if (data['max_area'] != null) 'max': data['max_area'],
+        },
+        'description': data['description'] ?? '',
+      };
+
+      final created = await _v2.create(payload);
+
       return OrderResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to create order'),
+        success: true,
+        message: 'Order created',
+        orders: [created.toLegacyOrder()],
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -233,27 +221,12 @@ class OrderService {
     }
   }
 
-  Future<OrderResponse> cancelOrder(int id) async {
+  Future<bool> cancelOrder(int id) async {
     try {
-      final response = await _apiClient.dio.delete('$_basePath/$id');
-      if (response.statusCode == 200) {
-        return OrderResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Order cancelled'),
-        );
-      }
-      return OrderResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to cancel order'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return OrderResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
+      await _v2.cancel(id);
+      return true;
+    } catch (_) {
+      return false;
     }
   }
-
-  factory OrderService.withClient(ApiClient client) => OrderService(apiClient: client);
 }

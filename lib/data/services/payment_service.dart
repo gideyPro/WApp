@@ -1,54 +1,30 @@
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/payment.dart';
+import '../models/v2/v2_legacy_adapters.dart';
+import 'v2/payment_service.dart';
 
-/// Service for Chapa payment history and details
+/// Service for Chapa payment history and details backed by V2 API.
 class PaymentService {
-  final ApiClient _apiClient;
+  final PaymentServiceV2 _v2;
 
-  PaymentService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+  PaymentService({ApiClient? apiClient, PaymentServiceV2? v2Service})
+      : _v2 = v2Service ?? PaymentServiceV2();
 
   Future<PaymentHistoryResponse> getPaymentHistory({
     int page = 1,
     int perPage = 15,
   }) async {
     try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.payments,
-        queryParameters: {
-          'page': page,
-          'per_page': perPage,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = response.data;
-        List<dynamic> paymentsList = ApiEnvelope.extractList(
-          responseData,
-          itemKeys: const ['payments', 'items'],
-        );
-        final pagination = ApiEnvelope.extractPagination(responseData, fallbackPage: page);
-
-        final payments = paymentsList
-            .whereType<Map>()
-            .map((json) => Payment.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return PaymentHistoryResponse(
-          success: true,
-          payments: payments,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final result = await _v2.fetch(limit: perPage);
+      final payments = result.items.map((p) => p.toLegacyPayment()).toList();
 
       return PaymentHistoryResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch payments'),
+        success: true,
+        payments: payments,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: payments.length,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -61,25 +37,29 @@ class PaymentService {
 
   Future<PaymentResponse> getPaymentDetail(int paymentId) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.paymentDetail}/$paymentId',
-      );
-
-      if (response.statusCode == 200) {
-        final paymentData = ApiEnvelope.extractData(response.data);
-        final payment = paymentData.isNotEmpty
-            ? Payment.fromJson(paymentData)
-            : Payment.fromJson(const <String, dynamic>{});
-
-        return PaymentResponse(
-          success: true,
-          payment: payment,
-        );
-      }
+      final payment = await _v2.fetchOne(paymentId.toString());
 
       return PaymentResponse(
+        success: true,
+        payment: payment.toLegacyPayment(),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return PaymentResponse(
         success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Payment not found'),
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  Future<PaymentResponse> verifyPayment(String txRef) async {
+    try {
+      final result = await _v2.verify(txRef);
+
+      return PaymentResponse(
+        success: result.isActivated,
+        verified: result.isSuccess,
+        message: result.isSuccess ? 'Payment verified successfully' : 'Payment pending',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);

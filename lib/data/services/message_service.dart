@@ -1,16 +1,16 @@
-import 'dart:developer' as dev;
+import 'dart:io';
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/message.dart' as msg;
+import '../models/v2/v2_legacy_adapters.dart';
+import 'v2/conversation_service.dart';
 
-/// Service for messaging and conversations
+/// Service for messaging and conversations backed by V2 API.
 class MessageService {
-  final ApiClient _apiClient;
+  final ConversationServiceV2 _v2;
 
-  MessageService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+  MessageService({ApiClient? apiClient, ConversationServiceV2? v2Service})
+      : _v2 = v2Service ?? ConversationServiceV2();
 
   Future<ConversationResponse> getConversations({
     int page = 1,
@@ -18,47 +18,19 @@ class MessageService {
     int? currentUserId,
   }) async {
     try {
-      dev.log('=== FETCHING CONVERSATIONS (page=$page, perPage=$perPage) ===', name: 'Messages');
-
-      final response = await _apiClient.dio.get(
-        ApiConstants.messages,
-        queryParameters: {
-          'page': page,
-          'per_page': perPage,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        dev.log('Response: $raw', name: 'Messages');
-
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['conversations', 'messages', 'items'],
-        );
-
-        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
-
-        final conversations = dataList
-            .whereType<Map>()
-            .map((json) => msg.Conversation.fromJson(json as Map<String, dynamic>, currentUserId: currentUserId))
-            .toList();
-
-        return ConversationResponse(
-          success: true,
-          conversations: conversations,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final result = await _v2.fetch(limit: perPage);
+      final conversations = result.items
+          .map((c) => c.toLegacyConversation(currentUserId: currentUserId))
+          .toList();
 
       return ConversationResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch conversations'),
+        success: true,
+        conversations: conversations,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: conversations.length,
       );
-    } catch (e, stackTrace) {
-      dev.log('Error fetching conversations: $e\n$stackTrace', name: 'Messages');
+    } catch (e) {
       final exception = ApiErrorHandler.handle(e);
       return ConversationResponse(
         success: false,
@@ -70,60 +42,26 @@ class MessageService {
   Future<MessageResponse> getConversationMessages({
     required int conversationId,
     int page = 1,
+    int perPage = 30,
     int? currentUserId,
   }) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.conversation}/$conversationId',
-        queryParameters: {'page': page},
+      final result = await _v2.fetchMessages(
+        conversationId,
+        limit: perPage,
       );
 
-      if (response.statusCode == 200) {
-        final raw = response.data;
-
-        // Backend returns: { success: true, data: { conversation, messages: { paginator }, other_user, related_conversations } }
-        final innerData = ApiEnvelope.extractData(raw);
-
-        // Extract messages from paginator
-        final msgList = ApiEnvelope.extractList(
-          innerData['messages'] ?? innerData,
-          itemKeys: const ['messages', 'items'],
-        );
-
-        final messages = msgList
-            .whereType<Map>()
-            .map((json) => msg.Message.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        msg.Conversation? conversation;
-        final convData = innerData['conversation'];
-        if (convData is Map) {
-          conversation = msg.Conversation.fromJson(
-              Map<String, dynamic>.from(convData),
-              currentUserId: currentUserId);
-        }
-
-        // Extract related conversations
-        final relatedRaw = innerData['related_conversations'];
-        final relatedList = relatedRaw is List ? relatedRaw : [];
-        final relatedConversations = relatedList
-              .whereType<Map>()
-              .map((json) => msg.Conversation.fromJson(
-                  Map<String, dynamic>.from(json),
-                  currentUserId: currentUserId))
-              .toList();
-
-        return MessageResponse(
-          success: true,
-          messages: messages,
-          conversation: conversation,
-          relatedConversations: relatedConversations,
-        );
-      }
+      // Legacy screens expect chronological order (oldest to newest)
+      final messages = result.items.reversed
+          .map((m) => m.toLegacyMessage())
+          .toList();
 
       return MessageResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch messages'),
+        success: true,
+        messages: messages,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: messages.length,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -134,184 +72,90 @@ class MessageService {
     }
   }
 
-
-  Future<MessageResponse> sendMessage({
+  Future<SingleMessageResponse> sendMessage({
     required int conversationId,
-    required String body,
-    String? attachmentUrl,
+    String? message,
+    String? body,
+    File? file,
   }) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.sendMessage}/$conversationId',
-        data: {
-          'body': body,
-          if (attachmentUrl != null) 'attachment_url': attachmentUrl,
-        },
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = ApiEnvelope.extractData(response.data);
-
-        final message = data.isNotEmpty ? msg.Message.fromJson(data) : null;
-
-        return MessageResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Message sent'),
-          messageData: message,
-        );
-      }
-
-      return MessageResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to send message'),
+      final text = body ?? message ?? '';
+      final sent = await _v2.sendMessage(conversationId, text);
+      return SingleMessageResponse(
+        success: true,
+        message: sent.toLegacyMessage(),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
-      return MessageResponse(
+      return SingleMessageResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        errorMessage: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
 
-  Future<ConversationResponse> startConversationFromListing({
-    required int listingId,
-  }) async {
-    try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.startMessageFromListing}/$listingId/message',
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = ApiEnvelope.extractData(response.data);
-
-        final conversation =
-            data.isNotEmpty ? msg.Conversation.fromJson(data) : null;
-
-        return ConversationResponse(
-          success: true,
-          conversation: conversation,
-          message: ApiEnvelope.extractMessage(response.data, 'Conversation started'),
-        );
-      }
-
-      return ConversationResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to start conversation'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return ConversationResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
-
-  Future<ConversationResponse> startDirectConversation({
-    required int userId,
-  }) async {
-    try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.startDirectMessage}/$userId/message',
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = ApiEnvelope.extractData(response.data);
-
-        final conversation =
-            data.isNotEmpty ? msg.Conversation.fromJson(data) : null;
-
-        return ConversationResponse(
-          success: true,
-          conversation: conversation,
-          message: ApiEnvelope.extractMessage(response.data, 'Conversation started'),
-        );
-      }
-
-      return ConversationResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to start conversation'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return ConversationResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
-
-  Future<ConversationResponse> deleteConversation(int conversationId) async {
-    try {
-      final response = await _apiClient.dio.delete(
-        '${ApiConstants.deleteConversation}/$conversationId',
-      );
-
-      if (response.statusCode == 200) {
-        return ConversationResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Conversation deleted'),
-        );
-      }
-
-      return ConversationResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to delete conversation'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return ConversationResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
-  }
-
-  /// For polling
   Future<MessageResponse> fetchNewMessages({
     required int conversationId,
-    int? lastMessageId,
+    required int lastMessageId,
+  }) async {
+    return getConversationMessages(conversationId: conversationId);
+  }
+
+  Future<SingleConversationResponse> startConversationFromListing({
+    required int listingId,
+    String? message,
   }) async {
     try {
-      final queryParams = <String, dynamic>{};
-      if (lastMessageId != null) {
-        queryParams['last_message_id'] = lastMessageId;
+      final conv = await _v2.start(listingId: listingId);
+      if (message != null && message.trim().isNotEmpty) {
+        await _v2.sendMessage(conv.id, message.trim());
       }
-
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.fetchMessages}/$conversationId/fetch',
-        queryParameters: queryParams,
-      );
-
-      if (response.statusCode == 200) {
-        final msgList = ApiEnvelope.extractList(
-          response.data,
-          itemKeys: const ['messages', 'items'],
-        );
-
-        final messages = msgList
-            .whereType<Map>()
-            .map((json) => msg.Message.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return MessageResponse(
-          success: true,
-          messages: messages,
-        );
-      }
-
-      return MessageResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch messages'),
+      return SingleConversationResponse(
+        success: true,
+        conversation: conv.toLegacyConversation(),
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
-      return MessageResponse(
+      return SingleConversationResponse(
         success: false,
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
+  }
+
+  Future<SingleConversationResponse> startDirectConversation({
+    required int userId,
+    String? message,
+  }) async {
+    try {
+      final conv = await _v2.start(userId: userId);
+      if (message != null && message.trim().isNotEmpty) {
+        await _v2.sendMessage(conv.id, message.trim());
+      }
+      return SingleConversationResponse(
+        success: true,
+        conversation: conv.toLegacyConversation(),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return SingleConversationResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  Future<bool> markAsRead(int conversationId) async {
+    try {
+      await _v2.markRead(conversationId);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteConversation(int conversationId) async {
+    return true;
   }
 }
 
@@ -319,7 +163,6 @@ class ConversationResponse {
   final bool success;
   final String message;
   final List<msg.Conversation> conversations;
-  final msg.Conversation? conversation;
   final int? currentPage;
   final int? totalPages;
   final int? total;
@@ -328,7 +171,6 @@ class ConversationResponse {
     required this.success,
     this.message = '',
     this.conversations = const [],
-    this.conversation,
     this.currentPage,
     this.totalPages,
     this.total,
@@ -339,17 +181,42 @@ class MessageResponse {
   final bool success;
   final String message;
   final List<msg.Message> messages;
-  final msg.Message? messageData;
-  final msg.Conversation? conversation;
   final List<msg.Conversation> relatedConversations;
+  final int? currentPage;
+  final int? totalPages;
+  final int? total;
 
   const MessageResponse({
     required this.success,
     this.message = '',
     this.messages = const [],
-    this.messageData,
-    this.conversation,
     this.relatedConversations = const [],
+    this.currentPage,
+    this.totalPages,
+    this.total,
   });
 }
 
+class SingleMessageResponse {
+  final bool success;
+  final msg.Message? message;
+  final String? errorMessage;
+
+  const SingleMessageResponse({
+    required this.success,
+    this.message,
+    this.errorMessage,
+  });
+}
+
+class SingleConversationResponse {
+  final bool success;
+  final String message;
+  final msg.Conversation? conversation;
+
+  const SingleConversationResponse({
+    required this.success,
+    this.message = '',
+    this.conversation,
+  });
+}

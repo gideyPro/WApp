@@ -210,7 +210,7 @@ class VipListingsNotifier extends StateNotifier<ListingsState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final response = await _listingService.getVipListings(
-      page: page,
+      limit: page * 10,
     );
 
     if (response.success) {

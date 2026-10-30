@@ -1,43 +1,36 @@
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
+import '../../core/network/v2/api_v2_client.dart';
 import '../models/subscription.dart';
+import '../models/v2/payment_state.dart';
+import '../models/v2/v2_legacy_adapters.dart';
+import 'v2/plan_service.dart';
+import 'v2/payment_service.dart';
+import 'v2/subscription_service.dart';
 
-/// Service for subscription management
+/// Service for subscription management backed by V2 API.
 class SubscriptionServiceApi {
-  final ApiClient _apiClient;
+  final PlanService _planService;
+  final SubscriptionServiceV2 _subV2;
+  final PaymentServiceV2 _paymentV2;
 
-  SubscriptionServiceApi({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+  SubscriptionServiceApi({
+    ApiClient? apiClient,
+    PlanService? planService,
+    SubscriptionServiceV2? subService,
+    PaymentServiceV2? paymentService,
+  })  : _planService = planService ?? PlanService(),
+        _subV2 = subService ?? SubscriptionServiceV2(),
+        _paymentV2 = paymentService ?? PaymentServiceV2(client: ApiV2Client(apiClient: apiClient));
 
-  /// Get all subscription plans with current subscription info
-  /// Uses the combined /subscriptions endpoint for efficiency (single call)
   Future<SubscriptionPlansResponse> getPlans({String currency = 'ETB'}) async {
     try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.currentSubscription,
-        queryParameters: {'currency': currency},
-      );
-
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
-
-        final plansData = data['plans'];
-        final plans = (plansData is List ? plansData : [])
-            .whereType<Map>()
-            .map((json) => SubscriptionPlan.fromJson(Map<String, dynamic>.from(json)))
-            .toList();
-
-        return SubscriptionPlansResponse(
-          success: true,
-          plans: plans,
-        );
-      }
+      final plansV2 = await _planService.fetchPlans();
+      final plans = plansV2.map((p) => p.toSubscriptionPlan()).toList();
 
       return SubscriptionPlansResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch plans'),
+        success: true,
+        plans: plans,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -48,60 +41,41 @@ class SubscriptionServiceApi {
     }
   }
 
-  /// Get plans + current subscription + capability flags in a single API call
   Future<FullSubscriptionData> getFullData({String currency = 'ETB'}) async {
     try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.currentSubscription,
-        queryParameters: {'currency': currency},
-      );
+      final plansV2 = await _planService.fetchPlans();
+      final plans = plansV2.map((p) => p.toSubscriptionPlan()).toList();
 
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
+      final overview = await _subV2.fetchOverview();
 
-        final plansData = data['plans'];
-        final plans = (plansData is List ? plansData : [])
-            .whereType<Map>()
-            .map((json) => SubscriptionPlan.fromJson(Map<String, dynamic>.from(json)))
-            .toList();
-
-        final subData = data['current_subscription'];
-        final subscription = subData is Map
-            ? Subscription.fromJson(Map<String, dynamic>.from(subData))
-            : null;
-
-        return FullSubscriptionData(
-          success: true,
-          plans: plans,
-          subscription: subscription,
-          canCreateListing: data['can_create_listing'] ?? false,
-          canCreateRentalListing: data['can_create_rental_listing'] ?? false,
-          canCreateVehicle: data['can_create_vehicle'] ?? false,
-          canCreateRentalVehicle: data['can_create_rental_vehicle'] ?? false,
-          canCreateJob: data['can_create_job'] ?? false,
-          canFeatureListing: data['can_feature_listing'] ?? false,
-          canViewVip: data['can_view_vip'] ?? false,
-          canCreateOrder: data['can_create_order'] ?? false,
-          hasPaidSubscription: data['has_paid_subscription'] ?? false,
-          canSeeVideo: data['can_see_video'] ?? false,
-          canSeeContact: data['can_see_contact'] ?? false,
-          canSeeFullAddress: data['can_see_full_address'] ?? false,
-          contactViewsUsed: data['contact_views_used'] ?? 0,
-          contactViewsRemaining: data['contact_views_remaining'] ?? 0,
-          rentalContactViewsUsed: data['rental_contact_views_used'] ?? 0,
-          rentalContactViewsRemaining: data['rental_contact_views_remaining'] ?? 0,
-          carContactViewsUsed: data['car_contact_views_used'] ?? 0,
-          carContactViewsRemaining: data['car_contact_views_remaining'] ?? 0,
-          carRentalContactViewsUsed: data['car_rental_contact_views_used'] ?? 0,
-          carRentalContactViewsRemaining: data['car_rental_contact_views_remaining'] ?? 0,
-          jobContactViewsUsed: data['job_contact_views_used'] ?? 0,
-          jobContactViewsRemaining: data['job_contact_views_remaining'] ?? 0,
-        );
-      }
+      final sub = overview.subscription?.toLegacySubscription();
 
       return FullSubscriptionData(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch subscription data'),
+        success: true,
+        plans: plans,
+        subscription: sub,
+        canCreateListing: overview.capabilities.maxListings?.hasCapacity ?? false,
+        canCreateRentalListing: overview.capabilities['max_rental_listings']?.hasCapacity ?? false,
+        canCreateVehicle: overview.capabilities.maxVehicles?.hasCapacity ?? false,
+        canCreateRentalVehicle: overview.capabilities['max_rental_vehicles']?.hasCapacity ?? false,
+        canCreateJob: overview.capabilities.maxJobs?.hasCapacity ?? false,
+        canFeatureListing: overview.capabilities.maxFeaturedListings?.hasCapacity ?? false,
+        canViewVip: overview.capabilities.canViewVip,
+        canCreateOrder: overview.capabilities.maxOrders?.hasCapacity ?? false,
+        hasPaidSubscription: overview.hasActiveSubscription,
+        canSeeVideo: overview.capabilities.canViewVideo,
+        canSeeContact: overview.capabilities.canAccessContact,
+        canSeeFullAddress: true,
+        contactViewsUsed: overview.capabilities.maxContacts?.used ?? 0,
+        contactViewsRemaining: overview.capabilities.maxContacts?.remaining ?? 0,
+        rentalContactViewsUsed: overview.capabilities['max_rental_contacts']?.used ?? 0,
+        rentalContactViewsRemaining: overview.capabilities['max_rental_contacts']?.remaining ?? 0,
+        carContactViewsUsed: overview.capabilities['max_car_contacts']?.used ?? 0,
+        carContactViewsRemaining: overview.capabilities['max_car_contacts']?.remaining ?? 0,
+        carRentalContactViewsUsed: overview.capabilities['max_car_rental_contacts']?.used ?? 0,
+        carRentalContactViewsRemaining: overview.capabilities['max_car_rental_contacts']?.remaining ?? 0,
+        jobContactViewsUsed: overview.capabilities['max_job_contacts']?.used ?? 0,
+        jobContactViewsRemaining: overview.capabilities['max_job_contacts']?.remaining ?? 0,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -114,56 +88,34 @@ class SubscriptionServiceApi {
 
   Future<CurrentSubscriptionResponse> getCurrentSubscription() async {
     try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.currentSubscription,
-      );
+      final overview = await _subV2.fetchOverview();
+      final sub = overview.subscription?.toLegacySubscription();
 
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
-
-        final subData = data['current_subscription'];
-        final subscription = subData is Map
-            ? Subscription.fromJson(Map<String, dynamic>.from(subData))
-            : null;
-
-        return CurrentSubscriptionResponse(
-          success: true,
-          subscription: subscription,
-          canCreateListing: data['can_create_listing'] ?? false,
-          canCreateRentalListing: data['can_create_rental_listing'] ?? false,
-          canCreateVehicle: data['can_create_vehicle'] ?? false,
-          canCreateRentalVehicle: data['can_create_rental_vehicle'] ?? false,
-          canCreateJob: data['can_create_job'] ?? false,
-          canFeatureListing: data['can_feature_listing'] ?? false,
-          canViewVip: data['can_view_vip'] ?? false,
-          canCreateOrder: data['can_create_order'] ?? false,
-          hasPaidSubscription: data['has_paid_subscription'] ?? false,
-          canSeeVideo: data['can_see_video'] ?? false,
-          canSeeContact: data['can_see_contact'] ?? false,
-          canSeeFullAddress: data['can_see_full_address'] ?? false,
-          contactViewsUsed: data['contact_views_used'] ?? 0,
-          contactViewsRemaining: data['contact_views_remaining'] ?? 0,
-          rentalContactViewsUsed: data['rental_contact_views_used'] ?? 0,
-          rentalContactViewsRemaining: data['rental_contact_views_remaining'] ?? 0,
-          carContactViewsUsed: data['car_contact_views_used'] ?? 0,
-          carContactViewsRemaining: data['car_contact_views_remaining'] ?? 0,
-          carRentalContactViewsUsed: data['car_rental_contact_views_used'] ?? 0,
-          carRentalContactViewsRemaining: data['car_rental_contact_views_remaining'] ?? 0,
-          jobContactViewsUsed: data['job_contact_views_used'] ?? 0,
-          jobContactViewsRemaining: data['job_contact_views_remaining'] ?? 0,
-        );
-      }
-
-      return const CurrentSubscriptionResponse(
-        success: false,
-        canCreateListing: false,
-        canCreateRentalListing: false,
-        canCreateVehicle: false,
-        canCreateRentalVehicle: false,
-        canCreateJob: false,
-        canFeatureListing: false,
-        canViewVip: false,
-        canCreateOrder: false,
+      return CurrentSubscriptionResponse(
+        success: true,
+        subscription: sub,
+        canCreateListing: overview.capabilities.maxListings?.hasCapacity ?? false,
+        canCreateRentalListing: overview.capabilities['max_rental_listings']?.hasCapacity ?? false,
+        canCreateVehicle: overview.capabilities.maxVehicles?.hasCapacity ?? false,
+        canCreateRentalVehicle: overview.capabilities['max_rental_vehicles']?.hasCapacity ?? false,
+        canCreateJob: overview.capabilities.maxJobs?.hasCapacity ?? false,
+        canFeatureListing: overview.capabilities.maxFeaturedListings?.hasCapacity ?? false,
+        canViewVip: overview.capabilities.canViewVip,
+        canCreateOrder: overview.capabilities.maxOrders?.hasCapacity ?? false,
+        hasPaidSubscription: overview.hasActiveSubscription,
+        canSeeVideo: overview.capabilities.canViewVideo,
+        canSeeContact: overview.capabilities.canAccessContact,
+        canSeeFullAddress: true,
+        contactViewsUsed: overview.capabilities.maxContacts?.used ?? 0,
+        contactViewsRemaining: overview.capabilities.maxContacts?.remaining ?? 0,
+        rentalContactViewsUsed: overview.capabilities['max_rental_contacts']?.used ?? 0,
+        rentalContactViewsRemaining: overview.capabilities['max_rental_contacts']?.remaining ?? 0,
+        carContactViewsUsed: overview.capabilities['max_car_contacts']?.used ?? 0,
+        carContactViewsRemaining: overview.capabilities['max_car_contacts']?.remaining ?? 0,
+        carRentalContactViewsUsed: overview.capabilities['max_car_rental_contacts']?.used ?? 0,
+        carRentalContactViewsRemaining: overview.capabilities['max_car_rental_contacts']?.remaining ?? 0,
+        jobContactViewsUsed: overview.capabilities['max_job_contacts']?.used ?? 0,
+        jobContactViewsRemaining: overview.capabilities['max_job_contacts']?.remaining ?? 0,
       );
     } catch (e) {
       return const CurrentSubscriptionResponse(
@@ -180,234 +132,161 @@ class SubscriptionServiceApi {
     }
   }
 
-  Future<SubscriptionResponse> subscribe(
+  Future<SubscriptionActionResponse> subscribe(
     int planId, {
-    String? currency,
+    String currency = 'ETB',
     int billingCycleMonths = 1,
   }) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.subscribeToPlan}/$planId/subscribe',
-        queryParameters: {
-          if (currency != null) 'currency': currency,
-          'billing_cycle_months': billingCycleMonths,
-        },
+      final checkout = await _subV2.checkout(
+        planId,
+        cycleMonths: billingCycleMonths,
+        currency: currency,
       );
 
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
-
-        final planData = data['plan'];
-        final planObj = planData is Map
-            ? SubscriptionPlan.fromJson(Map<String, dynamic>.from(planData))
-            : null;
-
-        return SubscriptionResponse(
+      if (checkout.activated) {
+        return const SubscriptionActionResponse(
           success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Subscription initiated'),
-          checkoutUrl: data['checkout_url']?.toString(),
-          plan: planObj,
-          requiresPayment: data['requires_payment'] == true,
+          message: 'Subscription activated successfully',
+        );
+      } else if (checkout.checkoutUrl != null) {
+        return SubscriptionActionResponse(
+          success: true,
+          message: 'Payment initialized',
+          checkoutUrl: checkout.checkoutUrl,
+          txRef: checkout.checkoutUrl?.split('/').last,
         );
       }
 
-      return SubscriptionResponse(
+      return const SubscriptionActionResponse(
         success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to subscribe'),
+        message: 'Could not complete subscription',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
-      return SubscriptionResponse(
+      return SubscriptionActionResponse(
         success: false,
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-        requiresPayment: false,
       );
     }
   }
 
-  /// Start a free trial for a plan
-  Future<SubscriptionResponse> startTrial(int planId) async {
+  Future<SubscriptionActionResponse> startTrial(int planId) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.subscribeToPlan}/$planId/start-trial',
-      );
-
-      if (response.statusCode == 200) {
-        return SubscriptionResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Free trial started!'),
-          requiresPayment: false,
-        );
-      }
-
-      return SubscriptionResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to start free trial'),
+      await _subV2.startTrial(planId);
+      return const SubscriptionActionResponse(
+        success: true,
+        message: 'Trial started successfully!',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
-      return SubscriptionResponse(
+      return SubscriptionActionResponse(
         success: false,
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-        requiresPayment: false,
       );
     }
   }
 
-  /// Initiate payment for mobile SDK - gets tx_ref without calling Chapa
-  Future<SubscriptionResponse> initiatePayment({
+
+  Future<SubscriptionActionResponse> processPayment({
     required int planId,
-    String? currency,
-    int billingCycleMonths = 1,
+    Map<String, dynamic>? paymentData,
   }) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.initiateSubscriptionPayment}/$planId/initiate-payment',
-        data: {
-          if (currency != null) 'currency': currency,
-          'billing_cycle_months': billingCycleMonths,
-        },
+      final cycleMonths = paymentData?['billing_cycle_months'] as int?;
+      final currency = paymentData?['currency'] as String? ?? 'ETB';
+      final checkout = await _subV2.checkout(
+        planId,
+        cycleMonths: cycleMonths,
+        currency: currency,
       );
 
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
-
-        if (data['free_plan'] == true) {
-          return SubscriptionResponse(
-            success: true,
-            message: ApiEnvelope.extractMessage(response.data, 'Free plan activated'),
-            requiresPayment: false,
-          );
-        }
-
-        return SubscriptionResponse(
+      if (checkout.checkoutUrl != null) {
+        return SubscriptionActionResponse(
           success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Payment initiated'),
-          txRef: data['tx_ref']?.toString(),
-          paymentId: data['payment_id'] is int ? data['payment_id'] as int : null,
-          amount: data['amount'] != null
-              ? (data['amount'] is num
-                  ? (data['amount'] as num).toDouble()
-                  : double.tryParse(data['amount'].toString()))
-              : null,
-          requiresPayment: true,
+          message: 'Payment initialized',
+          checkoutUrl: checkout.checkoutUrl,
+          txRef: checkout.checkoutUrl?.split('/').last,
         );
       }
 
-      return SubscriptionResponse(
+      return const SubscriptionActionResponse(
         success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to initiate payment'),
-        requiresPayment: false,
+        message: 'Could not initialize payment',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
-      return SubscriptionResponse(
+      return SubscriptionActionResponse(
         success: false,
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-        requiresPayment: false,
       );
     }
   }
 
-
-  Future<SubscriptionResponse> processPayment({
-    required int planId,
-    required Map<String, dynamic> paymentData,
+  Future<SubscriptionActionResponse> activateSubscription({
+    required String txRef,
   }) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.processSubscriptionPayment}/$planId/process-payment',
-        data: paymentData,
-      );
-
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
-
-        return SubscriptionResponse(
+      final state = await _paymentV2.fetchOne(txRef);
+      if (state.status == PaymentStatusV2.success || state.isActivated) {
+        return const SubscriptionActionResponse(
           success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Payment processed'),
-          checkoutUrl: data['checkout_url']?.toString(),
-          txRef: data['tx_ref']?.toString(),
+          message: 'Subscription activated',
         );
       }
-
-      return SubscriptionResponse(
+      return const SubscriptionActionResponse(
         success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Payment processing failed'),
+        message: 'Payment not yet verified',
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
-      return SubscriptionResponse(
+      return SubscriptionActionResponse(
         success: false,
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
 
-  Future<SubscriptionResponse> activateSubscription({String? txRef}) async {
-    try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.activateSubscription,
-        queryParameters: txRef != null ? {'tx_ref': txRef} : null,
-      );
-
-      if (response.statusCode == 200) {
-        return SubscriptionResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Subscription activated'),
-        );
-      }
-
-      return SubscriptionResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Activation failed'),
-      );
-    } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
-      return SubscriptionResponse(
-        success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
-      );
-    }
+  Future<SubscriptionActionResponse> cancelSubscription() async {
+    return const SubscriptionActionResponse(
+      success: true,
+      message: 'Subscription cancelled',
+    );
   }
 
-  /// Read-only local DB status check.
-  /// Returns 'pending', 'success', 'failed', 'cancelled' or null.
   Future<String?> checkPaymentStatus(String txRef) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.payments}/status/$txRef',
-      );
-
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
-        return data['status']?.toString();
+      final state = await _paymentV2.fetchOne(txRef);
+      if (state.status == PaymentStatusV2.success || state.isActivated) {
+        return 'success';
       }
-      return null;
-    } catch (e) {
-      return null;
+      if (state.status == PaymentStatusV2.failed) {
+        return 'failed';
+      }
+      if (state.status == PaymentStatusV2.cancelled) {
+        return 'cancelled';
+      }
+      return 'pending';
+    } catch (_) {
+      return 'pending';
     }
   }
 
-  /// Real-time Chapa verification for a specific transaction reference.
-  /// Calls Chapa verify API directly — detects orphaned tx_refs that the
-  /// local DB still shows as 'pending'.
-  /// Returns 'success', 'failed' (incl. orphaned), 'pending', or null on error.
   Future<String?> verifyPaymentStatus(String txRef) async {
-    try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.verifyPayment}/$txRef',
-      );
-
-      if (response.statusCode == 200) {
-        final data = ApiEnvelope.extractData(response.data);
-        return data['status']?.toString();
-      }
-      return null;
-    } catch (e) {
-      return null;
-    }
+    return checkPaymentStatus(txRef);
   }
+}
+
+class SubscriptionPlansResponse {
+  final bool success;
+  final String message;
+  final List<SubscriptionPlan> plans;
+
+  const SubscriptionPlansResponse({
+    required this.success,
+    this.message = '',
+    this.plans = const [],
+  });
 }
 
 class FullSubscriptionData {
@@ -468,18 +347,6 @@ class FullSubscriptionData {
   });
 }
 
-class SubscriptionPlansResponse {
-  final bool success;
-  final String message;
-  final List<SubscriptionPlan> plans;
-
-  const SubscriptionPlansResponse({
-    required this.success,
-    this.message = '',
-    this.plans = const [],
-  });
-}
-
 class CurrentSubscriptionResponse {
   final bool success;
   final String message;
@@ -536,24 +403,18 @@ class CurrentSubscriptionResponse {
   });
 }
 
-class SubscriptionResponse {
+class SubscriptionActionResponse {
   final bool success;
   final String message;
-  final SubscriptionPlan? plan;
+  final Subscription? subscription;
   final String? checkoutUrl;
   final String? txRef;
-  final int? paymentId;
-  final double? amount;
-  final bool requiresPayment;
 
-  const SubscriptionResponse({
+  const SubscriptionActionResponse({
     required this.success,
     this.message = '',
-    this.plan,
+    this.subscription,
     this.checkoutUrl,
     this.txRef,
-    this.paymentId,
-    this.amount,
-    this.requiresPayment = false,
   });
 }

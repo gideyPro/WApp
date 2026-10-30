@@ -55,7 +55,8 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
   }
 
   Future<bool> toggleFavorite(int listingId) async {
-    final response = await _favoriteService.toggleFavorite(listingId);
+    final isFav = state.favorites.any((f) => f.id == listingId);
+    final response = await _favoriteService.toggleFavorite(listingId, currentlyFavorite: isFav);
     if (response.success) {
       if (response.isFavorite == false) {
         state = state.copyWith(

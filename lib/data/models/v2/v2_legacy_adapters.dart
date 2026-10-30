@@ -1,9 +1,13 @@
 import '../../models/address.dart';
+import '../../models/car_form_data.dart';
 import '../../models/image.dart';
+import '../../models/job_form_data.dart';
 import '../../models/listing.dart';
+import '../../models/listing_form_data.dart';
 import '../../models/message.dart' as msg;
 import '../../models/notification.dart' as app;
 import '../../models/payment.dart';
+import '../../models/subscription.dart';
 import '../../services/order_service.dart';
 import 'app_notification.dart';
 import 'buyer_order.dart';
@@ -12,6 +16,8 @@ import 'listing_detail.dart';
 import 'listing_summary.dart';
 import 'owner_listing.dart';
 import 'payment_state.dart';
+import 'plan.dart';
+import 'subscription_state.dart';
 
 RentalPeriod? _parseRentalPeriod(String? period) {
   if (period == null) return null;
@@ -371,5 +377,184 @@ extension PaymentStateLegacyAdapter on PaymentState {
       paidAt: paidAt,
       createdAt: createdAt ?? DateTime.now(),
     );
+  }
+}
+
+extension PlanLegacyAdapter on Plan {
+  SubscriptionPlan toSubscriptionPlan() {
+    return SubscriptionPlan(
+      id: id,
+      name: name,
+      slug: slug,
+      description: description ?? '',
+      price: cycles.isNotEmpty ? cycles.first.price : 0,
+      priceUsd: cycles.isNotEmpty ? cycles.first.priceUsd : 0,
+      billingCycles: cycles
+          .map((c) => PlanBillingCycle(
+                months: c.months,
+                price: c.price,
+                priceUsd: c.priceUsd,
+                listingDurationDays: c.listingDays ?? 30,
+                discountPercent: c.discountPercent,
+                badge: c.badge,
+                originalPrice: c.originalPrice,
+                originalPriceUsd: c.originalPriceUsd,
+              ))
+          .toList(),
+      features: features,
+      maxListings: limits.listings,
+      maxRentalListings: limits.rentalListings,
+      maxVehicles: limits.vehicles,
+      maxRentalVehicles: limits.rentalVehicles,
+      maxJobs: limits.jobs,
+      viewVip: true,
+      trialDays: trialDays,
+      canStartTrial: canStartTrial,
+      isActive: true,
+    );
+  }
+}
+
+extension SubscriptionStateLegacyAdapter on SubscriptionState {
+  Subscription toLegacySubscription() {
+    return Subscription(
+      id: id,
+      userId: 0,
+      planId: planId ?? 0,
+      plan: plan != null
+          ? SubscriptionPlan(
+              id: plan!.id,
+              name: plan!.name,
+              slug: plan!.slug,
+              price: 0,
+              listingDurationDays: listingDurationDays,
+            )
+          : null,
+      status: status,
+      startsAt: startsAt ?? DateTime.now(),
+      endsAt: endsAt ?? DateTime.now().add(const Duration(days: 30)),
+      trialEndsAt: trialEndsAt,
+      billingCycleMonths: billingCycleMonths,
+      listingDurationDays: listingDurationDays,
+      listingsUsed: listingsUsed,
+      rentalListingsUsed: rentalListingsUsed,
+      vehiclesUsed: vehiclesUsed,
+      rentalVehiclesUsed: rentalVehiclesUsed,
+      jobsUsed: jobsUsed,
+    );
+  }
+}
+
+extension ListingFormDataV2Adapter on ListingFormData {
+  Map<String, dynamic> toV2Payload(String submissionKey) {
+    return {
+      'type': type,
+      'submission_key': submissionKey,
+      'listing_type': listingType,
+      if (priceFixed != null) 'price': priceFixed,
+      if (isRental && rentalPeriodUnit != null)
+        'rental_period': rentalPeriodUnit,
+      if (addressId != null) 'address_id': addressId,
+      if (specificLocation != null && specificLocation!.isNotEmpty)
+        'specific_location': specificLocation,
+      if (description != null && description!.isNotEmpty)
+        'description': description,
+      'attributes': {
+        if (useType.isNotEmpty) 'use_type': useType,
+        if (facingDirection != null) 'facing_direction': facingDirection,
+        if (totalSquareMeters != null) 'total_square_meters': totalSquareMeters,
+        if (frontAreaSqm != null) 'front_area_sqm': frontAreaSqm,
+        if (sideAreaSqm != null) 'side_area_sqm': sideAreaSqm,
+        if (hasDebtOrEncumbrance) 'has_debt_or_encumbrance': true,
+        if (debtAmount != null) 'debt_amount': debtAmount,
+        'holding_type': holdingType,
+      },
+      'details': {
+        if (bedrooms != null) 'bedrooms': bedrooms,
+        if (bathrooms != null) 'bathrooms': bathrooms,
+        if (kitchens != null) 'kitchens': kitchens,
+        if (yearBuilt != null) 'year_built': yearBuilt,
+        if (houseType != null) 'house_type': houseType,
+        'parking_available': parkingAvailable,
+        'electricity': electricity,
+        'water': water,
+      },
+      'holding_details': {
+        if (holdingType == 'Free Hold')
+          'private': {
+            if (taxPaidUntilYear != null)
+              'tax_paid_until_year': taxPaidUntilYear,
+            if (acquisitionClarification != null)
+              'acquisition_clarification': acquisitionClarification,
+          },
+        if (holdingType == 'Lease Hold')
+          'lease': {
+            if (leasedYear != null) 'leased_year': leasedYear,
+            if (leasePricePerSqm != null)
+              'lease_price_per_sqm': leasePricePerSqm,
+            if (buildType != null) 'build_type': buildType,
+            if (annualPayment != null) 'annual_payment': annualPayment,
+          },
+        if (holdingType == 'Cooperative')
+          'cooperative': {
+            if (cooperativeName != null) 'cooperative_name': cooperativeName,
+            if (cooperativeCode != null) 'cooperative_code': cooperativeCode,
+            if (buildingStatus != null) 'building_status': buildingStatus,
+          },
+      },
+    };
+  }
+}
+
+extension CarFormDataV2Adapter on CarFormData {
+  Map<String, dynamic> toV2Payload(String submissionKey) {
+    return {
+      'submission_key': submissionKey,
+      'listing_type': isForRent ? 'rental' : 'sale',
+      if (priceFixed != null) 'price': priceFixed,
+      if (isForRent && rentalPeriodUnit.isNotEmpty)
+        'rental_period': rentalPeriodUnit,
+      if (addressId != null) 'address_id': addressId,
+      if (specificLocation.isNotEmpty) 'specific_location': specificLocation,
+      if (vehicleCategory.isNotEmpty) 'vehicle_category': vehicleCategory,
+      if (make.isNotEmpty) 'make': make,
+      if (model.isNotEmpty) 'model': model,
+      if (year.isNotEmpty) 'year': int.tryParse(year),
+      if (mileageKm.isNotEmpty) 'mileage_km': double.tryParse(mileageKm),
+      if (bodyType.isNotEmpty) 'body_type': bodyType,
+      if (color.isNotEmpty) 'color': color,
+      if (condition.isNotEmpty) 'condition': condition,
+      if (vin.isNotEmpty) 'vin': vin,
+      if (features.isNotEmpty) 'features': features,
+      if (description.isNotEmpty) 'description': description,
+    };
+  }
+}
+
+extension JobFormDataV2Adapter on JobFormData {
+  Map<String, dynamic> toV2Payload(String submissionKey) {
+    return {
+      'submission_key': submissionKey,
+      'title': title ?? '',
+      if (companyName != null && companyName!.isNotEmpty)
+        'company_name': companyName,
+      'job_type': jobType,
+      'job_category': jobCategory,
+      'positions_count': positionsCount,
+      'salary_type': salaryType,
+      if (salaryMin != null) 'salary_min': salaryMin,
+      if (salaryMax != null) 'salary_max': salaryMax,
+      'salary_currency': salaryCurrency,
+      if (reqEducation != null) 'education': reqEducation,
+      if (reqExperience != null) 'experience': reqExperience,
+      'gender': reqGender,
+      if (deadline != null)
+        'deadline': deadline!.toIso8601String().split('T').first,
+      if (addressId != null) 'address_id': addressId,
+      if (specificLocation != null && specificLocation!.isNotEmpty)
+        'specific_location': specificLocation,
+      if (description != null && description!.isNotEmpty)
+        'description': description,
+    };
   }
 }

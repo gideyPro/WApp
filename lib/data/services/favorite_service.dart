@@ -1,56 +1,30 @@
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../models/listing.dart';
+import '../models/v2/v2_legacy_adapters.dart';
+import 'v2/favorite_service.dart';
 
-/// Service for managing favorite listings
+/// Service for managing favorite listings backed by V2 API.
 class FavoriteService {
-  final ApiClient _apiClient;
+  final FavoriteServiceV2 _v2;
 
-  FavoriteService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+  FavoriteService({ApiClient? apiClient, FavoriteServiceV2? v2Service})
+      : _v2 = v2Service ?? FavoriteServiceV2();
 
   Future<FavoriteResponse> getFavorites({
     int page = 1,
     int perPage = 50,
   }) async {
     try {
-      final response = await _apiClient.dio.get(
-        ApiConstants.favorites,
-        queryParameters: {
-          'page': page,
-          'per_page': perPage,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-
-        final dataList = ApiEnvelope.extractList(
-          data,
-          itemKeys: const ['listings', 'items'],
-        );
-
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        final pagination = ApiEnvelope.extractPagination(data, fallbackPage: page);
-
-        return FavoriteResponse(
-          success: true,
-          listings: listings,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final result = await _v2.fetch(limit: perPage);
+      final listings = result.items.map((s) => s.toListing()).toList();
 
       return FavoriteResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch favorites'),
+        success: true,
+        listings: listings,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: listings.length,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -61,30 +35,17 @@ class FavoriteService {
     }
   }
 
-  Future<FavoriteResponse> toggleFavorite(int listingId) async {
+  Future<FavoriteResponse> toggleFavorite(int listingId, {bool? currentlyFavorite}) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.toggleFavorite}/$listingId/toggle',
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final innerData = (data is Map && data['data'] is Map)
-            ? data['data'] as Map
-            : (data is Map ? data : const {});
-        final added = innerData['added'] == true ||
-            (data is Map && data['added'] == true);
-
-        return FavoriteResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(data, 'Favorite toggled'),
-          isFavorite: added,
-        );
-      }
+      final shouldRemove = currentlyFavorite ?? false;
+      final state = shouldRemove
+          ? await _v2.unfavorite(listingId)
+          : await _v2.favorite(listingId);
 
       return FavoriteResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to toggle favorite'),
+        success: true,
+        message: state.favorited ? 'Added to favorites' : 'Removed from favorites',
+        isFavorite: state.favorited,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -117,5 +78,5 @@ class FavoriteResponse {
 
   @override
   String toString() =>
-      'FavoriteResponse(success: $success, listings: ${listings.length})';
+      'FavoriteResponse(success: $success, listings: ${listings.length}, isFavorite: $isFavorite)';
 }

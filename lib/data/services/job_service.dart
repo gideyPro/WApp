@@ -1,18 +1,29 @@
-import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
-import '../models/listing.dart';
+import '../../core/network/v2/api_v2_client.dart';
+import '../../core/network/v2/api_v2_constants.dart';
 import '../models/job_form_data.dart';
+import '../models/v2/listing_summary.dart';
+import '../models/v2/owner_listing.dart';
+import '../models/v2/v2_legacy_adapters.dart';
 import 'listing_service.dart';
-import 'package:image_picker/image_picker.dart';
+import 'v2/catalog_filters.dart';
+import 'v2/catalog_service.dart';
+import 'v2/owner_listing_service.dart';
+import 'v2/promotion_service.dart';
 
+/// Service for managing job listings backed by V2 API.
 class JobService {
-  final ApiClient _apiClient;
+  final ApiV2Client _v2Client;
+  final CatalogService _catalog;
+  final OwnerListingService _owner;
+  final PromotionServiceV2 _promo;
 
   JobService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+      : _v2Client = ApiV2Client(apiClient: apiClient),
+        _catalog = CatalogService(client: ApiV2Client(apiClient: apiClient)),
+        _owner = OwnerListingService(client: ApiV2Client(apiClient: apiClient)),
+        _promo = PromotionServiceV2(client: ApiV2Client(apiClient: apiClient));
 
   Future<ListingResponse> getListings({
     int page = 1,
@@ -20,37 +31,26 @@ class JobService {
     Map<String, dynamic>? filters,
   }) async {
     try {
-      final queryParams = {
-        'page': page,
-        'per_page': perPage,
-        if (filters != null) ...filters,
-      };
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/jobs',
-        queryParameters: queryParams,
+      final jobFilters = JobFilters(
+        jobCategory: filters?['category']?.toString() ?? filters?['job_category']?.toString(),
+        jobType: filters?['job_type']?.toString(),
+        location: filters?['location']?.toString(),
+        search: filters?['search']?.toString() ?? filters?['q']?.toString(),
       );
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['listings', 'items', 'data'],
-        );
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
-        return ListingResponse(
-          success: true,
-          listings: listings,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+
+      final result = await _catalog.fetchJobs(
+        limit: perPage,
+        filters: jobFilters,
+      );
+
+      final listings = result.items.map((s) => s.toListing()).toList();
+
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch job listings'),
+        success: true,
+        listings: listings,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: listings.length,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -67,39 +67,29 @@ class JobService {
     String? status,
   }) async {
     try {
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'per_page': perPage,
+      final oStatus = switch (status?.toLowerCase()) {
+        'active' => OwnerListingStatus.active,
+        'pending' => OwnerListingStatus.pending,
+        'rejected' => OwnerListingStatus.rejected,
+        'frozen' => OwnerListingStatus.frozen,
+        'draft' => OwnerListingStatus.draft,
+        _ => null,
       };
-      if (status != null && status.isNotEmpty) {
-        queryParams['status'] = status;
-      }
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/jobs/my-listings',
-        queryParameters: queryParams,
+
+      final result = await _owner.fetch(
+        limit: perPage,
+        type: ListingKind.job,
+        status: oStatus,
       );
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['listings', 'items', 'data'],
-        );
-        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-        return ListingResponse(
-          success: true,
-          listings: listings,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+
+      final listings = result.items.map((s) => s.toListing()).toList();
+
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch your job listings'),
+        success: true,
+        listings: listings,
+        currentPage: page,
+        totalPages: result.hasMore ? page + 1 : page,
+        total: listings.length,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -110,37 +100,14 @@ class JobService {
     }
   }
 
-  Future<ListingResponse> getFeaturedListings({
-    int page = 1,
-    int perPage = 12,
-  }) async {
+  Future<ListingResponse> getFeaturedListings({int page = 1, int limit = 10}) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/jobs/featured',
-        queryParameters: {'page': page, 'per_page': perPage},
-      );
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['listings', 'items', 'data'],
-        );
-        final pagination = ApiEnvelope.extractPagination(raw, fallbackPage: page);
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-        return ListingResponse(
-          success: true,
-          listings: listings,
-          currentPage: pagination.currentPage,
-          totalPages: pagination.totalPages,
-          total: pagination.total,
-        );
-      }
+      final items = await _catalog.fetchFeaturedJobs(limit: limit);
+      final listings = items.map((s) => s.toListing()).toList();
+
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch featured jobs'),
+        success: true,
+        listings: listings,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -153,23 +120,12 @@ class JobService {
 
   Future<ListingDetailResponse> getListingDetail(int listingId) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/jobs/$listingId',
-      );
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final data = raw is Map ? (raw['data'] ?? raw['listing'] ?? raw) : raw;
-        final listing = data is Map ? Listing.fromJson(data as Map<String, dynamic>) : null;
-        return ListingDetailResponse(
-          success: true,
-          listing: listing,
-        );
-      }
-      final gate = ApiEnvelope.extractSubscriptionGate(response.data);
+      final detail = await _catalog.fetchJob(listingId);
+      final listing = detail.toListing();
+
       return ListingDetailResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to load job details'),
-        subscriptionGate: gate.required ? gate : null,
+        success: true,
+        listing: listing,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -182,24 +138,15 @@ class JobService {
 
   Future<ListingResponse> getSimilarListings(int listingId) async {
     try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/jobs/$listingId/similar',
+      final result = await _v2Client.getCollection(
+        '${ApiV2Constants.jobs}/$listingId/similar',
+        parse: ListingSummary.fromJson,
       );
-      if (response.statusCode == 200) {
-        final raw = response.data;
-        final dataList = ApiEnvelope.extractList(
-          raw,
-          itemKeys: const ['listings', 'items', 'data'],
-        );
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-        return ListingResponse(success: true, listings: listings);
-      }
+      final listings = result.items.map((s) => s.toListing()).toList();
+
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch similar jobs'),
+        success: true,
+        listings: listings,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -210,255 +157,125 @@ class JobService {
     }
   }
 
-  Future<FormData> _buildFormData(JobFormData formData, {bool isUpdate = false}) async {
-    final dioFormData = FormData();
-    dioFormData.fields.addAll([
-      const MapEntry('type', 'job'),
-      if (formData.title != null && formData.title!.isNotEmpty)
-        MapEntry('title', formData.title!),
-      if (formData.companyName != null && formData.companyName!.isNotEmpty)
-        MapEntry('company_name', formData.companyName!)
-      else if (isUpdate)
-        const MapEntry('company_name', ''),
-      MapEntry('job_type', formData.jobType),
-      if (formData.jobCategory.isNotEmpty) MapEntry('job_category', formData.jobCategory),
-      MapEntry('positions_count', formData.positionsCount.toString()),
-      MapEntry('salary_type', formData.salaryType),
-      if (formData.salaryMin != null) MapEntry('salary_min', formData.salaryMin!.toString()),
-      if (formData.salaryMax != null) MapEntry('salary_max', formData.salaryMax!.toString()),
-      MapEntry('salary_currency', formData.salaryCurrency),
-      if (formData.reqEducation != null && formData.reqEducation!.isNotEmpty) MapEntry('req_education', formData.reqEducation!),
-      if (formData.reqEducationCustom != null && formData.reqEducationCustom!.isNotEmpty) MapEntry('req_education_custom', formData.reqEducationCustom!),
-      if (formData.reqExperience != null && formData.reqExperience!.isNotEmpty) MapEntry('req_experience', formData.reqExperience!),
-      if (formData.reqEducations.isNotEmpty) ...[
-        for (int i = 0; i < formData.reqEducations.length; i++) ...[
-          MapEntry('req_educations[$i][education_level]', formData.reqEducations[i].educationLevel),
-          if (formData.reqEducations[i].fieldOfStudy != null && formData.reqEducations[i].fieldOfStudy!.isNotEmpty)
-            MapEntry('req_educations[$i][field_of_study]', formData.reqEducations[i].fieldOfStudy!),
-        ],
-      ],
-      if (formData.reqExperiences.isNotEmpty) ...[
-        for (int i = 0; i < formData.reqExperiences.length; i++) ...[
-          if (formData.reqExperiences[i].jobTitle != null && formData.reqExperiences[i].jobTitle!.isNotEmpty)
-            MapEntry('req_experiences[$i][job_title]', formData.reqExperiences[i].jobTitle!),
-          if (formData.reqExperiences[i].company != null && formData.reqExperiences[i].company!.isNotEmpty)
-            MapEntry('req_experiences[$i][company]', formData.reqExperiences[i].company!),
-          if (formData.reqExperiences[i].years != null)
-            MapEntry('req_experiences[$i][years]', formData.reqExperiences[i].years!.toString()),
-        ],
-      ],
-      MapEntry('req_gender', formData.reqGender),
-      if (formData.deadline != null) MapEntry('deadline', formData.deadline!.toIso8601String()),
-      if (formData.addressId != null) MapEntry('address_id', formData.addressId.toString()),
-      if (formData.specificLocation != null && formData.specificLocation!.isNotEmpty) MapEntry('specific_location', formData.specificLocation!),
-      if (formData.description != null && formData.description!.isNotEmpty) MapEntry('description', formData.description!),
-      const MapEntry('terms_accepted', '1'),
-    ]);
-
-    if (formData.postedByAgent && formData.agentId != null) {
-      dioFormData.fields.add(MapEntry('agent_id', formData.agentId!.toString()));
-    }
-    
-    for (int i = 0; i < formData.images.length; i++) {
-      final file = formData.images[i];
-      if (file is XFile) {
-        dioFormData.files.add(MapEntry(
-          'images[]',
-          await MultipartFile.fromFile(file.path, filename: 'image_$i.jpg'),
-        ));
-      }
-    }
-    if (isUpdate) {
-      dioFormData.fields.add(const MapEntry('_method', 'PUT'));
-      // Handle deleted images if you add it later to the form data model
-    }
-    return dioFormData;
-  }
-
   Future<ListingResponse> createListing({
     required JobFormData formData,
     String? submissionKey,
-    void Function(double progress)? onProgress,
+    void Function(double)? onProgress,
   }) async {
     try {
-      final dioFormData = await _buildFormData(formData);
-      final headers = <String, dynamic>{};
-      if (submissionKey != null) {
-        headers['X-Submission-Key'] = submissionKey;
-      }
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.apiBase}/jobs',
-        data: dioFormData,
-        options: Options(
-          sendTimeout: const Duration(seconds: 300),
-          headers: headers.isNotEmpty ? headers : null,
-        ),
-        onSendProgress: onProgress != null
-            ? (sent, total) {
-                if (total > 0) onProgress(sent / total);
-              }
-            : null,
-      );
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final raw = response.data;
-        final data = raw is Map ? (raw['data'] ?? raw['listing'] ?? raw) : raw;
-        final listing = data is Map ? Listing.fromJson(data as Map<String, dynamic>) : null;
-        return ListingResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Job listing submitted for review'),
-          listings: listing != null ? [listing] : [],
-        );
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to create job listing'),
+      onProgress?.call(0.2);
+      final key = submissionKey ?? 'job-${DateTime.now().microsecondsSinceEpoch}';
+      final payload = formData.toV2Payload(key);
+
+      final draft = await _owner.createJob(payload);
+      onProgress?.call(0.6);
+
+      await _owner.submit(draft.id);
+      onProgress?.call(1.0);
+
+      return const ListingResponse(
+        success: true,
+        message: 'Job listing submitted for review',
       );
     } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: ApiErrorHandler.handle(e).toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
 
   Future<ListingResponse> updateListing({
-    required int id,
+    required int listingId,
     required JobFormData formData,
-    void Function(double progress)? onProgress,
+    void Function(double)? onProgress,
   }) async {
     try {
-      final dioFormData = await _buildFormData(formData, isUpdate: true);
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.apiBase}/jobs/$id',
-        data: dioFormData,
-        options: Options(sendTimeout: const Duration(seconds: 300)),
-        onSendProgress: onProgress != null
-            ? (sent, total) {
-                if (total > 0) onProgress(sent / total);
-              }
-            : null,
-      );
-      if (response.statusCode == 200) {
-        return ListingResponse(
-          success: true,
-          message: ApiEnvelope.extractMessage(response.data, 'Job listing updated'),
-        );
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to update job listing'),
+      onProgress?.call(0.4);
+      final payload = formData.toV2Payload('');
+      await _owner.updateJob(listingId, payload);
+      onProgress?.call(1.0);
+
+      return const ListingResponse(
+        success: true,
+        message: 'Job updated successfully',
       );
     } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: ApiErrorHandler.handle(e).toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
 
   Future<ListingResponse> deleteListing(int id) async {
     try {
-      final response = await _apiClient.dio.delete(
-        '${ApiConstants.apiBase}/jobs/$id',
-      );
-      if (response.statusCode == 200) {
-        return const ListingResponse(success: true, message: 'Job listing deleted');
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to delete job listing'),
+      await _owner.delete(id);
+      return const ListingResponse(
+        success: true,
+        message: 'Job listing deleted successfully',
       );
     } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: ApiErrorHandler.handle(e).toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
 
   Future<ListingResponse> featureListing(int id) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.apiBase}/jobs/$id/feature',
-      );
-      if (response.statusCode == 200) {
-        return const ListingResponse(success: true, message: 'Job listing featured');
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to feature job listing'),
-      );
+      await _promo.feature(id);
+      return const ListingResponse(success: true, message: 'Featured');
     } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: ApiErrorHandler.handle(e).toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
 
   Future<ListingResponse> unfeatureListing(int id) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.apiBase}/jobs/$id/unfeature',
-      );
-      if (response.statusCode == 200) {
-        return const ListingResponse(success: true, message: 'Job listing unfeatured');
-      }
-      return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to unfeature job listing'),
-      );
+      await _promo.unfeature(id);
+      return const ListingResponse(success: true, message: 'Unfeatured');
     } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: ApiErrorHandler.handle(e).toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
 
   Future<ContactRevealResponse> revealContact(int id) async {
     try {
-      final response = await _apiClient.dio.post(
-        '${ApiConstants.apiBase}/jobs/$id/reveal-contact',
+      final data = await _v2Client.sendItem(
+        '${ApiV2Constants.listings}/$id/reveal-contact',
+        method: 'POST',
       );
-      if (response.statusCode == 200) {
-        final data = response.data is Map ? response.data as Map<String, dynamic> : {};
-        return ContactRevealResponse(
-          success: true,
-          contact: data['contact'] ?? '',
-          name: data['name'] ?? '',
-          alreadyRevealed: data['already_revealed'] ?? false,
-        );
-      }
+
       return ContactRevealResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to reveal contact'),
+        success: true,
+        contact: data['contact']?.toString() ?? data['phone']?.toString() ?? '',
+        name: data['name']?.toString() ?? '',
+        email: data['email']?.toString() ?? '',
+        alreadyRevealed: data['already_revealed'] ?? false,
       );
     } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
       return ContactRevealResponse(
         success: false,
-        message: ApiErrorHandler.handle(e).toString(),
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
     }
   }
 
   Future<int?> checkSubmissionKey(String key) async {
-    try {
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/jobs/check-key/$key',
-      );
-      if (response.statusCode == 200) {
-        final data = response.data is Map ? response.data as Map<String, dynamic> : {};
-        final listingData = data['listing'] ?? data['data'];
-        if (listingData is Map) {
-          final listing = Listing.fromJson(listingData as Map<String, dynamic>);
-          return listing.id;
-        }
-        return data['id'];
-      }
-      return null;
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 }
