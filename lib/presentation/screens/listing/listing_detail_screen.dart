@@ -28,8 +28,13 @@ import '../../widgets/v2/v2_listing_card.dart';
 /// Public viewers see catalog data only — never moderation state.
 class ListingDetailScreen extends ConsumerStatefulWidget {
   final int listingId;
+  final ListingKind kind;
 
-  const ListingDetailScreen({super.key, required this.listingId});
+  const ListingDetailScreen({
+    super.key,
+    required this.listingId,
+    this.kind = ListingKind.house,
+  });
 
   @override
   ConsumerState<ListingDetailScreen> createState() =>
@@ -232,7 +237,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
       title: l10n.listingsLoadError,
       subtitle: message,
       onRetry: () {
-        ref.invalidate(listingDetailV2Provider(widget.listingId));
+        ref.invalidate(catalogItemDetailV2Provider(
+            (kind: widget.kind, id: widget.listingId)));
       },
       isEmbedded: true,
     );
@@ -241,7 +247,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final detailAsync = ref.watch(listingDetailV2Provider(widget.listingId));
+    final detailAsync = ref.watch(
+        catalogItemDetailV2Provider((kind: widget.kind, id: widget.listingId)));
 
     return detailAsync.when(
       data: (detail) => _buildContent(context, l10n, detail),
@@ -574,6 +581,65 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen> {
 
     if (details.companyName != null && details.companyName!.isNotEmpty) {
       rows.add(_buildDetailRow(context, details.companyName!, Icons.business));
+    }
+
+    if (details.mileageKm != null && details.mileageKm! > 0) {
+      rows.add(_buildDetailRow(
+        context,
+        '${smartDecimal(details.mileageKm!)} km',
+        Icons.speed,
+      ));
+    }
+
+    if (details.transmission != null && details.transmission!.isNotEmpty) {
+      rows.add(_buildDetailRow(context, details.transmission!, Icons.settings));
+    }
+
+    if (details.fuelType != null && details.fuelType!.isNotEmpty) {
+      rows.add(
+          _buildDetailRow(context, details.fuelType!, Icons.local_gas_station));
+    }
+
+    if (details.condition != null && details.condition!.isNotEmpty) {
+      rows.add(_buildDetailRow(
+          context, details.condition!, Icons.verified_outlined));
+    }
+
+    if (details.color != null && details.color!.isNotEmpty) {
+      rows.add(
+          _buildDetailRow(context, details.color!, Icons.palette_outlined));
+    }
+
+    if (details.jobType != null && details.jobType!.isNotEmpty) {
+      rows.add(_buildDetailRow(context, details.jobType!, Icons.work_outline));
+    }
+
+    if (details.jobCategory != null && details.jobCategory!.isNotEmpty) {
+      rows.add(_buildDetailRow(
+          context, details.jobCategory!, Icons.category_outlined));
+    }
+
+    if (details.positionsCount != null && details.positionsCount! > 0) {
+      rows.add(_buildDetailRow(
+        context,
+        '${details.positionsCount} Positions',
+        Icons.people_outline,
+      ));
+    }
+
+    if (details.hasSalaryRange) {
+      final salary = details.salaryMin != null && details.salaryMax != null
+          ? '${smartDecimal(details.salaryMin!)} - ${smartDecimal(details.salaryMax!)} ${details.salaryCurrency ?? 'ETB'}'
+          : details.salaryMin != null
+              ? '${smartDecimal(details.salaryMin!)}+ ${details.salaryCurrency ?? 'ETB'}'
+              : 'Up to ${smartDecimal(details.salaryMax!)} ${details.salaryCurrency ?? 'ETB'}';
+      rows.add(
+          _buildDetailRow(context, salary, Icons.monetization_on_outlined));
+    }
+
+    if (details.education != null && details.education!.isNotEmpty) {
+      rows.add(
+          _buildDetailRow(context, details.education!, Icons.school_outlined));
     }
 
     if (rows.isEmpty) return const SizedBox.shrink();
@@ -913,7 +979,8 @@ ${l10n.shareListingTitle}
     final result = await context.push<bool>(editRoute);
     if (!mounted) return;
     if (result == true) {
-      ref.invalidate(listingDetailV2Provider(widget.listingId));
+      ref.invalidate(catalogItemDetailV2Provider(
+          (kind: widget.kind, id: widget.listingId)));
     }
   }
 
@@ -977,7 +1044,8 @@ ${l10n.shareListingTitle}
             content: Text('Listing submitted'),
             backgroundColor: AppColors.success),
       );
-      ref.invalidate(listingDetailV2Provider(widget.listingId));
+      ref.invalidate(catalogItemDetailV2Provider(
+          (kind: widget.kind, id: widget.listingId)));
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -999,7 +1067,8 @@ ${l10n.shareListingTitle}
                 result.isFeatured ? AppColors.success : AppColors.error,
           ),
         );
-        ref.invalidate(listingDetailV2Provider(widget.listingId));
+        ref.invalidate(catalogItemDetailV2Provider(
+            (kind: widget.kind, id: widget.listingId)));
       }
     } catch (_) {
       if (mounted) {

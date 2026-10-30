@@ -415,6 +415,22 @@ final listingDetailV2Provider =
   return ref.watch(catalogServiceProvider).fetchListing(listingId);
 });
 
+/// Generic catalog detail for listings, cars, and jobs.
+final catalogItemDetailV2Provider =
+    FutureProvider.family<ListingDetail, ({ListingKind kind, int id})>((ref, arg) async {
+  final service = ref.watch(catalogServiceProvider);
+  switch (arg.kind) {
+    case ListingKind.car:
+      return service.fetchCar(arg.id);
+    case ListingKind.job:
+      return service.fetchJob(arg.id);
+    case ListingKind.house:
+    case ListingKind.land:
+    case ListingKind.unknown:
+      return service.fetchListing(arg.id);
+  }
+});
+
 /// Help home feed from `/v2/help`.
 final helpHomeProvider = FutureProvider<HelpHome>((ref) {
   return ref.watch(helpV2ServiceProvider).fetchHome();

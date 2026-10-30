@@ -13,6 +13,7 @@ import '../../presentation/screens/favorites/favorites_screen.dart';
 import '../../presentation/screens/interests/my_interests_screen.dart';
 import '../../presentation/screens/messages/messages_screen.dart';
 import '../../data/models/v2/conversation.dart';
+import '../../data/models/v2/listing_summary.dart';
 import '../../presentation/screens/listing/create_listing_screen.dart';
 import '../../presentation/screens/listing/edit_listing_screen.dart';
 import '../../presentation/screens/listing/listing_detail_screen.dart';
@@ -26,14 +27,12 @@ import '../../presentation/screens/calls/webview_jitsi_screen.dart';
 import '../../presentation/screens/video/full_screen_video_screen.dart';
 import '../../presentation/screens/listing/widgets/listing_step3_media.dart';
 import '../../presentation/screens/cars/car_list_screen.dart';
-import '../../presentation/screens/cars/car_detail_screen.dart';
 import '../../presentation/screens/cars/create_car_screen.dart';
 import '../../presentation/screens/cars/edit_car_screen.dart';
 import '../../presentation/screens/notifications/notifications_screen.dart';
 
 import '../../presentation/screens/jobs/job_list_screen.dart';
 import '../../presentation/screens/jobs/create_job_screen.dart';
-import '../../presentation/screens/jobs/job_detail_screen.dart';
 import '../../presentation/screens/jobs/edit_job_screen.dart';
 import '../../presentation/screens/job_seekers/job_seekers_screen.dart';
 import '../../presentation/screens/job_seekers/job_seeker_detail_screen.dart';
@@ -337,7 +336,7 @@ final goRouter = GoRouter(
         }
         return _buildPageTransition(
           key: state.pageKey,
-          child: CarDetailScreen(listingId: id),
+          child: ListingDetailScreen(listingId: id, kind: ListingKind.car),
         );
       },
     ),
@@ -376,7 +375,7 @@ final goRouter = GoRouter(
         }
         return _buildPageTransition(
           key: state.pageKey,
-          child: JobDetailScreen(listingId: id),
+          child: ListingDetailScreen(listingId: id, kind: ListingKind.job),
         );
       },
     ),
