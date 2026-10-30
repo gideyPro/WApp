@@ -1,9 +1,17 @@
 import '../../models/address.dart';
 import '../../models/image.dart';
 import '../../models/listing.dart';
+import '../../models/message.dart' as msg;
+import '../../models/notification.dart' as app;
+import '../../models/payment.dart';
+import '../../services/order_service.dart';
+import 'app_notification.dart';
+import 'buyer_order.dart';
+import 'conversation.dart';
 import 'listing_detail.dart';
 import 'listing_summary.dart';
 import 'owner_listing.dart';
+import 'payment_state.dart';
 
 RentalPeriod? _parseRentalPeriod(String? period) {
   if (period == null) return null;
@@ -224,6 +232,144 @@ extension OwnerListingLegacyAdapter on OwnerListing {
       createdAt: createdAt ?? DateTime.now(),
       jobTitle: kind == ListingKind.job ? title : null,
       carMake: kind == ListingKind.car ? title : null,
+    );
+  }
+}
+
+extension BuyerOrderLegacyAdapter on BuyerOrder {
+  Order toLegacyOrder() {
+    final addr = address != null
+        ? Address(
+            id: address!.id,
+            region: address!.region,
+            zone: address!.zone,
+            woreda: address!.woreda,
+            kebele: address!.kebele,
+            specificLocation: address!.fullAddress,
+          )
+        : null;
+
+    return Order(
+      id: id,
+      type: switch (type) {
+        ListingKind.car => 'car',
+        ListingKind.job => 'job',
+        ListingKind.house => 'house',
+        ListingKind.land => 'land',
+        _ => 'house',
+      },
+      listingType: listingType,
+      holdingType: holdingType,
+      facingDirection: facingDirection,
+      minBudget: budget.min,
+      maxBudget: budget.max,
+      minArea: area.min,
+      maxArea: area.max,
+      description: description,
+      status: status.wireValue,
+      createdAt: createdAt?.toIso8601String() ?? '',
+      updatedAt: null,
+      address: addr,
+    );
+  }
+}
+
+extension ChatConversationLegacyAdapter on ChatConversation {
+  msg.Conversation toLegacyConversation({int? currentUserId}) {
+    final part = otherParticipant;
+    return msg.Conversation(
+      id: id,
+      senderId: currentUserId ?? 0,
+      receiverId: part?.id ?? 0,
+      listingId: listing?.id,
+      type: 'direct',
+      subject: title,
+      lastMessage: lastMessage?.body,
+      lastMessageAt: lastMessage?.createdAt,
+      unreadCount: unreadCount,
+      createdAt: createdAt ?? DateTime.now(),
+      otherParticipantId: part?.id,
+      otherParticipantFirstName: part?.firstName,
+      otherParticipantLastName: part?.lastName,
+      otherParticipantAvatar: part?.avatarUrl,
+      listingTitle: listing?.title,
+      listingImageUrl: listing?.coverImage?.url,
+    );
+  }
+}
+
+extension ChatMessageLegacyAdapter on ChatMessage {
+  msg.Message toLegacyMessage() {
+    return msg.Message(
+      id: id,
+      conversationId: conversationId,
+      senderId: senderId,
+      body: body,
+      isRead: isRead,
+      createdAt: createdAt ?? DateTime.now(),
+      readAt: readAt,
+      senderFirstName: sender?.firstName,
+      senderLastName: sender?.lastName,
+      senderAvatar: sender?.avatarUrl,
+    );
+  }
+}
+
+extension AppNotificationLegacyAdapter on AppNotification {
+  app.Notification toLegacyNotification() {
+    final nType = switch (type) {
+      'listing_approved' => app.NotificationType.listingApproved,
+      'listing_rejected' => app.NotificationType.listingRejected,
+      'new_interest' => app.NotificationType.newInterest,
+      'favorite' => app.NotificationType.favorite,
+      'payment_success' => app.NotificationType.paymentSuccess,
+      'payment_failed' => app.NotificationType.paymentFailed,
+      'subscription_activated' => app.NotificationType.subscriptionActivated,
+      'subscription_expired' => app.NotificationType.subscriptionExpired,
+      'kyc_update' => app.NotificationType.kycUpdate,
+      'conference_invite' => app.NotificationType.conferenceInvite,
+      'conference_update' => app.NotificationType.conferenceUpdate,
+      'incoming_call' => app.NotificationType.incomingCall,
+      'suggestion' => app.NotificationType.suggestion,
+      _ => app.NotificationType.systemAnnouncement,
+    };
+
+    return app.Notification(
+      id: id,
+      userId: 0,
+      title: title,
+      body: message,
+      type: nType,
+      actionUrl: actionUrl,
+      data: data,
+      isRead: isRead,
+      readAt: readAt,
+      createdAt: createdAt ?? DateTime.now(),
+    );
+  }
+}
+
+extension PaymentStateLegacyAdapter on PaymentState {
+  Payment toLegacyPayment() {
+    final pStatus = switch (status) {
+      PaymentStatusV2.pending => PaymentStatus.pending,
+      PaymentStatusV2.success => PaymentStatus.success,
+      PaymentStatusV2.failed => PaymentStatus.failed,
+      PaymentStatusV2.cancelled => PaymentStatus.cancelled,
+      PaymentStatusV2.unknown => PaymentStatus.pending,
+    };
+
+    return Payment(
+      id: id,
+      userId: 0,
+      transactionReference: txRef,
+      paymentType: PaymentType.subscription,
+      amount: amount,
+      currency: currency,
+      status: pStatus,
+      paymentMethod: paymentMethod,
+      paidAt: paidAt,
+      createdAt: createdAt ?? DateTime.now(),
     );
   }
 }
