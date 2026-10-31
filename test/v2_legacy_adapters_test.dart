@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wavemart/core/network/error_handler.dart';
 import 'package:wavemart/data/models/job_form_data.dart';
 import 'package:wavemart/data/models/job_requirement_item.dart';
 import 'package:wavemart/data/models/listing.dart';
@@ -291,6 +293,85 @@ void main() {
       expect(jobListing.jobSalaryMin, equals(40000.0));
       expect(jobListing.jobSalaryMax, equals(50000.0));
       expect(jobListing.status, equals(ListingStatus.rejected));
+    });
+  });
+
+  group('Viewer Entitlements & Quota Gates', () {
+    test('userContactHidden is true when contact quota is exhausted', () {
+      final detail = ListingDetail.fromJson({
+        'id': 801,
+        'type': 'house',
+        'listing_type': 'sale',
+        'title': 'Test Property',
+        'price': {'amount': 1000.0},
+        'location': {'region': 'Addis Ababa'},
+        'viewer': {
+          'is_owner': false,
+          'contact_allowed': true,
+          'contact_revealed': false,
+          'contacts_remaining': 0,
+          'contacts_max': 5,
+          'video_allowed': false,
+          'vip_blocked': true,
+          'interest_status': 'negotiating',
+          'interest_id': 19,
+        },
+      });
+
+      final listing = detail.toListing();
+      expect(listing.userContactHidden, isTrue,
+          reason: 'When quota is 0, userContactHidden must be true so upgrade card shows');
+      expect(listing.videoBlocked, isTrue);
+      expect(listing.vipBlocked, isTrue);
+      expect(listing.interestBlocked, isFalse);
+      expect(listing.userInterestStatus, equals('negotiating'));
+      expect(listing.userInterestId, equals(19));
+    });
+
+    test('userContactHidden is false when user has contact quota remaining', () {
+      final detail = ListingDetail.fromJson({
+        'id': 802,
+        'type': 'house',
+        'listing_type': 'sale',
+        'title': 'Test Property',
+        'price': {'amount': 1000.0},
+        'location': {'region': 'Addis Ababa'},
+        'viewer': {
+          'is_owner': false,
+          'contact_allowed': true,
+          'contact_revealed': false,
+          'contacts_remaining': 3,
+          'contacts_max': 5,
+        },
+      });
+
+      final listing = detail.toListing();
+      expect(listing.userContactHidden, isFalse);
+      expect(listing.contactRemaining, equals(3));
+      expect(listing.contactMax, equals(5));
+    });
+  });
+
+  group('ApiErrorHandler clean message extraction', () {
+    test('extracts clean message from V2 error envelope without raw code leaks', () {
+      final dioException = DioException(
+        requestOptions: RequestOptions(path: '/api/v2/listings/1/reveal-contact'),
+        response: Response(
+          requestOptions: RequestOptions(path: '/api/v2/listings/1/reveal-contact'),
+          statusCode: 403,
+          data: {
+            'error': {
+              'code': 'LIMIT_EXCEEDED',
+              'message': 'You have used all contact views for this period.',
+            },
+          },
+        ),
+        type: DioExceptionType.badResponse,
+      );
+
+      final message = ApiErrorHandler.getMessage(dioException);
+      expect(message, equals('You have used all contact views for this period.'));
+      expect(message.contains('{code:'), isFalse);
     });
   });
 }

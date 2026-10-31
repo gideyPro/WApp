@@ -145,12 +145,39 @@ class ApiErrorHandler {
 
   /// Extract error message from response data
   static String? _extractErrorMessage(dynamic data) {
-    if (data is Map<String, dynamic>) {
-      // Try common error message keys
-      return data['message'] ??
-          data['error'] ??
-          data['errors']?.toString() ??
-          data['detail']?.toString();
+    if (data is Map) {
+      if (data['error'] is Map) {
+        final errMap = data['error'] as Map;
+        if (errMap['fields'] is Map && (errMap['fields'] as Map).isNotEmpty) {
+          final fields = errMap['fields'] as Map;
+          final messages = <String>[];
+          for (final val in fields.values) {
+            if (val is List) {
+              messages.addAll(val.map((e) => e.toString()));
+            } else if (val != null) {
+              messages.add(val.toString());
+            }
+          }
+          if (messages.isNotEmpty) return messages.join('\n');
+        }
+        return errMap['message']?.toString() ?? errMap['code']?.toString();
+      }
+      if (data['error'] is String) {
+        return data['error'] as String;
+      }
+      if (data['errors'] is Map) {
+        final errs = data['errors'] as Map;
+        final messages = <String>[];
+        for (final val in errs.values) {
+          if (val is List) {
+            messages.addAll(val.map((e) => e.toString()));
+          } else if (val != null) {
+            messages.add(val.toString());
+          }
+        }
+        if (messages.isNotEmpty) return messages.join('\n');
+      }
+      return data['message']?.toString() ?? data['detail']?.toString();
     }
 
     return data?.toString();

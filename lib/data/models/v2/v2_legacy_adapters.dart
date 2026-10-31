@@ -199,6 +199,14 @@ extension ListingDetailLegacyAdapter on ListingDetail {
       contactMax: viewer.contactsMax,
       revealedContact: viewer.contactRevealed ? seller.phone : null,
       revealedName: viewer.contactRevealed ? seller.name : null,
+      userContactHidden: !viewer.isOwner &&
+          (!viewer.contactAllowed ||
+              (viewer.contactsMax > 0 && viewer.contactsRemaining <= 0)),
+      videoBlocked: video.blocked || (!viewer.isOwner && !viewer.videoAllowed),
+      vipBlocked: viewer.vipBlocked,
+      interestBlocked: !viewer.isOwner && !viewer.contactAllowed,
+      userInterestStatus: viewer.interestStatus,
+      userInterestId: viewer.interestId,
       // Car fields
       carVehicleCategory: details.vehicleCategory,
       carMake: details.make,
