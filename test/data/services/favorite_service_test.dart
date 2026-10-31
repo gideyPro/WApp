@@ -38,26 +38,28 @@ void main() {
     FlutterSecureStorage.setMockInitialValues({});
   });
 
-  test('toggleFavorite extracts added flag from root and data payload', () async {
-    final clientWithRootAdded = ApiClient();
-    clientWithRootAdded.dio.httpClientAdapter = _StubAdapter({
-      'success': true,
-      'message': 'Added to favorites',
-      'added': true,
+  test('toggleFavorite toggles favorite status correctly via V2 payload', () async {
+    final clientWithFavorited = ApiClient();
+    clientWithFavorited.dio.httpClientAdapter = _StubAdapter({
+      'data': {
+        'listing_id': 12,
+        'favorited': true,
+      },
     });
-    final service1 = FavoriteService(apiClient: clientWithRootAdded);
-    final res1 = await service1.toggleFavorite(12);
+    final service1 = FavoriteService(apiClient: clientWithFavorited);
+    final res1 = await service1.toggleFavorite(12, currentlyFavorite: false);
     expect(res1.success, isTrue);
     expect(res1.isFavorite, isTrue);
 
-    final clientWithNestedAdded = ApiClient();
-    clientWithNestedAdded.dio.httpClientAdapter = _StubAdapter({
-      'success': true,
-      'message': 'Removed from favorites',
-      'data': {'added': false},
+    final clientWithUnfavorited = ApiClient();
+    clientWithUnfavorited.dio.httpClientAdapter = _StubAdapter({
+      'data': {
+        'listing_id': 12,
+        'favorited': false,
+      },
     });
-    final service2 = FavoriteService(apiClient: clientWithNestedAdded);
-    final res2 = await service2.toggleFavorite(12);
+    final service2 = FavoriteService(apiClient: clientWithUnfavorited);
+    final res2 = await service2.toggleFavorite(12, currentlyFavorite: true);
     expect(res2.success, isTrue);
     expect(res2.isFavorite, isFalse);
   });

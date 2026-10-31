@@ -1,5 +1,6 @@
 import '../../core/network/api_client.dart';
 import '../../core/network/error_handler.dart';
+import '../../core/network/v2/api_v2_client.dart';
 import '../models/listing.dart';
 import '../models/v2/v2_legacy_adapters.dart';
 import 'v2/favorite_service.dart';
@@ -9,7 +10,11 @@ class FavoriteService {
   final FavoriteServiceV2 _v2;
 
   FavoriteService({ApiClient? apiClient, FavoriteServiceV2? v2Service})
-      : _v2 = v2Service ?? FavoriteServiceV2();
+      : _v2 = v2Service ??
+            FavoriteServiceV2(
+              client:
+                  apiClient != null ? ApiV2Client(apiClient: apiClient) : null,
+            );
 
   Future<FavoriteResponse> getFavorites({
     int page = 1,
@@ -27,10 +32,9 @@ class FavoriteService {
         total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return FavoriteResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -48,10 +52,9 @@ class FavoriteService {
         isFavorite: state.favorited,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return FavoriteResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }

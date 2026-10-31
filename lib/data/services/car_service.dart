@@ -23,6 +23,8 @@ class CarService {
   final OwnerListingService _owner;
   final ListingMediaServiceV2 _media;
   final PromotionServiceV2 _promo;
+  final Map<int, String> _carCursors = {};
+  final Map<int, String> _myCarCursors = {};
 
   CarService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient(),
@@ -37,6 +39,11 @@ class CarService {
     Map<String, dynamic>? filters,
   }) async {
     try {
+      if (page <= 1) {
+        _carCursors.clear();
+      }
+      final cursor = page > 1 ? _carCursors[page] : null;
+
       final carFilters = CarFilters(
         listingType: filters?['listing_type']?.toString(),
         location: filters?['location']?.toString() ?? filters?['city']?.toString(),
@@ -50,9 +57,14 @@ class CarService {
       );
 
       final result = await _catalog.fetchCars(
+        cursor: cursor,
         limit: perPage,
         filters: carFilters,
       );
+
+      if (result.nextCursor != null) {
+        _carCursors[page + 1] = result.nextCursor!;
+      }
 
       final listings = result.items.map((s) => s.toListing()).toList();
 
@@ -64,10 +76,9 @@ class CarService {
         total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -78,6 +89,11 @@ class CarService {
     String? status,
   }) async {
     try {
+      if (page <= 1) {
+        _myCarCursors.clear();
+      }
+      final cursor = page > 1 ? _myCarCursors[page] : null;
+
       final oStatus = switch (status?.toLowerCase()) {
         'active' => OwnerListingStatus.active,
         'pending' => OwnerListingStatus.pending,
@@ -88,10 +104,15 @@ class CarService {
       };
 
       final result = await _owner.fetch(
+        cursor: cursor,
         limit: perPage,
         type: ListingKind.car,
         status: oStatus,
       );
+
+      if (result.nextCursor != null) {
+        _myCarCursors[page + 1] = result.nextCursor!;
+      }
 
       final listings = result.items.map((s) => s.toListing()).toList();
 
@@ -103,10 +124,9 @@ class CarService {
         total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -211,10 +231,9 @@ class CarService {
         message: 'Vehicle listing submitted for review',
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -226,7 +245,7 @@ class CarService {
   }) async {
     try {
       onProgress?.call(0.3);
-      final payload = formData.toV2Payload('');
+      final payload = formData.toV2Payload('', isUpdate: true);
       await _owner.updateCar(listingId, payload);
       onProgress?.call(0.7);
 
@@ -241,10 +260,9 @@ class CarService {
         message: 'Vehicle updated successfully',
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -257,10 +275,9 @@ class CarService {
         message: 'Vehicle listing deleted successfully',
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }

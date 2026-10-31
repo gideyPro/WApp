@@ -20,6 +20,8 @@ class JobService {
   final CatalogService _catalog;
   final OwnerListingService _owner;
   final PromotionServiceV2 _promo;
+  final Map<int, String> _jobCursors = {};
+  final Map<int, String> _myJobCursors = {};
 
   JobService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient(),
@@ -33,6 +35,11 @@ class JobService {
     Map<String, dynamic>? filters,
   }) async {
     try {
+      if (page <= 1) {
+        _jobCursors.clear();
+      }
+      final cursor = page > 1 ? _jobCursors[page] : null;
+
       final jobFilters = JobFilters(
         jobCategory: filters?['category']?.toString() ?? filters?['job_category']?.toString(),
         jobType: filters?['job_type']?.toString(),
@@ -41,9 +48,14 @@ class JobService {
       );
 
       final result = await _catalog.fetchJobs(
+        cursor: cursor,
         limit: perPage,
         filters: jobFilters,
       );
+
+      if (result.nextCursor != null) {
+        _jobCursors[page + 1] = result.nextCursor!;
+      }
 
       final listings = result.items.map((s) => s.toListing()).toList();
 
@@ -55,10 +67,9 @@ class JobService {
         total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -69,6 +80,11 @@ class JobService {
     String? status,
   }) async {
     try {
+      if (page <= 1) {
+        _myJobCursors.clear();
+      }
+      final cursor = page > 1 ? _myJobCursors[page] : null;
+
       final oStatus = switch (status?.toLowerCase()) {
         'active' => OwnerListingStatus.active,
         'pending' => OwnerListingStatus.pending,
@@ -79,10 +95,15 @@ class JobService {
       };
 
       final result = await _owner.fetch(
+        cursor: cursor,
         limit: perPage,
         type: ListingKind.job,
         status: oStatus,
       );
+
+      if (result.nextCursor != null) {
+        _myJobCursors[page + 1] = result.nextCursor!;
+      }
 
       final listings = result.items.map((s) => s.toListing()).toList();
 
@@ -94,10 +115,9 @@ class JobService {
         total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -112,10 +132,9 @@ class JobService {
         listings: listings,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -130,10 +149,9 @@ class JobService {
         listing: listing,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingDetailResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -167,10 +185,9 @@ class JobService {
         message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch similar jobs'),
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -196,10 +213,9 @@ class JobService {
         message: 'Job listing submitted for review',
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -211,7 +227,7 @@ class JobService {
   }) async {
     try {
       onProgress?.call(0.4);
-      final payload = formData.toV2Payload('');
+      final payload = formData.toV2Payload('', isUpdate: true);
       await _owner.updateJob(listingId, payload);
       onProgress?.call(1.0);
 
@@ -220,10 +236,9 @@ class JobService {
         message: 'Job updated successfully',
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -236,10 +251,9 @@ class JobService {
         message: 'Job listing deleted successfully',
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -249,10 +263,9 @@ class JobService {
       await _promo.feature(id);
       return const ListingResponse(success: true, message: 'Featured');
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -262,10 +275,9 @@ class JobService {
       await _promo.unfeature(id);
       return const ListingResponse(success: true, message: 'Unfeatured');
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -293,10 +305,9 @@ class JobService {
         message: ApiEnvelope.extractMessage(response.data, 'Failed to reveal contact'),
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ContactRevealResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }

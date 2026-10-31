@@ -409,7 +409,10 @@ class PropertyListingCard extends ConsumerWidget {
   }
 
   Widget _buildDescription(BuildContext context) {
-    final description = listing?.description;
+    final rawDesc = listing?.description?.trim();
+    final description = (rawDesc != null && rawDesc.isNotEmpty)
+        ? rawDesc
+        : listing?.getLocalizedTitle(context).trim();
     if (description == null || description.isEmpty) {
       return const SizedBox.shrink();
     }

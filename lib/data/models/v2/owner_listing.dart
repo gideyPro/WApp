@@ -164,6 +164,7 @@ class OwnerListing {
   final ListingKind kind;
   final String listingType;
   final String title;
+  final String? description;
   final ListingPrice price;
   final ListingLocation location;
   final ListingImage? coverImage;
@@ -188,6 +189,7 @@ class OwnerListing {
     required this.kind,
     required this.listingType,
     required this.title,
+    this.description,
     required this.price,
     required this.location,
     this.coverImage,
@@ -222,6 +224,7 @@ class OwnerListing {
       kind: ListingKind.parse(map['type']),
       listingType: map['listing_type']?.toString() ?? 'sale',
       title: map['title']?.toString() ?? '',
+      description: _text(map['description']),
       price: ListingPrice.fromJson(map['price']),
       location: ListingLocation.fromJson(map['location']),
       coverImage: map['cover_image'] is Map

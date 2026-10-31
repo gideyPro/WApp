@@ -141,6 +141,7 @@ class ListingSummary {
   final ListingKind kind;
   final String listingType;
   final String title;
+  final String? description;
   final ListingPrice price;
   final ListingLocation location;
   final ListingImage? coverImage;
@@ -155,6 +156,7 @@ class ListingSummary {
     required this.kind,
     required this.listingType,
     required this.title,
+    this.description,
     required this.price,
     required this.location,
     this.coverImage,
@@ -176,6 +178,7 @@ class ListingSummary {
       kind: ListingKind.parse(json['type']),
       listingType: json['listing_type']?.toString() ?? 'sale',
       title: json['title']?.toString() ?? '',
+      description: _nonEmpty(json['description']),
       price: ListingPrice.fromJson(json['price']),
       location: ListingLocation.fromJson(json['location']),
       coverImage:
@@ -188,12 +191,13 @@ class ListingSummary {
     );
   }
 
-  ListingSummary copyWith({bool? isFavorite}) {
+  ListingSummary copyWith({bool? isFavorite, String? description}) {
     return ListingSummary(
       id: id,
       kind: kind,
       listingType: listingType,
       title: title,
+      description: description ?? this.description,
       price: price,
       location: location,
       coverImage: coverImage,

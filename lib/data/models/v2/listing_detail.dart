@@ -363,7 +363,6 @@ class ListingViewer {
 
 /// Full listing payload: summary projection plus detail-only blocks.
 class ListingDetail extends ListingSummary {
-  final String? description;
   final List<ListingImage> images;
   final ListingAttributes attributes;
   final ListingDetails details;
@@ -386,7 +385,7 @@ class ListingDetail extends ListingSummary {
     super.isVip,
     super.isFavorite,
     super.createdAt,
-    this.description,
+    super.description,
     this.images = const [],
     this.attributes = const ListingAttributes(),
     this.details = const ListingDetails(),
@@ -440,7 +439,11 @@ class ListingDetail extends ListingSummary {
   }
 
   @override
-  ListingDetail copyWith({bool? isFavorite, bool? contactRevealed}) {
+  ListingDetail copyWith({
+    bool? isFavorite,
+    String? description,
+    bool? contactRevealed,
+  }) {
     return ListingDetail(
       id: id,
       kind: kind,
@@ -454,7 +457,7 @@ class ListingDetail extends ListingSummary {
       isVip: isVip,
       isFavorite: isFavorite ?? this.isFavorite,
       createdAt: createdAt,
-      description: description,
+      description: description ?? this.description,
       images: images,
       attributes: attributes,
       details: details,

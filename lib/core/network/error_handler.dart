@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'v2/api_v2_error.dart';
 
 /// Custom exception for API errors
 class ApiException implements Exception {
@@ -13,7 +14,7 @@ class ApiException implements Exception {
   });
 
   @override
-  String toString() => 'ApiException: $message (Code: $code, Status: $statusCode)';
+  String toString() => 'ApiException: $message';
 }
 
 /// Network exception
@@ -46,9 +47,39 @@ class ServerException implements Exception {
   String toString() => 'ServerException: $message';
 }
 
-/// Parse Dio exceptions into custom exceptions
+/// Parse exceptions into custom exceptions
 class ApiErrorHandler {
   static Exception handle(dynamic error) {
+    if (error is ApiV2Exception) {
+      if (error.isUnauthenticated) {
+        return const UnauthorizedException();
+      }
+      if (error.statusCode != null && error.statusCode! >= 500) {
+        return const ServerException();
+      }
+      if (error.code == ApiV2ErrorCodes.networkError ||
+          error.code == ApiV2ErrorCodes.timeout) {
+        return NetworkException(error.message);
+      }
+      if (error.isValidation && error.error.allFieldMessages.isNotEmpty) {
+        return ApiException(
+          message: error.error.allFieldMessages.join('\n'),
+          statusCode: error.statusCode,
+          code: error.code,
+        );
+      }
+      return ApiException(
+        message: error.message,
+        statusCode: error.statusCode,
+        code: error.code,
+      );
+    }
+
+    if (error is ApiException) return error;
+    if (error is NetworkException) return error;
+    if (error is UnauthorizedException) return error;
+    if (error is ServerException) return error;
+
     if (error is DioException) {
       switch (error.type) {
         case DioExceptionType.connectionTimeout:
@@ -89,7 +120,27 @@ class ApiErrorHandler {
       }
     }
 
-    return ApiException(message: error.toString());
+    final raw = error.toString().replaceFirst(
+          RegExp(r'^(Exception|Error|ApiV2Exception|ApiException):\s*'),
+          '',
+        );
+    return ApiException(message: raw);
+  }
+
+  /// Get user-friendly error message from any exception or error
+  static String getMessage(dynamic error) {
+    if (error is ApiV2Exception) {
+      if (error.isValidation && error.error.allFieldMessages.isNotEmpty) {
+        return error.error.allFieldMessages.join('\n');
+      }
+      return error.message;
+    }
+    final exception = handle(error);
+    if (exception is ApiException) return exception.message;
+    if (exception is NetworkException) return exception.message;
+    if (exception is UnauthorizedException) return exception.message;
+    if (exception is ServerException) return exception.message;
+    return exception.toString().replaceFirst(RegExp(r'^\w+:\s*'), '');
   }
 
   /// Extract error message from response data

@@ -21,6 +21,8 @@ class ListingService {
   final OwnerListingService _owner;
   final ListingMediaServiceV2 _media;
   final PromotionServiceV2 _promo;
+  final Map<int, String> _catalogCursors = {};
+  final Map<int, String> _myListingsCursors = {};
 
   ListingService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient(),
@@ -35,6 +37,11 @@ class ListingService {
     Map<String, dynamic>? filters,
   }) async {
     try {
+      if (page <= 1) {
+        _catalogCursors.clear();
+      }
+      final cursor = page > 1 ? _catalogCursors[page] : null;
+
       final listingFilters = ListingFilters(
         type: filters?['type']?.toString(),
         listingType: filters?['listing_type']?.toString(),
@@ -49,9 +56,14 @@ class ListingService {
       );
 
       final result = await _catalog.fetchListings(
+        cursor: cursor,
         limit: perPage,
         filters: listingFilters,
       );
+
+      if (result.nextCursor != null) {
+        _catalogCursors[page + 1] = result.nextCursor!;
+      }
 
       final listings = result.items.map((s) => s.toListing()).toList();
 
@@ -63,10 +75,9 @@ class ListingService {
         total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -77,6 +88,11 @@ class ListingService {
     String? status,
   }) async {
     try {
+      if (page <= 1) {
+        _myListingsCursors.clear();
+      }
+      final cursor = page > 1 ? _myListingsCursors[page] : null;
+
       final oStatus = switch (status?.toLowerCase()) {
         'active' => OwnerListingStatus.active,
         'pending' => OwnerListingStatus.pending,
@@ -87,9 +103,14 @@ class ListingService {
       };
 
       final result = await _owner.fetch(
+        cursor: cursor,
         limit: perPage,
         status: oStatus,
       );
+
+      if (result.nextCursor != null) {
+        _myListingsCursors[page + 1] = result.nextCursor!;
+      }
 
       final listings = result.items.map((s) => s.toListing()).toList();
 
@@ -101,10 +122,9 @@ class ListingService {
         total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -254,10 +274,9 @@ class ListingService {
         message: 'Listing submitted successfully for review',
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -269,7 +288,7 @@ class ListingService {
   }) async {
     try {
       onProgress?.call(0.2);
-      final payload = formData.toV2Payload('');
+      final payload = formData.toV2Payload('', isUpdate: true);
       await _owner.updateProperty(listingId, payload);
       onProgress?.call(0.6);
 
@@ -284,10 +303,9 @@ class ListingService {
         message: 'Listing updated successfully',
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }

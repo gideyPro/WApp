@@ -68,6 +68,7 @@ extension ListingSummaryLegacyAdapter on ListingSummary {
       rentalPeriodUnit: _parseRentalPeriod(price.period),
       isFeatured: isFeatured,
       isVip: isVip,
+      description: description ?? (title.isNotEmpty ? title : null),
       specificLocation: location.specificLocation,
       address: addr,
       images: imageModels,
@@ -234,6 +235,7 @@ extension OwnerListingLegacyAdapter on OwnerListing {
       status: lStatus,
       isFeatured: isFeatured,
       isVip: isVip,
+      description: description ?? (title.isNotEmpty ? title : null),
       specificLocation: location.specificLocation,
       images: imageModels,
       createdAt: createdAt ?? DateTime.now(),
@@ -447,11 +449,13 @@ extension SubscriptionStateLegacyAdapter on SubscriptionState {
 }
 
 extension ListingFormDataV2Adapter on ListingFormData {
-  Map<String, dynamic> toV2Payload(String submissionKey) {
+  Map<String, dynamic> toV2Payload(String submissionKey, {bool isUpdate = false}) {
     return {
-      'type': type,
-      'submission_key': submissionKey,
-      'listing_type': listingType,
+      if (!isUpdate && submissionKey.isNotEmpty) 'submission_key': submissionKey,
+      if (!isUpdate) ...{
+        'type': type,
+        'listing_type': listingType,
+      },
       if (priceFixed != null) 'price': priceFixed,
       if (isRental && rentalPeriodUnit != null)
         'rental_period': rentalPeriodUnit,
@@ -468,7 +472,6 @@ extension ListingFormDataV2Adapter on ListingFormData {
         if (sideAreaSqm != null) 'side_area_sqm': sideAreaSqm,
         if (hasDebtOrEncumbrance) 'has_debt_or_encumbrance': true,
         if (debtAmount != null) 'debt_amount': debtAmount,
-        'holding_type': holdingType,
       },
       'details': {
         if (bedrooms != null) 'bedrooms': bedrooms,
@@ -480,38 +483,45 @@ extension ListingFormDataV2Adapter on ListingFormData {
         'electricity': electricity,
         'water': water,
       },
-      'holding_details': {
-        if (holdingType == 'Free Hold')
-          'private': {
-            if (taxPaidUntilYear != null)
-              'tax_paid_until_year': taxPaidUntilYear,
-            if (acquisitionClarification != null)
-              'acquisition_clarification': acquisitionClarification,
-          },
-        if (holdingType == 'Lease Hold')
-          'lease': {
-            if (leasedYear != null) 'leased_year': leasedYear,
-            if (leasePricePerSqm != null)
-              'lease_price_per_sqm': leasePricePerSqm,
-            if (buildType != null) 'build_type': buildType,
-            if (annualPayment != null) 'annual_payment': annualPayment,
-          },
-        if (holdingType == 'Cooperative')
-          'cooperative': {
-            if (cooperativeName != null) 'cooperative_name': cooperativeName,
-            if (cooperativeCode != null) 'cooperative_code': cooperativeCode,
-            if (buildingStatus != null) 'building_status': buildingStatus,
-          },
-      },
+      if (holdingType.isNotEmpty)
+        'holding': {
+          'type': holdingType,
+          if (holdingType == 'Free Hold')
+            'private': {
+              if (taxPaidUntilYear != null)
+                'tax_paid_until_year': taxPaidUntilYear,
+              if (acquisitionClarification != null &&
+                  acquisitionClarification!.isNotEmpty)
+                'acquisition_clarification': acquisitionClarification,
+            },
+          if (holdingType == 'Lease Hold')
+            'lease': {
+              if (leasedYear != null) 'leased_year': leasedYear,
+              if (leasePricePerSqm != null)
+                'lease_price_per_sqm': leasePricePerSqm,
+              if (buildType != null && buildType!.isNotEmpty)
+                'build_type': buildType,
+              if (annualPayment != null) 'annual_payment': annualPayment,
+            },
+          if (holdingType == 'Cooperative')
+            'cooperative': {
+              if (cooperativeName != null && cooperativeName!.isNotEmpty)
+                'cooperative_name': cooperativeName,
+              if (cooperativeCode != null && cooperativeCode!.isNotEmpty)
+                'cooperative_code': cooperativeCode,
+              if (buildingStatus != null && buildingStatus!.isNotEmpty)
+                'building_status': buildingStatus,
+            },
+        },
     };
   }
 }
 
 extension CarFormDataV2Adapter on CarFormData {
-  Map<String, dynamic> toV2Payload(String submissionKey) {
+  Map<String, dynamic> toV2Payload(String submissionKey, {bool isUpdate = false}) {
     return {
-      'submission_key': submissionKey,
-      'listing_type': isForRent ? 'rental' : 'sale',
+      if (!isUpdate && submissionKey.isNotEmpty) 'submission_key': submissionKey,
+      if (!isUpdate) 'listing_type': isForRent ? 'rental' : 'sale',
       if (priceFixed != null) 'price': priceFixed,
       if (isForRent && rentalPeriodUnit.isNotEmpty)
         'rental_period': rentalPeriodUnit,
@@ -533,9 +543,9 @@ extension CarFormDataV2Adapter on CarFormData {
 }
 
 extension JobFormDataV2Adapter on JobFormData {
-  Map<String, dynamic> toV2Payload(String submissionKey) {
+  Map<String, dynamic> toV2Payload(String submissionKey, {bool isUpdate = false}) {
     return {
-      'submission_key': submissionKey,
+      if (!isUpdate && submissionKey.isNotEmpty) 'submission_key': submissionKey,
       'title': title ?? '',
       if (companyName != null && companyName!.isNotEmpty)
         'company_name': companyName,
@@ -546,9 +556,11 @@ extension JobFormDataV2Adapter on JobFormData {
       if (salaryMin != null) 'salary_min': salaryMin,
       if (salaryMax != null) 'salary_max': salaryMax,
       'salary_currency': salaryCurrency,
-      if (reqEducation != null) 'education': reqEducation,
-      if (reqExperience != null) 'experience': reqExperience,
-      'gender': reqGender,
+      if (reqEducation != null && reqEducation!.isNotEmpty)
+        'req_education': reqEducation,
+      if (reqExperience != null && reqExperience!.isNotEmpty)
+        'req_experience': reqExperience,
+      if (reqGender.isNotEmpty) 'req_gender': reqGender,
       if (deadline != null)
         'deadline': deadline!.toIso8601String().split('T').first,
       if (addressId != null) 'address_id': addressId,
