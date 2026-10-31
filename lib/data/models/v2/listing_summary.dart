@@ -59,6 +59,7 @@ class ListingPrice {
 
 /// Address block. Discovery-tier viewers receive a masked payload.
 class ListingLocation {
+  final int? id;
   final String? region;
   final String? zone;
   final String? woreda;
@@ -72,6 +73,7 @@ class ListingLocation {
   final String? kebeleLocalized;
 
   const ListingLocation({
+    this.id,
     this.region,
     this.zone,
     this.woreda,
@@ -96,6 +98,7 @@ class ListingLocation {
   factory ListingLocation.fromJson(dynamic json) {
     final map = json is Map ? json : const {};
     return ListingLocation(
+      id: TypeUtils.safeInt(map['id'] ?? map['address_id']),
       region: _nonEmpty(map['region']),
       zone: _nonEmpty(map['zone']),
       woreda: _nonEmpty(map['woreda']),

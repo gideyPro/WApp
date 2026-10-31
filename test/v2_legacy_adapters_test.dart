@@ -5,10 +5,13 @@ import 'package:wavemart/data/models/job_form_data.dart';
 import 'package:wavemart/data/models/job_requirement_item.dart';
 import 'package:wavemart/data/models/listing.dart';
 import 'package:wavemart/data/models/listing_form_data.dart';
+import 'package:wavemart/data/models/payment.dart';
 import 'package:wavemart/data/models/v2/listing_detail.dart';
 import 'package:wavemart/data/models/v2/listing_summary.dart';
 import 'package:wavemart/data/models/v2/owner_listing.dart';
+import 'package:wavemart/data/models/v2/payment_state.dart';
 import 'package:wavemart/data/models/v2/v2_legacy_adapters.dart';
+import 'package:wavemart/data/services/lead_service.dart';
 
 void main() {
   group('ListingSummaryLegacyAdapter', () {
@@ -372,6 +375,85 @@ void main() {
       final message = ApiErrorHandler.getMessage(dioException);
       expect(message, equals('You have used all contact views for this period.'));
       expect(message.contains('{code:'), isFalse);
+    });
+  });
+
+  group('V2 Fallbacks in Listing & Lead Models', () {
+    test('Listing.fromJson parses V2 summary JSON with cover image, location and price', () {
+      final v2Map = {
+        'id': 901,
+        'user_id': 10,
+        'type': 'house',
+        'listing_type': 'sale',
+        'title': 'V2 Summary Villa',
+        'price': {'amount': 18500000.0, 'currency': 'ETB'},
+        'cover_image': {'url': 'https://wavemart.et/storage/cover.jpg'},
+        'location': {
+          'id': 77,
+          'region': 'Addis Ababa',
+          'zone': 'Bole',
+          'specific_location': 'Atlas',
+        },
+        'details': {
+          'bedrooms': 4,
+          'bathrooms': 3,
+          'area_sqm': 220.0,
+          'salons': 1,
+        },
+      };
+
+      final listing = Listing.fromJson(v2Map);
+      expect(listing.id, equals(901));
+      expect(listing.userId, equals(10));
+      expect(listing.priceFixed, equals(18500000.0));
+      expect(listing.images.length, equals(1));
+      expect(listing.images.first.imageUrl, equals('https://wavemart.et/storage/cover.jpg'));
+      expect(listing.address, isNotNull);
+      expect(listing.address?.region, equals('Addis Ababa'));
+      expect(listing.addressId, equals(77));
+      expect(listing.bedrooms, equals(4));
+      expect(listing.bathrooms, equals(3));
+      expect(listing.totalSquareMeters, equals(220.0));
+    });
+
+    test('Lead parses V2 suggestion price and listing ID correctly', () {
+      final suggestionJson = {
+        'id': 12,
+        'order_id': 5,
+        'listing_id': 456,
+        'source': 'suggestion',
+        'stage': 'new',
+        'listing': {
+          'id': 456,
+          'title': 'Recommended House',
+          'price': {'amount': 7500000.0, 'currency': 'ETB'},
+        },
+      };
+
+      final lead = Lead.fromJson(suggestionJson);
+      expect(lead.id, equals(12));
+      expect(lead.orderId, equals(5));
+      expect(lead.listingId, equals(456));
+      expect(lead.listingPrice, equals(7500000.0));
+      expect(lead.isSuggestionPending, isTrue);
+    });
+
+    test('ListingFormDataV2Adapter maps price_revision_possible', () {
+      final form = ListingFormData(
+        priceOnAgreement: true,
+      );
+      final payload = form.toV2Payload('test-sub');
+      expect((payload['attributes'] as Map)['price_revision_possible'], isTrue);
+    });
+
+    test('PaymentStateLegacyAdapter maps featured_listing payment type', () {
+      const state = PaymentState(
+        id: 1,
+        txRef: 'WM-FEAT-123',
+        type: 'featured_listing',
+      );
+      final legacy = state.toLegacyPayment();
+      expect(legacy.paymentType, equals(PaymentType.featuredListing));
     });
   });
 }

@@ -53,7 +53,7 @@ extension ListingSummaryLegacyAdapter on ListingSummary {
         : <ImageModel>[];
 
     final addr = Address(
-      id: 0,
+      id: location.id ?? 0,
       region: location.displayRegion,
       zone: location.displayZone,
       woreda: location.woreda,
@@ -73,6 +73,7 @@ extension ListingSummaryLegacyAdapter on ListingSummary {
       description: description ?? (title.isNotEmpty ? title : null),
       specificLocation: location.specificLocation,
       address: addr,
+      addressId: location.id,
       images: imageModels,
       createdAt: createdAt ?? DateTime.now(),
       // Feature chips for Property
@@ -123,7 +124,7 @@ extension ListingDetailLegacyAdapter on ListingDetail {
         .toList();
 
     final addr = Address(
-      id: 0,
+      id: location.id ?? 0,
       region: location.displayRegion,
       zone: location.displayZone,
       woreda: location.woreda,
@@ -153,6 +154,7 @@ extension ListingDetailLegacyAdapter on ListingDetail {
       isVip: isVip,
       description: description,
       specificLocation: attributes.specificLocation ?? location.specificLocation,
+      addressId: location.id,
       useType: attributes.useType,
       facingDirection: attributes.facingDirection,
       totalSquareMeters: attributes.totalSquareMeters ?? details.areaSqm,
@@ -272,7 +274,7 @@ extension OwnerListingLegacyAdapter on OwnerListing {
         : <ImageModel>[];
 
     final addr = Address(
-      id: 0,
+      id: location.id ?? 0,
       region: location.displayRegion,
       zone: location.displayZone,
       woreda: location.woreda,
@@ -293,6 +295,7 @@ extension OwnerListingLegacyAdapter on OwnerListing {
       description: description ?? (title.isNotEmpty ? title : null),
       specificLocation: location.specificLocation,
       address: addr,
+      addressId: location.id,
       images: imageModels,
       createdAt: createdAt ?? DateTime.now(),
       // Feature chips
@@ -444,7 +447,9 @@ extension PaymentStateLegacyAdapter on PaymentState {
       id: id,
       userId: 0,
       transactionReference: txRef,
-      paymentType: PaymentType.subscription,
+      paymentType: type == 'featured_listing'
+          ? PaymentType.featuredListing
+          : PaymentType.subscription,
       amount: amount,
       currency: currency,
       status: pStatus,
@@ -544,6 +549,7 @@ extension ListingFormDataV2Adapter on ListingFormData {
         if (sideAreaSqm != null) 'side_area_sqm': sideAreaSqm,
         if (hasDebtOrEncumbrance) 'has_debt_or_encumbrance': true,
         if (debtAmount != null) 'debt_amount': debtAmount,
+        if (priceOnAgreement) 'price_revision_possible': true,
       },
       'details': {
         if (totalRooms != null) 'total_rooms': totalRooms,

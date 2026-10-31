@@ -402,10 +402,10 @@ class _ConversationTile extends ConsumerWidget {
 /// Chat Screen - Individual conversation with full messaging
 class ChatScreen extends ConsumerStatefulWidget {
   final int conversationId;
-  final msg.Conversation conversation;
+  final msg.Conversation? conversation;
 
   const ChatScreen(
-      {super.key, required this.conversationId, required this.conversation});
+      {super.key, required this.conversationId, this.conversation});
 
   @override
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
@@ -760,8 +760,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    String title = widget.conversation.contextDisplayTitle;
-    String otherUserName = widget.conversation.getDisplayTitle(currentUserId);
+    final conv = widget.conversation ??
+        chatState.relatedConversations
+            .where((c) => c.id == widget.conversationId)
+            .firstOrNull;
+
+    String title = conv?.contextDisplayTitle ?? l10n.navMessages;
+    String otherUserName = conv?.getDisplayTitle(currentUserId) ?? '';
     final relatedConversations = chatState.relatedConversations;
 
     return Scaffold(
@@ -815,7 +820,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
         ),
         actions: [
-          if (widget.conversation.isAssetChat && widget.conversation.contactRevealed) ...[
+          if (conv?.isAssetChat == true && conv?.contactRevealed == true) ...[
             IconButton(
               icon: const Icon(Icons.call, size: 22),
               tooltip: 'Audio Call',
@@ -865,7 +870,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 ),
                               )
                             : _buildMessagesList(chatState.messages, currentUserId,
-                                l10n, widget.conversation.listingOwnerId),
+                                l10n, conv?.listingOwnerId ?? 0),
               ),
 
               // Message input

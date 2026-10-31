@@ -472,6 +472,30 @@ class Listing {
       }
     }
 
+    if (images.isEmpty && json['cover_image'] is Map) {
+      final coverUrl = json['cover_image']['url']?.toString();
+      if (coverUrl != null && coverUrl.isNotEmpty) {
+        images = [ImageModel(id: 0, imagePath: coverUrl)];
+      }
+    }
+
+    Address? parsedAddress;
+    if (json['address'] != null) {
+      parsedAddress = Address.fromJson(json['address']);
+    } else if (json['location'] is Map) {
+      final loc = json['location'] as Map;
+      parsedAddress = Address(
+        id: TypeUtils.safeInt(loc['id'] ?? loc['address_id']) ?? 0,
+        region: loc['region_localized']?.toString() ?? loc['region']?.toString(),
+        zone: loc['zone_localized']?.toString() ?? loc['zone']?.toString(),
+        woreda: loc['woreda_localized']?.toString() ?? loc['woreda']?.toString(),
+        kebele: loc['kebele_localized']?.toString() ?? loc['kebele']?.toString(),
+        specificLocation: loc['specific_location']?.toString(),
+      );
+    }
+
+    final detailsMap = json['details'] is Map ? json['details'] as Map : null;
+
     final owner = json['user'] is Map
         ? json['user']
         : (property is Map ? property['owner'] : null);
@@ -481,9 +505,10 @@ class Listing {
       userId: TypeUtils.safeInt(json['user_id']),
       ownerKycVerified: owner is Map && owner['is_kyc_verified'] == true,
       propertyId: TypeUtils.safeInt(json['property_id']),
-      propertyType: _parsePropertyType(json['property_type']),
+      propertyType: _parsePropertyType(json['property_type'] ?? json['type']),
       listingType: _parseListingType(json['listing_type']),
-      priceFixed: TypeUtils.safeDouble(json['price_fixed']),
+      priceFixed: TypeUtils.safeDouble(json['price_fixed']) ??
+          (json['price'] is Map ? TypeUtils.safeDouble(json['price']['amount']) : null),
       priceMin: TypeUtils.safeDouble(json['price_min']),
       priceMax: TypeUtils.safeDouble(json['price_max']),
       rentalPeriodUnit: json['rental_period_unit'] != null
@@ -500,12 +525,13 @@ class Listing {
       featuredUntil: json['featured_until'] != null
           ? DateTime.parse(json['featured_until'])
           : null,
-      addressId: TypeUtils.safeInt(json['address_id']),
+      addressId: TypeUtils.safeInt(json['address_id'] ?? (json['location'] is Map ? json['location']['id'] : null)),
       specificLocation: json['specific_location'] ?? (property is Map ? property['specific_location'] : null),
       useType: json['use_type'] ?? (property is Map ? property['use_type'] : null),
       facingDirection: json['facing_direction'] ?? (property is Map ? property['facing_direction'] : null),
       totalSquareMeters: TypeUtils.safeDouble(json['total_square_meters'] ?? json['area']) ??
-          (property is Map ? TypeUtils.safeDouble(property['total_square_meters'] ?? property['area']) : null),
+          (property is Map ? TypeUtils.safeDouble(property['total_square_meters'] ?? property['area']) : null) ??
+          TypeUtils.safeDouble(detailsMap?['area_sqm']),
       frontAreaSqm: TypeUtils.safeDouble(json['front_area_sqm']) ?? (property is Map ? TypeUtils.safeDouble(property['front_area_sqm']) : null),
       sideAreaSqm: TypeUtils.safeDouble(json['side_area_sqm']) ?? (property is Map ? TypeUtils.safeDouble(property['side_area_sqm']) : null),
       hasDebtOrEncumbrance: TypeUtils.safeBool(json['has_debt_or_encumbrance']),
@@ -593,15 +619,15 @@ class Listing {
       description: json['description'] ??
           (property is Map ? property['description'] : null),
       bedrooms:
-          TypeUtils.safeInt(property is Map ? property['bedrooms'] : json['bedrooms'], defaultValue: 0),
+          TypeUtils.safeInt(property is Map ? property['bedrooms'] : (json['bedrooms'] ?? detailsMap?['bedrooms']), defaultValue: 0),
       bathrooms:
-          TypeUtils.safeInt(property is Map ? property['bathrooms'] : json['bathrooms'], defaultValue: 0),
-      salons: TypeUtils.safeInt(property is Map ? property['salons'] : json['salons'], defaultValue: 0),
+          TypeUtils.safeInt(property is Map ? property['bathrooms'] : (json['bathrooms'] ?? detailsMap?['bathrooms']), defaultValue: 0),
+      salons: TypeUtils.safeInt(property is Map ? property['salons'] : (json['salons'] ?? detailsMap?['salons']), defaultValue: 0),
       kitchens:
           TypeUtils.safeInt(property is Map ? property['kitchens'] : json['kitchens'], defaultValue: 0),
-      imageCount: TypeUtils.safeInt(json['image_count']),
+      imageCount: TypeUtils.safeInt(json['image_count'] ?? json['images_count']),
       images: images,
-      address: json['address'] != null ? Address.fromJson(json['address']) : null,
+      address: parsedAddress,
       createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
       userInterestStatus: json['user_interest_status'],
@@ -612,22 +638,22 @@ class Listing {
       carVehicleCategory: property is Map ? property['vehicle_category'] : json['vehicle_category'],
       carMake: property is Map ? property['make'] : json['make'],
       carModel: property is Map ? property['model'] : json['model'],
-      carYear: TypeUtils.safeInt(property is Map ? property['year'] : json['year']),
-      carMileageKm: TypeUtils.safeDouble(property is Map ? property['mileage_km'] : json['mileage_km']),
+      carYear: TypeUtils.safeInt(property is Map ? property['year'] : (json['year'] ?? detailsMap?['year'])),
+      carMileageKm: TypeUtils.safeDouble(property is Map ? property['mileage_km'] : (json['mileage_km'] ?? detailsMap?['mileage_km'])),
       carBodyType: property is Map ? property['body_type'] : json['body_type'],
       carColor: property is Map ? property['color'] : json['color'],
       carCondition: property is Map ? property['condition'] : json['condition'],
       carVin: property is Map ? property['vin'] : json['vin'],
       carFeatures: _parseCarFeatures(property is Map ? property['features'] : json['features']),
       property: property is Map<String, dynamic> ? property : null,
-      jobCompanyName: property is Map ? property['company_name'] : json['company_name'],
-      jobType: property is Map ? property['job_type'] : json['job_type'],
-      jobCategory: property is Map ? property['job_category'] : json['job_category'],
-      jobPositionsCount: TypeUtils.safeInt(property is Map ? property['positions_count'] : json['positions_count']),
-      jobSalaryType: property is Map ? property['salary_type'] : json['salary_type'],
-      jobSalaryMin: TypeUtils.safeDouble(property is Map ? property['salary_min'] : json['salary_min']),
-      jobSalaryMax: TypeUtils.safeDouble(property is Map ? property['salary_max'] : json['salary_max']),
-      jobSalaryCurrency: property is Map ? property['salary_currency'] : json['salary_currency'],
+      jobCompanyName: property is Map ? property['company_name'] : (json['company_name'] ?? detailsMap?['company_name']),
+      jobType: property is Map ? property['job_type'] : (json['job_type'] ?? detailsMap?['job_type']),
+      jobCategory: property is Map ? property['job_category'] : (json['job_category'] ?? detailsMap?['job_category']),
+      jobPositionsCount: TypeUtils.safeInt(property is Map ? property['positions_count'] : (json['positions_count'] ?? detailsMap?['positions_count'])),
+      jobSalaryType: property is Map ? property['salary_type'] : (json['salary_type'] ?? detailsMap?['salary_type']),
+      jobSalaryMin: TypeUtils.safeDouble(property is Map ? property['salary_min'] : (json['salary_min'] ?? detailsMap?['salary_min'])),
+      jobSalaryMax: TypeUtils.safeDouble(property is Map ? property['salary_max'] : (json['salary_max'] ?? detailsMap?['salary_max'])),
+      jobSalaryCurrency: property is Map ? property['salary_currency'] : (json['salary_currency'] ?? detailsMap?['salary_currency']),
       jobReqEducation: property is Map ? property['req_education'] : json['req_education'],
       jobReqExperience: property is Map ? property['req_experience'] : json['req_experience'],
       jobReqGender: property is Map ? property['req_gender'] : json['req_gender'],

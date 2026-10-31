@@ -2,6 +2,7 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../../core/network/v2/api_v2_constants.dart';
+import '../../core/utils/type_utils.dart';
 
 class Lead {
   final int id;
@@ -44,23 +45,25 @@ class Lead {
 
   factory Lead.fromJson(Map<String, dynamic> json) {
     return Lead(
-      id: json['id'] ?? 0,
-      userId: json['user_id'] ?? 0,
-      listingId: json['listing_id'] ?? 0,
-      orderId: json['order_id'],
-      assignedTo: json['assigned_to'],
-      source: json['source'] ?? 'interest',
-      stage: json['stage'] ?? 'new',
-      buyerMessage: json['buyer_message'],
-      adminNotes: json['admin_notes'],
-      lostReason: json['lost_reason'],
-      contactedAt: json['contacted_at'],
-      closedAt: json['closed_at'],
-      readAt: json['read_at'],
-      createdAt: json['created_at'] ?? '',
-      updatedAt: json['updated_at'],
-      listing: json['listing'],
-      order: json['order'],
+      id: TypeUtils.safeInt(json['id']) ?? 0,
+      userId: TypeUtils.safeInt(json['user_id']) ?? 0,
+      listingId: TypeUtils.safeInt(json['listing_id']) ??
+          (json['listing'] is Map ? TypeUtils.safeInt(json['listing']['id']) : 0) ??
+          0,
+      orderId: TypeUtils.safeInt(json['order_id']),
+      assignedTo: TypeUtils.safeInt(json['assigned_to']),
+      source: json['source']?.toString() ?? 'interest',
+      stage: json['stage']?.toString() ?? 'new',
+      buyerMessage: json['buyer_message']?.toString(),
+      adminNotes: json['admin_notes']?.toString(),
+      lostReason: json['lost_reason']?.toString(),
+      contactedAt: json['contacted_at']?.toString(),
+      closedAt: json['closed_at']?.toString(),
+      readAt: json['read_at']?.toString(),
+      createdAt: json['created_at']?.toString() ?? '',
+      updatedAt: json['updated_at']?.toString(),
+      listing: json['listing'] is Map ? Map<String, dynamic>.from(json['listing']) : null,
+      order: json['order'] is Map ? Map<String, dynamic>.from(json['order']) : null,
     );
   }
 
@@ -80,16 +83,21 @@ class Lead {
 
   String? get listingTitle {
     if (listing == null) return null;
-    return listing!['title'] ?? listing!['description'] ?? 'Listing #$listingId';
+    return listing!['title']?.toString() ?? listing!['description']?.toString() ?? 'Listing #$listingId';
   }
 
   double? get listingPrice {
     if (listing == null) return null;
+    final priceObj = listing!['price'];
+    if (priceObj is Map) {
+      final amt = TypeUtils.safeDouble(priceObj['amount']);
+      if (amt != null) return amt;
+    }
     final price = listing!['price_fixed'];
     if (price == null) return null;
     if (price is double) return price;
     if (price is int) return price.toDouble();
-    return null;
+    return TypeUtils.safeDouble(price);
   }
 
   String get stageLabel {
