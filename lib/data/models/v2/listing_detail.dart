@@ -327,11 +327,13 @@ class ListingVideo {
 
 /// Contact info is null until the viewer is the owner or revealed contact.
 class ListingSeller {
+  final int? id;
   final String? name;
   final String? phone;
   final bool hidden;
 
   const ListingSeller({
+    this.id,
     this.name,
     this.phone,
     this.hidden = true,
@@ -340,6 +342,7 @@ class ListingSeller {
   factory ListingSeller.fromJson(dynamic json) {
     final map = json is Map ? json : const {};
     return ListingSeller(
+      id: TypeUtils.safeInt(map['id']),
       name: _text(map['name']),
       phone: _text(map['phone']),
       hidden: map['hidden'] == null
@@ -410,6 +413,7 @@ class ListingDetail extends ListingSummary {
 
   const ListingDetail({
     required super.id,
+    super.userId,
     required super.kind,
     required super.listingType,
     required super.title,
@@ -441,6 +445,7 @@ class ListingDetail extends ListingSummary {
 
     return ListingDetail(
       id: summary.id,
+      userId: summary.userId,
       kind: summary.kind,
       listingType: summary.listingType,
       title: summary.title,
@@ -484,9 +489,11 @@ class ListingDetail extends ListingSummary {
     String? description,
     bool? contactRevealed,
     SummaryDetails? summaryDetails,
+    int? userId,
   }) {
     return ListingDetail(
       id: id,
+      userId: userId ?? this.userId,
       kind: kind,
       listingType: listingType,
       title: title,

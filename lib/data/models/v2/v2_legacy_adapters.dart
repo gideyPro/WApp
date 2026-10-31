@@ -63,6 +63,7 @@ extension ListingSummaryLegacyAdapter on ListingSummary {
 
     return Listing(
       id: id,
+      userId: userId,
       propertyType: propType,
       listingType: listType,
       priceFixed: price.amount,
@@ -85,6 +86,13 @@ extension ListingSummaryLegacyAdapter on ListingSummary {
       // Feature chips for Job
       jobCompanyName: summaryDetails.companyName,
       jobType: summaryDetails.jobType,
+      jobCategory: summaryDetails.jobCategory,
+      jobPositionsCount: summaryDetails.positionsCount,
+      jobSalaryType: summaryDetails.salaryType,
+      jobSalaryMin: summaryDetails.salaryMin,
+      jobSalaryMax: summaryDetails.salaryMax,
+      jobSalaryCurrency: summaryDetails.salaryCurrency,
+      jobDeadline: summaryDetails.deadline,
       // Job specific fields
       jobTitle: kind == ListingKind.job ? title : null,
       // Car specific fields
@@ -134,6 +142,7 @@ extension ListingDetailLegacyAdapter on ListingDetail {
 
     return Listing(
       id: id,
+      userId: userId ?? seller.id,
       propertyType: propType,
       listingType: listType,
       priceFixed: price.amount,
@@ -254,8 +263,18 @@ extension OwnerListingLegacyAdapter on OwnerListing {
         ? [ImageModel(id: coverImage?.id ?? 0, imagePath: primaryImg)]
         : <ImageModel>[];
 
+    final addr = Address(
+      id: 0,
+      region: location.displayRegion,
+      zone: location.displayZone,
+      woreda: location.woreda,
+      kebele: location.kebele,
+      specificLocation: location.specificLocation,
+    );
+
     return Listing(
       id: id,
+      userId: userId,
       propertyType: propType,
       listingType: listType,
       priceFixed: price.amount,
@@ -265,6 +284,7 @@ extension OwnerListingLegacyAdapter on OwnerListing {
       isVip: isVip,
       description: description ?? (title.isNotEmpty ? title : null),
       specificLocation: location.specificLocation,
+      address: addr,
       images: imageModels,
       createdAt: createdAt ?? DateTime.now(),
       // Feature chips
@@ -276,6 +296,13 @@ extension OwnerListingLegacyAdapter on OwnerListing {
       carMileageKm: summaryDetails.carMileageKm,
       jobCompanyName: summaryDetails.companyName,
       jobType: summaryDetails.jobType,
+      jobCategory: summaryDetails.jobCategory,
+      jobPositionsCount: summaryDetails.positionsCount,
+      jobSalaryType: summaryDetails.salaryType,
+      jobSalaryMin: summaryDetails.salaryMin,
+      jobSalaryMax: summaryDetails.salaryMax,
+      jobSalaryCurrency: summaryDetails.salaryCurrency,
+      jobDeadline: summaryDetails.deadline,
       jobTitle: kind == ListingKind.job ? title : null,
       carMake: kind == ListingKind.car ? title : null,
     );

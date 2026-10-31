@@ -146,6 +146,13 @@ class SummaryDetails {
   final double? carMileageKm;
   final String? companyName;
   final String? jobType;
+  final String? jobCategory;
+  final int? positionsCount;
+  final String? salaryType;
+  final double? salaryMin;
+  final double? salaryMax;
+  final String? salaryCurrency;
+  final DateTime? deadline;
 
   const SummaryDetails({
     this.bedrooms,
@@ -157,6 +164,13 @@ class SummaryDetails {
     this.carMileageKm,
     this.companyName,
     this.jobType,
+    this.jobCategory,
+    this.positionsCount,
+    this.salaryType,
+    this.salaryMin,
+    this.salaryMax,
+    this.salaryCurrency,
+    this.deadline,
   });
 
   factory SummaryDetails.fromJson(dynamic json) {
@@ -171,12 +185,20 @@ class SummaryDetails {
       carMileageKm: TypeUtils.safeDouble(map['mileage_km']),
       companyName: _nonEmpty(map['company_name']),
       jobType: _nonEmpty(map['job_type']),
+      jobCategory: _nonEmpty(map['job_category']),
+      positionsCount: TypeUtils.safeInt(map['positions_count']),
+      salaryType: _nonEmpty(map['salary_type']),
+      salaryMin: TypeUtils.safeDouble(map['salary_min']),
+      salaryMax: TypeUtils.safeDouble(map['salary_max']),
+      salaryCurrency: _nonEmpty(map['salary_currency']),
+      deadline: _parseDate(map['deadline']),
     );
   }
 }
 
 class ListingSummary {
   final int id;
+  final int? userId;
   final ListingKind kind;
   final String listingType;
   final String title;
@@ -193,6 +215,7 @@ class ListingSummary {
 
   const ListingSummary({
     required this.id,
+    this.userId,
     required this.kind,
     required this.listingType,
     required this.title,
@@ -216,6 +239,7 @@ class ListingSummary {
     final rawCover = json['cover_image'];
     return ListingSummary(
       id: TypeUtils.safeInt(json['id']) ?? 0,
+      userId: TypeUtils.safeInt(json['user_id']),
       kind: ListingKind.parse(json['type']),
       listingType: json['listing_type']?.toString() ?? 'sale',
       title: json['title']?.toString() ?? '',
@@ -237,9 +261,11 @@ class ListingSummary {
     bool? isFavorite,
     String? description,
     SummaryDetails? summaryDetails,
+    int? userId,
   }) {
     return ListingSummary(
       id: id,
+      userId: userId ?? this.userId,
       kind: kind,
       listingType: listingType,
       title: title,

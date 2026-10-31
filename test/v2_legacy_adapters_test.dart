@@ -203,12 +203,13 @@ void main() {
     test('maps owner property listing with moderation status and summary chips', () {
       final ownerListing = OwnerListing.fromJson({
         'id': 501,
+        'user_id': 42,
         'type': 'house',
         'listing_type': 'sale',
         'title': 'Owner Villa',
         'description': 'Exclusive villa',
         'price': {'amount': 12000000.0, 'currency': 'ETB'},
-        'location': {'region': 'Addis Ababa', 'specific_location': 'Gerji'},
+        'location': {'region': 'Addis Ababa', 'zone': 'Bole', 'specific_location': 'Gerji'},
         'status': 'pending',
         'is_featured': true,
         'is_vip': false,
@@ -224,9 +225,14 @@ void main() {
       final listing = ownerListing.toListing();
 
       expect(listing.id, equals(501));
+      expect(listing.userId, equals(42));
       expect(listing.propertyType, equals(PropertyType.house));
       expect(listing.status, equals(ListingStatus.pending));
       expect(listing.isFeatured, isTrue);
+      expect(listing.address, isNotNull);
+      expect(listing.address?.region, equals('Addis Ababa'));
+      expect(listing.address?.zone, equals('Bole'));
+      expect(listing.address?.specificLocation, equals('Gerji'));
       expect(listing.bedrooms, equals(3));
       expect(listing.bathrooms, equals(2));
       expect(listing.totalSquareMeters, equals(180.0));
@@ -236,11 +242,12 @@ void main() {
     test('maps owner car and job listing with chips for My Listings cards', () {
       final ownerCar = OwnerListing.fromJson({
         'id': 601,
+        'user_id': 42,
         'type': 'car',
         'listing_type': 'sale',
         'title': '2023 Suzuki Dzire',
         'price': {'amount': 2800000.0, 'currency': 'ETB'},
-        'location': {'region': 'Addis Ababa'},
+        'location': {'region': 'Addis Ababa', 'zone': 'Kirkos'},
         'status': 'active',
         'details': {
           'year': 2023,
@@ -249,12 +256,15 @@ void main() {
       });
 
       final carListing = ownerCar.toListing();
+      expect(carListing.userId, equals(42));
+      expect(carListing.address?.region, equals('Addis Ababa'));
       expect(carListing.carYear, equals(2023));
       expect(carListing.carMileageKm, equals(8000.0));
       expect(carListing.status, equals(ListingStatus.active));
 
       final ownerJob = OwnerListing.fromJson({
         'id': 701,
+        'user_id': 42,
         'type': 'job',
         'listing_type': 'sale',
         'title': 'Frontend Developer',
@@ -264,12 +274,22 @@ void main() {
         'details': {
           'company_name': 'Wave Tech',
           'job_type': 'contract',
+          'job_category': 'technology',
+          'positions_count': 3,
+          'salary_min': 40000.0,
+          'salary_max': 50000.0,
         },
       });
 
       final jobListing = ownerJob.toListing();
+      expect(jobListing.userId, equals(42));
+      expect(jobListing.address?.region, equals('Addis Ababa'));
       expect(jobListing.jobCompanyName, equals('Wave Tech'));
       expect(jobListing.jobType, equals('contract'));
+      expect(jobListing.jobCategory, equals('technology'));
+      expect(jobListing.jobPositionsCount, equals(3));
+      expect(jobListing.jobSalaryMin, equals(40000.0));
+      expect(jobListing.jobSalaryMax, equals(50000.0));
       expect(jobListing.status, equals(ListingStatus.rejected));
     });
   });

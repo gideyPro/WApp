@@ -161,6 +161,7 @@ class PromotionState {
 /// affordances the owner currently has.
 class OwnerListing {
   final int id;
+  final int? userId;
   final ListingKind kind;
   final String listingType;
   final String title;
@@ -187,6 +188,7 @@ class OwnerListing {
 
   const OwnerListing({
     required this.id,
+    this.userId,
     required this.kind,
     required this.listingType,
     required this.title,
@@ -223,6 +225,7 @@ class OwnerListing {
     final map = json is Map ? json : const {};
     return OwnerListing(
       id: TypeUtils.safeInt(map['id']) ?? 0,
+      userId: TypeUtils.safeInt(map['user_id']),
       kind: ListingKind.parse(map['type']),
       listingType: map['listing_type']?.toString() ?? 'sale',
       title: map['title']?.toString() ?? '',
