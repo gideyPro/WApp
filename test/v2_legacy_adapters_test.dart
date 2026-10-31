@@ -5,6 +5,7 @@ import 'package:wavemart/data/models/listing.dart';
 import 'package:wavemart/data/models/listing_form_data.dart';
 import 'package:wavemart/data/models/v2/listing_detail.dart';
 import 'package:wavemart/data/models/v2/listing_summary.dart';
+import 'package:wavemart/data/models/v2/owner_listing.dart';
 import 'package:wavemart/data/models/v2/v2_legacy_adapters.dart';
 
 void main() {
@@ -195,6 +196,81 @@ void main() {
       expect(experiences.first['job_title'], equals('Scrum Master'));
       expect(experiences.first['company'], equals('Addis Soft'));
       expect(experiences.first['years'], equals(3.5));
+    });
+  });
+
+  group('OwnerListingLegacyAdapter (My Listings Cards)', () {
+    test('maps owner property listing with moderation status and summary chips', () {
+      final ownerListing = OwnerListing.fromJson({
+        'id': 501,
+        'type': 'house',
+        'listing_type': 'sale',
+        'title': 'Owner Villa',
+        'description': 'Exclusive villa',
+        'price': {'amount': 12000000.0, 'currency': 'ETB'},
+        'location': {'region': 'Addis Ababa', 'specific_location': 'Gerji'},
+        'status': 'pending',
+        'is_featured': true,
+        'is_vip': false,
+        'details': {
+          'bedrooms': 3,
+          'bathrooms': 2,
+          'area_sqm': 180.0,
+          'salons': 1,
+          'total_rooms': 6,
+        },
+      });
+
+      final listing = ownerListing.toListing();
+
+      expect(listing.id, equals(501));
+      expect(listing.propertyType, equals(PropertyType.house));
+      expect(listing.status, equals(ListingStatus.pending));
+      expect(listing.isFeatured, isTrue);
+      expect(listing.bedrooms, equals(3));
+      expect(listing.bathrooms, equals(2));
+      expect(listing.totalSquareMeters, equals(180.0));
+      expect(listing.salons, equals(1));
+    });
+
+    test('maps owner car and job listing with chips for My Listings cards', () {
+      final ownerCar = OwnerListing.fromJson({
+        'id': 601,
+        'type': 'car',
+        'listing_type': 'sale',
+        'title': '2023 Suzuki Dzire',
+        'price': {'amount': 2800000.0, 'currency': 'ETB'},
+        'location': {'region': 'Addis Ababa'},
+        'status': 'active',
+        'details': {
+          'year': 2023,
+          'mileage_km': 8000.0,
+        },
+      });
+
+      final carListing = ownerCar.toListing();
+      expect(carListing.carYear, equals(2023));
+      expect(carListing.carMileageKm, equals(8000.0));
+      expect(carListing.status, equals(ListingStatus.active));
+
+      final ownerJob = OwnerListing.fromJson({
+        'id': 701,
+        'type': 'job',
+        'listing_type': 'sale',
+        'title': 'Frontend Developer',
+        'price': {'amount': 45000.0, 'currency': 'ETB'},
+        'location': {'region': 'Addis Ababa'},
+        'status': 'rejected',
+        'details': {
+          'company_name': 'Wave Tech',
+          'job_type': 'contract',
+        },
+      });
+
+      final jobListing = ownerJob.toListing();
+      expect(jobListing.jobCompanyName, equals('Wave Tech'));
+      expect(jobListing.jobType, equals('contract'));
+      expect(jobListing.status, equals(ListingStatus.rejected));
     });
   });
 }
