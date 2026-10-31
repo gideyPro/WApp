@@ -274,9 +274,10 @@ class HoldingDetails {
 /// Video URL is nulled by the backend when the viewer is not entitled.
 class ListingVideo {
   final String? url;
+  final String? thumbnailUrl;
   final bool blocked;
 
-  const ListingVideo({this.url, this.blocked = false});
+  const ListingVideo({this.url, this.thumbnailUrl, this.blocked = false});
 
   bool get hasUrl => url != null && url!.isNotEmpty;
 
@@ -284,6 +285,7 @@ class ListingVideo {
     final map = json is Map ? json : const {};
     return ListingVideo(
       url: _text(map['url']),
+      thumbnailUrl: _text(map['thumbnail_url']),
       blocked: TypeUtils.safeBool(map['blocked']),
     );
   }
