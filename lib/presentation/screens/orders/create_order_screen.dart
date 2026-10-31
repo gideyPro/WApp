@@ -15,8 +15,6 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 
 import '../../providers/app_providers.dart';
-import '../../../core/network/api_constants.dart';
-import '../../../core/network/api_envelope.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
@@ -109,14 +107,11 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   Future<void> _loadSettings() async {
     try {
-      final response = await ref.read(apiClientProvider).dio.get('${ApiConstants.apiBase}/settings');
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = ApiEnvelope.extractData(response.data);
-        if (data.isNotEmpty && mounted) {
-          setState(() {
-            _rentalEnabled = data['rental_enabled'] == true;
-          });
-        }
+      final data = await ref.read(appSettingsProvider.future);
+      if (mounted) {
+        setState(() {
+          _rentalEnabled = data['rental_enabled'] == true;
+        });
       }
     } catch (_) {}
   }

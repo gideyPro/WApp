@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/network/api_constants.dart';
+import '../../../core/network/v2/api_v2_constants.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../providers/app_providers.dart';
@@ -82,7 +83,7 @@ class _WebViewJitsiScreenState extends ConsumerState<WebViewJitsiScreen> {
       try {
         final dio = apiClient.dio;
         final sessionResponse = await dio.post(
-          '${ApiConstants.apiBase}/web-session/cookie',
+          '${ApiV2Constants.apiBase}/web-session/cookie',
           options: Options(
             headers: {
               'Authorization': 'Bearer $token',
