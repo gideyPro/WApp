@@ -69,6 +69,9 @@ class Order {
     );
   }
 
+  bool get isActive => status.toLowerCase() == 'active';
+  bool get isCancelled => status.toLowerCase() == 'cancelled';
+
   String getLocalizedHoldingType(BuildContext context) {
     if (holdingType == null) return '';
     final l10n = AppLocalizations.of(context);

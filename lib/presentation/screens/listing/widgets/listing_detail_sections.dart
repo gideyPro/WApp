@@ -604,10 +604,13 @@ class ListingDetailSections extends ConsumerWidget {
     }
 
     final vp = listing.videoProcessing;
+    final fallbackThumbnail = vp?.thumbnailUrl ??
+        (listing.images.isNotEmpty ? listing.images.first.imageUrl : null);
 
     if (vp == null) {
       return VideoPlayerWidget(
         videoUrl: listing.videoUrl!,
+        thumbnailUrl: fallbackThumbnail,
         autoPlay: false,
         looping: false,
         title: l10n.listingsVideoTour,
@@ -622,7 +625,7 @@ class ListingDetailSections extends ConsumerWidget {
           children: [
             VideoPlayerWidget(
               videoUrl: listing.processedVideoUrl ?? listing.videoUrl!,
-              thumbnailUrl: vp.thumbnailUrl,
+              thumbnailUrl: fallbackThumbnail,
               autoPlay: false,
               looping: false,
               title: l10n.listingsVideoTour,
@@ -636,7 +639,7 @@ class ListingDetailSections extends ConsumerWidget {
           children: [
             VideoPlayerWidget(
               videoUrl: listing.videoUrl!,
-              thumbnailUrl: vp.thumbnailUrl,
+              thumbnailUrl: fallbackThumbnail,
               autoPlay: false,
               looping: false,
               title: l10n.listingsVideoTour,
@@ -653,7 +656,7 @@ class ListingDetailSections extends ConsumerWidget {
         ),
       VideoProcessingStatus.none => VideoPlayerWidget(
           videoUrl: listing.videoUrl!,
-          thumbnailUrl: vp.thumbnailUrl,
+          thumbnailUrl: fallbackThumbnail,
           autoPlay: false,
           looping: false,
           title: l10n.listingsVideoTour,

@@ -327,7 +327,7 @@
   "listingsEncumbranceYes": "እወ ({amount} ብር)",
   "listingsVideoTour": "ናይ ቪዲዮ ዑደት",
   "listingsVideoOptimizing": "ቪዲዮ ይዳሎ ኣሎ…",
-  "listingsViewOriginal": "መበቆላዊ ቪዲዮ ርኣዩ",
+  "listingsViewOriginal": "ኦርጂናል ቪዲዮ ርኣዩ",
   "listingsNoDescription": "መግለፂ ኣይተዋህበን",
   "listingsSimilarListings": "ተመሳሳሊ ንብረታት",
   "listingsNoFeatures": "ቀንዲ መገለፂታት ኣይተጠቐሱን",
@@ -557,7 +557,7 @@
   "listingErrorUseTypeRequired": "ዓይነት ኣገልግሎት የድሊ",
   "listingErrorAddressRequired": "በጃኹም ምሉእ ኣድራሻ ምረፁ",
   "listingErrorMinPrice": "ትክክለኛ ዋጋ የእትዉ",
-  "listingPricePerAgreement": "ብስምምነት",
+  "listingPricePerAgreement": "ብስምምዕነት",
   "listingErrorLeasedYearRequired": "ናይ ሊዝ ዓመት የድሊ",
   "listingErrorCooperativeNameRequired": "ሽም ማሕበር የድሊ",
   "listingErrorCooperativeCodeRequired": "ኮድ ማሕበር የድሊ",
@@ -597,7 +597,7 @@
   "markAsVipTitle": "ከም VIP ምልክት ይገበር?",
   "markAsVip": "ከም VIP ምልክት ግበሩ",
   "markAsVipMessage": "ንብረትኩም ካብ ተራ ተጠቀምቲ ክኽወልን ብ VIP ምልክት ክልለ እዩ።",
-  "upgradeToContact": "ንምርካብ ፓኬጅ ምሕያሽ",
+  "upgradeToContact": "ንምርኻብ ፓኬጆም የማሓይሹ",
   "listingsRevealContact": "ቁፅሪ ስልኪ ሸያጢ ኣርእዩ",
   "listingsRevealing": "የርኢ ኣሎ...",
   "listingsSeller": "ሸያጢ",
@@ -927,8 +927,8 @@
   "jobSalaryAndReqs": "መሃያን መዐቀኒታትን",
   "jobSalaryMax": "ዝለዓለ መሃያ",
   "jobSalaryMin": "ዝተሓተ መሃያ",
-  "jobSalaryPerAgreement": "ብስምምነት",
-  "jobSalaryType": "ዓይነት መሃያ",
+  "jobSalaryPerAgreement": "ብስምምዕነት",
+  "jobSalaryType": "መሃያ",
   "jobSelect": "ምረፁ",
   "jobSimilarJobs": "ተመሳሳሊ ስራሕቲ",
   "jobSpecificLocation": "ትኽክለኛ ቦታ",
@@ -940,7 +940,7 @@
   "jobUpdate": "ኣሐድሱ",
   "jobValidYearsRequired": "ቅኑዕ ዓመታት ኣእትዉ (ንኣብነት 2)",
   "jobYearsOfExperience": "ዓመታት ተመክሮ",
-  "jobContactEmployer": "ኣስራሒ ረኽቡ",
+  "jobContactEmployer": "ምስ ኣስራሒ ተራኸቡ",
   "jobCall": "ደውሉ",
   "jobCallHint": "ንኣስራሒ ንምድዋል ጠውቑ",
   "jobWhatsapp": "WhatsApp",
@@ -972,7 +972,21 @@
   "listingWaveMartOptions": "ኣማራጺታት WaveMart",
   "listingMessageSeller": "መልእክት",
   "seekerYearsExp": "{years} ዓመት ተመክሮ",
+  "@seekerYearsExp": {
+    "placeholders": {
+      "years": {
+        "type": "String"
+      }
+    }
+  },
   "seekerYearsTotal": "ጠቕላላ {years} ዓመት",
+  "@seekerYearsTotal": {
+    "placeholders": {
+      "years": {
+        "type": "String"
+      }
+    }
+  },
   "seekerMyProfile": "ናተይ ናይ ስራሕ ፕሮፋይል",
   "seekerFullName": "ምሉእ ስም",
   "seekerProfessionalTitle": "ሞያዊ መዓርግ",
@@ -1000,6 +1014,13 @@
   "searchSalaryMin": "ትሑት ደሞዝ (ብር)",
   "searchSeekersPlaceholder": "ደለይቲ ስራሕ ድለ...",
   "searchResultsCount": "{count, plural, =0{ውጽኢት ኣይተረኽበን} =1{1 ውጽኢት} other{{count} ውጽኢታት}}",
+  "@searchResultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "searchValidationNumber": "ቅኑዕ ቁጽሪ ኣእቱ",
   "searchValidationRange": "ትሑት ካብ ላዕለዋይ ንእሽቶ ክኸውን ኣለዎ",
   "rentalPeriodDay": "ብመዓልቲ",

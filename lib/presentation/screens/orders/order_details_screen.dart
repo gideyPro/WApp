@@ -8,6 +8,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../data/services/lead_service.dart';
+import '../../../data/services/order_service.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_glass.dart';
@@ -27,26 +28,22 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   bool _isCancelling = false;
   String? _orderError;
 
-  dynamic _order;
+  Order? _order;
   late Future<LeadResponse> _suggestionsFuture;
 
   @override
   void initState() {
     super.initState();
+    _suggestionsFuture = ref.read(leadServiceProvider).getSuggestions(widget.orderId);
     _loadOrder();
   }
 
   Future<void> _loadOrder() async {
     final response = await ref.read(orderServiceProvider).getOrder(widget.orderId);
-    if (mounted && response.success) {
+    if (mounted && response.success && response.orders.isNotEmpty) {
       setState(() {
         _order = response.orders.first;
         _isLoadingOrder = false;
-      });
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          _suggestionsFuture = LeadService().getSuggestions(widget.orderId);
-        });
       });
     } else if (mounted) {
       setState(() {
@@ -216,7 +213,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
   Widget _buildOrderInfoSection(AppLocalizations l10n) {
     final cache = ref.watch(addressCacheProvider);
-    final isActive = _order.isActive ?? false;
+    final order = _order!;
+    final isActive = order.isActive;
 
     return WaveGlass(
       child: Padding(
@@ -228,59 +226,59 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             Row(
               children: [
                 _buildBadge(
-                  typeLabel(_order.type, l10n),
-                  typeColor(_order.type),
+                  typeLabel(order.type, l10n),
+                  typeColor(order.type),
                   Colors.white,
                 ),
                 const SizedBox(width: 6),
-                if (_order.holdingType != null)
+                if (order.holdingType != null)
                   _buildBadge(
-                    _order.getLocalizedHoldingType(context),
+                    order.getLocalizedHoldingType(context),
                     context.isDarkMode ? AppColors.cardNavyLight : AppColors.stone100,
                     context.isDarkMode ? AppColors.accent300 : AppColors.primary800,
                   ),
                 const Spacer(),
                 _buildBadge(
-                  statusLabel(_order.status, l10n),
-                  statusColor(_order.status).withValues(alpha: 0.15),
-                  statusColor(_order.status),
+                  statusLabel(order.status, l10n),
+                  statusColor(order.status).withValues(alpha: 0.15),
+                  statusColor(order.status),
                 ),
               ],
             ),
             const SizedBox(height: 16),
 
             // Budget
-            if (_order.minBudget != null || _order.maxBudget != null) ...[
+            if (order.minBudget != null || order.maxBudget != null) ...[
               _detailRow(l10n.ordersBudget,
-                  formatRange(_order.minBudget, _order.maxBudget, 'ETB', l10n)),
+                  formatRange(order.minBudget, order.maxBudget, 'ETB', l10n)),
               const Divider(height: 16),
             ],
 
             // Area
-            if (_order.minArea != null || _order.maxArea != null) ...[
+            if (order.minArea != null || order.maxArea != null) ...[
               _detailRow(l10n.ordersArea,
-                  formatRange(_order.minArea, _order.maxArea, 'm²', l10n)),
+                  formatRange(order.minArea, order.maxArea, 'm²', l10n)),
               const Divider(height: 16),
             ],
 
             // Facing Direction
-            if (_order.facingDirection != null) ...[
+            if (order.facingDirection != null) ...[
               _detailRow(
                 l10n.ordersFacing,
-                _order.getLocalizedFacingDirection(context),
+                order.getLocalizedFacingDirection(context),
               ),
               const Divider(height: 16),
             ],
 
             // Location
-            if (_order.address != null) ...[
+            if (order.address != null) ...[
               _detailRow(l10n.ordersLocation,
-                  _order.address!.getLocalizedAddress(context, cache)),
+                  order.address!.getLocalizedAddress(context, cache)),
               const Divider(height: 16),
             ],
 
             // Description
-            _detailRow(l10n.ordersDescription, _order.description,
+            _detailRow(l10n.ordersDescription, order.description,
                 isDescription: true),
             const SizedBox(height: 16),
 
@@ -291,7 +289,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 child: OutlinedButton(
                   onPressed: _isCancelling
                       ? null
-                      : () => _cancelOrder(_order.id, l10n),
+                      : () => _cancelOrder(order.id, l10n),
                   style: OutlinedButton.styleFrom(
                     padding:
                         const EdgeInsets.symmetric(vertical: AppSpacing.md),

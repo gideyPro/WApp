@@ -597,7 +597,7 @@
   "markAsVipTitle": "እንደ VIP ምልክት ይደረግ?",
   "markAsVip": "እንደ VIP ምልክት ያድርጉ",
   "markAsVipMessage": "ንብረትዎ ከተራ ተጠቃሚዎች ድብቅ ሆኖ በ VIP ባጅ ይደምቃል።",
-  "upgradeToContact": "ለመገናኘት ያሻሽሉ",
+  "upgradeToContact": "ለመገናኘት ፓኬጅዎን ያሻሽሉ",
   "listingsRevealContact": "የሻጭ ስልክ ቁጥር ያሳዩ",
   "listingsRevealing": "በማሳየት ላይ...",
   "listingsSeller": "ሻጭ",
@@ -928,7 +928,7 @@
   "jobSalaryMax": "ከፍተኛ ደሞዝ",
   "jobSalaryMin": "ዝቅተኛ ደሞዝ",
   "jobSalaryPerAgreement": "በስምምነት",
-  "jobSalaryType": "የደሞዝ አይነት",
+  "jobSalaryType": "ደሞዝ",
   "jobSelect": "ይምረጡ",
   "jobSimilarJobs": "ተመሳሳይ ስራዎች",
   "jobSpecificLocation": "ትክክለኛ ቦታ",
@@ -972,7 +972,21 @@
   "listingWaveMartOptions": "የWaveMart አማራጮች",
   "listingMessageSeller": "መልእክት",
   "seekerYearsExp": "{years} ዓመት ልምድ",
+  "@seekerYearsExp": {
+    "placeholders": {
+      "years": {
+        "type": "String"
+      }
+    }
+  },
   "seekerYearsTotal": "ጠቅላላ {years} ዓመት",
+  "@seekerYearsTotal": {
+    "placeholders": {
+      "years": {
+        "type": "String"
+      }
+    }
+  },
   "seekerMyProfile": "የእኔ የስራ ፕሮፋይል",
   "seekerFullName": "ሙሉ ስም",
   "seekerProfessionalTitle": "የሙያ መጠሪያ",
@@ -1000,6 +1014,13 @@
   "searchSalaryMin": "አነስተኛ ደመወዝ (ብር)",
   "searchSeekersPlaceholder": "የስራ ፈላጊዎችን ይፈልጉ...",
   "searchResultsCount": "{count, plural, =0{ምንም ውጤት አልተገኘም} =1{1 ውጤት} other{{count} ውጤቶች}}",
+  "@searchResultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "searchValidationNumber": "ትክክለኛ ቁጥር ያስገቡ",
   "searchValidationRange": "አነስተኛው ከከፍተኛው ያነሰ መሆን አለበት",
   "rentalPeriodDay": "በቀን",
