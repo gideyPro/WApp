@@ -3,6 +3,7 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
+import '../../core/network/v2/api_v2_constants.dart';
 import '../models/user.dart';
 
 /// Authentication service handling OTP-based login
@@ -244,17 +245,17 @@ class AuthService {
   Future<AuthResponse> googleLogin({required String idToken}) async {
     try {
       final response = await _apiClient.dio.post(
-        ApiConstants.googleLogin,
-        data: {'credential': idToken},
+        ApiV2Constants.authGoogle,
+        data: {'id_token': idToken, 'credential': idToken},
       );
 
       if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map;
+        final raw = response.data as Map;
+        final data = (raw['data'] is Map) ? raw['data'] as Map : raw;
         final token = data['token'] ?? data['access_token'];
 
         if (token == null &&
-            data['user'] == null &&
-            data['data'] == null) {
+            data['user'] == null) {
           return AuthResponse(
             success: false,
             message: ApiEnvelope.extractMessage(data, 'Google Sign-In failed'),
@@ -268,8 +269,6 @@ class AuthService {
         User? user;
         if (data['user'] != null) {
           user = User.fromJson(data['user']);
-        } else if (data['data'] != null) {
-          user = User.fromJson(data['data']);
         }
 
         if (user != null) {

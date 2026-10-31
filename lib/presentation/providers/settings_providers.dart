@@ -2,22 +2,29 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import '../../data/models/v2/app_config.dart';
 import '../../data/services/kyc_service.dart';
 import '../../data/services/address_service.dart';
+import '../../data/services/v2/app_config_service.dart';
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
-import '../../core/network/api_envelope.dart';
 import 'theme_provider.dart';
 
-final appSettingsProvider = FutureProvider<Map<String, dynamic>>((_) async {
+final appSettingsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
   try {
-    final response =
-        await ApiClient().dio.get('${ApiConstants.apiBase}/settings');
-    if (response.statusCode == 200 && response.data is Map) {
-      return ApiEnvelope.extractData(response.data);
-    }
+    final config = await AppConfigService().fetch();
+    return {
+      'subscription_enabled': config.subscriptionEnabled,
+      'rental_enabled': config.rentalEnabled,
+      'update_check_enabled': config.updateType != AppUpdateType.none,
+      'latest_app_version': config.latestVersion,
+      'latest_app_version_code': config.latestBuild,
+      'update_type': config.updateType.name,
+      'whats_new': config.whatsNew,
+      'app_update_url': config.updateUrl,
+      'currency': config.currency,
+    };
   } catch (_) {}
-  return {'subscription_enabled': true};
+  return {'subscription_enabled': true, 'rental_enabled': false};
 });
 
 /// KYC Provider

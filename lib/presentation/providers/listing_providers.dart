@@ -30,7 +30,7 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
     // Fetch every page instead of silently truncating at the first one.
     while (true) {
       final response =
-          await _favoriteService.getFavorites(page: page, perPage: 100);
+          await _favoriteService.getFavorites(page: page, perPage: 50);
       if (!response.success) {
         if (favorites.isEmpty) {
           state = state.copyWith(

@@ -8,6 +8,7 @@ import 'v2/favorite_service.dart';
 /// Service for managing favorite listings backed by V2 API.
 class FavoriteService {
   final FavoriteServiceV2 _v2;
+  final Map<int, String> _cursors = {};
 
   FavoriteService({ApiClient? apiClient, FavoriteServiceV2? v2Service})
       : _v2 = v2Service ??
@@ -21,7 +22,14 @@ class FavoriteService {
     int perPage = 50,
   }) async {
     try {
-      final result = await _v2.fetch(limit: perPage);
+      if (page <= 1) {
+        _cursors.clear();
+      }
+      final cursor = page > 1 ? _cursors[page] : null;
+      final result = await _v2.fetch(cursor: cursor, limit: perPage);
+      if (result.nextCursor != null) {
+        _cursors[page + 1] = result.nextCursor!;
+      }
       final listings = result.items.map((s) => s.toListing()).toList();
 
       return FavoriteResponse(

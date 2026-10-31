@@ -1,10 +1,10 @@
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../../core/network/v2/api_v2_client.dart';
+import '../../core/network/v2/api_v2_constants.dart';
+import '../../core/utils/type_utils.dart';
 import '../models/job_form_data.dart';
-import '../models/listing.dart';
 import '../models/v2/listing_summary.dart';
 import '../models/v2/owner_listing.dart';
 import '../models/v2/v2_legacy_adapters.dart';
@@ -20,8 +20,7 @@ class JobService {
   final CatalogService _catalog;
   final OwnerListingService _owner;
   final PromotionServiceV2 _promo;
-  final Map<int, String> _jobCursors = {};
-  final Map<int, String> _myJobCursors = {};
+  final Map<String, Map<int, String>> _cursorStore = {};
 
   JobService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient(),
@@ -35,10 +34,12 @@ class JobService {
     Map<String, dynamic>? filters,
   }) async {
     try {
+      final queryKey = 'jobs_${filters?.toString() ?? ''}';
       if (page <= 1) {
-        _jobCursors.clear();
+        _cursorStore.remove(queryKey);
       }
-      final cursor = page > 1 ? _jobCursors[page] : null;
+      final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
+      final cursor = page > 1 ? pageCursors[page] : null;
 
       final jobFilters = JobFilters(
         jobCategory: filters?['category']?.toString() ?? filters?['job_category']?.toString(),
@@ -54,7 +55,7 @@ class JobService {
       );
 
       if (result.nextCursor != null) {
-        _jobCursors[page + 1] = result.nextCursor!;
+        pageCursors[page + 1] = result.nextCursor!;
       }
 
       final listings = result.items.map((s) => s.toListing()).toList();
@@ -80,10 +81,12 @@ class JobService {
     String? status,
   }) async {
     try {
+      final queryKey = 'my_jobs_${status?.toLowerCase() ?? 'all'}';
       if (page <= 1) {
-        _myJobCursors.clear();
+        _cursorStore.remove(queryKey);
       }
-      final cursor = page > 1 ? _myJobCursors[page] : null;
+      final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
+      final cursor = page > 1 ? pageCursors[page] : null;
 
       final oStatus = switch (status?.toLowerCase()) {
         'active' => OwnerListingStatus.active,
@@ -102,7 +105,7 @@ class JobService {
       );
 
       if (result.nextCursor != null) {
-        _myJobCursors[page + 1] = result.nextCursor!;
+        pageCursors[page + 1] = result.nextCursor!;
       }
 
       final listings = result.items.map((s) => s.toListing()).toList();
@@ -158,31 +161,13 @@ class JobService {
 
   Future<ListingResponse> getSimilarListings(int listingId) async {
     try {
-      // V2 backend does not expose /jobs/{id}/similar — fall back to V1.
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/jobs/$listingId/similar',
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final dataList = ApiEnvelope.extractList(
-          data,
-          itemKeys: const ['listings', 'items'],
-        );
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return ListingResponse(
-          success: true,
-          listings: listings,
-        );
-      }
+      final detail = await _catalog.fetchJob(listingId);
+      final listings = detail.similar.map((s) => s.toListing()).toList();
 
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch similar jobs'),
+        success: true,
+        listings: listings,
+        total: listings.length,
       );
     } catch (e) {
       return ListingResponse(
@@ -284,12 +269,11 @@ class JobService {
 
   Future<ContactRevealResponse> revealContact(int id) async {
     try {
-      // V2 backend does not expose /jobs/{id}/reveal-contact — fall back to V1.
       final response = await _apiClient.dio.post(
-        '${ApiConstants.apiBase}/jobs/$id/reveal-contact',
+        ApiV2Constants.jobRevealContact(id),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data is Map) {
         final data = ApiEnvelope.extractData(response.data);
         return ContactRevealResponse(
           success: true,
@@ -313,6 +297,17 @@ class JobService {
   }
 
   Future<int?> checkSubmissionKey(String key) async {
-    return null;
+    try {
+      final response = await _apiClient.dio.get(
+        ApiV2Constants.jobCheckKey(key),
+      );
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = ApiEnvelope.extractData(response.data);
+        return TypeUtils.safeInt(data['listing_id']);
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
   }
 }

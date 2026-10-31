@@ -135,13 +135,21 @@ class OrderResponse {
 /// Service for managing buyer orders backed by V2 API.
 class OrderService {
   final OrderServiceV2 _v2;
+  final Map<int, String> _cursors = {};
 
   OrderService({ApiClient? apiClient, OrderServiceV2? v2Service})
       : _v2 = v2Service ?? OrderServiceV2();
 
   Future<OrderResponse> getOrders({int page = 1, int perPage = 20}) async {
     try {
-      final result = await _v2.fetch(limit: perPage);
+      if (page <= 1) {
+        _cursors.clear();
+      }
+      final cursor = page > 1 ? _cursors[page] : null;
+      final result = await _v2.fetch(cursor: cursor, limit: perPage);
+      if (result.nextCursor != null) {
+        _cursors[page + 1] = result.nextCursor!;
+      }
       final orders = result.items.map((o) => o.toLegacyOrder()).toList();
 
       return OrderResponse(

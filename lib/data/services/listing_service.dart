@@ -1,9 +1,10 @@
 import 'dart:io';
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../../core/network/v2/api_v2_client.dart';
+import '../../core/network/v2/api_v2_constants.dart';
+import '../../core/utils/type_utils.dart';
 import '../models/listing.dart';
 import '../models/listing_form_data.dart';
 import '../models/v2/owner_listing.dart';
@@ -21,8 +22,7 @@ class ListingService {
   final OwnerListingService _owner;
   final ListingMediaServiceV2 _media;
   final PromotionServiceV2 _promo;
-  final Map<int, String> _catalogCursors = {};
-  final Map<int, String> _myListingsCursors = {};
+  final Map<String, Map<int, String>> _cursorStore = {};
 
   ListingService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient(),
@@ -37,10 +37,12 @@ class ListingService {
     Map<String, dynamic>? filters,
   }) async {
     try {
+      final queryKey = 'cat_${filters?.toString() ?? ''}';
       if (page <= 1) {
-        _catalogCursors.clear();
+        _cursorStore.remove(queryKey);
       }
-      final cursor = page > 1 ? _catalogCursors[page] : null;
+      final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
+      final cursor = page > 1 ? pageCursors[page] : null;
 
       final listingFilters = ListingFilters(
         type: filters?['type']?.toString(),
@@ -62,7 +64,7 @@ class ListingService {
       );
 
       if (result.nextCursor != null) {
-        _catalogCursors[page + 1] = result.nextCursor!;
+        pageCursors[page + 1] = result.nextCursor!;
       }
 
       final listings = result.items.map((s) => s.toListing()).toList();
@@ -88,10 +90,12 @@ class ListingService {
     String? status,
   }) async {
     try {
+      final queryKey = 'my_${status?.toLowerCase() ?? 'all'}';
       if (page <= 1) {
-        _myListingsCursors.clear();
+        _cursorStore.remove(queryKey);
       }
-      final cursor = page > 1 ? _myListingsCursors[page] : null;
+      final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
+      final cursor = page > 1 ? pageCursors[page] : null;
 
       final oStatus = switch (status?.toLowerCase()) {
         'active' => OwnerListingStatus.active,
@@ -109,7 +113,7 @@ class ListingService {
       );
 
       if (result.nextCursor != null) {
-        _myListingsCursors[page + 1] = result.nextCursor!;
+        pageCursors[page + 1] = result.nextCursor!;
       }
 
       final listings = result.items.map((s) => s.toListing()).toList();
@@ -207,37 +211,18 @@ class ListingService {
 
   Future<ListingResponse> getSimilarListings(int listingId) async {
     try {
-      // V2 backend does not expose /listings/{id}/similar — fall back to V1.
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.similarListings}/$listingId/similar',
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final dataList = ApiEnvelope.extractList(
-          data,
-          itemKeys: const ['listings', 'items'],
-        );
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return ListingResponse(
-          success: true,
-          listings: listings,
-        );
-      }
+      final detail = await _catalog.fetchListing(listingId);
+      final listings = detail.similar.map((s) => s.toListing()).toList();
 
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch similar listings'),
+        success: true,
+        listings: listings,
+        total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -253,16 +238,32 @@ class ListingService {
       final payload = formData.toV2Payload(key);
 
       final draft = await _owner.createProperty(payload);
-      onProgress?.call(0.4);
+      onProgress?.call(0.3);
 
       if (formData.images.isNotEmpty) {
         final imageFiles = formData.images.map((f) => File(f.path)).toList();
         await _media.uploadImages(draft.id, imageFiles);
       }
-      onProgress?.call(0.7);
+      onProgress?.call(0.5);
+
+      if (formData.sitePlan != null) {
+        try {
+          await _media.uploadSitePlan(draft.id, File(formData.sitePlan!.path));
+        } catch (_) {}
+      }
+      onProgress?.call(0.65);
+
+      if (formData.ownershipProof != null) {
+        try {
+          await _media.uploadOwnershipProof(draft.id, File(formData.ownershipProof!.path));
+        } catch (_) {}
+      }
+      onProgress?.call(0.8);
 
       if (formData.videoFile != null) {
-        await _media.uploadVideo(draft.id, File(formData.videoFile!.path));
+        try {
+          await _media.uploadVideo(draft.id, File(formData.videoFile!.path));
+        } catch (_) {}
       }
       onProgress?.call(0.9);
 
@@ -290,11 +291,52 @@ class ListingService {
       onProgress?.call(0.2);
       final payload = formData.toV2Payload('', isUpdate: true);
       await _owner.updateProperty(listingId, payload);
-      onProgress?.call(0.6);
+      onProgress?.call(0.4);
 
+      // Delete removed images
+      for (final imageId in formData.removedImageIds) {
+        try {
+          await _media.deleteImage(listingId, imageId);
+        } catch (_) {}
+      }
+
+      // Upload new images
       if (formData.images.isNotEmpty) {
         final imageFiles = formData.images.map((f) => File(f.path)).toList();
         await _media.uploadImages(listingId, imageFiles);
+      }
+      onProgress?.call(0.6);
+
+      // Handle site plan removal or update
+      if (formData.removeExistingSitePlan) {
+        try {
+          await _media.deleteSitePlan(listingId);
+        } catch (_) {}
+      }
+      if (formData.sitePlan != null) {
+        try {
+          await _media.uploadSitePlan(listingId, File(formData.sitePlan!.path));
+        } catch (_) {}
+      }
+
+      // Handle ownership proof
+      if (formData.ownershipProof != null) {
+        try {
+          await _media.uploadOwnershipProof(listingId, File(formData.ownershipProof!.path));
+        } catch (_) {}
+      }
+      onProgress?.call(0.8);
+
+      // Handle video deletion or update
+      if (formData.deleteVideo) {
+        try {
+          await _media.deleteVideo(listingId);
+        } catch (_) {}
+      }
+      if (formData.videoFile != null) {
+        try {
+          await _media.uploadVideo(listingId, File(formData.videoFile!.path));
+        } catch (_) {}
       }
       onProgress?.call(1.0);
 
@@ -344,12 +386,11 @@ class ListingService {
 
   Future<ContactRevealResponse> revealContact(int listingId) async {
     try {
-      // V2 backend does not expose /listings/{id}/reveal-contact — fall back to V1.
       final response = await _apiClient.dio.post(
-        '${ApiConstants.revealContact}/$listingId/reveal-contact',
+        ApiV2Constants.listingRevealContact(listingId),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data is Map) {
         final data = ApiEnvelope.extractData(response.data);
         return ContactRevealResponse(
           success: true,
@@ -365,10 +406,9 @@ class ListingService {
         message: ApiEnvelope.extractMessage(response.data, 'Failed to reveal contact'),
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ContactRevealResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -422,7 +462,18 @@ class ListingService {
   }
 
   Future<int?> checkSubmissionKey(String submissionKey) async {
-    return null;
+    try {
+      final response = await _apiClient.dio.get(
+        ApiV2Constants.listingCheckKey(submissionKey),
+      );
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = ApiEnvelope.extractData(response.data);
+        return TypeUtils.safeInt(data['listing_id']);
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
   }
 }
 

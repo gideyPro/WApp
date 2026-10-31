@@ -1,11 +1,11 @@
 import 'dart:io';
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../../core/network/v2/api_v2_client.dart';
+import '../../core/network/v2/api_v2_constants.dart';
+import '../../core/utils/type_utils.dart';
 import '../models/car_form_data.dart';
-import '../models/listing.dart';
 import '../models/v2/listing_summary.dart';
 import '../models/v2/owner_listing.dart';
 import '../models/v2/v2_legacy_adapters.dart';
@@ -23,8 +23,7 @@ class CarService {
   final OwnerListingService _owner;
   final ListingMediaServiceV2 _media;
   final PromotionServiceV2 _promo;
-  final Map<int, String> _carCursors = {};
-  final Map<int, String> _myCarCursors = {};
+  final Map<String, Map<int, String>> _cursorStore = {};
 
   CarService({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient(),
@@ -39,10 +38,12 @@ class CarService {
     Map<String, dynamic>? filters,
   }) async {
     try {
+      final queryKey = 'cars_${filters?.toString() ?? ''}';
       if (page <= 1) {
-        _carCursors.clear();
+        _cursorStore.remove(queryKey);
       }
-      final cursor = page > 1 ? _carCursors[page] : null;
+      final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
+      final cursor = page > 1 ? pageCursors[page] : null;
 
       final carFilters = CarFilters(
         listingType: filters?['listing_type']?.toString(),
@@ -63,7 +64,7 @@ class CarService {
       );
 
       if (result.nextCursor != null) {
-        _carCursors[page + 1] = result.nextCursor!;
+        pageCursors[page + 1] = result.nextCursor!;
       }
 
       final listings = result.items.map((s) => s.toListing()).toList();
@@ -89,10 +90,12 @@ class CarService {
     String? status,
   }) async {
     try {
+      final queryKey = 'my_cars_${status?.toLowerCase() ?? 'all'}';
       if (page <= 1) {
-        _myCarCursors.clear();
+        _cursorStore.remove(queryKey);
       }
-      final cursor = page > 1 ? _myCarCursors[page] : null;
+      final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
+      final cursor = page > 1 ? pageCursors[page] : null;
 
       final oStatus = switch (status?.toLowerCase()) {
         'active' => OwnerListingStatus.active,
@@ -111,7 +114,7 @@ class CarService {
       );
 
       if (result.nextCursor != null) {
-        _myCarCursors[page + 1] = result.nextCursor!;
+        pageCursors[page + 1] = result.nextCursor!;
       }
 
       final listings = result.items.map((s) => s.toListing()).toList();
@@ -169,37 +172,18 @@ class CarService {
 
   Future<ListingResponse> getSimilarListings(int listingId) async {
     try {
-      // V2 backend does not expose /cars/{id}/similar — fall back to V1.
-      final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/cars/$listingId/similar',
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final dataList = ApiEnvelope.extractList(
-          data,
-          itemKeys: const ['listings', 'items'],
-        );
-        final listings = dataList
-            .whereType<Map>()
-            .map((json) => Listing.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        return ListingResponse(
-          success: true,
-          listings: listings,
-        );
-      }
+      final detail = await _catalog.fetchCar(listingId);
+      final listings = detail.similar.map((s) => s.toListing()).toList();
 
       return ListingResponse(
-        success: false,
-        message: ApiEnvelope.extractMessage(response.data, 'Failed to fetch similar cars'),
+        success: true,
+        listings: listings,
+        total: listings.length,
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ListingResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
@@ -247,8 +231,16 @@ class CarService {
       onProgress?.call(0.3);
       final payload = formData.toV2Payload('', isUpdate: true);
       await _owner.updateCar(listingId, payload);
-      onProgress?.call(0.7);
+      onProgress?.call(0.6);
 
+      // Delete removed images
+      for (final imageId in formData.removedImageIds) {
+        try {
+          await _media.deleteImage(listingId, imageId);
+        } catch (_) {}
+      }
+
+      // Upload new images
       if (formData.images.isNotEmpty) {
         final imageFiles = formData.images.map((f) => File(f.path)).toList();
         await _media.uploadImages(listingId, imageFiles);
@@ -336,12 +328,11 @@ class CarService {
 
   Future<ContactRevealResponse> revealContact(int listingId) async {
     try {
-      // V2 backend does not expose /cars/{id}/reveal-contact — fall back to V1.
       final response = await _apiClient.dio.post(
-        '${ApiConstants.apiBase}/cars/$listingId/reveal-contact',
+        ApiV2Constants.carRevealContact(listingId),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data is Map) {
         final data = ApiEnvelope.extractData(response.data);
         return ContactRevealResponse(
           success: true,
@@ -357,15 +348,25 @@ class CarService {
         message: ApiEnvelope.extractMessage(response.data, 'Failed to reveal contact'),
       );
     } catch (e) {
-      final exception = ApiErrorHandler.handle(e);
       return ContactRevealResponse(
         success: false,
-        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+        message: ApiErrorHandler.getMessage(e),
       );
     }
   }
 
   Future<int?> checkSubmissionKey(String submissionKey) async {
-    return null;
+    try {
+      final response = await _apiClient.dio.get(
+        ApiV2Constants.carCheckKey(submissionKey),
+      );
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = ApiEnvelope.extractData(response.data);
+        return TypeUtils.safeInt(data['listing_id']);
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
   }
 }

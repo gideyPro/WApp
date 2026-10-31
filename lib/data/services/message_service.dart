@@ -8,6 +8,7 @@ import 'v2/conversation_service.dart';
 /// Service for messaging and conversations backed by V2 API.
 class MessageService {
   final ConversationServiceV2 _v2;
+  final Map<int, String> _cursors = {};
 
   MessageService({ApiClient? apiClient, ConversationServiceV2? v2Service})
       : _v2 = v2Service ?? ConversationServiceV2();
@@ -18,7 +19,14 @@ class MessageService {
     int? currentUserId,
   }) async {
     try {
-      final result = await _v2.fetch(limit: perPage);
+      if (page <= 1) {
+        _cursors.clear();
+      }
+      final cursor = page > 1 ? _cursors[page] : null;
+      final result = await _v2.fetch(cursor: cursor, limit: perPage);
+      if (result.nextCursor != null) {
+        _cursors[page + 1] = result.nextCursor!;
+      }
       final conversations = result.items
           .map((c) => c.toLegacyConversation(currentUserId: currentUserId))
           .toList();
@@ -155,7 +163,12 @@ class MessageService {
   }
 
   Future<bool> deleteConversation(int conversationId) async {
-    return true;
+    try {
+      await _v2.deleteConversation(conversationId);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 }
 

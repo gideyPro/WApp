@@ -7,6 +7,7 @@ import 'v2/payment_service.dart';
 /// Service for Chapa payment history and details backed by V2 API.
 class PaymentService {
   final PaymentServiceV2 _v2;
+  final Map<int, String> _cursors = {};
 
   PaymentService({ApiClient? apiClient, PaymentServiceV2? v2Service})
       : _v2 = v2Service ?? PaymentServiceV2();
@@ -16,7 +17,14 @@ class PaymentService {
     int perPage = 15,
   }) async {
     try {
-      final result = await _v2.fetch(limit: perPage);
+      if (page <= 1) {
+        _cursors.clear();
+      }
+      final cursor = page > 1 ? _cursors[page] : null;
+      final result = await _v2.fetch(cursor: cursor, limit: perPage);
+      if (result.nextCursor != null) {
+        _cursors[page + 1] = result.nextCursor!;
+      }
       final payments = result.items.map((p) => p.toLegacyPayment()).toList();
 
       return PaymentHistoryResponse(

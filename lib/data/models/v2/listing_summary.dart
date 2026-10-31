@@ -136,6 +136,45 @@ class ListingImage {
 }
 
 /// Card-level listing projection returned by lists, home and `similar`.
+class SummaryDetails {
+  final int? bedrooms;
+  final int? bathrooms;
+  final double? areaSqm;
+  final int? salons;
+  final int? totalRooms;
+  final int? carYear;
+  final double? carMileageKm;
+  final String? companyName;
+  final String? jobType;
+
+  const SummaryDetails({
+    this.bedrooms,
+    this.bathrooms,
+    this.areaSqm,
+    this.salons,
+    this.totalRooms,
+    this.carYear,
+    this.carMileageKm,
+    this.companyName,
+    this.jobType,
+  });
+
+  factory SummaryDetails.fromJson(dynamic json) {
+    final map = json is Map ? json : const {};
+    return SummaryDetails(
+      bedrooms: TypeUtils.safeInt(map['bedrooms']),
+      bathrooms: TypeUtils.safeInt(map['bathrooms']),
+      areaSqm: TypeUtils.safeDouble(map['area_sqm']),
+      salons: TypeUtils.safeInt(map['salons']),
+      totalRooms: TypeUtils.safeInt(map['total_rooms']),
+      carYear: TypeUtils.safeInt(map['year']),
+      carMileageKm: TypeUtils.safeDouble(map['mileage_km']),
+      companyName: _nonEmpty(map['company_name']),
+      jobType: _nonEmpty(map['job_type']),
+    );
+  }
+}
+
 class ListingSummary {
   final int id;
   final ListingKind kind;
@@ -146,6 +185,7 @@ class ListingSummary {
   final ListingLocation location;
   final ListingImage? coverImage;
   final int imagesCount;
+  final SummaryDetails summaryDetails;
   final bool isFeatured;
   final bool isVip;
   final bool isFavorite;
@@ -161,6 +201,7 @@ class ListingSummary {
     required this.location,
     this.coverImage,
     this.imagesCount = 0,
+    this.summaryDetails = const SummaryDetails(),
     this.isFeatured = false,
     this.isVip = false,
     this.isFavorite = false,
@@ -184,6 +225,7 @@ class ListingSummary {
       coverImage:
           rawCover is Map ? ListingImage.fromJson(rawCover) : null,
       imagesCount: TypeUtils.safeInt(json['images_count']) ?? 0,
+      summaryDetails: SummaryDetails.fromJson(json['details']),
       isFeatured: TypeUtils.safeBool(json['is_featured']),
       isVip: TypeUtils.safeBool(json['is_vip']),
       isFavorite: TypeUtils.safeBool(json['is_favorite']),
@@ -191,7 +233,11 @@ class ListingSummary {
     );
   }
 
-  ListingSummary copyWith({bool? isFavorite, String? description}) {
+  ListingSummary copyWith({
+    bool? isFavorite,
+    String? description,
+    SummaryDetails? summaryDetails,
+  }) {
     return ListingSummary(
       id: id,
       kind: kind,
@@ -202,6 +248,7 @@ class ListingSummary {
       location: location,
       coverImage: coverImage,
       imagesCount: imagesCount,
+      summaryDetails: summaryDetails ?? this.summaryDetails,
       isFeatured: isFeatured,
       isVip: isVip,
       isFavorite: isFavorite ?? this.isFavorite,

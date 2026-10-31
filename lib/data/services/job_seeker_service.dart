@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
+import '../../core/network/v2/api_v2_constants.dart';
 import '../models/job_seeker_profile.dart';
 
 class JobSeekerProfileResponse {
@@ -44,7 +44,7 @@ class JobSeekerService {
         if (filters != null) ...filters,
       };
       final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/job-seekers',
+        ApiV2Constants.jobSeekers,
         queryParameters: queryParams,
       );
       if (response.statusCode == 200) {
@@ -82,7 +82,7 @@ class JobSeekerService {
   Future<JobSeekerProfileResponse> getProfile(int id) async {
     try {
       final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/job-seekers/$id',
+        ApiV2Constants.jobSeeker(id),
       );
       if (response.statusCode == 200) {
         final raw = response.data;
@@ -109,7 +109,7 @@ class JobSeekerService {
   Future<JobSeekerProfileResponse> getMyProfile() async {
     try {
       final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/job-seekers/me',
+        ApiV2Constants.jobSeekerMe,
       );
       if (response.statusCode == 200) {
         final raw = response.data;
@@ -193,7 +193,7 @@ class JobSeekerService {
       }
 
       final response = await _apiClient.dio.post(
-        '${ApiConstants.apiBase}/job-seekers/profile',
+        ApiV2Constants.jobSeekerProfile,
         data: formData,
         options: Options(
           headers: {'Content-Type': 'multipart/form-data'},
@@ -225,7 +225,7 @@ class JobSeekerService {
   Future<JobSeekerProfileResponse> deleteProfile() async {
     try {
       final response = await _apiClient.dio.delete(
-        '${ApiConstants.apiBase}/job-seekers/profile',
+        ApiV2Constants.jobSeekerProfile,
       );
       if (response.statusCode == 200) {
         return const JobSeekerProfileResponse(success: true, message: 'Profile deleted');

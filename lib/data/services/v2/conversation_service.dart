@@ -94,6 +94,13 @@ class ConversationServiceV2 {
     return ConversationReadReceipt.fromJson(data);
   }
 
+  Future<void> deleteConversation(int conversationId) async {
+    await _client.send(
+      ApiV2Constants.conversation(conversationId),
+      method: 'DELETE',
+    );
+  }
+
   static int _clampLimit(int limit) {
     if (limit <= 0) return ApiV2Constants.defaultLimit;
     return limit > ApiV2Constants.maxLimit ? ApiV2Constants.maxLimit : limit;

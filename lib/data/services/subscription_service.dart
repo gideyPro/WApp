@@ -154,7 +154,7 @@ class SubscriptionServiceApi {
           success: true,
           message: 'Payment initialized',
           checkoutUrl: checkout.checkoutUrl,
-          txRef: checkout.checkoutUrl?.split('/').last,
+          txRef: checkout.payment?.txRef ?? checkout.checkoutUrl?.split('/').last,
         );
       }
 
@@ -206,7 +206,7 @@ class SubscriptionServiceApi {
           success: true,
           message: 'Payment initialized',
           checkoutUrl: checkout.checkoutUrl,
-          txRef: checkout.checkoutUrl?.split('/').last,
+          txRef: checkout.payment?.txRef ?? checkout.checkoutUrl?.split('/').last,
         );
       }
 
@@ -227,8 +227,9 @@ class SubscriptionServiceApi {
     required String txRef,
   }) async {
     try {
-      final state = await _paymentV2.fetchOne(txRef);
-      if (state.status == PaymentStatusV2.success || state.isActivated) {
+      final verification = await _paymentV2.verify(txRef);
+      if (verification.status == PaymentStatusV2.success ||
+          verification.payment.isActivated) {
         return const SubscriptionActionResponse(
           success: true,
           message: 'Subscription activated',
@@ -273,7 +274,22 @@ class SubscriptionServiceApi {
   }
 
   Future<String?> verifyPaymentStatus(String txRef) async {
-    return checkPaymentStatus(txRef);
+    try {
+      final verification = await _paymentV2.verify(txRef);
+      if (verification.status == PaymentStatusV2.success ||
+          verification.payment.isActivated) {
+        return 'success';
+      }
+      if (verification.status == PaymentStatusV2.failed) {
+        return 'failed';
+      }
+      if (verification.status == PaymentStatusV2.cancelled) {
+        return 'cancelled';
+      }
+      return 'pending';
+    } catch (_) {
+      return checkPaymentStatus(txRef);
+    }
   }
 }
 

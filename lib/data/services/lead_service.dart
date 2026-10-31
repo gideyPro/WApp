@@ -1,7 +1,7 @@
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
+import '../../core/network/v2/api_v2_constants.dart';
 
 class Lead {
   final int id;
@@ -128,13 +128,13 @@ class LeadService {
   Future<LeadResponse> getMyInterests({int page = 1, int perPage = 15}) async {
     try {
       final response = await _apiClient.dio.get(
-        ApiConstants.myInterests,
-        queryParameters: {'page': page, 'per_page': perPage},
+        ApiV2Constants.interests,
+        queryParameters: {'limit': perPage},
       );
       if (response.statusCode == 200) {
         final dataList = ApiEnvelope.extractList(
           response.data,
-          itemKeys: const ['leads', 'interests', 'items'],
+          itemKeys: const ['data', 'leads', 'interests', 'items'],
         );
         final leads = dataList
             .whereType<Map>()
@@ -161,7 +161,7 @@ class LeadService {
   }) async {
     try {
       final response = await _apiClient.dio.post(
-        '${ApiConstants.expressInterest}/$listingId/interest',
+        ApiV2Constants.listingInterest(listingId),
         data: {if (message != null && message.isNotEmpty) 'message': message},
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -192,7 +192,7 @@ class LeadService {
   Future<LeadResponse> cancelInterest(int leadId) async {
     try {
       final response = await _apiClient.dio.delete(
-        '${ApiConstants.cancelInterest}/$leadId',
+        ApiV2Constants.interest(leadId),
       );
       if (response.statusCode == 200) {
         return LeadResponse(
@@ -216,12 +216,12 @@ class LeadService {
   Future<LeadResponse> getSuggestions(int orderId) async {
     try {
       final response = await _apiClient.dio.get(
-        '${ApiConstants.apiBase}/orders/$orderId/suggestions',
+        ApiV2Constants.orderSuggestions(orderId),
       );
       if (response.statusCode == 200) {
         final dataList = ApiEnvelope.extractList(
           response.data,
-          itemKeys: const ['suggestions', 'leads', 'items'],
+          itemKeys: const ['data', 'suggestions', 'leads', 'items'],
         );
         return LeadResponse(
           success: true,
@@ -246,8 +246,8 @@ class LeadService {
 
   Future<LeadResponse> acceptSuggestion(int suggestionId) async {
     try {
-      final response = await _apiClient.dio.patch(
-        '${ApiConstants.apiBase}/orders/suggestions/$suggestionId/accept',
+      final response = await _apiClient.dio.post(
+        '${ApiV2Constants.orders}/suggestions/$suggestionId/accept',
       );
       if (response.statusCode == 200) {
         final data = response.data;
@@ -276,8 +276,8 @@ class LeadService {
 
   Future<LeadResponse> declineSuggestion(int suggestionId) async {
     try {
-      final response = await _apiClient.dio.patch(
-        '${ApiConstants.apiBase}/orders/suggestions/$suggestionId/decline',
+      final response = await _apiClient.dio.post(
+        '${ApiV2Constants.orders}/suggestions/$suggestionId/decline',
       );
       if (response.statusCode == 200) {
         return LeadResponse(

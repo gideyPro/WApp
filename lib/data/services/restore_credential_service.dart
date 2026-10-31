@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../core/network/api_constants.dart';
+import '../../core/network/v2/api_v2_constants.dart';
 import '../../data/models/user.dart';
 import '../../presentation/providers/app_providers.dart';
 import '../../presentation/providers/auth_provider.dart';
@@ -34,7 +34,7 @@ class RestoreCredentialService {
       if (token == null) return false;
 
       final response = await _dio.post(
-        ApiConstants.restoreCredentials,
+        ApiV2Constants.restoreCredentials,
         data: {
           'device_name': deviceName ?? (Platform.isAndroid ? 'Android Device' : 'Device'),
         },
@@ -47,7 +47,8 @@ class RestoreCredentialService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = response.data;
+        final raw = response.data;
+        final data = (raw is Map && raw['data'] is Map) ? raw['data'] as Map : (raw is Map ? raw : {});
         final restoreToken = data['restore_token'] ?? data['credential_id'];
 
         if (restoreToken != null && Platform.isAndroid) {
@@ -86,7 +87,7 @@ class RestoreCredentialService {
 
       // 2. Call public unauthenticated restore endpoint
       final response = await _dio.post(
-        ApiConstants.restoreSession,
+        ApiV2Constants.authRestoreSession,
         data: {
           'restore_token': restoreKey,
         },
@@ -99,7 +100,8 @@ class RestoreCredentialService {
       );
 
       if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map;
+        final raw = response.data as Map;
+        final data = (raw['data'] is Map) ? raw['data'] as Map : raw;
         final token = data['token'];
 
         if (token != null) {
@@ -152,7 +154,7 @@ class RestoreCredentialService {
       if (token == null) return [];
 
       final response = await _dio.get(
-        ApiConstants.restoreCredentials,
+        ApiV2Constants.restoreCredentials,
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -161,8 +163,10 @@ class RestoreCredentialService {
       );
 
       if (response.statusCode == 200 && response.data is Map) {
+        final raw = response.data as Map;
+        final data = (raw['data'] is Map) ? raw['data'] as Map : raw;
         return List<Map<String, dynamic>>.from(
-          response.data['credentials'] ?? [],
+          data['credentials'] ?? [],
         );
       }
       return [];
@@ -180,7 +184,7 @@ class RestoreCredentialService {
       if (token == null) return false;
 
       final response = await _dio.delete(
-        '${ApiConstants.restoreCredentials}/$credentialId',
+        ApiV2Constants.restoreCredential(credentialId),
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',

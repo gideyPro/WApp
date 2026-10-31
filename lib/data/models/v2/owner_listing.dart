@@ -169,6 +169,7 @@ class OwnerListing {
   final ListingLocation location;
   final ListingImage? coverImage;
   final int imagesCount;
+  final SummaryDetails summaryDetails;
   final OwnerListingStatus status;
   final String? rejectionReason;
   final bool isFeatured;
@@ -194,6 +195,7 @@ class OwnerListing {
     required this.location,
     this.coverImage,
     this.imagesCount = 0,
+    this.summaryDetails = const SummaryDetails(),
     this.status = OwnerListingStatus.unknown,
     this.rejectionReason,
     this.isFeatured = false,
@@ -231,6 +233,7 @@ class OwnerListing {
           ? ListingImage.fromJson(map['cover_image'])
           : null,
       imagesCount: TypeUtils.safeInt(map['images_count']) ?? 0,
+      summaryDetails: SummaryDetails.fromJson(map['details']),
       status: OwnerListingStatus.parse(map['status']),
       rejectionReason: _text(map['rejection_reason']),
       isFeatured: TypeUtils.safeBool(map['is_featured']),

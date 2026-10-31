@@ -26,6 +26,8 @@ class ApiV2Constants {
   static const String authResendOtp = '$apiBase/auth/resend-otp';
   static const String authLogin = '$apiBase/auth/login';
   static const String authRegister = '$apiBase/auth/register';
+  static const String authGoogle = '$apiBase/auth/google';
+  static const String authRestoreSession = '$apiBase/auth/restore-session';
   static const String authLogout = '$apiBase/auth/logout';
   static const String me = '$apiBase/me';
   static const String meListings = '$apiBase/me/listings';
@@ -35,6 +37,23 @@ class ApiV2Constants {
   static const String notifications = '$apiBase/notifications';
   static const String notificationsUnreadCount = '$notifications/unread-count';
   static const String notificationsReadAll = '$notifications/read-all';
+  static const String fcmRegister = '$apiBase/fcm/register';
+
+  static const String restoreCredentials = '$apiBase/restore-credentials';
+  static String restoreCredential(String id) =>
+      '$restoreCredentials/${Uri.encodeComponent(id)}';
+
+  static const String interests = '$apiBase/interests';
+  static String interest(int id) => '$interests/$id';
+  static String listingInterest(int id) => '$listings/$id/interest';
+
+  static const String reports = '$apiBase/reports';
+  static String listingReport(int id) => '$listings/$id/report';
+
+  static const String jobSeekers = '$apiBase/job-seekers';
+  static String jobSeeker(int id) => '$jobSeekers/$id';
+  static const String jobSeekerMe = '$jobSeekers/me';
+  static const String jobSeekerProfile = '$jobSeekers/profile';
 
   static const String addressRegions = '$apiBase/addresses/regions';
   static const String addressZones = '$apiBase/addresses/zones';
@@ -51,6 +70,17 @@ class ApiV2Constants {
   static String listing(int id) => '$listings/$id';
   static String car(int id) => '$cars/$id';
   static String job(int id) => '$jobs/$id';
+
+  static String listingRevealContact(int id) => '$listings/$id/reveal-contact';
+  static String carRevealContact(int id) => '$cars/$id/reveal-contact';
+  static String jobRevealContact(int id) => '$jobs/$id/reveal-contact';
+
+  static String listingCheckKey(String key) =>
+      '$listings/check-key/${Uri.encodeComponent(key)}';
+  static String carCheckKey(String key) =>
+      '$cars/check-key/${Uri.encodeComponent(key)}';
+  static String jobCheckKey(String key) =>
+      '$jobs/check-key/${Uri.encodeComponent(key)}';
 
   static String listingSubmit(int id) => '$listings/$id/submit';
   static String listingImages(int id) => '$listings/$id/images';

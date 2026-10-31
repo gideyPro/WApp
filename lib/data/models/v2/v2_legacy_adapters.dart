@@ -2,6 +2,7 @@ import '../../models/address.dart';
 import '../../models/car_form_data.dart';
 import '../../models/image.dart';
 import '../../models/job_form_data.dart';
+import '../../models/job_requirement_item.dart';
 import '../../models/listing.dart';
 import '../../models/listing_form_data.dart';
 import '../../models/message.dart' as msg;
@@ -73,6 +74,17 @@ extension ListingSummaryLegacyAdapter on ListingSummary {
       address: addr,
       images: imageModels,
       createdAt: createdAt ?? DateTime.now(),
+      // Feature chips for Property
+      bedrooms: summaryDetails.bedrooms,
+      bathrooms: summaryDetails.bathrooms,
+      totalSquareMeters: summaryDetails.areaSqm,
+      salons: summaryDetails.salons,
+      // Feature chips for Car
+      carYear: summaryDetails.carYear,
+      carMileageKm: summaryDetails.carMileageKm,
+      // Feature chips for Job
+      jobCompanyName: summaryDetails.companyName,
+      jobType: summaryDetails.jobType,
       // Job specific fields
       jobTitle: kind == ListingKind.job ? title : null,
       // Car specific fields
@@ -150,6 +162,7 @@ extension ListingDetailLegacyAdapter on ListingDetail {
       leasePricePerSqm: holdingDetails.lease?.leasePricePerSqm,
       buildType: holdingDetails.lease?.buildType,
       annualPayment: holdingDetails.lease?.annualPayment,
+      isTransferable: holdingDetails.lease?.isTransferable ?? true,
       // Cooperative
       cooperativeName: holdingDetails.cooperative?.cooperativeName,
       cooperativeCode: holdingDetails.cooperative?.cooperativeCode,
@@ -158,6 +171,7 @@ extension ListingDetailLegacyAdapter on ListingDetail {
       bedrooms: details.bedrooms,
       bathrooms: details.bathrooms,
       kitchens: details.kitchens,
+      salons: details.salons,
       yearBuilt: details.yearBuilt,
       houseType: details.houseType,
       electricity: details.electricity,
@@ -166,6 +180,8 @@ extension ListingDetailLegacyAdapter on ListingDetail {
       images: imageModels,
       address: addr,
       createdAt: createdAt ?? DateTime.now(),
+      sitePlanImageLink: sitePlanUrl,
+      ownershipProofLink: ownershipProofUrl,
       // Seller / contact
       sellerName: seller.name,
       sellerPhone: seller.phone,
@@ -183,6 +199,8 @@ extension ListingDetailLegacyAdapter on ListingDetail {
       carBodyType: details.bodyType,
       carColor: details.color,
       carCondition: details.condition,
+      carVin: details.vin,
+      carFeatures: details.features.isNotEmpty ? details.features : null,
       // Job fields
       jobTitle: details.companyName != null ? title : null,
       jobCompanyName: details.companyName,
@@ -194,6 +212,16 @@ extension ListingDetailLegacyAdapter on ListingDetail {
       jobSalaryMax: details.salaryMax,
       jobSalaryCurrency: details.salaryCurrency,
       jobReqEducation: details.education,
+      jobReqGender: details.reqGender,
+      jobReqExperience: details.reqExperience,
+      jobReqEducations: details.reqEducations
+          .whereType<Map>()
+          .map((m) => EducationItem.fromJson(Map<String, dynamic>.from(m)))
+          .toList(),
+      jobReqExperiences: details.reqExperiences
+          .whereType<Map>()
+          .map((m) => ExperienceItem.fromJson(Map<String, dynamic>.from(m)))
+          .toList(),
       jobDeadline: details.deadline,
     );
   }
@@ -239,6 +267,15 @@ extension OwnerListingLegacyAdapter on OwnerListing {
       specificLocation: location.specificLocation,
       images: imageModels,
       createdAt: createdAt ?? DateTime.now(),
+      // Feature chips
+      bedrooms: summaryDetails.bedrooms,
+      bathrooms: summaryDetails.bathrooms,
+      totalSquareMeters: summaryDetails.areaSqm,
+      salons: summaryDetails.salons,
+      carYear: summaryDetails.carYear,
+      carMileageKm: summaryDetails.carMileageKm,
+      jobCompanyName: summaryDetails.companyName,
+      jobType: summaryDetails.jobType,
       jobTitle: kind == ListingKind.job ? title : null,
       carMake: kind == ListingKind.car ? title : null,
     );
@@ -474,6 +511,8 @@ extension ListingFormDataV2Adapter on ListingFormData {
         if (debtAmount != null) 'debt_amount': debtAmount,
       },
       'details': {
+        if (totalRooms != null) 'total_rooms': totalRooms,
+        if (salons != null) 'salons': salons,
         if (bedrooms != null) 'bedrooms': bedrooms,
         if (bathrooms != null) 'bathrooms': bathrooms,
         if (kitchens != null) 'kitchens': kitchens,
@@ -483,6 +522,15 @@ extension ListingFormDataV2Adapter on ListingFormData {
         'electricity': electricity,
         'water': water,
       },
+      if (isVip) 'is_vip': isVip,
+      if (postedByAgent && agentId.isNotEmpty)
+        'agent_id': int.tryParse(agentId),
+      if (postedForOtherOwner)
+        'owner': {
+          'posted_for_other_owner': true,
+          if (ownerName.isNotEmpty) 'name': ownerName,
+          if (ownerPhone.isNotEmpty) 'phone': ownerPhone,
+        },
       if (holdingType.isNotEmpty)
         'holding': {
           'type': holdingType,
@@ -502,6 +550,7 @@ extension ListingFormDataV2Adapter on ListingFormData {
               if (buildType != null && buildType!.isNotEmpty)
                 'build_type': buildType,
               if (annualPayment != null) 'annual_payment': annualPayment,
+              'is_transferable': isTransferable,
             },
           if (holdingType == 'Cooperative')
             'cooperative': {
@@ -538,6 +587,9 @@ extension CarFormDataV2Adapter on CarFormData {
       if (vin.isNotEmpty) 'vin': vin,
       if (features.isNotEmpty) 'features': features,
       if (description.isNotEmpty) 'description': description,
+      if (isVip) 'is_vip': isVip,
+      if (postedByAgent && agentId.isNotEmpty)
+        'agent_id': int.tryParse(agentId),
     };
   }
 }
@@ -561,6 +613,21 @@ extension JobFormDataV2Adapter on JobFormData {
       if (reqExperience != null && reqExperience!.isNotEmpty)
         'req_experience': reqExperience,
       if (reqGender.isNotEmpty) 'req_gender': reqGender,
+      if (reqEducations.isNotEmpty)
+        'req_educations': reqEducations
+            .map((e) => {
+                  'education_level': e.educationLevel,
+                  if (e.fieldOfStudy != null) 'field_of_study': e.fieldOfStudy,
+                })
+            .toList(),
+      if (reqExperiences.isNotEmpty)
+        'req_experiences': reqExperiences
+            .map((e) => {
+                  'company': e.company,
+                  'job_title': e.jobTitle,
+                  'years': e.years,
+                })
+            .toList(),
       if (deadline != null)
         'deadline': deadline!.toIso8601String().split('T').first,
       if (addressId != null) 'address_id': addressId,
@@ -568,6 +635,8 @@ extension JobFormDataV2Adapter on JobFormData {
         'specific_location': specificLocation,
       if (description != null && description!.isNotEmpty)
         'description': description,
+      if (postedByAgent && agentId != null)
+        'agent_id': agentId,
     };
   }
 }

@@ -1,7 +1,7 @@
 import '../../core/network/api_client.dart';
-import '../../core/network/api_constants.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
+import '../../core/network/v2/api_v2_constants.dart';
 
 class ReportService {
   final ApiClient _apiClient;
@@ -17,10 +17,9 @@ class ReportService {
   }) async {
     try {
       final response = await _apiClient.dio.post(
-        ApiConstants.reports,
+        ApiV2Constants.reports,
         data: {
-          'reportable_type': reportableType,
-          'reportable_id': reportableId,
+          'listing_id': reportableId,
           'reason': reason,
           if (description != null && description.isNotEmpty)
             'description': description,

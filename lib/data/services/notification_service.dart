@@ -8,6 +8,7 @@ import 'v2/notification_service.dart';
 /// Service for managing notifications backed by V2 API.
 class NotificationService {
   final NotificationServiceV2 _v2;
+  final Map<int, String> _cursors = {};
 
   NotificationService({ApiClient? apiClient, NotificationServiceV2? v2Service})
       : _v2 = v2Service ?? NotificationServiceV2();
@@ -17,13 +18,21 @@ class NotificationService {
     String filter = 'all',
   }) async {
     try {
+      if (page <= 1) {
+        _cursors.clear();
+      }
+      final cursor = page > 1 ? _cursors[page] : null;
+
       final nFilter = switch (filter) {
         'unread' => NotificationFilter.unread,
         'read' => NotificationFilter.read,
         _ => NotificationFilter.all,
       };
 
-      final result = await _v2.fetch(filter: nFilter, limit: 30);
+      final result = await _v2.fetch(cursor: cursor, filter: nFilter, limit: 30);
+      if (result.nextCursor != null) {
+        _cursors[page + 1] = result.nextCursor!;
+      }
       final notifications =
           result.items.map((n) => n.toLegacyNotification()).toList();
 

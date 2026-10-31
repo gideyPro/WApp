@@ -56,6 +56,8 @@ class ListingDetails {
   final int? bedrooms;
   final int? bathrooms;
   final int? kitchens;
+  final int? salons;
+  final int? totalRooms;
   final double? areaSqm;
   final String? houseType;
   final int? yearBuilt;
@@ -78,6 +80,8 @@ class ListingDetails {
   final String? vehicleCategory;
   final String? condition;
   final String? color;
+  final String? vin;
+  final List<String> features;
   final bool negotiable;
 
   // Job
@@ -90,6 +94,10 @@ class ListingDetails {
   final double? salaryMax;
   final String? salaryCurrency;
   final String? education;
+  final String? reqExperience;
+  final String? reqGender;
+  final List<dynamic> reqEducations;
+  final List<dynamic> reqExperiences;
   final DateTime? deadline;
 
   const ListingDetails({
@@ -97,6 +105,8 @@ class ListingDetails {
     this.bedrooms,
     this.bathrooms,
     this.kitchens,
+    this.salons,
+    this.totalRooms,
     this.areaSqm,
     this.houseType,
     this.yearBuilt,
@@ -115,6 +125,8 @@ class ListingDetails {
     this.vehicleCategory,
     this.condition,
     this.color,
+    this.vin,
+    this.features = const [],
     this.negotiable = false,
     this.companyName,
     this.jobType,
@@ -125,6 +137,10 @@ class ListingDetails {
     this.salaryMax,
     this.salaryCurrency,
     this.education,
+    this.reqExperience,
+    this.reqGender,
+    this.reqEducations = const [],
+    this.reqExperiences = const [],
     this.deadline,
   });
 
@@ -141,6 +157,8 @@ class ListingDetails {
       bedrooms: TypeUtils.safeInt(map['bedrooms']),
       bathrooms: TypeUtils.safeInt(map['bathrooms']),
       kitchens: TypeUtils.safeInt(map['kitchens']),
+      salons: TypeUtils.safeInt(map['salons']),
+      totalRooms: TypeUtils.safeInt(map['total_rooms']),
       areaSqm: TypeUtils.safeDouble(map['area_sqm']),
       houseType: _text(map['house_type']),
       yearBuilt: TypeUtils.safeInt(map['year_built']),
@@ -159,6 +177,10 @@ class ListingDetails {
       vehicleCategory: _text(map['vehicle_category']),
       condition: _text(map['condition']),
       color: _text(map['color']),
+      vin: _text(map['vin']),
+      features: map['features'] is List
+          ? (map['features'] as List).map((e) => e.toString()).toList()
+          : const [],
       negotiable: TypeUtils.safeBool(map['negotiable']),
       companyName: _text(map['company_name']),
       jobType: _text(map['job_type']),
@@ -169,6 +191,14 @@ class ListingDetails {
       salaryMax: TypeUtils.safeDouble(map['salary_max']),
       salaryCurrency: _text(map['salary_currency']),
       education: _text(map['education']),
+      reqExperience: _text(map['req_experience']),
+      reqGender: _text(map['req_gender']),
+      reqEducations: map['req_educations'] is List
+          ? map['req_educations'] as List
+          : const [],
+      reqExperiences: map['req_experiences'] is List
+          ? map['req_experiences'] as List
+          : const [],
       deadline: _date(map['deadline']),
     );
   }
@@ -198,12 +228,14 @@ class LeaseHoldingDetails {
   final double? leasePricePerSqm;
   final double? annualPayment;
   final String? buildType;
+  final bool isTransferable;
 
   const LeaseHoldingDetails({
     this.leasedYear,
     this.leasePricePerSqm,
     this.annualPayment,
     this.buildType,
+    this.isTransferable = true,
   });
 
   factory LeaseHoldingDetails.fromJson(Map<String, dynamic> json) {
@@ -212,6 +244,8 @@ class LeaseHoldingDetails {
       leasePricePerSqm: TypeUtils.safeDouble(json['lease_price_per_sqm']),
       annualPayment: TypeUtils.safeDouble(json['annual_payment']),
       buildType: _text(json['build_type']),
+      isTransferable:
+          TypeUtils.safeBool(json['is_transferable'], defaultValue: true),
     );
   }
 }
@@ -371,6 +405,8 @@ class ListingDetail extends ListingSummary {
   final ListingSeller seller;
   final ListingViewer viewer;
   final List<ListingSummary> similar;
+  final String? sitePlanUrl;
+  final String? ownershipProofUrl;
 
   const ListingDetail({
     required super.id,
@@ -394,6 +430,8 @@ class ListingDetail extends ListingSummary {
     this.seller = const ListingSeller(),
     this.viewer = const ListingViewer(),
     this.similar = const [],
+    this.sitePlanUrl,
+    this.ownershipProofUrl,
   });
 
   factory ListingDetail.fromJson(Map<String, dynamic> json) {
@@ -428,6 +466,8 @@ class ListingDetail extends ListingSummary {
       video: ListingVideo.fromJson(json['video']),
       seller: ListingSeller.fromJson(json['seller']),
       viewer: ListingViewer.fromJson(json['viewer']),
+      sitePlanUrl: _text(json['site_plan_url']),
+      ownershipProofUrl: _text(json['ownership_proof_url']),
       similar: rawSimilar is List
           ? rawSimilar
               .whereType<Map>()
@@ -443,6 +483,7 @@ class ListingDetail extends ListingSummary {
     bool? isFavorite,
     String? description,
     bool? contactRevealed,
+    SummaryDetails? summaryDetails,
   }) {
     return ListingDetail(
       id: id,
