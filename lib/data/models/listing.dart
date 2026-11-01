@@ -486,11 +486,15 @@ class Listing {
       final loc = json['location'] as Map;
       parsedAddress = Address(
         id: TypeUtils.safeInt(loc['id'] ?? loc['address_id']) ?? 0,
-        region: loc['region_localized']?.toString() ?? loc['region']?.toString(),
-        zone: loc['zone_localized']?.toString() ?? loc['zone']?.toString(),
-        woreda: loc['woreda_localized']?.toString() ?? loc['woreda']?.toString(),
-        kebele: loc['kebele_localized']?.toString() ?? loc['kebele']?.toString(),
+        region: loc['region']?.toString() ?? loc['region_localized']?.toString(),
+        zone: loc['zone']?.toString() ?? loc['zone_localized']?.toString(),
+        woreda: loc['woreda']?.toString() ?? loc['woreda_localized']?.toString(),
+        kebele: loc['kebele']?.toString() ?? loc['kebele_localized']?.toString(),
         specificLocation: loc['specific_location']?.toString(),
+        regionLocalized: loc['region_localized']?.toString() ?? loc['region']?.toString(),
+        zoneLocalized: loc['zone_localized']?.toString() ?? loc['zone']?.toString(),
+        woredaLocalized: loc['woreda_localized']?.toString() ?? loc['woreda']?.toString(),
+        kebeleLocalized: loc['kebele_localized']?.toString() ?? loc['kebele']?.toString(),
       );
     }
 

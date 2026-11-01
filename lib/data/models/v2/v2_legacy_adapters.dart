@@ -35,6 +35,36 @@ RentalPeriod? _parseRentalPeriod(String? period) {
 ///
 /// This lets existing screen controllers, cards, widgets and lists consume V2
 /// API responses without touching or modifying any screen or component UI code.
+extension ListingLocationLegacyAdapter on ListingLocation {
+  Address toAddress({String? overrideSpecificLocation}) {
+    return Address(
+      id: id ?? 0,
+      region: region ?? regionLocalized,
+      zone: zone ?? zoneLocalized,
+      woreda: woreda ?? woredaLocalized,
+      kebele: kebele ?? kebeleLocalized,
+      specificLocation: overrideSpecificLocation ?? specificLocation,
+      regionLocalized: regionLocalized ?? region,
+      zoneLocalized: zoneLocalized ?? zone,
+      woredaLocalized: woredaLocalized ?? woreda,
+      kebeleLocalized: kebeleLocalized ?? kebele,
+    );
+  }
+}
+
+extension OrderAddressLegacyAdapter on OrderAddress {
+  Address toAddress({String? overrideSpecificLocation}) {
+    return Address(
+      id: id,
+      region: region,
+      zone: zone,
+      woreda: woreda,
+      kebele: kebele,
+      specificLocation: overrideSpecificLocation ?? fullAddress,
+    );
+  }
+}
+
 extension ListingSummaryLegacyAdapter on ListingSummary {
   Listing toListing() {
     final propType = switch (kind) {
@@ -53,14 +83,7 @@ extension ListingSummaryLegacyAdapter on ListingSummary {
         ? [ImageModel(id: coverImage?.id ?? 0, imagePath: primaryImg)]
         : <ImageModel>[];
 
-    final addr = Address(
-      id: location.id ?? 0,
-      region: location.displayRegion,
-      zone: location.displayZone,
-      woreda: location.woreda,
-      kebele: location.kebele,
-      specificLocation: location.specificLocation,
-    );
+    final addr = location.toAddress();
 
     return Listing(
       id: id,
@@ -124,14 +147,7 @@ extension ListingDetailLegacyAdapter on ListingDetail {
             ))
         .toList();
 
-    final addr = Address(
-      id: location.id ?? 0,
-      region: location.displayRegion,
-      zone: location.displayZone,
-      woreda: location.woreda,
-      kebele: location.kebele,
-      specificLocation: location.specificLocation,
-    );
+    final addr = location.toAddress();
 
     VideoProcessing? vp;
     if (video.hasUrl) {
@@ -274,14 +290,7 @@ extension OwnerListingLegacyAdapter on OwnerListing {
         ? [ImageModel(id: coverImage?.id ?? 0, imagePath: primaryImg)]
         : <ImageModel>[];
 
-    final addr = Address(
-      id: location.id ?? 0,
-      region: location.displayRegion,
-      zone: location.displayZone,
-      woreda: location.woreda,
-      kebele: location.kebele,
-      specificLocation: location.specificLocation,
-    );
+    final addr = location.toAddress();
 
     return Listing(
       id: id,
@@ -323,16 +332,9 @@ extension OwnerListingLegacyAdapter on OwnerListing {
 
 extension BuyerOrderLegacyAdapter on BuyerOrder {
   Order toLegacyOrder() {
-    final addr = address != null
-        ? Address(
-            id: address!.id,
-            region: address!.region,
-            zone: address!.zone,
-            woreda: address!.woreda,
-            kebele: address!.kebele,
-            specificLocation: address!.fullAddress,
-          )
-        : null;
+    final addr = address?.toAddress(
+      overrideSpecificLocation: address?.fullAddress,
+    );
 
     return Order(
       id: id,

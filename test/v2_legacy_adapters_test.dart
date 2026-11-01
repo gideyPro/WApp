@@ -81,6 +81,39 @@ void main() {
       expect(jobListing.jobCompanyName, equals('WaveMart Tech'));
       expect(jobListing.jobType, equals('full_time'));
     });
+
+    test('preserves English and localized address fields without cross-contamination', () {
+      final summary = ListingSummary.fromJson({
+        'id': 102,
+        'type': 'job',
+        'listing_type': 'sale',
+        'title': 'Job with address',
+        'price': {'amount': 25000.0, 'currency': 'ETB'},
+        'location': {
+          'id': 454,
+          'region': 'Tigray',
+          'zone': 'North West',
+          'woreda': 'Shire Endasilasie',
+          'kebele': 'Indasilassie Town 01',
+          'region_localized': 'ትግራይ',
+          'zone_localized': 'ሰሜን ምዕራብ',
+          'woreda_localized': 'ሽረ እንዳስላሴ',
+          'kebele_localized': 'እንዳስላሴ ከተማ 01',
+        },
+      });
+
+      final listing = summary.toListing();
+
+      expect(listing.address, isNotNull);
+      expect(listing.address?.region, equals('Tigray'));
+      expect(listing.address?.zone, equals('North West'));
+      expect(listing.address?.woreda, equals('Shire Endasilasie'));
+      expect(listing.address?.kebele, equals('Indasilassie Town 01'));
+      expect(listing.address?.regionLocalized, equals('ትግራይ'));
+      expect(listing.address?.zoneLocalized, equals('ሰሜን ምዕራብ'));
+      expect(listing.address?.woredaLocalized, equals('ሽረ እንዳስላሴ'));
+      expect(listing.address?.kebeleLocalized, equals('እንዳስላሴ ከተማ 01'));
+    });
   });
 
   group('ListingDetailLegacyAdapter', () {
