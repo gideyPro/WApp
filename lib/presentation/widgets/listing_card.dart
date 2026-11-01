@@ -500,24 +500,33 @@ class PropertyListingCard extends ConsumerWidget {
   Widget _buildFeatures(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isHouse = listing?.propertyType == PropertyType.house;
+    final hasArea =
+        listing?.totalSquareMeters != null && listing!.totalSquareMeters! > 0;
+
     return Row(
       children: [
-        if (isHouse) ...[
-          if ((listing?.bedrooms ?? 0) > 0)
-            _buildFeatureChip(Icons.bed_outlined, '${listing?.bedrooms}'),
-          if ((listing?.bathrooms ?? 0) > 0)
-            _buildFeatureChip(Icons.bathtub_outlined, '${listing?.bathrooms}'),
-          if ((listing?.salons ?? 0) > 0)
-            _buildFeatureChip(Icons.weekend_outlined, '${listing?.salons}'),
-        ] else ...[
+        if (hasArea) ...[
           _buildFeatureChip(
             Icons.square_foot_outlined,
-            l10n.listingUnitM2(listing?.totalSquareMeters != null
-                ? smartDecimal(listing!.totalSquareMeters!)
-                : '0'),
+            l10n.listingUnitM2(smartDecimal(listing!.totalSquareMeters!)),
           ),
+          const SizedBox(width: 8),
         ],
-        const SizedBox(width: 8),
+        if (isHouse) ...[
+          if ((listing?.bedrooms ?? 0) > 0) ...[
+            _buildFeatureChip(Icons.bed_outlined, '${listing?.bedrooms}'),
+            const SizedBox(width: 8),
+          ],
+          if ((listing?.bathrooms ?? 0) > 0) ...[
+            _buildFeatureChip(Icons.bathtub_outlined, '${listing?.bathrooms}'),
+            const SizedBox(width: 8),
+          ],
+          if ((listing?.salons ?? 0) > 0) ...[
+            _buildFeatureChip(Icons.weekend_outlined, '${listing?.salons}'),
+            const SizedBox(width: 8),
+          ],
+        ],
+        const Spacer(),
         _buildFeatureChip(
           Icons.sell_outlined,
           listing?.listingType == ListingType.sale
