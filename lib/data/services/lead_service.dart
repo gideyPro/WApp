@@ -52,7 +52,8 @@ class Lead {
           0,
       orderId: TypeUtils.safeInt(json['order_id']),
       assignedTo: TypeUtils.safeInt(json['assigned_to']),
-      source: json['source']?.toString() ?? 'interest',
+      source: json['source']?.toString() ??
+          (json['order_id'] != null ? 'suggestion' : 'interest'),
       stage: json['stage']?.toString() ?? 'new',
       buyerMessage: json['buyer_message']?.toString(),
       adminNotes: json['admin_notes']?.toString(),
@@ -67,19 +68,28 @@ class Lead {
     );
   }
 
-  bool get isNew => stage == 'new';
+  bool get isNew => stage == 'new' || stage == 'pending';
   bool get isContacted => stage == 'contacted';
   bool get isNegotiating => stage == 'negotiating';
   bool get isOffer => stage == 'offer';
-  bool get isWon => stage == 'won';
-  bool get isLost => stage == 'lost';
+  bool get isWon => stage == 'won' || stage == 'accepted';
+  bool get isLost => stage == 'lost' || stage == 'declined';
 
   bool get isFromInterest => source == 'interest';
-  bool get isFromSuggestion => source == 'suggestion';
+  bool get isFromSuggestion => source == 'suggestion' || orderId != null;
 
-  bool get isSuggestionPending => source == 'suggestion' && stage == 'new';
-  bool get isSuggestionAccepted => source == 'suggestion' && (stage == 'negotiating' || stage == 'offer' || stage == 'won');
-  bool get isSuggestionDeclined => source == 'suggestion' && stage == 'lost';
+  bool get isSuggestionPending =>
+      (source == 'suggestion' || orderId != null) &&
+      (stage == 'new' || stage == 'pending');
+  bool get isSuggestionAccepted =>
+      (source == 'suggestion' || orderId != null) &&
+      (stage == 'negotiating' ||
+          stage == 'offer' ||
+          stage == 'won' ||
+          stage == 'accepted');
+  bool get isSuggestionDeclined =>
+      (source == 'suggestion' || orderId != null) &&
+      (stage == 'lost' || stage == 'declined');
 
   String? get listingTitle {
     if (listing == null) return null;

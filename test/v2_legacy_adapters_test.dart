@@ -440,6 +440,28 @@ void main() {
       expect(lead.isSuggestionPending, isTrue);
     });
 
+    test('Lead correctly identifies pending and accepted suggestions without source field', () {
+      final newSuggestion = Lead.fromJson({
+        'id': 13,
+        'order_id': 5,
+        'listing_id': 789,
+        'stage': 'new',
+      });
+      expect(newSuggestion.isSuggestionPending, isTrue,
+          reason: 'A new suggestion with order_id must be recognized as pending, not declined');
+      expect(newSuggestion.isSuggestionDeclined, isFalse);
+
+      final acceptedSuggestion = Lead.fromJson({
+        'id': 14,
+        'order_id': 5,
+        'listing_id': 790,
+        'stage': 'negotiating',
+      });
+      expect(acceptedSuggestion.isSuggestionAccepted, isTrue);
+      expect(acceptedSuggestion.isSuggestionPending, isFalse);
+      expect(acceptedSuggestion.isSuggestionDeclined, isFalse);
+    });
+
     test('ListingFormDataV2Adapter maps price_revision_possible', () {
       final form = ListingFormData(
         priceOnAgreement: true,
