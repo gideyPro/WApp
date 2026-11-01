@@ -1074,10 +1074,13 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
 
   Widget _buildImageGallery(Listing listing) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       child: SizedBox(
         height: 280,
-        child: ListingGallery(listing: listing),
+        child: ListingGallery(
+          listing: listing,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }

@@ -2790,7 +2790,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobJob => 'ስራሕ';
 
   @override
-  String get jobJobCategory => 'ዓይነት ስራሕ';
+  String get jobJobCategory => ' ዘፈር ስራሕ';
 
   @override
   String get jobJobDetails => 'ዝርዝር ስራሕ';
