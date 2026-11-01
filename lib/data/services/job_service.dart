@@ -41,11 +41,18 @@ class JobService {
       final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
       final cursor = page > 1 ? pageCursors[page] : null;
 
+      final sortWire = filters?['sort']?.toString();
+      final sortEnum = sortWire == 'oldest' ? JobSort.oldest : JobSort.newest;
+
       final jobFilters = JobFilters(
         jobCategory: filters?['category']?.toString() ?? filters?['job_category']?.toString(),
         jobType: filters?['job_type']?.toString(),
         location: filters?['location']?.toString(),
         search: filters?['search']?.toString() ?? filters?['q']?.toString(),
+        educationLevel: filters?['education_level']?.toString(),
+        salaryMin: filters?['salary_min'] is num ? (filters!['salary_min'] as num).toDouble() : double.tryParse(filters?['salary_min']?.toString() ?? ''),
+        salaryMax: filters?['salary_max'] is num ? (filters!['salary_max'] as num).toDouble() : double.tryParse(filters?['salary_max']?.toString() ?? ''),
+        sort: sortEnum,
       );
 
       final result = await _catalog.fetchJobs(

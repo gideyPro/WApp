@@ -45,16 +45,34 @@ class CarService {
       final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
       final cursor = page > 1 ? pageCursors[page] : null;
 
+      final sortWire = filters?['sort']?.toString();
+      final sortEnum = switch (sortWire) {
+        'oldest' => CatalogSort.oldest,
+        'price_low' => CatalogSort.priceLow,
+        'price_high' => CatalogSort.priceHigh,
+        'year_desc' => CatalogSort.yearDesc,
+        'year_asc' => CatalogSort.yearAsc,
+        'mileage_low' => CatalogSort.mileageLow,
+        'mileage_high' => CatalogSort.mileageHigh,
+        _ => CatalogSort.newest,
+      };
+
       final carFilters = CarFilters(
         listingType: filters?['listing_type']?.toString(),
         location: filters?['location']?.toString() ?? filters?['city']?.toString(),
+        priceMin: filters?['price_min'] is num ? (filters!['price_min'] as num).toDouble() : null,
+        priceMax: filters?['price_max'] is num ? (filters!['price_max'] as num).toDouble() : null,
         make: filters?['make']?.toString(),
         model: filters?['model']?.toString(),
+        yearMin: filters?['year_min'] is int ? filters!['year_min'] as int : int.tryParse(filters?['year_min']?.toString() ?? ''),
+        yearMax: filters?['year_max'] is int ? filters!['year_max'] as int : int.tryParse(filters?['year_max']?.toString() ?? ''),
+        mileageMax: filters?['mileage_max'] is num ? (filters!['mileage_max'] as num).toDouble() : double.tryParse(filters?['mileage_max']?.toString() ?? ''),
         bodyType: filters?['body_type']?.toString(),
         transmission: filters?['transmission']?.toString(),
         fuelType: filters?['fuel_type']?.toString(),
         condition: filters?['condition']?.toString(),
         vehicleCategory: filters?['vehicle_category']?.toString(),
+        sort: sortEnum,
       );
 
       final result = await _catalog.fetchCars(

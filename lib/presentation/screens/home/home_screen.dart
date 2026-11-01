@@ -1190,6 +1190,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               case PropertyType.job:
                 card = JobListingCard(
                   job: listing,
+                  isFavorite: fav,
+                  isTogglingFavorite: _isToggling(listing.id),
+                  onFavorite: () => _toggleFavorite(listing.id),
                   onTap: () => context.push('/jobs/${listing.id}'),
                 );
               case PropertyType.house:
@@ -1512,7 +1515,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: isJob
-                  ? JobListingCard(job: listing)
+                  ? JobListingCard(
+                      job: listing,
+                      isFavorite: fav,
+                      isTogglingFavorite: _isToggling(listing.id),
+                      onFavorite: () => _toggleFavorite(listing.id),
+                      onTap: () => context.push('/jobs/${listing.id}'),
+                    )
                   : isVehicle
                       ? VehicleListingCard(
                           listing: listing,

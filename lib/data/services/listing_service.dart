@@ -44,6 +44,14 @@ class ListingService {
       final pageCursors = _cursorStore.putIfAbsent(queryKey, () => {});
       final cursor = page > 1 ? pageCursors[page] : null;
 
+      final sortWire = filters?['sort']?.toString();
+      final sortEnum = switch (sortWire) {
+        'oldest' => CatalogSort.oldest,
+        'price_low' => CatalogSort.priceLow,
+        'price_high' => CatalogSort.priceHigh,
+        _ => CatalogSort.newest,
+      };
+
       final listingFilters = ListingFilters(
         type: filters?['type']?.toString(),
         listingType: filters?['listing_type']?.toString(),
@@ -55,6 +63,8 @@ class ListingService {
         areaMax: filters?['area_max'] is num ? (filters!['area_max'] as num).toDouble() : null,
         minBedrooms: filters?['bedrooms'] is num ? (filters!['bedrooms'] as num).toInt() : null,
         minBathrooms: filters?['bathrooms'] is num ? (filters!['bathrooms'] as num).toInt() : null,
+        isFeatured: filters?['is_featured'] == true ? true : null,
+        sort: sortEnum,
       );
 
       final result = await _catalog.fetchListings(

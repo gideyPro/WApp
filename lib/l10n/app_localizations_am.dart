@@ -1790,7 +1790,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get listingErrorMinPrice => 'ትክክለኛ ዋጋ ያስገቡ';
 
   @override
-  String get listingPricePerAgreement => 'በስምምነት';
+  String get listingPricePerAgreement => 'ዋጋ በስምምነት';
 
   @override
   String get listingErrorLeasedYearRequired => 'የሊዝ ዓመት ያስፈልጋል';
@@ -2234,7 +2234,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get carTermsRequired => 'ውሎቹን መቀበል አለብዎት';
 
   @override
-  String get carRentalPriceNegotiable => 'በስምምነት';
+  String get carRentalPriceNegotiable => 'ዋጋ በስምምነት';
 
   @override
   String get listingPricing => 'ዋጋ አወጣጥ';
@@ -2870,7 +2870,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobSalaryMin => 'ዝቅተኛ ደሞዝ';
 
   @override
-  String get jobSalaryPerAgreement => 'በስምምነት';
+  String get jobSalaryPerAgreement => 'ደሞዝ በስምምነት';
 
   @override
   String get jobSalaryType => 'ደሞዝ';

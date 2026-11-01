@@ -3,7 +3,11 @@ enum CatalogSort {
   newest('newest'),
   oldest('oldest'),
   priceLow('price_low'),
-  priceHigh('price_high');
+  priceHigh('price_high'),
+  yearDesc('year_desc'),
+  yearAsc('year_asc'),
+  mileageLow('mileage_low'),
+  mileageHigh('mileage_high');
 
   final String wireValue;
 
