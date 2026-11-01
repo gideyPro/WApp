@@ -1920,7 +1920,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get markAsVipMessage => 'ንብረትዎ ከተራ ተጠቃሚዎች ድብቅ ሆኖ በ VIP ባጅ ይደምቃል።';
 
   @override
-  String get upgradeToContact => 'ለመገናኘት ያሻሽሉ';
+  String get upgradeToContact => 'ለመገናኘት ፓኬጅዎን ያሻሽሉ';
 
   @override
   String get listingsRevealContact => 'የሻጭ ስልክ ቁጥር ያሳዩ';
@@ -2873,7 +2873,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobSalaryPerAgreement => 'በስምምነት';
 
   @override
-  String get jobSalaryType => 'የደሞዝ አይነት';
+  String get jobSalaryType => 'ደሞዝ';
 
   @override
   String get jobSelect => 'ይምረጡ';

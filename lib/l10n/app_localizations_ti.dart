@@ -1035,7 +1035,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingsVideoOptimizing => 'ቪዲዮ ይዳሎ ኣሎ…';
 
   @override
-  String get listingsViewOriginal => 'መበቆላዊ ቪዲዮ ርኣዩ';
+  String get listingsViewOriginal => 'ኦርጂናል ቪዲዮ ርኣዩ';
 
   @override
   String get listingsNoDescription => 'መግለፂ ኣይተዋህበን';
@@ -1789,7 +1789,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingErrorMinPrice => 'ትክክለኛ ዋጋ የእትዉ';
 
   @override
-  String get listingPricePerAgreement => 'ብስምምነት';
+  String get listingPricePerAgreement => 'ብስምምዕነት';
 
   @override
   String get listingErrorLeasedYearRequired => 'ናይ ሊዝ ዓመት የድሊ';
@@ -1919,7 +1919,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get markAsVipMessage => 'ንብረትኩም ካብ ተራ ተጠቀምቲ ክኽወልን ብ VIP ምልክት ክልለ እዩ።';
 
   @override
-  String get upgradeToContact => 'ንምርካብ ፓኬጅ ምሕያሽ';
+  String get upgradeToContact => 'ንምርኻብ ፓኬጆም የማሓይሹ';
 
   @override
   String get listingsRevealContact => 'ቁፅሪ ስልኪ ሸያጢ ኣርእዩ';
@@ -2868,10 +2868,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobSalaryMin => 'ዝተሓተ መሃያ';
 
   @override
-  String get jobSalaryPerAgreement => 'ብስምምነት';
+  String get jobSalaryPerAgreement => 'ብስምምዕነት';
 
   @override
-  String get jobSalaryType => 'ዓይነት መሃያ';
+  String get jobSalaryType => 'መሃያ';
 
   @override
   String get jobSelect => 'ምረፁ';
@@ -2907,7 +2907,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobYearsOfExperience => 'ዓመታት ተመክሮ';
 
   @override
-  String get jobContactEmployer => 'ኣስራሒ ረኽቡ';
+  String get jobContactEmployer => 'ምስ ኣስራሒ ተራኸቡ';
 
   @override
   String get jobCall => 'ደውሉ';

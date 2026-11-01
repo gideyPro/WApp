@@ -4255,7 +4255,7 @@ abstract class AppLocalizations {
   /// No description provided for @carRentalPriceNegotiable.
   ///
   /// In en, this message translates to:
-  /// **'By Negotiation'**
+  /// **'Per Agreement'**
   String get carRentalPriceNegotiable;
 
   /// No description provided for @listingPricing.
@@ -5521,7 +5521,7 @@ abstract class AppLocalizations {
   /// No description provided for @jobSalaryType.
   ///
   /// In en, this message translates to:
-  /// **'Salary Type'**
+  /// **'Salary'**
   String get jobSalaryType;
 
   /// No description provided for @jobSelect.

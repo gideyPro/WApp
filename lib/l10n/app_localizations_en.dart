@@ -2266,7 +2266,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get carTermsRequired => 'You must accept the terms';
 
   @override
-  String get carRentalPriceNegotiable => 'By Negotiation';
+  String get carRentalPriceNegotiable => 'Per Agreement';
 
   @override
   String get listingPricing => 'Pricing';
@@ -2914,7 +2914,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobSalaryPerAgreement => 'Per Agreement';
 
   @override
-  String get jobSalaryType => 'Salary Type';
+  String get jobSalaryType => 'Salary';
 
   @override
   String get jobSelect => 'Select';

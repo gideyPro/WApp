@@ -86,10 +86,11 @@ class VehicleFeaturedCard extends ConsumerWidget {
           children: [
             Positioned.fill(
               child: CachedNetworkImage(
-                imageUrl: listing?.mainThumbnailUrl ?? '',
+                imageUrl: listing?.mainImageUrl.isNotEmpty == true
+                    ? listing!.mainImageUrl
+                    : (listing?.mainThumbnailUrl ?? ''),
                 fit: BoxFit.cover,
-                memCacheWidth: 260,
-                memCacheHeight: 400,
+                memCacheWidth: 400,
                 placeholder: (_, __) => Shimmer.fromColors(
                   baseColor: context.shimmerBase,
                   highlightColor: context.shimmerHighlight,

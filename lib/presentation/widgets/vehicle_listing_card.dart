@@ -166,17 +166,17 @@ class _VehicleListingCardState extends ConsumerState<VehicleListingCard>
       ),
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        child: SizedBox(
-          width: double.infinity,
-          height: 200,
+        child: AspectRatio(
+          aspectRatio: 16 / 10,
           child: Stack(
             fit: StackFit.expand,
             children: [
               CachedNetworkImage(
-                imageUrl: widget.listing?.mainThumbnailUrl ?? '',
+                imageUrl: widget.listing?.mainImageUrl.isNotEmpty == true
+                    ? widget.listing!.mainImageUrl
+                    : (widget.listing?.mainThumbnailUrl ?? ''),
                 fit: BoxFit.cover,
-                memCacheWidth: 400,
-                memCacheHeight: 300,
+                memCacheWidth: 600,
                 placeholder: (_, __) => Shimmer.fromColors(
                   baseColor: context.shimmerBase,
                   highlightColor: context.shimmerHighlight,
