@@ -231,6 +231,17 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         break;
 
       case app.NotificationType.systemAnnouncement:
+        final convoId = _extractId(notification, 'conversation_id') ??
+            _extractId(notification, 'chat_id');
+        if (convoId != null) {
+          context.push('/chat/$convoId');
+        } else if (notification.relatedType == 'listing' || notification.data?['listing_id'] != null) {
+          final id = _extractId(notification, 'listing_id');
+          if (id != null) context.push('/listings/$id');
+        } else if (notification.relatedType == 'order' || notification.data?['order_id'] != null) {
+          final id = _extractId(notification, 'order_id');
+          if (id != null) context.push('/orders/$id');
+        }
         break;
     }
   }

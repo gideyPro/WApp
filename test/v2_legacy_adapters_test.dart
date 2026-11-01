@@ -6,6 +6,8 @@ import 'package:wavemart/data/models/job_requirement_item.dart';
 import 'package:wavemart/data/models/listing.dart';
 import 'package:wavemart/data/models/listing_form_data.dart';
 import 'package:wavemart/data/models/payment.dart';
+import 'package:wavemart/data/models/v2/app_notification.dart';
+import 'package:wavemart/data/models/notification.dart' as app;
 import 'package:wavemart/data/models/v2/listing_detail.dart';
 import 'package:wavemart/data/models/v2/listing_summary.dart';
 import 'package:wavemart/data/models/v2/owner_listing.dart';
@@ -454,6 +456,38 @@ void main() {
       );
       final legacy = state.toLegacyPayment();
       expect(legacy.paymentType, equals(PaymentType.featuredListing));
+    });
+
+    test('AppNotificationLegacyAdapter maps actionUrl, relatedId, and type for navigation', () {
+      final notif = AppNotification.fromJson({
+        'id': 100,
+        'type': 'inquiry',
+        'title': 'New Inquiry',
+        'message': 'Someone expressed interest',
+        'data': {'listing_id': 55},
+        'action_url': '/listings/55',
+      });
+
+      final legacy = notif.toLegacyNotification();
+      expect(legacy.type, equals(app.NotificationType.newInterest));
+      expect(legacy.relatedId, equals(55));
+      expect(legacy.relatedType, equals('listing'));
+      expect(legacy.actionUrl, equals('/listings/55'));
+    });
+
+    test('AppNotificationLegacyAdapter generates fallback actionUrl when backend omits it', () {
+      final notif = AppNotification.fromJson({
+        'id': 101,
+        'type': 'message',
+        'title': 'New Message',
+        'message': 'Hello there',
+        'data': {'conversation_id': 88},
+      });
+
+      final legacy = notif.toLegacyNotification();
+      expect(legacy.relatedId, equals(88));
+      expect(legacy.relatedType, equals('conversation'));
+      expect(legacy.actionUrl, equals('/chat/88'));
     });
   });
 }

@@ -1,3 +1,4 @@
+import '../../../core/utils/type_utils.dart';
 import '../../models/address.dart';
 import '../../models/car_form_data.dart';
 import '../../models/image.dart';
@@ -402,15 +403,21 @@ extension ChatMessageLegacyAdapter on ChatMessage {
 extension AppNotificationLegacyAdapter on AppNotification {
   app.Notification toLegacyNotification() {
     final nType = switch (type) {
-      'listing_approved' => app.NotificationType.listingApproved,
-      'listing_rejected' => app.NotificationType.listingRejected,
-      'new_interest' => app.NotificationType.newInterest,
+      'listing_approved' ||
+      'listing_featured' ||
+      'listing_published' ||
+      'listing_update' =>
+        app.NotificationType.listingApproved,
+      'listing_rejected' || 'listing_rejection' =>
+        app.NotificationType.listingRejected,
+      'new_interest' || 'inquiry' => app.NotificationType.newInterest,
       'favorite' => app.NotificationType.favorite,
       'payment_success' => app.NotificationType.paymentSuccess,
       'payment_failed' => app.NotificationType.paymentFailed,
       'subscription_activated' => app.NotificationType.subscriptionActivated,
       'subscription_expired' => app.NotificationType.subscriptionExpired,
-      'kyc_update' => app.NotificationType.kycUpdate,
+      'kyc_update' || 'kyc_submitted' || 'kyc_approved' || 'kyc_rejected' =>
+        app.NotificationType.kycUpdate,
       'conference_invite' => app.NotificationType.conferenceInvite,
       'conference_update' => app.NotificationType.conferenceUpdate,
       'incoming_call' => app.NotificationType.incomingCall,
@@ -418,13 +425,58 @@ extension AppNotificationLegacyAdapter on AppNotification {
       _ => app.NotificationType.systemAnnouncement,
     };
 
+    final relId = TypeUtils.safeInt(
+      data['related_id'] ??
+          data['listing_id'] ??
+          data['order_id'] ??
+          data['conversation_id'] ??
+          data['conference_id'] ??
+          data['payment_id'],
+    );
+
+    final relType = (data['related_type']?.toString()) ??
+        (data.containsKey('listing_id')
+            ? 'listing'
+            : data.containsKey('order_id')
+                ? 'order'
+                : data.containsKey('conversation_id')
+                    ? 'conversation'
+                    : data.containsKey('conference_id')
+                        ? 'conference'
+                        : data.containsKey('payment_id')
+                            ? 'payment'
+                            : (type.startsWith('kyc')
+                                ? 'kyc'
+                                : type.startsWith('subscription')
+                                    ? 'subscription'
+                                    : null));
+
+    final resolvedActionUrl = actionUrl ??
+        (data['listing_id'] != null
+            ? '/listings/${data['listing_id']}'
+            : data['order_id'] != null
+                ? '/orders/${data['order_id']}'
+                : data['conversation_id'] != null
+                    ? '/chat/${data['conversation_id']}'
+                    : data['conference_id'] != null
+                        ? '/call/${data['conference_id']}'
+                        : data['payment_id'] != null
+                            ? '/payments/${data['payment_id']}'
+                            : (type.startsWith('kyc')
+                                ? '/kyc'
+                                : type.startsWith('subscription')
+                                    ? '/subscriptions'
+                                    : null));
+
     return app.Notification(
       id: id,
       userId: 0,
       title: title,
       body: message,
       type: nType,
-      actionUrl: actionUrl,
+      actionUrl: resolvedActionUrl,
+      relatedId: relId,
+      relatedType: relType,
       data: data,
       isRead: isRead,
       readAt: readAt,
