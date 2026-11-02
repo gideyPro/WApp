@@ -12,6 +12,7 @@ import 'package:wavemart/data/models/v2/listing_detail.dart';
 import 'package:wavemart/data/models/v2/listing_summary.dart';
 import 'package:wavemart/data/models/v2/owner_listing.dart';
 import 'package:wavemart/data/models/v2/payment_state.dart';
+import 'package:wavemart/data/models/v2/plan.dart';
 import 'package:wavemart/data/models/v2/v2_legacy_adapters.dart';
 import 'package:wavemart/data/services/lead_service.dart';
 
@@ -543,6 +544,26 @@ void main() {
       expect(legacy.relatedId, equals(88));
       expect(legacy.relatedType, equals('conversation'));
       expect(legacy.actionUrl, equals('/chat/88'));
+    });
+  });
+
+  group('PlanLegacyAdapter', () {
+    test('preserves the resolved view_vip feature instead of hardcoding it', () {
+      final free = Plan.fromJson({
+        'id': 1,
+        'slug': 'free',
+        'name': 'Free',
+        'plan_features': {'view_vip': false},
+      });
+      final premium = Plan.fromJson({
+        'id': 2,
+        'slug': 'premium',
+        'name': 'Premium',
+        'plan_features': {'view_vip': true},
+      });
+
+      expect(free.toSubscriptionPlan().viewVip, isFalse);
+      expect(premium.toSubscriptionPlan().viewVip, isTrue);
     });
   });
 }

@@ -21,7 +21,6 @@ class SubscriptionPlanRef {
   int get maxVehicles => -1;
   int get maxRentalVehicles => -1;
   int get maxJobs => -1;
-  bool get viewVip => true;
   List<String>? get features => null;
 
   factory SubscriptionPlanRef.fromJson(dynamic json) {

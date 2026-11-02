@@ -541,7 +541,7 @@ extension PlanLegacyAdapter on Plan {
       maxVehicles: limits.vehicles,
       maxRentalVehicles: limits.rentalVehicles,
       maxJobs: limits.jobs,
-      viewVip: true,
+      viewVip: viewVip,
       trialDays: trialDays,
       canStartTrial: canStartTrial,
       isActive: true,

@@ -35,6 +35,7 @@
         "No listing creation",
         "No contact details"
       ],
+      "view_vip": false,
       "trial_days": 0,
       "can_start_trial": false,
       "sort_order": 0
@@ -95,6 +96,7 @@
         "Full address details",
         "No property videos"
       ],
+      "view_vip": false,
       "trial_days": 0,
       "can_start_trial": false,
       "sort_order": 1
@@ -156,6 +158,7 @@
         "Full detail access (Videos + Contact)",
         "Priority support"
       ],
+      "view_vip": true,
       "trial_days": 0,
       "can_start_trial": false,
       "sort_order": 2

@@ -146,6 +146,24 @@ void main() {
       expect(plans[1].isFree, isFalse);
     });
 
+    test('resolves view_vip from plan feature keys', () {
+      expect(plans.first.viewVip, isFalse);
+      expect(plans[1].viewVip, isFalse);
+      expect(plans[2].viewVip, isTrue);
+    });
+
+    test('plan_features wins over the flat view_vip fallback', () {
+      final plan = Plan.fromJson({
+        'id': 9,
+        'slug': 'custom',
+        'name': 'Custom',
+        'view_vip': true,
+        'plan_features': {'view_vip': false},
+      });
+
+      expect(plan.viewVip, isFalse);
+    });
+
     test('cycles are authoritative', () {
       final basic = plans[1];
 

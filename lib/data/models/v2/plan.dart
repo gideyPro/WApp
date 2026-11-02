@@ -99,6 +99,7 @@ class Plan {
   final List<BillingCycle> cycles;
   final PlanLimits limits;
   final List<String> features;
+  final bool viewVip;
   final int trialDays;
   final bool canStartTrial;
   final int sortOrder;
@@ -113,6 +114,7 @@ class Plan {
     this.cycles = const [],
     this.limits = const PlanLimits(),
     this.features = const [],
+    this.viewVip = false,
     this.trialDays = 0,
     this.canStartTrial = false,
     this.sortOrder = 0,
@@ -148,6 +150,10 @@ class Plan {
   factory Plan.fromJson(Map<String, dynamic> json) {
     final rawCycles = json['cycles'];
     final rawFeatures = json['features'];
+    final rawPlanFeatures = json['plan_features'];
+    final planFeatures = rawPlanFeatures is Map
+        ? Map<String, dynamic>.from(rawPlanFeatures)
+        : const <String, dynamic>{};
 
     return Plan(
       id: TypeUtils.safeInt(json['id']) ?? 0,
@@ -169,6 +175,11 @@ class Plan {
               .map((feature) => feature.toString())
               .toList(growable: false)
           : const [],
+      // Feature-key values are authoritative; the flat field is kept as a
+      // fallback for older payloads that predate `plan_features`.
+      viewVip: planFeatures.containsKey('view_vip')
+          ? TypeUtils.safeBool(planFeatures['view_vip'])
+          : TypeUtils.safeBool(json['view_vip']),
       trialDays: TypeUtils.safeInt(json['trial_days']) ?? 0,
       canStartTrial: TypeUtils.safeBool(json['can_start_trial']),
       sortOrder: TypeUtils.safeInt(json['sort_order']) ?? 0,

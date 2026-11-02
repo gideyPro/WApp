@@ -273,7 +273,7 @@ class _SubscriptionPlansScreenState
 
     final showDaysLeft = sub.daysRemaining < 999;
     final isUrgent = sub.daysRemaining <= 7;
-    final hasVip = localPlan.viewVip;
+    final hasVip = canViewVip;
     final hasFeatures = localPlan.features != null && localPlan.features!.isNotEmpty;
     final showContactBar = contactViewsUsed + contactViewsRemaining > 0;
     final showRentalContactBar = rentalContactViewsUsed + rentalContactViewsRemaining > 0;
