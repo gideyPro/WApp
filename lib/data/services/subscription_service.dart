@@ -70,12 +70,12 @@ class SubscriptionServiceApi {
         contactViewsRemaining: overview.capabilities.maxContacts?.remaining ?? 0,
         rentalContactViewsUsed: overview.capabilities['max_rental_contacts']?.used ?? 0,
         rentalContactViewsRemaining: overview.capabilities['max_rental_contacts']?.remaining ?? 0,
-        carContactViewsUsed: overview.capabilities['max_car_contacts']?.used ?? 0,
-        carContactViewsRemaining: overview.capabilities['max_car_contacts']?.remaining ?? 0,
-        carRentalContactViewsUsed: overview.capabilities['max_car_rental_contacts']?.used ?? 0,
-        carRentalContactViewsRemaining: overview.capabilities['max_car_rental_contacts']?.remaining ?? 0,
-        jobContactViewsUsed: overview.capabilities['max_job_contacts']?.used ?? 0,
-        jobContactViewsRemaining: overview.capabilities['max_job_contacts']?.remaining ?? 0,
+        carContactViewsUsed: overview.capabilities['max_contacts_car']?.used ?? 0,
+        carContactViewsRemaining: overview.capabilities['max_contacts_car']?.remaining ?? 0,
+        carRentalContactViewsUsed: overview.capabilities['max_rental_contacts_car']?.used ?? 0,
+        carRentalContactViewsRemaining: overview.capabilities['max_rental_contacts_car']?.remaining ?? 0,
+        jobContactViewsUsed: overview.capabilities['max_contacts_job']?.used ?? 0,
+        jobContactViewsRemaining: overview.capabilities['max_contacts_job']?.remaining ?? 0,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -110,12 +110,12 @@ class SubscriptionServiceApi {
         contactViewsRemaining: overview.capabilities.maxContacts?.remaining ?? 0,
         rentalContactViewsUsed: overview.capabilities['max_rental_contacts']?.used ?? 0,
         rentalContactViewsRemaining: overview.capabilities['max_rental_contacts']?.remaining ?? 0,
-        carContactViewsUsed: overview.capabilities['max_car_contacts']?.used ?? 0,
-        carContactViewsRemaining: overview.capabilities['max_car_contacts']?.remaining ?? 0,
-        carRentalContactViewsUsed: overview.capabilities['max_car_rental_contacts']?.used ?? 0,
-        carRentalContactViewsRemaining: overview.capabilities['max_car_rental_contacts']?.remaining ?? 0,
-        jobContactViewsUsed: overview.capabilities['max_job_contacts']?.used ?? 0,
-        jobContactViewsRemaining: overview.capabilities['max_job_contacts']?.remaining ?? 0,
+        carContactViewsUsed: overview.capabilities['max_contacts_car']?.used ?? 0,
+        carContactViewsRemaining: overview.capabilities['max_contacts_car']?.remaining ?? 0,
+        carRentalContactViewsUsed: overview.capabilities['max_rental_contacts_car']?.used ?? 0,
+        carRentalContactViewsRemaining: overview.capabilities['max_rental_contacts_car']?.remaining ?? 0,
+        jobContactViewsUsed: overview.capabilities['max_contacts_job']?.used ?? 0,
+        jobContactViewsRemaining: overview.capabilities['max_contacts_job']?.remaining ?? 0,
       );
     } catch (e) {
       return const CurrentSubscriptionResponse(

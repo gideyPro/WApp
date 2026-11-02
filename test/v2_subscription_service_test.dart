@@ -6,7 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wavemart/core/network/v2/api_v2_client.dart';
 import 'package:wavemart/core/network/v2/api_v2_error.dart';
 import 'package:wavemart/data/models/v2/payment_state.dart';
+import 'package:wavemart/data/services/subscription_service.dart' as legacy;
 import 'package:wavemart/data/services/v2/payment_service.dart';
+import 'package:wavemart/data/services/v2/plan_service.dart';
 import 'package:wavemart/data/services/v2/subscription_service.dart';
 
 import 'v2_fixtures.dart';
@@ -53,6 +55,44 @@ void main() {
       expect(requests.single.uri.path, '/api/v2/subscription');
       expect(overview.subscription?.plan?.slug, 'free');
       expect(overview.capabilities.maxListings?.max, 0);
+    });
+
+    test('maps every contact quota into the legacy overview', () async {
+      final overview = Map<String, dynamic>.from(overviewData as Map);
+      overview['capabilities'] = {
+        ...Map<String, dynamic>.from(overview['capabilities'] as Map),
+        'max_contacts': {'allowed': true, 'used': 1, 'max': 3},
+        'max_rental_contacts': {'allowed': true, 'used': 2, 'max': 5},
+        'max_contacts_car': {'allowed': true, 'used': 3, 'max': 7},
+        'max_rental_contacts_car': {'allowed': true, 'used': 4, 'max': 9},
+        'max_contacts_job': {'allowed': true, 'used': 5, 'max': 11},
+      };
+      final plansData = loadV2Fixture('plans.index.json')['data'];
+
+      final apiClient = client((options) {
+        if (options.uri.path.endsWith('/plans')) {
+          return ok({'data': plansData});
+        }
+        return ok({'data': overview});
+      });
+
+      final service = legacy.SubscriptionServiceApi(
+        planService: PlanService(client: apiClient),
+        subService: SubscriptionServiceV2(client: apiClient),
+      );
+
+      final data = await service.getFullData();
+      expect(data.success, isTrue);
+      expect(data.contactViewsUsed, 1);
+      expect(data.contactViewsRemaining, 2);
+      expect(data.rentalContactViewsUsed, 2);
+      expect(data.rentalContactViewsRemaining, 3);
+      expect(data.carContactViewsUsed, 3);
+      expect(data.carContactViewsRemaining, 4);
+      expect(data.carRentalContactViewsUsed, 4);
+      expect(data.carRentalContactViewsRemaining, 5);
+      expect(data.jobContactViewsUsed, 5);
+      expect(data.jobContactViewsRemaining, 6);
     });
 
     test('checkout sends only the cycle and currency', () async {
