@@ -39,14 +39,8 @@ void main() {
       final apiClient = ApiClient();
       apiClient.dio.httpClientAdapter = _StubAdapter((options) {
         expect(options.method, 'DELETE');
-        expect(options.path, contains('/jobs/42'));
-        return ResponseBody.fromString(
-          jsonEncode({'success': true, 'message': 'Job listing deleted'}),
-          200,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
-        );
+        expect(options.path, endsWith('/api/v2/listings/42'));
+        return ResponseBody.fromString('', 204);
       });
 
       final jobService = JobService(apiClient: apiClient);
@@ -67,7 +61,9 @@ void main() {
       final apiClient = ApiClient();
       apiClient.dio.httpClientAdapter = _StubAdapter((options) {
         return ResponseBody.fromString(
-          jsonEncode({'success': false, 'message': 'Unauthorized'}),
+          jsonEncode({
+            'error': {'code': 'FORBIDDEN', 'message': 'Unauthorized'},
+          }),
           403,
           headers: {
             Headers.contentTypeHeader: [Headers.jsonContentType],
