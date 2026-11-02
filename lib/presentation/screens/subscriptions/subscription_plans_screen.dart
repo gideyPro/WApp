@@ -158,6 +158,9 @@ class _SubscriptionPlansScreenState
     final activePlans = state.plans.where((p) => p.isActive).toList();
     final subscription = state.subscription;
     final isActiveSub = subscription != null && subscription.isActive;
+    // `/subscription` only embeds a plan ref (id/slug/name). Resolve the full
+    // plan from `/plans` so the details card can render every usage limit.
+    final currentPlan = _resolvePlan(subscription, state.plans);
 
     SubscriptionPlan? featuredPlan;
     if (activePlans.any((p) => !p.isFree)) {
@@ -181,6 +184,7 @@ class _SubscriptionPlansScreenState
                   state.canCreateListing,
                   state.canFeatureListing,
                   state.canViewVip,
+                  resolvedPlan: currentPlan,
                   contactViewsUsed: state.contactViewsUsed,
                   contactViewsRemaining: state.contactViewsRemaining,
                   rentalContactViewsUsed: state.rentalContactViewsUsed,
@@ -198,6 +202,7 @@ class _SubscriptionPlansScreenState
                 state.canCreateListing,
                 state.canFeatureListing,
                 state.canViewVip,
+                resolvedPlan: currentPlan,
               ),
             const SizedBox(height: 8),
           ],
@@ -252,11 +257,37 @@ class _SubscriptionPlansScreenState
     );
   }
 
+  /// Matches the subscription's plan ref against the full plan list so the
+  /// details card can show every limit, not just the ref's defaults.
+  SubscriptionPlan? _resolvePlan(
+    Subscription? sub,
+    List<SubscriptionPlan> plans,
+  ) {
+    if (sub == null) return null;
+
+    final planId = sub.planId;
+    if (planId > 0) {
+      for (final plan in plans) {
+        if (plan.id == planId) return plan;
+      }
+    }
+
+    final slug = sub.plan?.slug;
+    if (slug != null && slug.isNotEmpty) {
+      for (final plan in plans) {
+        if (plan.slug == slug) return plan;
+      }
+    }
+
+    return null;
+  }
+
   Widget _buildCurrentSubscriptionBanner(
     Subscription sub,
     bool canCreateListing,
     bool canFeatureListing,
     bool canViewVip, {
+    SubscriptionPlan? resolvedPlan,
     int contactViewsUsed = 0,
     int contactViewsRemaining = 0,
     int rentalContactViewsUsed = 0,
@@ -268,7 +299,7 @@ class _SubscriptionPlansScreenState
     int jobContactViewsUsed = 0,
     int jobContactViewsRemaining = 0,
   }) {
-    final localPlan = sub.plan;
+    final localPlan = resolvedPlan ?? sub.plan;
     if (localPlan == null) return const SizedBox.shrink();
 
     final showDaysLeft = sub.daysRemaining < 999;
@@ -685,9 +716,10 @@ class _SubscriptionPlansScreenState
     Subscription sub,
     bool canCreateListing,
     bool canFeatureListing,
-    bool canViewVip,
-  ) {
-    final localPlan = sub.plan;
+    bool canViewVip, {
+    SubscriptionPlan? resolvedPlan,
+  }) {
+    final localPlan = resolvedPlan ?? sub.plan;
     if (localPlan == null) return const SizedBox.shrink();
 
     return Container(

@@ -541,6 +541,9 @@ extension PlanLegacyAdapter on Plan {
       maxVehicles: limits.vehicles,
       maxRentalVehicles: limits.rentalVehicles,
       maxJobs: limits.jobs,
+      maxFeaturedListings: limits.featuredListings,
+      maxOrders: limits.orders,
+      maxContacts: limits.contacts,
       viewVip: viewVip,
       trialDays: trialDays,
       canStartTrial: canStartTrial,
@@ -562,6 +565,9 @@ extension SubscriptionStateLegacyAdapter on SubscriptionState {
               slug: plan!.slug,
               price: 0,
               listingDurationDays: listingDurationDays,
+              // The overview only carries a plan ref; leave usage limits at
+              // zero so callers don't render a false "1 listing" quota.
+              maxListings: 0,
             )
           : null,
       status: status,
@@ -575,6 +581,8 @@ extension SubscriptionStateLegacyAdapter on SubscriptionState {
       vehiclesUsed: vehiclesUsed,
       rentalVehiclesUsed: rentalVehiclesUsed,
       jobsUsed: jobsUsed,
+      featuredListingsUsed: usage.featuredListings,
+      ordersUsed: usage.orders,
     );
   }
 }

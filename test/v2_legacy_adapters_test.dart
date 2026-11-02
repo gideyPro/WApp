@@ -13,6 +13,7 @@ import 'package:wavemart/data/models/v2/listing_summary.dart';
 import 'package:wavemart/data/models/v2/owner_listing.dart';
 import 'package:wavemart/data/models/v2/payment_state.dart';
 import 'package:wavemart/data/models/v2/plan.dart';
+import 'package:wavemart/data/models/v2/subscription_state.dart';
 import 'package:wavemart/data/models/v2/v2_legacy_adapters.dart';
 import 'package:wavemart/data/services/lead_service.dart';
 
@@ -564,6 +565,62 @@ void main() {
 
       expect(free.toSubscriptionPlan().viewVip, isFalse);
       expect(premium.toSubscriptionPlan().viewVip, isTrue);
+    });
+
+    test('maps every limit needed by the usage card', () {
+      final plan = Plan.fromJson({
+        'id': 2,
+        'slug': 'basic',
+        'name': 'Basic',
+        'limits': {
+          'listings': 5,
+          'rental_listings': 4,
+          'vehicles': 3,
+          'rental_vehicles': 2,
+          'jobs': 6,
+          'featured_listings': 1,
+          'orders': 7,
+          'contacts': 8,
+        },
+      });
+
+      final legacy = plan.toSubscriptionPlan();
+      expect(legacy.maxListings, 5);
+      expect(legacy.maxRentalListings, 4);
+      expect(legacy.maxVehicles, 3);
+      expect(legacy.maxRentalVehicles, 2);
+      expect(legacy.maxJobs, 6);
+      expect(legacy.maxFeaturedListings, 1);
+      expect(legacy.maxOrders, 7);
+      expect(legacy.maxContacts, 8);
+    });
+  });
+
+  group('SubscriptionStateLegacyAdapter', () {
+    test('maps featured and order usage for the details card', () {
+      final state = SubscriptionState.fromJson({
+        'id': 12,
+        'status': 'active',
+        'plan': {'id': 2, 'slug': 'basic', 'name': 'Basic'},
+        'usage': {
+          'listings': 1,
+          'rental_listings': 2,
+          'vehicles': 3,
+          'rental_vehicles': 4,
+          'jobs': 5,
+          'featured_listings': 6,
+          'orders': 7,
+        },
+      });
+
+      final legacy = state.toLegacySubscription();
+      expect(legacy.listingsUsed, 1);
+      expect(legacy.rentalListingsUsed, 2);
+      expect(legacy.vehiclesUsed, 3);
+      expect(legacy.rentalVehiclesUsed, 4);
+      expect(legacy.jobsUsed, 5);
+      expect(legacy.featuredListingsUsed, 6);
+      expect(legacy.ordersUsed, 7);
     });
   });
 }
