@@ -688,7 +688,6 @@ extension CarFormDataV2Adapter on CarFormData {
       if (color.isNotEmpty) 'color': color,
       if (condition.isNotEmpty) 'condition': condition,
       if (vin.isNotEmpty) 'vin': vin,
-      if (features.isNotEmpty) 'features': features,
       if (description.isNotEmpty) 'description': description,
       if (isVip) 'is_vip': isVip,
       if (postedByAgent && agentId.isNotEmpty)

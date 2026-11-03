@@ -315,14 +315,6 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
                         color: context.theme.textTertiary, height: 1.6)),
               ),
             ],
-            if (listing.carFeatures != null &&
-                listing.carFeatures!.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              _buildSection(
-                title: l10n.listingsKeyFeatures,
-                child: _buildFeatureChips(listing.carFeatures!, l10n),
-              ),
-            ],
             if (listing.vipBlocked) ...[
               const SizedBox(height: 24),
               UpgradeCard(
@@ -1082,40 +1074,6 @@ class _CarDetailScreenState extends ConsumerState<CarDetailScreen> {
           fit: BoxFit.contain,
         ),
       ),
-    );
-  }
-
-  Widget _buildFeatureChips(List<String> features, AppLocalizations l10n) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: features
-          .map((f) => Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: context.cardBg,
-                  borderRadius: BorderRadius.circular(12),
-                  border:
-                      Border.all(color: context.divider.withValues(alpha: 0.5)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.check_circle_outline,
-                        size: 16, color: AppColors.accent500),
-                    const SizedBox(width: 6),
-                    Text(
-                      featureLabel(f, l10n),
-                      style: AppTextStyles.labelMedium.copyWith(
-                        color: context.textSecondary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ))
-          .toList(),
     );
   }
 

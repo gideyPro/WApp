@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wavemart/core/network/error_handler.dart';
+import 'package:wavemart/data/models/car_form_data.dart';
 import 'package:wavemart/data/models/job_form_data.dart';
 import 'package:wavemart/data/models/job_requirement_item.dart';
 import 'package:wavemart/data/models/listing.dart';
@@ -238,6 +239,36 @@ void main() {
       expect(experiences.first['job_title'], equals('Scrum Master'));
       expect(experiences.first['company'], equals('Addis Soft'));
       expect(experiences.first['years'], equals(3.5));
+    });
+
+    test('CarFormDataV2Adapter outputs clean V2 payload omitting features', () {
+      final formData = CarFormData(
+        make: 'Toyota',
+        model: 'Corolla',
+        year: '2020',
+        mileageKm: '45000',
+        bodyType: 'sedan',
+        color: 'White',
+        condition: 'used',
+        vin: '1234567890',
+        features: ['Air conditioning', 'Bluetooth'],
+        description: 'Clean car',
+        priceFixed: 1200000,
+      );
+
+      final payload = formData.toV2Payload('car-sub-1');
+
+      expect(payload['submission_key'], equals('car-sub-1'));
+      expect(payload['make'], equals('Toyota'));
+      expect(payload['model'], equals('Corolla'));
+      expect(payload['year'], equals(2020));
+      expect(payload['mileage_km'], equals(45000.0));
+      expect(payload['body_type'], equals('sedan'));
+      expect(payload['color'], equals('White'));
+      expect(payload['condition'], equals('used'));
+      expect(payload['vin'], equals('1234567890'));
+      expect(payload['description'], equals('Clean car'));
+      expect(payload.containsKey('features'), isFalse);
     });
   });
 

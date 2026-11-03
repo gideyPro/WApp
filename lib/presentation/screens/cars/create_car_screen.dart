@@ -998,39 +998,6 @@ class _CreateCarScreenState extends ConsumerState<CreateCarScreen> {
           ),
           const SizedBox(height: 16),
           _sectionCard(
-            title: l10n.listingsKeyFeatures,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  spacing: 8, runSpacing: 4,
-                  children: featureOptionsForCategory(_formData.vehicleCategory).map((f) => FilterChip(
-                    label: Text(featureLabel(f, l10n), style: AppTextStyles.labelSmall),
-                    selected: _formData.features.contains(f),
-                    onSelected: (selected) {
-                      setState(() {
-                        final updated = List<String>.from(_formData.features);
-                        if (selected) { updated.add(f); } else { updated.remove(f); }
-                        _formData = _formData.copyWith(features: updated);
-                      });
-                    },
-                  )).toList(),
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  initialValue: _formData.customFeatures,
-                  style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                  decoration: InputDecoration(
-                    hintText: l10n.carCustomFeatures,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  ),
-                  onChanged: (v) => _formData = _formData.copyWith(customFeatures: v),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          _sectionCard(
             title: '${l10n.photos} *',
             child: _buildImageUploader(),
           ),
