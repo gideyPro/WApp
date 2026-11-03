@@ -9,7 +9,9 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../data/job_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../home/home_screen.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/job_providers.dart';
+import '../../providers/listing_providers.dart';
 import '../home/filter_sheet.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 
@@ -27,6 +29,7 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
   UnifiedFilterValues _filterValues =
       const UnifiedFilterValues(category: HomeCategory.jobs);
   Map<String, dynamic> _activeFilters = {};
+  final Set<int> _togglingFavorites = {};
 
   @override
   void initState() {
@@ -116,6 +119,24 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
     super.dispose();
   }
 
+  bool _isFavorite(int listingId) {
+    final favState = ref.watch(favoritesProvider);
+    return favState.favorites.any((f) => f.id == listingId);
+  }
+
+  Future<void> _toggleFavorite(int listingId) async {
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      context.push('/login');
+      return;
+    }
+    setState(() => _togglingFavorites.add(listingId));
+    await ref.read(favoritesProvider.notifier).toggleFavorite(listingId);
+    if (mounted) setState(() => _togglingFavorites.remove(listingId));
+  }
+
+  bool _isToggling(int listingId) => _togglingFavorites.contains(listingId);
+
   bool get _hasActiveFilters =>
       _filterValues.hasAnyFilter || _searchController.text.isNotEmpty;
 
@@ -199,12 +220,16 @@ class _JobListScreenState extends ConsumerState<JobListScreen> {
                                             strokeWidth: 2)),
                                   );
                                 }
+                                final listing = state.listings[listingIndex];
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 12),
                                   child: JobListingCard(
-                                    job: state.listings[listingIndex],
+                                    job: listing,
+                                    isFavorite: _isFavorite(listing.id),
+                                    isTogglingFavorite: _isToggling(listing.id),
+                                    onFavorite: () => _toggleFavorite(listing.id),
                                     onTap: () => context.push(
-                                        '/jobs/${state.listings[listingIndex].id}'),
+                                        '/jobs/${listing.id}'),
                                   ),
                                 );
                               },

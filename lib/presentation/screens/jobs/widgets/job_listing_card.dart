@@ -13,9 +13,10 @@ import '../../../../data/job_data.dart';
 import '../../../../data/models/listing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../providers/app_providers.dart';
+import '../../../providers/auth_provider.dart';
 import '../../../widgets/common/wave_card.dart';
 
-class JobListingCard extends ConsumerWidget {
+class JobListingCard extends ConsumerStatefulWidget {
   final Listing job;
   final VoidCallback? onTap;
   final VoidCallback? onFavorite;
@@ -36,6 +37,45 @@ class JobListingCard extends ConsumerWidget {
     this.footerActions,
     this.showOwnerBadges = false,
   });
+
+  @override
+  ConsumerState<JobListingCard> createState() => _JobListingCardState();
+}
+
+class _JobListingCardState extends ConsumerState<JobListingCard> {
+  bool _isLocalToggling = false;
+
+  Listing get job => widget.job;
+  VoidCallback? get onTap => widget.onTap;
+  VoidCallback? get onFavorite => widget.onFavorite;
+  bool? get isFavorite => widget.isFavorite;
+  bool get isTogglingFavorite => widget.isTogglingFavorite || _isLocalToggling;
+  bool get hideFavoriteButton => widget.hideFavoriteButton;
+  List<Widget>? get footerActions => widget.footerActions;
+  bool get showOwnerBadges => widget.showOwnerBadges;
+
+  Future<void> _handleFavorite() async {
+    if (widget.onFavorite != null) {
+      widget.onFavorite!();
+      return;
+    }
+
+    final authState = ref.read(authStateProvider);
+    if (!authState.isAuthenticated) {
+      context.push('/login');
+      return;
+    }
+
+    if (_isLocalToggling) return;
+    setState(() => _isLocalToggling = true);
+    try {
+      await ref.read(favoritesProvider.notifier).toggleFavorite(widget.job.id);
+    } finally {
+      if (mounted) {
+        setState(() => _isLocalToggling = false);
+      }
+    }
+  }
 
   Widget _buildStatusBadge(String text, Color color) {
     return Container(
@@ -389,7 +429,7 @@ class JobListingCard extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cache = ref.watch(addressCacheProvider);
     final subState = ref.watch(subscriptionProvider);
@@ -512,49 +552,49 @@ class JobListingCard extends ConsumerWidget {
               ),
               if (showFavoriteButton) ...[
                 const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: isTogglingFavorite
-                      ? null
-                      : () {
-                          HapticFeedback.lightImpact();
-                          if (onFavorite != null) {
-                            onFavorite!();
-                          } else {
-                            ref
-                                .read(favoritesProvider.notifier)
-                                .toggleFavorite(job.id);
-                          }
-                        },
-                  child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    decoration: BoxDecoration(
-                      color: isFav
-                          ? Colors.red.withValues(alpha: 0.95)
-                          : Colors.black.withValues(alpha: 0.75),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: isTogglingFavorite
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : Icon(
-                            isFav ? Icons.favorite : Icons.favorite_border,
-                            size: 18,
-                            color: Colors.white,
+                Semantics(
+                  button: true,
+                  enabled: !isTogglingFavorite,
+                  label: isFav ? l10n.favoritesRemoved : l10n.favoritesAdded,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: isTogglingFavorite
+                        ? null
+                        : () {
+                            HapticFeedback.lightImpact();
+                            _handleFavorite();
+                          },
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: isFav
+                            ? Colors.red.withValues(alpha: 0.95)
+                            : Colors.black.withValues(alpha: 0.75),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
                           ),
+                        ],
+                      ),
+                      child: isTogglingFavorite
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                    ),
                   ),
                 ),
               ],

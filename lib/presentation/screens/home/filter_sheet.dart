@@ -39,7 +39,7 @@ class UnifiedFilterValues {
   final bool forSeekers;
 
   const UnifiedFilterValues({
-    this.category = HomeCategory.property,
+    this.category = HomeCategory.all,
     this.priceMin,
     this.priceMax,
     this.sort = 'newest',

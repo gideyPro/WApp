@@ -92,10 +92,13 @@ class SubmissionOverlay extends StatefulWidget {
       ),
     );
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final future = showGeneralDialog<SubmissionDismissAction>(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.black54,
+      barrierColor: isDark
+          ? Colors.black.withValues(alpha: 0.7)
+          : Colors.black.withValues(alpha: 0.4),
       barrierLabel: AppLocalizations.of(context).submissionSubmittingTitle,
       pageBuilder: (ctx, anim1, anim2) {
         return PopScope(
@@ -253,7 +256,9 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                   child: LinearProgressIndicator(
                     value: state.progress,
                     minHeight: 4,
-                    backgroundColor: themeColors.textMuted.withValues(alpha: 0.2),
+                    backgroundColor: themeColors.isDark
+                        ? themeColors.border
+                        : themeColors.textMuted.withValues(alpha: 0.15),
                     valueColor: AlwaysStoppedAnimation<Color>(
                       themeColors.primary,
                     ),
@@ -310,6 +315,12 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                         color: themeColors.isDark
                             ? AppColors.accent500.withValues(alpha: 0.18)
                             : AppColors.successLight,
+                        border: Border.all(
+                          color: themeColors.isDark
+                              ? AppColors.accent400.withValues(alpha: 0.35)
+                              : AppColors.accent500.withValues(alpha: 0.2),
+                          width: 1.5,
+                        ),
                       ),
                       child: Icon(
                         Icons.check_rounded,
@@ -362,7 +373,9 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                       widget.onDismiss?.call(SubmissionDismissAction.viewListings),
                   child: Text(
                     l10n.submissionViewListings,
-                    style: AppTextStyles.buttonMedium,
+                    style: AppTextStyles.buttonMedium.copyWith(
+                      color: themeColors.primaryText,
+                    ),
                   ),
                 ),
               ),
@@ -383,7 +396,9 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                         ?.call(SubmissionDismissAction.createAnother),
                     child: Text(
                       l10n.submissionCreateAnother,
-                      style: AppTextStyles.buttonMedium,
+                      style: AppTextStyles.buttonMedium.copyWith(
+                        color: themeColors.textPrimary,
+                      ),
                     ),
                   ),
                 ),
@@ -417,8 +432,14 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: themeColors.isDark
-                            ? AppColors.error.withValues(alpha: 0.2)
+                            ? AppColors.error.withValues(alpha: 0.25)
                             : AppColors.errorLight,
+                        border: Border.all(
+                          color: themeColors.isDark
+                              ? AppColors.errorLight.withValues(alpha: 0.35)
+                              : AppColors.error.withValues(alpha: 0.2),
+                          width: 1.5,
+                        ),
                       ),
                       child: Icon(
                         Icons.close_rounded,
@@ -449,8 +470,9 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                   state.message,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: themeColors.isDark
-                        ? AppColors.stone300
+                        ? AppColors.errorLight
                         : AppColors.error,
+                    fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -471,7 +493,9 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                     onPressed: state.onRetry,
                     child: Text(
                       AppLocalizations.of(context).commonRetry,
-                      style: AppTextStyles.buttonMedium,
+                      style: AppTextStyles.buttonMedium.copyWith(
+                        color: themeColors.primaryText,
+                      ),
                     ),
                   ),
                 ),
@@ -495,7 +519,9 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
                     state.canSaveDraft
                         ? AppLocalizations.of(context).submissionSaveDraft
                         : AppLocalizations.of(context).submissionExit,
-                    style: AppTextStyles.buttonMedium,
+                    style: AppTextStyles.buttonMedium.copyWith(
+                      color: themeColors.textPrimary,
+                    ),
                   ),
                 ),
               ),
@@ -503,10 +529,14 @@ class _SubmissionOverlayState extends State<SubmissionOverlay>
               TextButton(
                 onPressed: () =>
                     widget.onDismiss?.call(SubmissionDismissAction.goBack),
+                style: TextButton.styleFrom(
+                  foregroundColor: themeColors.textTertiary,
+                ),
                 child: Text(
                   AppLocalizations.of(context).submissionGoBack,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: themeColors.textTertiary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

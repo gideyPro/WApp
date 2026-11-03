@@ -26,6 +26,7 @@ enum JobSort {
 
 /// Filters for `GET /v2/listings`.
 class ListingFilters {
+  final bool? includeAllTypes;
   final String? type;
   final String? listingType;
   final String? rentalPeriodUnit;
@@ -40,6 +41,7 @@ class ListingFilters {
   final CatalogSort sort;
 
   const ListingFilters({
+    this.includeAllTypes,
     this.type,
     this.listingType,
     this.rentalPeriodUnit,
@@ -56,6 +58,7 @@ class ListingFilters {
 
   Map<String, dynamic> toQuery() {
     return {
+      if (includeAllTypes != null) 'include_all_types': includeAllTypes,
       if (type != null) 'type': type,
       if (listingType != null) 'listing_type': listingType,
       if (rentalPeriodUnit != null) 'rental_period_unit': rentalPeriodUnit,

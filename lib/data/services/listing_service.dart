@@ -3,6 +3,7 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../../core/network/v2/api_v2_client.dart';
+import '../../core/network/v2/api_v2_error.dart';
 import '../../core/network/v2/api_v2_constants.dart';
 import '../../core/utils/type_utils.dart';
 import '../models/listing.dart';
@@ -53,6 +54,7 @@ class ListingService {
       };
 
       final listingFilters = ListingFilters(
+        includeAllTypes: filters?['include_all_types'] == true ? true : null,
         type: filters?['type']?.toString(),
         listingType: filters?['listing_type']?.toString(),
         rentalPeriodUnit: filters?['rental_period_unit']?.toString(),
@@ -196,6 +198,13 @@ class ListingService {
         listing: listing,
       );
     } catch (e) {
+      if (e is ApiV2Exception && e.error.requiresSubscription) {
+        return ListingDetailResponse(
+          success: false,
+          message: e.message,
+          subscriptionGate: const SubscriptionGate(required: true),
+        );
+      }
       final exception = ApiErrorHandler.handle(e);
       return ListingDetailResponse(
         success: false,

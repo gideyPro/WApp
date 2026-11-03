@@ -500,11 +500,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Map<String, dynamic>? _buildSearchFilters() {
-    final filters = <String, dynamic>{..._filterValues.toQueryParams()};
+    final effectiveValues = _filterValues.category != _selectedCategory
+        ? _filterValues.copyWith(category: _selectedCategory)
+        : _filterValues;
+    final filters = <String, dynamic>{...effectiveValues.toQueryParams()};
     final query = _searchController.text.trim();
     if (query.isNotEmpty) {
       filters[_selectedCategory == HomeCategory.jobs ? 'search' : 'location'] =
           query;
+    }
+    if (_selectedCategory == HomeCategory.all) {
+      filters['include_all_types'] = true;
     }
     return filters.isEmpty ? null : filters;
   }
@@ -653,14 +659,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _performSearch() {
     final query = _searchController.text.trim();
-    final filters = <String, dynamic>{..._filterValues.toQueryParams()};
-    if (query.isNotEmpty) {
-      if (_selectedCategory == HomeCategory.jobs) {
-        filters['search'] = query;
-      } else {
-        filters['location'] = query;
-      }
-    }
 
     if (query.isEmpty && !_filterValues.hasAnyFilter) {
       if (_hasSearched) {
@@ -671,7 +669,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     setState(() => _hasSearched = true);
-    final activeFilters = filters.isEmpty ? null : filters;
+    final activeFilters = _buildSearchFilters();
 
     if (_selectedCategory == HomeCategory.jobs &&
         _jobsSection == JobsSection.seekers) {
@@ -1780,7 +1778,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             final listing = state.listings[index];
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: JobListingCard(job: listing),
+              child: JobListingCard(
+                job: listing,
+                isFavorite: _isFavorite(listing.id),
+                isTogglingFavorite: _isToggling(listing.id),
+                onFavorite: () => _toggleFavorite(listing.id),
+                onTap: () => context.push('/jobs/${listing.id}'),
+              ),
             );
           },
           childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),

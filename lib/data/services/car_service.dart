@@ -3,6 +3,7 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_envelope.dart';
 import '../../core/network/error_handler.dart';
 import '../../core/network/v2/api_v2_client.dart';
+import '../../core/network/v2/api_v2_error.dart';
 import '../../core/network/v2/api_v2_constants.dart';
 import '../../core/utils/type_utils.dart';
 import '../models/car_form_data.dart';
@@ -180,6 +181,13 @@ class CarService {
         listing: listing,
       );
     } catch (e) {
+      if (e is ApiV2Exception && e.error.requiresSubscription) {
+        return ListingDetailResponse(
+          success: false,
+          message: e.message,
+          subscriptionGate: const SubscriptionGate(required: true),
+        );
+      }
       final exception = ApiErrorHandler.handle(e);
       return ListingDetailResponse(
         success: false,

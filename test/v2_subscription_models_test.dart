@@ -54,6 +54,8 @@ void main() {
       expect(capabilities.detailsAccess, 'discovery');
       expect(capabilities.detailsAccessCar, 'discovery');
       expect(capabilities.detailsAccessJob, 'discovery');
+      expect(capabilities.canSeeFullAddress, isFalse);
+      expect(overview.canSeeFullAddress, isFalse);
       expect(capabilities.quota('max_jobs'), 0);
       expect(capabilities['missing'], isNull);
     });
@@ -69,6 +71,21 @@ void main() {
       expect(disabled.subscription, isNull);
       expect(disabled.hasActiveSubscription, isFalse);
       expect(disabled.capabilities.maxListings, isNull);
+      expect(disabled.canSeeFullAddress, isTrue);
+    });
+
+    test('grants canSeeFullAddress when detailsAccess is higher than discovery', () {
+      final fullOverview = SubscriptionOverview.fromJson({
+        'enabled': true,
+        'subscription': null,
+        'capabilities': {
+          'details_access': {'value': 'full'},
+        },
+      });
+
+      expect(fullOverview.capabilities.detailsAccess, 'full');
+      expect(fullOverview.capabilities.canSeeFullAddress, isTrue);
+      expect(fullOverview.canSeeFullAddress, isTrue);
     });
   });
 

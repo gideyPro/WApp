@@ -124,4 +124,27 @@ void main() {
 
     expect(find.textContaining('days left'), findsOneWidget);
   });
+
+  testWidgets('JobListingCard shows spinning CircularProgressIndicator when isTogglingFavorite is true', (tester) async {
+    final job = createSampleJob();
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        JobListingCard(
+          job: job,
+          isTogglingFavorite: true,
+        ),
+      ),
+    );
+    await tester.pump();
+
+    // Verify spinning indicator is displayed instead of the heart icon
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byIcon(Icons.favorite_border), findsNothing);
+    expect(find.byIcon(Icons.favorite), findsNothing);
+
+    // Unmount so the indeterminate animation timer does not leak past test teardown
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(seconds: 1));
+  });
 }

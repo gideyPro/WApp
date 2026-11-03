@@ -41,6 +41,15 @@ void main() {
 
       expect(filters.toQuery(), {'sort': 'newest'});
     });
+
+    test('serializes include_all_types when requested', () {
+      const filters = ListingFilters(includeAllTypes: true);
+
+      expect(filters.toQuery(), {
+        'include_all_types': true,
+        'sort': 'newest',
+      });
+    });
   });
 
   group('CarFilters', () {

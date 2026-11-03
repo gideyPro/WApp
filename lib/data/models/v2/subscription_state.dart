@@ -207,6 +207,11 @@ class PlanCapabilities {
   String get detailsAccessJob =>
       entries['details_access_job']?.value ?? 'discovery';
 
+  /// Whether full address (woreda/kebele/specific location) is accessible.
+  /// Tiers above 'discovery' (e.g. 'without_video_and_contact', 'without_contact',
+  /// 'moderated_contact', 'full') grant full address visibility.
+  bool get canSeeFullAddress => detailsAccess != 'discovery';
+
   /// Quota max for a feature, or null when the API does not report one.
   int? quota(String key) => entries[key]?.max;
 
@@ -237,6 +242,10 @@ class SubscriptionOverview {
   });
 
   bool get hasActiveSubscription => subscription?.isActive ?? false;
+
+  /// When the subscription system is globally disabled, full address is unlocked.
+  /// Otherwise, it requires an active plan whose details_access != 'discovery'.
+  bool get canSeeFullAddress => !enabled || capabilities.canSeeFullAddress;
 
   factory SubscriptionOverview.fromJson(dynamic json) {
     final map = json is Map ? json : const {};
