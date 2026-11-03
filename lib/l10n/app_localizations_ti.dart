@@ -3039,6 +3039,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerViewCv => 'ሲቪ ርኣዩ';
 
   @override
+  String get seekerAvailableForHire => 'ንሥራሕ ድሉው';
+
+  @override
+  String get seekerCvAttached => 'ሲቪ ተተሓሒዙ';
+
+  @override
   String get listingPerDay => '/ መዓልቲ';
 
   @override

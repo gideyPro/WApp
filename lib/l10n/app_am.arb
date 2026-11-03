@@ -996,6 +996,8 @@
   "seekerCv": "ሲቪ",
   "seekerUploadCv": "ሲቪ ይስቀሉ (አማራጭ)",
   "seekerViewCv": "ሲቪ ይመልከቱ",
+  "seekerAvailableForHire": "ለስራ ዝግጁ",
+  "seekerCvAttached": "CV ተያይዟል",
   "listingPerDay": "/ ቀን",
   "listingPerMonth": "/ ወር",
   "listingPerYear": "/ ዓመት",

@@ -49,4 +49,38 @@ void main() {
       expect(JobSeekerProfile.fromJson(_baseJson(photo: '')).photo, isNull);
     });
   });
+
+  group('JobSeekerProfile fields and getters', () {
+    test('parses isVerified and location from json', () {
+      final json = {
+        ..._baseJson(),
+        'is_verified': true,
+        'location': 'Addis Ababa, Bole',
+        'cv': 'resumes/cv.pdf',
+      };
+      final profile = JobSeekerProfile.fromJson(json);
+
+      expect(profile.isVerified, isTrue);
+      expect(profile.location, 'Addis Ababa, Bole');
+      expect(profile.hasCv, isTrue);
+    });
+
+    test('parses isVerified from user.is_kyc_verified', () {
+      final json = {
+        ..._baseJson(),
+        'user': {
+          'id': 2,
+          'first_name': 'Test',
+          'last_name': 'User',
+          'is_kyc_verified': true,
+          'city': 'Mekelle',
+        },
+      };
+      final profile = JobSeekerProfile.fromJson(json);
+
+      expect(profile.isVerified, isTrue);
+      expect(profile.location, 'Mekelle');
+      expect(profile.hasCv, isFalse);
+    });
+  });
 }

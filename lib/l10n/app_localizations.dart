@@ -3415,7 +3415,7 @@ abstract class AppLocalizations {
   /// No description provided for @listingPricePerAgreement.
   ///
   /// In en, this message translates to:
-  /// **'Per Agreement'**
+  /// **'Price on agreement'**
   String get listingPricePerAgreement;
 
   /// No description provided for @listingErrorLeasedYearRequired.
@@ -4255,7 +4255,7 @@ abstract class AppLocalizations {
   /// No description provided for @carRentalPriceNegotiable.
   ///
   /// In en, this message translates to:
-  /// **'Per Agreement'**
+  /// **'Price on agreement'**
   String get carRentalPriceNegotiable;
 
   /// No description provided for @listingPricing.
@@ -5515,7 +5515,7 @@ abstract class AppLocalizations {
   /// No description provided for @jobSalaryPerAgreement.
   ///
   /// In en, this message translates to:
-  /// **'Per Agreement'**
+  /// **'Salary on agreement'**
   String get jobSalaryPerAgreement;
 
   /// No description provided for @jobSalaryType.
@@ -5841,6 +5841,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View CV'**
   String get seekerViewCv;
+
+  /// No description provided for @seekerAvailableForHire.
+  ///
+  /// In en, this message translates to:
+  /// **'Available for Hire'**
+  String get seekerAvailableForHire;
+
+  /// No description provided for @seekerCvAttached.
+  ///
+  /// In en, this message translates to:
+  /// **'CV Attached'**
+  String get seekerCvAttached;
 
   /// No description provided for @listingPerDay.
   ///

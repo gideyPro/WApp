@@ -996,6 +996,8 @@
   "seekerCv": "CV",
   "seekerUploadCv": "Upload CV (Optional)",
   "seekerViewCv": "View CV",
+  "seekerAvailableForHire": "Available for Hire",
+  "seekerCvAttached": "CV Attached",
   "listingPerDay": "/ day",
   "listingPerMonth": "/ month",
   "listingPerYear": "/ year",

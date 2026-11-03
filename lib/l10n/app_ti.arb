@@ -996,6 +996,8 @@
   "seekerCv": "ሲቪ",
   "seekerUploadCv": "ሲቪ ኣእትዉ (ኣማራጺ)",
   "seekerViewCv": "ሲቪ ርኣዩ",
+  "seekerAvailableForHire": "ንሥራሕ ድሉው",
+  "seekerCvAttached": "ሲቪ ተተሓሒዙ",
   "listingPerDay": "/ መዓልቲ",
   "listingPerMonth": "/ ወርሒ",
   "listingPerYear": "/ ዓመት",

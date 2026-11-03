@@ -15,6 +15,8 @@ class JobSeekerProfile {
   final List<ExperienceItem>? experiences;
   final String? description;
   final bool isPublic;
+  final bool isVerified;
+  final String? location;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -32,9 +34,13 @@ class JobSeekerProfile {
     this.experiences,
     this.description,
     required this.isPublic,
+    this.isVerified = false,
+    this.location,
     this.createdAt,
     this.updatedAt,
   });
+
+  bool get hasCv => cv != null && cv!.trim().isNotEmpty;
 
   double get totalExperienceYears {
     if (experiences == null || experiences!.isEmpty) return 0.0;
@@ -72,6 +78,15 @@ class JobSeekerProfile {
       experiences: parsedExperiences,
       description: json['description'] as String?,
       isPublic: json['is_public'] == 1 || json['is_public'] == true,
+      isVerified: json['is_verified'] == true ||
+          json['is_verified'] == 1 ||
+          (json['user'] is Map &&
+              (json['user']['is_kyc_verified'] == true ||
+                  json['user']['is_kyc_verified'] == 1)),
+      location: (json['location'] ??
+              json['city'] ??
+              (json['user'] is Map ? json['user']['city'] : null))
+          as String?,
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
     );
@@ -102,6 +117,8 @@ class JobSeekerProfile {
       if (experiences != null) 'experiences': experiences!.map((e) => e.toJson()).toList(),
       'description': description,
       'is_public': isPublic,
+      'is_verified': isVerified,
+      if (location != null) 'location': location,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -121,6 +138,8 @@ class JobSeekerProfile {
     List<ExperienceItem>? experiences,
     String? description,
     bool? isPublic,
+    bool? isVerified,
+    String? location,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -138,6 +157,8 @@ class JobSeekerProfile {
       experiences: experiences ?? this.experiences,
       description: description ?? this.description,
       isPublic: isPublic ?? this.isPublic,
+      isVerified: isVerified ?? this.isVerified,
+      location: location ?? this.location,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

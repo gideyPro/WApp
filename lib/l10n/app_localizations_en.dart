@@ -1813,7 +1813,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingErrorMinPrice => 'Please enter a valid price';
 
   @override
-  String get listingPricePerAgreement => 'Per Agreement';
+  String get listingPricePerAgreement => 'Price on agreement';
 
   @override
   String get listingErrorLeasedYearRequired => 'Leased year is required';
@@ -2266,7 +2266,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get carTermsRequired => 'You must accept the terms';
 
   @override
-  String get carRentalPriceNegotiable => 'Per Agreement';
+  String get carRentalPriceNegotiable => 'Price on agreement';
 
   @override
   String get listingPricing => 'Pricing';
@@ -2911,7 +2911,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobSalaryMin => 'Min Salary';
 
   @override
-  String get jobSalaryPerAgreement => 'Per Agreement';
+  String get jobSalaryPerAgreement => 'Salary on agreement';
 
   @override
   String get jobSalaryType => 'Salary';
@@ -3080,6 +3080,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seekerViewCv => 'View CV';
+
+  @override
+  String get seekerAvailableForHire => 'Available for Hire';
+
+  @override
+  String get seekerCvAttached => 'CV Attached';
 
   @override
   String get listingPerDay => '/ day';

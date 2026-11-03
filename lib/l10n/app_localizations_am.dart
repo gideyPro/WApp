@@ -3041,6 +3041,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekerViewCv => 'ሲቪ ይመልከቱ';
 
   @override
+  String get seekerAvailableForHire => 'ለስራ ዝግጁ';
+
+  @override
+  String get seekerCvAttached => 'CV ተያይዟል';
+
+  @override
   String get listingPerDay => '/ ቀን';
 
   @override
