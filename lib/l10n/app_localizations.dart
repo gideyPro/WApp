@@ -3295,7 +3295,7 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionLimitReached.
   ///
   /// In en, this message translates to:
-  /// **'You\'ve reached your listing limit. Upgrade your subscription to post more listings.'**
+  /// **'You\'ve reached your listing limit. Upgrade/Renew your subscription to post more listings.'**
   String get subscriptionLimitReached;
 
   /// No description provided for @subscriptionLimitReachedRental.
@@ -5197,7 +5197,7 @@ abstract class AppLocalizations {
   /// No description provided for @jobApplicationDeadlineOptional.
   ///
   /// In en, this message translates to:
-  /// **'Application Deadline (Optional)'**
+  /// **'Application Deadline'**
   String get jobApplicationDeadlineOptional;
 
   /// No description provided for @jobBasicInfo.

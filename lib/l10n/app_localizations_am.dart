@@ -266,7 +266,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpPaySecurityContent =>
-      'የፋይናንስ ደህንነትዎ ቀዳሚ ትኩረታችን ነው:\n\n1. ከፍተኛ የደህንነት ምስጠራ: ሁሉም ክፍያዎች በቻፓ ዓለም አቀፍ የደህንነት ደረጃ (PCI-DSS) ባሟላ እና በከፍተኛ ጥበቃ በተመሰጠረ ሲስተም ይፈፀማሉ\n2. የካርድ መረጃ አይቀመጥም: ዌቭማርት የክፍያ ካርድ ቁጥርዎን፣ የባንክ የይለፍ ቃልዎን ወይም የሞባይል ዋሌት ሚስጥር ቁጥርዎን በፍጹም አያይም እንዲሁም አያስቀምጥም\n3. ፈጣን ደረሰኝ: ለእያንዳንዱ የተሳካ ክፍያ ልዩ የማመሳከሪያ ኮድ ያለው ዲጂታል ደረሰኝ በአካውንትዎ ውስጥ ይፈጠራል\n4. የክፍያ ድጋፍ: በባንክዎ ወይም በዋሌትዎ ክፍያ ፈፅመው ነገር ግን በአካውንትዎ ላይ ካልታየ ልዩ የማመሳከሪያ ኮዱን (Reference Code) በመያዝ የድጋፍ ቡድናችንን ቢያነጋግሩ ወዲያውኑ ይስተካከልልዎታል።';
+      'የፋይናንስ ደህንነትዎ ቀዳሚ ትኩረታችን ነው:\n\n1. ከፍተኛ የደህንነት ምስጠራ: ሁሉም ክፍያዎች በቻፓ ዓለም አቀፍ የደህንነት ደረጃ (PCI-DSS) ባሟላ እና በከፍተኛ ጥበቃ በተመሰጠረ ሲስተም ይፈፀማሉ\n2. የካርድ መረጃ አይቀመጥም: ዌቭማርት የክፍያ ካርድ ቁጥርዎን፣ የባንክ የይለፍ ቃልዎን ወይም የሞባይል ዋሌት ሚስጥር ቁጥርዎን በፍፁም አያይም እንዲሁም አያስቀምጥም\n3. ፈጣን ደረሰኝ: ለእያንዳንዱ የተሳካ ክፍያ ልዩ የማመሳከሪያ ኮድ ያለው ዲጂታል ደረሰኝ በአካውንትዎ ውስጥ ይፈጠራል\n4. የክፍያ ድጋፍ: በባንክዎ ወይም በዋሌትዎ ክፍያ ፈፅመው ነገር ግን በአካውንትዎ ላይ ካልታየ ልዩ የማመሳከሪያ ኮዱን (Reference Code) በመያዝ የድጋፍ ቡድናችንን ቢያነጋግሩ ወዲያውኑ ይስተካከልልዎታል።';
 
   @override
   String get helpPayVipTitle =>
@@ -303,14 +303,14 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get helpSafePrivacyContent =>
-      'ዌቭማርት የግል መረጃዎን ደህንነት እና ሚስጥራዊነት በጥብቅ ይጠብቃል:\n\n1. የምንሰበስበው መረጃ: የመለያ መረጃ (ስም፣ ስልክ ቁጥር፣ ኢሜይል)፣ የለጠፏቸውን ንብረቶች ዝርዝር እና የደንበኞች ድጋፍ ግንኙነቶችን ብቻ ነው\n2. አድራሻን የመጠበቅ መርህ: ትክክለኛ ገዢ የሻጭ አድራሻን ለማየት ኮታውን ተጠቅሞ እስካልፈቀደ ድረስ የግል ስልክ ቁጥርዎ እና ኢሜይልዎ በይፋዊ ማስታወቂያዎች ላይ ተደብቀው ይቆያሉ\n3. መረጃን አሳልፎ አለመስጠት: የግል መረጃዎን ለማስታወቂያ ሰሪዎች ወይም ለሶስተኛ ወገኖች በፍፁም አንሸጥም ወይም አናጋራም\n4. አስተማማኝ ሚስጥራዊነት: ለማንነት ማረጋገጫ (KYC) የተላኩ ሰነዶች በከፍተኛ ምስጠራ ተቆልፈው የሚቀመጡ ሲሆን ለማረጋገጫ አገልግሎት ብቻ ይውላሉ\n\nሙሉውን የግላዊነት ፖሊሲ በድረ-ገጻችን ላይ ማንበብ ወይም ጥያቄ ካለዎት በ support@wavemart.et ሊያገኙን ይችላሉ።';
+      'ዌቭማርት የግል መረጃዎን ደህንነት እና ሚስጥራዊነት በጥብቅ ይጠብቃል:\n\n1. የምንሰበስበው መረጃ: የመለያ መረጃ (ስም፣ ስልክ ቁጥር፣ ኢሜይል)፣ የለጠፏቸውን ንብረቶች ዝርዝር እና የደንበኞች ድጋፍ ግንኙነቶችን ብቻ ነው\n2. አድራሻን የመጠበቅ መርህ: ትክክለኛ ገዢ የሻጭ አድራሻን ለማየት ኮታውን ተጠቅሞ እስካልፈቀደ ድረስ የግል ስልክ ቁጥርዎ እና ኢሜይልዎ በይፋዊ ማስታወቂያዎች ላይ ተደብቀው ይቆያሉ\n3. መረጃን አሳልፎ አለመስጠት: የግል መረጃዎን ለማስታወቂያ ሰሪዎች ወይም ለሶስተኛ ወገኖች በፍፁም አንሸጥም ወይም አናጋራም\n4. አስተማማኝ ሚስጥራዊነት: ለማንነት ማረጋገጫ (KYC) የተላኩ ሰነዶች በከፍተኛ ምስጠራ ተቆልፈው የሚቀመጡ ሲሆን ለማረጋገጫ አገልግሎት ብቻ ይውላሉ\n\nሙሉውን የግላዊነት ፖሊሲ በድረ-ገፃችን ላይ ማንበብ ወይም ጥያቄ ካለዎት በ support@wavemart.et ሊያገኙን ይችላሉ።';
 
   @override
   String get helpSafeReportTitle => 'አጠራጣሪ ነገሮችን ሪፖርት ማድረግ እና እገዛ ማግኘት';
 
   @override
   String get helpSafeReportContent =>
-      'የመድረካችንን ደህንነት በከፍተኛ ትኩረት እንጠብቃለን፤ ደህንነትዎ የተጠበቀ እንዲሆን የሚከተሉትን መንገዶች ይጠቀሙ:\n\n1. በመተግበሪያው ውስጥ ሪፖርት ማድረግ: አጠራጣሪ ዋጋ፣ የሀሰት ፎቶ ወይም አግባብ ያልሆነ ባህሪ ሲያጋጥም በማንኛውም ቤት፣ መኪና ወይም የሥራ ማስታወቂያ ላይ ባለ ሶስት ነጥብ ሜኑ በመንካት \"ሪፖርት አድርግ\" የሚለውን ይምረጡ\n2. የቅድመ ክፍያ በፍጹም አይላኩ: ንብረቱን፣ ቤቱን ወይም መኪናውን በአካል ሳያዩ እና ሰነዶቹን ሳያረጋግጡ ለማንም ሰው የቅድመ ክፍያ፣ የኮሚሽን ወይም የማስያዣ ገንዘብ በባንክ ወይም በቴሌብር አይላኩ\n3. የአስቸኳይ ጊዜ ስልክ: የደንበኞች ደህንነት ቡድናችንን በቀጥታ በስልክ ቁጥር +251 981 41 81 81 ያግኙ\n4. የኢሜይል ድጋፍ: በ support@wavemart.et የደረሰዎትን መረጃ እና ፎቶ በመላክ ያሳውቁን፤ የደህንነት ቡድናችን ጉዳዩን መርምሮ በ24 ሰዓታት ውስጥ እርምጃ ይወስዳል\n\nዌቭማርትን በመላው ኢትዮጵያ አስተማማኝ እና ታማኝ የግብይት ቦታ በጋራ እናድርገው።';
+      'የመድረካችንን ደህንነት በከፍተኛ ትኩረት እንጠብቃለን፤ ደህንነትዎ የተጠበቀ እንዲሆን የሚከተሉትን መንገዶች ይጠቀሙ:\n\n1. በመተግበሪያው ውስጥ ሪፖርት ማድረግ: አጠራጣሪ ዋጋ፣ የሀሰት ፎቶ ወይም አግባብ ያልሆነ ባህሪ ሲያጋጥም በማንኛውም ቤት፣ መኪና ወይም የሥራ ማስታወቂያ ላይ ባለ ሶስት ነጥብ ሜኑ በመንካት \"ሪፖርት አድርግ\" የሚለውን ይምረጡ\n2. የቅድመ ክፍያ በፍፁም አይላኩ: ንብረቱን፣ ቤቱን ወይም መኪናውን በአካል ሳያዩ እና ሰነዶቹን ሳያረጋግጡ ለማንም ሰው የቅድመ ክፍያ፣ የኮሚሽን ወይም የማስያዣ ገንዘብ በባንክ ወይም በቴሌብር አይላኩ\n3. የአስቸኳይ ጊዜ ስልክ: የደንበኞች ደህንነት ቡድናችንን በቀጥታ በስልክ ቁጥር +251 981 41 81 81 ያግኙ\n4. የኢሜይል ድጋፍ: በ support@wavemart.et የደረሰዎትን መረጃ እና ፎቶ በመላክ ያሳውቁን፤ የደህንነት ቡድናችን ጉዳዩን መርምሮ በ24 ሰዓታት ውስጥ እርምጃ ይወስዳል\n\nዌቭማርትን በመላው ኢትዮጵያ አስተማማኝ እና ታማኝ የግብይት ቦታ በጋራ እናድርገው።';
 
   @override
   String get profileVerificationKyc => 'KYC';
@@ -1281,7 +1281,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get settingsNotifications => 'ማሳወቂያዎች';
 
   @override
-  String get settingsDarkMode => 'ጨለማ ገጽታ';
+  String get settingsDarkMode => 'ጨለማ ገፅታ';
 
   @override
   String get settingsDeleteAccount => 'አካውንት ይሰርዙ';
@@ -1724,7 +1724,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get subscriptionLimitReached =>
-      'የምዝገባ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገዝ ምዝገባዎን ያሳድጉ።';
+      'ንብረት የመለጠፍ ገደብዎ ላይ ደርሰዋል። ተጨማሪ ንብረቶችን ለመመዝገብ ፓኬጅዎን ያሳድጉ/ያሳድሱ።';
 
   @override
   String get subscriptionLimitReachedRental =>
@@ -1973,7 +1973,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get subscriptionsDowngradeMessage =>
-      'የአሁኑ ፓኬጅዎ ጥቅሞች (የንብረት መለጠፊያ ቦታዎች፣ ባህርይ ያላቸው ዝርዝሮች፣ ቪአይፒ መዳረሻ እና ሌሎችም) ወደ አዲሱ ፓኬጅ አይተላለፉም። ያልተጠቀሙባቸው ጥቅሞች ሊጠፉ ይችላሉ።';
+      'የአሁኑ ፓኬጅዎ ጥቅሞች (የንብረት መለጠፊያ ቦታዎች፣ ተለይተው የቀረቡ ዝርዝሮች፣ ቪአይፒ መዳረሻ እና ሌሎችም) ወደ አዲሱ ፓኬጅ አይተላለፉም። ያልተጠቀሙባቸው ጥቅሞች ሊጠፉ ይችላሉ።';
 
   @override
   String get subscriptionsDowngradeConfirm => 'ለማንኛውም ይቀይሩ';
@@ -2362,7 +2362,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get submissionPendingApproval =>
-      'ምዝገባዎ እስኪጸድቅ ድረስ በመጠባበቅ ላይ ነው። ሲፀድቅ እናሳውቅዎታለን።';
+      'ምዝገባዎ እስኪፀድቅ ድረስ በመጠባበቅ ላይ ነው። ሲፀድቅ እናሳውቅዎታለን።';
 
   @override
   String get submissionViewListings => 'ንብረትዎን ይመልከቱ';
@@ -2711,7 +2711,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobAll => 'ሁሉም ስራዎች';
 
   @override
-  String get jobApplicationDeadlineOptional => 'የማመልከቻ የመጨረሻ ቀን (አማራጭ)';
+  String get jobApplicationDeadlineOptional => 'የማመልከቻ የመጨረሻ ቀን';
 
   @override
   String get jobBasicInfo => 'መሰረታዊ መረጃ';
@@ -2735,7 +2735,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get jobCategoryOther => 'ሌላ';
 
   @override
-  String get jobClear => 'ያጽዱ';
+  String get jobClear => 'ያፅዱ';
 
   @override
   String get jobCompanyName => 'የድርጅት ስም';
@@ -3029,7 +3029,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekerSaveProfile => 'ፕሮፋይልዎን ያስቀምጡ';
 
   @override
-  String get seekerProfileSaved => 'ፕሮፋይል በተሳካ ሁኔታ ተዘምኗል';
+  String get seekerProfileSaved => 'ፕሮፋይል በተሳካ ሁኔታ ዘምኗል';
 
   @override
   String get seekerCv => 'ሲቪ';

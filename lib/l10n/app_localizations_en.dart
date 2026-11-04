@@ -1746,7 +1746,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionLimitReached =>
-      'You\'ve reached your listing limit. Upgrade your subscription to post more listings.';
+      'You\'ve reached your listing limit. Upgrade/Renew your subscription to post more listings.';
 
   @override
   String get subscriptionLimitReachedRental =>
@@ -2748,8 +2748,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobAll => 'All Jobs';
 
   @override
-  String get jobApplicationDeadlineOptional =>
-      'Application Deadline (Optional)';
+  String get jobApplicationDeadlineOptional => 'Application Deadline';
 
   @override
   String get jobBasicInfo => 'Basic Info';

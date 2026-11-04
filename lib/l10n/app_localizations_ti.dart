@@ -57,7 +57,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get commonPressBackAgain => 'ንምውፃእ ደጊምኩም ፅቐጡ';
 
   @override
-  String get commonOptional => 'ኣማራጺ';
+  String get commonOptional => 'ኣማራፂ';
 
   @override
   String get commonSave => 'ዓቕቡ';
@@ -203,7 +203,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get helpListManageContent =>
-      'ኣብ ዘውፃእኹምዎም ንብረታትን ምልክታታትን ምሉእ ቁፅፅር ኣለኩም:\n\n1. ዘውፃእኹምዎም ኣባይቲ፣ መካይንን ክፍቲ ናይ ስራሕ ቦታታትን ንምርኣይ ናብ ኣካውንት > ናተይ ንብረታት ኺዱ\n2. ኵነታት ምልክታታት ተኸታተሉ: ኣብ ግምገማ ዘሎ፣ ንጡፍ፣ ዝተሸጠ፣ ዝተኻረየ፣ ዝተተሓዘ ወይ ዝተነፀገ\n3. ንምምሕዳር ኣብ ዝኾነ ምልክታ ጠውቑ: ሓበሬታ ንምዕራይ፣ ዋጋ ንምቕያር፣ ወይ ከም ዝተሸጠ/ዝተዓፀወ ምልክት ንምግባር\n4. ምርኣይ ምዕባይ: ካብ መመሓደሪ እቲ ምልክታ ብቐጥታ \"ፍሉይ ምልክታ\" ወይ \"VIP\" ምምሕያሻት ግበሩ\n5. ምስራዝ ወይ ምዕጻው: ድሕሪ ሕጂ ዘየለዉ ንብረታት ምሉእ ብምሉእ ሰርዙ ወይ ንግዚኡ ደብቑ\n\nመተሓሳሰቢ: መሰረታዊ ሓበሬታታት (ከም ኣድራሻ ወይ ዋና ኣርእስቲ) ምቕያር ብጉጅለ ግምገማና ቅልጡፍ ዳግመ-ምርመራ ክሓትት ይኽእል እዩ።';
+      'ኣብ ዘውፃእኹምዎም ንብረታትን ምልክታታትን ምሉእ ቁፅፅር ኣለኩም:\n\n1. ዘውፃእኹምዎም ኣባይቲ፣ መካይንን ክፍቲ ናይ ስራሕ ቦታታትን ንምርኣይ ናብ ኣካውንት > ናተይ ንብረታት ኺዱ\n2. ኵነታት ምልክታታት ተኸታተሉ: ኣብ ግምገማ ዘሎ፣ ንጡፍ፣ ዝተሸጠ፣ ዝተኻረየ፣ ዝተተሓዘ ወይ ዝተነፀገ\n3. ንምምሕዳር ኣብ ዝኾነ ምልክታ ጠውቑ: ሓበሬታ ንምዕራይ፣ ዋጋ ንምቕያር፣ ወይ ከም ዝተሸጠ/ዝተዓፀወ ምልክት ንምግባር\n4. ምርኣይ ምዕባይ: ካብ መመሓደሪ እቲ ምልክታ ብቐጥታ \"ፍሉይ ምልክታ\" ወይ \"VIP\" ምምሕያሻት ግበሩ\n5. ምስራዝ ወይ ምዕፃው: ድሕሪ ሕጂ ዘየለዉ ንብረታት ምሉእ ብምሉእ ሰርዙ ወይ ንግዚኡ ደብቑ\n\nመተሓሳሰቢ: መሰረታዊ ሓበሬታታት (ከም ኣድራሻ ወይ ዋና ኣርእስቲ) ምቕያር ብጉጅለ ግምገማና ቅልጡፍ ዳግመ-ምርመራ ክሓትት ይኽእል እዩ።';
 
   @override
   String get helpListTipsTitle => 'ዕዉትን ቅልጡፍ ዓዳጊ ዝስሕብን ምልክታ ንምውፃእ ዝሕግዙ ነጥብታት';
@@ -546,13 +546,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingOwnerName => 'ስም ዋና';
 
   @override
-  String get listingOwnerPhone => 'ቁጽሪ ስልኪ ዋና';
+  String get listingOwnerPhone => 'ቁፅሪ ስልኪ ዋና';
 
   @override
   String get listingOwnerNameRequired => 'ስም ዋና ኣእትዉ';
 
   @override
-  String get listingOwnerPhoneRequired => 'ቁጽሪ ስልኪ ዋና ኣእትዉ';
+  String get listingOwnerPhoneRequired => 'ቁፅሪ ስልኪ ዋና ኣእትዉ';
 
   @override
   String get listingStepBasics => 'መሰረታዊ';
@@ -1468,7 +1468,7 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get subscriptionsFreeSuccess => 'ነጻ ፓኬጅ ብትኽክል ተበጊሱ!';
+  String get subscriptionsFreeSuccess => 'ነፃ ፓኬጅ ብትኽክል ተበጊሱ!';
 
   @override
   String subscriptionsExpiresOn(Object date) {
@@ -1506,15 +1506,15 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String subscriptionsFreeTrial(Object planName) {
-    return 'ናጻ ፈተነ፦ $planName';
+    return 'ናፃ ፈተነ፦ $planName';
   }
 
   @override
-  String get subscriptionsStartFreeTrialTitle => 'ናጻ ፈተነ ክትጅምሩ ትደልዩ ዲኹም?';
+  String get subscriptionsStartFreeTrialTitle => 'ናፃ ፈተነ ክትጅምሩ ትደልዩ ዲኹም?';
 
   @override
   String subscriptionsStartFreeTrialPrompt(Object days, Object planName) {
-    return 'ናይ $days መዓልታት ናጻ ፈተነ ኣብ $planName ይጀምሩ? ንሓደ ኣካውንት ሓደ ፈተነ ጥራሕ።';
+    return 'ናይ $days መዓልታት ናፃ ፈተነ ኣብ $planName ይጀምሩ? ንሓደ ኣካውንት ሓደ ፈተነ ጥራሕ።';
   }
 
   @override
@@ -1522,7 +1522,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String subscriptionsStartTrialDaysButton(Object days) {
-    return 'ናይ $days መዓልታት ናጻ ፈተነ ይጀምሩ';
+    return 'ናይ $days መዓልታት ናፃ ፈተነ ይጀምሩ';
   }
 
   @override
@@ -1550,7 +1550,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String subscriptionsListingsActiveDays(Object count) {
-    return 'ንብረታት ን$count መዓልታት ንጡፋት ይጸንሑ';
+    return 'ንብረታት ን$count መዓልታት ንጡፋት ይፀንሑ';
   }
 
   @override
@@ -1723,7 +1723,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get subscriptionLimitReached =>
-      'ናይ ምዝገባ ደረትኩም በፂሕኩም ኣለኹም። ተወሳኺ ንብረታት ንምምዝጋብ ምዝገባኩም ኣዕብዩ።';
+      'ናይ ምልጣፍ ደረትኩም በፂሕኩም ኣለኹም። ተወሳኺ ንብረታት ንምምዝጋፍብ ፓኬጅኩም ኣዕብዩ/ኣሕድሱ።';
 
   @override
   String get subscriptionLimitReachedRental =>
@@ -2242,7 +2242,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get listingOptions => 'ኣማራፂታት';
 
   @override
-  String get listingDoors => 'ማዕጾታት';
+  String get listingDoors => 'ማዕፆታት';
 
   @override
   String get listingSeats => 'መንበራት';
@@ -2333,7 +2333,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get carCustomFeatures => 'ተወሳኺ መገለፂታት';
 
   @override
-  String get submissionStepValidating => 'ዳታ ይረጋገጽ ኣሎ';
+  String get submissionStepValidating => 'ዳታ ይረጋገፅ ኣሎ';
 
   @override
   String get submissionStepUploading => 'ፋይላት ይፀዓኑ ኣለዉ';
@@ -2342,7 +2342,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get submissionStepSaving => 'ንብረት ኣብ ምስፋር...';
 
   @override
-  String get submissionValidating => 'ዳታ ይረጋገጽ ኣሎ...';
+  String get submissionValidating => 'ዳታ ይረጋገፅ ኣሎ...';
 
   @override
   String get submissionUploading => 'ፋይላት ይፀዓኑ ኣለዉ';
@@ -2376,7 +2376,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get submissionUpdatedMessage => 'ምዝገባ ብዓወት ተሓዲሱ።';
 
   @override
-  String get submissionConnectionLost => 'መስመር ተቋሪጹ። መረዳእታኹም ተቀሚጡ።';
+  String get submissionConnectionLost => 'መስመር ተቋሪፁ። መረዳእታኹም ተቀሚጡ።';
 
   @override
   String get submissionRequestTimedOut => 'ናይ ርክብ ሕቶ እዋኑ ሓሊፉዎ። መረዳእታኹም ተቀሚጡ።';
@@ -2559,10 +2559,10 @@ class AppLocalizationsTi extends AppLocalizations {
   String get featureCentralLocking => 'ማእከላይ መሸጎሪ';
 
   @override
-  String get featureCrashBars => 'ናይ መከላኸሊ ሓጺን';
+  String get featureCrashBars => 'ናይ መከላኸሊ ሓፂን';
 
   @override
-  String get featureCruiseControl => 'ናይ ፍጥነት መቆጻጸሪ';
+  String get featureCruiseControl => 'ናይ ፍጥነት መቆፃፀሪ';
 
   @override
   String get featureDiscBrakes => 'ናይ ዲስክ ፍሬን';
@@ -2634,7 +2634,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get featureRoofRack => 'ናይ ናሕሲ መደርደሪ';
 
   @override
-  String get featureServiceRecords => 'ናይ ጽገና ታሪክ';
+  String get featureServiceRecords => 'ናይ ፅገና ታሪክ';
 
   @override
   String get featureSidePanniers => 'ናይ ጎን ቦርሳታት';
@@ -2646,7 +2646,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get featureTopCase => 'ናይ ድሕሪት ሳንዱቕ';
 
   @override
-  String get featureTowBar => 'ናይ መጎተቲ ሓጺን';
+  String get featureTowBar => 'ናይ መጎተቲ ሓፂን';
 
   @override
   String get featureTrackVsWheels => 'ሰንሰለት ወይ ጎማ';
@@ -2676,7 +2676,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get agentIdEmpty => 'መለለይ ኤጀንት የድሊ እዩ';
 
   @override
-  String get listingErrorTaxPaidYearRequired => 'ዓመት ክፍሊት ቀረጽ የድሊ እዩ';
+  String get listingErrorTaxPaidYearRequired => 'ዓመት ክፍሊት ቀረፅ የድሊ እዩ';
 
   @override
   String get listingErrorAcquisitionClarificationRequired =>
@@ -2710,7 +2710,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get jobAll => 'ኹሎም ስራሕቲ';
 
   @override
-  String get jobApplicationDeadlineOptional => 'ናይ መሕትት መወዳእታ ዕለት (ኣማራጺ)';
+  String get jobApplicationDeadlineOptional => 'ናይ መመልከቲ መወዳእታ ዕለት';
 
   @override
   String get jobBasicInfo => 'መሰረታዊ ሓበሬታ';
@@ -2975,7 +2975,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerNoExperienceAdded => 'ክሳብ ሕጂ ናይ ስራሕ ታሪኽ ኣይተወሰኸን።';
 
   @override
-  String get seekerNoBio => 'ዝኾነ መግለጺ ኣይተረኸበን።';
+  String get seekerNoBio => 'ዝኾነ መግለፂ ኣይተረኸበን።';
 
   @override
   String get seekerAboutBio => 'ብዛዕባይ';
@@ -2990,14 +2990,14 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerVideo => 'ቪዲዮ';
 
   @override
-  String get seekerWaveMartOptions => 'ኣማራጺታት WaveMart';
+  String get seekerWaveMartOptions => 'ኣማራፂታት WaveMart';
 
   @override
   String get seekerContactOptionsSubtitle =>
       'ምስቲ ደላይ ስራሕ ኣብ ውሽጢ መተግበሪ ብቐጥታ መልእኽቲ ተለዋወጡ';
 
   @override
-  String get listingWaveMartOptions => 'ኣማራጺታት WaveMart';
+  String get listingWaveMartOptions => 'ኣማራፂታት WaveMart';
 
   @override
   String get listingMessageSeller => 'መልእክት';
@@ -3028,13 +3028,13 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerSaveProfile => 'ፕሮፋይልኩም ዓቕቡ';
 
   @override
-  String get seekerProfileSaved => 'ፕሮፋይል ብዓወት ተመዝጊቡ';
+  String get seekerProfileSaved => 'ፕሮፋይል ብዓወት ተመሓይሹ';
 
   @override
   String get seekerCv => 'ሲቪ';
 
   @override
-  String get seekerUploadCv => 'ሲቪ ኣእትዉ (ኣማራጺ)';
+  String get seekerUploadCv => 'ሲቪ ኣእትዉ (ኣማራፂ)';
 
   @override
   String get seekerViewCv => 'ሲቪ ርኣዩ';
@@ -3122,15 +3122,15 @@ class AppLocalizationsTi extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ውጽኢታት',
-      one: '1 ውጽኢት',
-      zero: 'ውጽኢት ኣይተረኽበን',
+      other: '$count ውፅኢታት',
+      one: '1 ውፅኢት',
+      zero: 'ውፅኢት ኣይተረኽበን',
     );
     return '$_temp0';
   }
 
   @override
-  String get searchValidationNumber => 'ቅኑዕ ቁጽሪ ኣእቱ';
+  String get searchValidationNumber => 'ቅኑዕ ቁፅሪ ኣእቱ';
 
   @override
   String get searchValidationRange => 'ትሑት ካብ ላዕለዋይ ንእሽቶ ክኸውን ኣለዎ';
