@@ -2942,7 +2942,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekersTitle => 'የስራ ፈላጊዎች';
 
   @override
-  String get seekersNoProfiles => 'ምንም መገለጫ አልተገኘም';
+  String get seekersNoProfiles => 'ምንም ፕሮፋይል አልተገኘም';
 
   @override
   String get seekersNoResults => 'ምንም የስራ ፈላጊ አልተገኘም';
@@ -2964,7 +2964,7 @@ class AppLocalizationsAm extends AppLocalizations {
       'ገደብዎ ላይ ደርሰዋል። ተጨማሪ የስራ ማስታወቂያዎችን ለመለጠፍ ፕላንዎን ያሳድጉ።';
 
   @override
-  String get seekerProfileDetails => 'የመገለጫ ዝርዝር';
+  String get seekerProfileDetails => 'የፕሮፋይል ዝርዝር';
 
   @override
   String get seekerExperience => 'የስራ ልምድ';
@@ -3029,7 +3029,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekerSaveProfile => 'ፕሮፋይልዎን ያስቀምጡ';
 
   @override
-  String get seekerProfileSaved => 'መገለጫው በተሳካ ሁኔታ ተዘምኗል';
+  String get seekerProfileSaved => 'ፕሮፋይል በተሳካ ሁኔታ ተዘምኗል';
 
   @override
   String get seekerCv => 'ሲቪ';

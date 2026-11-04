@@ -10,6 +10,7 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../data/car_data.dart';
 import '../../../data/job_data.dart';
 import '../../../data/models/listing.dart';
+import '../../../data/models/job_seeker_profile.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
@@ -25,34 +26,38 @@ import '../job_seekers/widgets/job_seeker_card.dart';
 import '../../providers/job_seeker_providers.dart';
 import 'filter_sheet.dart';
 
-enum HomeCategory { all, property, vehicles, jobs }
+enum HomeCategory { property, vehicles, jobs, all }
 
 enum JobsSection { listings, seekers }
+
+enum ListingTypeSection { sale, rent }
+
+enum AllSection { all, sale, rent }
 
 extension HomeCategoryX on HomeCategory {
   String label(AppLocalizations l10n) {
     switch (this) {
-      case HomeCategory.all:
-        return l10n.searchFilterAll;
       case HomeCategory.property:
         return l10n.listingSummaryProperty;
       case HomeCategory.vehicles:
         return l10n.listingCarPlural;
       case HomeCategory.jobs:
         return l10n.homeJobs;
+      case HomeCategory.all:
+        return l10n.searchFilterAll;
     }
   }
 
   IconData get icon {
     switch (this) {
-      case HomeCategory.all:
-        return Icons.apps_rounded;
       case HomeCategory.property:
         return Icons.home_rounded;
       case HomeCategory.vehicles:
         return Icons.directions_car_rounded;
       case HomeCategory.jobs:
         return Icons.work_outline;
+      case HomeCategory.all:
+        return Icons.apps_rounded;
     }
   }
 }
@@ -77,6 +82,86 @@ extension JobsSectionX on JobsSection {
   }
 }
 
+extension ListingTypeSectionX on ListingTypeSection {
+  String label(AppLocalizations l10n) {
+    switch (this) {
+      case ListingTypeSection.sale:
+        return l10n.listingSale;
+      case ListingTypeSection.rent:
+        return l10n.listingRent;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case ListingTypeSection.sale:
+        return Icons.sell_outlined;
+      case ListingTypeSection.rent:
+        return Icons.key_outlined;
+    }
+  }
+
+  String get wireValue => this == ListingTypeSection.sale ? 'sale' : 'rental';
+}
+
+extension AllSectionX on AllSection {
+  String label(AppLocalizations l10n) {
+    switch (this) {
+      case AllSection.all:
+        return l10n.searchFilterAll;
+      case AllSection.sale:
+        return l10n.listingSale;
+      case AllSection.rent:
+        return l10n.listingRent;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case AllSection.all:
+        return Icons.apps_rounded;
+      case AllSection.sale:
+        return Icons.sell_outlined;
+      case AllSection.rent:
+        return Icons.key_outlined;
+    }
+  }
+
+  String? get wireValue {
+    switch (this) {
+      case AllSection.all:
+        return null;
+      case AllSection.sale:
+        return 'sale';
+      case AllSection.rent:
+        return 'rental';
+    }
+  }
+}
+
+sealed class _AllFeedItem {
+  DateTime get createdAt;
+}
+
+class _ListingFeedItem extends _AllFeedItem {
+  final Listing listing;
+  _ListingFeedItem(this.listing);
+
+  @override
+  DateTime get createdAt => listing.createdAt;
+}
+
+class _SeekerFeedItem extends _AllFeedItem {
+  final JobSeekerProfile profile;
+  _SeekerFeedItem(this.profile);
+
+  @override
+  DateTime get createdAt =>
+      profile.createdAt ??
+      profile.updatedAt ??
+      DateTime.fromMillisecondsSinceEpoch(0);
+}
+
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -93,10 +178,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Timer? _debounceTimer;
   DateTime? _lastLoadTime;
 
-  UnifiedFilterValues _filterValues = const UnifiedFilterValues();
+  UnifiedFilterValues _filterValues = const UnifiedFilterValues(
+    category: HomeCategory.property,
+    listingType: 'sale',
+  );
   bool _hasSearched = false;
   bool _isAutoRefreshing = false;
-  HomeCategory _selectedCategory = HomeCategory.all;
+  HomeCategory _selectedCategory = HomeCategory.property;
+  ListingTypeSection _listingTypeSection = ListingTypeSection.sale;
+  AllSection _allSection = AllSection.all;
   JobsSection _jobsSection = JobsSection.listings;
 
   late AnimationController _headerAnimationController;
@@ -129,9 +219,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       if (ref.read(subscriptionProvider).canViewVip) {
         ref.read(vipListingsProvider.notifier).loadVipListings();
       }
-      ref.read(listingsProvider.notifier).loadListings();
-      ref.read(homeCarListingsProvider.notifier).loadListings();
-      ref.read(homeJobListingsProvider.notifier).loadListings();
+      ref.read(listingsProvider.notifier).loadListings(
+            filters: {'listing_type': 'sale'},
+          );
       ref.read(authStateProvider.notifier).loadUser();
       ref.read(favoritesProvider.notifier).loadFavorites();
       _lastLoadTime = DateTime.now();
@@ -167,11 +257,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     setState(() => _isAutoRefreshing = true);
     _refreshPillController.forward();
     try {
-      await Future.wait([
-        ref.read(listingsProvider.notifier).loadListings(),
-        ref.read(homeCarListingsProvider.notifier).loadListings(),
-        ref.read(homeJobListingsProvider.notifier).loadListings(),
-      ]);
+      _reloadCurrentFeed();
     } finally {
       if (mounted) {
         await Future.delayed(const Duration(milliseconds: 350));
@@ -187,25 +273,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     _lastLoadTime = DateTime.now();
     final futures = <Future<void>>[
       ref.read(featuredListingsProvider.notifier).loadFeaturedListings(),
-      ref.read(listingsProvider.notifier).loadListings(),
       ref.read(favoritesProvider.notifier).loadFavorites(),
     ];
     if (ref.read(subscriptionProvider).canViewVip) {
       futures.add(ref.read(vipListingsProvider.notifier).loadVipListings());
     }
-    if (_selectedCategory == HomeCategory.vehicles ||
-        _selectedCategory == HomeCategory.all) {
-      futures.add(ref.read(homeCarListingsProvider.notifier).loadListings());
-    }
-    if (_selectedCategory == HomeCategory.jobs ||
-        _selectedCategory == HomeCategory.all) {
-      if (_selectedCategory == HomeCategory.jobs &&
-          _jobsSection == JobsSection.seekers) {
+    if (_selectedCategory == HomeCategory.vehicles) {
+      futures.add(ref.read(homeCarListingsProvider.notifier).loadListings(
+            filters: {'listing_type': _listingTypeSection.wireValue},
+          ));
+    } else if (_selectedCategory == HomeCategory.jobs) {
+      if (_jobsSection == JobsSection.seekers) {
         futures.add(
             ref.read(homeJobSeekerProfilesProvider.notifier).loadProfiles());
       } else {
         futures.add(ref.read(homeJobListingsProvider.notifier).loadListings());
       }
+    } else if (_selectedCategory == HomeCategory.all) {
+      final filters = _allSection == AllSection.all
+          ? null
+          : {'listing_type': _allSection.wireValue};
+      futures.add(
+          ref.read(listingsProvider.notifier).loadListings(filters: filters));
+      futures.add(ref
+          .read(homeCarListingsProvider.notifier)
+          .loadListings(filters: filters));
+      if (_allSection == AllSection.all) {
+        futures.add(ref.read(homeJobListingsProvider.notifier).loadListings());
+        futures.add(
+            ref.read(homeJobSeekerProfilesProvider.notifier).loadProfiles());
+      }
+    } else {
+      // HomeCategory.property
+      futures.add(ref.read(listingsProvider.notifier).loadListings(
+            filters: {'listing_type': _listingTypeSection.wireValue},
+          ));
     }
     await Future.wait(futures);
   }
@@ -215,29 +317,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     _searchController.clear();
     setState(() {
       _selectedCategory = category;
-      if (category != HomeCategory.jobs) {
-        _jobsSection = JobsSection.listings;
-      }
       _hasSearched = false;
       _filterValues = UnifiedFilterValues(
         category: category,
+        listingType: category == HomeCategory.all
+            ? _allSection.wireValue
+            : category == HomeCategory.jobs
+                ? null
+                : _listingTypeSection.wireValue,
         forSeekers: category == HomeCategory.jobs &&
             _jobsSection == JobsSection.seekers,
       );
     });
     ref.invalidate(searchResultsProvider);
-    if (category == HomeCategory.property || category == HomeCategory.all) {
-      ref.read(listingsProvider.notifier).loadListings();
-    }
-    if (category == HomeCategory.vehicles || category == HomeCategory.all) {
-      ref.read(homeCarListingsProvider.notifier).loadListings();
-    }
-    if (category == HomeCategory.jobs || category == HomeCategory.all) {
-      ref.read(homeJobListingsProvider.notifier).loadListings();
-    }
-    if (category == HomeCategory.jobs && _jobsSection == JobsSection.seekers) {
-      ref.read(homeJobSeekerProfilesProvider.notifier).loadProfiles();
-    }
+    _reloadCurrentFeed();
   }
 
   void _onJobsSectionChanged(JobsSection section) {
@@ -259,9 +352,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
   }
 
+  void _onListingTypeSectionChanged(ListingTypeSection section) {
+    if (section == _listingTypeSection) return;
+    _searchController.clear();
+    setState(() {
+      _listingTypeSection = section;
+      _hasSearched = false;
+      _filterValues = _filterValues.copyWith(
+        category: _selectedCategory,
+        listingType: section.wireValue,
+      );
+    });
+    ref.invalidate(searchResultsProvider);
+    _reloadCurrentFeed();
+  }
+
+  void _onAllSectionChanged(AllSection section) {
+    if (section == _allSection) return;
+    _searchController.clear();
+    setState(() {
+      _allSection = section;
+      _hasSearched = false;
+      _filterValues = _filterValues.copyWith(
+        category: HomeCategory.all,
+        listingType: section.wireValue,
+      );
+    });
+    ref.invalidate(searchResultsProvider);
+    _reloadCurrentFeed();
+  }
+
   void _handleFilterTap() async {
     final prepared = _filterValues.copyWith(
       category: _selectedCategory,
+      listingType: _selectedCategory == HomeCategory.all
+          ? _allSection.wireValue
+          : _selectedCategory == HomeCategory.jobs
+              ? null
+              : _listingTypeSection.wireValue,
       forSeekers: _selectedCategory == HomeCategory.jobs &&
           _jobsSection == JobsSection.seekers,
     );
@@ -283,11 +411,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     setState(() {
       _filterValues = result;
       _selectedCategory = result.category;
-      if (result.category != HomeCategory.jobs) {
-        _jobsSection = JobsSection.listings;
-      } else {
+      if (result.category == HomeCategory.jobs) {
         _jobsSection =
             result.forSeekers ? JobsSection.seekers : JobsSection.listings;
+      } else if (result.category == HomeCategory.all) {
+        if (result.listingType == 'sale') {
+          _allSection = AllSection.sale;
+        } else if (result.listingType == 'rental') {
+          _allSection = AllSection.rent;
+        } else {
+          _allSection = AllSection.all;
+        }
+      } else {
+        if (result.listingType == 'rental') {
+          _listingTypeSection = ListingTypeSection.rent;
+        } else {
+          _listingTypeSection = ListingTypeSection.sale;
+        }
       }
     });
     if (noOp) return;
@@ -369,6 +509,128 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               padding: const EdgeInsets.only(right: 6),
               child: GestureDetector(
                 onTap: () => _onJobsSectionChanged(section),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutCubic,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: isSelected ? AppColors.gradientAccent : null,
+                    color: isSelected
+                        ? null
+                        : context.cardBg.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : context.divider.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        section.icon,
+                        size: 14,
+                        color:
+                            isSelected ? Colors.white : context.textSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        section.label(l10n),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color:
+                              isSelected ? Colors.white : context.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListingTypeSectionPills() {
+    final l10n = AppLocalizations.of(context);
+    const sections = ListingTypeSection.values;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: sections.map((section) {
+            final isSelected = section == _listingTypeSection;
+            return Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: GestureDetector(
+                onTap: () => _onListingTypeSectionChanged(section),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutCubic,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: isSelected ? AppColors.gradientAccent : null,
+                    color: isSelected
+                        ? null
+                        : context.cardBg.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : context.divider.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        section.icon,
+                        size: 14,
+                        color:
+                            isSelected ? Colors.white : context.textSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        section.label(l10n),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color:
+                              isSelected ? Colors.white : context.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAllSectionPills() {
+    final l10n = AppLocalizations.of(context);
+    const sections = AllSection.values;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: sections.map((section) {
+            final isSelected = section == _allSection;
+            return Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: GestureDetector(
+                onTap: () => _onAllSectionChanged(section),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutCubic,
@@ -511,6 +773,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
     if (_selectedCategory == HomeCategory.all) {
       filters['include_all_types'] = true;
+      if (_allSection != AllSection.all) {
+        filters['listing_type'] = _allSection.wireValue;
+      }
+    } else if (_selectedCategory == HomeCategory.property ||
+        _selectedCategory == HomeCategory.vehicles) {
+      filters['listing_type'] = _listingTypeSection.wireValue;
     }
     return filters.isEmpty ? null : filters;
   }
@@ -558,21 +826,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         }
       }
     } else {
-      if (_selectedCategory == HomeCategory.vehicles ||
-          _selectedCategory == HomeCategory.all) {
+      if (_selectedCategory == HomeCategory.vehicles) {
         final carState = ref.read(homeCarListingsProvider);
         if (!carState.isLoading &&
             !carState.isLoadingMore &&
             carState.hasMore) {
           ref.read(homeCarListingsProvider.notifier).loadListings(
                 page: carState.currentPage + 1,
+                filters: {'listing_type': _listingTypeSection.wireValue},
               );
         }
-      }
-      if (_selectedCategory == HomeCategory.jobs ||
-          _selectedCategory == HomeCategory.all) {
-        if (_selectedCategory == HomeCategory.jobs &&
-            _jobsSection == JobsSection.seekers) {
+      } else if (_selectedCategory == HomeCategory.jobs) {
+        if (_jobsSection == JobsSection.seekers) {
           final seekerState = ref.read(homeJobSeekerProfilesProvider);
           if (!seekerState.isLoading &&
               !seekerState.isLoadingMore &&
@@ -591,15 +856,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 );
           }
         }
-      }
-      if (_selectedCategory == HomeCategory.property ||
-          _selectedCategory == HomeCategory.all) {
+      } else if (_selectedCategory == HomeCategory.all) {
+        final filters = _allSection == AllSection.all
+            ? null
+            : {'listing_type': _allSection.wireValue};
+
         final propState = ref.read(listingsProvider);
         if (!propState.isLoading &&
             !propState.isLoadingMore &&
             propState.hasMore) {
           ref.read(listingsProvider.notifier).loadListings(
                 page: propState.currentPage + 1,
+                filters: filters,
+              );
+        }
+        final carState = ref.read(homeCarListingsProvider);
+        if (!carState.isLoading &&
+            !carState.isLoadingMore &&
+            carState.hasMore) {
+          ref.read(homeCarListingsProvider.notifier).loadListings(
+                page: carState.currentPage + 1,
+                filters: filters,
+              );
+        }
+        if (_allSection == AllSection.all) {
+          final jobState = ref.read(homeJobListingsProvider);
+          if (!jobState.isLoading &&
+              !jobState.isLoadingMore &&
+              jobState.hasMore) {
+            ref.read(homeJobListingsProvider.notifier).loadListings(
+                  page: jobState.currentPage + 1,
+                );
+          }
+          final seekerState = ref.read(homeJobSeekerProfilesProvider);
+          if (!seekerState.isLoading &&
+              !seekerState.isLoadingMore &&
+              seekerState.hasMore) {
+            ref.read(homeJobSeekerProfilesProvider.notifier).loadProfiles(
+                  page: seekerState.currentPage + 1,
+                );
+          }
+        }
+      } else {
+        // HomeCategory.property
+        final propState = ref.read(listingsProvider);
+        if (!propState.isLoading &&
+            !propState.isLoadingMore &&
+            propState.hasMore) {
+          ref.read(listingsProvider.notifier).loadListings(
+                page: propState.currentPage + 1,
+                filters: {'listing_type': _listingTypeSection.wireValue},
               );
         }
       }
@@ -621,7 +927,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _reloadCurrentFeed() {
     if (_selectedCategory == HomeCategory.vehicles) {
-      ref.read(homeCarListingsProvider.notifier).loadListings();
+      ref.read(homeCarListingsProvider.notifier).loadListings(
+            filters: {'listing_type': _listingTypeSection.wireValue},
+          );
     } else if (_selectedCategory == HomeCategory.jobs) {
       if (_jobsSection == JobsSection.seekers) {
         ref.read(homeJobSeekerProfilesProvider.notifier).loadProfiles();
@@ -629,11 +937,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ref.read(homeJobListingsProvider.notifier).loadListings();
       }
     } else if (_selectedCategory == HomeCategory.all) {
-      ref.read(listingsProvider.notifier).loadListings();
-      ref.read(homeCarListingsProvider.notifier).loadListings();
-      ref.read(homeJobListingsProvider.notifier).loadListings();
+      final filters = _allSection == AllSection.all
+          ? null
+          : {'listing_type': _allSection.wireValue};
+      ref.read(listingsProvider.notifier).loadListings(filters: filters);
+      ref.read(homeCarListingsProvider.notifier).loadListings(filters: filters);
+      if (_allSection == AllSection.all) {
+        ref.read(homeJobListingsProvider.notifier).loadListings();
+        ref.read(homeJobSeekerProfilesProvider.notifier).loadProfiles();
+      }
     } else {
-      ref.read(listingsProvider.notifier).loadListings();
+      // HomeCategory.property
+      ref.read(listingsProvider.notifier).loadListings(
+            filters: {'listing_type': _listingTypeSection.wireValue},
+          );
     }
     ref.invalidate(searchResultsProvider);
   }
@@ -840,7 +1157,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     children: [
                       _buildCategoryPills(l10n),
                       if (_selectedCategory == HomeCategory.jobs)
-                        _buildJobsSectionPills(),
+                        _buildJobsSectionPills()
+                      else if (_selectedCategory == HomeCategory.all)
+                        _buildAllSectionPills()
+                      else
+                        _buildListingTypeSectionPills(),
                     ],
                   ),
                 ),
@@ -850,7 +1171,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       : _buildSearchResults(searchState, l10n)
                 else if (canBrowseAll)
                   ..._buildAllBrowseSlivers(featuredState, vipState,
-                      listingsState, carState, jobState, l10n)
+                      listingsState, carState, jobState, seekerState, l10n)
                 else if (_selectedCategory == HomeCategory.vehicles)
                   ..._buildCarBrowseSlivers(
                       featuredState, vipState, carState, l10n)
@@ -867,9 +1188,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildSectionHeader(l10n.listingsFeatured),
-                          _buildFeaturedListings(featuredState),
-                          _buildVipSection(vipState),
+                          if (_filterPropertyFeatured(featuredState)
+                              .listings
+                              .isNotEmpty) ...[
+                            _buildSectionHeader(l10n.listingsFeatured),
+                            _buildFeaturedListings(
+                                _filterPropertyFeatured(featuredState)),
+                          ],
+                          if (_filterPropertyFeatured(vipState)
+                              .listings
+                              .isNotEmpty)
+                            _buildVipSection(
+                                _filterPropertyFeatured(vipState)),
                           _buildSectionHeader(l10n.listingsTitle,
                               eyebrow: l10n.homeLatestRecently.toUpperCase()),
                         ],
@@ -949,7 +1279,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             if (_selectedCategory == HomeCategory.property ||
                 _selectedCategory == HomeCategory.vehicles ||
                 _selectedCategory == HomeCategory.all) ...[
-              if (v.listingType != null)
+              if (v.listingType != null && _hasSearched)
                 _filterChip(
                   v.listingType == 'sale'
                       ? l10n.listingForSale
@@ -1469,11 +1799,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ListingsState propState,
     ListingsState carState,
     ListingsState jobState,
+    JobSeekerProfilesState seekerState,
   ) {
-    if (propState.listings.isEmpty &&
-        carState.listings.isEmpty &&
-        jobState.listings.isEmpty) {
-      if (propState.isLoading || carState.isLoading || jobState.isLoading) {
+    final showJobsAndSeekers = _allSection == AllSection.all;
+
+    final hasAnyListings = propState.listings.isNotEmpty ||
+        carState.listings.isNotEmpty ||
+        (showJobsAndSeekers &&
+            (jobState.listings.isNotEmpty || seekerState.profiles.isNotEmpty));
+
+    final isAnyLoading = propState.isLoading ||
+        carState.isLoading ||
+        (showJobsAndSeekers && (jobState.isLoading || seekerState.isLoading));
+
+    if (!hasAnyListings) {
+      if (isAnyLoading) {
         return SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
           sliver: SliverList(
@@ -1487,11 +1827,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
 
-    // Merge and sort by createdAt descending
-    final allListings = <Listing>[
-      ...propState.listings,
-      ...carState.listings,
-      ...jobState.listings,
+    final allItems = <_AllFeedItem>[
+      ...propState.listings.map(_ListingFeedItem.new),
+      ...carState.listings.map(_ListingFeedItem.new),
+      if (showJobsAndSeekers) ...[
+        ...jobState.listings.map(_ListingFeedItem.new),
+        ...seekerState.profiles.map(_SeekerFeedItem.new),
+      ],
     ]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return SliverPadding(
@@ -1499,13 +1841,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            if (index >= allListings.length) {
+            if (index >= allItems.length) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator()),
               );
             }
-            final listing = allListings[index];
+            final item = allItems[index];
+            if (item is _SeekerFeedItem) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: JobSeekerCard(
+                  profile: item.profile,
+                  onTap: () => context.push('/job-seekers/${item.profile.id}'),
+                ),
+              );
+            }
+            final listing = (item as _ListingFeedItem).listing;
             final fav = _isFavorite(listing.id);
             final isVehicle = listing.propertyType == PropertyType.car;
             final isJob = listing.propertyType == PropertyType.job;
@@ -1537,10 +1889,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         ),
             );
           },
-          childCount: allListings.length +
+          childCount: allItems.length +
               (propState.isLoadingMore ||
                       carState.isLoadingMore ||
-                      jobState.isLoadingMore
+                      (showJobsAndSeekers &&
+                          (jobState.isLoadingMore ||
+                              seekerState.isLoadingMore))
                   ? 1
                   : 0),
         ),
@@ -1554,22 +1908,49 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ListingsState propState,
     ListingsState carState,
     ListingsState jobState,
+    JobSeekerProfilesState seekerState,
     AppLocalizations l10n,
   ) {
+    final isRent = _allSection == AllSection.rent;
+    final isAll = _allSection == AllSection.all;
+
+    final filteredFeatured = isAll
+        ? featuredState
+        : featuredState.copyWith(
+            listings: featuredState.listings
+                .where((l) =>
+                    l.listingType ==
+                    (isRent ? ListingType.rental : ListingType.sale))
+                .toList(),
+          );
+
+    final filteredVip = isAll
+        ? vipState
+        : vipState.copyWith(
+            listings: vipState.listings
+                .where((l) =>
+                    l.listingType ==
+                    (isRent ? ListingType.rental : ListingType.sale))
+                .toList(),
+          );
+
     return [
       SliverToBoxAdapter(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader(l10n.listingsFeatured),
-            _buildFeaturedListings(featuredState),
-            _buildVipSection(vipState),
+            if (filteredFeatured.listings.isNotEmpty) ...[
+              _buildSectionHeader(l10n.listingsFeatured),
+              _buildFeaturedListings(filteredFeatured),
+            ],
+            if (filteredVip.listings.isNotEmpty)
+              _buildVipSection(filteredVip),
             _buildSectionHeader(l10n.listingsTitle,
                 eyebrow: l10n.homeLatestRecently.toUpperCase()),
           ],
         ),
       ),
-      _buildMergedFeed(propState, carState, jobState),
+      _buildMergedFeed(propState, carState, jobState, seekerState),
     ];
   }
 
@@ -1604,10 +1985,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   ListingsState _filterCarListings(ListingsState state) {
+    final isRental = _listingTypeSection == ListingTypeSection.rent;
     final carListings = state.listings
-        .where((l) => l.propertyType == PropertyType.car)
+        .where((l) =>
+            l.propertyType == PropertyType.car &&
+            l.listingType == (isRental ? ListingType.rental : ListingType.sale))
         .toList();
     return state.copyWith(listings: carListings);
+  }
+
+  ListingsState _filterPropertyFeatured(ListingsState state) {
+    final isRental = _listingTypeSection == ListingTypeSection.rent;
+    final propListings = state.listings
+        .where((l) =>
+            l.propertyType != PropertyType.car &&
+            l.propertyType != PropertyType.job &&
+            l.listingType == (isRental ? ListingType.rental : ListingType.sale))
+        .toList();
+    return state.copyWith(listings: propListings);
   }
 
   List<Widget> _buildJobSeekerBrowseSlivers(

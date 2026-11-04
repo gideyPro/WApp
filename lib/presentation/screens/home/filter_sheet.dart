@@ -39,7 +39,7 @@ class UnifiedFilterValues {
   final bool forSeekers;
 
   const UnifiedFilterValues({
-    this.category = HomeCategory.all,
+    this.category = HomeCategory.property,
     this.priceMin,
     this.priceMax,
     this.sort = 'newest',
@@ -602,7 +602,8 @@ class _FilterSheetState extends State<FilterSheet> {
         sort: _sort,
         propertyType: _category == HomeCategory.property ? _propertyType : null,
         listingType: (_category == HomeCategory.property ||
-                _category == HomeCategory.vehicles)
+                _category == HomeCategory.vehicles ||
+                _category == HomeCategory.all)
             ? _listingType
             : null,
         isFeatured: _category == HomeCategory.property ? _isFeatured : false,

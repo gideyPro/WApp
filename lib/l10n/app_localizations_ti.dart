@@ -2008,7 +2008,8 @@ class AppLocalizationsTi extends AppLocalizations {
   String get homeRefreshing => 'ይሓድስ ኣሎ...';
 
   @override
-  String get shareListingTitle => 'ካብ ዌቭማርት ዝተመቓቐለ - እሙን ናይ ንብረት ዕዳጋኹም';
+  String get shareListingTitle =>
+      'Shared from Wavemart - Your Trusted Property Marketplace';
 
   @override
   String get shareListingMessage => 'ነዚ ንብረት ኣብ ዌቭማርት ርኣዩ: ';
@@ -2326,7 +2327,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get mediaImagesLocked => 'ንብረት ምስ ተመዝገበ ስእልታት ምቕያር ኣይከኣልን።';
 
   @override
-  String get carVipSubtitle => 'ብVIP ተጠቀምቲ ብቻ ዝረአ';
+  String get carVipSubtitle => 'ብVIP ተጠቀምቲ ጥራይ ዝረአ';
 
   @override
   String get carCustomFeatures => 'ተወሳኺ መገለፂታት';
@@ -2940,7 +2941,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekersTitle => 'ደለይቲ ስራሕ';
 
   @override
-  String get seekersNoProfiles => 'ዝኾነ መገለጫ ኣይተረኽበን';
+  String get seekersNoProfiles => 'ዝኾነ ዓይነት ፕሮፋይል ኣይተረኽበን';
 
   @override
   String get seekersNoResults => 'ዝኾነ ደላይ ስራሕ ኣይተረኽበን';
@@ -2962,7 +2963,7 @@ class AppLocalizationsTi extends AppLocalizations {
       'ገደብኩም በፂሕኩም ኣለኹም። ተወሳኺ ስራሕ ንምልጣፍ ፓኬጅኩም ኣማሓይሹ።';
 
   @override
-  String get seekerProfileDetails => 'ዝርዝር መገለጫ';
+  String get seekerProfileDetails => 'ዝርዝር ፕሮፋይል';
 
   @override
   String get seekerExperience => 'ተመክሮ';
