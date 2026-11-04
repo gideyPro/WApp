@@ -9,17 +9,21 @@ import 'package:wavemart/l10n/app_localizations.dart';
 import 'package:wavemart/presentation/screens/job_seekers/widgets/job_seeker_card.dart';
 
 void main() {
-  Widget buildTestableWidget(Widget child) {
+  Widget buildTestableWidget(
+    Widget child, {
+    Locale locale = const Locale('en'),
+  }) {
     return ProviderScope(
       child: MaterialApp(
         theme: AppTheme.lightTheme,
+        locale: locale,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const [Locale('en')],
+        supportedLocales: const [Locale('en'), Locale('am'), Locale('ti')],
         home: Scaffold(
           body: SingleChildScrollView(child: child),
         ),
@@ -36,7 +40,6 @@ void main() {
     String? cv = 'resumes/dawit_cv.pdf',
     String? description =
         'Experienced mobile engineer specializing in Flutter, Dart & Riverpod.',
-    String? location = 'Addis Ababa, Bole',
     bool isVerified = true,
   }) {
     return JobSeekerProfile(
@@ -55,7 +58,6 @@ void main() {
       ],
       cv: cv,
       description: description,
-      location: location,
       isVerified: isVerified,
       isPublic: true,
       createdAt: DateTime.now().subtract(const Duration(days: 2)),
@@ -95,14 +97,19 @@ void main() {
     expect(find.text('IT & Software'), findsOneWidget);
     expect(find.text('CV Attached'), findsOneWidget);
 
+    // Verify seniority and activity labels
+    expect(find.text('Mid-Senior Level'), findsOneWidget);
+    expect(find.text('Active this week'), findsOneWidget);
+
     // Verify bio preview
     expect(
       find.text('"Experienced mobile engineer specializing in Flutter, Dart & Riverpod."'),
       findsOneWidget,
     );
 
-    // Verify footer location & availability badge
-    expect(find.textContaining('Addis Ababa, Bole'), findsOneWidget);
+    // Verify footer recency and availability badge. Job-seeker profiles have no
+    // location column, so the footer must never imply one exists.
+    expect(find.byIcon(Icons.location_on_outlined), findsNothing);
     expect(find.text('Available for Hire'), findsOneWidget);
 
     // Verify favorite heart button tap
@@ -143,6 +150,66 @@ void main() {
     expect(find.text('CV Attached'), findsNothing);
     expect(find.text('Available for Hire'), findsOneWidget);
   });
+
+  testWidgets('JobSeekerCard renders verified badge from user.is_kyc_verified', (tester) async {
+    final profile = JobSeekerProfile.fromJson({
+      'id': 42,
+      'user_id': 10,
+      'full_name': 'Dawit Bekele',
+      'professional_title': 'Senior Flutter Developer',
+      'education_level': 'bachelors',
+      'is_public': true,
+      'user': {
+        'id': 10,
+        'is_kyc_verified': true,
+      },
+    });
+
+    await tester.pumpWidget(
+      buildTestableWidget(JobSeekerCard(profile: profile)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('VERIFIED'), findsOneWidget);
+  });
+
+  for (final locale in const [Locale('am'), Locale('ti')]) {
+    test(
+      'job-seeker card labels are translated (${locale.languageCode})',
+      () async {
+        final l10n = await AppLocalizations.delegate.load(locale);
+
+        expect(l10n.seekerSeniorLevel, isNot('Senior Level'));
+        expect(l10n.seekerMidSeniorLevel, isNot('Mid-Senior Level'));
+        expect(l10n.seekerMidLevel, isNot('Mid Level'));
+        expect(l10n.seekerJuniorLevel, isNot('Junior Level'));
+        expect(l10n.seekerActiveThisWeek, isNot('Active this week'));
+        expect(l10n.seekerActiveThisMonth, isNot('Active this month'));
+        expect(l10n.seekerActiveRecently, isNot('Active recently'));
+      },
+    );
+  }
+
+  testWidgets(
+    'JobSeekerCard localizes seniority and activity labels',
+    (tester) async {
+      final profile = createSampleProfile();
+      final l10n = await AppLocalizations.delegate.load(const Locale('am'));
+
+      await tester.pumpWidget(
+        buildTestableWidget(
+          JobSeekerCard(profile: profile),
+          locale: const Locale('am'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.seekerMidSeniorLevel), findsOneWidget);
+      expect(find.text(l10n.seekerActiveThisWeek), findsOneWidget);
+      expect(find.text('Mid-Senior Level'), findsNothing);
+      expect(find.text('Active this week'), findsNothing);
+    },
+  );
 
   testWidgets('JobSeekerCardSkeleton renders placeholder shimmer', (tester) async {
     await tester.pumpWidget(

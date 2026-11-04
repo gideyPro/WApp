@@ -3088,6 +3088,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seekerCvAttached => 'CV Attached';
 
   @override
+  String get seekerSeniorLevel => 'Senior Level';
+
+  @override
+  String get seekerMidSeniorLevel => 'Mid-Senior Level';
+
+  @override
+  String get seekerMidLevel => 'Mid Level';
+
+  @override
+  String get seekerJuniorLevel => 'Junior Level';
+
+  @override
+  String get seekerActiveThisWeek => 'Active this week';
+
+  @override
+  String get seekerActiveThisMonth => 'Active this month';
+
+  @override
+  String get seekerActiveRecently => 'Active recently';
+
+  @override
   String get listingPerDay => '/ day';
 
   @override

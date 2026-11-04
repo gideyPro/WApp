@@ -3045,6 +3045,27 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerCvAttached => 'ሲቪ ተተሓሒዙ';
 
   @override
+  String get seekerSeniorLevel => 'ላዕለዋይ ደረጃ';
+
+  @override
+  String get seekerMidSeniorLevel => 'ማእከላይ-ላዕለዋይ ደረጃ';
+
+  @override
+  String get seekerMidLevel => 'ማእከላይ ደረጃ';
+
+  @override
+  String get seekerJuniorLevel => 'ጀማሪ ደረጃ';
+
+  @override
+  String get seekerActiveThisWeek => 'ኣብዚ ሰሙን ንጡፍ';
+
+  @override
+  String get seekerActiveThisMonth => 'ኣብዚ ወርሒ ንጡፍ';
+
+  @override
+  String get seekerActiveRecently => 'ኣብ ቀረባ እዋን ንጡፍ';
+
+  @override
   String get listingPerDay => '/ መዓልቲ';
 
   @override

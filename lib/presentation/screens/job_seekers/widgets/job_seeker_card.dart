@@ -62,23 +62,22 @@ class _JobSeekerCardState extends State<JobSeekerCard> {
     return trimmed.substring(0, trimmed.length >= 2 ? 2 : 1).toUpperCase();
   }
 
-  String? _seniorityLevel() {
+  String? _seniorityLevel(AppLocalizations l10n) {
     final yrs = profile.totalExperienceYears;
-    if (yrs >= 7) return 'Senior Level';
-    if (yrs >= 4) return 'Mid-Senior Level';
-    if (yrs >= 2) return 'Mid Level';
-    if (yrs >= 1) return 'Junior Level';
-    if (yrs > 0) return 'Junior Level';
+    if (yrs >= 7) return l10n.seekerSeniorLevel;
+    if (yrs >= 4) return l10n.seekerMidSeniorLevel;
+    if (yrs >= 2) return l10n.seekerMidLevel;
+    if (yrs > 0) return l10n.seekerJuniorLevel;
     return null;
   }
 
-  String _activityText() {
+  String _activityText(AppLocalizations l10n) {
     final date = profile.updatedAt ?? profile.createdAt;
-    if (date == null) return 'Active recently';
+    if (date == null) return l10n.seekerActiveRecently;
     final daysOld = DateTime.now().difference(date).inDays;
-    if (daysOld <= 7) return 'Active this week';
-    if (daysOld <= 30) return 'Active this month';
-    return 'Active recently';
+    if (daysOld <= 7) return l10n.seekerActiveThisWeek;
+    if (daysOld <= 30) return l10n.seekerActiveThisMonth;
+    return l10n.seekerActiveRecently;
   }
 
   String? _experienceChipText(AppLocalizations l10n) {
@@ -262,14 +261,10 @@ class _JobSeekerCardState extends State<JobSeekerCard> {
     final educationChip = _educationChipText(l10n);
     final hasCv = profile.hasCv;
 
-    final seniority = _seniorityLevel();
-    final activity = _activityText();
+    final seniority = _seniorityLevel(l10n);
+    final activity = _activityText(l10n);
 
-    final locationStr = profile.location?.trim();
     final recencyStr = _formatRecency(l10n);
-    final footerLeftText = (locationStr != null && locationStr.isNotEmpty)
-        ? '$locationStr • $recencyStr'
-        : recencyStr;
 
     final hasBio = profile.description != null &&
         profile.description!.trim().isNotEmpty;
@@ -580,7 +575,7 @@ class _JobSeekerCardState extends State<JobSeekerCard> {
               ),
             ),
 
-            // Footer Row: Location & Recency on Left, Available for Hire Badge on Right
+            // Footer Row: Recency on Left, Available for Hire Badge on Right
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -590,16 +585,14 @@ class _JobSeekerCardState extends State<JobSeekerCard> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        (locationStr != null && locationStr.isNotEmpty)
-                            ? Icons.location_on_outlined
-                            : Icons.schedule_rounded,
+                        Icons.schedule_rounded,
                         size: 13,
                         color: context.theme.textMuted,
                       ),
                       const SizedBox(width: 3.5),
                       Flexible(
                         child: Text(
-                          footerLeftText,
+                          recencyStr,
                           style: AppTextStyles.caption.copyWith(
                             color: context.theme.textMuted,
                             fontSize: 11.5,

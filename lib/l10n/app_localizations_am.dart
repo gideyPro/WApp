@@ -3047,6 +3047,27 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekerCvAttached => 'CV ተያይዟል';
 
   @override
+  String get seekerSeniorLevel => 'ከፍተኛ ደረጃ';
+
+  @override
+  String get seekerMidSeniorLevel => 'መካከለኛ-ከፍተኛ ደረጃ';
+
+  @override
+  String get seekerMidLevel => 'መካከለኛ ደረጃ';
+
+  @override
+  String get seekerJuniorLevel => 'ጀማሪ ደረጃ';
+
+  @override
+  String get seekerActiveThisWeek => 'በዚህ ሳምንት ንቁ';
+
+  @override
+  String get seekerActiveThisMonth => 'በዚህ ወር ንቁ';
+
+  @override
+  String get seekerActiveRecently => 'በቅርብ ጊዜ ንቁ';
+
+  @override
   String get listingPerDay => '/ ቀን';
 
   @override

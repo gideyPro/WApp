@@ -5854,6 +5854,48 @@ abstract class AppLocalizations {
   /// **'CV Attached'**
   String get seekerCvAttached;
 
+  /// No description provided for @seekerSeniorLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Senior Level'**
+  String get seekerSeniorLevel;
+
+  /// No description provided for @seekerMidSeniorLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mid-Senior Level'**
+  String get seekerMidSeniorLevel;
+
+  /// No description provided for @seekerMidLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mid Level'**
+  String get seekerMidLevel;
+
+  /// No description provided for @seekerJuniorLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Junior Level'**
+  String get seekerJuniorLevel;
+
+  /// No description provided for @seekerActiveThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Active this week'**
+  String get seekerActiveThisWeek;
+
+  /// No description provided for @seekerActiveThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Active this month'**
+  String get seekerActiveThisMonth;
+
+  /// No description provided for @seekerActiveRecently.
+  ///
+  /// In en, this message translates to:
+  /// **'Active recently'**
+  String get seekerActiveRecently;
+
   /// No description provided for @listingPerDay.
   ///
   /// In en, this message translates to:

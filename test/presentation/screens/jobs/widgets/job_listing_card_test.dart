@@ -107,7 +107,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Per Agreement'), findsOneWidget);
+    expect(find.text('Salary on agreement'), findsOneWidget);
   });
 
   testWidgets('JobListingCard displays urgency badge for close deadline', (tester) async {

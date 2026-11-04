@@ -16,7 +16,6 @@ class JobSeekerProfile {
   final String? description;
   final bool isPublic;
   final bool isVerified;
-  final String? location;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -35,7 +34,6 @@ class JobSeekerProfile {
     this.description,
     required this.isPublic,
     this.isVerified = false,
-    this.location,
     this.createdAt,
     this.updatedAt,
   });
@@ -83,10 +81,6 @@ class JobSeekerProfile {
           (json['user'] is Map &&
               (json['user']['is_kyc_verified'] == true ||
                   json['user']['is_kyc_verified'] == 1)),
-      location: (json['location'] ??
-              json['city'] ??
-              (json['user'] is Map ? json['user']['city'] : null))
-          as String?,
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
     );
@@ -118,7 +112,6 @@ class JobSeekerProfile {
       'description': description,
       'is_public': isPublic,
       'is_verified': isVerified,
-      if (location != null) 'location': location,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -139,7 +132,6 @@ class JobSeekerProfile {
     String? description,
     bool? isPublic,
     bool? isVerified,
-    String? location,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -158,7 +150,6 @@ class JobSeekerProfile {
       description: description ?? this.description,
       isPublic: isPublic ?? this.isPublic,
       isVerified: isVerified ?? this.isVerified,
-      location: location ?? this.location,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
