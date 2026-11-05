@@ -83,9 +83,11 @@ class OrderRange {
   }
 }
 
-/// Exact address attached to a buyer request.
+/// Address attached to a buyer request.
 ///
-/// Unlike catalog locations this is never masked: the buyer chose it.
+/// The public browse feed only carries region/zone; the VIP detail payload adds
+/// woreda, kebele and the full address. Localized siblings are injected by the
+/// API and used whenever the app locale is not English.
 class OrderAddress {
   final int? id;
   final String? region;
@@ -93,6 +95,10 @@ class OrderAddress {
   final String? woreda;
   final String? kebele;
   final String? fullAddress;
+  final String? regionLocalized;
+  final String? zoneLocalized;
+  final String? woredaLocalized;
+  final String? kebeleLocalized;
 
   const OrderAddress({
     this.id,
@@ -101,19 +107,45 @@ class OrderAddress {
     this.woreda,
     this.kebele,
     this.fullAddress,
+    this.regionLocalized,
+    this.zoneLocalized,
+    this.woredaLocalized,
+    this.kebeleLocalized,
   });
 
-  String get displayAddress {
-    final explicit = _text(fullAddress);
-    if (explicit != null) return explicit;
+  /// Human readable address for the current locale.
+  ///
+  /// [broadOnly] mirrors the public teaser: only region and zone are exposed
+  /// before the VIP gate, so callers must not append woreda/kebele there.
+  String displayAddressFor(String locale, {bool broadOnly = false}) {
+    final useLocalized = locale != 'en';
 
-    final parts = [region, zone, woreda, kebele]
-        .map(_text)
-        .whereType<String>()
-        .toList(growable: false);
+    String? pick(String? base, String? localized) =>
+        useLocalized ? (_text(localized) ?? _text(base)) : _text(base);
+
+    if (!broadOnly) {
+      final explicit = _text(fullAddress);
+      if (explicit != null) return explicit;
+    }
+
+    final parts = [
+      pick(region, regionLocalized),
+      pick(zone, zoneLocalized),
+      if (!broadOnly) pick(woreda, woredaLocalized),
+      if (!broadOnly) pick(kebele, kebeleLocalized),
+    ].whereType<String>().toList(growable: false);
 
     return parts.isEmpty ? '' : parts.join(', ');
   }
+
+  /// English/current-locale address including every exposed part.
+  String get displayAddress => displayAddressFor('en');
+
+  bool get hasBroadArea =>
+      _text(region) != null ||
+      _text(zone) != null ||
+      _text(regionLocalized) != null ||
+      _text(zoneLocalized) != null;
 
   factory OrderAddress.fromJson(dynamic json) {
     final map = json is Map ? json : const {};
@@ -124,13 +156,20 @@ class OrderAddress {
       woreda: _text(map['woreda']),
       kebele: _text(map['kebele']),
       fullAddress: _text(map['full_address']),
+      regionLocalized: _text(map['region_localized']),
+      zoneLocalized: _text(map['zone_localized']),
+      woredaLocalized: _text(map['woreda_localized']),
+      kebeleLocalized: _text(map['kebele_localized']),
     );
   }
 }
 
 /// Public buyer details attached to an order in browse feeds.
+///
+/// The public browse payload intentionally omits the buyer's id so clients
+/// cannot bypass the VIP contact gate; only the VIP detail includes it.
 class OrderBuyer {
-  final int id;
+  final int? id;
   final String? fullName;
   final String? firstName;
   final String? lastName;
@@ -139,7 +178,7 @@ class OrderBuyer {
   final bool isKycVerified;
 
   const OrderBuyer({
-    required this.id,
+    this.id,
     this.fullName,
     this.firstName,
     this.lastName,
@@ -148,15 +187,25 @@ class OrderBuyer {
     this.isKycVerified = false,
   });
 
-  String get displayName =>
-      _text(fullName) ??
-      _text(firstName) ??
-      'Buyer #$id';
+  /// Best available display name, or null when the API sent none.
+  String? get name {
+    final full = _text(fullName);
+    if (full != null) return full;
+
+    final first = _text(firstName);
+    final last = _text(lastName);
+    if (first == null) return last;
+    return last == null ? first : '$first $last';
+  }
+
+  bool get hasName => name != null;
+
+  String get displayName => name ?? (id == null ? 'Buyer' : 'Buyer #$id');
 
   factory OrderBuyer.fromJson(dynamic json) {
     final map = json is Map ? json : const {};
     return OrderBuyer(
-      id: TypeUtils.safeInt(map['id']) ?? 0,
+      id: TypeUtils.safeInt(map['id']),
       fullName: _text(map['full_name']),
       firstName: _text(map['first_name']),
       lastName: _text(map['last_name']),
@@ -214,6 +263,10 @@ class BuyerOrder {
 
   bool get isRental => listingType == 'rental';
 
+  bool get isCar => type == ListingKind.car;
+
+  bool get isProperty => type == ListingKind.house || type == ListingKind.land;
+
   bool get hasAddress => address != null;
 
   bool get hasSuggestions => suggestionsCount > 0;
@@ -222,8 +275,32 @@ class BuyerOrder {
 
   bool get canCancel => status.isActive;
 
+  String? get vehicleMake => _text(vehicleDetails?['make']);
+
+  String? get vehicleModel => _text(vehicleDetails?['model']);
+
+  int? get vehicleYearMin => TypeUtils.safeInt(vehicleDetails?['year_min']);
+
+  int? get vehicleYearMax => TypeUtils.safeInt(vehicleDetails?['year_max']);
+
+  String? get vehicleTransmission => _text(vehicleDetails?['transmission']);
+
+  String? get vehicleFuelType => _text(vehicleDetails?['fuel_type']);
+
+  String? get vehicleBodyType => _text(vehicleDetails?['body_type']);
+
+  /// Human readable vehicle summary, e.g. "Toyota Corolla".
+  String? get vehicleName {
+    final make = vehicleMake;
+    final model = vehicleModel;
+    if (make == null && model == null) return null;
+    return [make, model].whereType<String>().join(' ');
+  }
+
   factory BuyerOrder.fromJson(Map<String, dynamic> json) {
-    final rawAddress = json['address'];
+    // Older browse payloads used `location`; the current contract uses
+    // `address`. Accept both so cached/fixture data keeps working.
+    final rawAddress = json['address'] ?? json['location'];
 
     return BuyerOrder(
       id: TypeUtils.safeInt(json['id']) ?? 0,

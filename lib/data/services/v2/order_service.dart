@@ -42,7 +42,11 @@ class OrderServiceV2 {
   }
 
   /// Public browse feed for active buyer orders across all categories.
+  ///
+  /// [category] is the coarse home filter (`property` = house + land,
+  /// `vehicle` = car). [type] remains available for one exact type.
   Future<Paginated<BuyerOrder>> fetchBrowseOrders({
+    String? category,
     String? type,
     String? listingType,
     String? location,
@@ -55,6 +59,8 @@ class OrderServiceV2 {
       ApiV2Constants.ordersBrowse,
       parse: BuyerOrder.fromJson,
       query: {
+        if (category != null && category.isNotEmpty && category != 'all')
+          'category': category,
         if (type != null && type.isNotEmpty && type != 'all') 'type': type,
         if (listingType != null && listingType.isNotEmpty)
           'listing_type': listingType,

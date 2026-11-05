@@ -3,9 +3,9 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../data/models/v2/buyer_order.dart';
-import '../../../../data/models/v2/listing_summary.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../widgets/common/wave_card.dart';
+import '../../../widgets/status_helpers.dart';
 
 class PublicOrderCard extends StatelessWidget {
   final BuyerOrder order;
@@ -27,50 +27,24 @@ class PublicOrderCard extends StatelessWidget {
     return l10n.listingMonthsAgo((days / 30).floor());
   }
 
-  String _formatBudget(OrderRange budget) {
-    if (budget.min != null && budget.max != null) {
-      return 'ETB ${_compactNumber(budget.min!)} - ${_compactNumber(budget.max!)}';
-    }
-    if (budget.min != null) {
-      return 'ETB ${_compactNumber(budget.min!)}+';
-    }
-    if (budget.max != null) {
-      return 'Up to ETB ${_compactNumber(budget.max!)}';
-    }
-    return 'Budget on agreement';
-  }
-
-  String _compactNumber(double n) {
-    if (n >= 1000000) {
-      final v = n / 1000000;
-      return v.truncateToDouble() == v ? '${v.toInt()}M' : '${v.toStringAsFixed(1)}M';
-    }
-    if (n >= 1000) {
-      final v = n / 1000;
-      return v.truncateToDouble() == v ? '${v.toInt()}K' : '${v.toStringAsFixed(1)}K';
-    }
-    return n.toInt().toString();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isDark = context.theme.isDark;
     final buyer = order.buyer;
-    final isCar = order.type == ListingKind.car;
-    final isRental = order.listingType == 'rental';
+    final isCar = order.isCar;
+    final isRental = order.isRental;
 
-    final categoryLabel = switch (order.type) {
-      ListingKind.car => l10n.listingCar,
-      ListingKind.land => l10n.listingLand,
-      _ => l10n.listingHouse,
-    };
+    final categoryLabel = orderTypeLabel(order.type, l10n);
     final intentLabel = isRental ? l10n.listingRent : l10n.listingSale;
     final recencyStr = _formatRecency(order.createdAt, l10n);
+    final headline = orderHeadline(order, l10n);
+    final areaLabel = orderAreaLabel(order.area, l10n);
+    final vehicleYear = vehicleYearLabel(order, l10n);
 
     return Semantics(
       button: true,
-      label: '${order.title ?? categoryLabel}, $intentLabel',
+      label: '$headline, $intentLabel',
       child: WaveCard(
         onTap: onTap,
         margin: EdgeInsets.zero,
@@ -138,7 +112,7 @@ class PublicOrderCard extends StatelessWidget {
 
             // Line 2: Order Title
             Text(
-              order.title ?? '$categoryLabel $intentLabel',
+              headline,
               style: AppTextStyles.titleSmall.copyWith(
                 color: context.theme.textPrimary,
                 fontWeight: FontWeight.w700,
@@ -152,7 +126,7 @@ class PublicOrderCard extends StatelessWidget {
 
             // Line 3: Budget Range
             Text(
-              _formatBudget(order.budget),
+              orderBudgetLabel(order.budget, l10n, compact: true),
               style: TextStyle(
                 color: isDark ? const Color(0xFF34D399) : const Color(0xFF059669),
                 fontWeight: FontWeight.w800,
@@ -167,33 +141,50 @@ class PublicOrderCard extends StatelessWidget {
               spacing: 6,
               runSpacing: 4,
               children: [
-                if (order.address?.displayAddress.isNotEmpty == true)
+                if (order.address?.displayAddressFor(
+                      l10n.localeName,
+                      broadOnly: true,
+                    ).isNotEmpty ==
+                    true)
                   _specChip(
                     context,
                     Icons.location_on_outlined,
-                    order.address!.displayAddress,
+                    order.address!.displayAddressFor(
+                      l10n.localeName,
+                      broadOnly: true,
+                    ),
                     isDark,
                   ),
-                if (!isCar && order.area.hasMin)
+                if (!isCar && areaLabel.isNotEmpty)
                   _specChip(
                     context,
                     Icons.square_foot_rounded,
-                    '${order.area.min!.toInt()}+ m²',
+                    areaLabel,
                     isDark,
                   ),
-                if (isCar && order.vehicleDetails != null) ...[
-                  if (order.vehicleDetails!['year_min'] != null)
+                if (isCar) ...[
+                  if (vehicleYear.isNotEmpty)
                     _specChip(
                       context,
                       Icons.calendar_today_rounded,
-                      '${order.vehicleDetails!['year_min']}+',
+                      vehicleYear,
                       isDark,
                     ),
-                  if (order.vehicleDetails!['transmission'] != null)
+                  if (order.vehicleTransmission != null)
                     _specChip(
                       context,
                       Icons.tune_rounded,
-                      order.vehicleDetails!['transmission'].toString().toUpperCase(),
+                      transmissionLabel(
+                        order.vehicleTransmission!,
+                        l10n,
+                      ),
+                      isDark,
+                    ),
+                  if (order.vehicleFuelType != null)
+                    _specChip(
+                      context,
+                      Icons.local_gas_station_outlined,
+                      fuelTypeLabel(order.vehicleFuelType!, l10n),
                       isDark,
                     ),
                 ],
@@ -215,44 +206,49 @@ class PublicOrderCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Buyer monogram / identity
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundColor: isDark
-                          ? const Color(0xFF0F766E).withValues(alpha: 0.6)
-                          : const Color(0xFFCCFBF1),
-                      child: Text(
-                        (buyer?.displayName.isNotEmpty == true
-                                ? buyer!.displayName[0]
-                                : 'B')
-                            .toUpperCase(),
-                        style: TextStyle(
-                          color: isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0F766E),
-                          fontWeight: FontWeight.w800,
-                          fontSize: 11,
+                Flexible(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircleAvatar(
+                        radius: 12,
+                        backgroundColor: isDark
+                            ? const Color(0xFF0F766E).withValues(alpha: 0.6)
+                            : const Color(0xFFCCFBF1),
+                        child: Text(
+                          (buyer?.hasName == true
+                                  ? buyer!.name![0]
+                                  : l10n.ordersBuyer[0])
+                              .toUpperCase(),
+                          style: TextStyle(
+                            color: isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0F766E),
+                            fontWeight: FontWeight.w800,
+                            fontSize: 11,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      buyer?.displayName ?? 'Buyer',
-                      style: AppTextStyles.caption.copyWith(
-                        color: context.theme.textSecondary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11.5,
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          buyer?.name ?? l10n.ordersBuyer,
+                          style: AppTextStyles.caption.copyWith(
+                            color: context.theme.textSecondary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11.5,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    if (buyer?.isKycVerified == true) ...[
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.check_circle_rounded,
-                        size: 13,
-                        color: Color(0xFF10B981),
-                      ),
+                      if (buyer?.isKycVerified == true) ...[
+                        const SizedBox(width: 4),
+                        const Icon(
+                          Icons.check_circle_rounded,
+                          size: 13,
+                          color: Color(0xFF10B981),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
 
                 // VIP Status indicator
@@ -300,7 +296,7 @@ class PublicOrderCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 3),
                             Text(
-                              'VIP REQUIRED',
+                              l10n.ordersVipRequiredBadge.toUpperCase(),
                               style: TextStyle(
                                 color: isDark ? const Color(0xFFFCD34D) : const Color(0xFFB45309),
                                 fontSize: 9,

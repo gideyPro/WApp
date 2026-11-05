@@ -8,6 +8,7 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../data/services/address_service.dart';
 import '../../../data/models/address.dart';
+import '../../../data/car_data.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_card.dart';
@@ -16,6 +17,7 @@ import '../../widgets/common/wave_liquid_glass.dart';
 
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
+import '../../widgets/status_helpers.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
   const CreateOrderScreen({super.key});
@@ -44,6 +46,25 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   final _modelCtrl = TextEditingController();
   final _minYearCtrl = TextEditingController();
   final _maxYearCtrl = TextEditingController();
+  String? _transmission;
+  String? _fuelType;
+  String? _bodyType;
+
+  static const _transmissionOptions = ['automatic', 'manual'];
+  static const _fuelTypeOptions = ['petrol', 'diesel', 'hybrid', 'electric'];
+  static const _bodyTypeOptions = [
+    'sedan',
+    'SUV',
+    'hatchback',
+    'pickup',
+    'truck',
+    'van',
+    'minibus',
+    'coupe',
+    'convertible',
+    'station_wagon',
+    'other',
+  ];
 
   // Address picker
   AddressService get _addressService => ref.read(addressServiceProvider);
@@ -233,14 +254,17 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       if (_maxAreaCtrl.text.isNotEmpty) data['max_area'] = _maxAreaCtrl.text.replaceAll(',', '');
     } else {
       final vehicleDetails = <String, dynamic>{
-        if (_makeCtrl.text.trim().isNotEmpty) 'make': _makeCtrl.text.trim(),
-        if (_modelCtrl.text.trim().isNotEmpty) 'model': _modelCtrl.text.trim(),
-        if (_minYearCtrl.text.trim().isNotEmpty) 'year_min': int.tryParse(_minYearCtrl.text.trim()),
-        if (_maxYearCtrl.text.trim().isNotEmpty) 'year_max': int.tryParse(_maxYearCtrl.text.trim()),
+        'make': _makeCtrl.text.trim(),
+        'model': _modelCtrl.text.trim(),
+        if (_minYearCtrl.text.trim().isNotEmpty)
+          'year_min': int.tryParse(_minYearCtrl.text.trim()),
+        if (_maxYearCtrl.text.trim().isNotEmpty)
+          'year_max': int.tryParse(_maxYearCtrl.text.trim()),
+        if (_transmission != null) 'transmission': _transmission,
+        if (_fuelType != null) 'fuel_type': _fuelType,
+        if (_bodyType != null) 'body_type': _bodyType,
       };
-      if (vehicleDetails.isNotEmpty) {
-        data['vehicle_details'] = vehicleDetails;
-      }
+      data['vehicle_details'] = vehicleDetails;
     }
     if (_kebeleId != null) data['address_id'] = _kebeleId;
     if (_minBudgetCtrl.text.isNotEmpty) data['min_budget'] = _minBudgetCtrl.text.replaceAll(',', '');
@@ -253,7 +277,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       setState(() => _submitting = false);
       if (response.success) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).ordersCreated), backgroundColor: AppColors.success));
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message), backgroundColor: AppColors.error));
       }
@@ -262,6 +286,28 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   String? _requiredValidator(String? value) {
     if (value == null || value.trim().isEmpty) return AppLocalizations.of(context).orderRequired;
+    return null;
+  }
+
+  String? _yearValidator(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    final year = int.tryParse(value.trim());
+    final maxYear = DateTime.now().year + 1;
+    if (year == null || year < 1970 || year > maxYear) {
+      return AppLocalizations.of(context).orderYearInvalid;
+    }
+    return null;
+  }
+
+  String? _maxYearValidator(String? value) {
+    final invalid = _yearValidator(value);
+    if (invalid != null) return invalid;
+
+    final min = int.tryParse(_minYearCtrl.text.trim());
+    final max = int.tryParse(value?.trim() ?? '');
+    if (min != null && max != null && max < min) {
+      return AppLocalizations.of(context).orderYearRangeInvalid;
+    }
     return null;
   }
 
@@ -515,6 +561,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                             controller: _makeCtrl,
                             style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                             decoration: _inputDecoration(label: l10n.listingMake),
+                            validator: _requiredValidator,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -523,6 +570,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                             controller: _modelCtrl,
                             style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                             decoration: _inputDecoration(label: l10n.listingModel),
+                            validator: _requiredValidator,
                           ),
                         ),
                       ],
@@ -539,6 +587,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                             style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                             decoration: _inputDecoration(label: l10n.searchAreaMin),
                             keyboardType: TextInputType.number,
+                            validator: _yearValidator,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -548,9 +597,93 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                             style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
                             decoration: _inputDecoration(label: l10n.searchAreaMax),
                             keyboardType: TextInputType.number,
+                            validator: _maxYearValidator,
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            initialValue: _transmission,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            decoration: _inputDecoration(label: l10n.listingTransmission),
+                            dropdownColor: context.sheetBg,
+                            items: [
+                              DropdownMenuItem(
+                                value: null,
+                                child: Text(
+                                  l10n.searchFilterAny,
+                                  style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                                ),
+                              ),
+                              for (final value in _transmissionOptions)
+                                DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    transmissionLabel(value, l10n),
+                                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                                  ),
+                                ),
+                            ],
+                            onChanged: (v) => setState(() => _transmission = v),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            initialValue: _fuelType,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            decoration: _inputDecoration(label: l10n.listingFuelType),
+                            dropdownColor: context.sheetBg,
+                            items: [
+                              DropdownMenuItem(
+                                value: null,
+                                child: Text(
+                                  l10n.searchFilterAny,
+                                  style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                                ),
+                              ),
+                              for (final value in _fuelTypeOptions)
+                                DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    fuelTypeLabel(value, l10n),
+                                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                                  ),
+                                ),
+                            ],
+                            onChanged: (v) => setState(() => _fuelType = v),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    DropdownButtonFormField<String>(
+                      initialValue: _bodyType,
+                      style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                      decoration: _inputDecoration(label: l10n.listingBodyType),
+                      dropdownColor: context.sheetBg,
+                      items: [
+                        DropdownMenuItem(
+                          value: null,
+                          child: Text(
+                            l10n.searchFilterAny,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
+                          ),
+                        ),
+                        for (final value in _bodyTypeOptions)
+                          DropdownMenuItem(
+                            value: value,
+                            child: Text(
+                              bodyTypeLabel(value, l10n),
+                              style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            ),
+                          ),
+                      ],
+                      onChanged: (v) => setState(() => _bodyType = v),
                     ),
                   ],
                 ),

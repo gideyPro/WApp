@@ -1767,6 +1767,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get orderRequired => 'አስፈላጊ';
 
   @override
+  String get orderYearInvalid => 'ትክክለኛ ዓመት ያስገቡ';
+
+  @override
+  String get orderYearRangeInvalid => 'ከፍተኛው ዓመት ከዝቅተኛው በኋላ መሆን አለበት';
+
+  @override
   String orderUpTo(Object price, Object unit) {
     return 'እስከ $price $unit';
   }
@@ -3162,6 +3168,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersBrowseEmpty => 'ምንም የገዢዎች ትዕዛዝ አልተገኘም';
 
   @override
+  String get ordersBrowseError => 'የገዢዎች ትዕዛዞችን መጫን አልተቻለም';
+
+  @override
   String get ordersVehicleCriteria => 'የመኪና መስፈርቶች';
 
   @override
@@ -3175,4 +3184,42 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get ordersPostRequest => 'የግዢ ፍላጎት ይለጥፉ';
+
+  @override
+  String get ordersBudgetOnAgreement => 'በስምምነት የሚወሰን በጀት';
+
+  @override
+  String ordersUpToBudget(String amount) {
+    return 'እስከ $amount';
+  }
+
+  @override
+  String get ordersTransmissionAutomatic => 'አውቶማቲክ';
+
+  @override
+  String get ordersTransmissionManual => 'ማንዋል';
+
+  @override
+  String get ordersFuelPetrol => 'ቤንዚን';
+
+  @override
+  String get ordersFuelDiesel => 'ናፍጣ';
+
+  @override
+  String get ordersYearPresent => 'እስከ አሁን';
+
+  @override
+  String get ordersBuyer => 'ገዢ';
+
+  @override
+  String get ordersVerifiedBuyer => 'የተረጋገጠ ገዢ';
+
+  @override
+  String get ordersBuyerInformation => 'የገዢ መረጃ';
+
+  @override
+  String get ordersVipRequiredBadge => 'VIP ያስፈልጋል';
+
+  @override
+  String get ordersDetailError => 'የትዕዛዝ ዝርዝር መጫን አልተቻለም';
 }

@@ -1766,6 +1766,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get orderRequired => 'የድሊ';
 
   @override
+  String get orderYearInvalid => 'ቅኑዕ ዓመት ኣእቱ';
+
+  @override
+  String get orderYearRangeInvalid => 'ዝለዓለ ዓመት ካብ ዝተሓተ ድሕሪ ክኸውን ኣለዎ';
+
+  @override
   String orderUpTo(Object price, Object unit) {
     return 'ክሳብ $price $unit';
   }
@@ -3161,6 +3167,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersBrowseEmpty => 'ዝኾነ ናይ ዓደግቲ ትእዛዝ ኣይተረኽበን';
 
   @override
+  String get ordersBrowseError => 'ናይ ዓደግቲ ትእዛዛት ክጽዕን ኣይተኻእለን';
+
+  @override
   String get ordersVehicleCriteria => 'ናይ መኪና መምዘኒታት';
 
   @override
@@ -3174,4 +3183,42 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get ordersPostRequest => 'ናይ ምግዛእ ድሌት ለጥፉ';
+
+  @override
+  String get ordersBudgetOnAgreement => 'ብስምምነት ዝውሰን በጀት';
+
+  @override
+  String ordersUpToBudget(String amount) {
+    return 'ክሳብ $amount';
+  }
+
+  @override
+  String get ordersTransmissionAutomatic => 'ኣውቶማቲክ';
+
+  @override
+  String get ordersTransmissionManual => 'ማንዋል';
+
+  @override
+  String get ordersFuelPetrol => 'ቤንዚን';
+
+  @override
+  String get ordersFuelDiesel => 'ናፍጣ';
+
+  @override
+  String get ordersYearPresent => 'ክሳብ ሕጂ';
+
+  @override
+  String get ordersBuyer => 'ዓዳጊ';
+
+  @override
+  String get ordersVerifiedBuyer => 'ተረጋጋጺ ዓዳጊ';
+
+  @override
+  String get ordersBuyerInformation => 'ሓበሬታ ዓዳጊ';
+
+  @override
+  String get ordersVipRequiredBadge => 'VIP የድሊ';
+
+  @override
+  String get ordersDetailError => 'ዝርዝር ትእዛዝ ክጽዕን ኣይተኻእለን';
 }

@@ -3370,6 +3370,18 @@ abstract class AppLocalizations {
   /// **'Required'**
   String get orderRequired;
 
+  /// No description provided for @orderYearInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid year'**
+  String get orderYearInvalid;
+
+  /// No description provided for @orderYearRangeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum year must be after minimum year'**
+  String get orderYearRangeInvalid;
+
   /// No description provided for @orderUpTo.
   ///
   /// In en, this message translates to:
@@ -6064,6 +6076,12 @@ abstract class AppLocalizations {
   /// **'No buyer orders found'**
   String get ordersBrowseEmpty;
 
+  /// No description provided for @ordersBrowseError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load buyer requests'**
+  String get ordersBrowseError;
+
   /// No description provided for @ordersVehicleCriteria.
   ///
   /// In en, this message translates to:
@@ -6093,6 +6111,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Post Buyer Request'**
   String get ordersPostRequest;
+
+  /// No description provided for @ordersBudgetOnAgreement.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget on agreement'**
+  String get ordersBudgetOnAgreement;
+
+  /// No description provided for @ordersUpToBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {amount}'**
+  String ordersUpToBudget(String amount);
+
+  /// No description provided for @ordersTransmissionAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get ordersTransmissionAutomatic;
+
+  /// No description provided for @ordersTransmissionManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get ordersTransmissionManual;
+
+  /// No description provided for @ordersFuelPetrol.
+  ///
+  /// In en, this message translates to:
+  /// **'Petrol'**
+  String get ordersFuelPetrol;
+
+  /// No description provided for @ordersFuelDiesel.
+  ///
+  /// In en, this message translates to:
+  /// **'Diesel'**
+  String get ordersFuelDiesel;
+
+  /// No description provided for @ordersYearPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get ordersYearPresent;
+
+  /// No description provided for @ordersBuyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer'**
+  String get ordersBuyer;
+
+  /// No description provided for @ordersVerifiedBuyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified Buyer'**
+  String get ordersVerifiedBuyer;
+
+  /// No description provided for @ordersBuyerInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer Information'**
+  String get ordersBuyerInformation;
+
+  /// No description provided for @ordersVipRequiredBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'VIP Required'**
+  String get ordersVipRequiredBadge;
+
+  /// No description provided for @ordersDetailError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load order details'**
+  String get ordersDetailError;
 }
 
 class _AppLocalizationsDelegate

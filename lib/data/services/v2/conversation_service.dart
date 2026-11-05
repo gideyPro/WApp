@@ -29,14 +29,17 @@ class ConversationServiceV2 {
     return ChatConversation.fromJson(data);
   }
 
-  /// Start (or reopen) a thread. Exactly one target must be supplied.
+  /// Start (or reopen) a thread. Exactly one target must be supplied:
+  /// a listing, a buyer request, or a user.
   Future<ChatConversation> start({
     int? listingId,
     int? userId,
+    int? orderId,
   }) async {
-    if ((listingId == null) == (userId == null)) {
+    final targets = [listingId, userId, orderId].whereType<int>().toList();
+    if (targets.length != 1) {
       throw ArgumentError(
-        'Pass exactly one of listingId or userId',
+        'Pass exactly one of listingId, userId or orderId',
       );
     }
 
@@ -46,6 +49,7 @@ class ConversationServiceV2 {
       body: {
         if (listingId != null) 'listing_id': listingId,
         if (userId != null) 'user_id': userId,
+        if (orderId != null) 'order_id': orderId,
       },
     );
 

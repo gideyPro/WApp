@@ -98,6 +98,11 @@ class UnifiedFilterValues {
           jobSalaryMin != null ||
           (location != null && location!.isNotEmpty);
     }
+    if (category == HomeCategory.orders) {
+      return priceMin != null ||
+          priceMax != null ||
+          (location != null && location!.isNotEmpty);
+    }
     return propertyType != null ||
         listingType != null ||
         isFeatured ||
@@ -180,6 +185,15 @@ class UnifiedFilterValues {
         educationLevel: key == 'education_level' ? null : educationLevel,
         jobSalaryMin: key == 'salary_min' ? null : jobSalaryMin,
         forSeekers: forSeekers,
+      );
+    }
+    if (category == HomeCategory.orders) {
+      return UnifiedFilterValues(
+        category: category,
+        priceMin: (key == 'price_min' || key == 'price_max') ? null : priceMin,
+        priceMax: (key == 'price_min' || key == 'price_max') ? null : priceMax,
+        sort: sort,
+        location: key == 'location' ? null : location,
       );
     }
     return UnifiedFilterValues(
@@ -353,6 +367,13 @@ class UnifiedFilterValues {
 
     if (category == HomeCategory.all) {
       params['include_all_types'] = true;
+    }
+
+    if (category == HomeCategory.orders) {
+      // The public orders feed uses budget_min/budget_max, not price_min/max.
+      if (priceMin != null) params['budget_min'] = priceMin;
+      if (priceMax != null) params['budget_max'] = priceMax;
+      return params;
     }
 
     final isVehicleRental =
@@ -746,6 +767,8 @@ class _FilterSheetState extends State<FilterSheet> {
                 ..._buildPropertySections(l10n)
               else if (_category == HomeCategory.jobs)
                 ..._buildJobSections(l10n)
+              else if (_category == HomeCategory.orders)
+                ..._buildOrderSections(l10n)
               else
                 ..._buildVehicleSections(l10n),
               const SizedBox(height: 8),
@@ -942,6 +965,46 @@ class _FilterSheetState extends State<FilterSheet> {
       const SizedBox(height: 16),
       _buildPriceSection(l10n),
       _buildSortSection(l10n, isVehicle: false),
+    ];
+  }
+
+  List<Widget> _buildOrderSections(AppLocalizations l10n) {
+    return [
+      Text(
+        l10n.ordersBudget,
+        style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+      ),
+      const SizedBox(height: 10),
+      _modalChipRow(
+        options: [
+          (l10n.searchFilterAny, null, _priceLabel == null),
+          (l10n.searchUnder5M, 'Under 5M', _priceLabel == 'Under 5M'),
+          (l10n.search5M10M, '5M-10M', _priceLabel == '5M-10M'),
+          (l10n.search10M50M, '10M-50M', _priceLabel == '10M-50M'),
+          (l10n.search50M100M, '50M-100M', _priceLabel == '50M-100M'),
+          (l10n.search100MPlus, '100M+', _priceLabel == '100M+'),
+        ],
+        onSelected: (v) {
+          final label = v as String?;
+          setState(() {
+            _priceLabel = label;
+            if (label == null) {
+              _priceMin = null;
+              _priceMax = null;
+            } else {
+              final range = _priceRanges[label]!;
+              _priceMin = range.$1;
+              _priceMax = range.$2;
+            }
+          });
+        },
+      ),
+      const SizedBox(height: 16),
+      Text(
+        l10n.searchPlaceholder,
+        style: AppTextStyles.bodySmall.copyWith(color: context.textSecondary),
+      ),
+      const SizedBox(height: 8),
     ];
   }
 

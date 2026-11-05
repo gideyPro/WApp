@@ -550,6 +550,8 @@
   "orderHoldingFacingSubtitle": "Holding type and facing direction",
   "orderDescriptionSubtitle": "Describe the property you need in detail",
   "orderRequired": "Required",
+  "orderYearInvalid": "Enter a valid year",
+  "orderYearRangeInvalid": "Maximum year must be after minimum year",
   "orderUpTo": "Up to {price} {unit}",
   "listingErrorPropertyTypeRequired": "Property type is required",
   "listingErrorHoldingTypeRequired": "Holding type is required",
@@ -1040,9 +1042,31 @@
   "ordersVipRequiredSubtitle": "Upgrade to a VIP plan to unlock full buyer requirements, detailed criteria, and direct contact details.",
   "ordersContactBuyer": "Contact Buyer",
   "ordersBrowseEmpty": "No buyer orders found",
+  "ordersBrowseError": "Could not load buyer requests",
   "ordersVehicleCriteria": "Vehicle Criteria",
   "ordersCallBuyer": "Call Buyer",
   "ordersChatBuyer": "Chat with Buyer",
   "ordersViewVipPlans": "View VIP Plans",
-  "ordersPostRequest": "Post Buyer Request"
+  "ordersPostRequest": "Post Buyer Request",
+  "ordersBudgetOnAgreement": "Budget on agreement",
+  "ordersUpToBudget": "Up to {amount}",
+  "@ordersUpToBudget": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "ordersTransmissionAutomatic": "Automatic",
+  "ordersTransmissionManual": "Manual",
+  "ordersFuelPetrol": "Petrol",
+  "ordersFuelDiesel": "Diesel",
+  "ordersYearPresent": "Present",
+  "ordersBuyer": "Buyer",
+  "ordersVerifiedBuyer": "Verified Buyer",
+  "ordersBuyerInformation": "Buyer Information",
+  "ordersVipRequiredBadge": "VIP Required",
+  "ordersDetailError": "Could not load order details",
+  "orderYearInvalid": "Enter a valid year",
+  "orderYearRangeInvalid": "Maximum year must be after minimum year"
 }

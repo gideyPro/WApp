@@ -1790,6 +1790,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderRequired => 'Required';
 
   @override
+  String get orderYearInvalid => 'Enter a valid year';
+
+  @override
+  String get orderYearRangeInvalid => 'Maximum year must be after minimum year';
+
+  @override
   String orderUpTo(Object price, Object unit) {
     return 'Up to $price $unit';
   }
@@ -3203,6 +3209,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersBrowseEmpty => 'No buyer orders found';
 
   @override
+  String get ordersBrowseError => 'Could not load buyer requests';
+
+  @override
   String get ordersVehicleCriteria => 'Vehicle Criteria';
 
   @override
@@ -3216,4 +3225,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ordersPostRequest => 'Post Buyer Request';
+
+  @override
+  String get ordersBudgetOnAgreement => 'Budget on agreement';
+
+  @override
+  String ordersUpToBudget(String amount) {
+    return 'Up to $amount';
+  }
+
+  @override
+  String get ordersTransmissionAutomatic => 'Automatic';
+
+  @override
+  String get ordersTransmissionManual => 'Manual';
+
+  @override
+  String get ordersFuelPetrol => 'Petrol';
+
+  @override
+  String get ordersFuelDiesel => 'Diesel';
+
+  @override
+  String get ordersYearPresent => 'Present';
+
+  @override
+  String get ordersBuyer => 'Buyer';
+
+  @override
+  String get ordersVerifiedBuyer => 'Verified Buyer';
+
+  @override
+  String get ordersBuyerInformation => 'Buyer Information';
+
+  @override
+  String get ordersVipRequiredBadge => 'VIP Required';
+
+  @override
+  String get ordersDetailError => 'Could not load order details';
 }

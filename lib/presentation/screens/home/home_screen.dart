@@ -21,12 +21,14 @@ import '../../widgets/featured_listing_card.dart';
 import '../../widgets/listing_card.dart';
 import '../../widgets/vehicle_listing_card.dart';
 import '../../widgets/vehicle_featured_card.dart';
+import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../jobs/widgets/job_listing_card.dart';
 import '../job_seekers/widgets/job_seeker_card.dart';
 import '../../providers/job_seeker_providers.dart';
 import '../../providers/v2_order_provider.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
+import '../../widgets/status_helpers.dart';
 import 'widgets/public_order_card.dart';
 import 'filter_sheet.dart';
 
@@ -95,14 +97,18 @@ extension OrdersSectionX on OrdersSection {
     }
   }
 
-  String? get wireType {
+  /// Coarse browse filter understood by `/api/v2/orders/browse`.
+  ///
+  /// `property` groups house + land; `vehicle` maps to car requests. The old
+  /// `type` filter is too narrow for the Property tab (it would hide land).
+  String? get browseCategory {
     switch (this) {
       case OrdersSection.all:
         return null;
       case OrdersSection.property:
-        return 'house';
+        return 'property';
       case OrdersSection.vehicles:
-        return 'car';
+        return 'vehicle';
     }
   }
 }
@@ -337,7 +343,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       }
     } else if (_selectedCategory == HomeCategory.orders) {
       futures.add(ref.read(homeOrdersProvider.notifier).loadOrders(
-            type: _ordersSection.wireType,
+            category: _ordersSection.browseCategory,
           ));
     } else if (_selectedCategory == HomeCategory.all) {
       final filters = _allSection == AllSection.all
@@ -448,7 +454,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       category: _selectedCategory,
       listingType: _selectedCategory == HomeCategory.all
           ? _allSection.wireValue
-          : _selectedCategory == HomeCategory.jobs
+          : _selectedCategory == HomeCategory.jobs ||
+                  _selectedCategory == HomeCategory.orders
               ? null
               : _listingTypeSection.wireValue,
       forSeekers: _selectedCategory == HomeCategory.jobs &&
@@ -483,6 +490,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         } else {
           _allSection = AllSection.all;
         }
+      } else if (result.category == HomeCategory.orders) {
+        // Orders only expose a budget range; no listing-type section applies.
       } else {
         if (result.listingType == 'rental') {
           _listingTypeSection = ListingTypeSection.rent;
@@ -913,7 +922,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     if (_hasSearched) {
       final filters = _buildSearchFilters();
-      if (_selectedCategory == HomeCategory.jobs &&
+      if (_selectedCategory == HomeCategory.orders) {
+        _loadOrdersFeed(append: true, search: true);
+      } else if (_selectedCategory == HomeCategory.jobs &&
           _jobsSection == JobsSection.seekers) {
         final state = ref.read(homeJobSeekerProfilesProvider);
         if (!state.isLoadingMore && state.hasMore) {
@@ -1024,9 +1035,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         if (!orderState.isLoading &&
             !orderState.isLoadingMore &&
             orderState.hasMore) {
-          ref.read(homeOrdersProvider.notifier).loadMore(
-                type: _ordersSection.wireType,
-              );
+          _loadOrdersFeed(append: true);
         }
       } else {
         // HomeCategory.property
@@ -1068,9 +1077,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ref.read(homeJobListingsProvider.notifier).loadListings();
       }
     } else if (_selectedCategory == HomeCategory.orders) {
-      ref.read(homeOrdersProvider.notifier).loadOrders(
-            type: _ordersSection.wireType,
-          );
+      _loadOrdersFeed();
     } else if (_selectedCategory == HomeCategory.all) {
       final filters = _allSection == AllSection.all
           ? null
@@ -1123,7 +1130,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     setState(() => _hasSearched = true);
     final activeFilters = _buildSearchFilters();
 
-    if (_selectedCategory == HomeCategory.jobs &&
+    if (_selectedCategory == HomeCategory.orders) {
+      _loadOrdersFeed(search: true);
+    } else if (_selectedCategory == HomeCategory.jobs &&
         _jobsSection == JobsSection.seekers) {
       ref
           .read(homeJobSeekerProfilesProvider.notifier)
@@ -1141,6 +1150,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           .read(searchResultsProvider.notifier)
           .loadListings(filters: activeFilters);
     }
+  }
+
+  /// Load (or extend) the public orders feed.
+  ///
+  /// Browse mode only applies the coarse section filter. Search mode adds the
+  /// typed location and the budget range stored in [UnifiedFilterValues], which
+  /// the backend expects as `budget_min` / `budget_max`.
+  void _loadOrdersFeed({bool append = false, bool search = false}) {
+    final notifier = ref.read(homeOrdersProvider.notifier);
+    final category = _ordersSection.browseCategory;
+    final location = search ? _ordersLocationQuery : null;
+    final budgetMin = search ? _filterValues.priceMin?.toDouble() : null;
+    final budgetMax = search ? _filterValues.priceMax?.toDouble() : null;
+
+    if (append) {
+      notifier.loadMore(
+        category: category,
+        location: location,
+        budgetMin: budgetMin,
+        budgetMax: budgetMax,
+      );
+    } else {
+      notifier.loadOrders(
+        category: category,
+        location: location,
+        budgetMin: budgetMin,
+        budgetMax: budgetMax,
+      );
+    }
+  }
+
+  String? get _ordersLocationQuery {
+    final typed = _searchController.text.trim();
+    if (typed.isNotEmpty) return typed;
+
+    final stored = _filterValues.location?.trim();
+    return stored == null || stored.isEmpty ? null : stored;
   }
 
   void _clearSearch() {
@@ -1303,7 +1349,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ],
                   ),
                 ),
-                if (_hasSearched)
+                if (_hasSearched && _selectedCategory == HomeCategory.orders)
+                  ..._buildOrderBrowseSlivers(ordersState, l10n,
+                      isSearch: true)
+                else if (_hasSearched)
                   isSeekerSearch
                       ? _buildSeekerSearchResults(seekerState, l10n)
                       : _buildSearchResults(searchState, l10n)
@@ -1511,7 +1560,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       })),
                 ),
             ],
-            if (v.priceMin != null || v.priceMax != null)
+            if (_selectedCategory == HomeCategory.orders &&
+                (v.priceMin != null || v.priceMax != null))
+              _filterChip(
+                orderBudgetLabel(
+                  OrderRange(
+                    min: v.priceMin?.toDouble(),
+                    max: v.priceMax?.toDouble(),
+                  ),
+                  l10n,
+                ),
+                () => _removeFilterAndCheck(() => setState(() {
+                      _filterValues = v.clearField('price_min');
+                    })),
+              )
+            else if (v.priceMin != null || v.priceMax != null)
               _filterChip(
                 v.priceMin != null && v.priceMax != null
                     ? 'ETB ${v.priceMin} - ETB ${v.priceMax}'
@@ -2329,7 +2392,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   List<Widget> _buildOrderBrowseSlivers(
-      OrdersV2State state, AppLocalizations l10n) {
+      OrdersV2State state, AppLocalizations l10n,
+      {bool isSearch = false}) {
     if (state.isLoading && state.orders.isEmpty) {
       return [
         SliverPadding(
@@ -2344,7 +2408,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ];
     }
 
-    if (state.orders.isEmpty) {
+    if (state.errorMessage != null && state.orders.isEmpty) {
       return [
         SliverFillRemaining(
           child: Center(
@@ -2353,17 +2417,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.receipt_long_outlined,
+                  Icon(Icons.cloud_off_rounded,
                       size: 64, color: context.textMuted),
                   const SizedBox(height: 16),
                   Text(
-                    l10n.ordersBrowseEmpty,
+                    l10n.ordersBrowseError,
                     style: AppTextStyles.bodyLarge
                         .copyWith(color: context.textSecondary),
                     textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: 16),
+                  WaveButton(
+                    text: l10n.commonTryAgain,
+                    icon: Icons.refresh_rounded,
+                    onPressed: () => _loadOrdersFeed(search: isSearch),
+                  ),
                 ],
               ),
+            ),
+          ),
+        ),
+      ];
+    }
+
+    if (state.orders.isEmpty) {
+      return [
+        SliverFillRemaining(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: isSearch
+                  ? WaveEmptyState(
+                      icon: Icons.search_off_rounded,
+                      title: l10n.searchNoResultsTitle,
+                      subtitle: l10n.searchNoResultsSubtitle,
+                      actionLabel: l10n.searchClearAll,
+                      onAction: _clearAllFilters,
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.receipt_long_outlined,
+                            size: 64, color: context.textMuted),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.ordersBrowseEmpty,
+                          style: AppTextStyles.bodyLarge
+                              .copyWith(color: context.textSecondary),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
             ),
           ),
         ),

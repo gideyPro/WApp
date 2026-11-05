@@ -153,6 +153,32 @@ class MessageService {
     }
   }
 
+  /// Start (or reopen) a VIP-gated conversation about a public buyer request.
+  ///
+  /// The backend resolves the buyer from the order, so callers never need the
+  /// buyer id (which the public browse payload no longer exposes).
+  Future<SingleConversationResponse> startOrderConversation({
+    required int orderId,
+    String? message,
+  }) async {
+    try {
+      final conv = await _v2.start(orderId: orderId);
+      if (message != null && message.trim().isNotEmpty) {
+        await _v2.sendMessage(conv.id, message.trim());
+      }
+      return SingleConversationResponse(
+        success: true,
+        conversation: conv.toLegacyConversation(),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return SingleConversationResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
   Future<bool> markAsRead(int conversationId) async {
     try {
       await _v2.markRead(conversationId);

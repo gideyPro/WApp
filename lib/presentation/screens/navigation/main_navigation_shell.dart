@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/text_styles.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/v2_order_provider.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/job_providers.dart';
 import '../home/home_screen.dart';
@@ -67,6 +68,8 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       ref.read(homeCarListingsProvider.notifier).loadListings();
       ref.read(jobListingsProvider.notifier).loadListings();
       ref.read(homeJobListingsProvider.notifier).loadListings();
+      ref.read(ordersProvider.notifier).loadOrders();
+      ref.read(homeOrdersProvider.notifier).loadOrders();
       ref.read(subscriptionProvider.notifier).refresh();
     }
   }

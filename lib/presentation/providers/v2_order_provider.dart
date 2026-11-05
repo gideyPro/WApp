@@ -23,6 +23,7 @@ class HomeOrdersNotifier extends StateNotifier<OrdersV2State> {
   HomeOrdersNotifier(this._service) : super(const OrdersV2State.initial());
 
   Future<void> loadOrders({
+    String? category,
     String? type,
     String? listingType,
     String? location,
@@ -33,6 +34,7 @@ class HomeOrdersNotifier extends StateNotifier<OrdersV2State> {
 
     try {
       final page = await _service.fetchBrowseOrders(
+        category: category,
         type: type,
         listingType: listingType,
         location: location,
@@ -55,6 +57,7 @@ class HomeOrdersNotifier extends StateNotifier<OrdersV2State> {
   }
 
   Future<void> loadMore({
+    String? category,
     String? type,
     String? listingType,
     String? location,
@@ -74,6 +77,7 @@ class HomeOrdersNotifier extends StateNotifier<OrdersV2State> {
 
     try {
       final page = await _service.fetchBrowseOrders(
+        category: category,
         type: type,
         listingType: listingType,
         location: location,

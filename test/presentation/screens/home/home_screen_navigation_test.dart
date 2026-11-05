@@ -22,9 +22,9 @@ void main() {
         OrdersSection.property,
         OrdersSection.vehicles,
       ]);
-      expect(OrdersSection.all.wireType, isNull);
-      expect(OrdersSection.property.wireType, 'house');
-      expect(OrdersSection.vehicles.wireType, 'car');
+      expect(OrdersSection.all.browseCategory, isNull);
+      expect(OrdersSection.property.browseCategory, 'property');
+      expect(OrdersSection.vehicles.browseCategory, 'vehicle');
     });
 
     test('ListingTypeSection has sale and rent with correct wire values', () {
