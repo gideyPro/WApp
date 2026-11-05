@@ -130,6 +130,8 @@ class ApiV2Constants {
       '${helpTicket(ticketNumber)}/rating';
 
   static const String orders = '$apiBase/orders';
+  static const String ordersBrowse = '$orders/browse';
+  static String orderBrowse(int id) => '$ordersBrowse/$id';
 
   static String order(int id) => '$orders/$id';
   static String orderCancel(int id) => '${order(id)}/cancel';

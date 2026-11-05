@@ -3143,4 +3143,35 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get rentalPeriodYear => 'ብዓመት';
+
+  @override
+  String get profileMyOrders => 'ናተይ ትእዛዛት';
+
+  @override
+  String get ordersVipRequiredTitle => 'ናይ VIP ኣባልነት የድሊ';
+
+  @override
+  String get ordersVipRequiredSubtitle =>
+      'ምሉእ ድሌት ዓደግቲ፣ ዝርዝር መረዳእታን ቀጥታዊ ናይ ርክብ ሓበሬታን ንምርኣይ ናብ VIP ፓኬጅ ኣማሓይሹ።';
+
+  @override
+  String get ordersContactBuyer => 'ንዓዳጊ ተወከሱ';
+
+  @override
+  String get ordersBrowseEmpty => 'ዝኾነ ናይ ዓደግቲ ትእዛዝ ኣይተረኽበን';
+
+  @override
+  String get ordersVehicleCriteria => 'ናይ መኪና መምዘኒታት';
+
+  @override
+  String get ordersCallBuyer => 'ንዓዳጊ ደውሉ';
+
+  @override
+  String get ordersChatBuyer => 'ምስ ዓዳጊ ተዛተዩ';
+
+  @override
+  String get ordersViewVipPlans => 'ናይ VIP ፓኬጃት ርኣዩ';
+
+  @override
+  String get ordersPostRequest => 'ናይ ምግዛእ ድሌት ለጥፉ';
 }

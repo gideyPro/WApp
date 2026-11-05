@@ -3185,4 +3185,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rentalPeriodYear => 'Year';
+
+  @override
+  String get profileMyOrders => 'My Orders';
+
+  @override
+  String get ordersVipRequiredTitle => 'VIP Access Required';
+
+  @override
+  String get ordersVipRequiredSubtitle =>
+      'Upgrade to a VIP plan to unlock full buyer requirements, detailed criteria, and direct contact details.';
+
+  @override
+  String get ordersContactBuyer => 'Contact Buyer';
+
+  @override
+  String get ordersBrowseEmpty => 'No buyer orders found';
+
+  @override
+  String get ordersVehicleCriteria => 'Vehicle Criteria';
+
+  @override
+  String get ordersCallBuyer => 'Call Buyer';
+
+  @override
+  String get ordersChatBuyer => 'Chat with Buyer';
+
+  @override
+  String get ordersViewVipPlans => 'View VIP Plans';
+
+  @override
+  String get ordersPostRequest => 'Post Buyer Request';
 }

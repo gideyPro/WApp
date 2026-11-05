@@ -9,7 +9,7 @@ import '../../providers/app_providers.dart';
 import '../../providers/car_providers.dart';
 import '../../providers/job_providers.dart';
 import '../home/home_screen.dart';
-import '../orders/orders_screen.dart';
+import '../messages/messages_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../account/account_screen.dart';
 import '../../../l10n/app_localizations.dart';
@@ -77,7 +77,7 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
     final l10n = AppLocalizations.of(context);
     final screens = [
       const HomeScreen(),
-      const OrdersScreen(),
+      const MessagesScreen(),
       const Center(child: Text('')), // Placeholder for FAB
       const NotificationsScreen(),
       const AccountScreen(),
@@ -162,7 +162,9 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(Icons.home_rounded, l10n.navHome, 0),
-                _buildNavItem(Icons.receipt_long_outlined, l10n.navOrders, 1),
+                _buildNavItem(
+                    Icons.chat_bubble_outline_rounded, l10n.navMessages, 1,
+                    badgeCount: ref.watch(unreadMessagesCountProvider)),
                 const SizedBox(width: 48), // Space for FAB notch
                 _buildNavItem(
                     Icons.notifications_outlined, l10n.settingsNotifications, 3,

@@ -41,6 +41,40 @@ class OrderServiceV2 {
     return BuyerOrder.fromJson(data);
   }
 
+  /// Public browse feed for active buyer orders across all categories.
+  Future<Paginated<BuyerOrder>> fetchBrowseOrders({
+    String? type,
+    String? listingType,
+    String? location,
+    double? budgetMin,
+    double? budgetMax,
+    String? cursor,
+    int limit = ApiV2Constants.defaultLimit,
+  }) {
+    return _client.getCollection(
+      ApiV2Constants.ordersBrowse,
+      parse: BuyerOrder.fromJson,
+      query: {
+        if (type != null && type.isNotEmpty && type != 'all') 'type': type,
+        if (listingType != null && listingType.isNotEmpty)
+          'listing_type': listingType,
+        if (location != null && location.trim().isNotEmpty)
+          'location': location.trim(),
+        if (budgetMin != null) 'budget_min': budgetMin,
+        if (budgetMax != null) 'budget_max': budgetMax,
+        if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
+        'limit': _clampLimit(limit),
+      },
+    );
+  }
+
+  /// Gated detail for a public order. Returns the order when VIP or owner,
+  /// throws ApiV2Exception with code SUBSCRIPTION_REQUIRED when non-VIP.
+  Future<BuyerOrder> fetchBrowseOrderDetail(int id) async {
+    final data = await _client.getItem(ApiV2Constants.orderBrowse(id));
+    return BuyerOrder.fromJson(data);
+  }
+
   /// Create a buyer request. Reusing the same `submission_key` returns the
   /// existing order instead of consuming quota again.
   Future<BuyerOrder> create(Map<String, dynamic> payload) async {

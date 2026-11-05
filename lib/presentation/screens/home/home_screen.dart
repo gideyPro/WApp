@@ -11,6 +11,7 @@ import '../../../data/car_data.dart';
 import '../../../data/job_data.dart';
 import '../../../data/models/listing.dart';
 import '../../../data/models/job_seeker_profile.dart';
+import '../../../data/models/v2/buyer_order.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
@@ -24,15 +25,20 @@ import '../../widgets/common/wave_common_widgets.dart';
 import '../jobs/widgets/job_listing_card.dart';
 import '../job_seekers/widgets/job_seeker_card.dart';
 import '../../providers/job_seeker_providers.dart';
+import '../../providers/v2_order_provider.dart';
+import '../../widgets/common/wave_upgrade_card.dart';
+import 'widgets/public_order_card.dart';
 import 'filter_sheet.dart';
 
-enum HomeCategory { property, vehicles, jobs, all }
+enum HomeCategory { property, vehicles, jobs, orders, all }
 
 enum JobsSection { listings, seekers }
 
 enum ListingTypeSection { sale, rent }
 
 enum AllSection { all, sale, rent }
+
+enum OrdersSection { all, property, vehicles }
 
 extension HomeCategoryX on HomeCategory {
   String label(AppLocalizations l10n) {
@@ -43,6 +49,8 @@ extension HomeCategoryX on HomeCategory {
         return l10n.listingCarPlural;
       case HomeCategory.jobs:
         return l10n.homeJobs;
+      case HomeCategory.orders:
+        return l10n.ordersTitle;
       case HomeCategory.all:
         return l10n.searchFilterAll;
     }
@@ -56,8 +64,45 @@ extension HomeCategoryX on HomeCategory {
         return Icons.directions_car_rounded;
       case HomeCategory.jobs:
         return Icons.work_outline;
+      case HomeCategory.orders:
+        return Icons.receipt_long_rounded;
       case HomeCategory.all:
         return Icons.apps_rounded;
+    }
+  }
+}
+
+extension OrdersSectionX on OrdersSection {
+  String label(AppLocalizations l10n) {
+    switch (this) {
+      case OrdersSection.all:
+        return l10n.searchFilterAll;
+      case OrdersSection.property:
+        return l10n.listingSummaryProperty;
+      case OrdersSection.vehicles:
+        return l10n.listingCarPlural;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case OrdersSection.all:
+        return Icons.apps_rounded;
+      case OrdersSection.property:
+        return Icons.home_work_outlined;
+      case OrdersSection.vehicles:
+        return Icons.directions_car_outlined;
+    }
+  }
+
+  String? get wireType {
+    switch (this) {
+      case OrdersSection.all:
+        return null;
+      case OrdersSection.property:
+        return 'house';
+      case OrdersSection.vehicles:
+        return 'car';
     }
   }
 }
@@ -188,6 +233,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   ListingTypeSection _listingTypeSection = ListingTypeSection.sale;
   AllSection _allSection = AllSection.all;
   JobsSection _jobsSection = JobsSection.listings;
+  OrdersSection _ordersSection = OrdersSection.all;
 
   late AnimationController _headerAnimationController;
   late Animation<double> _fadeAnimation;
@@ -289,6 +335,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       } else {
         futures.add(ref.read(homeJobListingsProvider.notifier).loadListings());
       }
+    } else if (_selectedCategory == HomeCategory.orders) {
+      futures.add(ref.read(homeOrdersProvider.notifier).loadOrders(
+            type: _ordersSection.wireType,
+          ));
     } else if (_selectedCategory == HomeCategory.all) {
       final filters = _allSection == AllSection.all
           ? null
@@ -322,7 +372,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         category: category,
         listingType: category == HomeCategory.all
             ? _allSection.wireValue
-            : category == HomeCategory.jobs
+            : (category == HomeCategory.jobs || category == HomeCategory.orders)
                 ? null
                 : _listingTypeSection.wireValue,
         forSeekers: category == HomeCategory.jobs &&
@@ -350,6 +400,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     } else {
       ref.read(homeJobListingsProvider.notifier).loadListings();
     }
+  }
+
+  void _onOrdersSectionChanged(OrdersSection section) {
+    if (section == _ordersSection) return;
+    _searchController.clear();
+    setState(() {
+      _ordersSection = section;
+      _hasSearched = false;
+    });
+    ref.invalidate(searchResultsProvider);
+    _reloadCurrentFeed();
   }
 
   void _onListingTypeSectionChanged(ListingTypeSection section) {
@@ -509,6 +570,67 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               padding: const EdgeInsets.only(right: 6),
               child: GestureDetector(
                 onTap: () => _onJobsSectionChanged(section),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutCubic,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: isSelected ? AppColors.gradientAccent : null,
+                    color: isSelected
+                        ? null
+                        : context.cardBg.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : context.divider.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        section.icon,
+                        size: 14,
+                        color:
+                            isSelected ? Colors.white : context.textSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        section.label(l10n),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color:
+                              isSelected ? Colors.white : context.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrdersSectionPills() {
+    final l10n = AppLocalizations.of(context);
+    const sections = OrdersSection.values;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: sections.map((section) {
+            final isSelected = section == _ordersSection;
+            return Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: GestureDetector(
+                onTap: () => _onOrdersSectionChanged(section),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutCubic,
@@ -897,6 +1019,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 );
           }
         }
+      } else if (_selectedCategory == HomeCategory.orders) {
+        final orderState = ref.read(homeOrdersProvider);
+        if (!orderState.isLoading &&
+            !orderState.isLoadingMore &&
+            orderState.hasMore) {
+          ref.read(homeOrdersProvider.notifier).loadMore(
+                type: _ordersSection.wireType,
+              );
+        }
       } else {
         // HomeCategory.property
         final propState = ref.read(listingsProvider);
@@ -936,6 +1067,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       } else {
         ref.read(homeJobListingsProvider.notifier).loadListings();
       }
+    } else if (_selectedCategory == HomeCategory.orders) {
+      ref.read(homeOrdersProvider.notifier).loadOrders(
+            type: _ordersSection.wireType,
+          );
     } else if (_selectedCategory == HomeCategory.all) {
       final filters = _allSection == AllSection.all
           ? null
@@ -1084,6 +1219,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final carState = ref.watch(homeCarListingsProvider);
     final jobState = ref.watch(homeJobListingsProvider);
     final seekerState = ref.watch(homeJobSeekerProfilesProvider);
+    final ordersState = ref.watch(homeOrdersProvider);
     final isSeekerSearch = _hasSearched &&
         _selectedCategory == HomeCategory.jobs &&
         _jobsSection == JobsSection.seekers;
@@ -1158,6 +1294,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       _buildCategoryPills(l10n),
                       if (_selectedCategory == HomeCategory.jobs)
                         _buildJobsSectionPills()
+                      else if (_selectedCategory == HomeCategory.orders)
+                        _buildOrdersSectionPills()
                       else if (_selectedCategory == HomeCategory.all)
                         _buildAllSectionPills()
                       else
@@ -1181,6 +1319,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 else if (_selectedCategory == HomeCategory.jobs)
                   ..._buildJobBrowseSlivers(
                       featuredState, vipState, jobState, l10n)
+                else if (_selectedCategory == HomeCategory.orders)
+                  ..._buildOrderBrowseSlivers(ordersState, l10n)
                 else ...[
                   SliverToBoxAdapter(
                     child: FadeTransition(
@@ -2186,6 +2326,109 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       ),
     );
+  }
+
+  List<Widget> _buildOrderBrowseSlivers(
+      OrdersV2State state, AppLocalizations l10n) {
+    if (state.isLoading && state.orders.isEmpty) {
+      return [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              for (int i = 0; i < 4; i++)
+                const PropertyListingCard(isLoading: true),
+            ]),
+          ),
+        ),
+      ];
+    }
+
+    if (state.orders.isEmpty) {
+      return [
+        SliverFillRemaining(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.receipt_long_outlined,
+                      size: 64, color: context.textMuted),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.ordersBrowseEmpty,
+                    style: AppTextStyles.bodyLarge
+                        .copyWith(color: context.textSecondary),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ];
+    }
+
+    return [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index >= state.orders.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              final order = state.orders[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: PublicOrderCard(
+                  order: order,
+                  onTap: () => _handleOrderTap(order, l10n),
+                ),
+              );
+            },
+            childCount: state.orders.length + (state.isLoadingMore ? 1 : 0),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  void _handleOrderTap(BuyerOrder order, AppLocalizations l10n) {
+    final canViewVip =
+        order.canViewVip || ref.read(subscriptionProvider).canViewVip;
+    if (!canViewVip) {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: context.sheetBg,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (ctx) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: UpgradeCard(
+              icon: Icons.lock_rounded,
+              iconColor: AppColors.accent500,
+              title: l10n.ordersVipRequiredTitle,
+              subtitle: l10n.ordersVipRequiredSubtitle,
+              buttonLabel: l10n.ordersViewVipPlans,
+              onButtonTap: () {
+                Navigator.pop(ctx);
+                context.push('/subscriptions');
+              },
+            ),
+          ),
+        ),
+      );
+      return;
+    }
+
+    context.push('/public-orders/${order.id}');
   }
 
   Widget _buildVipTeaser() {

@@ -7,8 +7,10 @@ import '../../presentation/screens/splash/splash_screen.dart';
 import '../../presentation/screens/auth/otp_login_screen.dart';
 import '../../presentation/screens/auth/registration_screen.dart';
 import '../../presentation/screens/navigation/main_navigation_shell.dart';
+import '../../presentation/screens/orders/orders_screen.dart';
 import '../../presentation/screens/orders/create_order_screen.dart';
 import '../../presentation/screens/orders/order_details_screen.dart';
+import '../../presentation/screens/orders/public_order_detail_screen.dart';
 import '../../presentation/screens/favorites/favorites_screen.dart';
 import '../../presentation/screens/interests/my_interests_screen.dart';
 import '../../presentation/screens/messages/messages_screen.dart';
@@ -201,6 +203,29 @@ final goRouter = GoRouter(
         key: state.pageKey,
         child: const CreateOrderScreen(),
       ),
+    ),
+    GoRoute(
+      path: '/my-orders',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const OrdersScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/public-orders/:id',
+      pageBuilder: (_, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        if (id == null) {
+          return _buildPageTransition(
+            key: state.pageKey,
+            child: const _InvalidRouteScreen(),
+          );
+        }
+        return _buildPageTransition(
+          key: state.pageKey,
+          child: PublicOrderDetailScreen(orderId: id),
+        );
+      },
     ),
     GoRoute(
       path: '/orders/:id',

@@ -11,6 +11,96 @@ final ordersV2Provider =
   return OrdersV2Notifier(ref.watch(orderV2ServiceProvider));
 });
 
+/// Public browse feed for active buyer orders on the home screen.
+final homeOrdersProvider =
+    StateNotifierProvider<HomeOrdersNotifier, OrdersV2State>((ref) {
+  return HomeOrdersNotifier(ref.watch(orderV2ServiceProvider));
+});
+
+class HomeOrdersNotifier extends StateNotifier<OrdersV2State> {
+  final OrderServiceV2 _service;
+
+  HomeOrdersNotifier(this._service) : super(const OrdersV2State.initial());
+
+  Future<void> loadOrders({
+    String? type,
+    String? listingType,
+    String? location,
+    double? budgetMin,
+    double? budgetMax,
+  }) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+
+    try {
+      final page = await _service.fetchBrowseOrders(
+        type: type,
+        listingType: listingType,
+        location: location,
+        budgetMin: budgetMin,
+        budgetMax: budgetMax,
+      );
+      state = OrdersV2State.loaded(
+        orders: page.items,
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+      );
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(isLoading: false, errorMessage: error.message);
+    } catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Could not load orders',
+      );
+    }
+  }
+
+  Future<void> loadMore({
+    String? type,
+    String? listingType,
+    String? location,
+    double? budgetMin,
+    double? budgetMax,
+  }) async {
+    final cursor = state.nextCursor;
+
+    if (state.isLoading ||
+        state.isLoadingMore ||
+        !state.hasMore ||
+        cursor == null) {
+      return;
+    }
+
+    state = state.copyWith(isLoadingMore: true);
+
+    try {
+      final page = await _service.fetchBrowseOrders(
+        type: type,
+        listingType: listingType,
+        location: location,
+        budgetMin: budgetMin,
+        budgetMax: budgetMax,
+        cursor: cursor,
+      );
+      state = state.copyWith(
+        orders: [...state.orders, ...page.items],
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+        isLoadingMore: false,
+      );
+    } on ApiV2Exception catch (error) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: error.message,
+      );
+    } catch (_) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: 'Could not load more orders',
+      );
+    }
+  }
+}
+
 class OrdersV2Notifier extends StateNotifier<OrdersV2State> {
   final OrderServiceV2 _service;
 

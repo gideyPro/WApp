@@ -39,6 +39,12 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   final _maxAreaCtrl = TextEditingController();
   final _descriptionCtrl = TextEditingController();
 
+  // Vehicle criteria
+  final _makeCtrl = TextEditingController();
+  final _modelCtrl = TextEditingController();
+  final _minYearCtrl = TextEditingController();
+  final _maxYearCtrl = TextEditingController();
+
   // Address picker
   AddressService get _addressService => ref.read(addressServiceProvider);
   String? _selectedRegion, _selectedZone, _selectedWoreda, _selectedKebele;
@@ -67,6 +73,10 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     _minAreaCtrl.dispose();
     _maxAreaCtrl.dispose();
     _descriptionCtrl.dispose();
+    _makeCtrl.dispose();
+    _modelCtrl.dispose();
+    _minYearCtrl.dispose();
+    _maxYearCtrl.dispose();
     _agentIdCtrl.dispose();
     super.dispose();
   }
@@ -216,13 +226,25 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
       'listing_type': _listingType,
       'description': _descriptionCtrl.text.trim(),
     };
-    if (_holdingType != null) data['holding_type'] = _holdingType;
-    if (_facingDirection != null) data['facing_direction'] = _facingDirection;
+    if (_type != 'car') {
+      if (_holdingType != null) data['holding_type'] = _holdingType;
+      if (_facingDirection != null) data['facing_direction'] = _facingDirection;
+      if (_minAreaCtrl.text.isNotEmpty) data['min_area'] = _minAreaCtrl.text.replaceAll(',', '');
+      if (_maxAreaCtrl.text.isNotEmpty) data['max_area'] = _maxAreaCtrl.text.replaceAll(',', '');
+    } else {
+      final vehicleDetails = <String, dynamic>{
+        if (_makeCtrl.text.trim().isNotEmpty) 'make': _makeCtrl.text.trim(),
+        if (_modelCtrl.text.trim().isNotEmpty) 'model': _modelCtrl.text.trim(),
+        if (_minYearCtrl.text.trim().isNotEmpty) 'year_min': int.tryParse(_minYearCtrl.text.trim()),
+        if (_maxYearCtrl.text.trim().isNotEmpty) 'year_max': int.tryParse(_maxYearCtrl.text.trim()),
+      };
+      if (vehicleDetails.isNotEmpty) {
+        data['vehicle_details'] = vehicleDetails;
+      }
+    }
     if (_kebeleId != null) data['address_id'] = _kebeleId;
     if (_minBudgetCtrl.text.isNotEmpty) data['min_budget'] = _minBudgetCtrl.text.replaceAll(',', '');
     if (_maxBudgetCtrl.text.isNotEmpty) data['max_budget'] = _maxBudgetCtrl.text.replaceAll(',', '');
-    if (_minAreaCtrl.text.isNotEmpty) data['min_area'] = _minAreaCtrl.text.replaceAll(',', '');
-    if (_maxAreaCtrl.text.isNotEmpty) data['max_area'] = _maxAreaCtrl.text.replaceAll(',', '');
     if (_postedByAgent && _agentIdCtrl.text.isNotEmpty) data['agent_id'] = _agentIdCtrl.text;
 
     final response = await ref.read(orderServiceProvider).createOrder(data);
@@ -396,8 +418,10 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
               child: Row(
                 children: [
                   _typeChip('house', l10n.ordersTypeHouse, Icons.home_outlined),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 8),
                   _typeChip('land', l10n.ordersTypeLand, Icons.landscape_outlined),
+                  const SizedBox(width: 8),
+                  _typeChip('car', l10n.listingCar, Icons.directions_car_outlined),
                 ],
               ),
             ),
@@ -444,40 +468,98 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  Text(l10n.ordersArea,
-                      style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _minAreaCtrl,
-                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                          decoration: _inputDecoration(label: l10n.ordersMin),
-                          keyboardType: TextInputType.number,
-                          onChanged: (v) => _onNumberChanged(_minAreaCtrl, v),
+                  if (_type != 'car') ...[
+                    const SizedBox(height: 12),
+                    Text(l10n.ordersArea,
+                        style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _minAreaCtrl,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            decoration: _inputDecoration(label: l10n.ordersMin),
+                            keyboardType: TextInputType.number,
+                            onChanged: (v) => _onNumberChanged(_minAreaCtrl, v),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _maxAreaCtrl,
-                          style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                          decoration: _inputDecoration(label: l10n.ordersMax),
-                          keyboardType: TextInputType.number,
-                          onChanged: (v) => _onNumberChanged(_maxAreaCtrl, v),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _maxAreaCtrl,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            decoration: _inputDecoration(label: l10n.ordersMax),
+                            keyboardType: TextInputType.number,
+                            onChanged: (v) => _onNumberChanged(_maxAreaCtrl, v),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
 
-            _sectionCard(
-              title: l10n.ordersHoldingType,
-              subtitle: l10n.orderHoldingFacingSubtitle,
+            if (_type == 'car')
+              _sectionCard(
+                title: l10n.ordersVehicleCriteria,
+                subtitle: l10n.listingSpecifications,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _makeCtrl,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            decoration: _inputDecoration(label: l10n.listingMake),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _modelCtrl,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            decoration: _inputDecoration(label: l10n.listingModel),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(l10n.listingYear,
+                        style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.theme.textSecondary, letterSpacing: 0.3)),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _minYearCtrl,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            decoration: _inputDecoration(label: l10n.searchAreaMin),
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _maxYearCtrl,
+                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
+                            decoration: _inputDecoration(label: l10n.searchAreaMax),
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+            if (_type != 'car')
+              _sectionCard(
+                title: l10n.ordersHoldingType,
+                subtitle: l10n.orderHoldingFacingSubtitle,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

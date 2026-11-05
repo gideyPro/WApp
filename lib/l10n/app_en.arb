@@ -1034,5 +1034,15 @@
   "searchValidationRange": "Minimum must be less than maximum",
   "rentalPeriodDay": "Day",
   "rentalPeriodMonth": "Month",
-  "rentalPeriodYear": "Year"
+  "rentalPeriodYear": "Year",
+  "profileMyOrders": "My Orders",
+  "ordersVipRequiredTitle": "VIP Access Required",
+  "ordersVipRequiredSubtitle": "Upgrade to a VIP plan to unlock full buyer requirements, detailed criteria, and direct contact details.",
+  "ordersContactBuyer": "Contact Buyer",
+  "ordersBrowseEmpty": "No buyer orders found",
+  "ordersVehicleCriteria": "Vehicle Criteria",
+  "ordersCallBuyer": "Call Buyer",
+  "ordersChatBuyer": "Chat with Buyer",
+  "ordersViewVipPlans": "View VIP Plans",
+  "ordersPostRequest": "Post Buyer Request"
 }

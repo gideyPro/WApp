@@ -354,9 +354,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                       title: l10n.settingsSectionAccount,
                       items: [
                         _MenuItemData(
-                          icon: Icons.chat_bubble_outline_rounded,
-                          title: l10n.navMessages,
-                          onTap: () => context.push('/messages'),
+                          icon: Icons.receipt_long_outlined,
+                          title: l10n.profileMyOrders,
+                          onTap: () => context.push('/my-orders'),
                         ),
                         _MenuItemData(
                           icon: Icons.interests_outlined,

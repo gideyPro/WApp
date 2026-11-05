@@ -6033,6 +6033,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Year'**
   String get rentalPeriodYear;
+
+  /// No description provided for @profileMyOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'My Orders'**
+  String get profileMyOrders;
+
+  /// No description provided for @ordersVipRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'VIP Access Required'**
+  String get ordersVipRequiredTitle;
+
+  /// No description provided for @ordersVipRequiredSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to a VIP plan to unlock full buyer requirements, detailed criteria, and direct contact details.'**
+  String get ordersVipRequiredSubtitle;
+
+  /// No description provided for @ordersContactBuyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Buyer'**
+  String get ordersContactBuyer;
+
+  /// No description provided for @ordersBrowseEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No buyer orders found'**
+  String get ordersBrowseEmpty;
+
+  /// No description provided for @ordersVehicleCriteria.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Criteria'**
+  String get ordersVehicleCriteria;
+
+  /// No description provided for @ordersCallBuyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Buyer'**
+  String get ordersCallBuyer;
+
+  /// No description provided for @ordersChatBuyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with Buyer'**
+  String get ordersChatBuyer;
+
+  /// No description provided for @ordersViewVipPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'View VIP Plans'**
+  String get ordersViewVipPlans;
+
+  /// No description provided for @ordersPostRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Post Buyer Request'**
+  String get ordersPostRequest;
 }
 
 class _AppLocalizationsDelegate

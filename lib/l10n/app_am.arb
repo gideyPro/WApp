@@ -1034,5 +1034,15 @@
   "searchValidationRange": "አነስተኛው ከከፍተኛው ያነሰ መሆን አለበት",
   "rentalPeriodDay": "በቀን",
   "rentalPeriodMonth": "በወር",
-  "rentalPeriodYear": "በዓመት"
+  "rentalPeriodYear": "በዓመት",
+  "profileMyOrders": "የእኔ ትዕዛዞች",
+  "ordersVipRequiredTitle": "የVIP አባልነት ያስፈልጋል",
+  "ordersVipRequiredSubtitle": "የገዢዎችን ሙሉ ፍላጎት፣ ዝርዝር መረጃ እና ቀጥታ የመገናኛ አድራሻ ለማየት ወደ VIP ፕላን ያሳድጉ።",
+  "ordersContactBuyer": "ገዢውን ያነጋግሩ",
+  "ordersBrowseEmpty": "ምንም የገዢዎች ትዕዛዝ አልተገኘም",
+  "ordersVehicleCriteria": "የመኪና መስፈርቶች",
+  "ordersCallBuyer": "ለገዢው ይደውሉ",
+  "ordersChatBuyer": "ከገዢው ጋር ይወያዩ",
+  "ordersViewVipPlans": "የVIP ፕላኖችን ይመልከቱ",
+  "ordersPostRequest": "የግዢ ፍላጎት ይለጥፉ"
 }

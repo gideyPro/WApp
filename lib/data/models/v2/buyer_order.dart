@@ -128,6 +128,45 @@ class OrderAddress {
   }
 }
 
+/// Public buyer details attached to an order in browse feeds.
+class OrderBuyer {
+  final int id;
+  final String? fullName;
+  final String? firstName;
+  final String? lastName;
+  final String? phoneNumber;
+  final String? avatar;
+  final bool isKycVerified;
+
+  const OrderBuyer({
+    required this.id,
+    this.fullName,
+    this.firstName,
+    this.lastName,
+    this.phoneNumber,
+    this.avatar,
+    this.isKycVerified = false,
+  });
+
+  String get displayName =>
+      _text(fullName) ??
+      _text(firstName) ??
+      'Buyer #$id';
+
+  factory OrderBuyer.fromJson(dynamic json) {
+    final map = json is Map ? json : const {};
+    return OrderBuyer(
+      id: TypeUtils.safeInt(map['id']) ?? 0,
+      fullName: _text(map['full_name']),
+      firstName: _text(map['first_name']),
+      lastName: _text(map['last_name']),
+      phoneNumber: _text(map['phone_number']),
+      avatar: _text(map['google_avatar']),
+      isKycVerified: TypeUtils.safeBool(map['is_kyc_verified']),
+    );
+  }
+}
+
 /// A buyer request from `/v2/orders`.
 ///
 /// Named [BuyerOrder] so it can coexist with the legacy v1 `Order` model while
@@ -137,12 +176,16 @@ class BuyerOrder {
   final ListingKind type;
   final String listingType;
   final BuyerOrderStatus status;
+  final String? title;
   final String description;
   final OrderRange budget;
   final OrderRange area;
   final String? holdingType;
   final String? facingDirection;
+  final Map<String, dynamic>? vehicleDetails;
   final OrderAddress? address;
+  final OrderBuyer? buyer;
+  final bool canViewVip;
   final int suggestionsCount;
   final int unreadSuggestionsCount;
   final DateTime? createdAt;
@@ -153,12 +196,16 @@ class BuyerOrder {
     required this.type,
     required this.listingType,
     required this.status,
+    this.title,
     required this.description,
     this.budget = const OrderRange.empty(),
     this.area = const OrderRange.empty(),
     this.holdingType,
     this.facingDirection,
+    this.vehicleDetails,
     this.address,
+    this.buyer,
+    this.canViewVip = false,
     this.suggestionsCount = 0,
     this.unreadSuggestionsCount = 0,
     this.createdAt,
@@ -183,14 +230,22 @@ class BuyerOrder {
       type: ListingKind.parse(json['type']),
       listingType: json['listing_type']?.toString() ?? 'sale',
       status: BuyerOrderStatus.parse(json['status']),
+      title: _text(json['title']),
       description: json['description']?.toString() ?? '',
       budget: OrderRange.fromJson(json['budget']),
       area: OrderRange.fromJson(json['area']),
       holdingType: _text(json['holding_type']),
       facingDirection: _text(json['facing_direction']),
+      vehicleDetails: json['vehicle_details'] is Map
+          ? Map<String, dynamic>.from(json['vehicle_details'] as Map)
+          : null,
       address: rawAddress is Map
           ? OrderAddress.fromJson(Map<String, dynamic>.from(rawAddress))
           : null,
+      buyer: json['buyer'] is Map ? OrderBuyer.fromJson(json['buyer']) : null,
+      canViewVip: json['viewer'] is Map
+          ? TypeUtils.safeBool(json['viewer']['can_view_vip'])
+          : false,
       suggestionsCount: TypeUtils.safeInt(json['suggestions_count']) ?? 0,
       unreadSuggestionsCount:
           TypeUtils.safeInt(json['unread_suggestions_count']) ?? 0,

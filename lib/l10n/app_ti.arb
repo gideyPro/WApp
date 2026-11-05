@@ -1034,5 +1034,15 @@
   "searchValidationRange": "ትሑት ካብ ላዕለዋይ ንእሽቶ ክኸውን ኣለዎ",
   "rentalPeriodDay": "ብመዓልቲ",
   "rentalPeriodMonth": "ብወርሒ",
-  "rentalPeriodYear": "ብዓመት"
+  "rentalPeriodYear": "ብዓመት",
+  "profileMyOrders": "ናተይ ትእዛዛት",
+  "ordersVipRequiredTitle": "ናይ VIP ኣባልነት የድሊ",
+  "ordersVipRequiredSubtitle": "ምሉእ ድሌት ዓደግቲ፣ ዝርዝር መረዳእታን ቀጥታዊ ናይ ርክብ ሓበሬታን ንምርኣይ ናብ VIP ፓኬጅ ኣማሓይሹ።",
+  "ordersContactBuyer": "ንዓዳጊ ተወከሱ",
+  "ordersBrowseEmpty": "ዝኾነ ናይ ዓደግቲ ትእዛዝ ኣይተረኽበን",
+  "ordersVehicleCriteria": "ናይ መኪና መምዘኒታት",
+  "ordersCallBuyer": "ንዓዳጊ ደውሉ",
+  "ordersChatBuyer": "ምስ ዓዳጊ ተዛተዩ",
+  "ordersViewVipPlans": "ናይ VIP ፓኬጃት ርኣዩ",
+  "ordersPostRequest": "ናይ ምግዛእ ድሌት ለጥፉ"
 }

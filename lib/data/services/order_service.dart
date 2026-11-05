@@ -21,6 +21,7 @@ class Order {
   final String listingType;
   final String? holdingType;
   final String? facingDirection;
+  final Map<String, dynamic>? vehicleDetails;
   final double? minBudget;
   final double? maxBudget;
   final double? minArea;
@@ -37,6 +38,7 @@ class Order {
     required this.listingType,
     this.holdingType,
     this.facingDirection,
+    this.vehicleDetails,
     this.minBudget,
     this.maxBudget,
     this.minArea,
@@ -55,6 +57,9 @@ class Order {
       listingType: json['listing_type'] ?? 'sale',
       holdingType: json['holding_type'],
       facingDirection: json['facing_direction'],
+      vehicleDetails: json['vehicle_details'] is Map
+          ? Map<String, dynamic>.from(json['vehicle_details'] as Map)
+          : null,
       minBudget: _parseDouble(json['min_budget']),
       maxBudget: _parseDouble(json['max_budget']),
       minArea: _parseDouble(json['min_area']),
@@ -199,6 +204,8 @@ class OrderService {
         'type': data['type'] ?? 'house',
         'listing_type': data['listing_type'] ?? 'sale',
         if (data['address_id'] != null) 'address_id': data['address_id'],
+        if (data['vehicle_details'] != null)
+          'vehicle_details': data['vehicle_details'],
         'attributes': {
           if (data['holding_type'] != null)
             'holding_type': data['holding_type'],

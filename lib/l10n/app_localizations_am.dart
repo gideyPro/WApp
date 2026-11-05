@@ -3144,4 +3144,35 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get rentalPeriodYear => 'በዓመት';
+
+  @override
+  String get profileMyOrders => 'የእኔ ትዕዛዞች';
+
+  @override
+  String get ordersVipRequiredTitle => 'የVIP አባልነት ያስፈልጋል';
+
+  @override
+  String get ordersVipRequiredSubtitle =>
+      'የገዢዎችን ሙሉ ፍላጎት፣ ዝርዝር መረጃ እና ቀጥታ የመገናኛ አድራሻ ለማየት ወደ VIP ፕላን ያሳድጉ።';
+
+  @override
+  String get ordersContactBuyer => 'ገዢውን ያነጋግሩ';
+
+  @override
+  String get ordersBrowseEmpty => 'ምንም የገዢዎች ትዕዛዝ አልተገኘም';
+
+  @override
+  String get ordersVehicleCriteria => 'የመኪና መስፈርቶች';
+
+  @override
+  String get ordersCallBuyer => 'ለገዢው ይደውሉ';
+
+  @override
+  String get ordersChatBuyer => 'ከገዢው ጋር ይወያዩ';
+
+  @override
+  String get ordersViewVipPlans => 'የVIP ፕላኖችን ይመልከቱ';
+
+  @override
+  String get ordersPostRequest => 'የግዢ ፍላጎት ይለጥፉ';
 }

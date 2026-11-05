@@ -348,6 +348,7 @@ extension BuyerOrderLegacyAdapter on BuyerOrder {
       listingType: listingType,
       holdingType: holdingType,
       facingDirection: facingDirection,
+      vehicleDetails: vehicleDetails,
       minBudget: budget.min,
       maxBudget: budget.max,
       minArea: area.min,
