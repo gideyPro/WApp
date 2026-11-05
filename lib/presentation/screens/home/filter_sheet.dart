@@ -104,7 +104,6 @@ class UnifiedFilterValues {
           (location != null && location!.isNotEmpty);
     }
     return propertyType != null ||
-        listingType != null ||
         isFeatured ||
         areaMin != null ||
         areaMax != null ||
