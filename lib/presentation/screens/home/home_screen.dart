@@ -511,29 +511,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   Widget _buildCategoryPills(AppLocalizations l10n) {
     const categories = HomeCategory.values;
+    final isDark = context.isDarkMode;
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: categories.map((cat) {
             final isSelected = cat == _selectedCategory;
             return Padding(
-              padding: const EdgeInsets.only(right: 6),
+              padding: const EdgeInsets.only(right: 8),
               child: GestureDetector(
                 onTap: () => _onCategoryChanged(cat),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutCubic,
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8.5),
                   decoration: BoxDecoration(
-                    gradient: isSelected ? AppColors.gradientAccent : null,
+                    gradient: isSelected
+                        ? (isDark
+                            ? AppColors.gradientAccent
+                            : AppColors.gradientPrimary)
+                        : null,
                     color: isSelected
                         ? null
-                        : context.cardBg.withValues(alpha: 0.8),
+                        : context.cardBg.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(24),
-                    boxShadow: isSelected ? AppColors.shadowSm : null,
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: (isDark
+                                      ? AppColors.accent500
+                                      : AppColors.primary900)
+                                  .withValues(alpha: 0.25),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                        : null,
                     border: Border.all(
                       color: isSelected
                           ? Colors.transparent
@@ -554,7 +570,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         cat.label(l10n),
                         style: AppTextStyles.bodySmall.copyWith(
                           fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                              isSelected ? FontWeight.w700 : FontWeight.w600,
                           color:
                               isSelected ? Colors.white : context.textPrimary,
                         ),
@@ -565,6 +581,115 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             );
           }).toList(),
+        ),
+      ),
+    );
+  }
+
+  /// Option A: Docked Segmented Capsule for Sub-Tabs
+  Widget _buildSegmentedSubTabs<T>({
+    required List<T> items,
+    required T selectedItem,
+    required String Function(T) label,
+    required IconData Function(T) icon,
+    required ValueChanged<T> onSelected,
+  }) {
+    final isDark = context.isDarkMode;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
+      alignment: Alignment.centerLeft,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          padding: const EdgeInsets.all(3.5),
+          decoration: BoxDecoration(
+            color: isDark
+                ? AppColors.cardNavyDark
+                : const Color(0xFFE2E8F0),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : const Color(0xFFCBD5E1),
+              width: 0.8,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: items.map((item) {
+              final isSelected = item == selectedItem;
+              return GestureDetector(
+                onTap: () => onSelected(item),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 6.5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? (isDark ? AppColors.cardNavyLight : Colors.white)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                    border: isSelected
+                        ? Border.all(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.15)
+                                : const Color(0xFFCBD5E1).withValues(alpha: 0.5),
+                            width: 0.6,
+                          )
+                        : Border.all(color: Colors.transparent, width: 0.6),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.35 : 0.08,
+                              ),
+                              blurRadius: 4,
+                              offset: const Offset(0, 1.5),
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (isSelected) ...[
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: const BoxDecoration(
+                            color: AppColors.accent500,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                      ],
+                      Icon(
+                        icon(item),
+                        size: 14,
+                        color: isSelected
+                            ? (isDark ? Colors.white : AppColors.primary900)
+                            : context.textSecondary,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        label(item),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color: isSelected
+                              ? (isDark ? Colors.white : AppColors.primary900)
+                              : context.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
@@ -572,245 +697,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   Widget _buildJobsSectionPills() {
     final l10n = AppLocalizations.of(context);
-    const sections = JobsSection.values;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: sections.map((section) {
-            final isSelected = section == _jobsSection;
-            return Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: GestureDetector(
-                onTap: () => _onJobsSectionChanged(section),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeOutCubic,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    gradient: isSelected ? AppColors.gradientAccent : null,
-                    color: isSelected
-                        ? null
-                        : context.cardBg.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : context.divider.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        section.icon,
-                        size: 14,
-                        color:
-                            isSelected ? Colors.white : context.textSecondary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        section.label(l10n),
-                        style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color:
-                              isSelected ? Colors.white : context.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
+    return _buildSegmentedSubTabs<JobsSection>(
+      items: JobsSection.values,
+      selectedItem: _jobsSection,
+      label: (s) => s.label(l10n),
+      icon: (s) => s.icon,
+      onSelected: _onJobsSectionChanged,
     );
   }
 
   Widget _buildOrdersSectionPills() {
     final l10n = AppLocalizations.of(context);
-    const sections = OrdersSection.values;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: sections.map((section) {
-            final isSelected = section == _ordersSection;
-            return Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: GestureDetector(
-                onTap: () => _onOrdersSectionChanged(section),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeOutCubic,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    gradient: isSelected ? AppColors.gradientAccent : null,
-                    color: isSelected
-                        ? null
-                        : context.cardBg.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : context.divider.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        section.icon,
-                        size: 14,
-                        color:
-                            isSelected ? Colors.white : context.textSecondary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        section.label(l10n),
-                        style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color:
-                              isSelected ? Colors.white : context.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
+    return _buildSegmentedSubTabs<OrdersSection>(
+      items: OrdersSection.values,
+      selectedItem: _ordersSection,
+      label: (s) => s.label(l10n),
+      icon: (s) => s.icon,
+      onSelected: _onOrdersSectionChanged,
     );
   }
 
   Widget _buildListingTypeSectionPills() {
     final l10n = AppLocalizations.of(context);
-    const sections = ListingTypeSection.values;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: sections.map((section) {
-            final isSelected = section == _listingTypeSection;
-            return Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: GestureDetector(
-                onTap: () => _onListingTypeSectionChanged(section),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeOutCubic,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    gradient: isSelected ? AppColors.gradientAccent : null,
-                    color: isSelected
-                        ? null
-                        : context.cardBg.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : context.divider.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        section.icon,
-                        size: 14,
-                        color:
-                            isSelected ? Colors.white : context.textSecondary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        section.label(l10n),
-                        style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color:
-                              isSelected ? Colors.white : context.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
+    return _buildSegmentedSubTabs<ListingTypeSection>(
+      items: ListingTypeSection.values,
+      selectedItem: _listingTypeSection,
+      label: (s) => s.label(l10n),
+      icon: (s) => s.icon,
+      onSelected: _onListingTypeSectionChanged,
     );
   }
 
   Widget _buildAllSectionPills() {
     final l10n = AppLocalizations.of(context);
-    const sections = AllSection.values;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: sections.map((section) {
-            final isSelected = section == _allSection;
-            return Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: GestureDetector(
-                onTap: () => _onAllSectionChanged(section),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeOutCubic,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    gradient: isSelected ? AppColors.gradientAccent : null,
-                    color: isSelected
-                        ? null
-                        : context.cardBg.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : context.divider.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        section.icon,
-                        size: 14,
-                        color:
-                            isSelected ? Colors.white : context.textSecondary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        section.label(l10n),
-                        style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color:
-                              isSelected ? Colors.white : context.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
+    return _buildSegmentedSubTabs<AllSection>(
+      items: AllSection.values,
+      selectedItem: _allSection,
+      label: (s) => s.label(l10n),
+      icon: (s) => s.icon,
+      onSelected: _onAllSectionChanged,
     );
   }
 
