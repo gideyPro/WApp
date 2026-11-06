@@ -82,7 +82,6 @@ class UnifiedFilterValues {
           vehicleCategory != null ||
           bodyType != null ||
           condition != null ||
-          listingType != null ||
           (listingType != 'rental' && (priceMin != null || priceMax != null)) ||
           (location != null && location!.isNotEmpty);
     }
