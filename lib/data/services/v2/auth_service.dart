@@ -57,6 +57,7 @@ class AuthServiceV2 {
     required String gender,
     required String otpCode,
     String? email,
+    String? promoCode,
   }) async {
     final data = await _client.sendItem(
       ApiV2Constants.authRegister,
@@ -68,6 +69,8 @@ class AuthServiceV2 {
         'gender': gender,
         'otp_code': otpCode,
         if (email != null && email.isNotEmpty) 'email': email,
+        if (promoCode != null && promoCode.trim().isNotEmpty)
+          'promo_code': promoCode.trim(),
       },
     );
 

@@ -1047,9 +1047,16 @@
   "ordersCallBuyer": "ለገዢው ይደውሉ",
   "ordersChatBuyer": "ከገዢው ጋር ይወያዩ",
   "ordersViewVipPlans": "የVIP ፕላኖችን ይመልከቱ",
-  "ordersPostRequest": "የግዢ ፍላጎት ይለጥፉ",
+  "ordersPostRequest": "የግዢ ፍላጎት",
   "ordersBudgetOnAgreement": "በስምምነት የሚወሰን በጀት",
   "ordersUpToBudget": "እስከ {amount}",
+  "@ordersUpToBudget": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "ordersTransmissionAutomatic": "አውቶማቲክ",
   "ordersTransmissionManual": "ማንዋል",
   "ordersFuelPetrol": "ቤንዚን",
@@ -1060,6 +1067,63 @@
   "ordersBuyerInformation": "የገዢ መረጃ",
   "ordersVipRequiredBadge": "VIP ያስፈልጋል",
   "ordersDetailError": "የትዕዛዝ ዝርዝር መጫን አልተቻለም",
-  "orderYearInvalid": "ትክክለኛ ዓመት ያስገቡ",
-  "orderYearRangeInvalid": "ከፍተኛው ዓመት ከዝቅተኛው በኋላ መሆን አለበት"
+  "promoReferralsTitle": "የማስተዋወቂያ ኮድ እና ጥቆማ",
+  "promoReferralsSubtitle": "ጓደኞችን ይጋብዙ፣ ገንዘብ ያግኙ፣ ቅናሽ ያግኙ",
+  "promoYourCode": "የእርስዎ የማስተዋወቂያ ኮድ",
+  "promoCopyCode": "ኮዱን ቅዳ",
+  "promoCodeCopied": "የማስተዋወቂያ ኮዱ ተቀድቷል!",
+  "promoShare": "ለጓደኞች አጋራ",
+  "promoShareMessage": "በእኔ የማስተዋወቂያ ኮድ {code} ወደ ዌቭማርት በመቀላቀል በመጀመሪያ የደንበኝነት ምዝገባዎ ላይ የ{percent}% ቅናሽ ያግኙ! አሁኑኑ ያውርዱ፡ {link}",
+  "@promoShareMessage": {
+    "placeholders": {
+      "code": { "type": "String" },
+      "percent": { "type": "String" },
+      "link": { "type": "String" }
+    }
+  },
+  "promoWalletBalance": "የኪስ ቦርሳ ቀሪ ሂሳብ",
+  "promoMinWithdraw": "አነስተኛ ማውጣት የሚቻለው፡ {amount} ብር",
+  "@promoMinWithdraw": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoWithdrawTelebirr": "በቴሌብር አውጣ",
+  "promoUseForPackage": "በኪስ ቦርሳ ፓኬጅ ይግዙ",
+  "promoStatsInvited": "የተጋበዙ ጓደኞች",
+  "promoStatsSubscribed": "የተመዘገቡ",
+  "promoStatsEarned": "አጠቃላይ የተገኘው",
+  "promoEarningsHistory": "የገቢ ታሪክ",
+  "promoNoEarningsYet": "እስካሁን ምንም የተገኘ ገቢ የለም። ጓደኞችን መጋበዝ ይጀምሩ!",
+  "promoWelcomeTitle": "እንኳን ወደ ዌቭማርት በደህና መጡ!",
+  "promoWelcomeSubtitle": "የጓደኛ የማስተዋወቂያ ኮድ አለዎት? በመጀመሪያው የደንበኝነት ምዝገባ ፓኬጅዎ ላይ የ{percent}% ቅናሽ ለማግኘት ከታች ያስገቡት።",
+  "@promoWelcomeSubtitle": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoCodeInputLabel": "የማስተዋወቂያ ኮድ (አማራጭ)",
+  "promoCodeInputHint": "ምሳሌ፡ WAVE-ABC123",
+  "promoClaimButton": "ቅናሹን ተጠቀም",
+  "promoSkipButton": "ለጊዜው ይለፉ",
+  "promoCodeValid": "ትክክለኛ የማስተዋወቂያ ኮድ! የ{percent}% ቅናሽ ይደረጋል።",
+  "@promoCodeValid": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoCodeInvalid": "የማይሰራ ወይም የተሳሳተ የማስተዋወቂያ ኮድ።",
+  "promoWithdrawTitle": "የቴሌብር ገንዘብ ማውጣት",
+  "promoWithdrawAmount": "መጠን (ብር)",
+  "promoWithdrawPhone": "የቴሌብር ስልክ ቁጥር",
+  "promoWithdrawAccountName": "የሂሳብ ባለቤት ስም",
+  "promoWithdrawSubmit": "ገንዘብ ማውጫውን ላክ",
+  "promoWithdrawSuccess": "የገንዘብ ማውጣት ጥያቄው ተልኳል! በቅርቡ ወደ ቴሌብር ሂሳብዎ ይተላለፋል።",
+  "promoPayWithWallet": "በኪስ ቦርሳ ቀሪ ሂሳብ ክፈል ({balance} ብር)",
+  "@promoPayWithWallet": {
+    "placeholders": {
+      "balance": { "type": "String" }
+    }
+  },
+  "promoPaySuccess": "የደንበኝነት ምዝገባዎ በኪስ ቦርሳዎ ቀሪ ሂሳብ በተሳካ ሁኔታ ነቅቷል!"
 }

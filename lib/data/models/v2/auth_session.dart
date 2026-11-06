@@ -24,11 +24,13 @@ class AuthSession {
   final String token;
   final String tokenType;
   final AccountUser user;
+  final bool isNewUser;
 
   const AuthSession({
     required this.token,
     this.tokenType = 'Bearer',
     required this.user,
+    this.isNewUser = false,
   });
 
   factory AuthSession.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,7 @@ class AuthSession {
     return AuthSession(
       token: json['token']?.toString() ?? '',
       tokenType: json['token_type']?.toString() ?? 'Bearer',
+      isNewUser: json['is_new_user'] == true,
       user: AccountUser.fromJson(Map<String, dynamic>.from(rawUser)),
     );
   }

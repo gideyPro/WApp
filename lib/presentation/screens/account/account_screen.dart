@@ -396,6 +396,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> with RouteAware {
                           ),
                         ],
                         _MenuItemData(
+                          icon: Icons.card_giftcard_rounded,
+                          title: l10n.promoReferralsTitle,
+                          subtitle: l10n.promoReferralsSubtitle,
+                          onTap: () => context.push('/promo'),
+                        ),
+                        _MenuItemData(
                           icon: Icons.verified_user_outlined,
                           title: l10n.profileKyc,
                           onTap: () => context.push('/kyc'),

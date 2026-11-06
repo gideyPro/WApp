@@ -1047,9 +1047,16 @@
   "ordersCallBuyer": "ንዓዳጊ ደውሉ",
   "ordersChatBuyer": "ምስ ዓዳጊ ተዛተዩ",
   "ordersViewVipPlans": "ናይ VIP ፓኬጃት ርኣዩ",
-  "ordersPostRequest": "ናይ ምግዛእ ድሌት ለጥፉ",
+  "ordersPostRequest": "ናይ ምግዛእ ድሌት",
   "ordersBudgetOnAgreement": "ብስምምነት ዝውሰን በጀት",
   "ordersUpToBudget": "ክሳብ {amount}",
+  "@ordersUpToBudget": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "ordersTransmissionAutomatic": "ኣውቶማቲክ",
   "ordersTransmissionManual": "ማንዋል",
   "ordersFuelPetrol": "ቤንዚን",
@@ -1060,6 +1067,63 @@
   "ordersBuyerInformation": "ሓበሬታ ዓዳጊ",
   "ordersVipRequiredBadge": "VIP የድሊ",
   "ordersDetailError": "ዝርዝር ትእዛዝ ክጽዕን ኣይተኻእለን",
-  "orderYearInvalid": "ቅኑዕ ዓመት ኣእቱ",
-  "orderYearRangeInvalid": "ዝለዓለ ዓመት ካብ ዝተሓተ ድሕሪ ክኸውን ኣለዎ"
+  "promoReferralsTitle": "ናይ ምልላይ ኮድን ዕድመን",
+  "promoReferralsSubtitle": "ፈተውቲ ይዓድሙ፣ ገንዘብ ይርከቡ፣ ቅናሽ ይርከቡ",
+  "promoYourCode": "ናይ ምልላይ ኮድኩም",
+  "promoCopyCode": "ኮድ ቅዳሕ",
+  "promoCodeCopied": "ናይ ምልላይ ኮድ ተቐዲሑ!",
+  "promoShare": "ንፈተውቲ ኣካፍሉ",
+  "promoShareMessage": "ብናተይ ናይ ምልላይ ኮድ {code} ናብ ዌቭማርት ብምፅንባር ኣብ ቀዳማይ ናይ ዓሚልነት ክፍሊትኩም ናይ {percent}% ቅናሽ ይርከቡ! ሕጂ ኣውርዱ፡ {link}",
+  "@promoShareMessage": {
+    "placeholders": {
+      "code": { "type": "String" },
+      "percent": { "type": "String" },
+      "link": { "type": "String" }
+    }
+  },
+  "promoWalletBalance": "ናይ ቦርሳ ተረፍ ሕሳብ",
+  "promoMinWithdraw": "ዝተሓተ ምውፃእ ዝከኣል፡ {amount} ቅርሺ",
+  "@promoMinWithdraw": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoWithdrawTelebirr": "ብቴሌብር ኣውፅኡ",
+  "promoUseForPackage": "ብቦርሳ ፓኬጅ ይግዝኡ",
+  "promoStatsInvited": "ዝተዓደሙ ፈተውቲ",
+  "promoStatsSubscribed": "ዝተመዝገቡ",
+  "promoStatsEarned": "ዝተረኸበ ሓፈሻዊ",
+  "promoEarningsHistory": "ናይ ኣታዊ ታሪኽ",
+  "promoNoEarningsYet": "ክሳብ ሕጂ ዝተረኸበ ኣታዊ የለን። ንፈተውትኹም ምዕዳም ጀምሩ!",
+  "promoWelcomeTitle": "እንቋዕ ናብ ዌቭማርት ብደሓን መፃእኹም!",
+  "promoWelcomeSubtitle": "ናይ ፈታዊኹም ናይ ምልላይ ኮድ ኣለኩምዶ? ኣብ ቀዳማይ ናይ ዓሚልነት ፓኬጅኩም ናይ {percent}% ቅናሽ ንምርካብ ኣብ ታሕቲ የእትዉዎ።",
+  "@promoWelcomeSubtitle": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoCodeInputLabel": "ናይ ምልላይ ኮድ (ምርጫ)",
+  "promoCodeInputHint": "ኣብነት፡ WAVE-ABC123",
+  "promoClaimButton": "ዕድል ተጠቐሙ",
+  "promoSkipButton": "ንሕጂ ሕለፉ",
+  "promoCodeValid": "ቅኑዕ ናይ ምልላይ ኮድ! ናይ {percent}% ቅናሽ ክግበረልኩም እዩ።",
+  "@promoCodeValid": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoCodeInvalid": "ዘይሰርሕ ወይ ድማ ዘይቅኑዕ ናይ ምልላይ ኮድ።",
+  "promoWithdrawTitle": "ናይ ቴሌብር ገንዘብ ምውፃእ",
+  "promoWithdrawAmount": "መጠኑ (ቅርሺ)",
+  "promoWithdrawPhone": "ናይ ቴሌብር ስልኪ ቍፅሪ",
+  "promoWithdrawAccountName": "ናይ ሕሳብ ዋና ስም",
+  "promoWithdrawSubmit": "ናይ ምውፃእ ሕቶ ኣእትዉ",
+  "promoWithdrawSuccess": "ናይ ገንዘብ ምውፃእ ሕቶ ተላኢኹ ኣሎ! ቀልጢፉ ናብ ናይ ቴሌብር ሕሳብኩም ክሰጋገር እዩ።",
+  "promoPayWithWallet": "ብናይ ቦርሳ ተረፍ ሕሳብ ክፈሉ ({balance} ቅርሺ)",
+  "@promoPayWithWallet": {
+    "placeholders": {
+      "balance": { "type": "String" }
+    }
+  },
+  "promoPaySuccess": "ናይ ዓሚልነት ክፍሊትኩም ብናይ ቦርሳ ተረፍ ሕሳብ ብዓወት ተኸፊቱ ኣሎ!"
 }

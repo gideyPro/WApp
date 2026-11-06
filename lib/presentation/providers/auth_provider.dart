@@ -334,6 +334,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String gender,
     String? email,
     String? otpCode,
+    String? promoCode,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
@@ -364,6 +365,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           gender: gender,
           otpCode: otpCode,
           email: email,
+          promoCode: promoCode,
         );
         await _apiClient.setAuthToken(session.token);
         final user = session.user.toUser();

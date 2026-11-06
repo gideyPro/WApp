@@ -22,6 +22,7 @@ class SubscriptionServiceV2 {
     int planId, {
     int? cycleMonths,
     String currency = 'ETB',
+    String? paymentMethod,
   }) async {
     final data = await _client.sendItem(
       ApiV2Constants.planCheckout(planId),
@@ -29,6 +30,7 @@ class SubscriptionServiceV2 {
       body: {
         if (cycleMonths != null) 'cycle_months': cycleMonths,
         'currency': currency,
+        if (paymentMethod != null) 'payment_method': paymentMethod,
       },
     );
 

@@ -3183,7 +3183,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ordersViewVipPlans => 'የVIP ፕላኖችን ይመልከቱ';
 
   @override
-  String get ordersPostRequest => 'የግዢ ፍላጎት ይለጥፉ';
+  String get ordersPostRequest => 'የግዢ ፍላጎት';
 
   @override
   String get ordersBudgetOnAgreement => 'በስምምነት የሚወሰን በጀት';
@@ -3222,4 +3222,111 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get ordersDetailError => 'የትዕዛዝ ዝርዝር መጫን አልተቻለም';
+
+  @override
+  String get promoReferralsTitle => 'የማስተዋወቂያ ኮድ እና ጥቆማ';
+
+  @override
+  String get promoReferralsSubtitle => 'ጓደኞችን ይጋብዙ፣ ገንዘብ ያግኙ፣ ቅናሽ ያግኙ';
+
+  @override
+  String get promoYourCode => 'የእርስዎ የማስተዋወቂያ ኮድ';
+
+  @override
+  String get promoCopyCode => 'ኮዱን ቅዳ';
+
+  @override
+  String get promoCodeCopied => 'የማስተዋወቂያ ኮዱ ተቀድቷል!';
+
+  @override
+  String get promoShare => 'ለጓደኞች አጋራ';
+
+  @override
+  String promoShareMessage(String code, String percent, String link) {
+    return 'በእኔ የማስተዋወቂያ ኮድ $code ወደ ዌቭማርት በመቀላቀል በመጀመሪያ የደንበኝነት ምዝገባዎ ላይ የ$percent% ቅናሽ ያግኙ! አሁኑኑ ያውርዱ፡ $link';
+  }
+
+  @override
+  String get promoWalletBalance => 'የኪስ ቦርሳ ቀሪ ሂሳብ';
+
+  @override
+  String promoMinWithdraw(String amount) {
+    return 'አነስተኛ ማውጣት የሚቻለው፡ $amount ብር';
+  }
+
+  @override
+  String get promoWithdrawTelebirr => 'በቴሌብር አውጣ';
+
+  @override
+  String get promoUseForPackage => 'በኪስ ቦርሳ ፓኬጅ ይግዙ';
+
+  @override
+  String get promoStatsInvited => 'የተጋበዙ ጓደኞች';
+
+  @override
+  String get promoStatsSubscribed => 'የተመዘገቡ';
+
+  @override
+  String get promoStatsEarned => 'አጠቃላይ የተገኘው';
+
+  @override
+  String get promoEarningsHistory => 'የገቢ ታሪክ';
+
+  @override
+  String get promoNoEarningsYet => 'እስካሁን ምንም የተገኘ ገቢ የለም። ጓደኞችን መጋበዝ ይጀምሩ!';
+
+  @override
+  String get promoWelcomeTitle => 'እንኳን ወደ ዌቭማርት በደህና መጡ!';
+
+  @override
+  String promoWelcomeSubtitle(String percent) {
+    return 'የጓደኛ የማስተዋወቂያ ኮድ አለዎት? በመጀመሪያው የደንበኝነት ምዝገባ ፓኬጅዎ ላይ የ$percent% ቅናሽ ለማግኘት ከታች ያስገቡት።';
+  }
+
+  @override
+  String get promoCodeInputLabel => 'የማስተዋወቂያ ኮድ (አማራጭ)';
+
+  @override
+  String get promoCodeInputHint => 'ምሳሌ፡ WAVE-ABC123';
+
+  @override
+  String get promoClaimButton => 'ቅናሹን ተጠቀም';
+
+  @override
+  String get promoSkipButton => 'ለጊዜው ይለፉ';
+
+  @override
+  String promoCodeValid(String percent) {
+    return 'ትክክለኛ የማስተዋወቂያ ኮድ! የ$percent% ቅናሽ ይደረጋል።';
+  }
+
+  @override
+  String get promoCodeInvalid => 'የማይሰራ ወይም የተሳሳተ የማስተዋወቂያ ኮድ።';
+
+  @override
+  String get promoWithdrawTitle => 'የቴሌብር ገንዘብ ማውጣት';
+
+  @override
+  String get promoWithdrawAmount => 'መጠን (ብር)';
+
+  @override
+  String get promoWithdrawPhone => 'የቴሌብር ስልክ ቁጥር';
+
+  @override
+  String get promoWithdrawAccountName => 'የሂሳብ ባለቤት ስም';
+
+  @override
+  String get promoWithdrawSubmit => 'ገንዘብ ማውጫውን ላክ';
+
+  @override
+  String get promoWithdrawSuccess =>
+      'የገንዘብ ማውጣት ጥያቄው ተልኳል! በቅርቡ ወደ ቴሌብር ሂሳብዎ ይተላለፋል።';
+
+  @override
+  String promoPayWithWallet(String balance) {
+    return 'በኪስ ቦርሳ ቀሪ ሂሳብ ክፈል ($balance ብር)';
+  }
+
+  @override
+  String get promoPaySuccess => 'የደንበኝነት ምዝገባዎ በኪስ ቦርሳዎ ቀሪ ሂሳብ በተሳካ ሁኔታ ነቅቷል!';
 }

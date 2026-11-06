@@ -10,6 +10,7 @@ import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/v2_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_liquid_glass.dart';
 import '../../widgets/common/app_logo.dart';
@@ -30,10 +31,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _promoCodeController = TextEditingController();
   final FocusNode _firstNameFocus = FocusNode();
   final FocusNode _lastNameFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
+  final FocusNode _promoCodeFocus = FocusNode();
   final GlobalKey<OtpInputFieldState> _otpKey = GlobalKey();
   String _otpCode = '';
 
@@ -41,6 +44,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   String? _lastNameError;
   String? _phoneError;
   String? _emailError;
+  String? _promoValidationMessage;
+  bool? _isPromoValid;
+  bool _isValidatingPromo = false;
+  Timer? _promoDebounceTimer;
 
   String? _selectedGender = 'male';
   CountryCode _selectedCountry = Countries.defaultCountry;
@@ -63,6 +70,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _lastNameController.addListener(_markDataEntered);
     _phoneController.addListener(_markDataEntered);
     _emailController.addListener(_markDataEntered);
+    _promoCodeController.addListener(_onPromoCodeChanged);
     _firstNameFocus.addListener(
         () => _onFieldFocusLost(_firstNameFocus, _validateFirstName));
     _lastNameFocus.addListener(
@@ -71,6 +79,37 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         .addListener(() => _onFieldFocusLost(_phoneFocus, _validatePhone));
     _emailFocus
         .addListener(() => _onFieldFocusLost(_emailFocus, _validateEmail));
+  }
+
+  void _onPromoCodeChanged() {
+    _markDataEntered();
+    _promoDebounceTimer?.cancel();
+    final code = _promoCodeController.text.trim();
+    if (code.isEmpty) {
+      setState(() {
+        _isPromoValid = null;
+        _promoValidationMessage = null;
+        _isValidatingPromo = false;
+      });
+      return;
+    }
+
+    setState(() => _isValidatingPromo = true);
+    _promoDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      if (!mounted) return;
+      final result = await ref.read(promoV2ServiceProvider).validateCode(code);
+      if (!mounted) return;
+      setState(() {
+        _isValidatingPromo = false;
+        _isPromoValid = result.valid;
+        if (result.valid) {
+          _promoValidationMessage =
+              l10n.promoCodeValid(result.discountPercent.toInt().toString());
+        } else {
+          _promoValidationMessage = result.message ?? l10n.promoCodeInvalid;
+        }
+      });
+    });
   }
 
   void _markDataEntered() {
@@ -106,11 +145,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     _lastNameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _promoCodeController.dispose();
     _firstNameFocus.dispose();
     _lastNameFocus.dispose();
     _phoneFocus.dispose();
     _emailFocus.dispose();
+    _promoCodeFocus.dispose();
     _countdownTimer?.cancel();
+    _promoDebounceTimer?.cancel();
     super.dispose();
   }
 
@@ -278,6 +320,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                                           _buildEmailInput(),
                                           const SizedBox(height: 14),
                                           _buildGenderSelection(),
+                                          const SizedBox(height: 14),
+                                          _buildPromoCodeInput(),
                                           const SizedBox(height: 10),
                                           _buildTermsCheckbox(),
                                           const SizedBox(height: 20),
@@ -546,6 +590,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     TextInputType? keyboardType,
     bool autocorrect = true,
     TextCapitalization textCapitalization = TextCapitalization.none,
+    Widget? suffixIcon,
+    Color? borderColor,
   }) {
     final hasError = errorText != null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -571,9 +617,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             border: Border.all(
               color: hasError
                   ? AppColors.error.withValues(alpha: 0.5)
-                  : (isDark
-                      ? Colors.white.withValues(alpha: 0.12)
-                      : AppColors.primary200),
+                  : (borderColor ??
+                      (isDark
+                          ? Colors.white.withValues(alpha: 0.12)
+                          : AppColors.primary200)),
             ),
           ),
           child: TextField(
@@ -585,6 +632,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                   AppTextStyles.bodySmall.copyWith(color: context.textMuted),
               prefixIcon:
                   Icon(icon, color: context.theme.iconSecondary, size: 18),
+              suffixIcon: suffixIcon,
               border: InputBorder.none,
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
@@ -680,6 +728,81 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPromoCodeInput() {
+    final l10n = AppLocalizations.of(context);
+    Color? borderColor;
+    Widget? suffixIcon;
+
+    if (_isValidatingPromo) {
+      suffixIcon = const Padding(
+        padding: EdgeInsets.all(12.0),
+        child: SizedBox(
+          width: 16,
+          height: 16,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    } else if (_isPromoValid == true) {
+      borderColor = AppColors.emerald500;
+      suffixIcon = const Icon(
+        Icons.check_circle_rounded,
+        color: AppColors.emerald500,
+        size: 20,
+      );
+    } else if (_isPromoValid == false) {
+      borderColor = AppColors.error;
+      suffixIcon = const Icon(
+        Icons.cancel_rounded,
+        color: AppColors.error,
+        size: 20,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildInputField(
+          controller: _promoCodeController,
+          focusNode: _promoCodeFocus,
+          label: l10n.promoCodeInputLabel,
+          hint: l10n.promoCodeInputHint,
+          icon: Icons.card_giftcard_rounded,
+          textCapitalization: TextCapitalization.characters,
+          suffixIcon: suffixIcon,
+          borderColor: borderColor,
+        ),
+        if (_promoValidationMessage != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 4, top: 4),
+            child: Row(
+              children: [
+                Icon(
+                  _isPromoValid == true
+                      ? Icons.check_circle_outline
+                      : Icons.error_outline,
+                  size: 14,
+                  color: _isPromoValid == true
+                      ? AppColors.emerald500
+                      : AppColors.error,
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    _promoValidationMessage!,
+                    style: AppTextStyles.caption.copyWith(
+                      color: _isPromoValid == true
+                          ? AppColors.emerald500
+                          : AppColors.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 
@@ -840,6 +963,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     setState(() => _isLoading = true);
 
     try {
+      final promoCode = _promoCodeController.text.trim();
       final response = await ref.read(authStateProvider.notifier).register(
             firstName: _firstNameController.text.trim(),
             lastName: _lastNameController.text.trim(),
@@ -849,12 +973,17 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             email: _emailController.text.trim().isEmpty
                 ? null
                 : _emailController.text.trim(),
+            promoCode: promoCode.isNotEmpty ? promoCode : null,
             otpCode: _otpCode,
           );
 
       if (response.success && mounted) {
         setState(() => _isLoading = false);
-        context.go('/');
+        if (promoCode.isNotEmpty && _isPromoValid != false) {
+          context.go('/subscriptions');
+        } else {
+          context.go('/');
+        }
       } else if (mounted) {
         setState(() => _isLoading = false);
         if (response.isLocked) {

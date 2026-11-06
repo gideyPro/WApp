@@ -6109,7 +6109,7 @@ abstract class AppLocalizations {
   /// No description provided for @ordersPostRequest.
   ///
   /// In en, this message translates to:
-  /// **'Post Buyer Request'**
+  /// **'Order Request'**
   String get ordersPostRequest;
 
   /// No description provided for @ordersBudgetOnAgreement.
@@ -6183,6 +6183,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load order details'**
   String get ordersDetailError;
+
+  /// No description provided for @promoReferralsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promo & Referrals'**
+  String get promoReferralsTitle;
+
+  /// No description provided for @promoReferralsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends, earn cash, get discounts'**
+  String get promoReferralsSubtitle;
+
+  /// No description provided for @promoYourCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Promo Code'**
+  String get promoYourCode;
+
+  /// No description provided for @promoCopyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Code'**
+  String get promoCopyCode;
+
+  /// No description provided for @promoCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Promo code copied to clipboard!'**
+  String get promoCodeCopied;
+
+  /// No description provided for @promoShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with Friends'**
+  String get promoShare;
+
+  /// No description provided for @promoShareMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Join WaveMart with my promo code {code} to get a {percent}% discount on your first subscription! Download now: {link}'**
+  String promoShareMessage(String code, String percent, String link);
+
+  /// No description provided for @promoWalletBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet Balance'**
+  String get promoWalletBalance;
+
+  /// No description provided for @promoMinWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum withdrawal: {amount} ETB'**
+  String promoMinWithdraw(String amount);
+
+  /// No description provided for @promoWithdrawTelebirr.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw via Telebirr'**
+  String get promoWithdrawTelebirr;
+
+  /// No description provided for @promoUseForPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy Package with Wallet'**
+  String get promoUseForPackage;
+
+  /// No description provided for @promoStatsInvited.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends Invited'**
+  String get promoStatsInvited;
+
+  /// No description provided for @promoStatsSubscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribed'**
+  String get promoStatsSubscribed;
+
+  /// No description provided for @promoStatsEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Earned'**
+  String get promoStatsEarned;
+
+  /// No description provided for @promoEarningsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Earning History'**
+  String get promoEarningsHistory;
+
+  /// No description provided for @promoNoEarningsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No referral earnings yet. Start inviting friends!'**
+  String get promoNoEarningsYet;
+
+  /// No description provided for @promoWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to WaveMart!'**
+  String get promoWelcomeTitle;
+
+  /// No description provided for @promoWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a friend\'s promo code? Enter it below to unlock a {percent}% discount on your first subscription package.'**
+  String promoWelcomeSubtitle(String percent);
+
+  /// No description provided for @promoCodeInputLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Promo Code (Optional)'**
+  String get promoCodeInputLabel;
+
+  /// No description provided for @promoCodeInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. WAVE-ABC123'**
+  String get promoCodeInputHint;
+
+  /// No description provided for @promoClaimButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim Offer'**
+  String get promoClaimButton;
+
+  /// No description provided for @promoSkipButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for Now'**
+  String get promoSkipButton;
+
+  /// No description provided for @promoCodeValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid promo code! {percent}% discount will be applied.'**
+  String promoCodeValid(String percent);
+
+  /// No description provided for @promoCodeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or inactive promo code.'**
+  String get promoCodeInvalid;
+
+  /// No description provided for @promoWithdrawTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Telebirr Withdrawal'**
+  String get promoWithdrawTitle;
+
+  /// No description provided for @promoWithdrawAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount (ETB)'**
+  String get promoWithdrawAmount;
+
+  /// No description provided for @promoWithdrawPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Telebirr Phone Number'**
+  String get promoWithdrawPhone;
+
+  /// No description provided for @promoWithdrawAccountName.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Holder Name'**
+  String get promoWithdrawAccountName;
+
+  /// No description provided for @promoWithdrawSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Withdrawal'**
+  String get promoWithdrawSubmit;
+
+  /// No description provided for @promoWithdrawSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawal request submitted! It will be processed to your Telebirr account soon.'**
+  String get promoWithdrawSuccess;
+
+  /// No description provided for @promoPayWithWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with Wallet Balance ({balance} ETB)'**
+  String promoPayWithWallet(String balance);
+
+  /// No description provided for @promoPaySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription activated successfully using your wallet balance!'**
+  String get promoPaySuccess;
 }
 
 class _AppLocalizationsDelegate

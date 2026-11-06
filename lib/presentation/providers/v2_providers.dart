@@ -27,6 +27,8 @@ import '../../data/services/v2/payment_service.dart';
 import '../../data/services/v2/plan_service.dart';
 import '../../data/services/v2/profile_service.dart';
 import '../../data/services/v2/promotion_service.dart';
+import '../../data/services/v2/promo_service.dart';
+import '../../data/models/v2/promo_models.dart';
 import '../../data/services/v2/subscription_service.dart';
 import 'app_providers.dart';
 
@@ -62,6 +64,10 @@ final kycV2ServiceProvider = Provider<KycServiceV2>((ref) {
 
 final helpV2ServiceProvider = Provider<HelpServiceV2>((ref) {
   return HelpServiceV2(client: ref.watch(apiV2ClientProvider));
+});
+
+final promoV2ServiceProvider = Provider<PromoServiceV2>((ref) {
+  return PromoServiceV2(client: ref.watch(apiV2ClientProvider));
 });
 
 final orderV2ServiceProvider = Provider<OrderServiceV2>((ref) {
@@ -434,4 +440,9 @@ final catalogItemDetailV2Provider =
 /// Help home feed from `/v2/help`.
 final helpHomeProvider = FutureProvider<HelpHome>((ref) {
   return ref.watch(helpV2ServiceProvider).fetchHome();
+});
+
+/// Referral and promo dashboard stats, wallet balance, and earnings list.
+final promoDashboardProvider = FutureProvider<PromoDashboardData>((ref) {
+  return ref.watch(promoV2ServiceProvider).fetchDashboard();
 });

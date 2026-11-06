@@ -39,6 +39,8 @@ import '../../presentation/screens/jobs/edit_job_screen.dart';
 import '../../presentation/screens/job_seekers/job_seekers_screen.dart';
 import '../../presentation/screens/job_seekers/job_seeker_detail_screen.dart';
 import '../../presentation/screens/job_seekers/edit_job_seeker_profile_screen.dart';
+import '../../presentation/screens/promo/welcome_promo_screen.dart';
+import '../../presentation/screens/promo/promo_referral_screen.dart';
 
 Page<void> _buildPageTransition<T>({
   required LocalKey key,
@@ -111,6 +113,13 @@ final goRouter = GoRouter(
       pageBuilder: (_, state) => _buildPageTransition(
         key: state.pageKey,
         child: const RegistrationScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/welcome-promo',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const WelcomePromoScreen(),
       ),
     ),
     GoRoute(
@@ -271,6 +280,13 @@ final goRouter = GoRouter(
       pageBuilder: (_, state) => _buildPageTransition(
         key: state.pageKey,
         child: const SubscriptionPlansScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/promo',
+      pageBuilder: (_, state) => _buildPageTransition(
+        key: state.pageKey,
+        child: const PromoReferralScreen(),
       ),
     ),
     GoRoute(

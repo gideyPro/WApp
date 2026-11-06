@@ -1047,7 +1047,7 @@
   "ordersCallBuyer": "Call Buyer",
   "ordersChatBuyer": "Chat with Buyer",
   "ordersViewVipPlans": "View VIP Plans",
-  "ordersPostRequest": "Post Buyer Request",
+  "ordersPostRequest": "Order Request",
   "ordersBudgetOnAgreement": "Budget on agreement",
   "ordersUpToBudget": "Up to {amount}",
   "@ordersUpToBudget": {
@@ -1067,6 +1067,63 @@
   "ordersBuyerInformation": "Buyer Information",
   "ordersVipRequiredBadge": "VIP Required",
   "ordersDetailError": "Could not load order details",
-  "orderYearInvalid": "Enter a valid year",
-  "orderYearRangeInvalid": "Maximum year must be after minimum year"
+  "promoReferralsTitle": "Promo & Referrals",
+  "promoReferralsSubtitle": "Invite friends, earn cash, get discounts",
+  "promoYourCode": "Your Promo Code",
+  "promoCopyCode": "Copy Code",
+  "promoCodeCopied": "Promo code copied to clipboard!",
+  "promoShare": "Share with Friends",
+  "promoShareMessage": "Join WaveMart with my promo code {code} to get a {percent}% discount on your first subscription! Download now: {link}",
+  "@promoShareMessage": {
+    "placeholders": {
+      "code": { "type": "String" },
+      "percent": { "type": "String" },
+      "link": { "type": "String" }
+    }
+  },
+  "promoWalletBalance": "Wallet Balance",
+  "promoMinWithdraw": "Minimum withdrawal: {amount} ETB",
+  "@promoMinWithdraw": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoWithdrawTelebirr": "Withdraw via Telebirr",
+  "promoUseForPackage": "Buy Package with Wallet",
+  "promoStatsInvited": "Friends Invited",
+  "promoStatsSubscribed": "Subscribed",
+  "promoStatsEarned": "Total Earned",
+  "promoEarningsHistory": "Earning History",
+  "promoNoEarningsYet": "No referral earnings yet. Start inviting friends!",
+  "promoWelcomeTitle": "Welcome to WaveMart!",
+  "promoWelcomeSubtitle": "Have a friend's promo code? Enter it below to unlock a {percent}% discount on your first subscription package.",
+  "@promoWelcomeSubtitle": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoCodeInputLabel": "Promo Code (Optional)",
+  "promoCodeInputHint": "e.g. WAVE-ABC123",
+  "promoClaimButton": "Claim Offer",
+  "promoSkipButton": "Skip for Now",
+  "promoCodeValid": "Valid promo code! {percent}% discount will be applied.",
+  "@promoCodeValid": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoCodeInvalid": "Invalid or inactive promo code.",
+  "promoWithdrawTitle": "Telebirr Withdrawal",
+  "promoWithdrawAmount": "Amount (ETB)",
+  "promoWithdrawPhone": "Telebirr Phone Number",
+  "promoWithdrawAccountName": "Account Holder Name",
+  "promoWithdrawSubmit": "Submit Withdrawal",
+  "promoWithdrawSuccess": "Withdrawal request submitted! It will be processed to your Telebirr account soon.",
+  "promoPayWithWallet": "Pay with Wallet Balance ({balance} ETB)",
+  "@promoPayWithWallet": {
+    "placeholders": {
+      "balance": { "type": "String" }
+    }
+  },
+  "promoPaySuccess": "Subscription activated successfully using your wallet balance!"
 }

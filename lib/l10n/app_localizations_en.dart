@@ -3224,7 +3224,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersViewVipPlans => 'View VIP Plans';
 
   @override
-  String get ordersPostRequest => 'Post Buyer Request';
+  String get ordersPostRequest => 'Order Request';
 
   @override
   String get ordersBudgetOnAgreement => 'Budget on agreement';
@@ -3263,4 +3263,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ordersDetailError => 'Could not load order details';
+
+  @override
+  String get promoReferralsTitle => 'Promo & Referrals';
+
+  @override
+  String get promoReferralsSubtitle =>
+      'Invite friends, earn cash, get discounts';
+
+  @override
+  String get promoYourCode => 'Your Promo Code';
+
+  @override
+  String get promoCopyCode => 'Copy Code';
+
+  @override
+  String get promoCodeCopied => 'Promo code copied to clipboard!';
+
+  @override
+  String get promoShare => 'Share with Friends';
+
+  @override
+  String promoShareMessage(String code, String percent, String link) {
+    return 'Join WaveMart with my promo code $code to get a $percent% discount on your first subscription! Download now: $link';
+  }
+
+  @override
+  String get promoWalletBalance => 'Wallet Balance';
+
+  @override
+  String promoMinWithdraw(String amount) {
+    return 'Minimum withdrawal: $amount ETB';
+  }
+
+  @override
+  String get promoWithdrawTelebirr => 'Withdraw via Telebirr';
+
+  @override
+  String get promoUseForPackage => 'Buy Package with Wallet';
+
+  @override
+  String get promoStatsInvited => 'Friends Invited';
+
+  @override
+  String get promoStatsSubscribed => 'Subscribed';
+
+  @override
+  String get promoStatsEarned => 'Total Earned';
+
+  @override
+  String get promoEarningsHistory => 'Earning History';
+
+  @override
+  String get promoNoEarningsYet =>
+      'No referral earnings yet. Start inviting friends!';
+
+  @override
+  String get promoWelcomeTitle => 'Welcome to WaveMart!';
+
+  @override
+  String promoWelcomeSubtitle(String percent) {
+    return 'Have a friend\'s promo code? Enter it below to unlock a $percent% discount on your first subscription package.';
+  }
+
+  @override
+  String get promoCodeInputLabel => 'Promo Code (Optional)';
+
+  @override
+  String get promoCodeInputHint => 'e.g. WAVE-ABC123';
+
+  @override
+  String get promoClaimButton => 'Claim Offer';
+
+  @override
+  String get promoSkipButton => 'Skip for Now';
+
+  @override
+  String promoCodeValid(String percent) {
+    return 'Valid promo code! $percent% discount will be applied.';
+  }
+
+  @override
+  String get promoCodeInvalid => 'Invalid or inactive promo code.';
+
+  @override
+  String get promoWithdrawTitle => 'Telebirr Withdrawal';
+
+  @override
+  String get promoWithdrawAmount => 'Amount (ETB)';
+
+  @override
+  String get promoWithdrawPhone => 'Telebirr Phone Number';
+
+  @override
+  String get promoWithdrawAccountName => 'Account Holder Name';
+
+  @override
+  String get promoWithdrawSubmit => 'Submit Withdrawal';
+
+  @override
+  String get promoWithdrawSuccess =>
+      'Withdrawal request submitted! It will be processed to your Telebirr account soon.';
+
+  @override
+  String promoPayWithWallet(String balance) {
+    return 'Pay with Wallet Balance ($balance ETB)';
+  }
+
+  @override
+  String get promoPaySuccess =>
+      'Subscription activated successfully using your wallet balance!';
 }

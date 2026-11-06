@@ -12,6 +12,7 @@ import '../../../../data/models/subscription.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/transaction_tracker.dart';
+import '../../providers/v2_providers.dart';
 import '../../widgets/common/wave_button.dart';
 import '../../widgets/common/wave_common_widgets.dart';
 import '../../widgets/common/wave_webview_page.dart';
@@ -971,6 +972,147 @@ class _SubscriptionPlansScreenState
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.subscriptionUnexpectedError(e.toString())), backgroundColor: AppColors.error));
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _processingPlanId = null);
+        }
+      }
+      return;
+    }
+
+    // Check wallet balance for optional payment with wallet
+    final promoData = ref.read(promoDashboardProvider).value;
+    final walletBalance = promoData?.walletBalance ?? 0.0;
+    final minWithdraw = promoData?.minWithdrawAmount ?? 500.0;
+
+    PlanBillingCycle? targetCycle;
+    for (final c in plan.billingCycles) {
+      if (c.months == billingCycleMonths) {
+        targetCycle = c;
+        break;
+      }
+    }
+    final priceEtb = targetCycle?.price ?? plan.price;
+
+    String chosenPaymentMethod = 'chapa';
+    if (_selectedCurrency == 'ETB' &&
+        walletBalance >= minWithdraw &&
+        walletBalance >= priceEtb) {
+      if (!mounted) return;
+      final useWallet = await showModalBottomSheet<bool>(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (ctx) {
+          final isDark = Theme.of(ctx).brightness == Brightness.dark;
+          return Container(
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.primary900 : Colors.white,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: ctx.textMuted.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Payment Method',
+                  style: AppTextStyles.title.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: ctx.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  leading: const Icon(
+                    Icons.account_balance_wallet_rounded,
+                    color: AppColors.emerald500,
+                  ),
+                  title: Text(
+                    l10n.promoPayWithWallet(walletBalance.toStringAsFixed(0)),
+                  ),
+                  subtitle: Text('Price: ${priceEtb.toStringAsFixed(0)} ETB'),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: AppColors.emerald500.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  onTap: () => Navigator.pop(ctx, true),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  leading: const Icon(
+                    Icons.credit_card_rounded,
+                    color: AppColors.accent500,
+                  ),
+                  title: const Text('Pay with Telebirr / Cards (Chapa)'),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: ctx.theme.cardBorder),
+                  ),
+                  onTap: () => Navigator.pop(ctx, false),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+      if (useWallet == null) return;
+      if (useWallet) {
+        chosenPaymentMethod = 'wallet';
+      }
+    }
+
+    if (chosenPaymentMethod == 'wallet') {
+      setState(() => _processingPlanId = plan.id);
+      try {
+        final response = await _subscriptionService.processPayment(
+          planId: plan.id,
+          paymentData: {
+            'payment_method': 'wallet',
+            'currency': _selectedCurrency,
+            'billing_cycle_months': billingCycleMonths,
+          },
+        );
+        if (mounted) {
+          if (response.success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.promoPaySuccess),
+                backgroundColor: AppColors.success,
+              ),
+            );
+            ref.read(subscriptionProvider.notifier).refresh();
+            ref.invalidate(promoDashboardProvider);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(response.message),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.subscriptionUnexpectedError(e.toString())),
+              backgroundColor: AppColors.error,
+            ),
+          );
         }
       } finally {
         if (mounted) {

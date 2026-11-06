@@ -3182,7 +3182,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get ordersViewVipPlans => 'ናይ VIP ፓኬጃት ርኣዩ';
 
   @override
-  String get ordersPostRequest => 'ናይ ምግዛእ ድሌት ለጥፉ';
+  String get ordersPostRequest => 'ናይ ምግዛእ ድሌት';
 
   @override
   String get ordersBudgetOnAgreement => 'ብስምምነት ዝውሰን በጀት';
@@ -3221,4 +3221,111 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get ordersDetailError => 'ዝርዝር ትእዛዝ ክጽዕን ኣይተኻእለን';
+
+  @override
+  String get promoReferralsTitle => 'ናይ ምልላይ ኮድን ዕድመን';
+
+  @override
+  String get promoReferralsSubtitle => 'ፈተውቲ ይዓድሙ፣ ገንዘብ ይርከቡ፣ ቅናሽ ይርከቡ';
+
+  @override
+  String get promoYourCode => 'ናይ ምልላይ ኮድኩም';
+
+  @override
+  String get promoCopyCode => 'ኮድ ቅዳሕ';
+
+  @override
+  String get promoCodeCopied => 'ናይ ምልላይ ኮድ ተቐዲሑ!';
+
+  @override
+  String get promoShare => 'ንፈተውቲ ኣካፍሉ';
+
+  @override
+  String promoShareMessage(String code, String percent, String link) {
+    return 'ብናተይ ናይ ምልላይ ኮድ $code ናብ ዌቭማርት ብምፅንባር ኣብ ቀዳማይ ናይ ዓሚልነት ክፍሊትኩም ናይ $percent% ቅናሽ ይርከቡ! ሕጂ ኣውርዱ፡ $link';
+  }
+
+  @override
+  String get promoWalletBalance => 'ናይ ቦርሳ ተረፍ ሕሳብ';
+
+  @override
+  String promoMinWithdraw(String amount) {
+    return 'ዝተሓተ ምውፃእ ዝከኣል፡ $amount ቅርሺ';
+  }
+
+  @override
+  String get promoWithdrawTelebirr => 'ብቴሌብር ኣውፅኡ';
+
+  @override
+  String get promoUseForPackage => 'ብቦርሳ ፓኬጅ ይግዝኡ';
+
+  @override
+  String get promoStatsInvited => 'ዝተዓደሙ ፈተውቲ';
+
+  @override
+  String get promoStatsSubscribed => 'ዝተመዝገቡ';
+
+  @override
+  String get promoStatsEarned => 'ዝተረኸበ ሓፈሻዊ';
+
+  @override
+  String get promoEarningsHistory => 'ናይ ኣታዊ ታሪኽ';
+
+  @override
+  String get promoNoEarningsYet => 'ክሳብ ሕጂ ዝተረኸበ ኣታዊ የለን። ንፈተውትኹም ምዕዳም ጀምሩ!';
+
+  @override
+  String get promoWelcomeTitle => 'እንቋዕ ናብ ዌቭማርት ብደሓን መፃእኹም!';
+
+  @override
+  String promoWelcomeSubtitle(String percent) {
+    return 'ናይ ፈታዊኹም ናይ ምልላይ ኮድ ኣለኩምዶ? ኣብ ቀዳማይ ናይ ዓሚልነት ፓኬጅኩም ናይ $percent% ቅናሽ ንምርካብ ኣብ ታሕቲ የእትዉዎ።';
+  }
+
+  @override
+  String get promoCodeInputLabel => 'ናይ ምልላይ ኮድ (ምርጫ)';
+
+  @override
+  String get promoCodeInputHint => 'ኣብነት፡ WAVE-ABC123';
+
+  @override
+  String get promoClaimButton => 'ዕድል ተጠቐሙ';
+
+  @override
+  String get promoSkipButton => 'ንሕጂ ሕለፉ';
+
+  @override
+  String promoCodeValid(String percent) {
+    return 'ቅኑዕ ናይ ምልላይ ኮድ! ናይ $percent% ቅናሽ ክግበረልኩም እዩ።';
+  }
+
+  @override
+  String get promoCodeInvalid => 'ዘይሰርሕ ወይ ድማ ዘይቅኑዕ ናይ ምልላይ ኮድ።';
+
+  @override
+  String get promoWithdrawTitle => 'ናይ ቴሌብር ገንዘብ ምውፃእ';
+
+  @override
+  String get promoWithdrawAmount => 'መጠኑ (ቅርሺ)';
+
+  @override
+  String get promoWithdrawPhone => 'ናይ ቴሌብር ስልኪ ቍፅሪ';
+
+  @override
+  String get promoWithdrawAccountName => 'ናይ ሕሳብ ዋና ስም';
+
+  @override
+  String get promoWithdrawSubmit => 'ናይ ምውፃእ ሕቶ ኣእትዉ';
+
+  @override
+  String get promoWithdrawSuccess =>
+      'ናይ ገንዘብ ምውፃእ ሕቶ ተላኢኹ ኣሎ! ቀልጢፉ ናብ ናይ ቴሌብር ሕሳብኩም ክሰጋገር እዩ።';
+
+  @override
+  String promoPayWithWallet(String balance) {
+    return 'ብናይ ቦርሳ ተረፍ ሕሳብ ክፈሉ ($balance ቅርሺ)';
+  }
+
+  @override
+  String get promoPaySuccess => 'ናይ ዓሚልነት ክፍሊትኩም ብናይ ቦርሳ ተረፍ ሕሳብ ብዓወት ተኸፊቱ ኣሎ!';
 }

@@ -158,4 +158,9 @@ class ApiV2Constants {
   static String conferenceLeave(int id) => '${conference(id)}/leave';
   static String conferenceEnd(int id) => '${conference(id)}/end';
   static String conferenceCancel(int id) => '${conference(id)}/cancel';
+
+  static const String promoValidate = '$apiBase/promo-codes/validate';
+  static const String promoClaim = '$apiBase/promo/claim';
+  static const String promoDashboard = '$apiBase/promo/dashboard';
+  static const String promoWithdraw = '$apiBase/promo/withdraw';
 }

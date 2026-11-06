@@ -136,12 +136,14 @@ class SubscriptionServiceApi {
     int planId, {
     String currency = 'ETB',
     int billingCycleMonths = 1,
+    String? paymentMethod,
   }) async {
     try {
       final checkout = await _subV2.checkout(
         planId,
         cycleMonths: billingCycleMonths,
         currency: currency,
+        paymentMethod: paymentMethod == 'wallet' ? 'wallet' : null,
       );
 
       if (checkout.activated) {
@@ -195,13 +197,20 @@ class SubscriptionServiceApi {
     try {
       final cycleMonths = paymentData?['billing_cycle_months'] as int?;
       final currency = paymentData?['currency'] as String? ?? 'ETB';
+      final paymentMethod = paymentData?['payment_method'] as String?;
       final checkout = await _subV2.checkout(
         planId,
         cycleMonths: cycleMonths,
         currency: currency,
+        paymentMethod: paymentMethod == 'wallet' ? 'wallet' : null,
       );
 
-      if (checkout.checkoutUrl != null) {
+      if (checkout.activated) {
+        return const SubscriptionActionResponse(
+          success: true,
+          message: 'Subscription activated successfully',
+        );
+      } else if (checkout.checkoutUrl != null) {
         return SubscriptionActionResponse(
           success: true,
           message: 'Payment initialized',

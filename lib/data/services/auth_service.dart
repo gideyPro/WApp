@@ -275,11 +275,14 @@ class AuthService {
           await _apiClient.cacheUserData(user.toJson());
         }
 
+        final isNewUser = data['is_new_user'] == true;
+
         return AuthResponse(
           success: true,
           message: 'Login successful',
           user: user,
           token: token?.toString(),
+          isNewUser: isNewUser,
         );
       }
 
@@ -456,6 +459,7 @@ class AuthResponse {
   final String? destination;
   final bool isLocked;
   final int? retryAfter;
+  final bool isNewUser;
 
   const AuthResponse({
     required this.success,
@@ -465,8 +469,9 @@ class AuthResponse {
     this.destination,
     this.isLocked = false,
     this.retryAfter,
+    this.isNewUser = false,
   });
 
   @override
-  String toString() => 'AuthResponse(success: $success, message: $message, isLocked: $isLocked, retryAfter: $retryAfter)';
+  String toString() => 'AuthResponse(success: $success, message: $message, isLocked: $isLocked, retryAfter: $retryAfter, isNewUser: $isNewUser)';
 }

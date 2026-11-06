@@ -25,7 +25,11 @@ class GoogleSignInButton extends ConsumerWidget {
                     .read(authStateProvider.notifier)
                     .loginWithGoogle();
                 if (response.success && context.mounted) {
-                  context.go('/');
+                  if (response.isNewUser) {
+                    context.go('/welcome-promo');
+                  } else {
+                    context.go('/');
+                  }
                 }
               },
         style: ElevatedButton.styleFrom(
