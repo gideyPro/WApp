@@ -342,8 +342,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         futures.add(ref.read(homeJobListingsProvider.notifier).loadListings());
       }
     } else if (_selectedCategory == HomeCategory.orders) {
+      // Pull-to-refresh must re-run the active query, not reset the feed to
+      // the unfiltered browse list.
       futures.add(ref.read(homeOrdersProvider.notifier).loadOrders(
             category: _ordersSection.browseCategory,
+            location: _ordersLocationQuery,
+            budgetMin: _filterValues.priceMin?.toDouble(),
+            budgetMax: _filterValues.priceMax?.toDouble(),
           ));
     } else if (_selectedCategory == HomeCategory.all) {
       final filters = _allSection == AllSection.all

@@ -70,6 +70,48 @@ class ReferralEarningItem {
   }
 }
 
+class PayoutHistoryItem {
+  final int id;
+  final double amount;
+  final String paymentMethod;
+  final String phoneNumber;
+  final String accountName;
+  final String status;
+  final String? adminNotes;
+  final DateTime? processedAt;
+  final DateTime? createdAt;
+
+  const PayoutHistoryItem({
+    required this.id,
+    required this.amount,
+    required this.paymentMethod,
+    required this.phoneNumber,
+    required this.accountName,
+    required this.status,
+    this.adminNotes,
+    this.processedAt,
+    this.createdAt,
+  });
+
+  factory PayoutHistoryItem.fromJson(Map<String, dynamic> json) {
+    return PayoutHistoryItem(
+      id: TypeUtils.safeInt(json['id']) ?? 0,
+      amount: TypeUtils.safeDouble(json['amount']) ?? 0.0,
+      paymentMethod: json['payment_method']?.toString() ?? 'telebirr',
+      phoneNumber: json['phone_number']?.toString() ?? '',
+      accountName: json['account_name']?.toString() ?? '',
+      status: json['status']?.toString() ?? 'pending',
+      adminNotes: json['admin_notes']?.toString(),
+      processedAt: json['processed_at'] != null
+          ? DateTime.tryParse(json['processed_at'].toString())
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'].toString())
+          : null,
+    );
+  }
+}
+
 class PromoDashboardData {
   final String promoCode;
   final String inviteLink;
@@ -81,6 +123,7 @@ class PromoDashboardData {
   final int totalSubscribed;
   final double totalEarned;
   final List<ReferralEarningItem> earnings;
+  final List<PayoutHistoryItem> payouts;
 
   const PromoDashboardData({
     required this.promoCode,
@@ -93,6 +136,7 @@ class PromoDashboardData {
     required this.totalSubscribed,
     required this.totalEarned,
     required this.earnings,
+    this.payouts = const [],
   });
 
   factory PromoDashboardData.fromJson(Map<String, dynamic> json) {
@@ -101,6 +145,8 @@ class PromoDashboardData {
         : const <String, dynamic>{};
     final rawEarnings =
         json['earnings'] is List ? json['earnings'] as List : const [];
+    final rawPayouts =
+        json['payouts'] is List ? json['payouts'] as List : const [];
 
     return PromoDashboardData(
       promoCode: json['promo_code']?.toString() ?? '',
@@ -119,6 +165,10 @@ class PromoDashboardData {
           .whereType<Map>()
           .map((e) =>
               ReferralEarningItem.fromJson(Map<String, dynamic>.from(e)))
+          .toList(),
+      payouts: rawPayouts
+          .whereType<Map>()
+          .map((p) => PayoutHistoryItem.fromJson(Map<String, dynamic>.from(p)))
           .toList(),
     );
   }

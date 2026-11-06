@@ -17,7 +17,6 @@ import '../../widgets/common/wave_liquid_glass.dart';
 
 import '../../providers/app_providers.dart';
 import '../../widgets/common/wave_upgrade_card.dart';
-import '../../widgets/status_helpers.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
   const CreateOrderScreen({super.key});
@@ -46,12 +45,8 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   final _modelCtrl = TextEditingController();
   final _minYearCtrl = TextEditingController();
   final _maxYearCtrl = TextEditingController();
-  String? _transmission;
-  String? _fuelType;
   String? _bodyType;
 
-  static const _transmissionOptions = ['automatic', 'manual'];
-  static const _fuelTypeOptions = ['petrol', 'diesel', 'hybrid', 'electric'];
   static const _bodyTypeOptions = [
     'sedan',
     'SUV',
@@ -260,8 +255,6 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
           'year_min': int.tryParse(_minYearCtrl.text.trim()),
         if (_maxYearCtrl.text.trim().isNotEmpty)
           'year_max': int.tryParse(_maxYearCtrl.text.trim()),
-        if (_transmission != null) 'transmission': _transmission,
-        if (_fuelType != null) 'fuel_type': _fuelType,
         if (_bodyType != null) 'body_type': _bodyType,
       };
       data['vehicle_details'] = vehicleDetails;
@@ -598,64 +591,6 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                             decoration: _inputDecoration(label: l10n.searchAreaMax),
                             keyboardType: TextInputType.number,
                             validator: _maxYearValidator,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            initialValue: _transmission,
-                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                            decoration: _inputDecoration(label: l10n.listingTransmission),
-                            dropdownColor: context.sheetBg,
-                            items: [
-                              DropdownMenuItem(
-                                value: null,
-                                child: Text(
-                                  l10n.searchFilterAny,
-                                  style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-                                ),
-                              ),
-                              for (final value in _transmissionOptions)
-                                DropdownMenuItem(
-                                  value: value,
-                                  child: Text(
-                                    transmissionLabel(value, l10n),
-                                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                                  ),
-                                ),
-                            ],
-                            onChanged: (v) => setState(() => _transmission = v),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            initialValue: _fuelType,
-                            style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                            decoration: _inputDecoration(label: l10n.listingFuelType),
-                            dropdownColor: context.sheetBg,
-                            items: [
-                              DropdownMenuItem(
-                                value: null,
-                                child: Text(
-                                  l10n.searchFilterAny,
-                                  style: AppTextStyles.bodySmall.copyWith(color: context.theme.textMuted),
-                                ),
-                              ),
-                              for (final value in _fuelTypeOptions)
-                                DropdownMenuItem(
-                                  value: value,
-                                  child: Text(
-                                    fuelTypeLabel(value, l10n),
-                                    style: AppTextStyles.bodySmall.copyWith(color: context.theme.textPrimary),
-                                  ),
-                                ),
-                            ],
-                            onChanged: (v) => setState(() => _fuelType = v),
                           ),
                         ),
                       ],

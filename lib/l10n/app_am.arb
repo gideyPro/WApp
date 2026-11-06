@@ -1125,5 +1125,51 @@
       "balance": { "type": "String" }
     }
   },
-  "promoPaySuccess": "የደንበኝነት ምዝገባዎ በኪስ ቦርሳዎ ቀሪ ሂሳብ በተሳካ ሁኔታ ነቅቷል!"
+  "promoPaySuccess": "የደንበኝነት ምዝገባዎ በኪስ ቦርሳዎ ቀሪ ሂሳብ በተሳካ ሁኔታ ነቅቷል!",
+  "promoInviteDiscount": "ለጓደኞችዎ በመጀመሪያ ፕላናቸው ላይ {percent}% ቅናሽ ይስጡ",
+  "@promoInviteDiscount": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoWithdrawMinHint": "ዝቅተኛ፡ {amount} ብር",
+  "@promoWithdrawMinHint": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoWithdrawInvalidAmount": "እባክዎ ትክክለኛ መጠን ያስገቡ",
+  "promoWithdrawExceedsBalance": "መጠኑ ከቦርሳ ቀሪ ሂሳብ ይበልጣል",
+  "promoWithdrawPhoneRequired": "እባክዎ የቴሌብር ስልክ ቁጥር ያስገቡ",
+  "promoWithdrawNameRequired": "እባክዎ የሂሳብ ባለቤት ስም ያስገቡ",
+  "promoWithdrawAccountNameHint": "በቴሌብር ላይ ያለው ሙሉ ስም",
+  "promoEarningBase": "{plan} (መሠረት፡ {base} ብር × {percent}%)",
+  "@promoEarningBase": {
+    "placeholders": {
+      "plan": { "type": "String" },
+      "base": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "promoPayoutHistory": "የገንዘብ ማውጣት ታሪክ",
+  "promoNoPayoutsYet": "እስካሁን የገንዘብ ማውጣት ጥያቄ የለም።",
+  "promoPayoutPending": "በመጠባበቅ ላይ",
+  "promoPayoutApproved": "ጸድቋል",
+  "promoPayoutCompleted": "ተከፍሏል",
+  "promoPayoutRejected": "ተከልክሏል",
+  "promoPayoutDestination": "ቴሌብር · {phone}",
+  "@promoPayoutDestination": {
+    "placeholders": {
+      "phone": { "type": "String" }
+    }
+  },
+  "promoPayoutRefunded": "መጠኑ ወደ ቦርሳ ተመልሷል",
+  "promoPaymentMethodTitle": "የክፍያ ዘዴ",
+  "promoPaymentPrice": "ዋጋ፡ {amount} ብር",
+  "@promoPaymentPrice": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoPayWithChapa": "በቴሌብር / ካርድ (Chapa) ይክፈሉ"
 }

@@ -3373,4 +3373,73 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get promoPaySuccess =>
       'Subscription activated successfully using your wallet balance!';
+
+  @override
+  String promoInviteDiscount(String percent) {
+    return 'Give friends $percent% off their first plan';
+  }
+
+  @override
+  String promoWithdrawMinHint(String amount) {
+    return 'Min: $amount ETB';
+  }
+
+  @override
+  String get promoWithdrawInvalidAmount => 'Please enter a valid amount';
+
+  @override
+  String get promoWithdrawExceedsBalance => 'Amount exceeds wallet balance';
+
+  @override
+  String get promoWithdrawPhoneRequired =>
+      'Please enter a Telebirr phone number';
+
+  @override
+  String get promoWithdrawNameRequired =>
+      'Please enter the account holder name';
+
+  @override
+  String get promoWithdrawAccountNameHint => 'Full name on Telebirr';
+
+  @override
+  String promoEarningBase(String plan, String base, String percent) {
+    return '$plan (Base: $base ETB × $percent%)';
+  }
+
+  @override
+  String get promoPayoutHistory => 'Withdrawal History';
+
+  @override
+  String get promoNoPayoutsYet => 'No withdrawal requests yet.';
+
+  @override
+  String get promoPayoutPending => 'Pending';
+
+  @override
+  String get promoPayoutApproved => 'Approved';
+
+  @override
+  String get promoPayoutCompleted => 'Paid';
+
+  @override
+  String get promoPayoutRejected => 'Rejected';
+
+  @override
+  String promoPayoutDestination(String phone) {
+    return 'Telebirr · $phone';
+  }
+
+  @override
+  String get promoPayoutRefunded => 'Amount returned to wallet';
+
+  @override
+  String get promoPaymentMethodTitle => 'Payment Method';
+
+  @override
+  String promoPaymentPrice(String amount) {
+    return 'Price: $amount ETB';
+  }
+
+  @override
+  String get promoPayWithChapa => 'Pay with Telebirr / Cards (Chapa)';
 }

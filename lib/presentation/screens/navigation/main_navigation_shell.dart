@@ -69,7 +69,9 @@ class _MainNavigationShellState extends ConsumerState<MainNavigationShell> {
       ref.read(jobListingsProvider.notifier).loadListings();
       ref.read(homeJobListingsProvider.notifier).loadListings();
       ref.read(ordersProvider.notifier).loadOrders();
-      ref.read(homeOrdersProvider.notifier).loadOrders();
+      // Preserve the home feed's active category/search filters; a bare
+      // loadOrders() would silently reset them to the "all" teaser.
+      ref.read(homeOrdersProvider.notifier).refresh();
       ref.read(subscriptionProvider.notifier).refresh();
     }
   }

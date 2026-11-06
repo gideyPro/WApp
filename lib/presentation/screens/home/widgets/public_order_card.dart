@@ -170,23 +170,6 @@ class PublicOrderCard extends StatelessWidget {
                       vehicleYear,
                       isDark,
                     ),
-                  if (order.vehicleTransmission != null)
-                    _specChip(
-                      context,
-                      Icons.tune_rounded,
-                      transmissionLabel(
-                        order.vehicleTransmission!,
-                        l10n,
-                      ),
-                      isDark,
-                    ),
-                  if (order.vehicleFuelType != null)
-                    _specChip(
-                      context,
-                      Icons.local_gas_station_outlined,
-                      fuelTypeLabel(order.vehicleFuelType!, l10n),
-                      isDark,
-                    ),
                 ],
               ],
             ),

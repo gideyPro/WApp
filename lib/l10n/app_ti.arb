@@ -1125,5 +1125,51 @@
       "balance": { "type": "String" }
     }
   },
-  "promoPaySuccess": "ናይ ዓሚልነት ክፍሊትኩም ብናይ ቦርሳ ተረፍ ሕሳብ ብዓወት ተኸፊቱ ኣሎ!"
+  "promoPaySuccess": "ናይ ዓሚልነት ክፍሊትኩም ብናይ ቦርሳ ተረፍ ሕሳብ ብዓወት ተኸፊቱ ኣሎ!",
+  "promoInviteDiscount": "ንፈተውትኹም ኣብ መጀመርታ ፕላኖም {percent}% ቅናሽ ሃቡ",
+  "@promoInviteDiscount": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoWithdrawMinHint": "ዝተሓተ ፦ {amount} ብር",
+  "@promoWithdrawMinHint": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoWithdrawInvalidAmount": "በጃኹም ቅኑዕ መጠን ኣእትዉ",
+  "promoWithdrawExceedsBalance": "መጠኑ ካብ ቀሪ ሕሳብ ይሓልፍ",
+  "promoWithdrawPhoneRequired": "በጃኹም ናይ ቴሌብር ስልኪ ቍፅሪ ኣእትዉ",
+  "promoWithdrawNameRequired": "በጃኹም ናይ ሕሳብ ዋና ስም ኣእትዉ",
+  "promoWithdrawAccountNameHint": "ኣብ ቴሌብር ዘሎ ምሉእ ስም",
+  "promoEarningBase": "{plan} (መሰረት፦ {base} ብር × {percent}%)",
+  "@promoEarningBase": {
+    "placeholders": {
+      "plan": { "type": "String" },
+      "base": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "promoPayoutHistory": "ናይ ገንዘብ ምውፃእ ታሪኽ",
+  "promoNoPayoutsYet": "ክሳብ ሕጂ ናይ ገንዘብ ምውፃእ ሕቶ የለን።",
+  "promoPayoutPending": "ኣብ ትጽቢት",
+  "promoPayoutApproved": "ተረጋጊጹ",
+  "promoPayoutCompleted": "ተኸፊሉ",
+  "promoPayoutRejected": "ተኣገደ",
+  "promoPayoutDestination": "ቴሌብር · {phone}",
+  "@promoPayoutDestination": {
+    "placeholders": {
+      "phone": { "type": "String" }
+    }
+  },
+  "promoPayoutRefunded": "መጠኑ ናብ ቦርሳ ተመሊሱ",
+  "promoPaymentMethodTitle": "ናይ ክፍሊት ዘዴ",
+  "promoPaymentPrice": "ዋጋ፦ {amount} ብር",
+  "@promoPaymentPrice": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoPayWithChapa": "ብቴሌብር / ካርድ (Chapa) ክፈሉ"
 }

@@ -1125,5 +1125,51 @@
       "balance": { "type": "String" }
     }
   },
-  "promoPaySuccess": "Subscription activated successfully using your wallet balance!"
+  "promoPaySuccess": "Subscription activated successfully using your wallet balance!",
+  "promoInviteDiscount": "Give friends {percent}% off their first plan",
+  "@promoInviteDiscount": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoWithdrawMinHint": "Min: {amount} ETB",
+  "@promoWithdrawMinHint": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoWithdrawInvalidAmount": "Please enter a valid amount",
+  "promoWithdrawExceedsBalance": "Amount exceeds wallet balance",
+  "promoWithdrawPhoneRequired": "Please enter a Telebirr phone number",
+  "promoWithdrawNameRequired": "Please enter the account holder name",
+  "promoWithdrawAccountNameHint": "Full name on Telebirr",
+  "promoEarningBase": "{plan} (Base: {base} ETB × {percent}%)",
+  "@promoEarningBase": {
+    "placeholders": {
+      "plan": { "type": "String" },
+      "base": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "promoPayoutHistory": "Withdrawal History",
+  "promoNoPayoutsYet": "No withdrawal requests yet.",
+  "promoPayoutPending": "Pending",
+  "promoPayoutApproved": "Approved",
+  "promoPayoutCompleted": "Paid",
+  "promoPayoutRejected": "Rejected",
+  "promoPayoutDestination": "Telebirr · {phone}",
+  "@promoPayoutDestination": {
+    "placeholders": {
+      "phone": { "type": "String" }
+    }
+  },
+  "promoPayoutRefunded": "Amount returned to wallet",
+  "promoPaymentMethodTitle": "Payment Method",
+  "promoPaymentPrice": "Price: {amount} ETB",
+  "@promoPaymentPrice": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoPayWithChapa": "Pay with Telebirr / Cards (Chapa)"
 }

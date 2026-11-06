@@ -329,16 +329,6 @@ class _PublicOrderDetailScreenState
                     _specRow(l10n.listingModel, order.vehicleModel!),
                   if (vehicleYear.isNotEmpty)
                     _specRow(l10n.listingYear, vehicleYear),
-                  if (order.vehicleTransmission != null)
-                    _specRow(
-                      l10n.listingTransmission,
-                      transmissionLabel(order.vehicleTransmission!, l10n),
-                    ),
-                  if (order.vehicleFuelType != null)
-                    _specRow(
-                      l10n.listingFuelType,
-                      fuelTypeLabel(order.vehicleFuelType!, l10n),
-                    ),
                   if (order.vehicleBodyType != null)
                     _specRow(
                       l10n.listingBodyType,

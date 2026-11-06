@@ -151,7 +151,9 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                           ),
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.money_rounded),
-                            hintText: 'Min: ${data.minWithdrawAmount.toStringAsFixed(0)} ETB',
+                            hintText: l10n.promoWithdrawMinHint(
+                              data.minWithdrawAmount.toStringAsFixed(0),
+                            ),
                             filled: true,
                             fillColor: isDark
                                 ? AppColors.primary800
@@ -168,7 +170,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                           validator: (value) {
                             final val = double.tryParse(value?.trim() ?? '');
                             if (val == null) {
-                              return 'Please enter a valid amount';
+                              return l10n.promoWithdrawInvalidAmount;
                             }
                             if (val < data.minWithdrawAmount) {
                               return l10n.promoMinWithdraw(
@@ -176,7 +178,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                               );
                             }
                             if (val > data.walletBalance) {
-                              return 'Amount exceeds wallet balance';
+                              return l10n.promoWithdrawExceedsBalance;
                             }
                             return null;
                           },
@@ -216,7 +218,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Please enter Telebirr phone number';
+                              return l10n.promoWithdrawPhoneRequired;
                             }
                             return null;
                           },
@@ -240,7 +242,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                           ),
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.person_rounded),
-                            hintText: 'Full Name on Telebirr',
+                            hintText: l10n.promoWithdrawAccountNameHint,
                             filled: true,
                             fillColor: isDark
                                 ? AppColors.primary800
@@ -256,7 +258,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Please enter account holder name';
+                              return l10n.promoWithdrawNameRequired;
                             }
                             return null;
                           },
@@ -383,6 +385,10 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                 _buildStatsGrid(data),
                 const SizedBox(height: 24),
                 _buildEarningsSection(data),
+                if (data.payouts.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  _buildPayoutHistorySection(data),
+                ],
               ],
             ),
           ),
@@ -427,7 +433,9 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                       ),
                     ),
                     Text(
-                      'Give friends ${data.discountPercentage.toInt()}% off their first plan',
+                      l10n.promoInviteDiscount(
+                        data.discountPercentage.toInt().toString(),
+                      ),
                       style: AppTextStyles.bodySmall.copyWith(
                         color: context.textMuted,
                       ),
@@ -747,7 +755,11 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${item.planName} (Base: ${item.planBasePrice.toStringAsFixed(0)} ETB × ${item.commissionPercentage.toInt()}%)',
+                  l10n.promoEarningBase(
+                    item.planName,
+                    item.planBasePrice.toStringAsFixed(0),
+                    item.commissionPercentage.toInt().toString(),
+                  ),
                   style: AppTextStyles.caption.copyWith(
                     color: context.textSecondary,
                   ),
@@ -770,6 +782,203 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
             style: AppTextStyles.titleSmall.copyWith(
               fontWeight: FontWeight.w800,
               color: AppColors.emerald600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPayoutHistorySection(PromoDashboardData data) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.promoPayoutHistory,
+          style: AppTextStyles.titleSmall.copyWith(
+            color: context.textPrimary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (data.payouts.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
+            decoration: BoxDecoration(
+              color: context.cardBg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : AppColors.primary100,
+              ),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.payments_rounded,
+                  size: 44,
+                  color: context.textMuted.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  l10n.promoNoPayoutsYet,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: context.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: data.payouts.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, index) {
+              final payout = data.payouts[index];
+              return _buildPayoutCard(payout);
+            },
+          ),
+      ],
+    );
+  }
+
+  Widget _buildPayoutCard(PayoutHistoryItem payout) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dateStr = payout.createdAt != null
+        ? DateFormat('MMM d, yyyy').format(payout.createdAt!)
+        : '';
+
+    Color statusColor;
+    String statusLabel;
+    IconData statusIcon;
+    switch (payout.status) {
+      case 'approved':
+        statusColor = AppColors.accent500;
+        statusLabel = l10n.promoPayoutApproved;
+        statusIcon = Icons.check_circle_outline_rounded;
+        break;
+      case 'completed':
+        statusColor = AppColors.emerald600;
+        statusLabel = l10n.promoPayoutCompleted;
+        statusIcon = Icons.verified_rounded;
+        break;
+      case 'rejected':
+        statusColor = AppColors.error;
+        statusLabel = l10n.promoPayoutRejected;
+        statusIcon = Icons.cancel_outlined;
+        break;
+      default:
+        statusColor = AppColors.warning;
+        statusLabel = l10n.promoPayoutPending;
+        statusIcon = Icons.hourglass_top_rounded;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : AppColors.primary100,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: statusColor.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(statusIcon, color: statusColor, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.promoPayoutDestination(payout.phoneNumber),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: context.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        statusLabel,
+                        style: AppTextStyles.caption.copyWith(
+                          color: statusColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                    if (dateStr.isNotEmpty) ...[
+                      const SizedBox(width: 6),
+                      Text(
+                        dateStr,
+                        style: AppTextStyles.caption.copyWith(
+                          color: context.textMuted,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                if (payout.status == 'rejected' &&
+                    payout.adminNotes != null &&
+                    payout.adminNotes!.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    payout.adminNotes!,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.error,
+                      fontSize: 11,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+                if (payout.status == 'rejected') ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    l10n.promoPayoutRefunded,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.emerald500,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Text(
+            '${payout.amount.toStringAsFixed(2)} ETB',
+            style: AppTextStyles.titleSmall.copyWith(
+              fontWeight: FontWeight.w800,
+              color: payout.status == 'rejected'
+                  ? AppColors.error
+                  : context.textPrimary,
             ),
           ),
         ],

@@ -6375,6 +6375,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Subscription activated successfully using your wallet balance!'**
   String get promoPaySuccess;
+
+  /// No description provided for @promoInviteDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Give friends {percent}% off their first plan'**
+  String promoInviteDiscount(String percent);
+
+  /// No description provided for @promoWithdrawMinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Min: {amount} ETB'**
+  String promoWithdrawMinHint(String amount);
+
+  /// No description provided for @promoWithdrawInvalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get promoWithdrawInvalidAmount;
+
+  /// No description provided for @promoWithdrawExceedsBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount exceeds wallet balance'**
+  String get promoWithdrawExceedsBalance;
+
+  /// No description provided for @promoWithdrawPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a Telebirr phone number'**
+  String get promoWithdrawPhoneRequired;
+
+  /// No description provided for @promoWithdrawNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the account holder name'**
+  String get promoWithdrawNameRequired;
+
+  /// No description provided for @promoWithdrawAccountNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name on Telebirr'**
+  String get promoWithdrawAccountNameHint;
+
+  /// No description provided for @promoEarningBase.
+  ///
+  /// In en, this message translates to:
+  /// **'{plan} (Base: {base} ETB × {percent}%)'**
+  String promoEarningBase(String plan, String base, String percent);
+
+  /// No description provided for @promoPayoutHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawal History'**
+  String get promoPayoutHistory;
+
+  /// No description provided for @promoNoPayoutsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No withdrawal requests yet.'**
+  String get promoNoPayoutsYet;
+
+  /// No description provided for @promoPayoutPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get promoPayoutPending;
+
+  /// No description provided for @promoPayoutApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get promoPayoutApproved;
+
+  /// No description provided for @promoPayoutCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get promoPayoutCompleted;
+
+  /// No description provided for @promoPayoutRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get promoPayoutRejected;
+
+  /// No description provided for @promoPayoutDestination.
+  ///
+  /// In en, this message translates to:
+  /// **'Telebirr · {phone}'**
+  String promoPayoutDestination(String phone);
+
+  /// No description provided for @promoPayoutRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount returned to wallet'**
+  String get promoPayoutRefunded;
+
+  /// No description provided for @promoPaymentMethodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get promoPaymentMethodTitle;
+
+  /// No description provided for @promoPaymentPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: {amount} ETB'**
+  String promoPaymentPrice(String amount);
+
+  /// No description provided for @promoPayWithChapa.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with Telebirr / Cards (Chapa)'**
+  String get promoPayWithChapa;
 }
 
 class _AppLocalizationsDelegate

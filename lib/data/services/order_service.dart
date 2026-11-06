@@ -204,6 +204,9 @@ class OrderService {
         'type': data['type'] ?? 'house',
         'listing_type': data['listing_type'] ?? 'sale',
         if (data['address_id'] != null) 'address_id': data['address_id'],
+        if (data['agent_id'] != null)
+          'agent_id': int.tryParse(data['agent_id'].toString()) ??
+              data['agent_id'],
         if (data['vehicle_details'] != null)
           'vehicle_details': data['vehicle_details'],
         'attributes': {

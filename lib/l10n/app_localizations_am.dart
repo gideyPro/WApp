@@ -3329,4 +3329,71 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get promoPaySuccess => 'የደንበኝነት ምዝገባዎ በኪስ ቦርሳዎ ቀሪ ሂሳብ በተሳካ ሁኔታ ነቅቷል!';
+
+  @override
+  String promoInviteDiscount(String percent) {
+    return 'ለጓደኞችዎ በመጀመሪያ ፕላናቸው ላይ $percent% ቅናሽ ይስጡ';
+  }
+
+  @override
+  String promoWithdrawMinHint(String amount) {
+    return 'ዝቅተኛ፡ $amount ብር';
+  }
+
+  @override
+  String get promoWithdrawInvalidAmount => 'እባክዎ ትክክለኛ መጠን ያስገቡ';
+
+  @override
+  String get promoWithdrawExceedsBalance => 'መጠኑ ከቦርሳ ቀሪ ሂሳብ ይበልጣል';
+
+  @override
+  String get promoWithdrawPhoneRequired => 'እባክዎ የቴሌብር ስልክ ቁጥር ያስገቡ';
+
+  @override
+  String get promoWithdrawNameRequired => 'እባክዎ የሂሳብ ባለቤት ስም ያስገቡ';
+
+  @override
+  String get promoWithdrawAccountNameHint => 'በቴሌብር ላይ ያለው ሙሉ ስም';
+
+  @override
+  String promoEarningBase(String plan, String base, String percent) {
+    return '$plan (መሠረት፡ $base ብር × $percent%)';
+  }
+
+  @override
+  String get promoPayoutHistory => 'የገንዘብ ማውጣት ታሪክ';
+
+  @override
+  String get promoNoPayoutsYet => 'እስካሁን የገንዘብ ማውጣት ጥያቄ የለም።';
+
+  @override
+  String get promoPayoutPending => 'በመጠባበቅ ላይ';
+
+  @override
+  String get promoPayoutApproved => 'ጸድቋል';
+
+  @override
+  String get promoPayoutCompleted => 'ተከፍሏል';
+
+  @override
+  String get promoPayoutRejected => 'ተከልክሏል';
+
+  @override
+  String promoPayoutDestination(String phone) {
+    return 'ቴሌብር · $phone';
+  }
+
+  @override
+  String get promoPayoutRefunded => 'መጠኑ ወደ ቦርሳ ተመልሷል';
+
+  @override
+  String get promoPaymentMethodTitle => 'የክፍያ ዘዴ';
+
+  @override
+  String promoPaymentPrice(String amount) {
+    return 'ዋጋ፡ $amount ብር';
+  }
+
+  @override
+  String get promoPayWithChapa => 'በቴሌብር / ካርድ (Chapa) ይክፈሉ';
 }

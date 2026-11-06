@@ -283,10 +283,6 @@ class BuyerOrder {
 
   int? get vehicleYearMax => TypeUtils.safeInt(vehicleDetails?['year_max']);
 
-  String? get vehicleTransmission => _text(vehicleDetails?['transmission']);
-
-  String? get vehicleFuelType => _text(vehicleDetails?['fuel_type']);
-
   String? get vehicleBodyType => _text(vehicleDetails?['body_type']);
 
   /// Human readable vehicle summary, e.g. "Toyota Corolla".

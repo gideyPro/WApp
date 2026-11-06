@@ -3328,4 +3328,71 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get promoPaySuccess => 'ናይ ዓሚልነት ክፍሊትኩም ብናይ ቦርሳ ተረፍ ሕሳብ ብዓወት ተኸፊቱ ኣሎ!';
+
+  @override
+  String promoInviteDiscount(String percent) {
+    return 'ንፈተውትኹም ኣብ መጀመርታ ፕላኖም $percent% ቅናሽ ሃቡ';
+  }
+
+  @override
+  String promoWithdrawMinHint(String amount) {
+    return 'ዝተሓተ ፦ $amount ብር';
+  }
+
+  @override
+  String get promoWithdrawInvalidAmount => 'በጃኹም ቅኑዕ መጠን ኣእትዉ';
+
+  @override
+  String get promoWithdrawExceedsBalance => 'መጠኑ ካብ ቀሪ ሕሳብ ይሓልፍ';
+
+  @override
+  String get promoWithdrawPhoneRequired => 'በጃኹም ናይ ቴሌብር ስልኪ ቍፅሪ ኣእትዉ';
+
+  @override
+  String get promoWithdrawNameRequired => 'በጃኹም ናይ ሕሳብ ዋና ስም ኣእትዉ';
+
+  @override
+  String get promoWithdrawAccountNameHint => 'ኣብ ቴሌብር ዘሎ ምሉእ ስም';
+
+  @override
+  String promoEarningBase(String plan, String base, String percent) {
+    return '$plan (መሰረት፦ $base ብር × $percent%)';
+  }
+
+  @override
+  String get promoPayoutHistory => 'ናይ ገንዘብ ምውፃእ ታሪኽ';
+
+  @override
+  String get promoNoPayoutsYet => 'ክሳብ ሕጂ ናይ ገንዘብ ምውፃእ ሕቶ የለን።';
+
+  @override
+  String get promoPayoutPending => 'ኣብ ትጽቢት';
+
+  @override
+  String get promoPayoutApproved => 'ተረጋጊጹ';
+
+  @override
+  String get promoPayoutCompleted => 'ተኸፊሉ';
+
+  @override
+  String get promoPayoutRejected => 'ተኣገደ';
+
+  @override
+  String promoPayoutDestination(String phone) {
+    return 'ቴሌብር · $phone';
+  }
+
+  @override
+  String get promoPayoutRefunded => 'መጠኑ ናብ ቦርሳ ተመሊሱ';
+
+  @override
+  String get promoPaymentMethodTitle => 'ናይ ክፍሊት ዘዴ';
+
+  @override
+  String promoPaymentPrice(String amount) {
+    return 'ዋጋ፦ $amount ብር';
+  }
+
+  @override
+  String get promoPayWithChapa => 'ብቴሌብር / ካርድ (Chapa) ክፈሉ';
 }

@@ -94,6 +94,12 @@ class _SubscriptionPlansScreenState
   @override
   Widget build(BuildContext context) {
     final subState = ref.watch(subscriptionProvider);
+    // Prime the promo dashboard with the plans screen so the wallet balance
+    // (and therefore the wallet payment option) is known on the first tap,
+    // not only after the user has visited the promo screen.
+    if (ref.watch(authStateProvider).isAuthenticated) {
+      ref.watch(promoDashboardProvider);
+    }
     final settingsAsync = ref.watch(appSettingsProvider);
     final subscriptionEnabled = settingsAsync.maybeWhen(
       data: (data) => data['subscription_enabled'] == true,
@@ -981,8 +987,16 @@ class _SubscriptionPlansScreenState
       return;
     }
 
-    // Check wallet balance for optional payment with wallet
-    final promoData = ref.read(promoDashboardProvider).value;
+    // Check wallet balance for optional payment with wallet. The dashboard is
+    // primed by `build`, but await it here when a cold read races that load.
+    var promoData = ref.read(promoDashboardProvider).value;
+    if (promoData == null) {
+      try {
+        promoData = await ref.read(promoDashboardProvider.future);
+      } catch (_) {
+        promoData = null;
+      }
+    }
     final walletBalance = promoData?.walletBalance ?? 0.0;
     final minWithdraw = promoData?.minWithdrawAmount ?? 500.0;
 
@@ -993,7 +1007,9 @@ class _SubscriptionPlansScreenState
         break;
       }
     }
-    final priceEtb = targetCycle?.price ?? plan.price;
+    // Cycle prices come from the API already adjusted for promo/upgrade
+    // discounts, so eligibility must use that effective ETB amount.
+    final priceEtb = targetCycle?.effectivePriceFor('ETB') ?? plan.price;
 
     String chosenPaymentMethod = 'chapa';
     if (_selectedCurrency == 'ETB' &&
@@ -1027,7 +1043,7 @@ class _SubscriptionPlansScreenState
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Payment Method',
+                  l10n.promoPaymentMethodTitle,
                   style: AppTextStyles.title.copyWith(
                     fontWeight: FontWeight.w700,
                     color: ctx.textPrimary,
@@ -1042,7 +1058,7 @@ class _SubscriptionPlansScreenState
                   title: Text(
                     l10n.promoPayWithWallet(walletBalance.toStringAsFixed(0)),
                   ),
-                  subtitle: Text('Price: ${priceEtb.toStringAsFixed(0)} ETB'),
+                  subtitle: Text(l10n.promoPaymentPrice(priceEtb.toStringAsFixed(0))),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
@@ -1057,7 +1073,7 @@ class _SubscriptionPlansScreenState
                     Icons.credit_card_rounded,
                     color: AppColors.accent500,
                   ),
-                  title: const Text('Pay with Telebirr / Cards (Chapa)'),
+                  title: Text(l10n.promoPayWithChapa),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(color: ctx.theme.cardBorder),
