@@ -5806,6 +5806,12 @@ abstract class AppLocalizations {
   /// **'My Job Profile'**
   String get seekerMyProfile;
 
+  /// Short label for the edit profile chip on the seekers tab
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
+  String get seekerEditProfile;
+
   /// No description provided for @seekerFullName.
   ///
   /// In en, this message translates to:

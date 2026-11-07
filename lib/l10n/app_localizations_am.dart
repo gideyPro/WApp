@@ -3023,6 +3023,9 @@ class AppLocalizationsAm extends AppLocalizations {
   String get seekerMyProfile => 'የእኔ የስራ ፕሮፋይል';
 
   @override
+  String get seekerEditProfile => 'የእኔ ፕሮፋይል';
+
+  @override
   String get seekerFullName => 'ሙሉ ስም';
 
   @override

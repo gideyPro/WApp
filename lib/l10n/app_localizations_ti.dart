@@ -3022,6 +3022,9 @@ class AppLocalizationsTi extends AppLocalizations {
   String get seekerMyProfile => 'ናተይ ናይ ስራሕ ፕሮፋይል';
 
   @override
+  String get seekerEditProfile => 'ናተይ ፕሮፋይል';
+
+  @override
   String get seekerFullName => 'ምሉእ ስም';
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 
@@ -593,103 +594,223 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     required String Function(T) label,
     required IconData Function(T) icon,
     required ValueChanged<T> onSelected,
+    Widget? trailing,
   }) {
     final isDark = context.isDarkMode;
+    final track = Container(
+      padding: const EdgeInsets.all(2.5),
+      decoration: BoxDecoration(
+        color: isDark
+            ? AppColors.cardNavyDark
+            : const Color(0xFFE2E8F0),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : const Color(0xFFCBD5E1),
+          width: 0.8,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: items.map((item) {
+          final isSelected = item == selectedItem;
+          return GestureDetector(
+            onTap: () => onSelected(item),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 4.5,
+              ),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? (isDark ? AppColors.cardNavyLight : Colors.white)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+                border: isSelected
+                    ? Border.all(
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.15)
+                            : const Color(0xFFCBD5E1).withValues(alpha: 0.5),
+                        width: 0.6,
+                      )
+                    : Border.all(color: Colors.transparent, width: 0.6),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withValues(
+                            alpha: isDark ? 0.35 : 0.08,
+                          ),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1.5),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isSelected) ...[
+                    Container(
+                      width: 5,
+                      height: 5,
+                      decoration: const BoxDecoration(
+                        color: AppColors.accent500,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 4.5),
+                  ],
+                  Icon(
+                    icon(item),
+                    size: 12.5,
+                    color: isSelected
+                        ? (isDark ? Colors.white : AppColors.primary900)
+                        : context.textSecondary,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    label(item),
+                    style: AppTextStyles.caption.copyWith(
+                      fontSize: 11.5,
+                      fontWeight:
+                          isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: isSelected
+                          ? (isDark ? Colors.white : AppColors.primary900)
+                          : context.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
       alignment: Alignment.centerLeft,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          padding: const EdgeInsets.all(2.5),
-          decoration: BoxDecoration(
-            color: isDark
-                ? AppColors.cardNavyDark
-                : const Color(0xFFE2E8F0),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.1)
-                  : const Color(0xFFCBD5E1),
-              width: 0.8,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: items.map((item) {
-              final isSelected = item == selectedItem;
-              return GestureDetector(
-                onTap: () => onSelected(item),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 220),
-                  curve: Curves.easeOutCubic,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4.5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? (isDark ? AppColors.cardNavyLight : Colors.white)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
-                    border: isSelected
-                        ? Border.all(
-                            color: isDark
-                                ? Colors.white.withValues(alpha: 0.15)
-                                : const Color(0xFFCBD5E1).withValues(alpha: 0.5),
-                            width: 0.6,
-                          )
-                        : Border.all(color: Colors.transparent, width: 0.6),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(
-                                alpha: isDark ? 0.35 : 0.08,
-                              ),
-                              blurRadius: 4,
-                              offset: const Offset(0, 1.5),
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (isSelected) ...[
-                        Container(
-                          width: 5,
-                          height: 5,
-                          decoration: const BoxDecoration(
-                            color: AppColors.accent500,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 4.5),
-                      ],
-                      Icon(
-                        icon(item),
-                        size: 12.5,
-                        color: isSelected
-                            ? (isDark ? Colors.white : AppColors.primary900)
-                            : context.textSecondary,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        label(item),
-                        style: AppTextStyles.caption.copyWith(
-                          fontSize: 11.5,
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color: isSelected
-                              ? (isDark ? Colors.white : AppColors.primary900)
-                              : context.textSecondary,
-                        ),
-                      ),
-                    ],
+      child: trailing == null
+          ? SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: track,
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: track,
                   ),
                 ),
-              );
-            }).toList(),
+                const SizedBox(width: 8),
+                trailing,
+              ],
+            ),
+    );
+  }
+
+  /// Option C: Personalized Avatar Chip for Editing Job Seeker Profile
+  Widget _buildEditJobProfileChip(AppLocalizations l10n) {
+    final isDark = context.isDarkMode;
+    final user = ref.watch(profileProvider).user;
+    final avatarUrl = user?.googleAvatar;
+    final initials = (user?.initials.isNotEmpty == true) ? user!.initials : '?';
+
+    return Semantics(
+      button: true,
+      label: l10n.seekerEditProfile,
+      child: Tooltip(
+        message: l10n.seekerEditProfile,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.lightImpact();
+              context.push('/my-job-profile');
+            },
+            borderRadius: BorderRadius.circular(16),
+            child: Ink(
+              padding: const EdgeInsets.fromLTRB(4, 3, 9, 3),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.cardNavyDark : Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.12)
+                      : const Color(0xFFCBD5E1),
+                  width: 0.8,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(
+                      alpha: isDark ? 0.35 : 0.08,
+                    ),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1.5),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: avatarUrl != null
+                          ? DecorationImage(
+                              image: ResizeImage(
+                                CachedNetworkImageProvider(avatarUrl),
+                                width: 44,
+                                height: 44,
+                              ),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                      gradient: avatarUrl != null
+                          ? null
+                          : AppColors.gradientNavyEmerald,
+                      border: Border.all(
+                        color: AppColors.accent500,
+                        width: 1.2,
+                      ),
+                    ),
+                    child: avatarUrl != null
+                        ? null
+                        : Center(
+                            child: Text(
+                              initials,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 9.5,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(width: 5.5),
+                  Text(
+                    l10n.seekerEditProfile,
+                    style: AppTextStyles.caption.copyWith(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : AppColors.primary900,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(
+                    Icons.edit_rounded,
+                    size: 12.5,
+                    color: AppColors.accent500,
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -704,6 +825,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       label: (s) => s.label(l10n),
       icon: (s) => s.icon,
       onSelected: _onJobsSectionChanged,
+      trailing: _jobsSection == JobsSection.seekers
+          ? _buildEditJobProfileChip(l10n)
+          : null,
     );
   }
 

@@ -990,6 +990,10 @@
     }
   },
   "seekerMyProfile": "My Job Profile",
+  "seekerEditProfile": "My Profile",
+  "@seekerEditProfile": {
+    "description": "Short label for the edit profile chip on the seekers tab"
+  },
   "seekerFullName": "Full Name",
   "seekerProfessionalTitle": "Professional Title",
   "seekerMakePublic": "Make Profile Public",

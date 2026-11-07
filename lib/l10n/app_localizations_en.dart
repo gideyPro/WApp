@@ -3063,6 +3063,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seekerMyProfile => 'My Job Profile';
 
   @override
+  String get seekerEditProfile => 'My Profile';
+
+  @override
   String get seekerFullName => 'Full Name';
 
   @override
