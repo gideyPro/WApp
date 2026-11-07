@@ -6259,13 +6259,13 @@ abstract class AppLocalizations {
   /// No description provided for @promoWithdrawTelebirr.
   ///
   /// In en, this message translates to:
-  /// **'Withdraw via Telebirr'**
+  /// **'Withdraw'**
   String get promoWithdrawTelebirr;
 
   /// No description provided for @promoUseForPackage.
   ///
   /// In en, this message translates to:
-  /// **'Buy Package with Wallet'**
+  /// **'Buy Package'**
   String get promoUseForPackage;
 
   /// No description provided for @promoStatsInvited.

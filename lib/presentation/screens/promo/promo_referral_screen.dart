@@ -419,52 +419,15 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Row: Label & Discount Chip
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                l10n.promoYourCode.toUpperCase(),
-                style: AppTextStyles.caption.copyWith(
-                  color: context.textMuted,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 10.5,
-                  letterSpacing: 0.8,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
-                decoration: BoxDecoration(
-                  color: AppColors.accent500.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: AppColors.accent500.withValues(alpha: 0.25),
-                    width: 0.8,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.local_offer_rounded,
-                      size: 11,
-                      color: AppColors.accent500,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      l10n.promoReferralHeaderDiscount(
-                        data.discountPercentage.toInt().toString(),
-                      ),
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.accent500,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 10.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          // Header Label
+          Text(
+            l10n.promoYourCode.toUpperCase(),
+            style: AppTextStyles.caption.copyWith(
+              color: context.textMuted,
+              fontWeight: FontWeight.w700,
+              fontSize: 10.5,
+              letterSpacing: 0.8,
+            ),
           ),
           const SizedBox(height: 12),
 
@@ -504,22 +467,6 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppColors.accent500.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    'ACTIVE',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.accent500,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 9.5,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -543,6 +490,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                       borderRadius: BorderRadius.circular(12),
                       child: Ink(
                         height: 42,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
                           color: isDark
                               ? AppColors.cardNavyLight
@@ -566,14 +514,18 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                                 color: AppColors.accent500,
                               ),
                               const SizedBox(width: 6),
-                              Text(
-                                l10n.promoCopyCode,
-                                style: AppTextStyles.labelMedium.copyWith(
-                                  color: isDark
-                                      ? Colors.white
-                                      : AppColors.primary900,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
+                              Flexible(
+                                child: Text(
+                                  l10n.promoCopyCode,
+                                  style: AppTextStyles.labelMedium.copyWith(
+                                    color: isDark
+                                        ? Colors.white
+                                        : AppColors.primary900,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
@@ -601,6 +553,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                       borderRadius: BorderRadius.circular(12),
                       child: Ink(
                         height: 42,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [Color(0xFF06B6D4), Color(0xFF0284C7)],
@@ -625,12 +578,16 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                                 color: Colors.white,
                               ),
                               const SizedBox(width: 6),
-                              Text(
-                                l10n.promoShare,
-                                style: AppTextStyles.labelMedium.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
+                              Flexible(
+                                child: Text(
+                                  l10n.promoShare,
+                                  style: AppTextStyles.labelMedium.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
@@ -696,9 +653,10 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
           ),
           const SizedBox(height: 4),
 
-          // FULL-WIDTH BALANCE ROW + STATUS (No overlapping with buttons!)
+          // FULL-WIDTH BALANCE ROW (No overlapping with buttons!)
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
                 data.walletBalance.toStringAsFixed(2),
@@ -716,48 +674,6 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                   color: AppColors.accent500,
                   fontWeight: FontWeight.w800,
                   fontSize: 13,
-                ),
-              ),
-              const Spacer(),
-              // Status Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: data.canWithdraw
-                      ? AppColors.emerald500.withValues(alpha: 0.12)
-                      : const Color(0xFFF59E0B).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: data.canWithdraw
-                            ? AppColors.emerald500
-                            : const Color(0xFFF59E0B),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      data.canWithdraw
-                          ? l10n.promoReadyToWithdraw
-                          : l10n.promoEarnMoreToWithdraw(
-                              (data.minWithdrawAmount - data.walletBalance)
-                                  .toStringAsFixed(0),
-                            ),
-                      style: AppTextStyles.caption.copyWith(
-                        color: data.canWithdraw
-                            ? AppColors.emerald600
-                            : const Color(0xFFD97706),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 10.5,
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ],
@@ -794,6 +710,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                       borderRadius: BorderRadius.circular(12),
                       child: Ink(
                         height: 42,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
                           gradient: data.canWithdraw
                               ? const LinearGradient(
@@ -833,14 +750,18 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                                     : context.textMuted,
                               ),
                               const SizedBox(width: 5),
-                              Text(
-                                l10n.promoWithdrawTelebirr,
-                                style: AppTextStyles.caption.copyWith(
-                                  color: data.canWithdraw
-                                      ? const Color(0xFF041E15)
-                                      : context.textMuted,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 12,
+                              Flexible(
+                                child: Text(
+                                  l10n.promoWithdrawTelebirr,
+                                  style: AppTextStyles.caption.copyWith(
+                                    color: data.canWithdraw
+                                        ? const Color(0xFF041E15)
+                                        : context.textMuted,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
@@ -870,6 +791,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                       borderRadius: BorderRadius.circular(12),
                       child: Ink(
                         height: 42,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
                           color: isDark
                               ? AppColors.cardNavyLight
@@ -895,16 +817,20 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                                     : context.textMuted,
                               ),
                               const SizedBox(width: 5),
-                              Text(
-                                l10n.promoUseForPackage,
-                                style: AppTextStyles.caption.copyWith(
-                                  color: data.walletBalance > 0
-                                      ? (isDark
-                                          ? Colors.white
-                                          : AppColors.primary900)
-                                      : context.textMuted,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
+                              Flexible(
+                                child: Text(
+                                  l10n.promoUseForPackage,
+                                  style: AppTextStyles.caption.copyWith(
+                                    color: data.walletBalance > 0
+                                        ? (isDark
+                                            ? Colors.white
+                                            : AppColors.primary900)
+                                        : context.textMuted,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],

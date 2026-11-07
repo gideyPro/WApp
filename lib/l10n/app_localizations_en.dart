@@ -3306,10 +3306,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get promoWithdrawTelebirr => 'Withdraw via Telebirr';
+  String get promoWithdrawTelebirr => 'Withdraw';
 
   @override
-  String get promoUseForPackage => 'Buy Package with Wallet';
+  String get promoUseForPackage => 'Buy Package';
 
   @override
   String get promoStatsInvited => 'Friends Invited';

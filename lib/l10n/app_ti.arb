@@ -1091,8 +1091,8 @@
       "amount": { "type": "String" }
     }
   },
-  "promoWithdrawTelebirr": "ብቴሌብር ኣውፅኡ",
-  "promoUseForPackage": "ብቦርሳ ፓኬጅ ይግዝኡ",
+  "promoWithdrawTelebirr": "ኣውፅኡ",
+  "promoUseForPackage": "ፓኬጅ ይግዝኡ",
   "promoStatsInvited": "ዝተዓደሙ ፈተውቲ",
   "promoStatsSubscribed": "ዝተመዝገቡ",
   "promoStatsEarned": "ዝተረኸበ ሓፈሻዊ",

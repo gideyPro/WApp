@@ -1094,8 +1094,8 @@
       "amount": { "type": "String" }
     }
   },
-  "promoWithdrawTelebirr": "Withdraw via Telebirr",
-  "promoUseForPackage": "Buy Package with Wallet",
+  "promoWithdrawTelebirr": "Withdraw",
+  "promoUseForPackage": "Buy Package",
   "promoStatsInvited": "Friends Invited",
   "promoStatsSubscribed": "Subscribed",
   "promoStatsEarned": "Total Earned",

@@ -1091,8 +1091,8 @@
       "amount": { "type": "String" }
     }
   },
-  "promoWithdrawTelebirr": "በቴሌብር አውጣ",
-  "promoUseForPackage": "በኪስ ቦርሳ ፓኬጅ ይግዙ",
+  "promoWithdrawTelebirr": "አውጣ",
+  "promoUseForPackage": "ፓኬጅ ይግዙ",
   "promoStatsInvited": "የተጋበዙ ጓደኞች",
   "promoStatsSubscribed": "የተመዘገቡ",
   "promoStatsEarned": "አጠቃላይ የተገኘው",

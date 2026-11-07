@@ -3263,10 +3263,10 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
-  String get promoWithdrawTelebirr => 'ብቴሌብር ኣውፅኡ';
+  String get promoWithdrawTelebirr => 'ኣውፅኡ';
 
   @override
-  String get promoUseForPackage => 'ብቦርሳ ፓኬጅ ይግዝኡ';
+  String get promoUseForPackage => 'ፓኬጅ ይግዝኡ';
 
   @override
   String get promoStatsInvited => 'ዝተዓደሙ ፈተውቲ';

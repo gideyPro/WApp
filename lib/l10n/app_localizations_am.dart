@@ -3264,10 +3264,10 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String get promoWithdrawTelebirr => 'በቴሌብር አውጣ';
+  String get promoWithdrawTelebirr => 'አውጣ';
 
   @override
-  String get promoUseForPackage => 'በኪስ ቦርሳ ፓኬጅ ይግዙ';
+  String get promoUseForPackage => 'ፓኬጅ ይግዙ';
 
   @override
   String get promoStatsInvited => 'የተጋበዙ ጓደኞች';
