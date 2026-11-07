@@ -1174,5 +1174,7 @@
       "amount": { "type": "String" }
     }
   },
-  "promoPayWithChapa": "በቴሌብር / ካርድ (Chapa) ይክፈሉ"
+  "promoPayWithChapa": "በቴሌብር / ካርድ (Chapa) ይክፈሉ",
+  "promoActivityRecords": "እንቅስቃሴዎች እና መዝገቦች",
+  "promoTierPromoter": "ደረጃ 1 አስተዋዋቂ"
 }

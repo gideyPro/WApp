@@ -3404,4 +3404,10 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get promoPayWithChapa => 'ብቴሌብር / ካርድ (Chapa) ክፈሉ';
+
+  @override
+  String get promoActivityRecords => 'ንጥፈታትን መዛግብትን';
+
+  @override
+  String get promoTierPromoter => 'ደረጃ 1 ኣፋላጢ';
 }

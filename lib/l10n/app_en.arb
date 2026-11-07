@@ -1177,5 +1177,7 @@
       "amount": { "type": "String" }
     }
   },
-  "promoPayWithChapa": "Pay with Telebirr / Cards (Chapa)"
+  "promoPayWithChapa": "Pay with Telebirr / Cards (Chapa)",
+  "promoActivityRecords": "Activity & Records",
+  "promoTierPromoter": "Tier 1 Promoter"
 }

@@ -6507,6 +6507,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pay with Telebirr / Cards (Chapa)'**
   String get promoPayWithChapa;
+
+  /// No description provided for @promoActivityRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity & Records'**
+  String get promoActivityRecords;
+
+  /// No description provided for @promoTierPromoter.
+  ///
+  /// In en, this message translates to:
+  /// **'Tier 1 Promoter'**
+  String get promoTierPromoter;
 }
 
 class _AppLocalizationsDelegate

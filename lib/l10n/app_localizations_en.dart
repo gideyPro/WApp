@@ -3451,4 +3451,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get promoPayWithChapa => 'Pay with Telebirr / Cards (Chapa)';
+
+  @override
+  String get promoActivityRecords => 'Activity & Records';
+
+  @override
+  String get promoTierPromoter => 'Tier 1 Promoter';
 }
