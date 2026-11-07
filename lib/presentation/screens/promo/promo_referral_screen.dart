@@ -393,7 +393,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
     );
   }
 
-  /// Compact Referral Code & Share Card (Option 1)
+  /// Compact Referral Code & Share Card (Option A: Full-width Code + 2-Column Action Row)
   Widget _buildReferralCard(PromoDashboardData data) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -466,126 +466,176 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
-          // Code Box + Share Button Row
-          Row(
-            children: [
-              // Code Box with Copy Chip
-              Expanded(
-                child: Container(
-                  height: 44,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+          // FULL-WIDTH PROMO CODE BOX (Spacious, prominent, not narrow!)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF081428) : const Color(0xFFF1F5F9),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isDark
+                    ? AppColors.accent500.withValues(alpha: 0.4)
+                    : const Color(0xFFCBD5E1),
+                width: 1.0,
+              ),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.confirmation_number_outlined,
+                  size: 18,
+                  color: AppColors.accent500,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    data.promoCode,
+                    style: AppTextStyles.titleSmall.copyWith(
+                      fontFamily: 'monospace',
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2.0,
+                      color: isDark ? Colors.white : AppColors.primary900,
+                      fontSize: 16.5,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF0F1E36)
-                        : const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isDark
-                          ? const Color(0xFF1E3A5F)
-                          : const Color(0xFFCBD5E1),
-                      width: 0.9,
+                    color: AppColors.accent500.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    'ACTIVE',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.accent500,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 9.5,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          data.promoCode,
-                          style: AppTextStyles.titleSmall.copyWith(
-                            fontFamily: 'monospace',
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.5,
-                            color: isDark ? Colors.white : AppColors.primary900,
-                            fontSize: 15,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // 2-COLUMN ACTION BUTTONS ROW (Copy Code & Share Link)
+          Row(
+            children: [
+              // Column 1: Copy Code (50% width)
+              Expanded(
+                child: Semantics(
+                  button: true,
+                  label: l10n.promoCopyCode,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        _copyPromoCode(data.promoCode);
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Ink(
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? AppColors.cardNavyLight
+                              : AppColors.stone100,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.12)
+                                : const Color(0xFFCBD5E1),
+                            width: 0.9,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Semantics(
-                        button: true,
-                        label: l10n.promoCopyCode,
-                        child: InkWell(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            _copyPromoCode(data.promoCode);
-                          },
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 9,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.accent500.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              l10n.promoCopyCode,
-                              style: AppTextStyles.caption.copyWith(
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.copy_rounded,
+                                size: 15,
                                 color: AppColors.accent500,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 11,
                               ),
-                            ),
+                              const SizedBox(width: 6),
+                              Text(
+                                l10n.promoCopyCode,
+                                style: AppTextStyles.labelMedium.copyWith(
+                                  color: isDark
+                                      ? Colors.white
+                                      : AppColors.primary900,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
 
-              // Share Button
-              Semantics(
-                button: true,
-                label: l10n.promoShare,
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      _sharePromoCode(data);
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Ink(
-                      height: 44,
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF06B6D4), Color(0xFF0284C7)],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF0284C7).withValues(alpha: 0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
+              // Column 2: Share Link (50% width)
+              Expanded(
+                child: Semantics(
+                  button: true,
+                  label: l10n.promoShare,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        _sharePromoCode(data);
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Ink(
+                        height: 42,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF06B6D4), Color(0xFF0284C7)],
                           ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.share_rounded,
-                            size: 15,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            l10n.promoShare,
-                            style: AppTextStyles.labelMedium.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF0284C7).withValues(alpha: 0.3),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
                             ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.share_rounded,
+                                size: 15,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                l10n.promoShare,
+                                style: AppTextStyles.labelMedium.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -608,7 +658,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
     );
   }
 
-  /// Compact Wallet Balance & Actions Card (Option 1)
+  /// Compact Wallet Balance & Actions Card (Option A: Full-width Balance + 2-Column Action Row)
   Widget _buildWalletCard(PromoDashboardData data) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -634,234 +684,234 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Balance & Actions Row
+          // Header Label
+          Text(
+            l10n.promoWalletBalance.toUpperCase(),
+            style: AppTextStyles.caption.copyWith(
+              color: context.textMuted,
+              fontWeight: FontWeight.w700,
+              fontSize: 10.5,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 4),
+
+          // FULL-WIDTH BALANCE ROW + STATUS (No overlapping with buttons!)
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Balance Side
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              Text(
+                data.walletBalance.toStringAsFixed(2),
+                style: AppTextStyles.title.copyWith(
+                  color: isDark ? Colors.white : AppColors.primary900,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 26,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'ETB',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.accent500,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 13,
+                ),
+              ),
+              const Spacer(),
+              // Status Badge
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: data.canWithdraw
+                      ? AppColors.emerald500.withValues(alpha: 0.12)
+                      : const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: data.canWithdraw
+                            ? AppColors.emerald500
+                            : const Color(0xFFF59E0B),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
                     Text(
-                      l10n.promoWalletBalance.toUpperCase(),
+                      data.canWithdraw
+                          ? l10n.promoReadyToWithdraw
+                          : l10n.promoEarnMoreToWithdraw(
+                              (data.minWithdrawAmount - data.walletBalance)
+                                  .toStringAsFixed(0),
+                            ),
                       style: AppTextStyles.caption.copyWith(
-                        color: context.textMuted,
+                        color: data.canWithdraw
+                            ? AppColors.emerald600
+                            : const Color(0xFFD97706),
                         fontWeight: FontWeight.w700,
                         fontSize: 10.5,
-                        letterSpacing: 0.8,
                       ),
-                    ),
-                    const SizedBox(height: 3),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        Text(
-                          data.walletBalance.toStringAsFixed(2),
-                          style: AppTextStyles.title.copyWith(
-                            color: isDark ? Colors.white : AppColors.primary900,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 24,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'ETB',
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppColors.accent500,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '(${l10n.promoMinWithdrawRequirement(data.minWithdrawAmount.toStringAsFixed(0))})',
-                      style: AppTextStyles.caption.copyWith(
-                        color: context.textMuted,
-                        fontSize: 10.5,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
+            ],
+          ),
+          const SizedBox(height: 4),
 
-              // Action Buttons: Withdraw & Use
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Withdraw Button
-                  Semantics(
-                    button: true,
-                    label: l10n.promoWithdrawTelebirr,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: data.canWithdraw
-                            ? () {
-                                HapticFeedback.lightImpact();
-                                _showWithdrawModal(context, data);
-                              }
-                            : null,
-                        borderRadius: BorderRadius.circular(10),
-                        child: Ink(
-                          height: 40,
-                          padding: const EdgeInsets.symmetric(horizontal: 14),
-                          decoration: BoxDecoration(
-                            gradient: data.canWithdraw
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFF10B981),
-                                      Color(0xFF059669),
-                                    ],
-                                  )
-                                : null,
-                            color: data.canWithdraw
-                                ? null
-                                : (isDark
-                                    ? AppColors.primary800
-                                    : AppColors.stone200),
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: data.canWithdraw
-                                ? [
-                                    BoxShadow(
-                                      color: const Color(0xFF10B981)
-                                          .withValues(alpha: 0.3),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.arrow_outward_rounded,
-                                  size: 14,
+          // Minimum threshold note (Full width, wraps cleanly if needed)
+          Text(
+            l10n.promoMinWithdrawRequirement(data.minWithdrawAmount.toStringAsFixed(0)),
+            style: AppTextStyles.caption.copyWith(
+              color: context.textMuted,
+              fontSize: 11,
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // 2-COLUMN ACTION BUTTONS ROW (Withdraw & Use)
+          Row(
+            children: [
+              // Column 1: Withdraw Button (50% width)
+              Expanded(
+                child: Semantics(
+                  button: true,
+                  label: l10n.promoWithdrawTelebirr,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: data.canWithdraw
+                          ? () {
+                              HapticFeedback.lightImpact();
+                              _showWithdrawModal(context, data);
+                            }
+                          : null,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Ink(
+                        height: 42,
+                        decoration: BoxDecoration(
+                          gradient: data.canWithdraw
+                              ? const LinearGradient(
+                                  colors: [
+                                    Color(0xFF10B981),
+                                    Color(0xFF059669),
+                                  ],
+                                )
+                              : null,
+                          color: data.canWithdraw
+                              ? null
+                              : (isDark
+                                  ? AppColors.primary800
+                                  : AppColors.stone200),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: data.canWithdraw
+                              ? [
+                                  BoxShadow(
+                                    color: const Color(0xFF10B981)
+                                        .withValues(alpha: 0.3),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.arrow_outward_rounded,
+                                size: 15,
+                                color: data.canWithdraw
+                                    ? const Color(0xFF041E15)
+                                    : context.textMuted,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                l10n.promoWithdrawTelebirr,
+                                style: AppTextStyles.caption.copyWith(
                                   color: data.canWithdraw
                                       ? const Color(0xFF041E15)
                                       : context.textMuted,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 12,
                                 ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  l10n.promoWithdrawSubmit,
-                                  style: AppTextStyles.caption.copyWith(
-                                    color: data.canWithdraw
-                                        ? const Color(0xFF041E15)
-                                        : context.textMuted,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-
-                  // Use Button
-                  Semantics(
-                    button: true,
-                    label: l10n.promoUseForPackage,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: data.walletBalance > 0
-                            ? () {
-                                HapticFeedback.lightImpact();
-                                context.push('/subscriptions');
-                              }
-                            : null,
-                        borderRadius: BorderRadius.circular(10),
-                        child: Ink(
-                          height: 40,
-                          padding: const EdgeInsets.symmetric(horizontal: 14),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? AppColors.cardNavyLight
-                                : AppColors.stone100,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: isDark
-                                  ? Colors.white.withValues(alpha: 0.12)
-                                  : const Color(0xFFCBD5E1),
-                              width: 0.8,
-                            ),
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.diamond_outlined,
-                                  size: 13,
-                                  color: data.walletBalance > 0
-                                      ? AppColors.accent500
-                                      : context.textMuted,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Use',
-                                  style: AppTextStyles.caption.copyWith(
-                                    color: data.walletBalance > 0
-                                        ? context.textPrimary
-                                        : context.textMuted,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          // Status Line
-          Row(
-            children: [
-              Container(
-                width: 7,
-                height: 7,
-                decoration: BoxDecoration(
-                  color: data.canWithdraw
-                      ? AppColors.emerald500
-                      : const Color(0xFFF59E0B),
-                  shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 10),
+
+              // Column 2: Use Button (50% width)
               Expanded(
-                child: Text(
-                  data.canWithdraw
-                      ? l10n.promoReadyToWithdraw
-                      : l10n.promoEarnMoreToWithdraw(
-                          (data.minWithdrawAmount - data.walletBalance)
-                              .toStringAsFixed(0),
+                child: Semantics(
+                  button: true,
+                  label: l10n.promoUseForPackage,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: data.walletBalance > 0
+                          ? () {
+                              HapticFeedback.lightImpact();
+                              context.push('/subscriptions');
+                            }
+                          : null,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Ink(
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? AppColors.cardNavyLight
+                              : AppColors.stone100,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.12)
+                                : const Color(0xFFCBD5E1),
+                            width: 0.9,
+                          ),
                         ),
-                  style: AppTextStyles.caption.copyWith(
-                    color: data.canWithdraw
-                        ? AppColors.emerald500
-                        : const Color(0xFFF59E0B),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 11,
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.diamond_outlined,
+                                size: 15,
+                                color: data.walletBalance > 0
+                                    ? AppColors.accent500
+                                    : context.textMuted,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                l10n.promoUseForPackage,
+                                style: AppTextStyles.caption.copyWith(
+                                  color: data.walletBalance > 0
+                                      ? (isDark
+                                          ? Colors.white
+                                          : AppColors.primary900)
+                                      : context.textMuted,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
