@@ -58,9 +58,15 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (ModalRoute.of(context)?.isCurrent == true) {
-      _refreshIfNeeded();
-    }
+    ref.listenManual(selectedTabProvider, (prev, next) {
+      if (prev != next && next == 1 && mounted) {
+        final authState = ref.read(authStateProvider);
+        ref.read(conversationsProvider.notifier).refreshConversations(
+              currentUserId: authState.user?.id,
+            );
+        ref.read(unreadMessagesCountProvider.notifier).refresh();
+      }
+    });
   }
 
   @override
@@ -70,22 +76,14 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     super.dispose();
   }
 
-  void _refreshIfNeeded() {
-    final authState = ref.read(authStateProvider);
-    ref.read(conversationsProvider.notifier).refreshConversations(
-          currentUserId: authState.user?.id,
-        );
-  }
-
   void _onScroll() {
     final state = ref.read(conversationsProvider);
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200 &&
-        !state.isLoading) {
-      final nextPage = (state.conversations.length ~/ 10) + 1;
+        !state.isLoading &&
+        state.hasMore) {
       final authState = ref.read(authStateProvider);
-      ref.read(conversationsProvider.notifier).loadConversations(
-            page: nextPage,
+      ref.read(conversationsProvider.notifier).loadMore(
             currentUserId: authState.user?.id,
           );
     }
@@ -162,15 +160,21 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
             child: WaveGlass(
               child: InkWell(
                 onTap: () async {
+                  ref
+                      .read(conversationsProvider.notifier)
+                      .markConversationRead(conversation.id);
                   await context.push(
                     '/chat/${conversation.id}',
                     extra: conversation,
                   );
                   if (mounted) {
                     final authState = ref.read(authStateProvider);
-                    ref.read(conversationsProvider.notifier).refreshConversations(
+                    ref
+                        .read(conversationsProvider.notifier)
+                        .refreshConversations(
                           currentUserId: authState.user?.id,
                         );
+                    ref.read(unreadMessagesCountProvider.notifier).refresh();
                   }
                 },
                 borderRadius: BorderRadius.circular(12),
@@ -411,7 +415,8 @@ class ChatScreen extends ConsumerStatefulWidget {
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends ConsumerState<ChatScreen> {
+class _ChatScreenState extends ConsumerState<ChatScreen>
+    with WidgetsBindingObserver {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _listScrollController = ScrollController();
   bool _isSending = false;
@@ -419,9 +424,40 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   bool _contextDropdownOpen = false;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    if (widget.conversation != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(chatMessagesProvider(widget.conversationId).notifier)
+            .loadMessages(initialConversation: widget.conversation);
+      });
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    final notifier =
+        ref.read(chatMessagesProvider(widget.conversationId).notifier);
+    if (state == AppLifecycleState.resumed) {
+      notifier.resumePolling();
+      notifier.fetchNewMessages();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      notifier.pausePolling();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _messageController.dispose();
     _listScrollController.dispose();
+    if (ref.read(activeConversationIdProvider) == widget.conversationId) {
+      ref.read(activeConversationIdProvider.notifier).state = null;
+    }
     super.dispose();
   }
 
@@ -760,7 +796,26 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final conv = widget.conversation ??
+    ref.listen<ChatMessagesState>(chatMessagesProvider(widget.conversationId),
+        (previous, next) {
+      if (previous != null && next.messages.length > previous.messages.length) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!_listScrollController.hasClients) return;
+          final maxScroll = _listScrollController.position.maxScrollExtent;
+          final currentScroll = _listScrollController.position.pixels;
+          final isNearBottom = (maxScroll - currentScroll) < 160;
+          final isLastMine = next.messages.isNotEmpty &&
+              next.messages.last.senderId == currentUserId;
+
+          if (isNearBottom || isLastMine) {
+            _scrollToBottom();
+          }
+        });
+      }
+    });
+
+    final conv = chatState.conversation ??
+        widget.conversation ??
         chatState.relatedConversations
             .where((c) => c.id == widget.conversationId)
             .firstOrNull;

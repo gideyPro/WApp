@@ -2,13 +2,13 @@ import 'dart:io';
 import '../../core/network/api_client.dart';
 import '../../core/network/error_handler.dart';
 import '../models/message.dart' as msg;
+import '../models/v2/conversation.dart';
 import '../models/v2/v2_legacy_adapters.dart';
 import 'v2/conversation_service.dart';
 
 /// Service for messaging and conversations backed by V2 API.
 class MessageService {
   final ConversationServiceV2 _v2;
-  final Map<int, String> _cursors = {};
 
   MessageService({ApiClient? apiClient, ConversationServiceV2? v2Service})
       : _v2 = v2Service ?? ConversationServiceV2();
@@ -17,16 +17,10 @@ class MessageService {
     int page = 1,
     int perPage = 15,
     int? currentUserId,
+    String? cursor,
   }) async {
     try {
-      if (page <= 1) {
-        _cursors.clear();
-      }
-      final cursor = page > 1 ? _cursors[page] : null;
       final result = await _v2.fetch(cursor: cursor, limit: perPage);
-      if (result.nextCursor != null) {
-        _cursors[page + 1] = result.nextCursor!;
-      }
       final conversations = result.items
           .map((c) => c.toLegacyConversation(currentUserId: currentUserId))
           .toList();
@@ -37,10 +31,31 @@ class MessageService {
         currentPage: page,
         totalPages: result.hasMore ? page + 1 : page,
         total: conversations.length,
+        nextCursor: result.nextCursor,
+        hasMore: result.hasMore,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
       return ConversationResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
+  }
+
+  Future<SingleConversationResponse> getConversation(
+    int conversationId, {
+    int? currentUserId,
+  }) async {
+    try {
+      final conv = await _v2.fetchConversation(conversationId);
+      return SingleConversationResponse(
+        success: true,
+        conversation: conv.toLegacyConversation(currentUserId: currentUserId),
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return SingleConversationResponse(
         success: false,
         message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
       );
@@ -52,10 +67,12 @@ class MessageService {
     int page = 1,
     int perPage = 30,
     int? currentUserId,
+    String? cursor,
   }) async {
     try {
       final result = await _v2.fetchMessages(
         conversationId,
+        cursor: cursor,
         limit: perPage,
       );
 
@@ -70,6 +87,8 @@ class MessageService {
         currentPage: page,
         totalPages: result.hasMore ? page + 1 : page,
         total: messages.length,
+        nextCursor: result.nextCursor,
+        hasMore: result.hasMore,
       );
     } catch (e) {
       final exception = ApiErrorHandler.handle(e);
@@ -105,8 +124,36 @@ class MessageService {
   Future<MessageResponse> fetchNewMessages({
     required int conversationId,
     required int lastMessageId,
+    int? currentUserId,
   }) async {
-    return getConversationMessages(conversationId: conversationId);
+    try {
+      final result = await _v2.fetchMessages(
+        conversationId,
+        afterId: lastMessageId,
+        limit: 50,
+      );
+
+      // Backend returns after_id messages oldest first (chronological order)
+      final messages = result.items
+          .map((m) => m.toLegacyMessage())
+          .toList();
+
+      return MessageResponse(
+        success: true,
+        messages: messages,
+        currentPage: 1,
+        totalPages: 1,
+        total: messages.length,
+        nextCursor: result.nextCursor,
+        hasMore: result.hasMore,
+      );
+    } catch (e) {
+      final exception = ApiErrorHandler.handle(e);
+      return MessageResponse(
+        success: false,
+        message: exception.toString().replaceAll(RegExp(r'^\w+: '), ''),
+      );
+    }
   }
 
   Future<SingleConversationResponse> startConversationFromListing({
@@ -179,12 +226,11 @@ class MessageService {
     }
   }
 
-  Future<bool> markAsRead(int conversationId) async {
+  Future<ConversationReadReceipt?> markAsRead(int conversationId) async {
     try {
-      await _v2.markRead(conversationId);
-      return true;
+      return await _v2.markRead(conversationId);
     } catch (_) {
-      return false;
+      return null;
     }
   }
 
@@ -205,6 +251,8 @@ class ConversationResponse {
   final int? currentPage;
   final int? totalPages;
   final int? total;
+  final String? nextCursor;
+  final bool hasMore;
 
   const ConversationResponse({
     required this.success,
@@ -213,6 +261,8 @@ class ConversationResponse {
     this.currentPage,
     this.totalPages,
     this.total,
+    this.nextCursor,
+    this.hasMore = false,
   });
 }
 
@@ -224,6 +274,8 @@ class MessageResponse {
   final int? currentPage;
   final int? totalPages;
   final int? total;
+  final String? nextCursor;
+  final bool hasMore;
 
   const MessageResponse({
     required this.success,
@@ -233,6 +285,8 @@ class MessageResponse {
     this.currentPage,
     this.totalPages,
     this.total,
+    this.nextCursor,
+    this.hasMore = false,
   });
 }
 

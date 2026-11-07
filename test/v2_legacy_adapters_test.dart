@@ -9,6 +9,7 @@ import 'package:wavemart/data/models/listing_form_data.dart';
 import 'package:wavemart/data/models/payment.dart';
 import 'package:wavemart/data/models/v2/app_notification.dart';
 import 'package:wavemart/data/models/notification.dart' as app;
+import 'package:wavemart/data/models/v2/conversation.dart';
 import 'package:wavemart/data/models/v2/listing_detail.dart';
 import 'package:wavemart/data/models/v2/listing_summary.dart';
 import 'package:wavemart/data/models/v2/owner_listing.dart';
@@ -652,6 +653,65 @@ void main() {
       expect(legacy.jobsUsed, 5);
       expect(legacy.featuredListingsUsed, 6);
       expect(legacy.ordersUsed, 7);
+    });
+  });
+
+  group('ChatConversationLegacyAdapter', () {
+    test('correctly maps lastMessageSenderId and identifies whether last message is mine', () {
+      final incomingChat = ChatConversation.fromJson({
+        'id': 10,
+        'type': 'listing',
+        'listing': {
+          'id': 42,
+          'user_id': 999,
+          'type': 'house',
+          'listing_type': 'sale',
+          'title': 'Nice House',
+          'price': {'amount': 1000000.0, 'currency': 'ETB'},
+          'location': {'region': 'Addis Ababa'},
+          'details': {},
+        },
+        'other_participant': {
+          'id': 200,
+          'first_name': 'Abebe',
+          'last_name': 'Kebede',
+        },
+        'last_message': {
+          'id': 101,
+          'conversation_id': 10,
+          'body': 'Hello from Abebe',
+          'sender_id': 200,
+          'is_mine': false,
+        },
+        'unread_count': 1,
+      });
+
+      final legacyIncoming = incomingChat.toLegacyConversation(currentUserId: 100);
+      expect(legacyIncoming.isLastMessageFromMe(100), isFalse);
+      expect(legacyIncoming.listingOwnerId, equals(999));
+      expect(legacyIncoming.isAssetChat, isTrue);
+
+      final outgoingChat = ChatConversation.fromJson({
+        'id': 11,
+        'type': 'direct',
+        'other_participant': {
+          'id': 200,
+          'first_name': 'Abebe',
+          'last_name': 'Kebede',
+        },
+        'last_message': {
+          'id': 102,
+          'conversation_id': 11,
+          'body': 'My reply to Abebe',
+          'sender_id': 100,
+          'is_mine': true,
+        },
+        'unread_count': 0,
+      });
+
+      final legacyOutgoing = outgoingChat.toLegacyConversation(currentUserId: 100);
+      expect(legacyOutgoing.isLastMessageFromMe(100), isTrue);
+      expect(legacyOutgoing.isAssetChat, isFalse);
     });
   });
 }

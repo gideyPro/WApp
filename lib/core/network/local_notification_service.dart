@@ -5,6 +5,8 @@ class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  static void Function(String? payload)? onNotificationTapped;
+
   static Future<void> initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -23,7 +25,12 @@ class LocalNotificationService {
 
     await _notificationsPlugin.initialize(
       settings: initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {},
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        final payload = response.payload;
+        if (payload != null && payload.isNotEmpty) {
+          onNotificationTapped?.call(payload);
+        }
+      },
     );
 
     const AndroidNotificationChannel channel = AndroidNotificationChannel(

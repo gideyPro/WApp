@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'fcm_api_service.dart';
-import '../../presentation/providers/app_providers.dart';
 import '../../core/network/local_notification_service.dart';
+import '../../core/router/app_router.dart';
+import '../../presentation/providers/app_providers.dart';
+import 'fcm_api_service.dart';
 
 final fcmApiServiceProvider = Provider<FcmApiService>((ref) => FcmApiService());
 
@@ -12,6 +14,8 @@ class FcmService {
 
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final Ref _ref;
+  Timer? _convRefreshDebounce;
+  Timer? _badgeRefreshDebounce;
 
   FcmService(this._ref);
 
@@ -29,16 +33,40 @@ class FcmService {
       log('User declined or has not accepted permission');
     }
 
-    // 2. Get and Register Token
+    // 2. Register local notification tap handler
+    LocalNotificationService.onNotificationTapped = (payload) {
+      if (payload == null || payload.isEmpty) return;
+      if (payload.startsWith('/')) {
+        goRouter.push(payload);
+      } else {
+        final convId = int.tryParse(payload);
+        if (convId != null) {
+          goRouter.push('/chat/$convId');
+        }
+      }
+    };
+
+    // 3. Get and Register Token
     await _updateToken();
 
-    // 3. Listen for token refresh
+    // 4. Listen for token refresh
     _fcm.onTokenRefresh.listen((newToken) async {
       log('FCM Token Refreshed: $newToken');
       await _ref.read(fcmApiServiceProvider).registerToken(newToken);
     });
 
-    // 4. Handle messages when app is in foreground
+    // 5. Check if app was opened from a terminated state via notification
+    try {
+      final initialMessage = await _fcm.getInitialMessage();
+      if (initialMessage != null) {
+        log('App launched from terminated state via notification: ${initialMessage.data}');
+        _navigateFromData(initialMessage.data);
+      }
+    } catch (e) {
+      log('Error checking initial FCM message: $e');
+    }
+
+    // 6. Handle messages when app is in foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log('Got a message whilst in the foreground!');
       log('Message data: ${message.data}');
@@ -50,18 +78,15 @@ class FcmService {
       if (type == 'incoming_call') {
         _handleIncomingCall(message.data);
       } else if (type == 'message') {
-        _ref.read(unreadMessagesCountProvider.notifier).refresh();
+        _debounceRefreshBadges();
+        _debounceRefreshConversations();
 
-        // Instant List Update: Refresh the conversations list so the snippet update is visible
-        _ref.read(conversationsProvider.notifier).loadConversations();
-
-        // Phase 2: Refresh chat messages if we are in a conversation
+        // Trigger the specific active ChatMessagesNotifier to fetch incrementally
         final conversationIdStr = message.data['conversation_id'];
         if (conversationIdStr != null) {
           final convId = int.tryParse(conversationIdStr.toString());
           if (convId != null) {
-            // This triggers the specific ChatMessagesNotifier to reload
-            _ref.invalidate(chatMessagesProvider(convId));
+            _ref.read(chatMessagesProvider(convId).notifier).fetchNewMessages();
           }
         }
       } else {
@@ -106,7 +131,7 @@ class FcmService {
       }
     });
 
-    // 5. Handle messages when app is in background but opened via notification
+    // 7. Handle messages when app is in background but opened via notification
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       log('App opened from notification!');
       final type = message.data['type'];
@@ -115,19 +140,70 @@ class FcmService {
         _handleIncomingCall(message.data);
       } else if (type == 'message') {
         _ref.read(unreadMessagesCountProvider.notifier).refresh();
+        _navigateFromData(message.data);
       } else {
-        // Invalidate to show latest data when navigated back
         _ref.invalidate(unreadCountProvider);
+        _navigateFromData(message.data);
       }
     });
   }
 
+  void _debounceRefreshConversations() {
+    _convRefreshDebounce?.cancel();
+    _convRefreshDebounce = Timer(const Duration(milliseconds: 300), () {
+      _ref.read(conversationsProvider.notifier).refreshConversations();
+    });
+  }
+
+  void _debounceRefreshBadges() {
+    _badgeRefreshDebounce?.cancel();
+    _badgeRefreshDebounce = Timer(const Duration(milliseconds: 300), () {
+      _ref.read(unreadMessagesCountProvider.notifier).refresh();
+    });
+  }
+
+  void _navigateFromData(Map<String, dynamic> data) {
+    final type = data['type']?.toString();
+    if (type == 'incoming_call') {
+      _handleIncomingCall(data);
+      return;
+    }
+
+    final convIdStr = data['conversation_id'] ?? data['chat_id'];
+    if (convIdStr != null) {
+      final convId = int.tryParse(convIdStr.toString());
+      if (convId != null) {
+        goRouter.push('/chat/$convId');
+        return;
+      }
+    }
+
+    final listingIdStr = data['listing_id'];
+    if (listingIdStr != null) {
+      final id = int.tryParse(listingIdStr.toString());
+      if (id != null) {
+        goRouter.push('/listings/$id');
+        return;
+      }
+    }
+
+    final orderIdStr = data['order_id'];
+    if (orderIdStr != null) {
+      final id = int.tryParse(orderIdStr.toString());
+      if (id != null) {
+        goRouter.push('/orders/$id');
+        return;
+      }
+    }
+
+    final actionUrl = data['action_url']?.toString();
+    if (actionUrl != null && actionUrl.startsWith('/')) {
+      goRouter.push(actionUrl);
+    }
+  }
+
   Future<void> _updateToken() async {
     try {
-      // Delete old token first to invalidate any stale token from a
-      // previous user who may have abandoned this device without logging out.
-      // This ensures the old token is immediately invalidated in Firebase,
-      // then we get a fresh one for the current user.
       await _fcm.deleteToken();
       String? token = await _fcm.getToken();
       log('FCM Token (fresh): $token');
@@ -155,6 +231,8 @@ class FcmService {
   /// Clean up FCM on logout — delete token so logged-out user stops receiving pushes
   Future<void> cleanup() async {
     try {
+      _convRefreshDebounce?.cancel();
+      _badgeRefreshDebounce?.cancel();
       await _fcm.deleteToken();
       log('FCM token deleted on logout');
     } catch (e) {

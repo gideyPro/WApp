@@ -71,6 +71,23 @@ class NotificationService {
     }
   }
 
+  Future<int> getUnreadMessagesCount() async {
+    try {
+      final counters = await _v2.unreadCount();
+      return counters.messages;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  Future<NotificationCounters?> getUnreadCounters() async {
+    try {
+      return await _v2.unreadCount();
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<NotificationResponse> markAsRead(int notificationId) async {
     try {
       await _v2.markRead(notificationId);

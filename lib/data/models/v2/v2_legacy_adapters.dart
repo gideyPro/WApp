@@ -365,23 +365,42 @@ extension BuyerOrderLegacyAdapter on BuyerOrder {
 extension ChatConversationLegacyAdapter on ChatConversation {
   msg.Conversation toLegacyConversation({int? currentUserId}) {
     final part = otherParticipant;
+    final int? lastSenderId = lastMessage != null
+        ? (lastMessage!.isMine && currentUserId != null
+            ? currentUserId
+            : lastMessage!.senderId)
+        : null;
+
+    final isMine = lastMessage?.isMine ?? false;
+    final int sender = isMine && currentUserId != null
+        ? currentUserId
+        : (part?.id ?? 0);
+    final int receiver = isMine && currentUserId != null
+        ? (part?.id ?? 0)
+        : (currentUserId ?? 0);
+
     return msg.Conversation(
       id: id,
-      senderId: currentUserId ?? 0,
-      receiverId: part?.id ?? 0,
+      senderId: sender,
+      receiverId: receiver,
       listingId: listing?.id,
-      type: 'direct',
+      type: type,
       subject: title,
       lastMessage: lastMessage?.body,
       lastMessageAt: lastMessage?.createdAt,
       unreadCount: unreadCount,
       createdAt: createdAt ?? DateTime.now(),
+      updatedAt: updatedAt,
       otherParticipantId: part?.id,
       otherParticipantFirstName: part?.firstName,
       otherParticipantLastName: part?.lastName,
       otherParticipantAvatar: part?.avatarUrl,
       listingTitle: listing?.title,
       listingImageUrl: listing?.coverImage?.url,
+      listingDescription: listing?.description,
+      listingOwnerId: listing?.userId,
+      isAssetChat: isAboutListing || listing != null,
+      lastMessageSenderId: lastSenderId,
     );
   }
 }

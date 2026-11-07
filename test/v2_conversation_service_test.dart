@@ -87,6 +87,24 @@ void main() {
       expect(request.uri.queryParameters['limit'], '30');
       expect(page.items.single.body, contains('available'));
     });
+
+    test('polls messages with after_id', () async {
+      final service = ConversationServiceV2(
+        client: client((_) => ok(messagesPage)),
+      );
+
+      final page = await service.fetchMessages(
+        88,
+        afterId: 771,
+        limit: 50,
+      );
+
+      final request = requests.single;
+      expect(request.uri.path, '/api/v2/conversations/88/messages');
+      expect(request.uri.queryParameters['after_id'], '771');
+      expect(request.uri.queryParameters['limit'], '50');
+      expect(page.items.single.id, 772);
+    });
   });
 
   group('writes', () {

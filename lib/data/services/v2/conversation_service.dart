@@ -57,9 +57,13 @@ class ConversationServiceV2 {
   }
 
   /// Newest message first; follow [Paginated.nextCursor] for older pages.
+  ///
+  /// Pass [afterId] to poll for messages newer than the given id instead. The
+  /// backend then returns rows oldest first so they can be appended directly.
   Future<Paginated<ChatMessage>> fetchMessages(
     int conversationId, {
     String? cursor,
+    int? afterId,
     int limit = ApiV2Constants.defaultLimit,
   }) {
     return _client.getCollection(
@@ -67,6 +71,7 @@ class ConversationServiceV2 {
       parse: ChatMessage.fromJson,
       query: {
         if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
+        if (afterId != null) 'after_id': afterId,
         'limit': _clampLimit(limit),
       },
     );

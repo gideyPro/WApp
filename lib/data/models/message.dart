@@ -281,6 +281,65 @@ class Conversation {
   bool matchesParticipant(int userId) {
     return senderId == userId || receiverId == userId;
   }
+
+  Conversation copyWith({
+    int? id,
+    int? senderId,
+    int? receiverId,
+    int? listingId,
+    String? type,
+    String? subject,
+    String? lastMessage,
+    DateTime? lastMessageAt,
+    int? unreadCount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? otherParticipantId,
+    String? otherParticipantFirstName,
+    String? otherParticipantLastName,
+    String? otherParticipantAvatar,
+    String? listingTitle,
+    String? listingImageUrl,
+    String? listingDescription,
+    int? listingOwnerId,
+    bool? isAssetChat,
+    bool? contactRevealed,
+    String? revealedContact,
+    Map<String, dynamic>? senderData,
+    Map<String, dynamic>? receiverData,
+    int? lastMessageSenderId,
+  }) {
+    return Conversation(
+      id: id ?? this.id,
+      senderId: senderId ?? this.senderId,
+      receiverId: receiverId ?? this.receiverId,
+      listingId: listingId ?? this.listingId,
+      type: type ?? this.type,
+      subject: subject ?? this.subject,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageAt: lastMessageAt ?? this.lastMessageAt,
+      unreadCount: unreadCount ?? this.unreadCount,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      otherParticipantId: otherParticipantId ?? this.otherParticipantId,
+      otherParticipantFirstName:
+          otherParticipantFirstName ?? this.otherParticipantFirstName,
+      otherParticipantLastName:
+          otherParticipantLastName ?? this.otherParticipantLastName,
+      otherParticipantAvatar:
+          otherParticipantAvatar ?? this.otherParticipantAvatar,
+      listingTitle: listingTitle ?? this.listingTitle,
+      listingImageUrl: listingImageUrl ?? this.listingImageUrl,
+      listingDescription: listingDescription ?? this.listingDescription,
+      listingOwnerId: listingOwnerId ?? this.listingOwnerId,
+      isAssetChat: isAssetChat ?? this.isAssetChat,
+      contactRevealed: contactRevealed ?? this.contactRevealed,
+      revealedContact: revealedContact ?? this.revealedContact,
+      senderData: senderData ?? _senderData,
+      receiverData: receiverData ?? _receiverData,
+      lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
+    );
+  }
 }
 
 class Message {
@@ -363,5 +422,35 @@ class Message {
       return first.substring(0, first.length > 1 ? 2 : 1).toUpperCase();
     }
     return '??';
+  }
+
+  Message copyWith({
+    int? id,
+    int? conversationId,
+    int? senderId,
+    String? body,
+    bool? isRead,
+    DateTime? readAt,
+    String? attachmentUrl,
+    String? attachmentType,
+    DateTime? createdAt,
+    String? senderFirstName,
+    String? senderLastName,
+    String? senderAvatar,
+  }) {
+    return Message(
+      id: id ?? this.id,
+      conversationId: conversationId ?? this.conversationId,
+      senderId: senderId ?? this.senderId,
+      body: body ?? this.body,
+      isRead: isRead ?? this.isRead,
+      readAt: readAt ?? this.readAt,
+      attachmentUrl: attachmentUrl ?? this.attachmentUrl,
+      attachmentType: attachmentType ?? this.attachmentType,
+      createdAt: createdAt ?? this.createdAt,
+      senderFirstName: senderFirstName ?? this.senderFirstName,
+      senderLastName: senderLastName ?? this.senderLastName,
+      senderAvatar: senderAvatar ?? this.senderAvatar,
+    );
   }
 }
