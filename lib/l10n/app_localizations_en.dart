@@ -3295,6 +3295,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promoWalletBalance => 'Wallet Balance';
 
   @override
+  String get promoWalletWithdrawable => 'Withdrawable';
+
+  @override
+  String get promoWalletLocked => 'Locked';
+
+  @override
   String promoMinWithdraw(String amount) {
     return 'Minimum withdrawal: $amount ETB';
   }

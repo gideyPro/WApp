@@ -1086,6 +1086,8 @@
     }
   },
   "promoWalletBalance": "Wallet Balance",
+  "promoWalletWithdrawable": "Withdrawable",
+  "promoWalletLocked": "Locked",
   "promoMinWithdraw": "Minimum withdrawal: {amount} ETB",
   "@promoMinWithdraw": {
     "placeholders": {

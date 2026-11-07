@@ -3253,6 +3253,12 @@ class AppLocalizationsAm extends AppLocalizations {
   String get promoWalletBalance => 'የኪስ ቦርሳ ቀሪ ሂሳብ';
 
   @override
+  String get promoWalletWithdrawable => 'ማውጣት የሚቻል';
+
+  @override
+  String get promoWalletLocked => 'ተቆልፏል';
+
+  @override
   String promoMinWithdraw(String amount) {
     return 'አነስተኛ ማውጣት የሚቻለው፡ $amount ብር';
   }

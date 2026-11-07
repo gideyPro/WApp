@@ -1083,6 +1083,8 @@
     }
   },
   "promoWalletBalance": "ናይ ቦርሳ ተረፍ ሕሳብ",
+  "promoWalletWithdrawable": "ምውፃእ ዝከኣል",
+  "promoWalletLocked": "ተዓፅዩ",
   "promoMinWithdraw": "ዝተሓተ ምውፃእ ዝከኣል፡ {amount} ቅርሺ",
   "@promoMinWithdraw": {
     "placeholders": {

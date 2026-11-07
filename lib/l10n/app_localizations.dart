@@ -6238,6 +6238,18 @@ abstract class AppLocalizations {
   /// **'Wallet Balance'**
   String get promoWalletBalance;
 
+  /// No description provided for @promoWalletWithdrawable.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawable'**
+  String get promoWalletWithdrawable;
+
+  /// No description provided for @promoWalletLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get promoWalletLocked;
+
   /// No description provided for @promoMinWithdraw.
   ///
   /// In en, this message translates to:

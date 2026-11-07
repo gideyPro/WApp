@@ -32,11 +32,16 @@ final similarCarsProvider =
 
 class CarListingsNotifier extends StateNotifier<ListingsState> {
   final CarService _carService;
+  int _requestId = 0;
 
   CarListingsNotifier(this._carService) : super(const ListingsState.initial());
 
   Future<void> loadListings(
       {int page = 1, Map<String, dynamic>? filters}) async {
+    // Page 1 starts a new query generation. Pagination belongs to the
+    // generation that produced its cursor, so a newer page 1 invalidates it.
+    final requestId = page == 1 ? ++_requestId : _requestId;
+
     if (page == 1) {
       state = state.copyWith(isLoading: true, errorMessage: null);
     } else {
@@ -47,6 +52,8 @@ class CarListingsNotifier extends StateNotifier<ListingsState> {
       page: page,
       filters: filters,
     );
+
+    if (!mounted || requestId != _requestId) return;
 
     if (response.success) {
       final newListings = page == 1
@@ -70,6 +77,7 @@ class CarListingsNotifier extends StateNotifier<ListingsState> {
   }
 
   void reset() {
+    _requestId++;
     state = const ListingsState.initial();
   }
 }

@@ -1083,6 +1083,8 @@
     }
   },
   "promoWalletBalance": "የኪስ ቦርሳ ቀሪ ሂሳብ",
+  "promoWalletWithdrawable": "ማውጣት የሚቻል",
+  "promoWalletLocked": "ተቆልፏል",
   "promoMinWithdraw": "አነስተኛ ማውጣት የሚቻለው፡ {amount} ብር",
   "@promoMinWithdraw": {
     "placeholders": {

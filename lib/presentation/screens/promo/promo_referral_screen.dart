@@ -476,7 +476,9 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      data.canWithdraw ? 'Withdrawable' : 'Locked',
+                      data.canWithdraw
+                          ? l10n.promoWalletWithdrawable
+                          : l10n.promoWalletLocked,
                       style: AppTextStyles.caption.copyWith(
                         color: data.canWithdraw
                             ? AppColors.emerald500

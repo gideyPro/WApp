@@ -891,8 +891,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             Expanded(
               child: Center(
                 child: TextButton.icon(
-                  onPressed: () =>
-                      ref.read(homeCarListingsProvider.notifier).loadListings(),
+                  onPressed: () => ref
+                      .read(homeCarListingsProvider.notifier)
+                      .loadListings(
+                        filters: {
+                          'listing_type': _listingTypeSection.wireValue,
+                        },
+                      ),
                   icon: const Icon(Icons.refresh_rounded),
                   label: Text(l10n.commonRetryMessage),
                 ),

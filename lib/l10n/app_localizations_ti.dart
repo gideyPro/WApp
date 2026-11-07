@@ -3252,6 +3252,12 @@ class AppLocalizationsTi extends AppLocalizations {
   String get promoWalletBalance => 'ናይ ቦርሳ ተረፍ ሕሳብ';
 
   @override
+  String get promoWalletWithdrawable => 'ምውፃእ ዝከኣል';
+
+  @override
+  String get promoWalletLocked => 'ተዓፅዩ';
+
+  @override
   String promoMinWithdraw(String amount) {
     return 'ዝተሓተ ምውፃእ ዝከኣል፡ $amount ቅርሺ';
   }

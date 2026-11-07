@@ -47,12 +47,16 @@ final similarListingsProvider =
 
 class ListingsNotifier extends StateNotifier<ListingsState> {
   final ListingService _listingService;
+  int _requestId = 0;
 
   ListingsNotifier(this._listingService) : super(const ListingsState.initial());
 
   Future<void> loadListings(
       {int page = 1, Map<String, dynamic>? filters}) async {
     final isUnfiltered = filters == null || filters.isEmpty;
+    // Page 1 starts a new query generation. Pagination belongs to the
+    // generation that produced its cursor, so a newer page 1 invalidates it.
+    final requestId = page == 1 ? ++_requestId : _requestId;
 
     if (page == 1) {
       state = state.copyWith(isLoading: true, errorMessage: null);
@@ -64,6 +68,8 @@ class ListingsNotifier extends StateNotifier<ListingsState> {
       page: page,
       filters: filters,
     );
+
+    if (!mounted || requestId != _requestId) return;
 
     if (response.success) {
       final newListings = page == 1
@@ -87,6 +93,7 @@ class ListingsNotifier extends StateNotifier<ListingsState> {
       // Try loading from cache on error
       if (page == 1 && isUnfiltered && state.listings.isEmpty) {
         final cached = await _loadCachedListings();
+        if (!mounted || requestId != _requestId) return;
         if (cached != null) {
           state = ListingsState.loaded(
             listings: cached,
