@@ -1176,5 +1176,12 @@
   },
   "promoPayWithChapa": "ብቴሌብር / ካርድ (Chapa) ክፈሉ",
   "promoActivityRecords": "ንጥፈታትን መዛግብትን",
-  "promoTierPromoter": "ደረጃ 1 ኣፋላጢ"
+  "promoStatusSubscribed": "ተመዝጊቡ",
+  "promoStatusNotSubscribed": "ኣይተመዝገበን",
+  "promoJoinedNoSubscription": "WaveMart ተጸንቢሩ · ክሳብ ሕጂ ምዝገባ የለን",
+  "promoReadyToWithdraw": "ናብ ቴሌብር ንምውፃእ ድሉው እዩ",
+  "promoMinWithdrawRequirement": "ንቴሌብር ምውፃእ እንተወሓደ {amount} ቅርሺ",
+  "promoEarnMoreToWithdraw": "ንምውፃእ ተወሳኺ {amount} ቅርሺ ረኸቡ",
+  "promoReferralHeaderDiscount": "ንመሓዙት {percent}% ቅናሽ",
+  "promoReferralNote": "መሓዙት ንናይ መጀመርታ ውጥኖም {percent}% ቅናሽ ይረኽቡ · ኣብ ነፍሲ ወከፍ ምዝገባ ገንዘብ ይረኽቡ"
 }

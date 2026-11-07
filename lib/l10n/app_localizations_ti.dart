@@ -3409,5 +3409,34 @@ class AppLocalizationsTi extends AppLocalizations {
   String get promoActivityRecords => 'ንጥፈታትን መዛግብትን';
 
   @override
-  String get promoTierPromoter => 'ደረጃ 1 ኣፋላጢ';
+  String get promoStatusSubscribed => 'ተመዝጊቡ';
+
+  @override
+  String get promoStatusNotSubscribed => 'ኣይተመዝገበን';
+
+  @override
+  String get promoJoinedNoSubscription => 'WaveMart ተጸንቢሩ · ክሳብ ሕጂ ምዝገባ የለን';
+
+  @override
+  String get promoReadyToWithdraw => 'ናብ ቴሌብር ንምውፃእ ድሉው እዩ';
+
+  @override
+  String promoMinWithdrawRequirement(String amount) {
+    return 'ንቴሌብር ምውፃእ እንተወሓደ $amount ቅርሺ';
+  }
+
+  @override
+  String promoEarnMoreToWithdraw(String amount) {
+    return 'ንምውፃእ ተወሳኺ $amount ቅርሺ ረኸቡ';
+  }
+
+  @override
+  String promoReferralHeaderDiscount(String percent) {
+    return 'ንመሓዙት $percent% ቅናሽ';
+  }
+
+  @override
+  String promoReferralNote(String percent) {
+    return 'መሓዙት ንናይ መጀመርታ ውጥኖም $percent% ቅናሽ ይረኽቡ · ኣብ ነፍሲ ወከፍ ምዝገባ ገንዘብ ይረኽቡ';
+  }
 }

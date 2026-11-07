@@ -78,7 +78,19 @@ void main() {
             'commission_percentage': 10.0,
             'earned_amount': 100.0,
             'status': 'available',
+            'is_subscribed': true,
             'created_at': '2026-11-05T10:00:00Z',
+          },
+          {
+            'id': -2,
+            'invitee_name': 'Bekele',
+            'plan_name': '',
+            'plan_base_price': 0.0,
+            'commission_percentage': 0.0,
+            'earned_amount': 0.0,
+            'status': 'joined',
+            'is_subscribed': false,
+            'created_at': '2026-11-06T10:00:00Z',
           }
         ],
       });
@@ -89,13 +101,20 @@ void main() {
       expect(dashboard.totalInvited, 8);
       expect(dashboard.totalSubscribed, 3);
       expect(dashboard.totalEarned, 750.50);
-      expect(dashboard.earnings.length, 1);
+      expect(dashboard.earnings.length, 2);
 
       final item = dashboard.earnings.first;
       expect(item.inviteeName, 'Almaz');
       expect(item.planName, 'Standard Pro');
       expect(item.earnedAmount, 100.0);
       expect(item.planBasePrice, 1000.0);
+      expect(item.isSubscribed, isTrue);
+
+      final nonSubscribed = dashboard.earnings[1];
+      expect(nonSubscribed.inviteeName, 'Bekele');
+      expect(nonSubscribed.isSubscribed, isFalse);
+      expect(nonSubscribed.status, 'joined');
+      expect(nonSubscribed.earnedAmount, 0.0);
     });
   });
 

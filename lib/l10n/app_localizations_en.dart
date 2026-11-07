@@ -3456,5 +3456,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promoActivityRecords => 'Activity & Records';
 
   @override
-  String get promoTierPromoter => 'Tier 1 Promoter';
+  String get promoStatusSubscribed => 'Subscribed';
+
+  @override
+  String get promoStatusNotSubscribed => 'Not Subscribed';
+
+  @override
+  String get promoJoinedNoSubscription =>
+      'Joined WaveMart · No subscription yet';
+
+  @override
+  String get promoReadyToWithdraw => 'Ready to withdraw to Telebirr';
+
+  @override
+  String promoMinWithdrawRequirement(String amount) {
+    return 'Min. $amount ETB for Telebirr';
+  }
+
+  @override
+  String promoEarnMoreToWithdraw(String amount) {
+    return 'Earn $amount ETB more to withdraw';
+  }
+
+  @override
+  String promoReferralHeaderDiscount(String percent) {
+    return '$percent% Discount for Friends';
+  }
+
+  @override
+  String promoReferralNote(String percent) {
+    return 'Friends get $percent% off their first plan · You earn cash on each subscription';
+  }
 }

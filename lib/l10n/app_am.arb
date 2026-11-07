@@ -1176,5 +1176,12 @@
   },
   "promoPayWithChapa": "በቴሌብር / ካርድ (Chapa) ይክፈሉ",
   "promoActivityRecords": "እንቅስቃሴዎች እና መዝገቦች",
-  "promoTierPromoter": "ደረጃ 1 አስተዋዋቂ"
+  "promoStatusSubscribed": "ተመዝግቧል",
+  "promoStatusNotSubscribed": "አልተመዘገበም",
+  "promoJoinedNoSubscription": "WaveMart ተቀላቅለዋል · እስካሁን ምንም ምዝገባ የለም",
+  "promoReadyToWithdraw": "ወደ ቴሌብር ለማውጣት ዝግጁ ነው",
+  "promoMinWithdrawRequirement": "ለቴሌብር ማውጣት ቢያንስ {amount} ብር",
+  "promoEarnMoreToWithdraw": "ለማውጣት ተጨማሪ {amount} ብር ያግኙ",
+  "promoReferralHeaderDiscount": "ለጓደኞች {percent}% ቅናሽ",
+  "promoReferralNote": "ጓደኞች ለመጀመሪያ እቅዳቸው {percent}% ቅናሽ ያገኛሉ · በእያንዳንዱ ምዝገባ ገንዘብ ያገኛሉ"
 }

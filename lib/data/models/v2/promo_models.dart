@@ -40,6 +40,7 @@ class ReferralEarningItem {
   final double commissionPercentage;
   final double earnedAmount;
   final String status;
+  final bool isSubscribed;
   final DateTime? createdAt;
 
   const ReferralEarningItem({
@@ -50,19 +51,28 @@ class ReferralEarningItem {
     required this.commissionPercentage,
     required this.earnedAmount,
     required this.status,
+    this.isSubscribed = true,
     this.createdAt,
   });
 
   factory ReferralEarningItem.fromJson(Map<String, dynamic> json) {
+    final status = json['status']?.toString() ?? 'available';
+    final hasSubscribed = json['is_subscribed'] != null
+        ? TypeUtils.safeBool(json['is_subscribed'])
+        : (status != 'joined' &&
+            status != 'pending_subscription' &&
+            (TypeUtils.safeDouble(json['earned_amount']) ?? 0.0) > 0);
+
     return ReferralEarningItem(
       id: TypeUtils.safeInt(json['id']) ?? 0,
       inviteeName: json['invitee_name']?.toString() ?? 'Friend',
-      planName: json['plan_name']?.toString() ?? 'Subscription',
+      planName: json['plan_name']?.toString() ?? '',
       planBasePrice: TypeUtils.safeDouble(json['plan_base_price']) ?? 0.0,
       commissionPercentage:
           TypeUtils.safeDouble(json['commission_percentage']) ?? 0.0,
       earnedAmount: TypeUtils.safeDouble(json['earned_amount']) ?? 0.0,
-      status: json['status']?.toString() ?? 'available',
+      status: status,
+      isSubscribed: hasSubscribed,
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())
           : null,

@@ -6514,11 +6514,53 @@ abstract class AppLocalizations {
   /// **'Activity & Records'**
   String get promoActivityRecords;
 
-  /// No description provided for @promoTierPromoter.
+  /// No description provided for @promoStatusSubscribed.
   ///
   /// In en, this message translates to:
-  /// **'Tier 1 Promoter'**
-  String get promoTierPromoter;
+  /// **'Subscribed'**
+  String get promoStatusSubscribed;
+
+  /// No description provided for @promoStatusNotSubscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Subscribed'**
+  String get promoStatusNotSubscribed;
+
+  /// No description provided for @promoJoinedNoSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined WaveMart · No subscription yet'**
+  String get promoJoinedNoSubscription;
+
+  /// No description provided for @promoReadyToWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to withdraw to Telebirr'**
+  String get promoReadyToWithdraw;
+
+  /// No description provided for @promoMinWithdrawRequirement.
+  ///
+  /// In en, this message translates to:
+  /// **'Min. {amount} ETB for Telebirr'**
+  String promoMinWithdrawRequirement(String amount);
+
+  /// No description provided for @promoEarnMoreToWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn {amount} ETB more to withdraw'**
+  String promoEarnMoreToWithdraw(String amount);
+
+  /// No description provided for @promoReferralHeaderDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% Discount for Friends'**
+  String promoReferralHeaderDiscount(String percent);
+
+  /// No description provided for @promoReferralNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends get {percent}% off their first plan · You earn cash on each subscription'**
+  String promoReferralNote(String percent);
 }
 
 class _AppLocalizationsDelegate

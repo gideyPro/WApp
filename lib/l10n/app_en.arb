@@ -1179,5 +1179,32 @@
   },
   "promoPayWithChapa": "Pay with Telebirr / Cards (Chapa)",
   "promoActivityRecords": "Activity & Records",
-  "promoTierPromoter": "Tier 1 Promoter"
+  "promoStatusSubscribed": "Subscribed",
+  "promoStatusNotSubscribed": "Not Subscribed",
+  "promoJoinedNoSubscription": "Joined WaveMart · No subscription yet",
+  "promoReadyToWithdraw": "Ready to withdraw to Telebirr",
+  "promoMinWithdrawRequirement": "Min. {amount} ETB for Telebirr",
+  "@promoMinWithdrawRequirement": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoEarnMoreToWithdraw": "Earn {amount} ETB more to withdraw",
+  "@promoEarnMoreToWithdraw": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "promoReferralHeaderDiscount": "{percent}% Discount for Friends",
+  "@promoReferralHeaderDiscount": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "promoReferralNote": "Friends get {percent}% off their first plan · You earn cash on each subscription",
+  "@promoReferralNote": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  }
 }
