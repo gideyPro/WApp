@@ -31,7 +31,6 @@ class PublicOrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isDark = context.theme.isDark;
-    final buyer = order.buyer;
     final isCar = order.isCar;
     final isRental = order.isRental;
 
@@ -174,123 +173,64 @@ class PublicOrderCard extends StatelessWidget {
               ],
             ),
 
-            // Divider
+            // Bottom VIP Status indicator only
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Divider(
-                height: 1,
-                thickness: 0.6,
-                color: context.theme.divider.withValues(alpha: 0.5),
-              ),
-            ),
-
-            // Bottom VIP Teaser & Buyer Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Buyer monogram / identity
-                Flexible(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        radius: 12,
-                        backgroundColor: isDark
-                            ? const Color(0xFF0F766E).withValues(alpha: 0.6)
-                            : const Color(0xFFCCFBF1),
-                        child: Text(
-                          (buyer?.hasName == true
-                                  ? buyer!.name![0]
-                                  : l10n.ordersBuyer[0])
-                              .toUpperCase(),
-                          style: TextStyle(
-                            color: isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0F766E),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          buyer?.name ?? l10n.ordersBuyer,
-                          style: AppTextStyles.caption.copyWith(
-                            color: context.theme.textSecondary,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 11.5,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (buyer?.isKycVerified == true) ...[
-                        const SizedBox(width: 4),
+              padding: const EdgeInsets.only(top: 8),
+              child: order.canViewVip
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                         const Icon(
-                          Icons.check_circle_rounded,
+                          Icons.lock_open_rounded,
                           size: 13,
                           color: Color(0xFF10B981),
                         ),
+                        const SizedBox(width: 4),
+                        Text(
+                          l10n.ordersContactBuyer,
+                          style: TextStyle(
+                            color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ],
-                    ],
-                  ),
-                ),
-
-                // VIP Status indicator
-                order.canViewVip
-                    ? Row(
+                    )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF78350F).withValues(alpha: 0.4)
+                            : const Color(0xFFFEF3C7),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFFD97706).withValues(alpha: 0.4)
+                              : const Color(0xFFFDE68A),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
-                            Icons.lock_open_rounded,
-                            size: 13,
-                            color: Color(0xFF10B981),
+                          Icon(
+                            Icons.lock_rounded,
+                            size: 10,
+                            color: isDark ? const Color(0xFFFCD34D) : const Color(0xFFB45309),
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: 3),
                           Text(
-                            l10n.ordersContactBuyer,
+                            l10n.ordersVipRequiredBadge.toUpperCase(),
                             style: TextStyle(
-                              color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
+                              color: isDark ? const Color(0xFFFCD34D) : const Color(0xFFB45309),
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.3,
                             ),
                           ),
                         ],
-                      )
-                    : Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? const Color(0xFF78350F).withValues(alpha: 0.4)
-                              : const Color(0xFFFEF3C7),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: isDark
-                                ? const Color(0xFFD97706).withValues(alpha: 0.4)
-                                : const Color(0xFFFDE68A),
-                            width: 0.8,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.lock_rounded,
-                              size: 10,
-                              color: isDark ? const Color(0xFFFCD34D) : const Color(0xFFB45309),
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              l10n.ordersVipRequiredBadge.toUpperCase(),
-                              style: TextStyle(
-                                color: isDark ? const Color(0xFFFCD34D) : const Color(0xFFB45309),
-                                fontSize: 9,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.3,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-              ],
+                    ),
             ),
           ],
         ),

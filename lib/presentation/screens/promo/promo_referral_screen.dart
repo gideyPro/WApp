@@ -378,9 +378,9 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildPromoCodeCard(data),
-                const SizedBox(height: 18),
                 _buildWalletCard(data),
+                const SizedBox(height: 18),
+                _buildPromoCodeCard(data),
                 const SizedBox(height: 18),
                 _buildStatsGrid(data),
                 const SizedBox(height: 24),
@@ -397,11 +397,145 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
     );
   }
 
+  Widget _buildWalletCard(PromoDashboardData data) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return LiquidGlass(
+      borderRadius: 20,
+      blur: 16,
+      variant: LiquidGlassVariant.prominent,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.emerald500.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.account_balance_wallet_rounded,
+                  color: AppColors.emerald500,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.promoWalletBalance,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: context.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      l10n.promoMinWithdraw(
+                        data.minWithdrawAmount.toStringAsFixed(0),
+                      ),
+                      style: AppTextStyles.caption.copyWith(
+                        color: context.textMuted,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: (data.canWithdraw
+                          ? AppColors.emerald500
+                          : context.textMuted)
+                      .withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: (data.canWithdraw
+                            ? AppColors.emerald500
+                            : context.textMuted)
+                        .withValues(alpha: 0.25),
+                    width: 0.8,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: data.canWithdraw
+                            ? AppColors.emerald500
+                            : context.textMuted,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      data.canWithdraw ? 'Withdrawable' : 'Locked',
+                      style: AppTextStyles.caption.copyWith(
+                        color: data.canWithdraw
+                            ? AppColors.emerald500
+                            : context.textMuted,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            '${data.walletBalance.toStringAsFixed(2)} ETB',
+            style: AppTextStyles.headline1.copyWith(
+              color: isDark ? const Color(0xFF34D399) : const Color(0xFF059669),
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.5,
+              fontSize: 32,
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Primary action: Full-width Withdraw via Telebirr
+          WaveButton(
+            text: l10n.promoWithdrawTelebirr,
+            icon: Icons.payments_rounded,
+            variant: ButtonVariant.primary,
+            isFullWidth: true,
+            height: 46,
+            onPressed: data.canWithdraw
+                ? () => _showWithdrawModal(context, data)
+                : null,
+          ),
+          const SizedBox(height: 10),
+
+          // Secondary action: Full-width Use for Package
+          WaveButton(
+            text: l10n.promoUseForPackage,
+            icon: Icons.diamond_rounded,
+            variant: ButtonVariant.outline,
+            isFullWidth: true,
+            height: 42,
+            onPressed: data.walletBalance > 0
+                ? () => context.push('/subscriptions')
+                : null,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPromoCodeCard(PromoDashboardData data) {
     return LiquidGlass(
       borderRadius: 20,
-      blur: 20,
-      variant: LiquidGlassVariant.prominent,
+      blur: 16,
+      variant: LiquidGlassVariant.regular,
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,7 +551,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                 child: const Icon(
                   Icons.card_giftcard_rounded,
                   color: AppColors.accent500,
-                  size: 22,
+                  size: 20,
                 ),
               ),
               const SizedBox(width: 10),
@@ -427,9 +561,9 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
                   children: [
                     Text(
                       l10n.promoYourCode,
-                      style: AppTextStyles.caption.copyWith(
-                        color: context.textSecondary,
-                        fontWeight: FontWeight.w600,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: context.textPrimary,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     Text(
@@ -445,7 +579,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
 
           // Code display box with Copy action
           Container(
@@ -490,6 +624,7 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
             text: l10n.promoShare,
             icon: Icons.share_rounded,
             isFullWidth: true,
+            height: 44,
             onPressed: () => _sharePromoCode(data),
           ),
         ],
@@ -497,120 +632,59 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
     );
   }
 
-  Widget _buildWalletCard(PromoDashboardData data) {
-    return LiquidGlass(
-      borderRadius: 20,
-      blur: 16,
-      variant: LiquidGlassVariant.regular,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                l10n.promoWalletBalance,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: context.textSecondary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: (data.canWithdraw
-                          ? AppColors.emerald500
-                          : context.textMuted)
-                      .withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  l10n.promoMinWithdraw(
-                    data.minWithdrawAmount.toStringAsFixed(0),
-                  ),
-                  style: AppTextStyles.caption.copyWith(
-                    color: data.canWithdraw
-                        ? AppColors.emerald500
-                        : context.textMuted,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '${data.walletBalance.toStringAsFixed(2)} ETB',
-            style: AppTextStyles.headline2.copyWith(
-              color: AppColors.emerald600,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 18),
-
-          // Action row
-          Row(
-            children: [
-              Expanded(
-                child: WaveButton(
-                  text: l10n.promoWithdrawTelebirr,
-                  icon: Icons.payments_rounded,
-                  variant: ButtonVariant.primary,
-                  onPressed: data.canWithdraw
-                      ? () => _showWithdrawModal(context, data)
-                      : null,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: WaveButton(
-                  text: l10n.promoUseForPackage,
-                  icon: Icons.diamond_rounded,
-                  variant: ButtonVariant.outline,
-                  onPressed: data.walletBalance > 0
-                      ? () => context.push('/subscriptions')
-                      : null,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildStatsGrid(PromoDashboardData data) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatTile(
-            title: l10n.promoStatsInvited,
-            value: data.totalInvited.toString(),
-            icon: Icons.people_outline_rounded,
-            accentColor: AppColors.accent500,
-          ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : AppColors.primary100,
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _buildStatTile(
-            title: l10n.promoStatsSubscribed,
-            value: data.totalSubscribed.toString(),
-            icon: Icons.verified_user_rounded,
-            accentColor: AppColors.emerald500,
-          ),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Expanded(
+              child: _buildStatTile(
+                title: l10n.promoStatsInvited,
+                value: data.totalInvited.toString(),
+                icon: Icons.people_outline_rounded,
+                accentColor: AppColors.accent500,
+              ),
+            ),
+            VerticalDivider(
+              width: 1,
+              thickness: 0.8,
+              color: context.divider.withValues(alpha: 0.5),
+            ),
+            Expanded(
+              child: _buildStatTile(
+                title: l10n.promoStatsSubscribed,
+                value: data.totalSubscribed.toString(),
+                icon: Icons.verified_user_rounded,
+                accentColor: AppColors.emerald500,
+              ),
+            ),
+            VerticalDivider(
+              width: 1,
+              thickness: 0.8,
+              color: context.divider.withValues(alpha: 0.5),
+            ),
+            Expanded(
+              child: _buildStatTile(
+                title: l10n.promoStatsEarned,
+                value: '${data.totalEarned.toStringAsFixed(0)} ETB',
+                icon: Icons.monetization_on_rounded,
+                accentColor: AppColors.warning,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _buildStatTile(
-            title: l10n.promoStatsEarned,
-            value: '${data.totalEarned.toStringAsFixed(0)} ETB',
-            icon: Icons.monetization_on_rounded,
-            accentColor: AppColors.warning,
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -620,35 +694,30 @@ class _PromoReferralScreenState extends ConsumerState<PromoReferralScreen> {
     required IconData icon,
     required Color accentColor,
   }) {
-    return LiquidGlass(
-      borderRadius: 16,
-      blur: 12,
-      variant: LiquidGlassVariant.regular,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-      child: Column(
-        children: [
-          Icon(icon, size: 20, color: accentColor),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: AppTextStyles.titleSmall.copyWith(
-              fontWeight: FontWeight.w800,
-              color: context.textPrimary,
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 20, color: accentColor),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: AppTextStyles.titleSmall.copyWith(
+            fontWeight: FontWeight.w800,
+            color: context.textPrimary,
           ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.caption.copyWith(
-              color: context.textMuted,
-              fontSize: 11,
-            ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: AppTextStyles.caption.copyWith(
+            color: context.textMuted,
+            fontSize: 11,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

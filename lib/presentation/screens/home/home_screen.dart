@@ -596,17 +596,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }) {
     final isDark = context.isDarkMode;
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
-      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
+      alignment: Alignment.center,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Container(
-          padding: const EdgeInsets.all(3.5),
+          padding: const EdgeInsets.all(2.5),
           decoration: BoxDecoration(
             color: isDark
                 ? AppColors.cardNavyDark
                 : const Color(0xFFE2E8F0),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isDark
                   ? Colors.white.withValues(alpha: 0.1)
@@ -624,14 +624,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOutCubic,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 6.5,
+                    horizontal: 10,
+                    vertical: 4.5,
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? (isDark ? AppColors.cardNavyLight : Colors.white)
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     border: isSelected
                         ? Border.all(
                             color: isDark
@@ -657,26 +657,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     children: [
                       if (isSelected) ...[
                         Container(
-                          width: 6,
-                          height: 6,
+                          width: 5,
+                          height: 5,
                           decoration: const BoxDecoration(
                             color: AppColors.accent500,
                             shape: BoxShape.circle,
                           ),
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 4.5),
                       ],
                       Icon(
                         icon(item),
-                        size: 14,
+                        size: 12.5,
                         color: isSelected
                             ? (isDark ? Colors.white : AppColors.primary900)
                             : context.textSecondary,
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(width: 4),
                       Text(
                         label(item),
-                        style: AppTextStyles.bodySmall.copyWith(
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 11.5,
                           fontWeight:
                               isSelected ? FontWeight.w700 : FontWeight.w500,
                           color: isSelected
@@ -740,7 +741,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildCarLatestSliver(ListingsState state, AppLocalizations l10n) {
-    if (state.isLoading && state.listings.isEmpty) {
+    final isRental = _listingTypeSection == ListingTypeSection.rent;
+    final carListings = state.listings
+        .where((l) =>
+            l.propertyType == PropertyType.car &&
+            l.listingType == (isRental ? ListingType.rental : ListingType.sale))
+        .toList();
+
+    if (state.isLoading && carListings.isEmpty) {
       return SliverPadding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
         sliver: SliverList(
@@ -752,7 +760,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       );
     }
 
-    if (state.errorMessage != null && state.listings.isEmpty) {
+    if (state.errorMessage != null && carListings.isEmpty) {
       return SliverFillRemaining(
         child: Column(
           children: [
@@ -771,7 +779,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       );
     }
 
-    if (state.listings.isEmpty) {
+    if (carListings.isEmpty) {
       return SliverFillRemaining(
         child: Center(
           child: Padding(
@@ -797,13 +805,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            if (index == state.listings.length) {
+            if (index == carListings.length) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator()),
               );
             }
-            final listing = state.listings[index];
+            final listing = carListings[index];
             final fav = _isFavorite(listing.id);
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
@@ -816,7 +824,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             );
           },
-          childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
+          childCount: carListings.length + (state.isLoadingMore ? 1 : 0),
         ),
       ),
     );
@@ -1935,9 +1943,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     JobSeekerProfilesState seekerState,
   ) {
     final showJobsAndSeekers = _allSection == AllSection.all;
+    final isAll = _allSection == AllSection.all;
+    final isRent = _allSection == AllSection.rent;
 
-    final hasAnyListings = propState.listings.isNotEmpty ||
-        carState.listings.isNotEmpty ||
+    // Filter property and car listings by the active sub-tab listing type.
+    final filteredPropListings = isAll
+        ? propState.listings
+        : propState.listings
+            .where((l) =>
+                l.listingType ==
+                (isRent ? ListingType.rental : ListingType.sale))
+            .toList();
+    final filteredCarListings = isAll
+        ? carState.listings
+        : carState.listings
+            .where((l) =>
+                l.listingType ==
+                (isRent ? ListingType.rental : ListingType.sale))
+            .toList();
+
+    final hasAnyListings = filteredPropListings.isNotEmpty ||
+        filteredCarListings.isNotEmpty ||
         (showJobsAndSeekers &&
             (jobState.listings.isNotEmpty || seekerState.profiles.isNotEmpty));
 
@@ -1957,12 +1983,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
         );
       }
-      return const SliverToBoxAdapter(child: SizedBox.shrink());
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.search_off_rounded,
+                    size: 56, color: context.textMuted),
+                const SizedBox(height: 12),
+                Text(
+                  AppLocalizations.of(context).listingsNoResults,
+                  style: AppTextStyles.bodyMedium
+                      .copyWith(color: context.textMuted),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
     final allItems = <_AllFeedItem>[
-      ...propState.listings.map(_ListingFeedItem.new),
-      ...carState.listings.map(_ListingFeedItem.new),
+      ...filteredPropListings.map(_ListingFeedItem.new),
+      ...filteredCarListings.map(_ListingFeedItem.new),
       if (showJobsAndSeekers) ...[
         ...jobState.listings.map(_ListingFeedItem.new),
         ...seekerState.profiles.map(_SeekerFeedItem.new),
@@ -2545,7 +2591,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildLatestListings(ListingsState state) {
-    if (state.errorMessage != null && state.listings.isEmpty) {
+    final isRental = _listingTypeSection == ListingTypeSection.rent;
+    final propListings = state.listings
+        .where((l) =>
+            l.propertyType != PropertyType.car &&
+            l.propertyType != PropertyType.job &&
+            l.listingType == (isRental ? ListingType.rental : ListingType.sale))
+        .toList();
+
+    if (state.errorMessage != null && propListings.isEmpty) {
       return SliverFillRemaining(
         child: Center(
           child: Padding(
@@ -2555,7 +2609,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       );
     }
-    if (state.isLoading && state.listings.isEmpty) {
+    if (state.isLoading && propListings.isEmpty) {
       return SliverPadding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
         sliver: SliverList(
@@ -2566,7 +2620,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       );
     }
-    if (state.listings.isEmpty) {
+    if (propListings.isEmpty) {
       return SliverFillRemaining(
         child: Center(
           child: Text(AppLocalizations.of(context).listingsNoResults),
@@ -2578,13 +2632,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            if (index == state.listings.length) {
+            if (index == propListings.length) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator()),
               );
             }
-            final listing = state.listings[index];
+            final listing = propListings[index];
             final fav = _isFavorite(listing.id);
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
@@ -2597,7 +2651,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             );
           },
-          childCount: state.listings.length + (state.isLoadingMore ? 1 : 0),
+          childCount: propListings.length + (state.isLoadingMore ? 1 : 0),
         ),
       ),
     );
