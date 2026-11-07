@@ -597,7 +597,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final isDark = context.isDarkMode;
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Container(
